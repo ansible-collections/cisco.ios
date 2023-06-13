@@ -191,7 +191,7 @@ class Ospfv2(ResourceModule):
                 self.addcmd(entry, "area.filter_list", True)
 
     def _passive_interfaces_compare(self, want, have):
-        parsers = ["passive_interfaces.interface", "passive_interfaces.default"]
+        interface_parsers = ["passive_interfaces.interface", "passive_interfaces.default"]
         h_pi = None
         for k, v in iteritems(want["passive_interfaces"]):
             h_pi = have.get("passive_interfaces", [])
@@ -201,7 +201,7 @@ class Ospfv2(ResourceModule):
                     if each not in h_interface_name:
                         temp = {"interface": {each: each}, "set_interface": v["set_interface"]}
                         self.compare(
-                            parsers=parsers,
+                            parsers=interface_parsers,
                             want={"passive_interfaces": temp},
                             have=dict(),
                         )
@@ -212,13 +212,13 @@ class Ospfv2(ResourceModule):
                     for each in v["name"]:
                         temp = {"interface": {each: each}, "set_interface": v["set_interface"]}
                         self.compare(
-                            parsers=parsers,
+                            parsers=interface_parsers,
                             want={"passive_interfaces": temp},
                             have=dict(),
                         )
                 elif k == "default":
                     self.compare(
-                        parsers=parsers,
+                        parsers=interface_parsers,
                         want={"passive_interfaces": {"default": True}},
                         have=dict(),
                     )
@@ -234,13 +234,13 @@ class Ospfv2(ResourceModule):
                                 "set_interface": not (v["set_interface"]),
                             }
                             self.compare(
-                                parsers=parsers,
+                                parsers=interface_parsers,
                                 want={"passive_interface": temp},
                                 have=dict(),
                             )
                     elif k == "default":
                         self.compare(
-                            parsers=parsers,
+                            parsers=interface_parsers,
                             want=dict(),
                             have={"passive_interface": {"default": True}},
                         )

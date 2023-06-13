@@ -1698,6 +1698,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.ospfv
 )
 
 
+import debugpy
+debugpy.listen(3007)
+debugpy.wait_for_client()
+
 def main():
     """
     Main entry point for module execution
