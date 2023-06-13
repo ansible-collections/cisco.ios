@@ -3,3 +3,4 @@ bugfixes:
   - ios_ospf_interface - Fix configuration rendering for ipv4 and ipv6 configurations.
   - ios_ospf_interface - Fix replaced and overridden state, action to negate superfluous configuration.
   - ios_snmp_server - Add default versions to version 3 users.
+  - ios_lag_interfaces - Fix empty facts to be a list.

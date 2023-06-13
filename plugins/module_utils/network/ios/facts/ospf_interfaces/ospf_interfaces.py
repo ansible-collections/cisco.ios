@@ -82,7 +82,7 @@ class Ospf_interfacesFacts(object):
             ),
         )
 
-        facts["ospf_interfaces"] = params["config"]
+        facts["ospf_interfaces"] = params.get("config", [])
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
