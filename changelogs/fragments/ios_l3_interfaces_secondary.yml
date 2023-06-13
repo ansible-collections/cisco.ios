@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_l3_interfaces - account for secondary/primary when comparing ipv4 addresses. (https://github.com/ansible-collections/cisco.ios/issues/826)
