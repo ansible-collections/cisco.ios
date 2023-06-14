@@ -914,4 +914,5 @@ releases:
       - lint_examples.yml
       - ospf_intf_fix.yml
       - snmpv3_user_render.yml
+      - update_galaxy.yml
     release_date: "2023-06-13"
