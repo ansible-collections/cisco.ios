@@ -505,42 +505,30 @@ class Ospfv2Template(NetworkTemplate):
             "name": "pid",
             "getval": re.compile(
                 r"""
-                        ^router\s
-                        ospf*
-                        \s(?P<pid>\S+)
-                        \svrf
-                        \s(?P<vrf>\S+)
-                        $""",
+                ^router\sospf
+                (\s(?P<pid>\d+))
+                (\s(vrf\s(?P<vrf_value>\S+)))?
+                $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_vrf_cmd,
+            "setval": "router ospf {{ process_id }}"
+            "{{ (' vrf ' + vrf ) if vrf is defined else '' }}",
             "result": {
-                "processes": {"{{ pid }}": {"process_id": "{{ pid|int }}", "vrf": "{{ vrf }}"}},
+                "processes": {
+                    "{{ pid }}": {"process_id": "{{ pid|int }}", "vrf": "{{ vrf_value }}"},
+                },
             },
-            "shared": True,
-        },
-        {
-            "name": "pid",
-            "getval": re.compile(
-                r"""
-                        ^router\s
-                        ospf*
-                        \s(?P<pid>\S+)
-                        $""",
-                re.VERBOSE,
-            ),
-            "setval": _tmplt_ospf_vrf_cmd,
-            "result": {"processes": {"{{ pid }}": {"process_id": "{{ pid|int }}"}}},
             "shared": True,
         },
         {
             "name": "adjacency",
             "getval": re.compile(
-                r"""\s+adjacency
-                    \sstagger*
-                    \s*((?P<min>\d+)|(?P<none_adj>none))*
-                    \s*(?P<max>\S+)
-                    *$""",
+                r"""
+                \sadjacency\sstagger
+                (\s(?P<min>\d+))?
+                (\s(?P<none>none))?
+                (\s(?P<max>\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_adjacency_cmd,
@@ -559,11 +547,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "address_family",
             "getval": re.compile(
-                r"""\s+topology
-                    \s(?P<base>base)*
-                    \s*(?P<name>\S+)*
-                    \s*(?P<tid>tid\s\d+)
-                    *$""",
+                r"""
+                \stopology
+                (\s(?P<base>base))?
+                (\s(?P<name>\S+))?
+                (\stid\s(?P<tid>\S+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_address_family_cmd,
@@ -574,7 +563,7 @@ class Ospfv2Template(NetworkTemplate):
                             "topology": {
                                 "base": "{{ True if base is defined }}",
                                 "name": "{{ name }}",
-                                "tid": "{{ tid.split(" ")[1] }}",
+                                "tid": "{{ tid }}",
                             },
                         },
                     },
@@ -584,11 +573,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "area.authentication",
             "getval": re.compile(
-                r"""\s+area
-                    \s(?P<area_id>\S+)*
-                    \s*(?P<auth>authentication)*
-                    \s*(?P<md>message-digest)
-                    *$""",
+                r"""
+                \sarea
+                (\s(?P<area_id>\S+))?
+                (\s(?P<auth>authentication))?
+                (\s(?P<md>message-digest))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_authentication,
@@ -612,11 +602,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "area.capability",
             "getval": re.compile(
-                r"""\s+area
-                    \s(?P<area_id>\S+)*
-                    \s*(?P<capability>capability)*
-                    \s*(?P<df>default-exclusion)
-                    *$""",
+                r"""
+                \sarea
+                (\s(?P<area_id>\S+))?
+                (\s(?P<capability>capability))?
+                \sdefault-exclusion
+                $""",
                 re.VERBOSE,
             ),
             "setval": "area {{ area_id }} capability default-exclusion",
@@ -637,11 +628,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "area.default_cost",
             "getval": re.compile(
-                r"""\s+area
-                    \s(?P<area_id>\S+)*
-                    \sdefault-cost*
-                    \s*(?P<default_cost>\S+)
-                    *$""",
+                r"""
+                \sarea
+                (\s(?P<area_id>\S+))?
+                \sdefault-cost
+                (\s(?P<default_cost>\S+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": "area {{ area_id }} default-cost {{ default_cost }}",
@@ -662,12 +654,13 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "area.filter_list",
             "getval": re.compile(
-                r"""\s+area
-                    \s*(?P<area_id>\S+)*
-                    \s*filter-list\sprefix*
-                    \s*(?P<name>\S+)*
-                    \s*(?P<dir>\S+)
-                    *$""",
+                r"""
+                \s+area
+                (\s(?P<area_id>\S+))?
+                \sfilter-list\sprefix
+                (\s(?P<name>\S+))?
+                (\s(?P<dir>\S+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_filter,
@@ -688,14 +681,18 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "area.nssa",
             "getval": re.compile(
-                r"""\s+area\s(?P<area_id>\S+)
-                    \s(?P<nssa>nssa)*
-                    \s*(?P<no_redis>no-redistribution)*
-                    \s*(?P<def_origin>default-information-originate)*
-                    \s*(?P<metric>metric\s\d+)*
-                    \s*(?P<metric_type>metric-type\s\d+)*
-                    \s*(?P<no_summary>no-summary)*
-                    \s*(?P<no_ext>no-ext-capability)*$""",
+                r"""
+                \sarea
+                (\s(?P<area_id>\S+))?
+                (\s(?P<nssa>nssa))?
+                (\s(?P<no_redis>no-redistribution))?
+                (\s(?P<def_origin>default-information-originate))?
+                (\smetric\s(?P<metric>\d+))?
+                (\smetric-type\s(?P<metric_type>\d+))?
+                (\s(?P<no_summary>no-summary))?
+                (\s(?P<nssa_only>nssa-only))?
+                (\s(?P<no_ext>no-ext-capability))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_nssa_translate,
@@ -707,13 +704,11 @@ class Ospfv2Template(NetworkTemplate):
                             "{{ area_id }}": {
                                 "area_id": "{{ area_id }}",
                                 "nssa": {
-                                    "set": "{{ True if nssa is defined and def_origin is undefined and "
+                                    "set": "{{ True if def_origin is undefined and "
                                     "no_ext is undefined and no_redis is undefined and nssa_only is undefined }}",
                                     "default_information_originate": {
-                                        "set": "{{ True if def_origin is defined and metric is undefined and "
-                                        "metric_type is undefined and nssa_only is undefined }}",
-                                        "metric": "{{ metric.split(" ")[1]|int }}",
-                                        "metric_type": "{{ metric_type.split(" ")[1]|int }}",
+                                        "metric": "{{ metric|int }}",
+                                        "metric_type": "{{ metric_type|int }}",
                                         "nssa_only": "{{ True if nssa_only is defined }}",
                                     },
                                     "no_ext_capability": "{{ True if no_ext is defined }}",
@@ -729,13 +724,14 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "area.nssa.translate",
             "getval": re.compile(
-                r"""\s+area*
-                    \s*(?P<area_id>\S+)*
-                    \s*(?P<nssa>nssa)*
-                    \stranslate\stype7*
-                    \s(?P<translate_always>always)*
-                    \s* (?P<translate_supress>suppress-fa)
-                    *$""",
+                r"""
+                \sarea
+                (\s(?P<area_id>\S+))?
+                \snssa
+                \stranslate\stype7
+                (\s(?P<translate_always>always))?
+                (\s(?P<translate_supress>suppress-fa))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_nssa,
@@ -758,13 +754,16 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "area.ranges",
             "getval": re.compile(
-                r"""\s+area\s(?P<area_id>\S+)
-                    \srange
-                    \s(?P<address>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})
-                    \s(?P<netmask>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*((?P<advertise>advertise)|(?P<not_advertise>not-advertise))*
-                    \s*(?P<cost>cost\s\d+)
-                    *$""",
+                r"""
+                \sarea
+                (\s(?P<area_id>\S+))
+                \srange
+                (\s(?P<address>\S+))
+                (\s(?P<netmask>\S+))
+                (\s(?P<advertise>advertise))?
+                (\s(?P<not_advertise>not-advertise))?
+                (\s(cost\s(?P<cost>\d+)))
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_ranges,
@@ -780,7 +779,7 @@ class Ospfv2Template(NetworkTemplate):
                                         "address": "{{ address }}",
                                         "netmask": "{{ netmask }}",
                                         "advertise": "{{ True if advertise is defined }}",
-                                        "cost": "{{ cost.split(" ")[1]|int }}",
+                                        "cost": "{{ cost }}",
                                         "not_advertise": "{{ True if not_advertise is defined }}",
                                     },
                                 ],
@@ -793,13 +792,15 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "area.sham_link",
             "getval": re.compile(
-                r"""\s+area\s(?P<area_id>\S+)
-                    \ssham-link
-                    \s(?P<source>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})
-                    \s(?P<destination>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*(?P<cost>cost\s\d+)*
-                    \s*(?P<ttl_security>ttl-security\shops\s\d+)
-                    *$""",
+                r"""
+                \sarea
+                (\s(?P<area_id>\S+))?
+                \ssham-link
+                (\s(?P<source>\S+))?
+                (\s(?P<destination>\S+))?
+                (\s(cost\s(?P<cost>\d+)))?
+                (\s(ttl-security\shops\s(?P<ttl_security>\d+)))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_sham_link,
@@ -813,8 +814,8 @@ class Ospfv2Template(NetworkTemplate):
                                 "sham_link": {
                                     "source": "{{ source }}",
                                     "destination": "{{ destination }}",
-                                    "cost": "{{ cost.split(" ")[1]|int }}",
-                                    "ttl_security": '{{ ttl_security.split("hops ")[1] }}',
+                                    "cost": "{{ cost }}",
+                                    "ttl_security": "{{ ttl_security }}",
                                 },
                             },
                         },
@@ -825,11 +826,13 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "area.stub",
             "getval": re.compile(
-                r"""\s+area\s(?P<area_id>\S+)
-                    \s(?P<stub>stub)*
-                    \s*(?P<no_ext>no-ext-capability)*
-                    \s*(?P<no_sum>no-summary)
-                    *$""",
+                r"""
+                \sarea
+                (\s(?P<area_id>\S+))?
+                (\s(?P<stub>stub))?
+                (\s(?P<no_ext>no-ext-capability))?
+                (\s(?P<no_sum>no-summary))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_stub_link,
@@ -854,9 +857,10 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "auto_cost",
             "getval": re.compile(
-                r"""\s+(?P<auto_cost>auto-cost)*
-                    \s*(?P<ref_band>reference-bandwidth\s\d+)
-                    *$""",
+                r"""
+                (\s(?P<auto_cost>auto-cost))?
+                (\sreference-bandwidth\s(?P<ref_band>\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_auto_cost,
@@ -865,7 +869,7 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "auto_cost": {
                             "set": "{{ True if auto_cost is defined and ref_band is undefined }}",
-                            "reference_bandwidth": '{{ ref_band.split(" ")[1] }}',
+                            "reference_bandwidth": "{{ ref_band }}",
                         },
                     },
                 },
@@ -874,9 +878,10 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "bfd",
             "getval": re.compile(
-                r"""\s+bfd*
-                    \s*(?P<bfd>all-interfaces)
-                    *$""",
+                r"""
+                \sbfd
+                (\s(?P<bfd>all-interfaces))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": "bfd all-interfaces",
@@ -885,9 +890,13 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "capability",
             "getval": re.compile(
-                r"""\s+capability*
-                    \s*((?P<lls>lls)|(?P<opaque>opaque)|(?P<transit>transit)|(?P<vrf_lite>vrf-lite))
-                    *$""",
+                r"""
+                \scapability
+                (\s(?P<lls>lls))?
+                (\s(?P<opaque>opaque))?
+                (\s(?P<transit>transit))?
+                (\s(?P<vrf_lite>vrf-lite))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_capability,
@@ -907,9 +916,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "compatible",
             "getval": re.compile(
-                r"""\s+compatible*
-                    \s*((?P<rfc1583>rfc1583)|(?P<rfc1587>rfc1587)|(?P<rfc5243>rfc5243))
-                    *$""",
+                r"""
+                \scompatible
+                (\s(?P<rfc1583>rfc1583))?
+                (\s(?P<rfc1587>rfc1587))?
+                (\s(?P<rfc5243>rfc5243))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_compatible,
@@ -928,13 +940,14 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "default_information",
             "getval": re.compile(
-                r"""\s+default-information*
-                    \s*(?P<originate>originate)*
-                    \s*(?P<always>always)*
-                    \s*(?P<metric>metric\s\d+)*
-                    \s*(?P<metric_type>metric-type\s\d+)*
-                    \s*(?P<route_map>route-map\s\S+)
-                    *$""",
+                r"""
+                \sdefault-information
+                (\s(?P<originate>originate))?
+                (\s(?P<always>always))?
+                (\smetric\s(?P<metric>\d+))?
+                (\smetric-type\s(?P<metric_type>\d+))?
+                (\sroute-map\s(?P<route_map>\S+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_default_information,
@@ -944,9 +957,9 @@ class Ospfv2Template(NetworkTemplate):
                         "default_information": {
                             "originate": "{{ True if originate is defined }}",
                             "always": "{{ True if always is defined }}",
-                            "metric": "{{ metric.split(" ")[1]|int }}",
-                            "metric_type": "{{ metric_type.split(" ")[1]|int }}",
-                            "route_map": "{{ route_map.split(" ")[1] }}",
+                            "metric": "{{ metric }}",
+                            "metric_type": "{{ metric_type }}",
+                            "route_map": "{{ route_map }}",
                         },
                     },
                 },
@@ -955,20 +968,23 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "default_metric",
             "getval": re.compile(
-                r"""\s+default-metric(?P<default_metric>\s\d+)
-                    *$""",
+                r"""
+                \sdefault-metric
+                \s(?P<default_metric>\d+)?
+                $""",
                 re.VERBOSE,
             ),
             "setval": "default-metric {{ default_metric }}",
-            "result": {"processes": {"{{ pid }}": {"default_metric": "{{ default_metric| int}}"}}},
+            "result": {"processes": {"{{ pid }}": {"default_metric": "{{ default_metric|int }}"}}},
         },
         {
             "name": "discard_route",
             "getval": re.compile(
-                r"""\s+(?P<discard_route>discard-route)*
-                    \s*(?P<external>external\s\d+)*
-                    \s*(?P<internal>internal\s\d+)
-                    *$""",
+                r"""
+                (\s(?P<discard_route>discard-route))?
+                (\sexternal\s(?P<external>\d+))?
+                (\sinternal\s(?P<internal>\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_discard_route,
@@ -977,8 +993,8 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "discard_route": {
                             "set": "{{ True if discard_route is defined and external is undefined and internal is undefined }}",
-                            "external": "{{ external.split(" ")[1]|int }}",
-                            "internal": "{{ internal.split(" ")[1]|int }}",
+                            "external": "{{ external|int }}",
+                            "internal": "{{ internal|int }}",
                         },
                     },
                 },
@@ -987,12 +1003,13 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "distance.admin_distance",
             "getval": re.compile(
-                r"""\s+distance
-                    \s(?P<admin_dist>\S+)*
-                    \s*(?P<source>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*(?P<wildcard>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*(?P<acl>\S+)
-                    *$""",
+                r"""
+                \sdistance
+                (\s(?P<admin_dist>\S+))
+                (\s(?P<source>\S+))?
+                (\s(?P<wildcard>\S+))?
+                (\s(?P<acl>\S+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_distance_admin_distance,
@@ -1015,12 +1032,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "distance.ospf",
             "getval": re.compile(
-                r"""\s+distance
-                    \sospf*
-                    \s*(?P<intra>intra-area\s\d+)*
-                    \s*(?P<inter>inter-area\s\d+)*
-                    \s*(?P<external>external\s\d+)
-                    *$""",
+                r"""
+                \sdistance\sospf
+                (\sintra-area\s(?P<intra>\d+))
+                (\sinter-area\s(?P<inter>\d+))
+                (\sexternal\s(?P<external>\d+))
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_distance_ospf,
@@ -1030,9 +1047,9 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "distance": {
                             "ospf": {
-                                "inter_area": "{{ inter.split(" ")[1]|int }}",
-                                "intra_area": "{{ intra.split(" ")[1]|int }}",
-                                "external": "{{ external.split(" ")[1]|int }}",
+                                "inter_area": "{{ inter|int }}",
+                                "intra_area": "{{ intra|int }}",
+                                "external": "{{ external|int }}",
                             },
                         },
                     },
@@ -1042,11 +1059,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "distribute_list.acls",
             "getval": re.compile(
-                r"""\s+distribute-list
-                    \s(?P<name>\S+)*
-                    \s*(?P<dir>\S+)*
-                    \s*(?P<int_pro>\S+\s\d+)
-                    *$""",
+                r"""
+                \sdistribute-list
+                (\s(?P<name>\S+))
+                (\s(?P<dir>\S+))
+                (\s(?P<int_pro>\S+\s\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_distribute_list_acls,
@@ -1071,12 +1089,13 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "distribute_list.prefix",
             "getval": re.compile(
-                r"""\s+distribute-list
-                    \s(?P<prefix>prefix\s\S+)*
-                    \s*(?P<gateway>gateway\s\S+)*
-                    \s*(?P<dir>\S+)*
-                    \s*(?P<int_pro>\S+\s\S+)
-                    *$""",
+                r"""
+                \sdistribute-list
+                (\sprefix\s(?P<prefix>\S+))
+                (\sgateway\s(?P<gateway>\S+))?
+                (\s(?P<dir>\S+))?
+                (\s(?P<int_pro>\S+\s\S+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_distribute_list_prefix,
@@ -1086,8 +1105,8 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "distribute_list": {
                             "prefix": {
-                                "name": "{{ prefix.split(" ")[1] }}",
-                                "gateway_name": "{{ gateway.split(" ")[1] if prefix is defined }}",
+                                "name": "{{ prefix }}",
+                                "gateway_name": "{{ gateway }}",
                                 "direction": "{{ dir if gateway is undefined }}",
                                 "interface": '{{ int_pro if dir == "in" }}',
                                 "protocol": '{{ int_pro if dir == "out" }}',
@@ -1100,10 +1119,11 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "distribute_list.route_map",
             "getval": re.compile(
-                r"""\s+distribute-list
-                    \s(?P<route_map>route-map\s\S+)*
-                    \s*(?P<dir>\S+)
-                    *$""",
+                r"""
+                \sdistribute-list
+                (\sroute-map\s(?P<route_map>\S+))
+                (\s(?P<dir>\S+))
+                $""",
                 re.VERBOSE,
             ),
             "setval": "distribute-list route-map {{ distribute_list.route_map.name }} in",
@@ -1111,7 +1131,7 @@ class Ospfv2Template(NetworkTemplate):
             "result": {
                 "processes": {
                     "{{ pid }}": {
-                        "distribute_list": {"route_map": {"name": "{{ route_map.split(" ")[1] }}"}},
+                        "distribute_list": {"route_map": {"name": "{{ route_map }}"}},
                     },
                 },
             },
@@ -1119,11 +1139,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "domain_id",
             "getval": re.compile(
-                r"""\s+domain-id
-                    \s(?P<address>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*(?P<secondary>secondary)*
-                    \s*(?P<null>null)
-                    *$""",
+                r"""
+                \sdomain-id
+                (\s(?P<address>\S+))
+                (\s(?P<secondary>secondary))?
+                (\s(?P<null>null))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_domain_id,
@@ -1144,9 +1165,10 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "domain_tag",
             "getval": re.compile(
-                r"""\s+domain-tag
-                    \s(?P<tag>\d+)
-                    *$""",
+                r"""
+                \sdomain-tag
+                (\s(?P<tag>\d+))
+                $""",
                 re.VERBOSE,
             ),
             "setval": "domain-tag {{ domain_tag }}",
@@ -1155,11 +1177,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "event_log",
             "getval": re.compile(
-                r"""\s+(?P<event_log>event-log)*
-                    \s*(?P<one_shot>one-shot)*
-                    \s*(?P<pause>pause)*
-                    \s*(?P<size>size\s\d+)
-                    *$""",
+                r"""
+                (\s(?P<event_log>event-log))?
+                (\s(?P<one_shot>one-shot))?
+                (\s(?P<pause>pause))?
+                (\ssize\s(?P<size>\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_event_log,
@@ -1170,7 +1193,7 @@ class Ospfv2Template(NetworkTemplate):
                             "enable": "{{ True if event_log is defined and one_shot is undefined and pause is undefined and size is undefined }}",
                             "one_shot": "{{ True if one_shot is defined }}",
                             "pause": "{{ True if pause is defined }}",
-                            "size": "{{ size.split(" ")[1]|int }}",
+                            "size": "{{ size|int }}",
                         },
                     },
                 },
@@ -1179,8 +1202,9 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "help",
             "getval": re.compile(
-                r"""\s+(?P<help>help)
-                    *$""",
+                r"""
+                \s(?P<help>help)
+                $""",
                 re.VERBOSE,
             ),
             "setval": "help",
@@ -1189,8 +1213,9 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "ignore",
             "getval": re.compile(
-                r"""\s+(?P<ignore>ignore)
-                    *$""",
+                r"""
+                \s(?P<ignore>ignore)
+                $""",
                 re.VERBOSE,
             ),
             "setval": "ignore lsa mospf",
@@ -1199,8 +1224,9 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "interface_id",
             "getval": re.compile(
-                r"""\s+(?P<interface_id>interface-id\ssnmp-if-index)
-                    *$""",
+                r"""
+                (\s(?P<interface_id>interface-id\ssnmp-if-index))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": "interface-id snmp-if-index",
@@ -1213,8 +1239,9 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "ispf",
             "getval": re.compile(
-                r"""\s+(?P<ispf>ispf)
-                    *$""",
+                r"""
+                \s(?P<ispf>ispf)
+                $""",
                 re.VERBOSE,
             ),
             "setval": "ispf",
@@ -1223,10 +1250,13 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "limit",
             "getval": re.compile(
-                r"""\s+limit\sretransmissions
-                    \s((?P<dc_num>dc\s\d+)|(?P<dc_disable>dc\sdisable))*
-                    \s*((?P<non_dc_num>non-dc\s\d+)|(?P<non_dc_disable>non-dc\sdisable))
-                    *$""",
+                r"""
+                \slimit\sretransmissions
+                (\sdc\s(?P<dc_num>\d+))?
+                (\sdc\sdisable(?P<dc_disable>))?
+                (\snon-dc\s(?P<non_dc_num>\d+))?
+                (\snon-dc\sdisable(?P<non_dc_disable>))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_limit,
@@ -1235,11 +1265,11 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "limit": {
                             "dc": {
-                                "number": "{{ dc_num.split(" ")[1]|int }}",
+                                "number": "{{ dc_num|int }}",
                                 "disable": "{{ True if dc_disable is defined }}",
                             },
                             "non_dc": {
-                                "number": "{{ non_dc_num.split(" ")[1]|int }}",
+                                "number": "{{ non_dc_num|int }}",
                                 "disable": "{{ True if dc_disable is defined }}",
                             },
                         },
@@ -1250,11 +1280,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "local_rib_criteria",
             "getval": re.compile(
-                r"""\s+(?P<local>local-rib-criteria)*
-                    \s*(?P<forward>forwarding-address)*
-                    \s*(?P<inter>inter-area-summary)*
-                    \s*(?P<nssa>nssa-translation)
-                    *$""",
+                r"""
+                (\s(?P<local>local-rib-criteria))?
+                (\s(?P<forward>forwarding-address))?
+                (\s(?P<inter>inter-area-summary))?
+                (\s(?P<nssa>nssa-translation))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_vrf_local_rib_criteria,
@@ -1274,9 +1305,10 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "log_adjacency_changes",
             "getval": re.compile(
-                r"""\s+(?P<log>log-adjacency-changes)*
-                    \s*(?P<detail>detail)
-                    *$""",
+                r"""
+                (\s(?P<log>log-adjacency-changes))?
+                (\s(?P<detail>detail))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_log_adjacency_changes,
@@ -1294,13 +1326,14 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "max_lsa",
             "getval": re.compile(
-                r"""\s+max-lsa
-                    \s(?P<number>\d+)*
-                    \s*(?P<threshold>\d+)*
-                    \s*(?P<ignore_count>ignore-count\s\d+)*
-                    \s*(?P<ignore_time>ignore-time\s\d+)*
-                    \s*(?P<reset_time>reset-time\s\d+)
-                    *$""",
+                r"""\smax-lsa
+                    (\s(?P<number>\d+))?
+                    (\s(?P<threshold>\d+))?
+                    (\s(?P<warning>warning-only))?
+                    (\signore-count\s(?P<ignore_count>\d+))?
+                    (\signore-time\s(?P<ignore_time>\d+))?
+                    (\sreset-time\s(?P<reset_time>\d+))?
+                    $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_max_lsa,
@@ -1310,9 +1343,9 @@ class Ospfv2Template(NetworkTemplate):
                         "max_lsa": {
                             "number": "{{ number }}",
                             "threshold_value": "{{ threshold }}",
-                            "ignore_count": "{{ ignore_count.split(" ")[1] }}",
-                            "ignore_time": "{{ ignore_time.split(" ")[1] }}",
-                            "reset_time": "{{ reset_time.split(" ")[1] }}",
+                            "ignore_count": "{{ ignore_count }}",
+                            "ignore_time": "{{ ignore_time }}",
+                            "reset_time": "{{ reset_time }}",
                             "warning_only": "{{ True if warning is defined }}",
                         },
                     },
@@ -1322,14 +1355,15 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "max_metric",
             "getval": re.compile(
-                r"""\s+max-metric*
-                    \s*(?P<router_lsa>router-lsa)*
-                    \s*(?P<include_stub>include-stub)*
-                    \s*(?P<external_lsa>external-lsa\s\d+)*
-                    \s*(?P<startup_time>on-startup\s\d+)*
-                    \s*(?P<startup_wait>on-startup\s\S+)*
-                    \s*(?P<summary_lsa>summary-lsa\s\d+)
-                    *$""",
+                r"""
+                \smax-metric
+                (\s(?P<router_lsa>router-lsa))?
+                (\s(?P<include_stub>include-stub))?
+                (\sexternal-lsa\s(?P<external_lsa>\d+))?
+                (\son-startup\s(?P<startup_time>\d+))?
+                (\son-startup\s(?P<startup_wait>\S+))?
+                (\ssummary-lsa\s(?P<summary_lsa>\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_max_metric,
@@ -1338,13 +1372,13 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "max_metric": {
                             "router_lsa": "{{ True if router_lsa is defined }}",
-                            "external_lsa": "{{ external_lsa.split(" ")[1] }}",
-                            "include_stub": "{{ ignore_count.split(" ")[1] }}",
+                            "external_lsa": "{{ external_lsa }}",
+                            "include_stub": "{{ ignore_count }}",
                             "on_startup": {
-                                "time": "{{ startup_time.split(" ")[1] }}",
+                                "time": "{{ startup_time }}",
                                 "wait_for_bgp": "{{ True if startup_wait is defined }}",
                             },
-                            "summary_lsa": "{{ summary_lsa.split(" ")[1] }}",
+                            "summary_lsa": "{{ summary_lsa }}",
                         },
                     },
                 },
@@ -1353,9 +1387,10 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "maximum_paths",
             "getval": re.compile(
-                r"""\s+maximum-paths*
-                    \s+(?P<paths>\d+)
-                    *$""",
+                r"""
+                \smaximum-paths
+                \s(?P<paths>\d+)
+                $""",
                 re.VERBOSE,
             ),
             "setval": "maximum-paths {{ maximum_paths }}",
@@ -1364,11 +1399,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "mpls.ldp",
             "getval": re.compile(
-                r"""\s+mpls
-                    \sldp*
-                    \s*(?P<autoconfig>autoconfig*\s*(?P<area>area\s\S+))*
-                    \s*(?P<sync>sync)
-                    *$""",
+                r"""
+                \smpls\sldp
+                (\s(?P<autoconfig>autoconfig))?
+                (\sarea\s(?P<area>\S+))?
+                (\s(?P<sync>sync))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_mpls_ldp,
@@ -1380,7 +1416,7 @@ class Ospfv2Template(NetworkTemplate):
                             "ldp": {
                                 "autoconfig": {
                                     "set": "{{ True if autoconfig is defined and area is undefined }}",
-                                    "area": "{{ area.split(" ")[1] }}",
+                                    "area": "{{ area }}",
                                 },
                                 "sync": "{{ True if sync is defined }}",
                             },
@@ -1432,13 +1468,14 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "neighbor",
             "getval": re.compile(
-                r"""\s+neighbor
-                    \s(?P<address>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*(?P<cost>cost\s\d+)*
-                    \s*(?P<db_filter>database-filter\sall\sout)*
-                    \s*(?P<poll>poll-interval\s\d+)*
-                    \s*(?P<priority>priority\s\d+)
-                    *$""",
+                r"""
+                \sneighbor
+                (\s(?P<address>\S+))
+                (\scost\s(?P<cost>\d+))
+                (\sdatabase-filter\sall\sout\s(?P<db_filter>))?
+                (\spoll-interval\s(?P<poll>\d+))?
+                (\spriority\s(?P<priority>\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_neighbor,
@@ -1447,10 +1484,10 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "neighbor": {
                             "address": "{{ address }}",
-                            "cost": "{{ cost.split(" ")[1] }}",
+                            "cost": "{{ cost }}",
                             "database_filter": "{{ True if db_filter is defined }}",
-                            "poll_interval": "{{ poll.split(" ")[1] }}",
-                            "priority": "{{ priority.split(" ")[1] }}",
+                            "poll_interval": "{{ poll }}",
+                            "priority": "{{ priority }}",
                         },
                     },
                 },
@@ -1459,11 +1496,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "network",
             "getval": re.compile(
-                r"""\s+network
-                    \s(?P<address>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*(?P<wildcard>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*(?P<area>area\s\S+)
-                    *$""",
+                r"""
+                \snetwork
+                (\s(?P<address>\S+))?
+                (\s(?P<wildcard>\S+))?
+                (\sarea\s(?P<area>\S+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_network,
@@ -1474,7 +1512,7 @@ class Ospfv2Template(NetworkTemplate):
                             {
                                 "address": "{{ address }}",
                                 "wildcard_bits": "{{ wildcard }}",
-                                "area": "{{ area.split(" ")[1] }}",
+                                "area": "{{ area }}",
                             },
                         ],
                     },
@@ -1484,11 +1522,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "nsf.cisco",
             "getval": re.compile(
-                r"""\s+nsf
-                    \s(?P<cisco>cisco)*
-                    \s*(?P<helper>helper)*
-                    \s*(?P<disable>disable)
-                    *$""",
+                r"""
+                \snsf
+                (\s(?P<cisco>cisco))
+                (\s(?P<helper>helper))?
+                (\s(?P<disable>disable))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_nsf_cisco,
@@ -1509,12 +1548,13 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "nsf.ietf",
             "getval": re.compile(
-                r"""\s+nsf
-                    \s(?P<ietf>ietf)*
-                    \s*(?P<helper>helper)*
-                    \s*(?P<disable>disable)*
-                    \s*(?P<strict>strict-lsa-checking)
-                    *$""",
+                r"""
+                \snsf
+                (\s(?P<ietf>ietf))
+                (\s(?P<helper>helper))?
+                (\s(?P<disable>disable))?
+                (\s(?P<strict>strict-lsa-checking))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_nsf_ietf,
@@ -1534,12 +1574,13 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
-            "name": "passive_interfaces",
+            "name": "passive_interfaces.interface",
             "getval": re.compile(
-                r"""\s*(?P<no>no)*
-                    \s*passive-interface*
-                    \s*(?P<interface>\S+\s\S+|\S+)
-                    *$""",
+                r"""
+                (\s(?P<no>no))?
+                \spassive-interface
+                \s(?P<interface>\S+)
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_passive_interfaces,
@@ -1547,9 +1588,8 @@ class Ospfv2Template(NetworkTemplate):
                 "processes": {
                     "{{ pid }}": {
                         "passive_interfaces": {
-                            "default": "{{ True if 'default' in interface }}",
                             "interface": {
-                                "set_interface": "{% if no is defined %}{{ False }}{% elif 'default' not in interface %}{{ True }}{% endif %}",
+                                "set_interface": "{{ not no }}",
                                 "name": ["{{ interface if 'default' not in interface }}"],
                             },
                         },
@@ -1558,21 +1598,31 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
-            "name": "passive_interface",
+            "name": "passive_interfaces.default",
             "getval": re.compile(
-                r"""\s+passive-interface
-                    \s(?P<interface>\S+\s\S+)
-                    *$""",
+                r"""
+                \spassive-interface
+                \s(?P<default_value>default)
+                $""",
                 re.VERBOSE,
             ),
-            "setval": "passive-interface {{ passive_interface }}",
-            "result": {"processes": {"{{ pid }}": {"passive_interface": "{{ interface }}"}}},
+            "setval": "passive-interface default",
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "passive_interfaces": {
+                            "default": "{{ True if default_value is defined }}",
+                        },
+                    },
+                },
+            },
         },
         {
             "name": "prefix_suppression",
             "getval": re.compile(
-                r"""\s+(?P<prefix_sup>prefix-suppression)
-                    *$""",
+                r"""
+                \s(?P<prefix_sup>prefix-suppression)
+                $""",
                 re.VERBOSE,
             ),
             "setval": "prefix-suppression",
@@ -1585,9 +1635,10 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "priority",
             "getval": re.compile(
-                r"""\s+priority
-                    \s(?P<priority>\d+)
-                    *$""",
+                r"""
+                \spriority
+                \s(?P<priority>\d+)
+                $""",
                 re.VERBOSE,
             ),
             "setval": "priority {{ priority }}",
@@ -1596,11 +1647,11 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "queue_depth.hello",
             "getval": re.compile(
-                r"""\s+queue-depth
-                    \shello*
-                    \s*(?P<max_packets>\d+)*
-                    \s*(?P<unlimited>unlimited)
-                    *$""",
+                r"""
+                \squeue-depth\shello
+                (\s(?P<max_packets>\d+))?
+                (\s(?P<unlimited>unlimited))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_queue_depth_hello,
@@ -1621,11 +1672,11 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "queue_depth.update",
             "getval": re.compile(
-                r"""\s+queue-depth
-                    \supdate*
-                    \s*(?P<max_packets>\d+)*
-                    \s*(?P<unlimited>unlimited)
-                    *$""",
+                r"""
+                \squeue-depth\supdate
+                (\s(?P<max_packets>\d+))?
+                (\s(?P<unlimited>unlimited))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_queue_depth_update,
@@ -1646,9 +1697,10 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "router_id",
             "getval": re.compile(
-                r"""\s+router-id
-                    \s(?P<id>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})
-                    *$""",
+                r"""
+                \srouter-id
+                (\s(?P<id>\S+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": "router-id {{ router_id }}",
@@ -1657,8 +1709,9 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "shutdown",
             "getval": re.compile(
-                r"""\s+(?P<shutdown>shutdown)
-                    *$""",
+                r"""
+                \s(?P<shutdown>shutdown)
+                $""",
                 re.VERBOSE,
             ),
             "setval": "shutdown",
@@ -1669,13 +1722,14 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "summary_address",
             "getval": re.compile(
-                r"""\s+summary-address
-                    \s(?P<address>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*(?P<mask>\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})*
-                    \s*(?P<not_adv>not-advertise)*
-                    \s*(?P<nssa>nssa-only)*
-                    \s*(?P<tag>tag\s\d+)
-                    *$""",
+                r"""
+                \ssummary-address
+                (\s(?P<address>\S+))?
+                (\s(?P<mask>\S+))?
+                (\s(?P<not_adv>not-advertise))?
+                (\s(?P<nssa>nssa-only))?
+                (\stag\s(?P<tag>\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_summary_address,
@@ -1687,7 +1741,7 @@ class Ospfv2Template(NetworkTemplate):
                             "mask": "{{ mask }}",
                             "not_advertise": "{{ True if not_adv is defined }}",
                             "nssa_only": "{{ True if nssa is defined }}",
-                            "tag": "{{ tag.split(" ")[1] }}",
+                            "tag": "{{ tag }}",
                         },
                     },
                 },
@@ -1696,11 +1750,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "timers.lsa",
             "getval": re.compile(
-                r"""\s+timers
-                    \slsa
-                    \sarrival
-                    \s(?P<lsa>\d+)
-                    *$""",
+                r"""
+                \stimers
+                \slsa
+                \sarrival
+                (\s(?P<lsa>\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": "timers lsa arrival {{ timers.lsa }}",
@@ -1710,12 +1765,12 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "timers.pacing",
             "getval": re.compile(
-                r"""\s+timers
-                    \spacing
-                    \s(?P<flood>flood\s\d+)*
-                    \s*(?P<lsa_group>lsa-group\s\d+)*
-                    \s*(?P<retransmission>retransmission\s\d+)
-                    *$""",
+                r"""
+                \stimers\spacing
+                (\sflood\s(?P<flood>\d+))?
+                (\slsa-group\s(?P<lsa_group>\d+))?
+                (\sretransmission\s(?P<retransmission>\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_timers_pacing,
@@ -1725,9 +1780,9 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "timers": {
                             "pacing": {
-                                "flood": "{{ flood.split(" ")[1] }}",
-                                "lsa_group": "{{ lsa_group.split(" ")[1] }}",
-                                "retransmission": "{{ retransmission.split(" ")[1] }}",
+                                "flood": "{{ flood }}",
+                                "lsa_group": "{{ lsa_group }}",
+                                "retransmission": "{{ retransmission }}",
                             },
                         },
                     },
@@ -1737,13 +1792,13 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "timers.throttle.lsa",
             "getval": re.compile(
-                r"""\s+timers
-                    \sthrottle
-                    \s*(?P<lsa>lsa)*
-                    \s*(?P<first_delay>\d+)*
-                    \s*(?P<min_delay>\d+)*
-                    \s*(?P<max_delay>\d+)
-                    *$""",
+                r"""
+                \stimers\sthrottle
+                (\s(?P<lsa>lsa))?
+                (\s(?P<first_delay>\d+))?
+                (\s(?P<min_delay>\d+))?
+                (\s(?P<max_delay>\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": "timers throttle lsa {{ throttle.lsa.first_delay }} {{ throttle.lsa.min_delay }} {{ throttle.lsa.max_delay }}",
@@ -1767,13 +1822,13 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "timers.throttle.spf",
             "getval": re.compile(
-                r"""\s+timers
-                    \sthrottle
-                    \s*(?P<spf>spf)*
-                    \s*(?P<first_delay>\d+)*
-                    \s*(?P<min_delay>\d+)*
-                    \s*(?P<max_delay>\d+)
-                    *$""",
+                r"""
+                \stimers\sthrottle
+                (\s(?P<spf>spf))?
+                (\s(?P<first_delay>\d+))?
+                (\s(?P<min_delay>\d+))?
+                (\s(?P<max_delay>\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": "timers throttle spf {{ throttle.spf.receive_delay }} {{ throttle.spf.between_delay }} {{ throttle.spf.max_delay }}",
@@ -1797,8 +1852,9 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "traffic_share",
             "getval": re.compile(
-                r"""\s+(?P<traffic>traffic-share\smin\sacross-interfaces)
-                    *$""",
+                r"""
+                \s(?P<traffic>traffic-share\smin\sacross-interfaces)
+                $""",
                 re.VERBOSE,
             ),
             "setval": "traffic-share min across-interfaces",
@@ -1809,10 +1865,11 @@ class Ospfv2Template(NetworkTemplate):
         {
             "name": "ttl_security",
             "getval": re.compile(
-                r"""\s+ttl-security
-                    \s(?P<interfaces>all-interfaces)*
-                    \s*(?P<hops>hops\s\d+)
-                    *$""",
+                r"""
+                \sttl-security
+                (\s(?P<interfaces>all-interfaces))?
+                (\shops\s(?P<hops>\d+))?
+                $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_ttl_security,
@@ -1821,7 +1878,7 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "ttl_security": {
                             "set": "{{ True if interfaces is defined and hops is undefined }}",
-                            "hops": "{{ hops.split(" ")[1] }}",
+                            "hops": "{{ hops }}",
                         },
                     },
                 },

@@ -52,33 +52,34 @@ class Ospfv2(ResourceModule):
         :rtype: A dictionary
         :returns: The result from module execution
         """
-        self.gen_config()
-        self.run_commands()
+        if self.state not in ["parsed", "gathered"]:
+            self.generate_commands()
+            self.run_commands()
         return self.result
 
-    def gen_config(self):
+    def generate_commands(self):
         """Select the appropriate function based on the state provided
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
+        haved, wantd = dict(), dict()
+
         if self.want:
-            wantd = {}
             for entry in self.want.get("processes", []):
                 wantd.update({(entry["process_id"], entry.get("vrf")): entry})
-        else:
-            wantd = {}
+ 
         if self.have:
-            haved = {}
             for entry in self.have.get("processes", []):
                 haved.update({(entry["process_id"], entry.get("vrf")): entry})
-        else:
-            haved = {}
+
 
         # turn all lists of dicts into dicts prior to merge
         for each in wantd, haved:
-            self.list_to_dict(each)
+            if each:
+                self._list_to_dict(each)
+
         # if state is merged, merge want onto have
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
@@ -253,32 +254,18 @@ class Ospfv2(ResourceModule):
                             have={"passive_interface": {"default": True}},
                         )
 
-    def list_to_dict(self, param):
-        if param:
-            for _pid, proc in iteritems(param):
-                for area in proc.get("areas", []):
-                    ranges = {}
-                    for entry in area.get("ranges", []):
-                        ranges.update({entry["address"]: entry})
-                    if bool(ranges):
-                        area["ranges"] = ranges
-                    filter_list = {}
-                    for entry in area.get("filter_list", []):
-                        filter_list.update({entry["direction"]: entry})
-                    if bool(filter_list):
-                        area["filter_list"] = filter_list
-                temp = {}
-                for entry in proc.get("areas", []):
-                    temp.update({entry["area_id"]: entry})
-                proc["areas"] = temp
-                if proc.get("distribute_list"):
-                    if "acls" in proc.get("distribute_list"):
-                        temp = {}
-                        for entry in proc["distribute_list"].get("acls", []):
-                            temp.update({entry["name"]: entry})
-                        proc["distribute_list"]["acls"] = temp
-                if proc.get("passive_interfaces") and proc["passive_interfaces"].get("interface"):
-                    temp = {}
-                    for entry in proc["passive_interfaces"]["interface"].get("name", []):
-                        temp.update({entry: entry})
-                    proc["passive_interfaces"]["interface"]["name"] = temp
+    def _list_to_dict(self, param):
+        for _pid, proc in param.items():
+            for area in proc.get("areas", []):
+                area["ranges"] = {entry["address"]: entry for entry in area.get("ranges", [])}
+                area["filter_list"] = {entry["direction"]: entry for entry in area.get("filter_list", [])}
+
+            proc["areas"] = {entry["area_id"]: entry for entry in proc.get("areas", [])}
+
+            distribute_list = proc.get("distribute_list", {})
+            if "acls" in distribute_list:
+                distribute_list["acls"] = {entry["name"]: entry for entry in distribute_list["acls"]}
+
+            passive_interfaces = proc.get("passive_interfaces", {}).get("interface", {})
+            if passive_interfaces.get("name"):
+                passive_interfaces["name"] = {entry: entry for entry in passive_interfaces["name"]}
