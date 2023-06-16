@@ -45,7 +45,7 @@ class Ospfv2Facts(object):
         :rtype: dictionary
         :returns: facts
         """
-        
+
         facts = {}
         facts_output = {"processes": []}
 
@@ -56,7 +56,9 @@ class Ospfv2Facts(object):
         ospf_parsed = ospf_temp_obj.parse()
 
         # Convert dict to list
-        ospf_parsed["processes"] = (ospf_parsed["processes"].values() if "processes" in ospf_parsed else [])
+        ospf_parsed["processes"] = (
+            ospf_parsed["processes"].values() if "processes" in ospf_parsed else []
+        )
 
         # converts areas, interfaces in each process to list
         for process in ospf_parsed.get("processes", []):
@@ -72,7 +74,7 @@ class Ospfv2Facts(object):
             facts_output["processes"].append(process)
 
         ansible_facts["ansible_network_resources"].pop("ospfv2", None)
-        
+
         if ospf_parsed["processes"]:
             params = utils.validate_config(self.argument_spec, {"config": facts_output})
             params = utils.remove_empties(params)

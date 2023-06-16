@@ -69,11 +69,10 @@ class Ospfv2(ResourceModule):
         if self.want:
             for entry in self.want.get("processes", []):
                 wantd.update({(entry["process_id"], entry.get("vrf")): entry})
- 
+
         if self.have:
             for entry in self.have.get("processes", []):
                 haved.update({(entry["process_id"], entry.get("vrf")): entry})
-
 
         # turn all lists of dicts into dicts prior to merge
         for each in wantd, haved:
@@ -258,13 +257,17 @@ class Ospfv2(ResourceModule):
         for _pid, proc in param.items():
             for area in proc.get("areas", []):
                 area["ranges"] = {entry["address"]: entry for entry in area.get("ranges", [])}
-                area["filter_list"] = {entry["direction"]: entry for entry in area.get("filter_list", [])}
+                area["filter_list"] = {
+                    entry["direction"]: entry for entry in area.get("filter_list", [])
+                }
 
             proc["areas"] = {entry["area_id"]: entry for entry in proc.get("areas", [])}
 
             distribute_list = proc.get("distribute_list", {})
             if "acls" in distribute_list:
-                distribute_list["acls"] = {entry["name"]: entry for entry in distribute_list["acls"]}
+                distribute_list["acls"] = {
+                    entry["name"]: entry for entry in distribute_list["acls"]
+                }
 
             passive_interfaces = proc.get("passive_interfaces", {}).get("interface", {})
             if passive_interfaces.get("name"):
