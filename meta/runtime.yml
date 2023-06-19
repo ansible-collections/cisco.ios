@@ -43,8 +43,6 @@ plugin_routing:
       redirect: cisco.ios.ios
     ios_lldp:
       redirect: cisco.ios.ios
-    ios_logging:
-      redirect: cisco.ios.ios
     ios_logging_global:
       redirect: cisco.ios.ios
     ios_ntp:
