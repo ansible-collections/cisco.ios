@@ -199,7 +199,9 @@ class Ospfv2(ResourceModule):
                     if each not in h_interface_name:
                         temp = {"interface": {each: each}, "set_interface": v["set_interface"]}
                         self.compare(
-                            parsers=parsers, want={"passive_interfaces": temp}, have=dict()
+                            parsers=parsers,
+                            want={"passive_interfaces": temp},
+                            have=dict(),
                         )
                     else:
                         h_interface_name.remove(each)
@@ -208,11 +210,15 @@ class Ospfv2(ResourceModule):
                     for each in v["name"]:
                         temp = {"interface": {each: each}, "set_interface": v["set_interface"]}
                         self.compare(
-                            parsers=parsers, want={"passive_interfaces": temp}, have=dict()
+                            parsers=parsers,
+                            want={"passive_interfaces": temp},
+                            have=dict(),
                         )
                 elif k == "default":
                     self.compare(
-                        parsers=parsers, want={"passive_interfaces": {"default": True}}, have=dict()
+                        parsers=parsers,
+                        want={"passive_interfaces": {"default": True}},
+                        have=dict(),
                     )
             else:
                 h_pi.pop(k, None)
@@ -227,7 +233,9 @@ class Ospfv2(ResourceModule):
                                 "set_interface": not v["set_interface"],
                             }
                             self.compare(
-                                parsers=parsers, want={"passive_interface": temp}, have=dict()
+                                parsers=parsers,
+                                want={"passive_interface": temp},
+                                have=dict(),
                             )
                     elif k == "default":
                         self.compare(
