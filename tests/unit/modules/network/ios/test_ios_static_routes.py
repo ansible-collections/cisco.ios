@@ -102,8 +102,8 @@ class TestIosStaticRoutesModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
-            "ip route vrf ansible_vrf 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150",
             "ip route 198.51.100.0 255.255.255.0 198.51.101.1 110 tag 40 name route_1 multicast",
+            "ip route vrf ansible_vrf 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name test_vrf track 150",
         ]
         self.assertEqual(result["commands"], commands)
 
