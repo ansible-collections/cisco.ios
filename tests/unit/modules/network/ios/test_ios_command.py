@@ -41,8 +41,8 @@ class TestIosCommandModule(TestIosModule):
         )
         self.run_commands = self.mock_run_commands.start()
 
-    def tearDown(self):
-        super(TestIosCommandModule, self).tearDown()
+    def tear_down(self):
+        super(TestIosCommandModule, self).tear_down()
         self.mock_run_commands.stop()
 
     def load_fixtures(self, commands=None):

@@ -59,8 +59,8 @@ class TestIosFactsModule(TestIosModule):
             "network_api": "cliconf",
         }
 
-    def tearDown(self):
-        super(TestIosFactsModule, self).tearDown()
+    def tear_down(self):
+        super(TestIosFactsModule, self).tear_down()
         self.mock_run_commands.stop()
         self.mock_get_capabilities.stop()
 

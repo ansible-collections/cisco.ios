@@ -72,7 +72,7 @@ class TestPluginCLIConfIOS(unittest.TestCase):
         self._cliconf = ios.Cliconf(self._mock_connection)
         self.maxDiff = None
 
-    def tearDown(self):
+    def tear_down(self):
         pass
 
     def test_get_device_info(self):

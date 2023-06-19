@@ -33,8 +33,8 @@ class TestIosOspfV3Module(TestIosModule):
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
-    def tearDown(self):
-        super(TestIosOspfV3Module, self).tearDown()
+    def tear_down(self):
+        super(TestIosOspfV3Module, self).tear_down()
         self.mock_get_resource_connection_facts.stop()
         self.mock_execute_show_command.stop()
 

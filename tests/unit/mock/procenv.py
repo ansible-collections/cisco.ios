@@ -89,6 +89,6 @@ class ModuleTestCase(unittest.TestCase):
         self.stdin_swap = swap_stdin_and_argv(stdin_data=args)
         self.stdin_swap.__enter__()
 
-    def tearDown(self):
+    def tear_down(self):
         # unittest doesn't have a clean place to use a context manager, so we have to enter/exit manually
         self.stdin_swap.__exit__(None, None, None)

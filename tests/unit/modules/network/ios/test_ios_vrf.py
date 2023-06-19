@@ -50,8 +50,8 @@ class TestIosVrfModule(TestIosModule):
         )
         self.exec_command = self.mock_exec_command.start()
 
-    def tearDown(self):
-        super(TestIosVrfModule, self).tearDown()
+    def tear_down(self):
+        super(TestIosVrfModule, self).tear_down()
         self.mock_get_config.stop()
         self.mock_load_config.stop()
         self.mock_exec_command.stop()

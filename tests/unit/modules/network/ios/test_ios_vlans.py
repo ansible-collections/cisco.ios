@@ -60,8 +60,8 @@ class TestIosVlansModule(TestIosModule):
         )
         self._l2_device_command = self.mock_l2_device_command.start()
 
-    def tearDown(self):
-        super(TestIosVlansModule, self).tearDown()
+    def tear_down(self):
+        super(TestIosVlansModule, self).tear_down()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()

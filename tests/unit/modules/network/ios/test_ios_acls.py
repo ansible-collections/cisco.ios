@@ -35,8 +35,8 @@ class TestIosAclsModule(TestIosModule):
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
-    def tearDown(self):
-        super(TestIosAclsModule, self).tearDown()
+    def tear_down(self):
+        super(TestIosAclsModule, self).tear_down()
         self.mock_get_resource_connection_facts.stop()
         self.mock_execute_show_command.stop()
 
