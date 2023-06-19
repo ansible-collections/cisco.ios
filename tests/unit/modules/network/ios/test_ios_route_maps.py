@@ -33,8 +33,8 @@ class TestIosRouteMapsModule(TestIosModule):
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
-    def tear_down(self):
-        super(TestIosRouteMapsModule, self).tear_down()
+    def tearDown(self):
+        super(TestIosRouteMapsModule, self).tearDown()
         self.mock_get_resource_connection_facts.stop()
         self.mock_execute_show_command.stop()
 

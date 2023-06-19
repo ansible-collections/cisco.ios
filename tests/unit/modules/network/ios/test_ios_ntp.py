@@ -42,8 +42,8 @@ class TestIosNtpModule(TestIosModule):
         )
         self.load_config = self.mock_load_config.start()
 
-    def tear_down(self):
-        super(TestIosNtpModule, self).tear_down()
+    def tearDown(self):
+        super(TestIosNtpModule, self).tearDown()
         self.mock_get_config.stop()
         self.mock_load_config.stop()
 

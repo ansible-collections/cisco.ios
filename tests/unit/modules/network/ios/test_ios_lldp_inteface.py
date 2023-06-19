@@ -56,8 +56,8 @@ class TestIosLldpInterfacesModule(TestIosModule):
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
-    def tear_down(self):
-        super(TestIosLldpInterfacesModule, self).tear_down()
+    def tearDown(self):
+        super(TestIosLldpInterfacesModule, self).tearDown()
         self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
         self.mock_edit_config.stop()

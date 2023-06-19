@@ -45,8 +45,8 @@ class TestIosSystemModule(TestIosModule):
         )
         self.load_config = self.mock_load_config.start()
 
-    def tear_down(self):
-        super(TestIosSystemModule, self).tear_down()
+    def tearDown(self):
+        super(TestIosSystemModule, self).tearDown()
         self.mock_get_config.stop()
         self.mock_load_config.stop()
 

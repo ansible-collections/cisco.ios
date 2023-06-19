@@ -57,8 +57,8 @@ class TestIosConfigModule(TestIosModule):
         self.cliconf_obj = Cliconf(MagicMock())
         self.running_config = load_fixture("ios_config_config.cfg")
 
-    def tear_down(self):
-        super(TestIosConfigModule, self).tear_down()
+    def tearDown(self):
+        super(TestIosConfigModule, self).tearDown()
         self.mock_get_config.stop()
         self.mock_run_commands.stop()
         self.mock_get_connection.stop()

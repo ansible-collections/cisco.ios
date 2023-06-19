@@ -41,8 +41,8 @@ class TestIosSnmpServerModule(TestIosModule):
 
         self.execute_show_command_user = self.mock_execute_show_command_user.start()
 
-    def tear_down(self):
-        super(TestIosSnmpServerModule, self).tear_down()
+    def tearDown(self):
+        super(TestIosSnmpServerModule, self).tearDown()
         self.mock_get_resource_connection_facts.stop()
         self.mock_execute_show_command.stop()
         self.mock_execute_show_command_user.stop()
