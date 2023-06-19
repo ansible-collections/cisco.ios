@@ -33,10 +33,6 @@ class Ospfv2(ResourceModule):
     The ios_ospfv2 class
     """
 
-    gather_subset = ["!all", "!min"]
-
-    gather_network_resources = ["ospfv2"]
-
     def __init__(self, module):
         super(Ospfv2, self).__init__(
             empty_fact_val={},
@@ -45,6 +41,53 @@ class Ospfv2(ResourceModule):
             resource="ospfv2",
             tmplt=Ospfv2Template(),
         )
+
+        self.parsers = [
+            "adjacency",
+            "address_family",
+            "auto_cost",
+            "bfd",
+            "capability",
+            "compatible",
+            "default_information",
+            "default_metric",
+            "discard_route",
+            "distance.admin_distance",
+            "distance.ospf",
+            "distribute_list.acls",
+            "distribute_list.prefix",
+            "distribute_list.route_map",
+            "domain_id",
+            "domain_tag",
+            "event_log",
+            "help",
+            "ignore",
+            "interface_id",
+            "ispf",
+            "limit",
+            "local_rib_criteria",
+            "log_adjacency_changes",
+            "max_lsa",
+            "max_metric",
+            "maximum_paths",
+            "mpls.ldp",
+            "mpls.traffic_eng",
+            "neighbor",
+            "network",
+            "nsf.cisco",
+            "nsf.ietf",
+            "prefix_suppression",
+            "priority",
+            "queue_depth.hello",
+            "queue_depth.update",
+            "router_id",
+            "shutdown",
+            "summary_address",
+            "timers.throttle.lsa",
+            "timers.throttle.spf",
+            "traffic_share",
+            "ttl_security",
+        ]
 
     def execute_module(self):
         """Execute the module
@@ -103,57 +146,9 @@ class Ospfv2(ResourceModule):
             self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
-        parsers = [
-            "adjacency",
-            "address_family",
-            "auto_cost",
-            "bfd",
-            "capability",
-            "compatible",
-            "default_information",
-            "default_metric",
-            "discard_route",
-            "distance.admin_distance",
-            "distance.ospf",
-            "distribute_list.acls",
-            "distribute_list.prefix",
-            "distribute_list.route_map",
-            "domain_id",
-            "domain_tag",
-            "event_log",
-            "help",
-            "ignore",
-            "interface_id",
-            "ispf",
-            "limit",
-            "local_rib_criteria",
-            "log_adjacency_changes",
-            "max_lsa",
-            "max_metric",
-            "maximum_paths",
-            "mpls.ldp",
-            "mpls.traffic_eng",
-            "neighbor",
-            "network",
-            "nsf.cisco",
-            "nsf.ietf",
-            "passive_interface",
-            "prefix_suppression",
-            "priority",
-            "queue_depth.hello",
-            "queue_depth.update",
-            "router_id",
-            "shutdown",
-            "summary_address",
-            "timers.throttle.lsa",
-            "timers.throttle.spf",
-            "traffic_share",
-            "ttl_security",
-        ]
-
         if want != have:
             self.addcmd(want or have, "pid", False)
-            self.compare(parsers, want, have)
+            self.compare(self.parsers, want, have)
             self._areas_compare(want, have)
             if want.get("passive_interfaces"):
                 self._passive_interfaces_compare(want, have)
@@ -184,74 +179,48 @@ class Ospfv2(ResourceModule):
         for name, entry in iteritems(wantd):
             h_item = haved.pop(name, {})
             if entry != h_item and name == "filter_list":
-                filter_list_entry = {}
-                filter_list_entry["area_id"] = wantd["area_id"]
-                if h_item:
-                    li_diff = [
-                        item for item in entry + h_item if item not in entry or item not in h_item
-                    ]
-                else:
-                    li_diff = entry
-                filter_list_entry["filter_list"] = li_diff
+                filter_list_entry = {
+                    "area_id": wantd["area_id"],
+                    "filter_list": list(set(entry) ^ set(h_item)) if h_item else entry
+                }
                 self.addcmd(filter_list_entry, "area.filter_list", False)
+
         for name, entry in iteritems(haved):
             if name == "filter_list":
                 self.addcmd(entry, "area.filter_list", True)
 
     def _passive_interfaces_compare(self, want, have):
-        parsers = ["passive_interfaces"]
-        h_pi = None
-        for k, v in iteritems(want["passive_interfaces"]):
-            h_pi = have.get("passive_interfaces", [])
-            if h_pi and h_pi.get(k) and h_pi.get(k) != v:
+        parsers = ["passive_interfaces.default", "passive_interfaces.set_interface"]
+        h_pi = have.get("passive_interfaces", {})
+        for k, v in want["passive_interfaces"].items():
+            if h_pi and k in h_pi and h_pi[k] != v:
                 for each in v["name"]:
                     h_interface_name = h_pi[k].get("name", [])
                     if each not in h_interface_name:
                         temp = {"interface": {each: each}, "set_interface": v["set_interface"]}
-                        self.compare(
-                            parsers=parsers,
-                            want={"passive_interfaces": temp},
-                            have=dict(),
-                        )
+                        self.compare(parsers=parsers, want={"passive_interfaces": temp}, have=dict())
                     else:
-                        h_interface_name.pop(each)
+                        h_interface_name.remove(each)
             elif not h_pi:
                 if k == "interface":
                     for each in v["name"]:
                         temp = {"interface": {each: each}, "set_interface": v["set_interface"]}
-                        self.compare(
-                            parsers=parsers,
-                            want={"passive_interfaces": temp},
-                            have=dict(),
-                        )
+                        self.compare(parsers=parsers, want={"passive_interfaces": temp}, have=dict())
                 elif k == "default":
-                    self.compare(
-                        parsers=parsers,
-                        want={"passive_interfaces": {"default": True}},
-                        have=dict(),
-                    )
+                    self.compare(parsers=parsers, want={"passive_interfaces": {"default": True}}, have=dict())
             else:
-                h_pi.pop(k)
+                h_pi.pop(k, None)
+
         if (self.state == "replaced" or self.state == "overridden") and h_pi:
-            if h_pi.get("default") or h_pi.get("interface"):
-                for k, v in iteritems(h_pi):
+            if "default" in h_pi or "interface" in h_pi:
+                for k, v in h_pi.items():
                     if k == "interface":
                         for each in v["name"]:
-                            temp = {
-                                "interface": {each: each},
-                                "set_interface": not (v["set_interface"]),
-                            }
-                            self.compare(
-                                parsers=parsers,
-                                want={"passive_interface": temp},
-                                have=dict(),
-                            )
+                            temp = {"interface": {each: each}, "set_interface": not v["set_interface"]}
+                            self.compare(parsers=parsers, want={"passive_interface": temp}, have=dict())
                     elif k == "default":
-                        self.compare(
-                            parsers=parsers,
-                            want=dict(),
-                            have={"passive_interface": {"default": True}},
-                        )
+                        self.compare(parsers=parsers, want=dict(), have={"passive_interface": {"default": True}})
+
 
     def _list_to_dict(self, param):
         for _pid, proc in param.items():
