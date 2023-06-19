@@ -181,7 +181,7 @@ class Ospfv2(ResourceModule):
             if entry != h_item and name == "filter_list":
                 filter_list_entry = {
                     "area_id": wantd["area_id"],
-                    "filter_list": list(set(entry) ^ set(h_item)) if h_item else entry
+                    "filter_list": list(set(entry) ^ set(h_item)) if h_item else entry,
                 }
                 self.addcmd(filter_list_entry, "area.filter_list", False)
 
@@ -198,16 +198,22 @@ class Ospfv2(ResourceModule):
                     h_interface_name = h_pi[k].get("name", [])
                     if each not in h_interface_name:
                         temp = {"interface": {each: each}, "set_interface": v["set_interface"]}
-                        self.compare(parsers=parsers, want={"passive_interfaces": temp}, have=dict())
+                        self.compare(
+                            parsers=parsers, want={"passive_interfaces": temp}, have=dict()
+                        )
                     else:
                         h_interface_name.remove(each)
             elif not h_pi:
                 if k == "interface":
                     for each in v["name"]:
                         temp = {"interface": {each: each}, "set_interface": v["set_interface"]}
-                        self.compare(parsers=parsers, want={"passive_interfaces": temp}, have=dict())
+                        self.compare(
+                            parsers=parsers, want={"passive_interfaces": temp}, have=dict()
+                        )
                 elif k == "default":
-                    self.compare(parsers=parsers, want={"passive_interfaces": {"default": True}}, have=dict())
+                    self.compare(
+                        parsers=parsers, want={"passive_interfaces": {"default": True}}, have=dict()
+                    )
             else:
                 h_pi.pop(k, None)
 
@@ -216,11 +222,19 @@ class Ospfv2(ResourceModule):
                 for k, v in h_pi.items():
                     if k == "interface":
                         for each in v["name"]:
-                            temp = {"interface": {each: each}, "set_interface": not v["set_interface"]}
-                            self.compare(parsers=parsers, want={"passive_interface": temp}, have=dict())
+                            temp = {
+                                "interface": {each: each},
+                                "set_interface": not v["set_interface"],
+                            }
+                            self.compare(
+                                parsers=parsers, want={"passive_interface": temp}, have=dict()
+                            )
                     elif k == "default":
-                        self.compare(parsers=parsers, want=dict(), have={"passive_interface": {"default": True}})
-
+                        self.compare(
+                            parsers=parsers,
+                            want=dict(),
+                            have={"passive_interface": {"default": True}},
+                        )
 
     def _list_to_dict(self, param):
         for _pid, proc in param.items():
