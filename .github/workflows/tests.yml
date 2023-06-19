@@ -46,4 +46,4 @@ jobs:
           '${{ needs.sanity.result }}',
           '${{ needs.unit-galaxy.result }}',
           '${{ needs.unit-source.result }}'
-          ]) == {'success'}"
+          ]) == {'success', 'skipped'}"

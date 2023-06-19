@@ -635,12 +635,6 @@ options:
                   warning_only:
                     description: Only give warning message when limit is exceeded
                     type: bool
-              next_hop_self:
-                description:
-                  - Disable the next hop calculation for this neighbor
-                  - This option is DEPRECATED and is replaced with nexthop_self which
-                    accepts dict as input this attribute will be removed after 2023-06-01.
-                type: bool
               nexthop_self:
                 description: Disable the next hop calculation for this neighbor
                 type: dict
