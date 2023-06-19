@@ -195,7 +195,7 @@ class Bgp_address_family(ResourceModule):
                 self.addcmd(wentry, f"redistribute.{_parser}", False)
 
         # remove remaining items in have for replaced state
-        for _, hentry in h_attr.items():
+        for hkey, hentry in h_attr.items():
             self.addcmd(hentry, "redistribute.ospf", True)
 
     def _compare_neighbor_lists(self, want, have):
@@ -292,7 +292,7 @@ class Bgp_address_family(ResourceModule):
                 self.addcmd(wentry, "networks", False)
 
         # remove remaining items in have for replaced state
-        for _, hentry in h_attr.items():
+        for hkey, hentry in h_attr.items():
             self.addcmd(hentry, "networks", True)
 
     def _compare_agg_add_lists(self, w_attr, h_attr):
@@ -301,7 +301,7 @@ class Bgp_address_family(ResourceModule):
             if wentry != h_attr.pop(wkey, {}):
                 self.addcmd(wentry, "aggregate_addresses", False)
         # remove remaining items in have for replaced state
-        for _, hentry in h_attr.items():
+        for hkey, hentry in h_attr.items():
             self.addcmd(hentry, "aggregate_addresses", True)
 
     def _bgp_add_fam_list_to_dict(self, tmp_data):
