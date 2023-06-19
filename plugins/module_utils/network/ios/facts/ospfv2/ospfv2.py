@@ -36,6 +36,25 @@ class Ospfv2Facts(object):
 
     def get_ospfv2_data(self, connection):
         return connection.get("show running-config | section ^router ospf")
+    
+    def dict_to_list(self, ospf_data):
+        """Converts areas, interfaces in each process to list
+        :param ospf_data: ospf data
+        :rtype: dictionary
+        :returns: facts_output
+        """
+        
+        facts_output = {"processes": []}
+
+        for process in ospf_data.get("processes", []):
+            if "passive_interfaces" in process and process["passive_interfaces"].get("default"):
+                if process.get("passive_interfaces", {}).get("interface"):
+                    process["passive_interfaces"]["interface"]["name"] = [each for each in process["passive_interfaces"]["interface"]["name"] if each]
+            if "areas" in process:
+                process["areas"] = list(process["areas"].values())
+            facts_output["processes"].append(process)
+        
+        return facts_output
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for ospfv2
@@ -47,7 +66,7 @@ class Ospfv2Facts(object):
         """
 
         facts = {}
-        facts_output = {"processes": []}
+        
 
         if not data:
             data = self.get_ospfv2_data(connection)
@@ -61,17 +80,7 @@ class Ospfv2Facts(object):
         )
 
         # converts areas, interfaces in each process to list
-        for process in ospf_parsed.get("processes", []):
-            if "passive_interfaces" in process and process["passive_interfaces"].get("default"):
-                if process["passive_interfaces"].get("interface"):
-                    temp = []
-                    for each in process["passive_interfaces"]["interface"]["name"]:
-                        if each:
-                            temp.append(each)
-                    process["passive_interfaces"]["interface"]["name"] = temp
-            if "areas" in process:
-                process["areas"] = list(process["areas"].values())
-            facts_output["processes"].append(process)
+        facts_output = self.dict_to_list(ospf_parsed)
 
         ansible_facts["ansible_network_resources"].pop("ospfv2", None)
 
