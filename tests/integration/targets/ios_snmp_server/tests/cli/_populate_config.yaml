@@ -24,3 +24,7 @@
   cisco.ios.ios_snmp_server:
     commands:
       - show running-config | section ^snmp-server
+    register: snmp_output
+- name: Display output
+  debug:
+    var: snmp_output.stdout_lines
