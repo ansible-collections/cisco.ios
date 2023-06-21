@@ -1,8 +1,7 @@
----
 authors:
   - Ansible Network Community (ansible-network)
 dependencies:
-  "ansible.netcommon": ">=2.5.1"
+  ansible.netcommon: '>=2.5.1'
 license_file: LICENSE
 name: ios
 namespace: cisco
@@ -10,5 +9,9 @@ description: Ansible Network Collection for Cisco IOS devices.
 readme: README.md
 repository: https://github.com/ansible-collections/cisco.ios
 issues: https://github.com/ansible-collections/cisco.ios/issues
-tags: [cisco, ios, iosxe, networking]
-version: "4.6.1"
+tags:
+  - cisco
+  - ios
+  - iosxe
+  - networking
+version: 5.0.0
