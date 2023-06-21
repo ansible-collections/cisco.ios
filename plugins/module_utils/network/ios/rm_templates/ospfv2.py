@@ -11,25 +11,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
-def _tmplt_ospf_vrf_cmd(process):
-    command = "router ospf {process_id}".format(**process)
-    if "vrf" in process:
-        command += " vrf {vrf}".format(**process)
-    return command
-
-
-def _tmplt_ospf_adjacency_cmd(config_data):
-    if "adjacency" in config_data:
-        command = "adjacency stagger "
-        if "none" in config_data["adjacency"]:
-            command += " none"
-        else:
-            command += " {min_adjacency}".format(**config_data["adjacency"])
-        if "max_adjacency" in config_data["adjacency"]:
-            command += " {min_adjacency}".format(**config_data["adjacency"])
-        return command
-
-
 def _tmplt_ospf_address_family_cmd(config_data):
     if "address_family" in config_data:
         command = ["address-family ipv4 multicast", "exit-address-family"]
@@ -41,14 +22,6 @@ def _tmplt_ospf_address_family_cmd(config_data):
                 if "tid" in config_data["address_family"].get("topology"):
                     cmd += " tid {tid}".format(**config_data["address_family"].get("topology"))
                 command.insert(1, cmd)
-        return command
-
-
-def _tmplt_ospf_area_authentication(config_data):
-    if "authentication" in config_data:
-        command = "area {area_id} authentication".format(**config_data)
-        if config_data["authentication"].get("message_digest"):
-            command += " message-digest"
         return command
 
 
@@ -87,14 +60,6 @@ def _tmplt_ospf_area_nssa(config_data):
         return command
 
 
-def _tmplt_ospf_area_nssa_translate(config_data):
-    if "nssa" in config_data:
-        command = "area {area_id} nssa".format(**config_data)
-        if "translate" in config_data["nssa"]:
-            command += " translate type7 {translate}".format(**config_data["nssa"])
-        return command
-
-
 def _tmplt_ospf_area_ranges(config_data):
     if "ranges" in config_data:
         commands = []
@@ -110,100 +75,6 @@ def _tmplt_ospf_area_ranges(config_data):
             cmd += temp_cmd
             commands.append(cmd)
         return commands
-
-
-def _tmplt_ospf_area_sham_link(config_data):
-    if "sham_link" in config_data:
-        command = "area {area_id} sham-link".format(**config_data)
-        if "source" in config_data["sham_link"]:
-            command += " {source} {destination}".format(**config_data["sham_link"])
-        if "cost" in config_data["sham_link"]:
-            command += " cost {cost}".format(**config_data["sham_link"])
-        if "ttl_security" in config_data["sham_link"]:
-            command += " ttl-security hops {ttl_security}".format(**config_data["sham_link"])
-        return command
-
-
-def _tmplt_ospf_area_stub_link(config_data):
-    if "stub" in config_data:
-        command = "area {area_id} stub".format(**config_data)
-        if "no_ext_capability" in config_data["stub"]:
-            command += " no-ext-capability"
-        if "no_summary" in config_data["stub"]:
-            command += " no-summary"
-        return command
-
-
-def _tmplt_ospf_auto_cost(config_data):
-    if "auto_cost" in config_data:
-        command = "auto-cost"
-        if "reference_bandwidth" in config_data["auto_cost"]:
-            command += " reference-bandwidth {reference_bandwidth}".format(
-                **config_data["auto_cost"]
-            )
-        return command
-
-
-def _tmplt_ospf_capability(config_data):
-    if "capability" in config_data:
-        if "lls" in config_data["capability"]:
-            command = "capability lls"
-        elif "opaque" in config_data["capability"]:
-            command = "capability opaque"
-        elif "transit" in config_data["capability"]:
-            command = "capability transit"
-        elif "vrf_lite" in config_data["capability"]:
-            command = "capability vrf-lite"
-        return command
-
-
-def _tmplt_ospf_compatible(config_data):
-    if "compatible" in config_data:
-        if "rfc1583" in config_data["compatible"]:
-            command = "compatible rfc1583"
-        elif "rfc1587" in config_data["compatible"]:
-            command = "compatible rfc1587"
-        elif "rfc5243" in config_data["compatible"]:
-            command = "compatible rfc5243"
-        return command
-
-
-def _tmplt_ospf_default_information(config_data):
-    if "default_information" in config_data:
-        command = "default-information"
-        if "originate" in config_data["default_information"]:
-            command += " originate"
-        if "always" in config_data["default_information"]:
-            command += " always"
-        if "metric" in config_data["default_information"]:
-            command += " metric {metric}".format(**config_data["default_information"])
-        if "metric_type" in config_data["default_information"]:
-            command += " metric-type {metric_type}".format(**config_data["default_information"])
-        if "metric" in config_data["default_information"]:
-            command += " route-map {route_map}".format(**config_data["default_information"])
-        return command
-
-
-def _tmplt_ospf_discard_route(config_data):
-    if "discard_route" in config_data:
-        command = "discard-route"
-        if "external" in config_data["discard_route"]:
-            command += " external {external}".format(**config_data["discard_route"])
-        if "internal" in config_data["discard_route"]:
-            command += " internal {internal}".format(**config_data["discard_route"])
-        return command
-
-
-def _tmplt_ospf_distance_admin_distance(config_data):
-    if "admin_distance" in config_data["distance"]:
-        command = "distance {distance}".format(**config_data["distance"]["admin_distance"])
-        if "address" in config_data["distance"]["admin_distance"]:
-            command += " {address} {wildcard_bits}".format(
-                **config_data["distance"]["admin_distance"]
-            )
-        if "acl" in config_data["distance"]["admin_distance"]:
-            command += " {acl}".format(**config_data["distance"]["admin_distance"])
-        return command
 
 
 def _tmplt_ospf_distance_ospf(config_data):
@@ -531,14 +402,14 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_adjacency_cmd,
+            "setval": "adjacency stagger {{ 'none' if none else min_adjacency }} {{ max_adjacency }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
                         "adjacency": {
                             "min_adjacency": "{{ min|int }}",
                             "max_adjacency": "{{ max|int }}",
-                            "none": "{{ True if none_adj is defined else None }}",
+                            "none": "{{ True if none_adj is defined else False }}",
                         },
                     },
                 },
@@ -581,7 +452,8 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_area_authentication,
+            "setval": "area {{ area_id }} authentication"
+            "{{ 'message-digest' if authentication.message_digest else '' }}",
             "compval": "authentication",
             "result": {
                 "processes": {
@@ -695,7 +567,7 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_area_nssa_translate,
+            "setval": _tmplt_ospf_area_nssa,
             "compval": "nssa",
             "result": {
                 "processes": {
@@ -734,7 +606,8 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_area_nssa,
+            "setval": "area {{ area_id }} nssa"
+            "{{ (' translate type7 ' + nssa.translate) if nssa.translate is defined else '' }}",
             "compval": "nssa.translate",
             "result": {
                 "processes": {
@@ -803,7 +676,9 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_area_sham_link,
+            "setval": "area {{ area_id }} sham-link {{ sham_link.source }} {{ sham_link.destination }}"
+            "{{ (' cost ' + sham_link.cost) if sham_link.cost is defined else '' }}"
+            "{{ (' ttl-security hops ' + sham_link.ttl_security) if sham_link.ttl_security is defined else '' }}",
             "compval": "sham_link",
             "result": {
                 "processes": {
@@ -835,7 +710,9 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_area_stub_link,
+            "setval": "area {{ area_id }} stub"
+            "{{ (' no-ext-capability') if no_ext_capability is defined else ''}}"
+            "{{ (' no-summary') if no_summary is defined else ''}}",
             "compval": "stub",
             "result": {
                 "processes": {
@@ -863,7 +740,7 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_auto_cost,
+            "setval": "auto-cost {{ reference_bandwidth if reference_bandwidth is defined else '' }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -888,50 +765,140 @@ class Ospfv2Template(NetworkTemplate):
             "result": {"processes": {"{{ pid }}": {"bfd": "{{ True if bfd is defined }}"}}},
         },
         {
-            "name": "capability",
+            "name": "capability.lls",
             "getval": re.compile(
                 r"""
                 \scapability
-                (\s(?P<lls>lls))?
-                (\s(?P<opaque>opaque))?
-                (\s(?P<transit>transit))?
-                (\s(?P<vrf_lite>vrf-lite))?
+                (\s(?P<lls>lls))
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_capability,
+            "setval": "capability lls",
             "result": {
                 "processes": {
                     "{{ pid }}": {
                         "capability": {
-                            "lls": "{{ True if lls is defined }}",
-                            "opaque": "{{ True if opaque is defined }}",
-                            "transit": "{{ True if transit is defined }}",
-                            "vrf_lite": "{{ True if vrf_lite is defined }}",
+                            "lls": "{{ True }}",
                         },
                     },
                 },
             },
         },
         {
-            "name": "compatible",
+            "name": "capability.opaque",
             "getval": re.compile(
                 r"""
-                \scompatible
-                (\s(?P<rfc1583>rfc1583))?
-                (\s(?P<rfc1587>rfc1587))?
-                (\s(?P<rfc5243>rfc5243))?
+                \scapability
+                (\s(?P<opaque>opaque))
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_compatible,
+            "setval": "capability opaque",
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "capability": {
+                            "opaque": "{{ True }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "capability.transit",
+            "getval": re.compile(
+                r"""
+                \scapability
+                (\s(?P<transit>transit))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "capability transit",
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "capability": {
+                            "transit": "{{ True }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "capability.vrf_lite",
+            "getval": re.compile(
+                r"""
+                \scapability
+                (\s(?P<vrf_lite>vrf-lite))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "capability vrf-lite",
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "capability": {
+                            "vrf_lite": "{{ True }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "compatible.rfc1583",
+            "getval": re.compile(
+                r"""
+                \scompatible
+                (\s(?P<rfc1583>rfc1583))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "compatible rfc1583",
             "result": {
                 "processes": {
                     "{{ pid }}": {
                         "compatible": {
-                            "rfc1583": "{{ True if rfc1583 is defined }}",
-                            "rfc1587": "{{ True if rfc1587 is defined }}",
-                            "rfc5243": "{{ True if rfc5243 is defined }}",
+                            "rfc1583": "{{ True }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "compatible.rfc1587",
+            "getval": re.compile(
+                r"""
+                \scompatible
+                (\s(?P<rfc1587>rfc1587))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "compatible rfc1587",
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "compatible": {
+                            "rfc1587": "{{ True }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "compatible.rfc5243",
+            "getval": re.compile(
+                r"""
+                \scompatible
+                (\s(?P<rfc5243>rfc5243))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "compatible rfc5243",
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "compatible": {
+                            "rfc5243": "{{ True }}",
                         },
                     },
                 },
@@ -950,7 +917,11 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_default_information,
+            "setval": "default-information {{ originate if originate is defined else ''}}"
+            "{{ always if always is defined else '' }}"
+            "{{ ' metric ' + metric if metric is defined else '' }}"
+            "{{ ' metric-type ' + metric_type if metric_type is defined else '' }}"
+            "{{ ' route-map ' + route_map if route_map is defined and metric is defined else '' }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -981,20 +952,54 @@ class Ospfv2Template(NetworkTemplate):
             "name": "discard_route",
             "getval": re.compile(
                 r"""
-                (\s(?P<discard_route>discard-route))?
-                (\sexternal\s(?P<external>\d+))?
-                (\sinternal\s(?P<internal>\d+))?
+                (\s(?P<discard_route>discard-route))
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_discard_route,
+            "setval": "discard-route",
             "result": {
                 "processes": {
                     "{{ pid }}": {
                         "discard_route": {
-                            "set": "{{ True if discard_route is defined and external is undefined and internal is undefined }}",
-                            "external": "{{ external|int }}",
-                            "internal": "{{ internal|int }}",
+                            "set": "{{ True }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "discard_route.external",
+            "getval": re.compile(
+                r"""
+                (\s(?P<discard_route>discard-route))
+                (\sexternal\s(?P<external>\d+))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "discard-route external {{ external }}",
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "discard_route": {"external": "{{ external|int }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "discard_route.internal",
+            "getval": re.compile(
+                r"""
+                (\s(?P<discard_route>discard-route))
+                (\sinternal\s(?P<internal>\d+))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "discard-route internal {{ internal }}",
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "discard_route": {"internal": "{{ internal|int }}",
                         },
                     },
                 },
@@ -1012,7 +1017,9 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_distance_admin_distance,
+            "setval": "distance {{ distance }} "
+            "{{ ( address + ' ' + wildcard_bits ) if address is defined else '' }}"
+            "{{ ' ' + acl if acl is defined else '' }}",
             "compval": "admin_distance",
             "result": {
                 "processes": {

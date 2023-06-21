@@ -68,7 +68,7 @@ class Ospfv2Facts(object):
         """
 
         facts = {}
-
+        
         if not data:
             data = self.get_ospfv2_data(connection)
 
