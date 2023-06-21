@@ -980,7 +980,8 @@ class Ospfv2Template(NetworkTemplate):
             "result": {
                 "processes": {
                     "{{ pid }}": {
-                        "discard_route": {"external": "{{ external|int }}",
+                        "discard_route": {
+                            "external": "{{ external|int }}",
                         },
                     },
                 },
@@ -999,7 +1000,8 @@ class Ospfv2Template(NetworkTemplate):
             "result": {
                 "processes": {
                     "{{ pid }}": {
-                        "discard_route": {"internal": "{{ internal|int }}",
+                        "discard_route": {
+                            "internal": "{{ internal|int }}",
                         },
                     },
                 },
