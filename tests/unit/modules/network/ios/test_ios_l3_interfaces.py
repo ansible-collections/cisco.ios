@@ -23,32 +23,11 @@ class TestIosL3InterfacesModule(TestIosModule):
     def setUp(self):
         super(TestIosL3InterfacesModule, self).setUp()
 
-        self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
-        )
-        self.get_config = self.mock_get_config.start()
-
-        self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
-        )
-        self.load_config = self.mock_load_config.start()
-
-        self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection",
-        )
-        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
-
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
-
-        self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
-        )
-        self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.l3_interfaces.l3_interfaces."
@@ -58,11 +37,7 @@ class TestIosL3InterfacesModule(TestIosModule):
 
     def tearDown(self):
         super(TestIosL3InterfacesModule, self).tearDown()
-        self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
-        self.mock_edit_config.stop()
-        self.mock_get_config.stop()
-        self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
 
     def test_ios_l3_interfaces_merged_common_ip(self):
@@ -444,4 +419,30 @@ class TestIosL3InterfacesModule(TestIosModule):
         )
         commands = []
         result = self.execute_module(changed=False)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_l3_interfaces_remove_primary_replaced(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/3.100
+             encapsulation dot1Q 20
+             ip address 192.168.0.3 255.255.255.0
+             ip address 192.168.1.3 255.255.255.0 secondary
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(name="GigabitEthernet0/3.100", ipv4=[dict(address="192.168.1.3/24")]),
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/3.100",
+            "ip address 192.168.1.3 255.255.255.0",
+            "no ip address 192.168.0.3 255.255.255.0",
+            "no ip address 192.168.1.3 255.255.255.0 secondary",
+        ]
+        result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))

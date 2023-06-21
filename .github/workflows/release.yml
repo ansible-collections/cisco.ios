@@ -1,0 +1,14 @@
+---
+name: release
+on:  # yamllint disable-line rule:truthy
+  release:
+    types: [published]
+
+jobs:
+  release:
+    uses: ansible/devtools/.github/workflows/release_collection.yml@main
+    with:
+      environment: release
+    secrets:
+      ah_token: ${{ secrets.AH_TOKEN }}
+      ansible_galaxy_api_key: ${{ secrets.ANSIBLE_GALAXY_API_KEY }}

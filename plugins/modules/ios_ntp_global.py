@@ -17,13 +17,13 @@ DOCUMENTATION = """
 module: ios_ntp_global
 short_description: Resource module to configure NTP.
 description:
-- This module provides declarative management of ntp on Cisco IOS devices.
+  - This module provides declarative management of ntp on Cisco IOS devices.
 version_added: 2.5.0
 author:
-- Sagar Paul (@KB-perByte)
+  - Sagar Paul (@KB-perByte)
 notes:
-- Tested against Cisco IOSXE Version 17.3 on CML.
-- This module works with connection C(network_cli).
+  - Tested against Cisco IOSXE Version 17.3 on CML.
+  - This module works with connection C(network_cli).
 options:
   config:
     description: A dictionary of ntp options
@@ -242,13 +242,13 @@ options:
     type: str
   state:
     choices:
-    - merged
-    - replaced
-    - overridden
-    - deleted
-    - rendered
-    - gathered
-    - parsed
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - rendered
+      - gathered
+      - parsed
     default: merged
     description:
       - The state the configuration should be left in
@@ -295,10 +295,10 @@ EXAMPLES = """
           - access_list: preauth_ipv6_acl
             ipv6: true
             kod: true
-          - access_list: '2'
+          - access_list: "2"
             kod: true
         query_only:
-          - access_list: '10'
+          - access_list: "10"
       allow:
         control:
           rate_limit: 4
@@ -382,7 +382,6 @@ EXAMPLES = """
 #     "ntp trusted-key 3 - 3",
 #     "ntp trusted-key 21"
 # ],
-
 
 # After state:
 # ------------
@@ -518,8 +517,8 @@ EXAMPLES = """
           use_ipv4: true
       access_group:
         peer:
-        - access_list: DHCP-Server
-          ipv6: true
+          - access_list: DHCP-Server
+            ipv6: true
     state: overridden
 
 # Commands Fired:
@@ -784,10 +783,10 @@ EXAMPLES = """
           - access_list: preauth_ipv6_acl
             ipv6: true
             kod: true
-          - access_list: '2'
+          - access_list: "2"
             kod: true
         query_only:
-          - access_list: '10'
+          - access_list: "10"
       allow:
         control:
           rate_limit: 4

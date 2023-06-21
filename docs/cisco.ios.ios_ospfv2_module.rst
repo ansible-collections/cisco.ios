@@ -4616,9 +4616,9 @@ Examples
       cisco.ios.ios_ospfv2:
         config:
           processes:
-          - process_id: 1
-          - process_id: 200
-            vrf: blue
+            - process_id: 1
+            - process_id: 200
+              vrf: blue
         state: deleted
 
     # Commands Fired:
@@ -4691,62 +4691,62 @@ Examples
       cisco.ios.ios_ospfv2:
         config:
           processes:
-          - process_id: 1
-            max_metric:
-              router_lsa: true
-              on_startup:
-                time: 110
-            areas:
-            - area_id: '5'
-              capability: true
-              authentication:
-                enable: true
-            - area_id: '10'
-              authentication:
-                message_digest: true
-              nssa:
-                default_information_originate:
-                  metric: 10
-                translate: suppress-fa
-              default_cost: 10
-              filter_list:
-              - name: test_prefix_in
-                direction: in
-              - name: test_prefix_out
-                direction: out
-            network:
-              - address: 198.51.100.0
-                wildcard_bits: 0.0.0.255
-                area: 5
-            default_information:
-              originate: true
-            passive_interfaces:
-              default: true
-              interface:
-                set_interface: False
-                name:
-                  - GigabitEthernet0/1
-                  - GigabitEthernet0/2
-          - process_id: 200
-            vrf: blue
-            domain_id:
-              ip_address:
-                address: 192.0.3.1
-            max_metric:
-              router_lsa: true
-              on_startup:
-                time: 100
-            auto_cost:
-              reference_bandwidth: 4
-            areas:
-            - area_id: '10'
-              capability: true
-            distribute_list:
-              acls:
-              - name: 10
-                direction: out
-              - name: 123
-                direction: in
+            - process_id: 1
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 110
+              areas:
+                - area_id: "5"
+                  capability: true
+                  authentication:
+                    enable: true
+                - area_id: "10"
+                  authentication:
+                    message_digest: true
+                  nssa:
+                    default_information_originate:
+                      metric: 10
+                    translate: suppress-fa
+                  default_cost: 10
+                  filter_list:
+                    - name: test_prefix_in
+                      direction: in
+                    - name: test_prefix_out
+                      direction: out
+              network:
+                - address: 198.51.100.0
+                  wildcard_bits: 0.0.0.255
+                  area: 5
+              default_information:
+                originate: true
+              passive_interfaces:
+                default: true
+                interface:
+                  set_interface: False
+                  name:
+                    - GigabitEthernet0/1
+                    - GigabitEthernet0/2
+            - process_id: 200
+              vrf: blue
+              domain_id:
+                ip_address:
+                  address: 192.0.3.1
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 100
+              auto_cost:
+                reference_bandwidth: 4
+              areas:
+                - area_id: "10"
+                  capability: true
+              distribute_list:
+                acls:
+                  - name: 10
+                    direction: out
+                  - name: 123
+                    direction: in
         state: merged
 
     # Commands Fired:
@@ -4827,38 +4827,38 @@ Examples
       cisco.ios.ios_ospfv2:
         config:
           processes:
-          - process_id: 200
-            vrf: blue
-            domain_id:
-              ip_address:
-                address: 192.0.4.1
-            max_metric:
-              router_lsa: true
-              on_startup:
-                time: 200
-            maximum_paths: 15
-            ttl_security:
-              hops: 7
-            areas:
-            - area_id: '10'
-              default_cost: 10
-              authentication:
-                message_digest: true
-          - process_id: 100
-            vrf: ospf_vrf
-            domain_id:
-              ip_address:
-                address: 192.0.5.1
-            auto_cost:
-              reference_bandwidth: 5
-            areas:
-            - area_id: '5'
-              authentication:
-                message_digest: true
-              nssa:
-                default_information_originate:
-                  metric: 10
-                translate: suppress-fa
+            - process_id: 200
+              vrf: blue
+              domain_id:
+                ip_address:
+                  address: 192.0.4.1
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 200
+              maximum_paths: 15
+              ttl_security:
+                hops: 7
+              areas:
+                - area_id: "10"
+                  default_cost: 10
+                  authentication:
+                    message_digest: true
+            - process_id: 100
+              vrf: ospf_vrf
+              domain_id:
+                ip_address:
+                  address: 192.0.5.1
+              auto_cost:
+                reference_bandwidth: 5
+              areas:
+                - area_id: "5"
+                  authentication:
+                    message_digest: true
+                  nssa:
+                    default_information_originate:
+                      metric: 10
+                    translate: suppress-fa
         state: overridden
 
     # Commands Fired:
@@ -4930,38 +4930,38 @@ Examples
       cisco.ios.ios_ospfv2:
         config:
           processes:
-          - process_id: 200
-            vrf: blue
-            domain_id:
-              ip_address:
-                address: 192.0.4.1
-            max_metric:
-              router_lsa: true
-              on_startup:
-                time: 200
-            maximum_paths: 15
-            ttl_security:
-              hops: 7
-            areas:
-            - area_id: '10'
-              default_cost: 10
-              authentication:
-                message_digest: true
-          - process_id: 100
-            vrf: ospf_vrf
-            domain_id:
-              ip_address:
-                address: 192.0.5.1
-            auto_cost:
-              reference_bandwidth: 5
-            areas:
-            - area_id: '5'
-              authentication:
-                message_digest: true
-              nssa:
-                default_information_originate:
-                  metric: 10
-                translate: suppress-fa
+            - process_id: 200
+              vrf: blue
+              domain_id:
+                ip_address:
+                  address: 192.0.4.1
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 200
+              maximum_paths: 15
+              ttl_security:
+                hops: 7
+              areas:
+                - area_id: "10"
+                  default_cost: 10
+                  authentication:
+                    message_digest: true
+            - process_id: 100
+              vrf: ospf_vrf
+              domain_id:
+                ip_address:
+                  address: 192.0.5.1
+              auto_cost:
+                reference_bandwidth: 5
+              areas:
+                - area_id: "5"
+                  authentication:
+                    message_digest: true
+                  nssa:
+                    default_information_originate:
+                      metric: 10
+                    translate: suppress-fa
         state: replaced
 
     # Commands Fired:
@@ -5163,55 +5163,55 @@ Examples
       cisco.ios.ios_ospfv2:
         config:
           processes:
-          - process_id: 1
-            max_metric:
-              router_lsa: true
-              on_startup:
-                time: 110
-            areas:
-            - area_id: '5'
-              capability: true
-              authentication:
-                enable: true
-            - area_id: '10'
-              authentication:
-                message_digest: true
-              nssa:
-                default_information_originate:
-                  metric: 10
-                translate: suppress-fa
-              default_cost: 10
-              filter_list:
-              - name: test_prefix_in
-                direction: in
-              - name: test_prefix_out
-                direction: out
-            network:
-              - address: 198.51.100.0
-                wildcard_bits: 0.0.0.255
-                area: 5
-            default_information:
-              originate: true
-          - process_id: 200
-            vrf: blue
-            domain_id:
-              ip_address:
-                address: 192.0.3.1
-            max_metric:
-              router_lsa: true
-              on_startup:
-                time: 100
-            auto_cost:
-              reference_bandwidth: 4
-            areas:
-            - area_id: '10'
-              capability: true
-            distribute_list:
-              acls:
-              - name: 10
-                direction: out
-              - name: 123
-                direction: in
+            - process_id: 1
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 110
+              areas:
+                - area_id: "5"
+                  capability: true
+                  authentication:
+                    enable: true
+                - area_id: "10"
+                  authentication:
+                    message_digest: true
+                  nssa:
+                    default_information_originate:
+                      metric: 10
+                    translate: suppress-fa
+                  default_cost: 10
+                  filter_list:
+                    - name: test_prefix_in
+                      direction: in
+                    - name: test_prefix_out
+                      direction: out
+              network:
+                - address: 198.51.100.0
+                  wildcard_bits: 0.0.0.255
+                  area: 5
+              default_information:
+                originate: true
+            - process_id: 200
+              vrf: blue
+              domain_id:
+                ip_address:
+                  address: 192.0.3.1
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 100
+              auto_cost:
+                reference_bandwidth: 4
+              areas:
+                - area_id: "10"
+                  capability: true
+              distribute_list:
+                acls:
+                  - name: 10
+                    direction: out
+                  - name: 123
+                    direction: in
         state: rendered
 
     # Module Execution Result:

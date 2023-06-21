@@ -28,6 +28,7 @@
                   interface_cost: 30
                 priority: 40
                 ttl_security:
+                  set: true
                   hops: 50
         state: overridden
 

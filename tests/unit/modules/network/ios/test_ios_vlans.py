@@ -70,7 +70,7 @@ class TestIosVlansModule(TestIosModule):
         self.mock_execute_show_command.stop()
         self.mock_l2_device_command.stop()
 
-    def load_fixtures(self, commands=None, transport="cli"):
+    def load_fixtures(self, commands=None):
         def load_from_file(*args, **kwargs):
             return load_fixture("ios_vlans_config.cfg")
 

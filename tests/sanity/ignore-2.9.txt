@@ -2,8 +2,6 @@ plugins/modules/ios_bgp.py validate-modules:deprecation-mismatch
 plugins/modules/ios_bgp.py validate-modules:invalid-documentation
 plugins/modules/ios_lldp.py validate-modules:deprecation-mismatch
 plugins/modules/ios_lldp.py validate-modules:invalid-documentation
-plugins/modules/ios_logging.py validate-modules:deprecation-mismatch
-plugins/modules/ios_logging.py validate-modules:invalid-documentation
 plugins/modules/ios_ntp.py validate-modules:deprecation-mismatch
 plugins/modules/ios_ntp.py validate-modules:invalid-documentation
 plugins/modules/ios_linkagg.py validate-modules:deprecation-mismatch

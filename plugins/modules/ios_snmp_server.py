@@ -14,7 +14,6 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
----
 author:
   - Sagar Paul (@KB-perByte)
 description:
@@ -174,9 +173,9 @@ options:
             elements: str
           version:
             choices:
-              - '1'
+              - "1"
               - 2c
-              - '3'
+              - "3"
             description: Notification message SNMP version.
             type: str
           version_option:
@@ -884,51 +883,51 @@ EXAMPLES = """
   cisco.ios.ios_snmp_server:
     config:
       communities:
-      -   acl_v4: testACL
+        - acl_v4: testACL
           name: mergedComm
           rw: true
       contact: contact updated using merged
       engine_id:
-      -   id: AB0C5342FF0F
+        - id: AB0C5342FF0F
           remote:
-              host: 172.16.0.12
-              udp_port: 25
+            host: 172.16.0.12
+            udp_port: 25
       groups:
-      -   group: mergedGroup
+        - group: mergedGroup
           version: v3
           version_option: auth
       file_transfer:
-              access_group: test
-              protocol:
-              - ftp
+        access_group: test
+        protocol:
+          - ftp
       hosts:
-      -   community_string: mergedComm
+        - community_string: mergedComm
           host: 172.16.2.9
           informs: true
           traps:
-          - msdp
-          - stun
-          - pki
+            - msdp
+            - stun
+            - pki
           version: 2c
-      -   community_string: mergedComm
+        - community_string: mergedComm
           host: 172.16.2.9
           traps:
-          - slb
-          - pki
+            - slb
+            - pki
       password_policy:
-      -   change: 3
+        - change: 3
           digits: 23
           lower_case: 12
           max_len: 24
           policy_name: MergedPolicy
           special_char: 32
           upper_case: 12
-      -   change: 43
+        - change: 43
           min_len: 12
           policy_name: MergedPolicy2
           special_char: 22
           upper_case: 12
-      -   change: 11
+        - change: 11
           digits: 23
           max_len: 12
           min_len: 12
@@ -936,31 +935,31 @@ EXAMPLES = """
           special_char: 22
           upper_case: 12
       traps:
-          cef:
-              enable: true
-              inconsistency: true
-              peer_fib_state_change: true
-              peer_state_change: true
-              resource_failure: true
-          msdp: true
-          ospf:
-              cisco_specific:
-                  error: true
-                  lsa: true
-                  retransmit: true
-                  state_change:
-                      nssa_trans_change: true
-                      shamlink:
-                          interface: true
-                          neighbor: true
-              error: true
-              lsa: true
-              retransmit: true
-              state_change: true
-          syslog: true
-          tty: true
+        cef:
+          enable: true
+          inconsistency: true
+          peer_fib_state_change: true
+          peer_state_change: true
+          resource_failure: true
+        msdp: true
+        ospf:
+          cisco_specific:
+            error: true
+            lsa: true
+            retransmit: true
+            state_change:
+              nssa_trans_change: true
+              shamlink:
+                interface: true
+                neighbor: true
+          error: true
+          lsa: true
+          retransmit: true
+          state_change: true
+        syslog: true
+        tty: true
       users:
-      -   acl_v4: '24'
+        - acl_v4: "24"
           group: dev
           username: userPaul
           version: v1
@@ -996,7 +995,6 @@ EXAMPLES = """
 #         "snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11",
 #         "snmp-server user userPaul dev v1 access 24"
 # ],
-
 
 # After state:
 # ------------
@@ -1142,14 +1140,13 @@ EXAMPLES = """
 - name: Override commands with provided configuration
   cisco.ios.ios_snmp_server:
     config:
-      location: 'location entry for snmp'
+      location: "location entry for snmp"
       packet_size: 500
       communities:
         - acl_v4: acl_uq
           name: communityOverriden
           rw: true
     state: overridden
-
 
 # Commands Fired:
 # ---------------
@@ -1208,7 +1205,7 @@ EXAMPLES = """
 - name: Replace commands with provided configuration
   cisco.ios.ios_snmp_server:
     config:
-      location: 'updated location entry'
+      location: "updated location entry"
       packet_size: 500
       communities:
         - acl_v4: acl_uq
@@ -1411,125 +1408,125 @@ EXAMPLES = """
   cisco.ios.ios_snmp_server:
     config:
       accounting:
-          command: default
+        command: default
       cache: 2
       chassis_id: entry for chassis id
       communities:
-      -   acl_v6: te
+        - acl_v6: te
           name: test
           ro: true
           view: terst1
-      -   acl_v4: '1322'
+        - acl_v4: "1322"
           name: wete
           ro: true
-      -   acl_v4: paul
+        - acl_v4: paul
           name: weteww
           rw: true
       contact: details contact
       context:
-      - contextA
-      - contextB
+        - contextA
+        - contextB
       engine_id:
-      -   id: AB0C5342FA0A
+        - id: AB0C5342FA0A
           local: true
-      -   id: AB0C5342FAAB
+        - id: AB0C5342FAAB
           remote:
-              host: 172.16.0.2
-              udp_port: 23
-      -   id: AB0C5342FAAA
+            host: 172.16.0.2
+            udp_port: 23
+        - id: AB0C5342FAAA
           remote:
-              host: 172.16.0.1
-              udp_port: 22
+            host: 172.16.0.1
+            udp_port: 22
       file_transfer:
-          access_group: testAcl
-          protocol:
+        access_group: testAcl
+        protocol:
           - ftp
           - rcp
       groups:
-      -   group: grpFamily
+        - group: grpFamily
           version: v3
           version_option: auth
-      -   context: mycontext
+        - context: mycontext
           group: grpFamily
           version: v1
-      -   acl_v4: '2'
+        - acl_v4: "2"
           group: grp1
           notify: me
           version: v1
-      -   group: newtera
+        - group: newtera
           version: v3
           version_option: priv
-      -   group: relaplacing
+        - group: relaplacing
           version: v3
           version_option: noauth
       hosts:
-      -   community_string: check
+        - community_string: check
           host: 172.16.2.99
           informs: true
           traps:
-          - msdp
-          - stun
+            - msdp
+            - stun
           version: 2c
-      -   community_string: check
+        - community_string: check
           host: 172.16.2.99
           traps:
-          - slb
-          - pki
-      -   community_string: checktrap
+            - slb
+            - pki
+        - community_string: checktrap
           host: 172.16.2.99
           traps:
-          - isis
-          - hsrp
-      -   community_string: newtera
+            - isis
+            - hsrp
+        - community_string: newtera
           host: 172.16.2.1
           traps:
-          - rsrb
-          - pim
-          - rsvp
-          - slb
-          - pki
-          version: '3'
+            - rsrb
+            - pim
+            - rsvp
+            - slb
+            - pki
+          version: "3"
           version_option: priv
-      -   community_string: relaplacing
+        - community_string: relaplacing
           host: 172.16.2.1
           traps:
-          - slb
-          - pki
-          version: '3'
+            - slb
+            - pki
+          version: "3"
           version_option: noauth
-      -   community_string: trapsac
+        - community_string: trapsac
           host: 172.16.2.1
           traps:
-          - tty
-          - bgp
+            - tty
+            - bgp
           version: 2c
-      -   community_string: www
+        - community_string: www
           host: 172.16.1.1
           traps:
-          - tty
-          - bgp
-          version: '3'
+            - tty
+            - bgp
+          version: "3"
           version_option: auth
       inform:
-          pending: 2
+        pending: 2
       ip:
-          dscp: 2
-      location: 'entry for snmp location'
+        dscp: 2
+      location: "entry for snmp location"
       packet_size: 500
       password_policy:
-      -   change: 3
+        - change: 3
           digits: 23
           lower_case: 12
           max_len: 24
           policy_name: policy1
           special_char: 32
           upper_case: 12
-      -   change: 9
+        - change: 9
           min_len: 12
           policy_name: policy2
           special_char: 22
           upper_case: 12
-      -   change: 11
+        - change: 11
           digits: 23
           max_len: 12
           min_len: 12
@@ -1542,103 +1539,103 @@ EXAMPLES = """
       trap_source: GigabitEthernet0/0
       trap_timeout: 2
       traps:
-          auth_framework:
-              enable: true
-          bgp:
-              cbgp2: true
-              enable: true
-          bfd:
-              enable: true
-              session_down: true
-              session_up: true
-          bridge:
-              enable: true
-              newroot: true
-              topologychange: true
-          casa: true
-          cef:
-              enable: true
-              inconsistency: true
-              peer_fib_state_change: true
-              peer_state_change: true
-              resource_failure: true
-          dlsw:
-              enable: true
-          eigrp: true
-          ethernet:
-              cfm:
-                  alarm: true
-              evc:
-                  status: true
-          event_manager: true
-          flowmon: true
-          frame_relay:
-              enable: true
-              subif:
-                  enable: true
-          hsrp: true
-          ike:
-              policy:
-                  add: true
-                  delete: true
-              tunnel:
-                  start: true
-                  stop: true
-          ipmulticast: true
-          ipsec:
-              cryptomap:
-                  add: true
-                  attach: true
-                  delete: true
-                  detach: true
-              too_many_sas: true
-              tunnel:
-                  start: true
-                  stop: true
-          ipsla: true
-          l2tun:
-              pseudowire_status: true
-              session: true
-          msdp: true
-          ospf:
-              cisco_specific:
-                  error: true
-                  lsa: true
-                  retransmit: true
-                  state_change:
-                      nssa_trans_change: true
-                      shamlink:
-                          interface: true
-                          neighbor: true
-              error: true
-              lsa: true
-              retransmit: true
-              state_change: true
-          pim:
-              enable: true
-              invalid_pim_message: true
-              neighbor_change: true
-              rp_mapping_change: true
-          pki: true
-          rsvp: true
-          snmp:
-              authentication: true
-              coldstart: true
-              linkdown: true
-              linkup: true
-              warmstart: true
-          syslog: true
-          tty: true
+        auth_framework:
+          enable: true
+        bgp:
+          cbgp2: true
+          enable: true
+        bfd:
+          enable: true
+          session_down: true
+          session_up: true
+        bridge:
+          enable: true
+          newroot: true
+          topologychange: true
+        casa: true
+        cef:
+          enable: true
+          inconsistency: true
+          peer_fib_state_change: true
+          peer_state_change: true
+          resource_failure: true
+        dlsw:
+          enable: true
+        eigrp: true
+        ethernet:
+          cfm:
+            alarm: true
+          evc:
+            status: true
+        event_manager: true
+        flowmon: true
+        frame_relay:
+          enable: true
+          subif:
+            enable: true
+        hsrp: true
+        ike:
+          policy:
+            add: true
+            delete: true
+          tunnel:
+            start: true
+            stop: true
+        ipmulticast: true
+        ipsec:
+          cryptomap:
+            add: true
+            attach: true
+            delete: true
+            detach: true
+          too_many_sas: true
+          tunnel:
+            start: true
+            stop: true
+        ipsla: true
+        l2tun:
+          pseudowire_status: true
+          session: true
+        msdp: true
+        ospf:
+          cisco_specific:
+            error: true
+            lsa: true
+            retransmit: true
+            state_change:
+              nssa_trans_change: true
+              shamlink:
+                interface: true
+                neighbor: true
+          error: true
+          lsa: true
+          retransmit: true
+          state_change: true
+        pim:
+          enable: true
+          invalid_pim_message: true
+          neighbor_change: true
+          rp_mapping_change: true
+        pki: true
+        rsvp: true
+        snmp:
+          authentication: true
+          coldstart: true
+          linkdown: true
+          linkup: true
+          warmstart: true
+        syslog: true
+        tty: true
       users:
-      -   acl_v4: '24'
+        - acl_v4: "24"
           group: groupFamily
           username: paul
           version: v1
-      -   acl_v4: ipv6
+        - acl_v4: ipv6
           group: groupFamily
           username: domnic
           version: v3
-      -   group: relaplacing
+        - group: relaplacing
           username: relaplacing
           version: v3
     state: rendered
@@ -1780,7 +1777,7 @@ EXAMPLES = """
 
 # Module Execution Result:
 # ------------------------
-
+#
 #  "parsed": {
 #     "accounting": {
 #         "command": "default"
@@ -1942,6 +1939,7 @@ EXAMPLES = """
 #         }
 #     ]
 # }
+
 """
 
 RETURN = """

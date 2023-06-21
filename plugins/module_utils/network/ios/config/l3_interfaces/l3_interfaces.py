@@ -115,13 +115,50 @@ class L3_interfaces(ResourceModule):
             hacls = have.pop(afi, {})
 
             for key, entry in wacls.items():
-                self.validate_ips(afi, want=entry, have=hacls.get(key, {}))
+                if entry.get("secondary", False) is True:
+                    continue
+                # entry is set as primary
+                hacl = hacls.get(key, {})
+                if hacl.get("secondary", False) is True:
+                    hacl = {}
+                self.validate_ips(afi, want=entry, have=hacl)
+
+                if hacl:
+                    hacls.pop(key, {})
+
                 self.compare(
                     parsers=self.parsers,
                     want={afi: entry},
-                    have={afi: hacls.pop(key, {})},
+                    have={afi: hacl},
                 )
+
+            for key, entry in wacls.items():
+                if entry.get("secondary", False) is False:
+                    continue
+                # entry is set as secondary
+                hacl = hacls.get(key, {})
+                if hacl.get("secondary", False) is False:
+                    # hacl is set as primary, if wacls has no other primary entry we must keep
+                    # this entry as primary (so we'll compare entry to hacl and not
+                    # generate commands)
+                    if list(filter(lambda w: w.get("secondary", False) is False, wacls.values())):
+                        # another primary is in wacls
+                        hacl = {}
+                self.validate_ips(afi, want=entry, have=hacl)
+
+                if hacl:
+                    hacls.pop(key, {})
+
+                self.compare(
+                    parsers=self.parsers,
+                    want={afi: entry},
+                    have={afi: hacl},
+                )
+
             # remove remaining items in have for replaced
+            # these can be subnets that are no longer used
+            # or secondaries that have moved to primary
+            # or primary that has moved to secondary
             for key, entry in hacls.items():
                 self.validate_ips(afi, have=entry)
                 self.compare(parsers=self.parsers, want={}, have={afi: entry})

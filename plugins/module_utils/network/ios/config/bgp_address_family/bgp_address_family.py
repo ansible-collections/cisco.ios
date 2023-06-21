@@ -336,9 +336,6 @@ class Bgp_address_family(ResourceModule):
                             neib["neighbor_address"] = neib.pop("ipv6_address")
                         if neib.get("ipv6_adddress"):
                             neib["neighbor_address"] = neib.pop("ipv6_adddress")
-                        # next_hop_self deprecated added nexthop_self
-                        if neib.get("next_hop_self"):
-                            neib["nexthop_self"] = {"set": neib.pop("next_hop_self")}
                         # prefix_list and prefix_lists
                         if neib.get("prefix_list"):  # deprecated made list
                             neib["prefix_lists"] = [neib.pop("prefix_list")]

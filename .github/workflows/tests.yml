@@ -1,5 +1,5 @@
 ---
-name: Test collection
+name: test_collection
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
@@ -46,4 +46,4 @@ jobs:
           '${{ needs.sanity.result }}',
           '${{ needs.unit-galaxy.result }}',
           '${{ needs.unit-source.result }}'
-          ]) == {'success'}"
+          ]) == {'success', 'skipped'}"

@@ -22,17 +22,17 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_facts
 author:
-- Peter Sprygada (@privateip)
-- Sumit Jaiswal (@justjais)
+  - Peter Sprygada (@privateip)
+  - Sumit Jaiswal (@justjais)
 short_description: Module to collect facts from remote devices.
 description:
-- Collects a base set of device facts from a remote device that is running IOS.  This
-  module prepends all of the base network fact keys with C(ansible_net_<fact>).  The
-  facts module will always collect a base set of facts from the device and can enable
-  or disable collection of additional facts.
+  - Collects a base set of device facts from a remote device that is running IOS.  This
+    module prepends all of the base network fact keys with C(ansible_net_<fact>).  The
+    facts module will always collect a base set of facts from the device and can enable
+    or disable collection of additional facts.
 version_added: 1.0.0
 extends_documentation_fragment:
-- cisco.ios.ios
+  - cisco.ios.ios
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML and IOS 15.6 for L2 specific resource.
   - Facts gathering for L3 devices are supposed to produce blank output for unsupported
@@ -42,26 +42,26 @@ notes:
 options:
   gather_subset:
     description:
-    - When supplied, this argument restricts the facts collected to a given subset.
-    - Possible values for this argument include C(all), C(min), C(default), C(hardware), C(config),
-      and C(interfaces).
-    - Specify a list of values to include a larger subset.
-    - Use a value with an initial C(!) to collect all facts except that subset.
+      - When supplied, this argument restricts the facts collected to a given subset.
+      - Possible values for this argument include C(all), C(min), C(default), C(hardware), C(config),
+        and C(interfaces).
+      - Specify a list of values to include a larger subset.
+      - Use a value with an initial C(!) to collect all facts except that subset.
     required: false
-    default: 'min'
+    default: "min"
     type: list
     elements: str
   gather_network_resources:
     description:
-    - When supplied, this argument will restrict the facts collected to a given subset.
-      Possible values for this argument include all and the resources like interfaces,
-      vlans etc. Can specify a list of values to include a larger subset. Values can
-      also be used with an initial C(!) to specify that a specific subset should
-      not be collected. Valid subsets are 'bgp_global', 'l3_interfaces', 'lag_interfaces',
-      'ntp_global', 'acls', 'hostname', 'interfaces', 'lldp_interfaces', 'logging_global',
-      'ospf_interfaces', 'ospfv2', 'prefix_lists', 'static_routes', 'acl_interfaces',
-      'all', 'bgp_address_family', 'l2_interfaces', 'lacp', 'lacp_interfaces', 'lldp_global',
-      'ospfv3', 'snmp_server', 'vlans'.
+      - When supplied, this argument will restrict the facts collected to a given subset.
+        Possible values for this argument include all and the resources like interfaces,
+        vlans etc. Can specify a list of values to include a larger subset. Values can
+        also be used with an initial C(!) to specify that a specific subset should
+        not be collected. Valid subsets are 'bgp_global', 'l3_interfaces', 'lag_interfaces',
+        'ntp_global', 'acls', 'hostname', 'interfaces', 'lldp_interfaces', 'logging_global',
+        'ospf_interfaces', 'ospfv2', 'prefix_lists', 'static_routes', 'acl_interfaces',
+        'all', 'bgp_address_family', 'l2_interfaces', 'lacp', 'lacp_interfaces', 'lldp_global',
+        'ospfv3', 'snmp_server', 'vlans', 'service'.
     type: list
     elements: str
   available_network_resources:
@@ -69,6 +69,7 @@ options:
     type: bool
     default: false
 """
+
 EXAMPLES = """
 - name: Gather all legacy facts
   cisco.ios.ios_facts:
@@ -77,12 +78,12 @@ EXAMPLES = """
 - name: Gather only the config and default facts
   cisco.ios.ios_facts:
     gather_subset:
-    - config
+      - config
 
 - name: Do not gather hardware facts
   cisco.ios.ios_facts:
     gather_subset:
-    - '!hardware'
+      - "!hardware"
 
 - name: Gather legacy and resource facts
   cisco.ios.ios_facts:
@@ -92,10 +93,10 @@ EXAMPLES = """
 - name: Gather only the interfaces resource facts and no legacy facts
   cisco.ios.ios_facts:
     gather_subset:
-    - '!all'
-    - '!min'
+      - "!all"
+      - "!min"
     gather_network_resources:
-    - interfaces
+      - interfaces
 
 - name: Gather interfaces resource and minimal legacy facts
   cisco.ios.ios_facts:
@@ -112,6 +113,7 @@ EXAMPLES = """
     gather_subset: min
     gather_network_resources: l3_interfaces
 """
+
 RETURN = """
 ansible_net_gather_subset:
   description: The list of fact subsets collected from the device

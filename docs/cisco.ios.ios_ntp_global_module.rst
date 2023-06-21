@@ -1571,10 +1571,10 @@ Examples
               - access_list: preauth_ipv6_acl
                 ipv6: true
                 kod: true
-              - access_list: '2'
+              - access_list: "2"
                 kod: true
             query_only:
-              - access_list: '10'
+              - access_list: "10"
           allow:
             control:
               rate_limit: 4
@@ -1658,7 +1658,6 @@ Examples
     #     "ntp trusted-key 3 - 3",
     #     "ntp trusted-key 21"
     # ],
-
 
     # After state:
     # ------------
@@ -1794,8 +1793,8 @@ Examples
               use_ipv4: true
           access_group:
             peer:
-            - access_list: DHCP-Server
-              ipv6: true
+              - access_list: DHCP-Server
+                ipv6: true
         state: overridden
 
     # Commands Fired:
@@ -2060,10 +2059,10 @@ Examples
               - access_list: preauth_ipv6_acl
                 ipv6: true
                 kod: true
-              - access_list: '2'
+              - access_list: "2"
                 kod: true
             query_only:
-              - access_list: '10'
+              - access_list: "10"
           allow:
             control:
               rate_limit: 4

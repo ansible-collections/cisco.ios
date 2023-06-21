@@ -27,7 +27,8 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_lacp
 short_description: Resource module to configure LACP.
-description: This module provides declarative management of Global LACP on Cisco IOS
+description:
+  This module provides declarative management of Global LACP on Cisco IOS
   network devices.
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
@@ -46,8 +47,8 @@ options:
         suboptions:
           priority:
             description:
-            - LACP priority for the system.
-            - Refer to vendor documentation for valid values.
+              - LACP priority for the system.
+              - Refer to vendor documentation for valid values.
             type: int
             required: true
   running_config:
@@ -79,12 +80,12 @@ options:
         connection to remote host is not required.
     type: str
     choices:
-    - merged
-    - replaced
-    - deleted
-    - rendered
-    - parsed
-    - gathered
+      - merged
+      - replaced
+      - deleted
+      - rendered
+      - parsed
+      - gathered
     default: merged
 """
 
@@ -213,7 +214,6 @@ EXAMPLES = """
 #             "priority": 123
 #         }
 #     }
-
 """
 
 RETURN = """

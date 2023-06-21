@@ -49,7 +49,6 @@ class TestIosLacpInterfaceModule(TestIosModule):
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
         )
         self.edit_config = self.mock_edit_config.start()
-
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lacp_interfaces.lacp_interfaces."
             "Lacp_InterfacesFacts.get_lacp_interface_data",
