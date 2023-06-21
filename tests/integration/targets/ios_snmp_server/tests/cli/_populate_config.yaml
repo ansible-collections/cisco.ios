@@ -25,7 +25,7 @@
     commands:
       - show running-config | section ^snmp-server
       - show snmp user
-    register: snmp_output
+  register: snmp_output
 - name: Display output
   debug:
     var: snmp_output.stdout_lines
