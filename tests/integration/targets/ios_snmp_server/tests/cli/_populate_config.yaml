@@ -21,10 +21,11 @@
             udp_port: 25
     state: merged
 - name: Print commands
-  cisco.ios.ios_snmp_server:
+  cisco.ios.ios_command:
     commands:
       - show running-config | section ^snmp-server
-    register: snmp_output
+      - show snmp user
+  register: snmp_output
 - name: Display output
   debug:
     var: snmp_output.stdout_lines
