@@ -1,4 +1,12 @@
 ---
+- name: Print commands
+  cisco.ios.ios_snmp_server:
+    commands:
+      - show running-config | section ^snmp-server
+    register: snmp_output
+- name: Display output
+  debug:
+    var: snmp_output.stdout_lines
 - name: Pre post task remove snmp-server configuration
   cisco.ios.ios_snmp_server:
     config:
