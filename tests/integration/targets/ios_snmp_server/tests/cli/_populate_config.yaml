@@ -20,3 +20,7 @@
             host: 192.0.2.12
             udp_port: 25
     state: merged
+- name: Print commands
+  cisco.ios.ios_snmp_server:
+    commands:
+      - show running-config | section ^snmp-server
