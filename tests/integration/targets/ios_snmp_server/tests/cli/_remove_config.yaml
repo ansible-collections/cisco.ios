@@ -1,6 +1,6 @@
 ---
 - name: Print commands
-  cisco.ios.ios_snmp_server:
+  cisco.ios.ios_command:
     commands:
       - show running-config | section ^snmp-server
       - show snmp user
