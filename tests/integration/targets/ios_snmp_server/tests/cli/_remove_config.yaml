@@ -3,6 +3,7 @@
   cisco.ios.ios_snmp_server:
     commands:
       - show running-config | section ^snmp-server
+      - show snmp user
     register: snmp_output
 - name: Display output
   debug:
