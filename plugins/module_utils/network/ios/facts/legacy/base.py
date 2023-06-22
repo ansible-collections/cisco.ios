@@ -125,7 +125,7 @@ class Default(FactsBase):
 
 
 class Hardware(FactsBase):
-    COMMANDS = ["dir", "show memory statistics", "show process cpu | ex 0.00"]
+    COMMANDS = ["dir", "show memory statistics", "show processes cpu | include CPU utilization"]
 
     def populate(self):
         warnings = list()
