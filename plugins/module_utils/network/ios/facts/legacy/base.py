@@ -141,11 +141,14 @@ class Hardware(FactsBase):
             if "Invalid input detected" in data:
                 warnings.append("Unable to gather memory statistics")
             else:
-                processor_line = [line for line in data.splitlines() if "Processor" in line].pop()
-                match = re.findall(r"\s(\d+)\s", processor_line)
-                if match:
-                    self.facts["memtotal_mb"] = int(match[0]) / 1048576
-                    self.facts["memfree_mb"] = int(match[2]) / 1048576
+                for line in data.splitlines():
+                    match = re.match(
+                        r"Processor\s+(\S+|\d+)\s+(?P<total>\d+)\s+\d+\s+(?P<free>\d+)",
+                        line,
+                    )
+                    if match:
+                        self.facts["memtotal_mb"] = int(match.group("total")) / 1048576
+                        self.facts["memfree_mb"] = int(match.group("free")) / 1048576
 
     def parse_filesystems(self, data):
         return re.findall(r"^Directory of (\S+)/", data, re.M)
