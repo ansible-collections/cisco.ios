@@ -1,0 +1,7 @@
+---
+deprecated_features:
+  - Deprecated ios_logging module in favor of ios_logging_global.
+  - Deprecated next_hop_self attribute for bgp_address_family with nexthop_self.
+bugfixes:
+  - ios_static_routes - Fix parsers to parse interface attribute correctly.
+  - ios_static_routes - Fix non vlan entries to have unique group identifier.

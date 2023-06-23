@@ -71,7 +71,7 @@ class Static_routes(ResourceModule):
         if delete_spcl and haved and self.state == "deleted":
             for pk, to_rem in delete_spcl.items():
                 if pk in ["ipv4", "ipv6"]:
-                    _afis = haved.get("_afis_")
+                    _afis = haved.get("(_afis_)")
                     for k, v in _afis.get(pk, {}).items():
                         for each_dest in to_rem:
                             if k.split("_")[0] == each_dest:
@@ -184,5 +184,5 @@ class Static_routes(ResourceModule):
 
                             _routes[_key] = dummy_sr
                     _srts[_afi] = _routes
-                _static_rts[_vrf if _vrf else "_afis_"] = _srts
+                _static_rts[_vrf if _vrf else "(_afis_)"] = _srts
         return _static_rts, _delete_spc

@@ -1,0 +1,3 @@
+---
+trivial:
+  - "Changed Integration test to show facts during nightly runs."

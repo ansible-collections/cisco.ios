@@ -1,7 +1,7 @@
 ---
 name: code_coverage
 
-on:
+on:  # yamllint disable-line rule:truthy
   push:
   pull_request:
     branches: [ main ]

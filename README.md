@@ -1,7 +1,8 @@
 # Cisco IOS Collection
 
-[![CI](https://zuul-ci.org/gated.svg)](https://dashboard.zuul.ansible.com/t/ansible/project/github.com/ansible-collections/cisco.ios) <!--[![Codecov](https://img.shields.io/codecov/c/github/ansible-collections/vyos)](https://codecov.io/gh/ansible-collections/cisco.ios)-->
+[![CI](https://zuul-ci.org/gated.svg)](https://dashboard.zuul.ansible.com/t/ansible/project/github.com/ansible-collections/cisco.ios)
 [![Codecov](https://codecov.io/gh/ansible-collections/cisco.ios/branch/main/graph/badge.svg)](https://codecov.io/gh/ansible-collections/cisco.ios)
+[![CI](https://github.com/ansible-collections/cisco.ios/actions/workflows/tests.yml/badge.svg?branch=main&event=schedule)](https://github.com/ansible-collections/cisco.ios/actions/workflows/tests.yml)
 
 The Ansible Cisco IOS collection includes a variety of Ansible content to help automate the management of Cisco IOS and Cisco IOS XE network appliances.
 
@@ -54,7 +55,6 @@ Name | Description
 [cisco.ios.ios_lldp](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lldp_module.rst)|(deprecated, removed after 2024-06-01) Manage LLDP configuration on Cisco IOS network devices.
 [cisco.ios.ios_lldp_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lldp_global_module.rst)|Resource module to configure LLDP.
 [cisco.ios.ios_lldp_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lldp_interfaces_module.rst)|Resource module to configure LLDP interfaces.
-[cisco.ios.ios_logging](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_logging_module.rst)|(deprecated, removed after 2023-06-01) Manage logging on network devices
 [cisco.ios.ios_logging_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_logging_global_module.rst)|Resource module to configure logging.
 [cisco.ios.ios_ntp](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ntp_module.rst)|(deprecated, removed after 2024-01-01) Manages core NTP configuration.
 [cisco.ios.ios_ntp_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ntp_global_module.rst)|Resource module to configure NTP.

@@ -66,7 +66,7 @@ class Lag_interfacesFacts(object):
             ),
         )
 
-        facts["lag_interfaces"] = params.get("config", {})
+        facts["lag_interfaces"] = params.get("config", [])
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts

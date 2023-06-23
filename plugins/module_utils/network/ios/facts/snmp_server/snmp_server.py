@@ -73,7 +73,13 @@ class Snmp_serverFacts(object):
 
     def get_snmpv3_user_facts(self, snmpv3_user):
         """Parse the snmpv3_user data and return a list of users
-
+        example data-
+        User name: TESTU25
+        Engine ID: 000000090200000000000A0B
+        storage-type: nonvolatile        active access-list: 22
+        Authentication Protocol: MD5
+        Privacy Protocol: None
+        Group-name: TESTG
         :param snmpv3_user: the snmpv3_user data which is a string
 
         :rtype: list
@@ -93,11 +99,12 @@ class Snmp_serverFacts(object):
                     one_set["acl_v6"] = line.split(": ")[-1]
                 if "active\taccess-list:" in line:
                     one_set["acl_v4"] = line.split(": ")[-1]
+                one_set["version"] = "v3"  # defaults to version 3 data
             if len(one_set):
                 user_list.append(one_set)
         return user_list
 
-    def populate_facts(self, connection, ansible_facts, data=None, snmpv3_user=None):
+    def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Snmp_server network resource
 
         :param connection: the device connection
@@ -110,11 +117,11 @@ class Snmp_serverFacts(object):
         facts = {}
         objs = []
         params = {}
+        snmpv3_user = ""
 
         if not data:
             data = self.get_snmp_data(connection)
-        if not snmpv3_user:
-            snmpv3_user = self.get_snmpv3_user_data(connection)
+            snmpv3_user = self.get_snmpv3_user_data(connection)  # gathers v3 user data
 
         # parse native config using the Snmp_server template
         snmp_server_parser = Snmp_serverTemplate(lines=data.splitlines(), module=self._module)
