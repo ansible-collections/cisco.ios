@@ -186,13 +186,13 @@ class Hardware(FactsBase):
                     _core = "core_" + str(match_cpu_utilization.group("core"))
                 facts[_core] = {}
                 facts[_core]["five_seconds"] = int(
-                    match_cpu_utilization.group("f_se_nom") or match_cpu_utilization.group("f_sec")
+                    match_cpu_utilization.group("f_se_nom") or match_cpu_utilization.group("f_sec"),
                 )
                 facts[_core]["one_minute"] = int(match_cpu_utilization.group("a_min"))
                 facts[_core]["five_minutes"] = int(match_cpu_utilization.group("f_min"))
                 if match_cpu_utilization.group("f_s_denom"):
                     facts[_core]["five_seconds_interrupt"] = int(
-                        match_cpu_utilization.group("f_s_denom")
+                        match_cpu_utilization.group("f_s_denom"),
                     )
         return facts
 
