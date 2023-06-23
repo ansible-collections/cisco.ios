@@ -119,8 +119,14 @@ class TestIosFactsModule(TestIosModule):
     def test_ios_facts_filesystems_info(self):
         set_module_args(dict(gather_subset="hardware"))
         result = self.execute_module()
+        print(result["ansible_facts"]["ansible_net_cpu_utilization"])
         cpu_utilization_data = {
-            "core": {"mic_seconds": 3, "five_seconds": 2, "one_minute": 1, "five_minutes": 5},
+            "core": {
+                "five_seconds_interrupt": 2,
+                "five_seconds": 3,
+                "one_minute": 1,
+                "five_minutes": 5,
+            },
             "core_0": {"five_seconds": 4, "one_minute": 0, "five_minutes": 3},
             "core_1": {"five_seconds": 5, "one_minute": 5, "five_minutes": 3},
         }

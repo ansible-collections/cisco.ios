@@ -1,5 +1,5 @@
 ---
-deprecated_features:
+removed_features:
   - Deprecated ios_logging module in favor of ios_logging_global.
   - Deprecated next_hop_self attribute for bgp_address_family with nexthop_self.
 bugfixes:

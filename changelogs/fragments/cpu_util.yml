@@ -1,0 +1,2 @@
+minor_changes:
+  - ios_facts - Add CPU utilization. (https://github.com/ansible-collections/cisco.ios/issues/779)
