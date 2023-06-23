@@ -15,7 +15,7 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from ansible.errors import AnsibleError
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.snmp_server.snmp_server import (
@@ -52,7 +52,7 @@ class Snmp_serverFacts(object):
         except Exception as e:
             if "agent not enabled" in str(e):
                 return ""
-            raise AnsibleError("Unable to get snmp user data: %s" % str(e))
+            raise Exception("Unable to get snmp user data: %s" % str(e))
         return _get_snmpv3_user
 
     def sort_list_dicts(self, objs):
