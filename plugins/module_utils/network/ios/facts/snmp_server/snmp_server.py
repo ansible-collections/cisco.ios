@@ -47,6 +47,8 @@ class Snmp_serverFacts(object):
         Note: The seperate method is needed because the snmpv3 user data is not returned within the snmp-server config
         """
         _get_snmpv3_user = connection.get("show snmp user")
+        if "%" in _get_snmpv3_user:
+            _get_snmpv3_user = ""
         return _get_snmpv3_user
 
     def sort_list_dicts(self, objs):
