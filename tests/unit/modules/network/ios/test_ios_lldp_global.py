@@ -120,6 +120,25 @@ class TestIosLldpGlobalModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
 
+    def test_ios_lldp_global_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            lldp timer 10
+            lldp holdtime 10
+            lldp reinit 3
+            lldp run
+            """,
+        )
+        set_module_args(
+            dict(
+                config={"timer": 15, "reinit": 9},
+                state="overridden",
+            ),
+        )
+        commands = ["no lldp holdtime", "no lldp run", "lldp timer 15", "lldp reinit 9"]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
     def test_ios_lldp_global_deleted(self):
         self.execute_show_command.return_value = dedent(
             """\

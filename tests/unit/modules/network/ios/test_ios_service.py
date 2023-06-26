@@ -172,6 +172,62 @@ class TestIosServiceModule(TestIosModule):
 
         self.assertEqual(sorted(result["commands"]), sorted(deleted))
 
+    def test_ios_service_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            service call-home
+            service config
+            service counters max age 0
+            service dhcp
+            service pad
+            service password-recovery
+            service private-config-encryption
+            service prompt config
+            service slave-log
+            service timestamps log datetime msec
+            """,
+        )
+        playbook = {
+            "config": {
+                "timestamps": [
+                    {
+                        "msg": "log",
+                        "timestamp": "datetime",
+                        "datetime_options": {
+                            "localtime": True,
+                            "msec": True,
+                            "show_timezone": True,
+                            "year": True,
+                        },
+                    },
+                    {
+                        "msg": "debug",
+                        "timestamp": "datetime",
+                    },
+                ],
+                "tcp_keepalives_in": True,
+                "tcp_keepalives_out": True,
+                "password_encryption": True,
+                "counters": 5,
+            },
+        }
+        overridden = [
+            "no service call-home",
+            "no service config",
+            "no service pad",
+            "service counters max age 5",
+            "service password-encryption",
+            "service tcp-keepalives-in",
+            "service tcp-keepalives-out",
+            "service timestamps debug datetime",
+            "service timestamps log datetime msec localtime show-timezone year",
+        ]
+        playbook["state"] = "overridden"
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+
+        self.assertEqual(sorted(result["commands"]), sorted(overridden))
+
     def test_ios_service_replaced(self):
         self.execute_show_command.return_value = dedent(
             """\

@@ -110,6 +110,7 @@ class ServiceArgs(object):  # pylint: disable=R0903
             "choices": [
                 "merged",
                 "replaced",
+                "overridden",
                 "deleted",
                 "gathered",
                 "rendered",
