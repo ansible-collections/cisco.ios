@@ -5,6 +5,14 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v5.0.0
+======
+
+Major Changes
+-------------
+
+- [major] Cleanup and Deprecation of older module and attributes (https://github.com/ansible-collections/cisco.ios/pull/858)
+
 v4.6.1
 ======
 
