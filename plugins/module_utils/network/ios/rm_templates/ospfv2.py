@@ -1583,6 +1583,26 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
+            "name": "passive_interfaces.default",
+            "getval": re.compile(
+                r"""
+                \spassive-interface
+                \s(?P<default_value>default)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "passive-interface default",
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "passive_interfaces": {
+                            "default": "{{ True if default_value is defined }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
             "name": "passive_interfaces.interface",
             "getval": re.compile(
                 r"""
@@ -1601,26 +1621,6 @@ class Ospfv2Template(NetworkTemplate):
                                 "set_interface": "{{ not no }}",
                                 "name": ["{{ interface if 'default' not in interface }}"],
                             },
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "passive_interfaces.default",
-            "getval": re.compile(
-                r"""
-                \spassive-interface
-                \s(?P<default_value>default)
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "passive-interface default",
-            "result": {
-                "processes": {
-                    "{{ pid }}": {
-                        "passive_interfaces": {
-                            "default": "{{ True if default_value is defined }}",
                         },
                     },
                 },
