@@ -170,18 +170,18 @@ class Hardware(FactsBase):
 
     def parse_cpu_utilization(self, data):
         facts = {}
+        regex_cpu_utilization = re.compile(
+            r"""
+            (^Core\s(?P<core>\d+)?:)?
+            (^|\s)CPU\sutilization\sfor\sfive\sseconds:
+            (\s(?P<f_sec>\d+)?%)?
+            (\s(?P<f_se_nom>\d+)%/(?P<f_s_denom>\d+)%\)?)?
+            ;\sone\sminute:\s(?P<a_min>\d+)?%
+            ;\sfive\sminutes:\s(?P<f_min>\d+)?%
+            """,
+            re.VERBOSE,
+        )
         for line in data.split("\n"):
-            regex_cpu_utilization = re.compile(
-                r"""
-                (^Core\s(?P<core>\d+)?:)?
-                (^|\s)CPU\sutilization\sfor\sfive\sseconds:
-                (\s(?P<f_sec>\d+)?%)?
-                (\s(?P<f_se_nom>\d+)%/(?P<f_s_denom>\d+)%\)?)?
-                ;\sone\sminute:\s(?P<a_min>\d+)?%
-                ;\sfive\sminutes:\s(?P<f_min>\d+)?%
-                """,
-                re.VERBOSE,
-            )
             match_cpu_utilization = regex_cpu_utilization.match(line)
             if match_cpu_utilization:
                 _core = "core"
