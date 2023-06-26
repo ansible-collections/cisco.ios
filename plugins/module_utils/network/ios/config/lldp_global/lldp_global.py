@@ -145,8 +145,6 @@ class Lldp_global(ConfigBase):
                 msg="value of config parameter must not be empty for state {0}".format(self.state),
             )
 
-        if self.state == "overridden":
-            commands = self._state_overridden(want, have)
         elif self.state == "deleted":
             commands = self._state_deleted(want, have)
         elif self.state in ("merged", "rendered"):
