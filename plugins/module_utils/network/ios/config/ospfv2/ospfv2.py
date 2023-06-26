@@ -197,7 +197,7 @@ class Ospfv2(ResourceModule):
                 self.addcmd(entry, "area.filter_list", True)
 
     def _passive_interfaces_compare(self, want, have):
-        parsers = ["passive_interfaces.default", "passive_interfaces.set_interface"]
+        parsers = ["passive_interfaces.default", "passive_interfaces.interface"]
         h_pi = have.get("passive_interfaces", {})
         for k, v in want["passive_interfaces"].items():
             if h_pi and k in h_pi and h_pi[k] != v:

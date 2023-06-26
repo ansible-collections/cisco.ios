@@ -601,14 +601,12 @@ class Ospfv2Template(NetworkTemplate):
                 (\s(?P<area_id>\S+))?
                 \snssa
                 \stranslate\stype7
-                (\s(?P<translate_always>always))?
-                (\s(?P<translate_supress>suppress-fa))?
+                (\s(?P<translate_always>always|suppress-fa))?
                 $""",
                 re.VERBOSE,
             ),
             "setval": "area {{ area_id }} nssa"
             "{{ (' translate type7 ' + nssa.translate) if nssa.translate is defined else '' }}",
-            "compval": "nssa.translate",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -616,7 +614,7 @@ class Ospfv2Template(NetworkTemplate):
                             "{{ area_id }}": {
                                 "area_id": "{{ area_id }}",
                                 "nssa": {
-                                    "translate": "{{ translate_always if translate_always is defined else translate_supress if translate_supress is defined }}",
+                                    "translate": "{{ translate_always }}",
                                 },
                             },
                         },
@@ -677,8 +675,8 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "area {{ area_id }} sham-link {{ sham_link.source }} {{ sham_link.destination }}"
-            "{{ (' cost ' + sham_link.cost) if sham_link.cost is defined else '' }}"
-            "{{ (' ttl-security hops ' + sham_link.ttl_security) if sham_link.ttl_security is defined else '' }}",
+            "{{ (' cost ' + sham_link.cost|string) if sham_link.cost is defined else '' }}"
+            "{{ (' ttl-security hops ' + sham_link.ttl_security|string) if sham_link.ttl_security is defined else '' }}",
             "compval": "sham_link",
             "result": {
                 "processes": {
@@ -919,8 +917,8 @@ class Ospfv2Template(NetworkTemplate):
             ),
             "setval": "default-information {{ originate if originate is defined else ''}}"
             "{{ always if always is defined else '' }}"
-            "{{ ' metric ' + metric if metric is defined else '' }}"
-            "{{ ' metric-type ' + metric_type if metric_type is defined else '' }}"
+            "{{ (' metric ' + metric|string) if metric is defined else '' }}"
+            "{{ (' metric-type ' + metric_type|string) if metric_type is defined else '' }}"
             "{{ ' route-map ' + route_map if route_map is defined and metric is defined else '' }}",
             "result": {
                 "processes": {
