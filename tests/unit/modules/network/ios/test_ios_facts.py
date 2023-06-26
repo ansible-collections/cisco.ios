@@ -136,7 +136,8 @@ class TestIosFactsModule(TestIosModule):
         }
 
         self.assertEqual(
-            result["ansible_facts"]["ansible_net_filesystems_info"], net_filesystem_data
+            result["ansible_facts"]["ansible_net_filesystems_info"],
+            net_filesystem_data,
         )
         self.assertEqual(
             result["ansible_facts"]["ansible_net_cpu_utilization"],
