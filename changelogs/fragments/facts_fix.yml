@@ -1,0 +1,3 @@
+---
+trivial:
+  - "Fix and update tests for ios_facts."
