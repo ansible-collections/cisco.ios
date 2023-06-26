@@ -119,6 +119,16 @@ class TestIosFactsModule(TestIosModule):
     def test_ios_facts_filesystems_info(self):
         set_module_args(dict(gather_subset="hardware"))
         result = self.execute_module()
+        cpu_utilization_data = {
+            "core": {
+                "five_seconds_interrupt": 2,
+                "five_seconds": 3,
+                "one_minute": 1,
+                "five_minutes": 5,
+            },
+            "core_0": {"five_seconds": 4, "one_minute": 0, "five_minutes": 3},
+            "core_1": {"five_seconds": 5, "one_minute": 5, "five_minutes": 3},
+        }
         self.assertEqual(
             result["ansible_facts"]["ansible_net_filesystems_info"]["bootflash:"]["spacetotal_kb"],
             7712692.0,
@@ -126,6 +136,10 @@ class TestIosFactsModule(TestIosModule):
         self.assertEqual(
             result["ansible_facts"]["ansible_net_filesystems_info"]["bootflash:"]["spacefree_kb"],
             6453180.0,
+        )
+        self.assertEqual(
+            result["ansible_facts"]["ansible_net_cpu_utilization"],
+            cpu_utilization_data,
         )
 
     def test_ios_facts_memory_info(self):
