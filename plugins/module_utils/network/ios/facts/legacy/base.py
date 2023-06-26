@@ -130,11 +130,12 @@ class Hardware(FactsBase):
     def populate(self):
         warnings = list()
         super(Hardware, self).populate()
+
         data = self.responses[0]
         if data:
             self.facts["filesystems"] = self.parse_filesystems(data)
             self.facts["filesystems_info"] = self.parse_filesystems_info(data)
-            self.facts["cpu_utilization"] = self.parse_cpu_utilization(data)
+        self.facts["cpu_utilization"] = self.parse_cpu_utilization(self.responses[2])
 
         data = self.responses[1]
         if data:
