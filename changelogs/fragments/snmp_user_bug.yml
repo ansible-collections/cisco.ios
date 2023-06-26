@@ -1,3 +1,3 @@
 ---
 bugfixes:
-  - "Fixes error handling for snmp user when snmp agent is not enabled"
+  - "ios_snmp_server - Fixes error handling for snmp user when snmp agent is not enabled"
