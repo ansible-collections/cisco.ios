@@ -231,7 +231,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <b>ansible_net_cpu_utilization</b>
                     <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
                     <div style="font-size: small">
-                      <span style="color: purple">integer</span>
+                      <span style="color: purple">dictionary</span>
                     </div>
                 </td>
                 <td>when hardware is configured</td>
