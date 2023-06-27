@@ -184,6 +184,10 @@ ansible_net_memtotal_mb:
   description: The total memory on the remote device in Mb
   returned: when hardware is configured
   type: int
+ansible_net_cpu_utilization:
+  description: The current CPU utilization of the device
+  returned: when hardware is configured
+  type: int
 
 # config
 ansible_net_config:
