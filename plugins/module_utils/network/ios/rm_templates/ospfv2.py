@@ -31,14 +31,15 @@ def _tmplt_ospf_area_filter(config_data):
     for value in filter_list.values():
         name = value.get("name")
         direction = value.get("direction")
-        
+
         if name and direction:
             cmd = "area {area_id} filter-list prefix {name} {direction}".format(
-                area_id=config_data.get("area_id"), name=name, direction=direction
+                area_id=config_data.get("area_id"),
+                name=name,
+                direction=direction,
             )
             command.append(cmd)
     return command
-
 
 
 def _tmplt_ospf_area_nssa(config_data):
@@ -370,9 +371,11 @@ def _tmplt_ospf_ttl_security(config_data):
         if "hops" in config_data["ttl_security"]:
             command += " hops {hops}".format(**config_data["ttl_security"])
         return command
-    
+
+
 def _tmplt_ospf_area_nssa_translate(config_data):
     import q
+
     q(config_data)
 
 
@@ -542,7 +545,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_filter,
-            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -643,7 +645,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_ranges,
-            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -682,7 +683,6 @@ class Ospfv2Template(NetworkTemplate):
             "setval": "area {{ area_id }} sham-link {{ sham_link.source }} {{ sham_link.destination }}"
             "{{ (' cost ' + sham_link.cost|string) if sham_link.cost is defined else '' }}"
             "{{ (' ttl-security hops ' + sham_link.ttl_security|string) if sham_link.ttl_security is defined else '' }}",
-            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -716,7 +716,6 @@ class Ospfv2Template(NetworkTemplate):
             "setval": "area {{ area_id }} stub"
             "{{ (' no-ext-capability') if stub.no_ext_capability else ''}}"
             "{{ (' no-summary') if stub.no_summary else ''}}",
-            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -958,7 +957,6 @@ class Ospfv2Template(NetworkTemplate):
             "setval": "distance {{ admin_distance.distance }} "
             "{{ ( admin_distance.address + ' ' + admin_distance.wildcard_bits ) if admin_distance.address is defined else '' }}"
             "{{ ' ' + admin_distance.acl if admin_distance.acl is defined else '' }}",
-            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -986,7 +984,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_distance_ospf,
-            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1013,7 +1010,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_distribute_list_acls,
-            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1044,7 +1040,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_distribute_list_prefix,
-            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1072,7 +1067,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "distribute-list route-map {{ distribute_list.route_map.name }} in",
-            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1384,7 +1378,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_mpls_traffic_eng,
-            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1475,7 +1468,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_nsf_cisco,
-            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1502,7 +1494,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_nsf_ietf,
-            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1599,7 +1590,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_queue_depth_hello,
-            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1624,7 +1614,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_queue_depth_update,
-            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1703,7 +1692,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "timers lsa arrival {{ timers.lsa }}",
-            
             "result": {"processes": {"{{ pid }}": {"timers": {"lsa": "{{ lsa }}"}}}},
         },
         {
@@ -1718,7 +1706,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_timers_pacing,
-            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1746,7 +1733,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "timers throttle lsa {{ throttle.lsa.first_delay }} {{ throttle.lsa.min_delay }} {{ throttle.lsa.max_delay }}",
-            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1776,7 +1762,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "timers throttle spf {{ throttle.spf.receive_delay }} {{ throttle.spf.between_delay }} {{ throttle.spf.max_delay }}",
-            
             "result": {
                 "processes": {
                     "{{ pid }}": {

@@ -268,7 +268,6 @@ class Ospfv2(ResourceModule):
             if passive_interfaces.get("name"):
                 passive_interfaces["name"] = {entry: entry for entry in passive_interfaces["name"]}
 
-
     def _handle_deprecated(self, config):
         if config.get("passive_interface"):
             passive_interfaces = config.get("passive_interfaces", {})
