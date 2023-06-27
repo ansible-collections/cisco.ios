@@ -187,7 +187,7 @@ ansible_net_memtotal_mb:
 ansible_net_cpu_utilization:
   description: The current CPU utilization of the device
   returned: when hardware is configured
-  type: int
+  type: dict
 
 # config
 ansible_net_config:
