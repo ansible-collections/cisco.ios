@@ -51,14 +51,10 @@ class Ospfv2(ResourceModule):
             "capability.opaque",
             "capability.transit",
             "capability.vrf_lite",
-            "compatible.rfc1583",
-            "compatible.rfc1587",
-            "compatible.rfc5243",
+            "compatible",
             "default_information",
             "default_metric",
             "discard_route",
-            "discard_route.external",
-            "discard_route.internal",
             "distance.admin_distance",
             "distance.ospf",
             "distribute_list.acls",
@@ -118,10 +114,12 @@ class Ospfv2(ResourceModule):
 
         if self.want:
             for entry in self.want.get("processes", []):
+                entry = self._handle_deprecated(entry)
                 wantd.update({(entry["process_id"], entry.get("vrf")): entry})
 
         if self.have:
             for entry in self.have.get("processes", []):
+                entry = self._handle_deprecated(entry)
                 haved.update({(entry["process_id"], entry.get("vrf")): entry})
 
         # turn all lists of dicts into dicts prior to merge
@@ -148,7 +146,6 @@ class Ospfv2(ResourceModule):
             for k, have in iteritems(haved):
                 if k not in wantd:
                     self.addcmd(have, "pid", True)
-
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
 
@@ -170,14 +167,14 @@ class Ospfv2(ResourceModule):
 
     def _area_compare(self, want, have):
         parsers = [
-            "area.authentication",
-            "area.capability",
-            "area.default_cost",
-            "area.nssa",
-            "area.nssa.translate",
-            "area.ranges",
-            "area.sham_link",
-            "area.stub",
+            "authentication",
+            "capability",
+            "default_cost",
+            "nssa",
+            "nssa.translate",
+            "ranges",
+            "sham_link",
+            "stub",
         ]
         self.compare(parsers=parsers, want=want, have=have)
         self._area_compare_filters(want, have)
@@ -190,11 +187,11 @@ class Ospfv2(ResourceModule):
                     "area_id": wantd["area_id"],
                     "filter_list": list(set(entry) ^ set(h_item)) if h_item else entry,
                 }
-                self.addcmd(filter_list_entry, "area.filter_list", False)
+                self.addcmd(filter_list_entry, "filter_list", False)
 
         for name, entry in iteritems(haved):
             if name == "filter_list":
-                self.addcmd(entry, "area.filter_list", True)
+                self.addcmd(entry, "filter_list", True)
 
     def _passive_interfaces_compare(self, want, have):
         parsers = ["passive_interfaces.default", "passive_interfaces.interface"]
@@ -270,3 +267,16 @@ class Ospfv2(ResourceModule):
             passive_interfaces = proc.get("passive_interfaces", {}).get("interface", {})
             if passive_interfaces.get("name"):
                 passive_interfaces["name"] = {entry: entry for entry in passive_interfaces["name"]}
+
+
+    def _handle_deprecated(self, config):
+        if config.get("passive_interface"):
+            passive_interfaces = config.get("passive_interfaces", {})
+            interface = passive_interfaces.get("interface", {})
+            name_list = interface.get("name", [])
+            if not name_list:
+                name_list.append(config["passive_interface"])
+            else:
+                name_list.extend(config["passive_interface"])
+            del config["passive_interface"]
+        return config

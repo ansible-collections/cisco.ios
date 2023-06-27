@@ -214,31 +214,37 @@ class TestIosOspfV2Module(TestIosModule):
     def test_ios_ospfv2_overridden_idempotent(self):
         set_module_args(
             dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="200",
-                            auto_cost=dict(reference_bandwidth="4"),
-                            distribute_list=dict(
-                                acls=[
-                                    dict(direction="out", name="10"),
-                                    dict(direction="in", name="123"),
+                config={
+                    "processes": [
+                        {
+                            "process_id": 200,
+                            "vrf": "blue",
+                            "auto_cost": {"reference_bandwidth": "4"},
+                            "distribute_list": { 
+                                "acls": [
+                                    {
+                                        "direction": "out",
+                                        "name": "10",
+                                    },
+                                    {
+                                        "direction": "in",
+                                        "name": "123",
+                                    }
                                 ],
-                            ),
-                            domain_id=dict(ip_address=dict(address="192.0.3.1")),
-                            max_metric=dict(on_startup=dict(time=100), router_lsa=True),
-                            areas=[dict(area_id="10", capability=True)],
-                            passive_interfaces=dict(
-                                default=True,
-                                interface=dict(
-                                    set_interface=False,
-                                    name=["GigabitEthernet0/1", "GigabitEthernet0/2"],
-                                ),
-                            ),
-                            vrf="blue",
-                        ),
-                    ],
-                ),
+                             },
+                            "domain_id": {"ip_address": {"address": "192.0.3.1"}},
+                            "max_metric": {"on_startup": {"time": 100}, "router_lsa": True},
+                            "areas": [{"area_id": "10", "capability": True}],
+                            "passive_interfaces": {
+                                "default": True,
+                                "interface": {
+                                    "set_interface": False,
+                                    "name": ["GigabitEthernet0/1", "GigabitEthernet0/2"],
+                                },
+                            },
+                        }
+                    ]
+                },
                 state="overridden",
             ),
         )
@@ -319,14 +325,14 @@ class TestIosOspfV2Module(TestIosModule):
                             "bfd": True,
                             "capability": {
                                 "lls": True,
-                                "opaque": True,
-                                "transit": True,
-                                "vrf_lite": True,
+                                "opaque": False,
+                                "transit": False,
+                                "vrf_lite": False,
                             },
                             "compatible": {
                                 "rfc1583": True,
-                                "rfc1587": True,
-                                "rfc5243": True,
+                                "rfc1587": False,
+                                "rfc5243": False,
                             },
                             "default_information": {
                                 "always": True,
@@ -517,7 +523,7 @@ class TestIosOspfV2Module(TestIosModule):
         commands = [
             "no router ospf 200 vrf blue",
             "router ospf 1 vrf vrf1",
-            "adjacency stagger  none 2",
+            "adjacency stagger none 10",
             "address-family ipv4 multicast",
             "topology base",
             "exit-address-family",
@@ -528,6 +534,7 @@ class TestIosOspfV2Module(TestIosModule):
             "default-information originate always metric 25 metric-type 26 route-map rmap1",
             "default-metric 50",
             "discard-route external 5 internal 2",
+            'distance ospf inter-area 2 intra-area 3 external 1',
             "domain-id 192.168.1.0 True",
             "domain-tag 54",
             "event-log one-shot pause size 10",
@@ -541,10 +548,16 @@ class TestIosOspfV2Module(TestIosModule):
             "max-lsa 10 10 ignore-count 10 ignore-time 10 reset-time 10 warning-only",
             "max-metric router-lsa external-lsa 10 include-stub on-startup 110 summary-lsa 20",
             "maximum-paths 15",
+            "mpls ldp autoconfig area area1",
+            'mpls traffic-eng area area12',
             "neighbor 172.16.1.0 cost 2 database-filter all out poll-interval 20 priority 10",
             "network 198.51.100.0 0.0.0.255 area 5",
+            'nsf cisco helper disable', 
+            'nsf ietf helper disable',
             "prefix-suppression",
             "priority 10",
+            'queue-depth hello 10',
+            'queue-depth update 30',
             "router-id router1",
             "shutdown",
             "summary-address 172.16.1.0 0.0.0.255 not-advertise",
@@ -565,6 +578,8 @@ class TestIosOspfV2Module(TestIosModule):
             "no passive-interface GigabitEthernet0/1",
             "no passive-interface GigabitEthernet0/2",
         ]
+        
+
         result = self.execute_module(changed=True)
         self.assertEqual(commands, result["commands"])
 
@@ -670,14 +685,14 @@ class TestIosOspfV2Module(TestIosModule):
                             "bfd": True,
                             "capability": {
                                 "lls": True,
-                                "opaque": True,
-                                "transit": True,
-                                "vrf_lite": True,
+                                "opaque": False,
+                                "transit": False,
+                                "vrf_lite": False,
                             },
                             "compatible": {
                                 "rfc1583": True,
-                                "rfc1587": True,
-                                "rfc5243": True,
+                                "rfc1587": False,
+                                "rfc5243": False,
                             },
                             "default_information": {
                                 "always": True,
@@ -805,7 +820,6 @@ class TestIosOspfV2Module(TestIosModule):
                                     "strict_lsa_checking": True,
                                 },
                             },
-                            # "passive_interface": "GigabitEthernet0/1",
                             "passive_interfaces": {
                                 "default": True,
                                 "interface": {
@@ -866,7 +880,7 @@ class TestIosOspfV2Module(TestIosModule):
         )
         commands = [
             "address-family ipv4 multicast",
-            "adjacency stagger  none 2",
+            "adjacency stagger none 10",
             "area 10 authentication message-digest",
             "area 10 capability default-exclusion",
             "area 10 default-cost 10",
@@ -885,6 +899,7 @@ class TestIosOspfV2Module(TestIosModule):
             "default-information originate always metric 25 metric-type 26 route-map rmap1",
             "default-metric 50",
             "discard-route external 5 internal 2",
+            "distance ospf inter-area 2 intra-area 3 external 1",
             "domain-id 192.168.1.0 True",
             "domain-tag 54",
             "event-log one-shot pause size 10",
@@ -899,13 +914,19 @@ class TestIosOspfV2Module(TestIosModule):
             "max-lsa 10 10 ignore-count 10 ignore-time 10 reset-time 10 warning-only",
             "max-metric router-lsa external-lsa 10 include-stub on-startup 110 summary-lsa 20",
             "maximum-paths 15",
+            "mpls ldp autoconfig area area1",
+            'mpls traffic-eng area area12',
             "neighbor 172.16.1.0 cost 2 database-filter all out poll-interval 20 priority 10",
             "network 198.51.100.0 0.0.0.255 area 5",
             "no passive-interface GigabitEthernet0/1",
             "no passive-interface GigabitEthernet0/2",
+            "nsf cisco helper disable",
+            "nsf ietf helper disable",
             "passive-interface default",
             "prefix-suppression",
             "priority 10",
+            'queue-depth hello 10',
+            'queue-depth update 30',
             "router ospf 1 vrf vrf1",
             "router-id router1",
             "shutdown",

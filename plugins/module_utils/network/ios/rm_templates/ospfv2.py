@@ -26,36 +26,41 @@ def _tmplt_ospf_address_family_cmd(config_data):
 
 
 def _tmplt_ospf_area_filter(config_data):
-    if "filter_list" in config_data:
-        command = []
-        for key, value in iteritems(config_data.get("filter_list")):
-            cmd = "area {area_id}".format(**config_data)
-            if value.get("name") and value.get("direction"):
-                cmd += " filter-list prefix {name} {direction}".format(**value)
+    filter_list = config_data.get("filter_list", {})
+    command = []
+    for value in filter_list.values():
+        name = value.get("name")
+        direction = value.get("direction")
+        
+        if name and direction:
+            cmd = "area {area_id} filter-list prefix {name} {direction}".format(
+                area_id=config_data.get("area_id"), name=name, direction=direction
+            )
             command.append(cmd)
-        return command
+    return command
+
 
 
 def _tmplt_ospf_area_nssa(config_data):
     if "nssa" in config_data:
+        nssa_data = config_data["nssa"]
         command = "area {area_id} nssa".format(**config_data)
-        if "default_information_originate" in config_data["nssa"]:
+        if "default_information_originate" in nssa_data:
+            default_info = nssa_data["default_information_originate"]
             command += " default-information-originate"
-            if "metric" in config_data["nssa"]["default_information_originate"]:
-                command += " metric {metric}".format(
-                    **config_data["nssa"]["default_information_originate"]
-                )
-            if "metric_type" in config_data["nssa"]["default_information_originate"]:
-                command += " metric-type {metric_type}".format(
-                    **config_data["nssa"]["default_information_originate"]
-                )
-            if "nssa_only" in config_data["nssa"]["default_information_originate"]:
+            metric = default_info.get("metric")
+            if metric is not None:
+                command += " metric {metric}".format(metric=metric)
+            metric_type = default_info.get("metric_type")
+            if metric_type is not None:
+                command += " metric-type {metric_type}".format(metric_type=metric_type)
+            if default_info.get("nssa_only"):
                 command += " nssa-only"
-        if config_data["nssa"].get("no_ext_capability"):
+        if nssa_data.get("no_ext_capability"):
             command += " no-ext-capability"
-        if config_data["nssa"].get("no_redistribution"):
+        if nssa_data.get("no_redistribution"):
             command += " no-redistribution"
-        if config_data["nssa"].get("no_summary"):
+        if nssa_data.get("no_summary"):
             command += " no-summary"
         return command
 
@@ -365,6 +370,10 @@ def _tmplt_ospf_ttl_security(config_data):
         if "hops" in config_data["ttl_security"]:
             command += " hops {hops}".format(**config_data["ttl_security"])
         return command
+    
+def _tmplt_ospf_area_nssa_translate(config_data):
+    import q
+    q(config_data)
 
 
 class Ospfv2Template(NetworkTemplate):
@@ -402,7 +411,7 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "adjacency stagger {{ 'none' if none else min_adjacency }} {{ max_adjacency }}",
+            "setval": "adjacency stagger {{ 'none' if adjacency.none else adjacency.min_adjacency }} {{ adjacency.max_adjacency }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -442,7 +451,7 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
-            "name": "area.authentication",
+            "name": "authentication",
             "getval": re.compile(
                 r"""
                 \sarea
@@ -453,8 +462,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "area {{ area_id }} authentication"
-            "{{ 'message-digest' if authentication.message_digest else '' }}",
-            "compval": "authentication",
+            "{{ ' message-digest' if authentication.message_digest else '' }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -472,7 +480,7 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
-            "name": "area.capability",
+            "name": "capability",
             "getval": re.compile(
                 r"""
                 \sarea
@@ -483,7 +491,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "area {{ area_id }} capability default-exclusion",
-            "compval": "capability",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -498,7 +505,7 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
-            "name": "area.default_cost",
+            "name": "default_cost",
             "getval": re.compile(
                 r"""
                 \sarea
@@ -509,7 +516,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "area {{ area_id }} default-cost {{ default_cost }}",
-            "compval": "default_cost",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -524,7 +530,7 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
-            "name": "area.filter_list",
+            "name": "filter_list",
             "getval": re.compile(
                 r"""
                 \s+area
@@ -536,7 +542,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_filter,
-            "compval": "filter_list",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -551,7 +557,7 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
-            "name": "area.nssa",
+            "name": "nssa",
             "getval": re.compile(
                 r"""
                 \sarea
@@ -568,7 +574,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_nssa,
-            "compval": "nssa",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -594,7 +599,7 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
-            "name": "area.nssa.translate",
+            "name": "nssa.translate",
             "getval": re.compile(
                 r"""
                 \sarea
@@ -605,8 +610,8 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "area {{ area_id }} nssa"
-            "{{ (' translate type7 ' + nssa.translate) if nssa.translate is defined else '' }}",
+            "setval": "area {{ area_id }} nssa "
+            "translate type7 {{ nssa.translate if nssa.translate is defined }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -623,7 +628,7 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
-            "name": "area.ranges",
+            "name": "ranges",
             "getval": re.compile(
                 r"""
                 \sarea
@@ -638,7 +643,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_ranges,
-            "compval": "ranges",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -661,7 +666,7 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
-            "name": "area.sham_link",
+            "name": "sham_link",
             "getval": re.compile(
                 r"""
                 \sarea
@@ -677,7 +682,7 @@ class Ospfv2Template(NetworkTemplate):
             "setval": "area {{ area_id }} sham-link {{ sham_link.source }} {{ sham_link.destination }}"
             "{{ (' cost ' + sham_link.cost|string) if sham_link.cost is defined else '' }}"
             "{{ (' ttl-security hops ' + sham_link.ttl_security|string) if sham_link.ttl_security is defined else '' }}",
-            "compval": "sham_link",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -697,7 +702,7 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
-            "name": "area.stub",
+            "name": "stub",
             "getval": re.compile(
                 r"""
                 \sarea
@@ -709,9 +714,9 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "area {{ area_id }} stub"
-            "{{ (' no-ext-capability') if no_ext_capability is defined else ''}}"
-            "{{ (' no-summary') if no_summary is defined else ''}}",
-            "compval": "stub",
+            "{{ (' no-ext-capability') if stub.no_ext_capability else ''}}"
+            "{{ (' no-summary') if stub.no_summary else ''}}",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -733,17 +738,18 @@ class Ospfv2Template(NetworkTemplate):
             "name": "auto_cost",
             "getval": re.compile(
                 r"""
-                (\s(?P<auto_cost>auto-cost))?
+                (\s(?P<auto_cost>auto-cost))
                 (\sreference-bandwidth\s(?P<ref_band>\d+))?
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "auto-cost {{ reference_bandwidth if reference_bandwidth is defined else '' }}",
+            "setval": "auto-cost"
+            "{{ ' reference-bandwidth ' + auto_cost.reference_bandwidth|string if auto_cost.reference_bandwidth is defined }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
                         "auto_cost": {
-                            "set": "{{ True if auto_cost is defined and ref_band is undefined }}",
+                            "set": "{{ True }}",
                             "reference_bandwidth": "{{ ref_band }}",
                         },
                     },
@@ -843,60 +849,25 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
-            "name": "compatible.rfc1583",
+            "name": "compatible",
             "getval": re.compile(
                 r"""
                 \scompatible
-                (\s(?P<rfc1583>rfc1583))
+                (\s(?P<rfc>rfc1583|rfc1587|rfc5243))?
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "compatible rfc1583",
+            "setval": "compatible"
+            "{{ (' rfc1583') if compatible.rfc1583 else ''}}"
+            "{{ (' rfc1587') if compatible.rfc1587 else ''}}"
+            "{{ (' rfc5243') if compatible.rfc5243 else ''}}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
                         "compatible": {
-                            "rfc1583": "{{ True }}",
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "compatible.rfc1587",
-            "getval": re.compile(
-                r"""
-                \scompatible
-                (\s(?P<rfc1587>rfc1587))
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "compatible rfc1587",
-            "result": {
-                "processes": {
-                    "{{ pid }}": {
-                        "compatible": {
-                            "rfc1587": "{{ True }}",
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "compatible.rfc5243",
-            "getval": re.compile(
-                r"""
-                \scompatible
-                (\s(?P<rfc5243>rfc5243))
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "compatible rfc5243",
-            "result": {
-                "processes": {
-                    "{{ pid }}": {
-                        "compatible": {
-                            "rfc5243": "{{ True }}",
+                            "rfc1583": "{{ True if 'rfc1583' in rfc else False }}",
+                            "rfc1587": "{{ True if 'rfc1587' in rfc else False }}",
+                            "rfc5243": "{{ True if 'rfc5243' in rfc else False }}",
                         },
                     },
                 },
@@ -915,11 +886,12 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "default-information {{ originate if originate is defined else ''}}"
-            "{{ always if always is defined else '' }}"
-            "{{ (' metric ' + metric|string) if metric is defined else '' }}"
-            "{{ (' metric-type ' + metric_type|string) if metric_type is defined else '' }}"
-            "{{ ' route-map ' + route_map if route_map is defined and metric is defined else '' }}",
+            "setval": "default-information"
+            "{{ ' originate' if default_information.originate is defined else ''}}"
+            "{{ ' always' if default_information.always is defined else '' }}"
+            "{{ (' metric ' + default_information.metric|string) if default_information.metric is defined else '' }}"
+            "{{ (' metric-type ' + default_information.metric_type|string) if default_information.metric_type is defined else '' }}"
+            "{{ ' route-map ' + default_information.route_map if default_information.route_map is defined and default_information.metric is defined else '' }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -943,63 +915,29 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "default-metric {{ default_metric }}",
-            "result": {"processes": {"{{ pid }}": {"default_metric": "{{ default_metric|int }}"}}},
+            "setval": "default-metric {{ default_metric|string }}",
+            "result": {"processes": {"{{ pid }}": {"default_metric": "{{ default_metric }}"}}},
         },
         {
             "name": "discard_route",
             "getval": re.compile(
                 r"""
                 (\s(?P<discard_route>discard-route))
+                (\sexternal\s(?P<external>\d+))?
+                (\sinternal\s(?P<internal>\d+))?
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "discard-route",
+            "setval": "discard-route"
+            "{{ ' external ' + discard_route.external|string if discard_route.external is defined else '' }}"
+            "{{ ' internal ' + discard_route.internal|string if discard_route.internal is defined else '' }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
                         "discard_route": {
                             "set": "{{ True }}",
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "discard_route.external",
-            "getval": re.compile(
-                r"""
-                (\s(?P<discard_route>discard-route))
-                (\sexternal\s(?P<external>\d+))
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "discard-route external {{ external }}",
-            "result": {
-                "processes": {
-                    "{{ pid }}": {
-                        "discard_route": {
-                            "external": "{{ external|int }}",
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "discard_route.internal",
-            "getval": re.compile(
-                r"""
-                (\s(?P<discard_route>discard-route))
-                (\sinternal\s(?P<internal>\d+))
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "discard-route internal {{ internal }}",
-            "result": {
-                "processes": {
-                    "{{ pid }}": {
-                        "discard_route": {
-                            "internal": "{{ internal|int }}",
+                            "external": "{{ external }}",
+                            "internal": "{{ internal }}",
                         },
                     },
                 },
@@ -1017,10 +955,10 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "distance {{ distance }} "
-            "{{ ( address + ' ' + wildcard_bits ) if address is defined else '' }}"
-            "{{ ' ' + acl if acl is defined else '' }}",
-            "compval": "admin_distance",
+            "setval": "distance {{ admin_distance.distance }} "
+            "{{ ( admin_distance.address + ' ' + admin_distance.wildcard_bits ) if admin_distance.address is defined else '' }}"
+            "{{ ' ' + admin_distance.acl if admin_distance.acl is defined else '' }}",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1048,7 +986,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_distance_ospf,
-            "compval": "ospf",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1075,7 +1013,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_distribute_list_acls,
-            "compval": "distribute_list.acls",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1106,7 +1044,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_distribute_list_prefix,
-            "compval": "distribute_list.prefix",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1134,7 +1072,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "distribute-list route-map {{ distribute_list.route_map.name }} in",
-            "compval": "distribute_list.route_map",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1415,7 +1353,6 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_mpls_ldp,
-            "compval": "ldp",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1447,7 +1384,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_mpls_traffic_eng,
-            "compval": "traffic_eng",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1538,7 +1475,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_nsf_cisco,
-            "compval": "cisco",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1565,7 +1502,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_nsf_ietf,
-            "compval": "ietf",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1662,7 +1599,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_queue_depth_hello,
-            "compval": "hello",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1687,7 +1624,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_queue_depth_update,
-            "compval": "update",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1766,7 +1703,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "timers lsa arrival {{ timers.lsa }}",
-            "compval": "lsa",
+            
             "result": {"processes": {"{{ pid }}": {"timers": {"lsa": "{{ lsa }}"}}}},
         },
         {
@@ -1781,7 +1718,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_timers_pacing,
-            "compval": "pacing",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1809,7 +1746,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "timers throttle lsa {{ throttle.lsa.first_delay }} {{ throttle.lsa.min_delay }} {{ throttle.lsa.max_delay }}",
-            "compval": "throttle.lsa",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1839,7 +1776,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "timers throttle spf {{ throttle.spf.receive_delay }} {{ throttle.spf.between_delay }} {{ throttle.spf.max_delay }}",
-            "compval": "throttle.spf",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
