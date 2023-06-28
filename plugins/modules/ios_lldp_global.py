@@ -124,6 +124,7 @@ options:
   state:
     description:
       - The state the configuration should be left in
+      - The module have declaratively similar behavior for replaced and overridden state.
       - The states I(rendered), I(gathered) and I(parsed) does not perform any change
         on the device.
       - The state I(rendered) will transform the configuration in C(config) option to
@@ -143,6 +144,7 @@ options:
     choices:
       - merged
       - replaced
+      - overridden
       - deleted
       - rendered
       - gathered
@@ -337,6 +339,7 @@ def main():
     required_if = [
         ("state", "merged", ("config",)),
         ("state", "replaced", ("config",)),
+        ("state", "overridden", ("config",)),
         ("state", "rendered", ("config",)),
         ("state", "parsed", ("running_config",)),
     ]

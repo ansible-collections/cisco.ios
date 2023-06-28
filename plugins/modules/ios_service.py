@@ -210,6 +210,7 @@ options:
     choices:
       - merged
       - replaced
+      - overridden
       - deleted
       - gathered
       - rendered
@@ -217,6 +218,7 @@ options:
     default: merged
     description:
       - The state the configuration should be left in.
+      - The module have declaratively similar behavior for replaced and overridden state.
       - Refer to examples for more details.
     type: str
 """
@@ -434,7 +436,7 @@ EXAMPLES = """
 # service dhcp
 # service password-recovery
 
-- name: "Delete service configuration and restore default configuration for some importants service (those with a default value in module)"
+- name: "Delete service configuration and restore default configuration for some important service (those with a default value in module)"
   cisco.ios.ios_service:
     state: deleted
 
@@ -676,6 +678,7 @@ def main():
         required_if=[
             ["state", "merged", ["config"]],
             ["state", "replaced", ["config"]],
+            ["state", "overridden", ["config"]],
             ["state", "rendered", ["config"]],
             ["state", "parsed", ["running_config"]],
         ],

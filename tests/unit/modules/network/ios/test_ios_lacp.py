@@ -111,6 +111,22 @@ class TestIosLacpModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
 
+    def test_ios_lacp_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            123, 5e00.0000.8000
+            """,
+        )
+        set_module_args(
+            dict(
+                config={"system": {"priority": 12300}},
+                state="overridden",
+            ),
+        )
+        commands = ["lacp system-priority 12300"]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
     def test_ios_lacp_deleted(self):
         self.execute_show_command.return_value = dedent(
             """\

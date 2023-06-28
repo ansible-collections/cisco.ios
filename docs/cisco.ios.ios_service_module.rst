@@ -1015,6 +1015,7 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li><div style="color: blue"><b>merged</b>&nbsp;&larr;</div></li>
                                     <li>replaced</li>
+                                    <li>overridden</li>
                                     <li>deleted</li>
                                     <li>gathered</li>
                                     <li>rendered</li>
@@ -1023,6 +1024,7 @@ Parameters
                 </td>
                 <td>
                         <div>The state the configuration should be left in.</div>
+                        <div>The module have declaratively similar behavior for replaced and overridden state.</div>
                         <div>Refer to examples for more details.</div>
                 </td>
             </tr>
@@ -1256,7 +1258,7 @@ Examples
     # service dhcp
     # service password-recovery
 
-    - name: "Delete service configuration and restore default configuration for some importants service (those with a default value in module)"
+    - name: "Delete service configuration and restore default configuration for some important service (those with a default value in module)"
       cisco.ios.ios_service:
         state: deleted
 
