@@ -31,15 +31,14 @@ def _tmplt_ospf_area_filter(config_data):
     for value in filter_list.values():
         name = value.get("name")
         direction = value.get("direction")
-
+        
         if name and direction:
             cmd = "area {area_id} filter-list prefix {name} {direction}".format(
-                area_id=config_data.get("area_id"),
-                name=name,
-                direction=direction,
+                area_id=config_data.get("area_id"), name=name, direction=direction
             )
             command.append(cmd)
     return command
+
 
 
 def _tmplt_ospf_area_nssa(config_data):
@@ -83,18 +82,6 @@ def _tmplt_ospf_area_ranges(config_data):
         return commands
 
 
-def _tmplt_ospf_distance_ospf(config_data):
-    if "ospf" in config_data["distance"]:
-        command = "distance ospf"
-        if "inter_area" in config_data["distance"]["ospf"]:
-            command += " inter-area {inter_area}".format(**config_data["distance"]["ospf"])
-        if config_data["distance"].get("ospf").get("intra_area"):
-            command += " intra-area {intra_area}".format(**config_data["distance"]["ospf"])
-        if config_data["distance"].get("ospf").get("external"):
-            command += " external {external}".format(**config_data["distance"]["ospf"])
-        return command
-
-
 def _tmplt_ospf_distribute_list_acls(config_data):
     if "acls" in config_data.get("distribute_list"):
         command = []
@@ -105,20 +92,6 @@ def _tmplt_ospf_distribute_list_acls(config_data):
             if "protocol" in v:
                 cmd += " {protocol}".format(**v)
             command.append(cmd)
-        return command
-
-
-def _tmplt_ospf_distribute_list_prefix(config_data):
-    if "prefix" in config_data.get("distribute_list"):
-        command = "distribute-list prefix {name}".format(**config_data["distribute_list"]["prefix"])
-        if "gateway_name" in config_data["distribute_list"]["prefix"]:
-            command += " gateway {gateway_name}".format(**config_data["distribute_list"]["prefix"])
-        if "direction" in config_data["distribute_list"]["prefix"]:
-            command += " {direction}".format(**config_data["distribute_list"]["prefix"])
-        if "interface" in config_data["distribute_list"]["prefix"]:
-            command += " {interface}".format(**config_data["distribute_list"]["prefix"])
-        if "protocol" in config_data["distribute_list"]["prefix"]:
-            command += " {protocol}".format(**config_data["distribute_list"]["prefix"])
         return command
 
 
@@ -135,18 +108,6 @@ def _tmplt_ospf_domain_id(config_data):
         return command
 
 
-def _tmplt_ospf_event_log(config_data):
-    if "event_log" in config_data:
-        command = "event-log"
-        if "one_shot" in config_data["event_log"]:
-            command += " one-shot"
-        if "pause" in config_data["event_log"]:
-            command += " pause"
-        if "size" in config_data["event_log"]:
-            command += " size {size}".format(**config_data["event_log"])
-        return command
-
-
 def _tmplt_ospf_limit(config_data):
     if "limit" in config_data:
         command = "limit retransmissions"
@@ -160,42 +121,6 @@ def _tmplt_ospf_limit(config_data):
                 command += " non-dc {number}".format(**config_data["limit"]["non_dc"])
             if "disable" in config_data["limit"]["dc"]:
                 command += " non-dc disable"
-        return command
-
-
-def _tmplt_ospf_vrf_local_rib_criteria(config_data):
-    if "local_rib_criteria" in config_data:
-        command = "local-rib-criteria"
-        if "forwarding_address" in config_data["local_rib_criteria"]:
-            command += " forwarding-address"
-        if "inter_area_summary" in config_data["local_rib_criteria"]:
-            command += " inter-area-summary"
-        if "nssa_translation" in config_data["local_rib_criteria"]:
-            command += " nssa-translation"
-        return command
-
-
-def _tmplt_ospf_log_adjacency_changes(config_data):
-    if "log_adjacency_changes" in config_data:
-        command = "log-adjacency-changes"
-        if "detail" in config_data["log_adjacency_changes"]:
-            command += " detail"
-        return command
-
-
-def _tmplt_ospf_max_lsa(config_data):
-    if "max_lsa" in config_data:
-        command = "max-lsa {number}".format(**config_data["max_lsa"])
-        if "threshold_value" in config_data["max_lsa"]:
-            command += " {threshold_value}".format(**config_data["max_lsa"])
-        if "ignore_count" in config_data["max_lsa"]:
-            command += " ignore-count {ignore_count}".format(**config_data["max_lsa"])
-        if "ignore_time" in config_data["max_lsa"]:
-            command += " ignore-time {ignore_time}".format(**config_data["max_lsa"])
-        if "reset_time" in config_data["max_lsa"]:
-            command += " reset-time {reset_time}".format(**config_data["max_lsa"])
-        if "warning_only" in config_data["max_lsa"]:
-            command += " warning-only"
         return command
 
 
@@ -289,14 +214,6 @@ def _tmplt_ospf_network(config_data):
         return command
 
 
-def _tmplt_ospf_nsf_cisco(config_data):
-    if "cisco" in config_data["nsf"]:
-        command = "nsf cisco helper"
-        if "disable" in config_data["nsf"]["cisco"]:
-            command += " disable"
-        return command
-
-
 def _tmplt_ospf_nsf_ietf(config_data):
     if "ietf" in config_data["nsf"]:
         command = "nsf ietf helper"
@@ -363,21 +280,7 @@ def _tmplt_ospf_timers_pacing(config_data):
         elif "retransmission" in config_data["timers"]["pacing"]:
             command += " retransmission {retransmission}".format(**config_data["timers"]["pacing"])
         return command
-
-
-def _tmplt_ospf_ttl_security(config_data):
-    if "ttl_security" in config_data:
-        command = "ttl-security all-interfaces"
-        if "hops" in config_data["ttl_security"]:
-            command += " hops {hops}".format(**config_data["ttl_security"])
-        return command
-
-
-def _tmplt_ospf_area_nssa_translate(config_data):
-    import q
-
-    q(config_data)
-
+   
 
 class Ospfv2Template(NetworkTemplate):
     def __init__(self, lines=None):
@@ -545,6 +448,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_filter,
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -645,6 +549,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_area_ranges,
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -683,6 +588,7 @@ class Ospfv2Template(NetworkTemplate):
             "setval": "area {{ area_id }} sham-link {{ sham_link.source }} {{ sham_link.destination }}"
             "{{ (' cost ' + sham_link.cost|string) if sham_link.cost is defined else '' }}"
             "{{ (' ttl-security hops ' + sham_link.ttl_security|string) if sham_link.ttl_security is defined else '' }}",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -716,6 +622,7 @@ class Ospfv2Template(NetworkTemplate):
             "setval": "area {{ area_id }} stub"
             "{{ (' no-ext-capability') if stub.no_ext_capability else ''}}"
             "{{ (' no-summary') if stub.no_summary else ''}}",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -957,6 +864,7 @@ class Ospfv2Template(NetworkTemplate):
             "setval": "distance {{ admin_distance.distance }} "
             "{{ ( admin_distance.address + ' ' + admin_distance.wildcard_bits ) if admin_distance.address is defined else '' }}"
             "{{ ' ' + admin_distance.acl if admin_distance.acl is defined else '' }}",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -983,7 +891,10 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_distance_ospf,
+            "setval": "distance ospf"
+            "{{ ' inter-area ' + distance.ospf.inter_area|string if distance.ospf.inter_area is defined else '' }}"
+            "{{ ' intra-area ' + distance.ospf.intra_area|string if distance.ospf.intra_area is defined else '' }}"
+            "{{ ' external ' + distance.ospf.external|string if distance.ospf.external is defined else '' }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1010,6 +921,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_distribute_list_acls,
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1039,7 +951,11 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_distribute_list_prefix,
+            "setval": "distribute-list prefix {{ distribute_list.prefix.name }}"
+            "{{ ' gateway ' + distribute_list.prefix.gateway_name if distribute_list.prefix.gateway_name is defined else '' }}"
+            "{{ ' ' + distribute_list.prefix.direction if distribute_list.prefix.direction is defined else '' }}"
+            "{{ ' ' + distribute_list.prefix.interface if distribute_list.prefix.interface is defined else '' }}"
+            "{{ ' ' + distribute_list.prefix.protocol if distribute_list.prefix.protocol is defined else '' }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1067,6 +983,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "distribute-list route-map {{ distribute_list.route_map.name }} in",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1124,7 +1041,10 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_event_log,
+            "setval": "event-log"
+            "{{ ' one-shot' if event_log.one_shot else '' }}"
+            "{{ ' pause' if event_log.pause else '' }}"
+            "{{ ' size ' + event_log.size|string if event_log.size is defined else '' }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1132,7 +1052,7 @@ class Ospfv2Template(NetworkTemplate):
                             "enable": "{{ True if event_log is defined and one_shot is undefined and pause is undefined and size is undefined }}",
                             "one_shot": "{{ True if one_shot is defined }}",
                             "pause": "{{ True if pause is defined }}",
-                            "size": "{{ size|int }}",
+                            "size": "{{ size }}",
                         },
                     },
                 },
@@ -1227,7 +1147,10 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_vrf_local_rib_criteria,
+            "setval": "local-rib-criteria"
+            "{{ ' forwarding-address' if local_rib_criteria.forwarding_address else '' }}"
+            "{{ ' inter-area-summary' if local_rib_criteria.inter_area_summary else '' }}"
+            "{{ ' nssa-translation' if local_rib_criteria.nssa_translation else '' }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1250,7 +1173,8 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_log_adjacency_changes,
+            "setval": "log-adjacency-changes"
+            "{{ ' detail' if log_adjacency_changes.detail else '' }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1275,7 +1199,12 @@ class Ospfv2Template(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_max_lsa,
+            "setval": "max-lsa {{ max_lsa.number|string }}"
+            "{{ ' ' + max_lsa.threshold_value|string if max_lsa.threshold_value is defined else '' }}"
+            "{{ ' warning-only' if max_lsa.warning_only else '' }}"
+            "{{ ' ignore-count ' + max_lsa.ignore_count|string if max_lsa.ignore_count is defined and not max_lsa.warning_only else '' }}"
+            "{{ ' ignore-time ' + max_lsa.ignore_time|string if max_lsa.ignore_time is defined and not max_lsa.warning_only else '' }}"
+            "{{ ' reset-time ' + max_lsa.reset_time|string if max_lsa.reset_time is defined and not max_lsa.warning_only else '' }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1378,6 +1307,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_mpls_traffic_eng,
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1467,7 +1397,8 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_nsf_cisco,
+            "setval": "nsf cisco helper"
+            "{{ ' disable' if nsf.cisco.disable }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1494,6 +1425,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_nsf_ietf,
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1590,6 +1522,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_queue_depth_hello,
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1614,6 +1547,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_queue_depth_update,
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1692,6 +1626,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "timers lsa arrival {{ timers.lsa }}",
+            
             "result": {"processes": {"{{ pid }}": {"timers": {"lsa": "{{ lsa }}"}}}},
         },
         {
@@ -1706,6 +1641,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospf_timers_pacing,
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1733,6 +1669,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "timers throttle lsa {{ throttle.lsa.first_delay }} {{ throttle.lsa.min_delay }} {{ throttle.lsa.max_delay }}",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1762,6 +1699,7 @@ class Ospfv2Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "timers throttle spf {{ throttle.spf.receive_delay }} {{ throttle.spf.between_delay }} {{ throttle.spf.max_delay }}",
+            
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1801,7 +1739,8 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_ttl_security,
+            "setval": "ttl-security all-interfaces"
+            "{{ ' hops ' + ttl_security.hops|string if ttl_security.hops is defined }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {

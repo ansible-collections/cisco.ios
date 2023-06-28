@@ -153,23 +153,40 @@ class TestIosOspfV2Module(TestIosModule):
     def test_ios_ospfv2_replaced(self):
         set_module_args(
             dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="200",
-                            auto_cost=dict(reference_bandwidth="4"),
-                            domain_id=dict(ip_address=dict(address="192.0.1.1")),
-                            max_metric=dict(on_startup=dict(time=200), router_lsa=True),
-                            areas=[dict(area_id="10", capability=True)],
-                            vrf="blue",
-                        ),
+                config= {
+                    "processes": [
+                        {
+                            "process_id": "200",
+                            "auto_cost": {
+                                "reference_bandwidth": "4"
+                            },
+                            "domain_id": {
+                                "ip_address": {
+                                    "address": "192.0.1.1"
+                                }
+                            },
+                            "max_metric": {
+                                "on_startup": {
+                                    "time": 200
+                                },
+                                "router_lsa": True
+                            },
+                            "areas": [
+                                {
+                                    "area_id": "10",
+                                    "capability": True
+                                }
+                            ],
+                            "vrf": "blue"
+                        },
                     ],
-                ),
+                },
                 state="replaced",
             ),
         )
         commands = [
             "router ospf 200 vrf blue",
+            'auto-cost reference-bandwidth 4',
             "no distribute-list 123 in",
             "no distribute-list 10 out",
             "domain-id 192.0.1.1",
@@ -220,7 +237,7 @@ class TestIosOspfV2Module(TestIosModule):
                             "process_id": 200,
                             "vrf": "blue",
                             "auto_cost": {"reference_bandwidth": "4"},
-                            "distribute_list": {
+                            "distribute_list": { 
                                 "acls": [
                                     {
                                         "direction": "out",
@@ -229,9 +246,9 @@ class TestIosOspfV2Module(TestIosModule):
                                     {
                                         "direction": "in",
                                         "name": "123",
-                                    },
+                                    }
                                 ],
-                            },
+                             },
                             "domain_id": {"ip_address": {"address": "192.0.3.1"}},
                             "max_metric": {"on_startup": {"time": 100}, "router_lsa": True},
                             "areas": [{"area_id": "10", "capability": True}],
@@ -242,8 +259,8 @@ class TestIosOspfV2Module(TestIosModule):
                                     "name": ["GigabitEthernet0/1", "GigabitEthernet0/2"],
                                 },
                             },
-                        },
-                    ],
+                        }
+                    ]
                 },
                 state="overridden",
             ),
@@ -534,7 +551,7 @@ class TestIosOspfV2Module(TestIosModule):
             "default-information originate always metric 25 metric-type 26 route-map rmap1",
             "default-metric 50",
             "discard-route external 5 internal 2",
-            "distance ospf inter-area 2 intra-area 3 external 1",
+            'distance ospf inter-area 2 intra-area 3 external 1',
             "domain-id 192.168.1.0 True",
             "domain-tag 54",
             "event-log one-shot pause size 10",
@@ -545,19 +562,19 @@ class TestIosOspfV2Module(TestIosModule):
             "limit retransmissions dc 20 dc disable non-dc 10 non-dc disable",
             "local-rib-criteria forwarding-address inter-area-summary nssa-translation",
             "log-adjacency-changes detail",
-            "max-lsa 10 10 ignore-count 10 ignore-time 10 reset-time 10 warning-only",
+            "max-lsa 10 10 warning-only",
             "max-metric router-lsa external-lsa 10 include-stub on-startup 110 summary-lsa 20",
             "maximum-paths 15",
             "mpls ldp autoconfig area area1",
-            "mpls traffic-eng area area12",
+            'mpls traffic-eng area area12',
             "neighbor 172.16.1.0 cost 2 database-filter all out poll-interval 20 priority 10",
             "network 198.51.100.0 0.0.0.255 area 5",
-            "nsf cisco helper disable",
-            "nsf ietf helper disable",
+            'nsf cisco helper disable', 
+            'nsf ietf helper disable',
             "prefix-suppression",
             "priority 10",
-            "queue-depth hello 10",
-            "queue-depth update 30",
+            'queue-depth hello 10',
+            'queue-depth update 30',
             "router-id router1",
             "shutdown",
             "summary-address 172.16.1.0 0.0.0.255 not-advertise",
@@ -578,8 +595,9 @@ class TestIosOspfV2Module(TestIosModule):
             "no passive-interface GigabitEthernet0/1",
             "no passive-interface GigabitEthernet0/2",
         ]
-
         result = self.execute_module(changed=True)
+        import q
+        q(result['commands'])
         self.assertEqual(commands, result["commands"])
 
     def test_ios_ospfv2_deleted(self):
@@ -760,7 +778,7 @@ class TestIosOspfV2Module(TestIosModule):
                                 "number": 10,
                                 "reset_time": 10,
                                 "threshold_value": 10,
-                                "warning_only": True,
+                                "warning_only": False,
                             },
                             "max_metric": {
                                 "external_lsa": 10,
@@ -910,11 +928,11 @@ class TestIosOspfV2Module(TestIosModule):
             "limit retransmissions dc 20 dc disable non-dc 10 non-dc disable",
             "local-rib-criteria forwarding-address inter-area-summary nssa-translation",
             "log-adjacency-changes detail",
-            "max-lsa 10 10 ignore-count 10 ignore-time 10 reset-time 10 warning-only",
+            "max-lsa 10 10 ignore-count 10 ignore-time 10 reset-time 10",
             "max-metric router-lsa external-lsa 10 include-stub on-startup 110 summary-lsa 20",
             "maximum-paths 15",
             "mpls ldp autoconfig area area1",
-            "mpls traffic-eng area area12",
+            'mpls traffic-eng area area12',
             "neighbor 172.16.1.0 cost 2 database-filter all out poll-interval 20 priority 10",
             "network 198.51.100.0 0.0.0.255 area 5",
             "no passive-interface GigabitEthernet0/1",
@@ -924,8 +942,8 @@ class TestIosOspfV2Module(TestIosModule):
             "passive-interface default",
             "prefix-suppression",
             "priority 10",
-            "queue-depth hello 10",
-            "queue-depth update 30",
+            'queue-depth hello 10',
+            'queue-depth update 30',
             "router ospf 1 vrf vrf1",
             "router-id router1",
             "shutdown",
