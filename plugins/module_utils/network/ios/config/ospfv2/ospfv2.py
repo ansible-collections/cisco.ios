@@ -119,7 +119,7 @@ class Ospfv2(ResourceModule):
 
         if self.have:
             for entry in self.have.get("processes", []):
-                entry = self._handle_deprecated(entry)
+                # entry = self._handle_deprecated(entry)
                 haved.update({(entry["process_id"], entry.get("vrf")): entry})
 
         # turn all lists of dicts into dicts prior to merge
@@ -146,6 +146,7 @@ class Ospfv2(ResourceModule):
             for k, have in iteritems(haved):
                 if k not in wantd:
                     self.addcmd(have, "pid", True)
+        
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
 

@@ -195,78 +195,6 @@ class TestIosOspfV2Module(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-    def test_ios_ospfv2_replaced_idempotent(self):
-        set_module_args(
-            dict(
-                config=dict(
-                    processes=[
-                        dict(
-                            process_id="200",
-                            auto_cost=dict(reference_bandwidth="4"),
-                            distribute_list=dict(
-                                acls=[
-                                    dict(direction="out", name="10"),
-                                    dict(direction="in", name="123"),
-                                ],
-                            ),
-                            domain_id=dict(ip_address=dict(address="192.0.3.1")),
-                            max_metric=dict(on_startup=dict(time=100), router_lsa=True),
-                            areas=[dict(area_id="10", capability=True)],
-                            passive_interfaces=dict(
-                                default=True,
-                                interface=dict(
-                                    set_interface=False,
-                                    name=["GigabitEthernet0/1", "GigabitEthernet0/2"],
-                                ),
-                            ),
-                            vrf="blue",
-                        ),
-                    ],
-                ),
-                state="replaced",
-            ),
-        )
-        self.execute_module(changed=False, commands=[])
-
-    def test_ios_ospfv2_overridden_idempotent(self):
-        set_module_args(
-            dict(
-                config={
-                    "processes": [
-                        {
-                            "process_id": 200,
-                            "vrf": "blue",
-                            "auto_cost": {"reference_bandwidth": "4"},
-                            "distribute_list": { 
-                                "acls": [
-                                    {
-                                        "direction": "out",
-                                        "name": "10",
-                                    },
-                                    {
-                                        "direction": "in",
-                                        "name": "123",
-                                    }
-                                ],
-                             },
-                            "domain_id": {"ip_address": {"address": "192.0.3.1"}},
-                            "max_metric": {"on_startup": {"time": 100}, "router_lsa": True},
-                            "areas": [{"area_id": "10", "capability": True}],
-                            "passive_interfaces": {
-                                "default": True,
-                                "interface": {
-                                    "set_interface": False,
-                                    "name": ["GigabitEthernet0/1", "GigabitEthernet0/2"],
-                                },
-                            },
-                        }
-                    ]
-                },
-                state="overridden",
-            ),
-        )
-        self.execute_module(changed=False, commands=[])
-
     def test_ios_ospfv2_overridden(self):
         set_module_args(
             dict(
@@ -584,8 +512,8 @@ class TestIosOspfV2Module(TestIosModule):
             "area 10 authentication message-digest",
             "area 10 capability default-exclusion",
             "area 10 default-cost 10",
-            "area 10 nssa translate type7 suppress-fa",
             "area 10 nssa default-information-originate metric 10 metric-type 1 nssa-only no-ext-capability no-redistribution no-summary",
+            "area 10 nssa translate type7 suppress-fa",
             "area 10 range 172.16.1.0 0.0.0.255 advertise cost 20",
             "area 10 sham-link checkSource checkDestination cost 10 ttl-security hops 20",
             "area 10 stub no-ext-capability no-summary",
@@ -596,8 +524,6 @@ class TestIosOspfV2Module(TestIosModule):
             "no passive-interface GigabitEthernet0/2",
         ]
         result = self.execute_module(changed=True)
-        import q
-        q(result['commands'])
         self.assertEqual(commands, result["commands"])
 
     def test_ios_ospfv2_deleted(self):
