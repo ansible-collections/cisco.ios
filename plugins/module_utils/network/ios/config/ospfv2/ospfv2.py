@@ -146,7 +146,7 @@ class Ospfv2(ResourceModule):
             for k, have in iteritems(haved):
                 if k not in wantd:
                     self.addcmd(have, "pid", True)
-        
+
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
 
