@@ -1,7 +1,0 @@
----
-minor_changes:
-  - ios_facts - Add CPU utilization. (https://github.com/ansible-collections/cisco.ios/issues/779)
-bugfixes:
-  - ios_facts - Fix facts gathering when memory statistics head is not hexadecimal. (https://github.com/ansible-collections/cisco.ios/issues/776)
-doc_changes:
-  - ios_facts - Add ansible_net_cpu_utilization.
