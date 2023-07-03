@@ -916,3 +916,30 @@ releases:
       - snmpv3_user_render.yml
       - update_galaxy.yml
     release_date: "2023-06-13"
+  5.0.0:
+    changes:
+      bugfixes:
+        - ios_facts - Fix facts gathering when memory statistics head is not hexadecimal.
+          (https://github.com/ansible-collections/cisco.ios/issues/776)
+        - ios_snmp_server - Fixes error handling for snmp user when snmp agent is not
+          enabled
+        - ios_static_routes - Fix non vlan entries to have unique group identifier.
+        - ios_static_routes - Fix parsers to parse interface attribute correctly.
+      doc_changes:
+        - ios_facts - Add ansible_net_cpu_utilization.
+      major_changes:
+        - This release removes a previously deprecated modules, and a few attributes
+          from this collection. Refer to **Removed Features** section for details.
+      minor_changes:
+        - ios_facts - Add CPU utilization. (https://github.com/ansible-collections/cisco.ios/issues/779)
+      removed_features:
+        - Deprecated ios_logging module in favor of ios_logging_global.
+        - Deprecated next_hop_self attribute for bgp_address_family with nexthop_self.
+    fragments:
+      - cpu_util.yml
+      - depr_logging.yml
+      - enable_states.yml
+      - facts_fix.yml
+      - snmp_log.yml
+      - snmp_user_bug.yml
+    release_date: "2023-07-03"
