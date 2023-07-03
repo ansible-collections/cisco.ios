@@ -881,7 +881,6 @@ class TestIosOspfV2Module(TestIosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), commands)
 
-
     def test_ios_ospfv2_overridden_idempotent(self):
         set_module_args(
             dict(
@@ -904,5 +903,3 @@ class TestIosOspfV2Module(TestIosModule):
             ),
         )
         self.execute_module(changed=False, commands=[])
-        
-        
