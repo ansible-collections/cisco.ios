@@ -62,15 +62,12 @@
           - "{{ replaced['after']['processes'] | symmetric_difference(result['after']['processes']) | length == 0 }}"
 
     - name: Replaced provided OSPF v2 configuration (idempotent)
-      register: result
+      register: result_id
       cisco.ios.ios_ospfv2: *id001
-    - name: Assert that task was idempotent
-      ansible.builtin.debug:
-        msg:
-          - result['changed']
+
     - name: Assert that task was idempotent
       ansible.builtin.assert:
         that:
-          - result['changed'] == false
+          - result_id['changed'] == false
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

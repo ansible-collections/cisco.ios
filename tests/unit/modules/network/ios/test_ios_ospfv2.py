@@ -880,3 +880,29 @@ class TestIosOspfV2Module(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), commands)
+
+
+    def test_ios_ospfv2_overridden_idempotent(self):
+        set_module_args(
+            dict(
+                config=dict(
+                    processes=[
+                        dict(
+                            process_id="200",
+                            passive_interfaces=dict(
+                                default=True,
+                                interface=dict(
+                                    set_interface=False,
+                                    name=["GigabitEthernet0/1", "GigabitEthernet0/2"],
+                                ),
+                            ),
+                            vrf="blue",
+                        ),
+                    ],
+                ),
+                state="overridden",
+            ),
+        )
+        self.execute_module(changed=False, commands=[])
+        
+        

@@ -222,7 +222,7 @@ deleted:
 
 rtt:
   commands:
-    - no router ospf 100 vrf ospf_vrf
+    - no router ospf 100 vrf blue
     - router ospf 200 vrf blue
     - auto-cost reference-bandwidth 4
     - distribute-list 10 out
