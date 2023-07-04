@@ -8,6 +8,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+from textwrap import dedent
+
 from ansible_collections.cisco.ios.plugins.modules import ios_ospfv2
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
@@ -38,13 +40,22 @@ class TestIosOspfV2Module(TestIosModule):
         self.mock_get_resource_connection_facts.stop()
         self.mock_execute_show_command.stop()
 
-    def load_fixtures(self, commands=None):
-        def load_from_file(*args, **kwargs):
-            return load_fixture("ios_ospfv2.cfg")
-
-        self.execute_show_command.side_effect = load_from_file
 
     def test_ios_ospfv2_merged(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router ospf 200 vrf blue
+             auto-cost reference-bandwidth 4
+             distribute-list 10 out
+             distribute-list 123 in
+             domain-id 192.0.3.1
+             max-metric router-lsa on-startup 100
+             area 10 capability default-exclusion
+             passive-interface default
+             no passive-interface GigabitEthernet0/1
+             no passive-interface GigabitEthernet0/2
+            """,
+        )
         set_module_args(
             dict(
                 config=dict(
@@ -97,6 +108,20 @@ class TestIosOspfV2Module(TestIosModule):
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_ospfv2_merged_specific_param(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router ospf 200 vrf blue
+             auto-cost reference-bandwidth 4
+             distribute-list 10 out
+             distribute-list 123 in
+             domain-id 192.0.3.1
+             max-metric router-lsa on-startup 100
+             area 10 capability default-exclusion
+             passive-interface default
+             no passive-interface GigabitEthernet0/1
+             no passive-interface GigabitEthernet0/2
+            """,
+        )
         set_module_args(
             dict(
                 config={
@@ -118,6 +143,20 @@ class TestIosOspfV2Module(TestIosModule):
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_ospfv2_merged_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router ospf 200 vrf blue
+             auto-cost reference-bandwidth 4
+             distribute-list 10 out
+             distribute-list 123 in
+             domain-id 192.0.3.1
+             max-metric router-lsa on-startup 100
+             area 10 capability default-exclusion
+             passive-interface default
+             no passive-interface GigabitEthernet0/1
+             no passive-interface GigabitEthernet0/2
+            """,
+        )
         set_module_args(
             dict(
                 config=dict(
@@ -151,6 +190,20 @@ class TestIosOspfV2Module(TestIosModule):
         self.execute_module(changed=False, commands=[])
 
     def test_ios_ospfv2_replaced(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router ospf 200 vrf blue
+             auto-cost reference-bandwidth 4
+             distribute-list 10 out
+             distribute-list 123 in
+             domain-id 192.0.3.1
+             max-metric router-lsa on-startup 100
+             area 10 capability default-exclusion
+             passive-interface default
+             no passive-interface GigabitEthernet0/1
+             no passive-interface GigabitEthernet0/2
+            """,
+        )
         set_module_args(
             dict(
                 config={
@@ -196,6 +249,20 @@ class TestIosOspfV2Module(TestIosModule):
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_ospfv2_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router ospf 200 vrf blue
+             auto-cost reference-bandwidth 4
+             distribute-list 10 out
+             distribute-list 123 in
+             domain-id 192.0.3.1
+             max-metric router-lsa on-startup 100
+             area 10 capability default-exclusion
+             passive-interface default
+             no passive-interface GigabitEthernet0/1
+             no passive-interface GigabitEthernet0/2
+            """,
+        )
         set_module_args(
             dict(
                 config={
@@ -527,6 +594,20 @@ class TestIosOspfV2Module(TestIosModule):
         self.assertEqual(commands, result["commands"])
 
     def test_ios_ospfv2_deleted(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router ospf 200 vrf blue
+             auto-cost reference-bandwidth 4
+             distribute-list 10 out
+             distribute-list 123 in
+             domain-id 192.0.3.1
+             max-metric router-lsa on-startup 100
+             area 10 capability default-exclusion
+             passive-interface default
+             no passive-interface GigabitEthernet0/1
+             no passive-interface GigabitEthernet0/2
+            """,
+        )
         set_module_args(
             dict(config=dict(processes=[dict(process_id="200", vrf="blue")]), state="deleted"),
         )
@@ -534,6 +615,20 @@ class TestIosOspfV2Module(TestIosModule):
         self.execute_module(changed=True, commands=commands)
 
     def test_ios_ospfv2_parsed(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router ospf 200 vrf blue
+             auto-cost reference-bandwidth 4
+             distribute-list 10 out
+             distribute-list 123 in
+             domain-id 192.0.3.1
+             max-metric router-lsa on-startup 100
+             area 10 capability default-exclusion
+             passive-interface default
+             no passive-interface GigabitEthernet0/1
+             no passive-interface GigabitEthernet0/2
+            """,
+        )
         set_module_args(
             dict(
                 running_config="router ospf 1\n area 5 authentication\n area 5 capability default-exclusion",
@@ -554,6 +649,20 @@ class TestIosOspfV2Module(TestIosModule):
         self.assertEqual(parsed_list, result["parsed"])
 
     def test_ios_ospfv2_rendered(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router ospf 200 vrf blue
+             auto-cost reference-bandwidth 4
+             distribute-list 10 out
+             distribute-list 123 in
+             domain-id 192.0.3.1
+             max-metric router-lsa on-startup 100
+             area 10 capability default-exclusion
+             passive-interface default
+             no passive-interface GigabitEthernet0/1
+             no passive-interface GigabitEthernet0/2
+            """,
+        )
         set_module_args(
             dict(
                 config={
@@ -881,22 +990,140 @@ class TestIosOspfV2Module(TestIosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), commands)
 
+
+    def test_ios_ospfv2_overridden_2(self):
+        from textwrap import dedent
+        self.execute_show_command.return_value = dedent(
+            """\
+            router ospf 200 vrf blue
+             auto-cost reference-bandwidth 4
+             distribute-list 10 out
+             distribute-list 123 in
+             domain-id 192.0.3.1
+             max-metric router-lsa on-startup 100
+             area 10 capability default-exclusion
+             passive-interface default
+             no passive-interface GigabitEthernet0/1
+             no passive-interface GigabitEthernet0/2
+            router ospf 210 vrf green
+             auto-cost reference-bandwidth 4
+             distribute-list 10 out
+             distribute-list 123 in
+             domain-id 192.0.3.1
+             max-metric router-lsa on-startup 100
+             area 10 capability default-exclusion
+             passive-interface default
+             no passive-interface GigabitEthernet0/1
+             no passive-interface GigabitEthernet0/2
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config={
+                    "processes": [
+                        {
+                            "process_id": 200,
+                            "vrf": "blue",
+                            "auto_cost": {"set": True, "reference_bandwidth": 4},
+                            "distribute_list": {
+                                "acls": [
+                                    {"name": "110", "direction": "out"},
+                                    {"name": "123", "direction": "in"},
+                                ]
+                            },
+                            "domain_id": {"ip_address": {"address": "192.0.3.1"}},
+                            "max_metric": {"router_lsa": True, "on_startup": {"time": 100}},
+                            "areas": [{"area_id": "10", "capability": True}],
+                            "passive_interfaces": {
+                                "default": True,
+                                "interface": {
+                                    "set_interface": False,
+                                    "name": ["GigabitEthernet0/2", "GigabitEthernet0/1"],
+                                },
+                            },
+                        },
+                        {
+                            "process_id": 210,
+                            "vrf": "green",
+                            "auto_cost": {"set": True, "reference_bandwidth": 5},
+                            "distribute_list": {
+                                "acls": [
+                                    {"name": "5120", "direction": "out"},
+                                    {"name": "123", "direction": "out"},
+                                ]
+                            },
+                            "domain_id": {"ip_address": {"address": "192.0.3.1"}},
+                            "max_metric": {"router_lsa": True, "on_startup": {"time": 100}},
+                            "areas": [{"area_id": "11", "capability": True}],
+                            "passive_interfaces": {
+                                "default": True,
+                                "interface": {
+                                    "set_interface": False,
+                                    "name": ["GigabitEthernet0/2"],
+                                },
+                            },
+                        },
+                    ]
+                },
+                state="overridden",
+            ),
+        )
+        
+        result = self.execute_module(changed=True)
+        print(result["commands"])
+        commands = [
+            'router ospf 210 vrf green', 
+            'auto-cost reference-bandwidth 5',
+            'distribute-list 5120 out', 
+            'distribute-list 123 out', 
+            'no domain-id 192.0.3.1',
+            'area 11 capability default-exclusion', 
+            'no area 10 capability default-exclusion'
+        ]
+        self.assertEqual(result["commands"], commands)
+
+
     def test_ios_ospfv2_overridden_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router ospf 200 vrf blue
+             auto-cost reference-bandwidth 4
+             distribute-list 10 out
+             distribute-list 123 in
+             domain-id 192.0.3.1
+             max-metric router-lsa on-startup 100
+             area 10 capability default-exclusion
+             passive-interface default
+             no passive-interface GigabitEthernet0/1
+             no passive-interface GigabitEthernet0/2
+            """,
+        )
         set_module_args(
             dict(
                 config=dict(
                     processes=[
-                        dict(
-                            process_id="200",
-                            passive_interfaces=dict(
-                                default=True,
-                                interface=dict(
-                                    set_interface=False,
-                                    name=["GigabitEthernet0/1", "GigabitEthernet0/2"],
-                                ),
-                            ),
-                            vrf="blue",
-                        ),
+                        {
+                            "process_id": 200,
+                            "vrf": "blue",
+                            "auto_cost": {"set": True, "reference_bandwidth": 4},
+                            "distribute_list": {
+                                "acls": [
+                                    {"name": "10", "direction": "out"},
+                                    {"name": "123", "direction": "in"},
+                                ]
+                            },
+                            "domain_id": {"ip_address": {"address": "192.0.3.1"}},
+                            "max_metric": {"router_lsa": True, "on_startup": {"time": 100}},
+                            "areas": [{"area_id": "10", "capability": True}],
+                            "passive_interfaces": {
+                                "default": True,
+                                "interface": {
+                                    "set_interface": False,
+                                    "name": ["GigabitEthernet0/2", "GigabitEthernet0/1"],
+                                },
+                            },
+                        }
                     ],
                 ),
                 state="overridden",
