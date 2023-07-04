@@ -41,11 +41,11 @@ def _tmplt_route_map_match(config_data):
                 cmd += " best-range"
                 if config_data["match"]["additional_paths"]["best_range"].get("lower_limit"):
                     cmd += " lower-limit {lower_limit}".format(
-                        **config_data["match"]["additional_paths"]["best_range"]
+                        **config_data["match"]["additional_paths"]["best_range"],
                     )
                 if config_data["match"]["additional_paths"]["best_range"].get("upper_limit"):
                     cmd += " upper-limit {upper_limit}".format(
-                        **config_data["match"]["additional_paths"]["best_range"]
+                        **config_data["match"]["additional_paths"]["best_range"],
                     )
             if config_data["match"]["additional_paths"].get("group_best"):
                 cmd += " group-best"
@@ -294,7 +294,7 @@ def _tmplt_route_map_match_ipv6(config_data):
             cmd += " address"
             if config_data["match"]["ipv6"]["address"].get("prefix_list"):
                 cmd += " prefix-list {prefix_list}".format(
-                    **config_data["match"]["ipv6"]["address"]
+                    **config_data["match"]["ipv6"]["address"],
                 )
             elif config_data["match"]["ipv6"]["address"].get("acl"):
                 cmd += " {acl}".format(**config_data["match"]["ipv6"]["address"])
@@ -306,7 +306,7 @@ def _tmplt_route_map_match_ipv6(config_data):
                 cmd += " src-pfx"
             if config_data["match"]["ipv6"]["flowspec"].get("prefix_list"):
                 cmd += " prefix-list {prefix_list}".format(
-                    **config_data["match"]["ipv6"]["flowspec"]
+                    **config_data["match"]["ipv6"]["flowspec"],
                 )
             elif config_data["match"]["ipv6"]["flowspec"].get("acl"):
                 cmd += " {acl}".format(**config_data["match"]["ipv6"]["flowspec"])
@@ -314,7 +314,7 @@ def _tmplt_route_map_match_ipv6(config_data):
             cmd += " next-hop"
             if config_data["match"]["ipv6"]["next_hop"].get("prefix_list"):
                 cmd += " prefix-list {prefix_list}".format(
-                    **config_data["match"]["ipv6"]["next_hop"]
+                    **config_data["match"]["ipv6"]["next_hop"],
                 )
             elif config_data["match"]["ipv6"]["next_hop"].get("acl"):
                 cmd += " {acl}".format(**config_data["match"]["ipv6"]["next_hop"])
@@ -322,7 +322,7 @@ def _tmplt_route_map_match_ipv6(config_data):
             cmd += " route-source"
             if config_data["match"]["ipv6"]["route_source"].get("prefix_list"):
                 cmd += " prefix-list {prefix_list}".format(
-                    **config_data["match"]["ipv6"]["route_source"]
+                    **config_data["match"]["ipv6"]["route_source"],
                 )
             elif config_data["match"]["ipv6"]["route_source"].get("acl"):
                 cmd += " {acl}".format(**config_data["match"]["ipv6"]["route_source"])
@@ -380,7 +380,7 @@ def _tmplt_route_map_set(config_data):
         if set.get("dampening"):
             command.append(
                 "set dampening {penalty_half_time} {reuse_route_val} {suppress_route_val} {max_suppress}".format(
-                    **set["dampening"]
+                    **set["dampening"],
                 ),
             )
         if set.get("default"):
@@ -403,7 +403,7 @@ def _tmplt_route_map_set(config_data):
                 cmd = "set extcommunity rt"
                 if set["extcommunity"]["rt"].get("range"):
                     cmd += " range {lower_limit} {upper_limit}".format(
-                        **set["extcommunity"]["rt"]["range"]
+                        **set["extcommunity"]["rt"]["range"],
                     )
                 elif set["extcommunity"]["rt"].get("address"):
                     cmd += " {address}".format(**set["extcommunity"]["rt"])
@@ -416,7 +416,7 @@ def _tmplt_route_map_set(config_data):
                 cmd = "set extcommunity vpn-distinguisher"
                 if set["extcommunity"]["vpn_distinguisher"].get("range"):
                     cmd += " range {lower_limit} {upper_limit}".format(
-                        **set["extcommunity"]["vpn_distinguisher"]["range"]
+                        **set["extcommunity"]["vpn_distinguisher"]["range"],
                     )
                 elif set["extcommunity"]["vpn_distinguisher"].get("address"):
                     cmd += " {address}".format(**set["extcommunity"]["vpn_distinguisher"])
@@ -454,13 +454,13 @@ def _tmplt_route_map_set(config_data):
                     if set["metric"]["deviation"] == "plus":
                         cmd += (
                             " +{eigrp_delay} {metric_reliability} {metric_bandwidth} {mtu}".format(
-                                **set["metric"]
+                                **set["metric"],
                             )
                         )
                     elif set["metric"]["deviation"] == "minus":
                         cmd += (
                             " -{eigrp_delay} {metric_reliability} {metric_bandwidth} {mtu}".format(
-                                **set["metric"]
+                                **set["metric"],
                             )
                         )
             if set["metric"].get("deviation") and not set["metric"].get("eigrp_delay"):
@@ -512,7 +512,7 @@ def _tmplt_route_map_set_ip(config_data):
             cmd += " global next-hop"
             if set_ip["global_route"].get("verify_availability"):
                 cmd += " verify-availability {address} {sequence} track {track}".format(
-                    **set_ip["global_route"]["verify_availability"]
+                    **set_ip["global_route"]["verify_availability"],
                 )
             elif set_ip["global_route"].get("address"):
                 cmd += " {address}".format(**set_ip["global_route"])
@@ -543,7 +543,8 @@ def _tmplt_route_map_set_ip(config_data):
             if set_ip["next_hop"].get("verify_availability"):
                 command.append(
                     "{0} verify-availability {address} {sequence} track {track}".format(
-                        cmd, **set_ip["next_hop"]["verify_availability"]
+                        cmd,
+                        **set_ip["next_hop"]["verify_availability"],
                     ),
                 )
         if set_ip.get("precedence"):
@@ -584,7 +585,7 @@ def _tmplt_route_map_set_ip(config_data):
             cmd += " vrf {vrf} next-hop".format(**set_ip)
             if set_ip["vrf"].get("verify_availability").get("address"):
                 cmd += " verify-availability {address} {sequence} track {track}".format(
-                    **set_ip["vrf"]["verify_availability"]
+                    **set_ip["vrf"]["verify_availability"],
                 )
             elif set_ip["vrf"].get("address"):
                 cmd += " {address}".format(**set_ip["vrf"])
@@ -604,7 +605,7 @@ def _tmplt_route_map_set_ipv6(config_data):
             cmd += " global next-hop"
             if set_ipv6["global_route"].get("verify_availability"):
                 cmd += " verify-availability {address} {sequence} track {track}".format(
-                    **set_ipv6["global_route"]["verify_availability"]
+                    **set_ipv6["global_route"]["verify_availability"],
                 )
             elif set_ipv6["global_route"].get("address"):
                 cmd += " {address}".format(**set_ipv6["global_route"])
@@ -621,7 +622,7 @@ def _tmplt_route_map_set_ipv6(config_data):
         if set_ipv6.get("vrf"):
             cmd += (
                 " vrf {vrf} next-hop verify-availability {address} {sequence} track {track}".format(
-                    **set_ipv6["vrf"]["verify_availability"]
+                    **set_ipv6["vrf"]["verify_availability"],
                 )
             )
         return cmd
