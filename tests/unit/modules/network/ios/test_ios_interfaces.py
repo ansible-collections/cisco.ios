@@ -23,32 +23,11 @@ class TestIosInterfacesModule(TestIosModule):
     def setUp(self):
         super(TestIosInterfacesModule, self).setUp()
 
-        self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
-        )
-        self.get_config = self.mock_get_config.start()
-
-        self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
-        )
-        self.load_config = self.mock_load_config.start()
-
-        self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection",
-        )
-        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
-
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
-
-        self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
-        )
-        self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.interfaces.interfaces."
@@ -58,11 +37,7 @@ class TestIosInterfacesModule(TestIosModule):
 
     def tearDown(self):
         super(TestIosInterfacesModule, self).tearDown()
-        self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
-        self.mock_edit_config.stop()
-        self.mock_get_config.stop()
-        self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
 
     def test_ios_interfaces_merged(self):
@@ -79,6 +54,7 @@ class TestIosInterfacesModule(TestIosModule):
              speed 1000
              mtu 1500
              no negotiation auto
+             source template ANSIBLE
             interface GigabitEthernet3
              description Ansible UT interface 3
              no ip address
@@ -91,6 +67,7 @@ class TestIosInterfacesModule(TestIosModule):
              no ip address
              shutdown
              negotiation auto
+             source template ANSIBLE
             interface GigabitEthernet5
              description Ansible UT interface 5
              no ip address
@@ -99,6 +76,7 @@ class TestIosInterfacesModule(TestIosModule):
              ipv6 dhcp server
             interface GigabitEthernet6
              description Ansible UT interface 6
+             source template NOCHANGE
             """,
         )
         set_module_args(
@@ -108,11 +86,13 @@ class TestIosInterfacesModule(TestIosModule):
                         "description": "This interface should be disabled",
                         "enabled": True,
                         "name": "GigabitEthernet1",
+                        "template": "ANSIBLE",
                     },
                     {
                         "description": "This interface should be enabled",
                         "enabled": False,
                         "name": "GigabitEthernet0/1",
+                        "template": "DISABLED",
                     },
                     {"mode": "layer3", "name": "GigabitEthernet6"},
                 ],
@@ -122,9 +102,11 @@ class TestIosInterfacesModule(TestIosModule):
         commands = [
             "interface GigabitEthernet0/1",
             "description This interface should be enabled",
+            "source template DISABLED",
             "shutdown",
             "interface GigabitEthernet1",
             "description This interface should be disabled",
+            "source template ANSIBLE",
             "interface GigabitEthernet6",
             "no switchport",
         ]
@@ -189,6 +171,7 @@ class TestIosInterfacesModule(TestIosModule):
              no shutdown
              ip address dhcp
              negotiation auto
+             source template ANSIBLE
             interface GigabitEthernet0/1
              description Ansible UT interface 2
              ip address dhcp
@@ -227,17 +210,21 @@ class TestIosInterfacesModule(TestIosModule):
                         "name": "GigabitEthernet6",
                         "description": "Ansible UT interface 6",
                         "mode": "layer2",
+                        "template": "ANSIBLE",
                     },
                 ],
                 "state": "replaced",
             },
         )
         commands = [
+            "interface GigabitEthernet1",
+            "no source template ANSIBLE",
             "interface GigabitEthernet0/1",
             "no description Ansible UT interface 2",
             "speed 1200",
             "mtu 1800",
             "interface GigabitEthernet6",
+            "source template ANSIBLE",
             "switchport",
         ]
         result = self.execute_module(changed=True)
@@ -328,6 +315,7 @@ class TestIosInterfacesModule(TestIosModule):
             interface GigabitEthernet6
              description Ansible UT interface 6
              no switchport
+             source template ANSIBLE_INTERFACE_6
             """,
         )
         set_module_args(
@@ -363,6 +351,7 @@ class TestIosInterfacesModule(TestIosModule):
             "shutdown",
             "interface GigabitEthernet6",
             "no description Ansible UT interface 6",
+            "no source template ANSIBLE_INTERFACE_6",
             "shutdown",
             "switchport",
             "interface GigabitEthernet1",
@@ -386,6 +375,7 @@ class TestIosInterfacesModule(TestIosModule):
              no shutdown
              ip address dhcp
              negotiation auto
+             source template ANSIBLE
             interface GigabitEthernet0/1
              description Ansible UT interface 2
              ip address dhcp
@@ -416,6 +406,7 @@ class TestIosInterfacesModule(TestIosModule):
         commands = [
             "interface GigabitEthernet1",
             "no description Ansible UT interface 1",
+            "no source template ANSIBLE",
             "shutdown",
         ]
         result = self.execute_module(changed=True)
@@ -564,6 +555,7 @@ class TestIosInterfacesModule(TestIosModule):
                     interface GigabitEthernet7
                      description Ansible UT interface 7
                      no switchport
+                     source template ANSIBLE
                     """,
                 ),
                 state="parsed",
@@ -603,6 +595,7 @@ class TestIosInterfacesModule(TestIosModule):
                 "mode": "layer3",
                 "description": "Ansible UT interface 7",
                 "enabled": True,
+                "template": "ANSIBLE",
             },
         ]
         self.assertEqual(parsed_list, result["parsed"])
@@ -643,6 +636,7 @@ class TestIosInterfacesModule(TestIosModule):
                         "description": "Ansible UT interface 5",
                         "duplex": "full",
                         "enabled": True,
+                        "template": "ANSIBLE",
                     },
                     {
                         "name": "twentyFiveGigE1",
@@ -720,6 +714,7 @@ class TestIosInterfacesModule(TestIosModule):
             "interface GigabitEthernet5",
             "description Ansible UT interface 5",
             "duplex full",
+            "source template ANSIBLE",
             "no shutdown",
             "interface TwentyFiveGigE1",
             "description Ansible UT TwentyFiveGigE",

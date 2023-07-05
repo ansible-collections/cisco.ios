@@ -859,3 +859,87 @@ releases:
       - update_bgp_af_docs.yaml
       - update_bgp_global_docs.yaml
     release_date: "2023-04-18"
+  4.6.0:
+    changes:
+      bugfixes:
+        - ios_facts - fix calculation of memory from bytes to megabytes; grab correct
+          output element for free memory (https://github.com/ansible-collections/cisco.ios/issues/763)
+        - ospfv2 - Fixed rendering of capability command with vrf_lite.
+        - ospfv3 - Fixed rendering of capability command with vrf_lite.
+      doc_changes:
+        - ios_bgp_address_family - Fixed examples formatting.
+        - ios_bgp_global - Fixed examples formatting.
+        - ios_interfaces - Corrected inteface names in documentation.
+        - ios_interfaces - Fixed module documentation and examples.
+        - ios_l2_interfaces - Fixed module documentation and examples.
+        - ios_l3_interfaces - Fixed module documentation and examples.
+        - ios_l3_interfaces - Fixed module examples, update tasks to generate address
+          and not network interface.
+        - ios_static_routes - Corrected static routes before state in documentation.
+        - ios_static_routes - Fixed examples formatting.
+      minor_changes:
+        - ios_interfaces - Add template attribute to provide support for cisco ios templates.
+        - ios_service - Create module to manage service configuration on IOS switches
+    fragments:
+      - add_periodic_jobs_gha.yml
+      - fix_intergration_tests.yml
+      - healthcheck_1.yml
+      - interfaces_staticorutes.yml
+      - ios_facts_memorycalc.yaml
+      - ios_interface_templates.yml
+      - ios_l3_interfaces_doc_changes.yml
+      - ios_service_changes.yml
+      - vrf_lite_ospf_v2_v3.yml
+    modules:
+      - description: Resource module to configure service.
+        name: ios_service
+        namespace: ""
+    release_date: "2023-06-01"
+  4.6.1:
+    changes:
+      bugfixes:
+        - ios_l3_interfaces - account for secondary/primary when comparing ipv4 addresses.
+          (https://github.com/ansible-collections/cisco.ios/issues/826)
+        - ios_lag_interfaces - Fix empty facts to be a list.
+        - ios_ospf_interface - Fix configuration rendering for ipv4 and ipv6 configurations.
+        - ios_ospf_interface - Fix replaced and overridden state, action to negate superfluous
+          configuration.
+        - ios_snmp_server - Add default versions to version 3 users.
+        - snmp_server - update module to get snmp_server user configuration.
+      doc_changes:
+        - Lint examples as per ansible-lint.
+    fragments:
+      - cap_python.yml
+      - ios_l3_interfaces_secondary.yml
+      - lint_examples.yml
+      - ospf_intf_fix.yml
+      - snmpv3_user_render.yml
+      - update_galaxy.yml
+    release_date: "2023-06-13"
+  5.0.0:
+    changes:
+      bugfixes:
+        - ios_facts - Fix facts gathering when memory statistics head is not hexadecimal.
+          (https://github.com/ansible-collections/cisco.ios/issues/776)
+        - ios_snmp_server - Fixes error handling for snmp user when snmp agent is not
+          enabled
+        - ios_static_routes - Fix non vlan entries to have unique group identifier.
+        - ios_static_routes - Fix parsers to parse interface attribute correctly.
+      doc_changes:
+        - ios_facts - Add ansible_net_cpu_utilization.
+      major_changes:
+        - This release removes a previously deprecated modules, and a few attributes
+          from this collection. Refer to **Removed Features** section for details.
+      minor_changes:
+        - ios_facts - Add CPU utilization. (https://github.com/ansible-collections/cisco.ios/issues/779)
+      removed_features:
+        - Deprecated ios_logging module in favor of ios_logging_global.
+        - Deprecated next_hop_self attribute for bgp_address_family with nexthop_self.
+    fragments:
+      - cpu_util.yml
+      - depr_logging.yml
+      - enable_states.yml
+      - facts_fix.yml
+      - snmp_log.yml
+      - snmp_user_bug.yml
+    release_date: "2023-07-03"

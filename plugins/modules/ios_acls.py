@@ -601,7 +601,7 @@ options:
         the IOS device by executing the command B(sh access-list).
       - The state I(parsed) reads the configuration from C(running_config) option and
         transforms it into Ansible structured data as per the resource module's argspec
-          and the value is then returned in the I(parsed) key within the result.
+        and the value is then returned in the I(parsed) key within the result.
     type: str
   state:
     choices:
@@ -642,9 +642,6 @@ options:
       - The state I(replaced), modify/add only the ACEs of the ACLs defined only.
         It does not perform any other change on the device.
       - The state I(deleted), deletes only the specified ACLs, or all if not specified.
-
-
-
     type: str
 short_description: Resource module to configure ACLs.
 version_added: 1.0.0
@@ -663,14 +660,14 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration
   cisco.ios.ios_acls:
     config:
-    - afi: ipv4
-      acls:
-      - name: 100
-        aces:
-        - sequence: 10
-          protocol_options:
-            icmp:
-              traceroute: true
+      - afi: ipv4
+        acls:
+          - name: 100
+            aces:
+              - sequence: 10
+                protocol_options:
+                  icmp:
+                    traceroute: true
     state: merged
 
 # After state:
@@ -690,104 +687,104 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration
   cisco.ios.ios_acls:
     config:
-    - afi: ipv4
-      acls:
-      - name: std_acl
-        acl_type: standard
-        aces:
-        - grant: deny
-          source:
-            address: 192.168.1.200
-        - grant: deny
-          source:
-            address: 192.168.2.0
-            wildcard_bits: 0.0.0.255
-      - name: 110
-        aces:
-        - sequence: 10
-          protocol_options:
-            icmp:
-              traceroute: true
-        - grant: deny
-          protocol_options:
-            tcp:
-              ack: true
-          source:
-            host: 198.51.100.0
-          destination:
-            host: 198.51.110.0
-            port_protocol:
-              eq: telnet
-      - name: test
-        acl_type: extended
-        aces:
-        - grant: deny
-          protocol_options:
-            tcp:
-              fin: true
-          source:
-            address: 192.0.2.0
-            wildcard_bits: 0.0.0.255
-          destination:
-            address: 192.0.3.0
-            wildcard_bits: 0.0.0.255
-            port_protocol:
-              eq: www
-          option:
-            traceroute: true
-          ttl:
-            eq: 10
-      - name: 123
-        aces:
-        - remarks:
-          - "remarks for extended ACL 1"
-          - "check ACL"
-        - grant: deny
-          protocol_options:
-            tcp:
-              ack: true
-          source:
-            address: 198.51.100.0
-            wildcard_bits: 0.0.0.255
-          destination:
-            address: 198.51.101.0
-            wildcard_bits: 0.0.0.255
-            port_protocol:
-              eq: telnet
-          tos:
-            service_value: 12
-        - grant: deny
-          protocol_options:
-            tcp:
-              ack: true
-          source:
-            address: 192.0.3.0
-            wildcard_bits: 0.0.0.255
-          destination:
-            address: 192.0.4.0
-            wildcard_bits: 0.0.0.255
-            port_protocol:
-              eq: www
-          dscp: ef
-          ttl:
-            lt: 20
-    - afi: ipv6
-      acls:
-      - name: R1_TRAFFIC
-        aces:
-        - grant: deny
-          protocol_options:
-            tcp:
-              ack: true
-          source:
-            any: true
-            port_protocol:
-              eq: www
-          destination:
-            any: true
-            port_protocol:
-              eq: telnet
-          dscp: af11
+      - afi: ipv4
+        acls:
+          - name: std_acl
+            acl_type: standard
+            aces:
+              - grant: deny
+                source:
+                  address: 192.168.1.200
+              - grant: deny
+                source:
+                  address: 192.168.2.0
+                  wildcard_bits: 0.0.0.255
+          - name: 110
+            aces:
+              - sequence: 10
+                protocol_options:
+                  icmp:
+                    traceroute: true
+              - grant: deny
+                protocol_options:
+                  tcp:
+                    ack: true
+                source:
+                  host: 198.51.100.0
+                destination:
+                  host: 198.51.110.0
+                  port_protocol:
+                    eq: telnet
+          - name: test
+            acl_type: extended
+            aces:
+              - grant: deny
+                protocol_options:
+                  tcp:
+                    fin: true
+                source:
+                  address: 192.0.2.0
+                  wildcard_bits: 0.0.0.255
+                destination:
+                  address: 192.0.3.0
+                  wildcard_bits: 0.0.0.255
+                  port_protocol:
+                    eq: www
+                option:
+                  traceroute: true
+                ttl:
+                  eq: 10
+          - name: 123
+            aces:
+              - remarks:
+                  - "remarks for extended ACL 1"
+                  - "check ACL"
+              - grant: deny
+                protocol_options:
+                  tcp:
+                    ack: true
+                source:
+                  address: 198.51.100.0
+                  wildcard_bits: 0.0.0.255
+                destination:
+                  address: 198.51.101.0
+                  wildcard_bits: 0.0.0.255
+                  port_protocol:
+                    eq: telnet
+                tos:
+                  service_value: 12
+              - grant: deny
+                protocol_options:
+                  tcp:
+                    ack: true
+                source:
+                  address: 192.0.3.0
+                  wildcard_bits: 0.0.0.255
+                destination:
+                  address: 192.0.4.0
+                  wildcard_bits: 0.0.0.255
+                  port_protocol:
+                    eq: www
+                dscp: ef
+                ttl:
+                  lt: 20
+      - afi: ipv6
+        acls:
+          - name: R1_TRAFFIC
+            aces:
+              - grant: deny
+                protocol_options:
+                  tcp:
+                    ack: true
+                source:
+                  any: true
+                  port_protocol:
+                    eq: www
+                destination:
+                  any: true
+                  port_protocol:
+                    eq: telnet
+                dscp: af11
     state: merged
 
 # Commands fired:
@@ -829,7 +826,6 @@ EXAMPLES = """
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-
 # Using replaced
 
 # Before state:
@@ -850,49 +846,48 @@ EXAMPLES = """
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-
 - name: Replaces device configuration of listed acls with provided configuration
   cisco.ios.ios_acls:
     config:
-    - afi: ipv4
-      acls:
-      - name: 110
-        aces:
-        - grant: deny
-          protocol_options:
-            tcp:
-              syn: true
-          source:
-            address: 192.0.2.0
-            wildcard_bits: 0.0.0.255
-          destination:
-            address: 192.0.3.0
-            wildcard_bits: 0.0.0.255
-            port_protocol:
-              eq: www
-          dscp: ef
-          ttl:
-            eq: 10
-      - name: 150
-        aces:
-        - grant: deny
-          sequence: 20
-          protocol_options:
-            tcp:
-              syn: true
-          source:
-            address: 198.51.100.0
-            wildcard_bits: 0.0.0.255
-            port_protocol:
-              eq: telnet
-          destination:
-            address: 198.51.110.0
-            wildcard_bits: 0.0.0.255
-            port_protocol:
-              eq: telnet
-          dscp: ef
-          ttl:
-            eq: 10
+      - afi: ipv4
+        acls:
+          - name: 110
+            aces:
+              - grant: deny
+                protocol_options:
+                  tcp:
+                    syn: true
+                source:
+                  address: 192.0.2.0
+                  wildcard_bits: 0.0.0.255
+                destination:
+                  address: 192.0.3.0
+                  wildcard_bits: 0.0.0.255
+                  port_protocol:
+                    eq: www
+                dscp: ef
+                ttl:
+                  eq: 10
+          - name: 150
+            aces:
+              - grant: deny
+                sequence: 20
+                protocol_options:
+                  tcp:
+                    syn: true
+                source:
+                  address: 198.51.100.0
+                  wildcard_bits: 0.0.0.255
+                  port_protocol:
+                    eq: telnet
+                destination:
+                  address: 198.51.110.0
+                  wildcard_bits: 0.0.0.255
+                  port_protocol:
+                    eq: telnet
+                dscp: ef
+                ttl:
+                  eq: 10
     state: replaced
 
 # Commands fired:
@@ -946,48 +941,48 @@ EXAMPLES = """
 - name: Override device configuration of all acls with provided configuration
   cisco.ios.ios_acls:
     config:
-    - afi: ipv4
-      acls:
-      - name: 110
-        aces:
-        - grant: deny
-          sequence: 20
-          protocol_options:
-            tcp:
-              ack: true
-          source:
-            address: 198.51.100.0
-            wildcard_bits: 0.0.0.255
-            port_protocol:
-              eq: telnet
-          destination:
-            address: 198.51.110.0
-            wildcard_bits: 0.0.0.255
-            port_protocol:
-              eq: www
-          dscp: ef
-          ttl:
-            eq: 10
-      - name: 150
-        aces:
-        - grant: deny
-          sequence: 10
-          protocol_options:
-            tcp:
-              syn: true
-          source:
-            address: 198.51.100.0
-            wildcard_bits: 0.0.0.255
-            port_protocol:
-              eq: telnet
-          destination:
-            address: 198.51.110.0
-            wildcard_bits: 0.0.0.255
-            port_protocol:
-              eq: telnet
-          dscp: ef
-          ttl:
-            eq: 10
+      - afi: ipv4
+        acls:
+          - name: 110
+            aces:
+              - grant: deny
+                sequence: 20
+                protocol_options:
+                  tcp:
+                    ack: true
+                source:
+                  address: 198.51.100.0
+                  wildcard_bits: 0.0.0.255
+                  port_protocol:
+                    eq: telnet
+                destination:
+                  address: 198.51.110.0
+                  wildcard_bits: 0.0.0.255
+                  port_protocol:
+                    eq: www
+                dscp: ef
+                ttl:
+                  eq: 10
+          - name: 150
+            aces:
+              - grant: deny
+                sequence: 10
+                protocol_options:
+                  tcp:
+                    syn: true
+                source:
+                  address: 198.51.100.0
+                  wildcard_bits: 0.0.0.255
+                  port_protocol:
+                    eq: telnet
+                destination:
+                  address: 198.51.110.0
+                  wildcard_bits: 0.0.0.255
+                  port_protocol:
+                    eq: telnet
+                dscp: ef
+                ttl:
+                  eq: 10
     state: overridden
 
 # Commands fired:
@@ -1036,14 +1031,14 @@ EXAMPLES = """
 - name: "Delete ACLs (Note: This won't delete the all configured ACLs)"
   cisco.ios.ios_acls:
     config:
-    - afi: ipv4
-      acls:
-      - name: test
-        acl_type: extended
-      - name: 110
-    - afi: ipv6
-      acls:
-      - name: R1_TRAFFIC
+      - afi: ipv4
+        acls:
+          - name: test
+            acl_type: extended
+          - name: 110
+      - afi: ipv6
+        acls:
+          - name: R1_TRAFFIC
     state: deleted
 
 # Commands fired:
@@ -1085,7 +1080,7 @@ EXAMPLES = """
 - name: "Delete ACLs based on AFI (Note: This won't delete the all configured ACLs)"
   cisco.ios.ios_acls:
     config:
-    - afi: ipv4
+      - afi: ipv4
     state: deleted
 
 # Commands fired:
@@ -1124,8 +1119,9 @@ EXAMPLES = """
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-- name: 'Delete ALL of configured ACLs (Note: This WILL delete the all configured
-    ACLs)'
+- name:
+    "Delete ALL of configured ACLs (Note: This WILL delete the all configured
+    ACLs)"
   cisco.ios.ios_acls:
     state: deleted
 
@@ -1328,45 +1324,45 @@ EXAMPLES = """
 - name: Rendered the provided configuration with the existing running configuration
   cisco.ios.ios_acls:
     config:
-    - afi: ipv4
-      acls:
-      - name: 110
-        aces:
-        - grant: deny
-          sequence: 10
-          protocol_options:
-            tcp:
-              syn: true
-          source:
-            address: 192.0.2.0
-            wildcard_bits: 0.0.0.255
-          destination:
-            address: 192.0.3.0
-            wildcard_bits: 0.0.0.255
-            port_protocol:
-              eq: www
-          dscp: ef
-          ttl:
-            eq: 10
-      - name: 150
-        aces:
-        - grant: deny
-          protocol_options:
-            tcp:
-              syn: true
-          source:
-            address: 198.51.100.0
-            wildcard_bits: 0.0.0.255
-            port_protocol:
-              eq: telnet
-          destination:
-            address: 198.51.110.0
-            wildcard_bits: 0.0.0.255
-            port_protocol:
-              eq: telnet
-          dscp: ef
-          ttl:
-            eq: 10
+      - afi: ipv4
+        acls:
+          - name: 110
+            aces:
+              - grant: deny
+                sequence: 10
+                protocol_options:
+                  tcp:
+                    syn: true
+                source:
+                  address: 192.0.2.0
+                  wildcard_bits: 0.0.0.255
+                destination:
+                  address: 192.0.3.0
+                  wildcard_bits: 0.0.0.255
+                  port_protocol:
+                    eq: www
+                dscp: ef
+                ttl:
+                  eq: 10
+          - name: 150
+            aces:
+              - grant: deny
+                protocol_options:
+                  tcp:
+                    syn: true
+                source:
+                  address: 198.51.100.0
+                  wildcard_bits: 0.0.0.255
+                  port_protocol:
+                    eq: telnet
+                destination:
+                  address: 198.51.110.0
+                  wildcard_bits: 0.0.0.255
+                  port_protocol:
+                    eq: telnet
+                dscp: ef
+                ttl:
+                  eq: 10
     state: rendered
 
 # Module Execution Result:

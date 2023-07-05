@@ -5,6 +5,90 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v5.0.0
+======
+
+Major Changes
+-------------
+
+- This release removes a previously deprecated modules, and a few attributes from this collection. Refer to **Removed Features** section for details.
+
+Minor Changes
+-------------
+
+- ios_facts - Add CPU utilization. (https://github.com/ansible-collections/cisco.ios/issues/779)
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- Deprecated ios_logging module in favor of ios_logging_global.
+- Deprecated next_hop_self attribute for bgp_address_family with nexthop_self.
+
+Bugfixes
+--------
+
+- ios_facts - Fix facts gathering when memory statistics head is not hexadecimal. (https://github.com/ansible-collections/cisco.ios/issues/776)
+- ios_snmp_server - Fixes error handling for snmp user when snmp agent is not enabled
+- ios_static_routes - Fix non vlan entries to have unique group identifier.
+- ios_static_routes - Fix parsers to parse interface attribute correctly.
+
+Documentation Changes
+---------------------
+
+- ios_facts - Add ansible_net_cpu_utilization.
+
+v4.6.1
+======
+
+Bugfixes
+--------
+
+- ios_l3_interfaces - account for secondary/primary when comparing ipv4 addresses. (https://github.com/ansible-collections/cisco.ios/issues/826)
+- ios_lag_interfaces - Fix empty facts to be a list.
+- ios_ospf_interface - Fix configuration rendering for ipv4 and ipv6 configurations.
+- ios_ospf_interface - Fix replaced and overridden state, action to negate superfluous configuration.
+- ios_snmp_server - Add default versions to version 3 users.
+- snmp_server - update module to get snmp_server user configuration.
+
+Documentation Changes
+---------------------
+
+- Lint examples as per ansible-lint.
+
+v4.6.0
+======
+
+Minor Changes
+-------------
+
+- ios_interfaces - Add template attribute to provide support for cisco ios templates.
+- ios_service - Create module to manage service configuration on IOS switches
+
+Bugfixes
+--------
+
+- ios_facts - fix calculation of memory from bytes to megabytes; grab correct output element for free memory (https://github.com/ansible-collections/cisco.ios/issues/763)
+- ospfv2 - Fixed rendering of capability command with vrf_lite.
+- ospfv3 - Fixed rendering of capability command with vrf_lite.
+
+Documentation Changes
+---------------------
+
+- ios_bgp_address_family - Fixed examples formatting.
+- ios_bgp_global - Fixed examples formatting.
+- ios_interfaces - Corrected inteface names in documentation.
+- ios_interfaces - Fixed module documentation and examples.
+- ios_l2_interfaces - Fixed module documentation and examples.
+- ios_l3_interfaces - Fixed module documentation and examples.
+- ios_l3_interfaces - Fixed module examples, update tasks to generate address and not network interface.
+- ios_static_routes - Corrected static routes before state in documentation.
+- ios_static_routes - Fixed examples formatting.
+
+New Modules
+-----------
+
+- ios_service - Resource module to configure service.
+
 v4.5.0
 ======
 

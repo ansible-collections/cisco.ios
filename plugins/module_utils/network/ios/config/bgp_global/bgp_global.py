@@ -148,7 +148,7 @@ class Bgp_global(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
-        if self.state in ["merged", "replaced"]:
+        if self.state in ["merged", "replaced", "overridden"]:
             w_asn = self.want.get("as_number")
             h_asn = self.have.get("as_number")
 

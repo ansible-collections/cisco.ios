@@ -46,7 +46,7 @@ options:
           action:
             description: Route map set operations
             type: str
-            choices: ['deny', 'permit']
+            choices: ["deny", "permit"]
           continue_entry:
             description: Continue on a different entry within the route-map
             type: dict
@@ -950,7 +950,7 @@ options:
                 suboptions:
                   deviation:
                     description: Add or subtract metric
-                    choices: ['plus', 'minus']
+                    choices: ["plus", "minus"]
                     type: str
                   metric_value:
                     description:
@@ -1067,7 +1067,6 @@ options:
 """
 
 EXAMPLES = """
-
 # Using deleted
 
 # Before state:
@@ -2298,7 +2297,6 @@ EXAMPLES = """
 #             "route_map": "test_2"
 #         }
 #     ]
-
 """
 
 RETURN = """

@@ -180,6 +180,22 @@ Parameters
                         <div>Interface link speed. Applicable for Ethernet interfaces only.</div>
                 </td>
             </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>template</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>IOS template name.</div>
+                </td>
+            </tr>
 
             <tr>
                 <td colspan="2">
@@ -288,7 +304,6 @@ Examples
             duplex: full
         state: merged
 
-
     # Task Output
     # -----------
     #
@@ -300,8 +315,8 @@ Examples
     #   name: GigabitEthernet2
     #   speed: '1000'
     # - description: Configured and Merged by Ansible Network
-    #   enabled: true
-    #   mtu: 2800
+    #   enabled: false
+    #   mtu: 3800
     #   name: GigabitEthernet3
     #   speed: '1000'
     # - enabled: false
@@ -312,7 +327,10 @@ Examples
     #   name: Loopback999
     # commands:
     # - interface GigabitEthernet3
+    # - description Configured and Merged by Ansible Network
+    # - speed 100
     # - mtu 3800
+    # - duplex full
     # - shutdown
     # after:
     # - enabled: true
@@ -322,8 +340,8 @@ Examples
     #   name: GigabitEthernet2
     #   speed: '1000'
     # - description: Configured and Merged by Ansible Network
-    #   enabled: false
-    #   mtu: 3800
+    #   enabled: true
+    #   mtu: 2800
     #   name: GigabitEthernet3
     #   speed: '1000'
     # - enabled: false
@@ -389,6 +407,7 @@ Examples
 
     # Task Output
     # -----------
+    #
     # before:
     # - enabled: true
     #   name: GigabitEthernet1
@@ -400,10 +419,8 @@ Examples
     # - interface GigabitEthernet2
     # - description Configured and Merged by Ansible Network
     # - switchport
-    # - no shutdown
     # - interface GigabitEthernet3
     # - description Configured and Merged by Ansible Network
-    # - shutdown
     # after:
     # - enabled: true
     #   name: GigabitEthernet1
@@ -411,7 +428,6 @@ Examples
     #   enabled: true
     #   name: GigabitEthernet2
     # - description: Configured and Merged by Ansible Network
-    #   enabled: false
     #   name: GigabitEthernet3
     #   mode: layer3
 
@@ -426,7 +442,6 @@ Examples
     # interface GigabitEthernet3
     #  description Configured and Merged by Ansible Network
     #  no switchport
-    #  shutdown
 
     # Using replaced
 
@@ -460,10 +475,10 @@ Examples
     - name: Replaces device configuration of listed interfaces with provided configuration
       cisco.ios.ios_interfaces:
         config:
-        - name: GigabitEthernet0/3
-          description: Configured and Replaced by Ansible Network
-          enabled: false
-          speed: 1000
+          - name: GigabitEthernet3
+            description: Configured and Replaced by Ansible Network
+            enabled: false
+            speed: 1000
         state: replaced
 
     # Task Output
@@ -574,15 +589,15 @@ Examples
     - name: Override device configuration of all interfaces with provided configuration
       cisco.ios.ios_interfaces:
         config:
-        - description: Management interface do not change
-          enabled: true
-          name: GigabitEthernet1
-        - name: GigabitEthernet2
-          description: Configured and Overridden by Ansible Network
-          speed: 10000
-        - name: GigabitEthernet3
-          description: Configured and Overridden by Ansible Network
-          enabled: false
+          - description: Management interface do not change
+            enabled: true
+            name: GigabitEthernet1
+          - name: GigabitEthernet2
+            description: Configured and Overridden by Ansible Network
+            speed: 10000
+          - name: GigabitEthernet3
+            description: Configured and Overridden by Ansible Network
+            enabled: false
         state: overridden
 
     # Task Output
@@ -712,7 +727,7 @@ Examples
     - name: "Delete interface attributes (Note: This won't delete the interface itself)"
       cisco.ios.ios_interfaces:
         config:
-        - name: GigabitEthernet2
+          - name: GigabitEthernet2
         state: deleted
 
     # Task Output
@@ -834,8 +849,8 @@ Examples
     - name: "Purge given interfaces (Note: This will delete the interface itself)"
       cisco.ios.ios_interfaces:
         config:
-        - name: Loopback888
-        - name: Vlan50
+          - name: Loopback888
+          - name: Vlan50
         state: purged
 
     # Task Output
@@ -906,7 +921,6 @@ Examples
     #  shutdown
     #  negotiation auto
 
-
     # Using gathered
 
     # Before state:
@@ -965,17 +979,17 @@ Examples
     - name: Render the commands for provided configuration
       cisco.ios.ios_interfaces:
         config:
-        - name: GigabitEthernet1
-          description: Configured by Ansible-Network
-          mtu: 110
-          enabled: true
-          duplex: half
-        - name: GigabitEthernet2
-          description: Configured by Ansible-Network
-          mtu: 2800
-          enabled: false
-          speed: 100
-          duplex: full
+          - name: GigabitEthernet1
+            description: Configured by Ansible-Network
+            mtu: 110
+            enabled: true
+            duplex: half
+          - name: GigabitEthernet2
+            description: Configured by Ansible-Network
+            mtu: 2800
+            enabled: false
+            speed: 100
+            duplex: full
         state: rendered
 
     # Task Output

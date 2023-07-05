@@ -19,8 +19,8 @@ short_description: Resource module to configure interfaces.
 description: This module manages the interface attributes of Cisco IOS network devices.
 version_added: 1.0.0
 author:
-- Sumit Jaiswal (@justjais)
-- Sagar Paul (@KB-perByte)
+  - Sumit Jaiswal (@justjais)
+  - Sagar Paul (@KB-perByte)
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
@@ -35,49 +35,53 @@ options:
     suboptions:
       name:
         description:
-        - Full name of interface, e.g. GigabitEthernet0/2, loopback999.
+          - Full name of interface, e.g. GigabitEthernet0/2, loopback999.
         type: str
         required: true
       description:
         description:
-        - Interface description.
+          - Interface description.
         type: str
       enabled:
         description:
-        - Administrative state of the interface.
-        - Set the value to C(true) to administratively enable the interface or C(false)
-          to disable it.
+          - Administrative state of the interface.
+          - Set the value to C(true) to administratively enable the interface or C(false)
+            to disable it.
         type: bool
         default: true
       speed:
         description:
-        - Interface link speed. Applicable for Ethernet interfaces only.
+          - Interface link speed. Applicable for Ethernet interfaces only.
         type: str
       mtu:
         description:
-        - MTU for a specific interface. Applicable for Ethernet interfaces only.
-        - Refer to vendor documentation for valid values.
+          - MTU for a specific interface. Applicable for Ethernet interfaces only.
+          - Refer to vendor documentation for valid values.
         type: int
       mode:
         description:
-        - Manage Layer2 or Layer3 state of the interface.
-        - For a Layer 2 appliance mode Layer2 adds switchport command ( default impacts idempotency).
-        - For a Layer 2 appliance mode Layer3 adds no switchport command.
-        - For a Layer 3 appliance mode Layer3/2 has no impact rather command fails on apply.
+          - Manage Layer2 or Layer3 state of the interface.
+          - For a Layer 2 appliance mode Layer2 adds switchport command ( default impacts idempotency).
+          - For a Layer 2 appliance mode Layer3 adds no switchport command.
+          - For a Layer 3 appliance mode Layer3/2 has no impact rather command fails on apply.
         choices:
-        - layer2
-        - layer3
+          - layer2
+          - layer3
         type: str
       duplex:
         description:
-        - Interface link status. Applicable for Ethernet interfaces only, either in
-          half duplex, full duplex or in automatic state which negotiates the duplex
-          automatically.
+          - Interface link status. Applicable for Ethernet interfaces only, either in
+            half duplex, full duplex or in automatic state which negotiates the duplex
+            automatically.
         type: str
         choices:
-        - full
-        - half
-        - auto
+          - full
+          - half
+          - auto
+      template:
+        description:
+          - IOS template name.
+        type: str
   running_config:
     description:
       - This option is used only with state I(parsed).
@@ -89,14 +93,14 @@ options:
     type: str
   state:
     choices:
-    - merged
-    - replaced
-    - overridden
-    - deleted
-    - rendered
-    - gathered
-    - purged
-    - parsed
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - rendered
+      - gathered
+      - purged
+      - parsed
     default: merged
     description:
       - The state the configuration should be left in
@@ -162,7 +166,6 @@ EXAMPLES = """
         duplex: full
     state: merged
 
-
 # Task Output
 # -----------
 #
@@ -174,8 +177,8 @@ EXAMPLES = """
 #   name: GigabitEthernet2
 #   speed: '1000'
 # - description: Configured and Merged by Ansible Network
-#   enabled: true
-#   mtu: 2800
+#   enabled: false
+#   mtu: 3800
 #   name: GigabitEthernet3
 #   speed: '1000'
 # - enabled: false
@@ -186,7 +189,10 @@ EXAMPLES = """
 #   name: Loopback999
 # commands:
 # - interface GigabitEthernet3
+# - description Configured and Merged by Ansible Network
+# - speed 100
 # - mtu 3800
+# - duplex full
 # - shutdown
 # after:
 # - enabled: true
@@ -196,8 +202,8 @@ EXAMPLES = """
 #   name: GigabitEthernet2
 #   speed: '1000'
 # - description: Configured and Merged by Ansible Network
-#   enabled: false
-#   mtu: 3800
+#   enabled: true
+#   mtu: 2800
 #   name: GigabitEthernet3
 #   speed: '1000'
 # - enabled: false
@@ -263,6 +269,7 @@ EXAMPLES = """
 
 # Task Output
 # -----------
+#
 # before:
 # - enabled: true
 #   name: GigabitEthernet1
@@ -274,10 +281,8 @@ EXAMPLES = """
 # - interface GigabitEthernet2
 # - description Configured and Merged by Ansible Network
 # - switchport
-# - no shutdown
 # - interface GigabitEthernet3
 # - description Configured and Merged by Ansible Network
-# - shutdown
 # after:
 # - enabled: true
 #   name: GigabitEthernet1
@@ -285,7 +290,6 @@ EXAMPLES = """
 #   enabled: true
 #   name: GigabitEthernet2
 # - description: Configured and Merged by Ansible Network
-#   enabled: false
 #   name: GigabitEthernet3
 #   mode: layer3
 
@@ -300,7 +304,6 @@ EXAMPLES = """
 # interface GigabitEthernet3
 #  description Configured and Merged by Ansible Network
 #  no switchport
-#  shutdown
 
 # Using replaced
 
@@ -334,10 +337,10 @@ EXAMPLES = """
 - name: Replaces device configuration of listed interfaces with provided configuration
   cisco.ios.ios_interfaces:
     config:
-    - name: GigabitEthernet0/3
-      description: Configured and Replaced by Ansible Network
-      enabled: false
-      speed: 1000
+      - name: GigabitEthernet3
+        description: Configured and Replaced by Ansible Network
+        enabled: false
+        speed: 1000
     state: replaced
 
 # Task Output
@@ -448,15 +451,15 @@ EXAMPLES = """
 - name: Override device configuration of all interfaces with provided configuration
   cisco.ios.ios_interfaces:
     config:
-    - description: Management interface do not change
-      enabled: true
-      name: GigabitEthernet1
-    - name: GigabitEthernet2
-      description: Configured and Overridden by Ansible Network
-      speed: 10000
-    - name: GigabitEthernet3
-      description: Configured and Overridden by Ansible Network
-      enabled: false
+      - description: Management interface do not change
+        enabled: true
+        name: GigabitEthernet1
+      - name: GigabitEthernet2
+        description: Configured and Overridden by Ansible Network
+        speed: 10000
+      - name: GigabitEthernet3
+        description: Configured and Overridden by Ansible Network
+        enabled: false
     state: overridden
 
 # Task Output
@@ -586,7 +589,7 @@ EXAMPLES = """
 - name: "Delete interface attributes (Note: This won't delete the interface itself)"
   cisco.ios.ios_interfaces:
     config:
-    - name: GigabitEthernet2
+      - name: GigabitEthernet2
     state: deleted
 
 # Task Output
@@ -708,8 +711,8 @@ EXAMPLES = """
 - name: "Purge given interfaces (Note: This will delete the interface itself)"
   cisco.ios.ios_interfaces:
     config:
-    - name: Loopback888
-    - name: Vlan50
+      - name: Loopback888
+      - name: Vlan50
     state: purged
 
 # Task Output
@@ -780,7 +783,6 @@ EXAMPLES = """
 #  shutdown
 #  negotiation auto
 
-
 # Using gathered
 
 # Before state:
@@ -839,17 +841,17 @@ EXAMPLES = """
 - name: Render the commands for provided configuration
   cisco.ios.ios_interfaces:
     config:
-    - name: GigabitEthernet1
-      description: Configured by Ansible-Network
-      mtu: 110
-      enabled: true
-      duplex: half
-    - name: GigabitEthernet2
-      description: Configured by Ansible-Network
-      mtu: 2800
-      enabled: false
-      speed: 100
-      duplex: full
+      - name: GigabitEthernet1
+        description: Configured by Ansible-Network
+        mtu: 110
+        enabled: true
+        duplex: half
+      - name: GigabitEthernet2
+        description: Configured by Ansible-Network
+        mtu: 2800
+        enabled: false
+        speed: 100
+        duplex: full
     state: rendered
 
 # Task Output
@@ -966,6 +968,7 @@ parsed:
   sample: >
     This output will always be in the same format as the
     module argspec.
+
 """
 
 from ansible.module_utils.basic import AnsibleModule

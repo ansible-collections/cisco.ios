@@ -70,11 +70,11 @@ def _tmplt_ospf_area_nssa(config_data):
             command += " default-information-originate"
             if "metric" in config_data["nssa"]["default_information_originate"]:
                 command += " metric {metric}".format(
-                    **config_data["nssa"]["default_information_originate"]
+                    **config_data["nssa"]["default_information_originate"],
                 )
             if "metric_type" in config_data["nssa"]["default_information_originate"]:
                 command += " metric-type {metric_type}".format(
-                    **config_data["nssa"]["default_information_originate"]
+                    **config_data["nssa"]["default_information_originate"],
                 )
             if "nssa_only" in config_data["nssa"]["default_information_originate"]:
                 command += " nssa-only"
@@ -139,7 +139,7 @@ def _tmplt_ospf_auto_cost(config_data):
         command = "auto-cost"
         if "reference_bandwidth" in config_data["auto_cost"]:
             command += " reference-bandwidth {reference_bandwidth}".format(
-                **config_data["auto_cost"]
+                **config_data["auto_cost"],
             )
         return command
 
@@ -153,7 +153,7 @@ def _tmplt_ospf_capability(config_data):
         elif "transit" in config_data["capability"]:
             command = "capability transit"
         elif "vrf_lite" in config_data["capability"]:
-            command = "capability vrf_lite"
+            command = "capability vrf-lite"
         return command
 
 
@@ -199,7 +199,7 @@ def _tmplt_ospf_distance_admin_distance(config_data):
         command = "distance {distance}".format(**config_data["distance"]["admin_distance"])
         if "address" in config_data["distance"]["admin_distance"]:
             command += " {address} {wildcard_bits}".format(
-                **config_data["distance"]["admin_distance"]
+                **config_data["distance"]["admin_distance"],
             )
         if "acl" in config_data["distance"]["admin_distance"]:
             command += " {acl}".format(**config_data["distance"]["admin_distance"])
@@ -360,17 +360,17 @@ def _tmplt_ospf_mpls_traffic_eng(config_data):
             command += " area {area}".format(**config_data["mpls"]["traffic_eng"])
         elif "autoroute_exclude" in config_data["mpls"]["traffic_eng"]:
             command += " autoroute-exclude prefix-list {autoroute_exclude}".format(
-                **config_data["mpls"]["traffic_eng"]
+                **config_data["mpls"]["traffic_eng"],
             )
         elif "interface" in config_data["mpls"]["traffic_eng"]:
             command += " interface {int_type}".format(
-                **config_data["mpls"]["traffic_eng"]["interface"]
+                **config_data["mpls"]["traffic_eng"]["interface"],
             )
             if "area" in config_data["mpls"]["traffic_eng"]["interface"]:
                 command += " area {area}".format(**config_data["mpls"]["traffic_eng"]["interface"])
         elif "mesh_group" in config_data["mpls"]["traffic_eng"]:
             command += " mesh-group {id} {interface}".format(
-                **config_data["mpls"]["traffic_eng"]["mesh_group"]
+                **config_data["mpls"]["traffic_eng"]["mesh_group"],
             )
             if "area" in config_data["mpls"]["traffic_eng"]["mesh_group"]:
                 command += " area {area}".format(**config_data["mpls"]["traffic_eng"]["mesh_group"])
@@ -378,7 +378,7 @@ def _tmplt_ospf_mpls_traffic_eng(config_data):
             command += " multicast-intact"
         elif "router_id_interface" in config_data["mpls"]["traffic_eng"]:
             command += " router-id {router_id_interface}".format(
-                **config_data["mpls"]["traffic_eng"]
+                **config_data["mpls"]["traffic_eng"],
             )
         return command
 

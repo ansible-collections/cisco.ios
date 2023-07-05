@@ -21,32 +21,11 @@ class TestIosOspfV2Module(TestIosModule):
     def setUp(self):
         super(TestIosOspfV2Module, self).setUp()
 
-        self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
-        )
-        self.get_config = self.mock_get_config.start()
-
-        self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
-        )
-        self.load_config = self.mock_load_config.start()
-
-        self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection",
-        )
-        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
-
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
-
-        self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
-        )
-        self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ospfv2.ospfv2."
@@ -56,11 +35,7 @@ class TestIosOspfV2Module(TestIosModule):
 
     def tearDown(self):
         super(TestIosOspfV2Module, self).tearDown()
-        self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
-        self.mock_edit_config.stop()
-        self.mock_get_config.stop()
-        self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
 
     def load_fixtures(self, commands=None):
@@ -118,6 +93,27 @@ class TestIosOspfV2Module(TestIosModule):
             "no passive-interface GigabitEthernet0/2",
             "max-metric router-lsa on-startup 100",
         ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_ospfv2_merged_specific_param(self):
+        set_module_args(
+            dict(
+                config={
+                    "processes": [
+                        {
+                            "process_id": 1,
+                            "router_id": "0.0.0.1",
+                            "vrf": "vrf",
+                            "areas": [{"area_id": 0}],
+                            "capability": {"vrf_lite": True},
+                        },
+                    ],
+                },
+                state="merged",
+            ),
+        )
+        commands = ["router ospf 1 vrf vrf", "capability vrf-lite", "router-id 0.0.0.1"]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 

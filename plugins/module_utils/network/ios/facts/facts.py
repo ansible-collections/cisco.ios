@@ -67,7 +67,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ntp_gl
     Ntp_globalFacts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ospf_interfaces.ospf_interfaces import (
-    Ospf_InterfacesFacts,
+    Ospf_interfacesFacts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ospfv2.ospfv2 import (
     Ospfv2Facts,
@@ -80,6 +80,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.prefix
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.route_maps.route_maps import (
     Route_mapsFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.service.service import (
+    ServiceFacts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.snmp_server.snmp_server import (
     Snmp_serverFacts,
@@ -112,13 +115,14 @@ FACT_RESOURCE_SUBSETS = dict(
     acls=AclsFacts,
     ospfv2=Ospfv2Facts,
     ospfv3=Ospfv3Facts,
-    ospf_interfaces=Ospf_InterfacesFacts,
+    ospf_interfaces=Ospf_interfacesFacts,
     bgp_global=Bgp_globalFacts,
     bgp_address_family=Bgp_address_familyFacts,
     logging_global=Logging_globalFacts,
     route_maps=Route_mapsFacts,
     prefix_lists=Prefix_listsFacts,
     ntp_global=Ntp_globalFacts,
+    service=ServiceFacts,
     snmp_server=Snmp_serverFacts,
     hostname=HostnameFacts,
     spanning_tree=Spanning_treeFacts,

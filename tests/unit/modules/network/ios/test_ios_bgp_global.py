@@ -23,32 +23,11 @@ class TestIosBgpGlobalModule(TestIosModule):
     def setUp(self):
         super(TestIosBgpGlobalModule, self).setUp()
 
-        self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
-        )
-        self.get_config = self.mock_get_config.start()
-
-        self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
-        )
-        self.load_config = self.mock_load_config.start()
-
-        self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection",
-        )
-        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
-
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
-
-        self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
-        )
-        self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_global.bgp_global."
@@ -58,11 +37,7 @@ class TestIosBgpGlobalModule(TestIosModule):
 
     def tearDown(self):
         super(TestIosBgpGlobalModule, self).tearDown()
-        self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
-        self.mock_edit_config.stop()
-        self.mock_get_config.stop()
-        self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
 
     def test_ios_bgp_global_merged(self):
@@ -343,13 +318,68 @@ class TestIosBgpGlobalModule(TestIosModule):
                 state="merged",
             ),
         )
-        # self.assertEqual(sorted(result["commands"]), sorted(commands))
         with self.assertRaises(AnsibleFailJson) as error:
             self.execute_module(changed=False, commands=[])
         self.assertIn(
             "BGP is already configured with ASN 65000. Please remove it with state: purged before configuring new ASN",
             str(error.exception),
         )
+
+    def test_ios_bgp_global_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp nopeerup-delay post-boot 10
+             bgp bestpath compare-routerid
+             bgp advertise-best-external
+             aggregate-address 192.168.0.11 255.255.0.0 attribute-map map1
+             timers bgp 100 200 150
+             redistribute connected metric 10
+             neighbor 192.0.2.2 remote-as 100
+             neighbor 192.0.2.2 route-map test-route out
+             address-family ipv4
+              neighbor 192.0.2.28 activate
+              neighbor 172.31.35.140 activate
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    aggregate_address=dict(
+                        dict(address="192.168.0.11", attribute_map="map1", netmask="255.255.0.0"),
+                    ),
+                    aggregate_addresses=[
+                        dict(address="192.168.0.1", attribute_map="map", netmask="255.255.0.0"),
+                        dict(address="192.168.0.2", attribute_map="map2", netmask="255.255.0.0"),
+                    ],
+                    bgp=dict(
+                        advertise_best_external=True,
+                        bestpath_options=dict(compare_routerid=True),
+                        log_neighbor_changes=True,
+                        nopeerup_delay_options=dict(cold_boot=20, post_boot=10),
+                    ),
+                    redistribute=[dict(connected=dict(set=True, metric=10))],
+                    neighbors=[
+                        dict(address="192.0.2.1", remote_as=200, description="replace neighbor"),
+                    ],
+                ),
+                state="overridden",
+            ),
+        )
+        commands = [
+            "router bgp 65000",
+            "no timers bgp 100 200 150",
+            "bgp log-neighbor-changes",
+            "bgp nopeerup-delay cold-boot 20",
+            "aggregate-address 192.168.0.1 255.255.0.0 attribute-map map",
+            "aggregate-address 192.168.0.2 255.255.0.0 attribute-map map2",
+            "neighbor 192.0.2.1 remote-as 200",
+            "neighbor 192.0.2.1 description replace neighbor",
+            "no neighbor 192.0.2.2",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_bgp_global_replaced(self):
         self.execute_show_command.return_value = dedent(
