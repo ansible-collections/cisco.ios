@@ -120,7 +120,6 @@ class Ospfv2(ResourceModule):
                 # entry = self._handle_deprecated(entry)
                 haved.update({(entry["process_id"], entry.get("vrf")): entry})
 
-        
         # turn all lists of dicts into dicts prior to merge
         for each in wantd, haved:
             if each:
@@ -198,7 +197,7 @@ class Ospfv2(ResourceModule):
         self._area_complex_compare(want, have, want.get("area_id"))
 
     def _area_complex_compare(self, want, have, area_id):
-        area_complex_parsers = ["filter_list","ranges"]
+        area_complex_parsers = ["filter_list", "ranges"]
         for _parser in area_complex_parsers:
             wantr = want.get(_parser, {})
             haver = have.get(_parser, {})
@@ -213,7 +212,6 @@ class Ospfv2(ResourceModule):
             for key, haveing in iteritems(haver):
                 haveing["area_id"] = area_id
                 self.addcmd(haveing, _parser, negate=True)
-
 
     def _passive_interfaces_compare(self, want, have):
         parsers = ["passive_interfaces.default", "passive_interfaces.interface"]
@@ -292,8 +290,8 @@ class Ospfv2(ResourceModule):
             passive_interfaces = proc.get("passive_interfaces", {}).get("interface", {})
             if passive_interfaces.get("name"):
                 passive_interfaces["name"] = {entry: entry for entry in passive_interfaces["name"]}
-            
-            #list to dict for network
+
+            # list to dict for network
             if proc.get("network"):
                 proc["network"] = {entry["address"]: entry for entry in proc["network"]}
 

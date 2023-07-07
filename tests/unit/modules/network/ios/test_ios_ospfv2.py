@@ -40,7 +40,6 @@ class TestIosOspfV2Module(TestIosModule):
         self.mock_get_resource_connection_facts.stop()
         self.mock_execute_show_command.stop()
 
-
     def test_ios_ospfv2_merged(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -989,8 +988,7 @@ class TestIosOspfV2Module(TestIosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), commands)
 
-
-    def test_ios_ospfv2_overridden_2(self):        
+    def test_ios_ospfv2_overridden_2(self):
         self.execute_show_command.return_value = dedent(
             """\
             router ospf 200 vrf blue
@@ -1029,7 +1027,7 @@ class TestIosOspfV2Module(TestIosModule):
                                 "acls": [
                                     {"name": "110", "direction": "out"},
                                     {"name": "123", "direction": "in"},
-                                ]
+                                ],
                             },
                             "domain_id": {"ip_address": {"address": "192.0.3.1"}},
                             "max_metric": {"router_lsa": True, "on_startup": {"time": 100}},
@@ -1050,7 +1048,7 @@ class TestIosOspfV2Module(TestIosModule):
                                 "acls": [
                                     {"name": "5120", "direction": "out"},
                                     {"name": "123", "direction": "out"},
-                                ]
+                                ],
                             },
                             "domain_id": {"ip_address": {"address": "192.0.3.1"}},
                             "max_metric": {"router_lsa": True, "on_startup": {"time": 100}},
@@ -1063,30 +1061,29 @@ class TestIosOspfV2Module(TestIosModule):
                                 },
                             },
                         },
-                    ]
+                    ],
                 },
                 state="overridden",
             ),
         )
-        
+
         result = self.execute_module(changed=True)
         commands = [
-            'router ospf 200 vrf blue',
-            'no area 10 filter-list prefix test_prefix_in in',
-            'distribute-list 110 out',
-            'no distribute-list 10 out',
-            'router ospf 210 vrf green',
-            'auto-cost reference-bandwidth 5',
-            'area 11 capability default-exclusion', 
-            'no area 10 capability default-exclusion', 
-            'distribute-list 5120 out', 
-            'no distribute-list 123 in',
-            'distribute-list 123 out',
-            'no distribute-list 10 out',
-            'passive-interface GigabitEthernet0/1'
+            "router ospf 200 vrf blue",
+            "no area 10 filter-list prefix test_prefix_in in",
+            "distribute-list 110 out",
+            "no distribute-list 10 out",
+            "router ospf 210 vrf green",
+            "auto-cost reference-bandwidth 5",
+            "area 11 capability default-exclusion",
+            "no area 10 capability default-exclusion",
+            "distribute-list 5120 out",
+            "no distribute-list 123 in",
+            "distribute-list 123 out",
+            "no distribute-list 10 out",
+            "passive-interface GigabitEthernet0/1",
         ]
         self.assertEqual(result["commands"], commands)
-
 
     def test_ios_ospfv2_overridden_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -1115,7 +1112,7 @@ class TestIosOspfV2Module(TestIosModule):
                                 "acls": [
                                     {"name": "10", "direction": "out"},
                                     {"name": "123", "direction": "in"},
-                                ]
+                                ],
                             },
                             "domain_id": {"ip_address": {"address": "192.0.3.1"}},
                             "max_metric": {"router_lsa": True, "on_startup": {"time": 100}},
@@ -1127,7 +1124,7 @@ class TestIosOspfV2Module(TestIosModule):
                                     "name": ["GigabitEthernet0/2", "GigabitEthernet0/1"],
                                 },
                             },
-                        }
+                        },
                     ],
                 ),
                 state="overridden",
