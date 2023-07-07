@@ -179,19 +179,6 @@ def _tmplt_ospf_neighbor(config_data):
         return command
 
 
-def _tmplt_ospf_network(config_data):
-    if "network" in config_data:
-        command = []
-        for each in config_data["network"]:
-            cmd = "network"
-            if "address" in each:
-                cmd += " {address} {wildcard_bits}".format(**each)
-            if "area" in each:
-                cmd += " area {area}".format(**each)
-            command.append(cmd)
-        return command
-
-
 def _tmplt_ospf_nsf_ietf(config_data):
     if "ietf" in config_data["nsf"]:
         command = "nsf ietf helper"
@@ -224,8 +211,6 @@ def _tmplt_ospf_queue_depth_update(config_data):
 
 def _tmplt_ospf_passive_interfaces(config_data):
     if "passive_interfaces" in config_data:
-        if config_data["passive_interfaces"].get("default"):
-            cmd = "passive-interface default"
         if config_data["passive_interfaces"].get("interface"):
             if config_data["passive_interfaces"].get("set_interface"):
                 for each in config_data["passive_interfaces"]["interface"]:
@@ -1345,7 +1330,9 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_network,
+            "setval": "network"
+            "{{ (' ' + address + ' ' + wildcard_bits) if address is defined }}"
+            "{{ ' area ' + area if area is defined }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1421,7 +1408,8 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "passive-interface default",
+            "setval": "passive-interface"
+            "{{ ' default' if passive_interfaces.default }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {

@@ -57,7 +57,6 @@ class Ospfv2(ResourceModule):
             "discard_route",
             "distance.admin_distance",
             "distance.ospf",
-            # "distribute_list.acls",
             "distribute_list.prefix",
             "distribute_list.route_map",
             "domain_id",
@@ -76,7 +75,6 @@ class Ospfv2(ResourceModule):
             "mpls.ldp",
             "mpls.traffic_eng",
             "neighbor",
-            "network",
             "nsf.cisco",
             "nsf.ietf",
             "prefix_suppression",
@@ -122,6 +120,7 @@ class Ospfv2(ResourceModule):
                 # entry = self._handle_deprecated(entry)
                 haved.update({(entry["process_id"], entry.get("vrf")): entry})
 
+        
         # turn all lists of dicts into dicts prior to merge
         for each in wantd, haved:
             if each:
@@ -155,22 +154,27 @@ class Ospfv2(ResourceModule):
             self.addcmd(want or have, "pid", False)
             self.compare(self.parsers, want, have)
             self._areas_compare(want, have)
-            self._distribute_list_compare(want, have)
+            self._complex_compare(want, have)
             if want.get("passive_interfaces"):
                 self._passive_interfaces_compare(want, have)
 
-    def _distribute_list_compare(self, want, have):
-        wdist = want.get("distribute_list", {}).get("acls", {})
-        hdist = have.get("distribute_list", {}).get("acls", {})
-
-        for key, wanting in iteritems(wdist):
-            haveing = hdist.pop(key, {})
-            if wanting != haveing:
-                if haveing and self.state in ["overridden", "replaced"]:
-                    self.addcmd(haveing, "distribute_list.acls", negate=True)
-                self.addcmd(wanting, "distribute_list.acls", False)
-        for key, haveing in iteritems(hdist):
-            self.addcmd(haveing, "distribute_list.acls", negate=True)
+    def _complex_compare(self, want, have):
+        complex_parsers = ["distribute_list.acls", "network"]
+        for _parser in complex_parsers:
+            if _parser == "distribute_list.acls":
+                wdist = want.get("distribute_list", {}).get("acls", {})
+                hdist = have.get("distribute_list", {}).get("acls", {})
+            else:
+                wdist = want.get(_parser, {})
+                hdist = have.get(_parser, {})
+            for key, wanting in iteritems(wdist):
+                haveing = hdist.pop(key, {})
+                if wanting != haveing:
+                    if haveing and self.state in ["overridden", "replaced"]:
+                        self.addcmd(haveing, _parser, negate=True)
+                    self.addcmd(wanting, _parser, False)
+            for key, haveing in iteritems(hdist):
+                self.addcmd(haveing, _parser, negate=True)
 
     def _areas_compare(self, want, have):
         wareas = want.get("areas", {})
@@ -194,8 +198,8 @@ class Ospfv2(ResourceModule):
         self._area_complex_compare(want, have, want.get("area_id"))
 
     def _area_complex_compare(self, want, have, area_id):
-        parsers = ["filter_list","ranges"]
-        for _parser in parsers:
+        area_complex_parsers = ["filter_list","ranges"]
+        for _parser in area_complex_parsers:
             wantr = want.get(_parser, {})
             haver = have.get(_parser, {})
             for key, wanting in iteritems(wantr):
@@ -209,6 +213,7 @@ class Ospfv2(ResourceModule):
             for key, haveing in iteritems(haver):
                 haveing["area_id"] = area_id
                 self.addcmd(haveing, _parser, negate=True)
+
 
     def _passive_interfaces_compare(self, want, have):
         parsers = ["passive_interfaces.default", "passive_interfaces.interface"]
@@ -267,6 +272,7 @@ class Ospfv2(ResourceModule):
 
     def _list_to_dict(self, param):
         for _pid, proc in param.items():
+            # convert list to dict for areas
             for area in proc.get("areas", []):
                 area["ranges"] = {entry["address"]: entry for entry in area.get("ranges", [])}
                 area["filter_list"] = {
@@ -275,15 +281,21 @@ class Ospfv2(ResourceModule):
 
             proc["areas"] = {entry["area_id"]: entry for entry in proc.get("areas", [])}
 
+            # list to dict for distribute_list
             distribute_list = proc.get("distribute_list", {})
             if "acls" in distribute_list:
                 distribute_list["acls"] = {
                     entry["name"]: entry for entry in distribute_list["acls"]
                 }
 
+            # list to dict for passive_interfaces
             passive_interfaces = proc.get("passive_interfaces", {}).get("interface", {})
             if passive_interfaces.get("name"):
                 passive_interfaces["name"] = {entry: entry for entry in passive_interfaces["name"]}
+            
+            #list to dict for network
+            if proc.get("network"):
+                proc["network"] = {entry["address"]: entry for entry in proc["network"]}
 
     def _handle_deprecated(self, config):
         if config.get("passive_interface"):

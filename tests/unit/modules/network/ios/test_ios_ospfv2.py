@@ -246,7 +246,6 @@ class TestIosOspfV2Module(TestIosModule):
             "max-metric router-lsa on-startup 200",
         ]
         result = self.execute_module(changed=True)
-        print(result["commands"])
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_ospfv2_overridden(self):
@@ -563,7 +562,6 @@ class TestIosOspfV2Module(TestIosModule):
             "mpls ldp autoconfig area area1",
             "mpls traffic-eng area area12",
             "neighbor 172.16.1.0 cost 2 database-filter all out poll-interval 20 priority 10",
-            "network 198.51.100.0 0.0.0.255 area 5",
             "nsf cisco helper disable",
             "nsf ietf helper disable",
             "prefix-suppression",
@@ -586,6 +584,7 @@ class TestIosOspfV2Module(TestIosModule):
             "area 10 filter-list prefix test_prefix_in in",
             "area 10 filter-list prefix test_prefix_out out",
             "area 10 range 172.16.1.0 0.0.0.255 not-advertise cost 20",
+            "network 198.51.100.0 0.0.0.255 area 5",
             "passive-interface default",
             "no passive-interface GigabitEthernet0/1",
             "no passive-interface GigabitEthernet0/2",
@@ -991,8 +990,7 @@ class TestIosOspfV2Module(TestIosModule):
         self.assertEqual(sorted(result["rendered"]), commands)
 
 
-    def test_ios_ospfv2_overridden_2(self):
-        from textwrap import dedent
+    def test_ios_ospfv2_overridden_2(self):        
         self.execute_show_command.return_value = dedent(
             """\
             router ospf 200 vrf blue
@@ -1072,7 +1070,6 @@ class TestIosOspfV2Module(TestIosModule):
         )
         
         result = self.execute_module(changed=True)
-        print(result["commands"])
         commands = [
             'router ospf 200 vrf blue',
             'no area 10 filter-list prefix test_prefix_in in',
