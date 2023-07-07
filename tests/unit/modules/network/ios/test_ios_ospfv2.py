@@ -246,6 +246,7 @@ class TestIosOspfV2Module(TestIosModule):
             "max-metric router-lsa on-startup 200",
         ]
         result = self.execute_module(changed=True)
+        print(result["commands"])
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_ospfv2_overridden(self):
@@ -311,7 +312,6 @@ class TestIosOspfV2Module(TestIosModule):
                                     "ranges": [
                                         {
                                             "address": "172.16.1.0",
-                                            "advertise": True,
                                             "cost": 20,
                                             "netmask": "0.0.0.255",
                                             "not_advertise": True,
@@ -581,16 +581,17 @@ class TestIosOspfV2Module(TestIosModule):
             "area 10 default-cost 10",
             "area 10 nssa default-information-originate metric 10 metric-type 1 nssa-only no-ext-capability no-redistribution no-summary",
             "area 10 nssa translate type7 suppress-fa",
-            "area 10 range 172.16.1.0 0.0.0.255 advertise cost 20",
             "area 10 sham-link checkSource checkDestination cost 10 ttl-security hops 20",
             "area 10 stub no-ext-capability no-summary",
             "area 10 filter-list prefix test_prefix_in in",
             "area 10 filter-list prefix test_prefix_out out",
+            "area 10 range 172.16.1.0 0.0.0.255 not-advertise cost 20",
             "passive-interface default",
             "no passive-interface GigabitEthernet0/1",
             "no passive-interface GigabitEthernet0/2",
         ]
         result = self.execute_module(changed=True)
+        self.maxDiff = None
         self.assertEqual(commands, result["commands"])
 
     def test_ios_ospfv2_deleted(self):
@@ -714,7 +715,6 @@ class TestIosOspfV2Module(TestIosModule):
                                             "advertise": True,
                                             "cost": 20,
                                             "netmask": "0.0.0.255",
-                                            "not_advertise": True,
                                         },
                                     ],
                                     "sham_link": {
@@ -1002,6 +1002,7 @@ class TestIosOspfV2Module(TestIosModule):
              domain-id 192.0.3.1
              max-metric router-lsa on-startup 100
              area 10 capability default-exclusion
+             area 10 filter-list prefix test_prefix_in in
              passive-interface default
              no passive-interface GigabitEthernet0/1
              no passive-interface GigabitEthernet0/2
@@ -1073,13 +1074,19 @@ class TestIosOspfV2Module(TestIosModule):
         result = self.execute_module(changed=True)
         print(result["commands"])
         commands = [
-            'router ospf 210 vrf green', 
+            'router ospf 200 vrf blue',
+            'no area 10 filter-list prefix test_prefix_in in',
+            'distribute-list 110 out',
+            'no distribute-list 10 out',
+            'router ospf 210 vrf green',
             'auto-cost reference-bandwidth 5',
-            'distribute-list 5120 out', 
-            'distribute-list 123 out', 
-            'no domain-id 192.0.3.1',
             'area 11 capability default-exclusion', 
-            'no area 10 capability default-exclusion'
+            'no area 10 capability default-exclusion', 
+            'distribute-list 5120 out', 
+            'no distribute-list 123 in',
+            'distribute-list 123 out',
+            'no distribute-list 10 out',
+            'passive-interface GigabitEthernet0/1'
         ]
         self.assertEqual(result["commands"], commands)
 

@@ -57,7 +57,7 @@ class Ospfv2(ResourceModule):
             "discard_route",
             "distance.admin_distance",
             "distance.ospf",
-            "distribute_list.acls",
+            # "distribute_list.acls",
             "distribute_list.prefix",
             "distribute_list.route_map",
             "domain_id",
@@ -155,8 +155,22 @@ class Ospfv2(ResourceModule):
             self.addcmd(want or have, "pid", False)
             self.compare(self.parsers, want, have)
             self._areas_compare(want, have)
+            self._distribute_list_compare(want, have)
             if want.get("passive_interfaces"):
                 self._passive_interfaces_compare(want, have)
+
+    def _distribute_list_compare(self, want, have):
+        wdist = want.get("distribute_list", {}).get("acls", {})
+        hdist = have.get("distribute_list", {}).get("acls", {})
+
+        for key, wanting in iteritems(wdist):
+            haveing = hdist.pop(key, {})
+            if wanting != haveing:
+                if haveing and self.state in ["overridden", "replaced"]:
+                    self.addcmd(haveing, "distribute_list.acls", negate=True)
+                self.addcmd(wanting, "distribute_list.acls", False)
+        for key, haveing in iteritems(hdist):
+            self.addcmd(haveing, "distribute_list.acls", negate=True)
 
     def _areas_compare(self, want, have):
         wareas = want.get("areas", {})
@@ -173,32 +187,35 @@ class Ospfv2(ResourceModule):
             "default_cost",
             "nssa",
             "nssa.translate",
-            "ranges",
             "sham_link",
             "stub",
         ]
         self.compare(parsers=parsers, want=want, have=have)
-        self._area_compare_filters(want, have)
+        self._area_complex_compare(want, have, want.get("area_id"))
 
-    def _area_compare_filters(self, wantd, haved):
-        for name, entry in iteritems(wantd):
-            h_item = haved.pop(name, {})
-            if entry != h_item and name == "filter_list":
-                filter_list_entry = {
-                    "area_id": wantd["area_id"],
-                    "filter_list": list(set(entry) ^ set(h_item)) if h_item else entry,
-                }
-                self.addcmd(filter_list_entry, "filter_list", False)
-
-        for name, entry in iteritems(haved):
-            if name == "filter_list":
-                self.addcmd(entry, "filter_list", True)
+    def _area_complex_compare(self, want, have, area_id):
+        parsers = ["filter_list","ranges"]
+        for _parser in parsers:
+            wantr = want.get(_parser, {})
+            haver = have.get(_parser, {})
+            for key, wanting in iteritems(wantr):
+                haveing = have.pop(key, {})
+                haveing["area_id"] = area_id
+                wanting["area_id"] = area_id
+                if wanting != haveing:
+                    if haveing and self.state in ["overridden", "replaced"]:
+                        self.addcmd(haveing, _parser, negate=True)
+                    self.addcmd(wanting, _parser, False)
+            for key, haveing in iteritems(haver):
+                haveing["area_id"] = area_id
+                self.addcmd(haveing, _parser, negate=True)
 
     def _passive_interfaces_compare(self, want, have):
         parsers = ["passive_interfaces.default", "passive_interfaces.interface"]
-        h_pi = have.get("passive_interfaces", {})
-        for k, v in want["passive_interfaces"].items():
-            if h_pi and k in h_pi and h_pi[k] != v:
+        h_pi = None
+        for k, v in iteritems(want["passive_interfaces"]):
+            h_pi = have.get("passive_interfaces", {})
+            if h_pi.get(k) and h_pi.get(k) != v:
                 for each in v["name"]:
                     h_interface_name = h_pi[k].get("name", [])
                     if each not in h_interface_name:
@@ -209,7 +226,7 @@ class Ospfv2(ResourceModule):
                             have=dict(),
                         )
                     else:
-                        h_interface_name.remove(each)
+                        h_interface_name.pop(each)
             elif not h_pi:
                 if k == "interface":
                     for each in v["name"]:
@@ -226,27 +243,26 @@ class Ospfv2(ResourceModule):
                         have=dict(),
                     )
             else:
-                h_pi.pop(k, None)
-
+                h_pi.pop(k)
         if (self.state == "replaced" or self.state == "overridden") and h_pi:
-            if "default" in h_pi or "interface" in h_pi:
-                for k, v in h_pi.items():
+            if h_pi.get("default") or h_pi.get("interface"):
+                for k, v in iteritems(h_pi):
                     if k == "interface":
                         for each in v["name"]:
                             temp = {
                                 "interface": {each: each},
-                                "set_interface": not v["set_interface"],
+                                "set_interface": not (v["set_interface"]),
                             }
                             self.compare(
                                 parsers=parsers,
-                                want={"passive_interface": temp},
+                                want={"passive_interfaces": temp},
                                 have=dict(),
                             )
                     elif k == "default":
                         self.compare(
                             parsers=parsers,
                             want=dict(),
-                            have={"passive_interface": {"default": True}},
+                            have={"passive_interfaces": {"default": True}},
                         )
 
     def _list_to_dict(self, param):

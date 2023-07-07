@@ -26,20 +26,16 @@ def _tmplt_ospf_address_family_cmd(config_data):
 
 
 def _tmplt_ospf_area_filter(config_data):
-    filter_list = config_data.get("filter_list", {})
-    command = []
-    for value in filter_list.values():
-        name = value.get("name")
-        direction = value.get("direction")
-
-        if name and direction:
-            cmd = "area {area_id} filter-list prefix {name} {direction}".format(
-                area_id=config_data.get("area_id"),
-                name=name,
-                direction=direction,
-            )
-            command.append(cmd)
-    return command
+    direction = config_data.get("direction")
+    name = config_data.get("name")
+    cmd = ""
+    if name and direction:
+        cmd = "area {area_id} filter-list prefix {name} {direction}".format(
+            area_id=config_data.get("area_id"),
+            name=name,
+            direction=direction,
+        )
+    return cmd
 
 
 def _tmplt_ospf_area_nssa(config_data):
@@ -67,34 +63,15 @@ def _tmplt_ospf_area_nssa(config_data):
 
 
 def _tmplt_ospf_area_ranges(config_data):
-    if "ranges" in config_data:
-        commands = []
-        for k, v in iteritems(config_data["ranges"]):
-            cmd = "area {area_id} range".format(**config_data)
-            temp_cmd = " {address} {netmask}".format(**v)
-            if "advertise" in v:
-                temp_cmd += " advertise"
-            elif "not_advertise" in v:
-                temp_cmd += " not-advertise"
-            if "cost" in v:
-                temp_cmd += " cost {cost}".format(**v)
-            cmd += temp_cmd
-            commands.append(cmd)
-        return commands
-
-
-def _tmplt_ospf_distribute_list_acls(config_data):
-    if "acls" in config_data.get("distribute_list"):
-        command = []
-        for k, v in iteritems(config_data["distribute_list"]["acls"]):
-            cmd = "distribute-list {name} {direction}".format(**v)
-            if "interface" in v:
-                cmd += " {interface}".format(**v)
-            if "protocol" in v:
-                cmd += " {protocol}".format(**v)
-            command.append(cmd)
-        return command
-
+    cmd = "area {area_id} range".format(**config_data)
+    cmd += " {address} {netmask}".format(**config_data)
+    if "advertise" in config_data:
+        cmd += " advertise"
+    elif "not_advertise" in config_data:
+        cmd += " not-advertise"
+    if "cost" in config_data:
+        cmd += " cost {cost}".format(**config_data)
+    return cmd
 
 def _tmplt_ospf_domain_id(config_data):
     if "domain_id" in config_data:
@@ -548,6 +525,10 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
+            # "setval": "area {{ area_id }} range {{ address }} {{ netmask }}"
+            # "{{ ' advertise' if advertise }}"
+            # "{{ ' not-advertise' if not_advertise }}"
+            # "{{ ' cost ' + cost|int if cost is defined }}",
             "setval": _tmplt_ospf_area_ranges,
             "result": {
                 "processes": {
@@ -916,7 +897,7 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_distribute_list_acls,
+            "setval": "distribute-list {{ name }} {{ direction }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
