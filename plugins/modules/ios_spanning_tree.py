@@ -86,21 +86,33 @@ options:
         type: dict
         mutually_exclusive: [[ "network_default", "edge_default" ]]
         suboptions:
+          default:
+            description:
+              - Immediately brings an STP port configured as an access or trunk port to the forwarding state.
+            type: bool
           network_default:
             description:
-              - Enables PortFast network mode by default on all switch access ports.
+              - Enables PortFast network mode by default on all switch access ports. Command for old IOS support.
             type: bool
           edge_default:
             description:
-              - Enables PortFast edge mode by default on all switch access ports.
+              - Enables PortFast edge mode by default on all switch access ports. Command for old IOS support.
             type: bool
           bpdufilter_default:
             description:
-              - Enables PortFast edge BPDU filter by default on all PortFast edge ports.
+              - Enables PortFast BPDU filter by default on all PortFast ports.
+            type: bool
+          edge_bpdufilter_default:
+            description:
+              - Enables PortFast edge BPDU filter by default on all PortFast edge ports. Command for old IOS support.
             type: bool
           bpduguard_default:
             description:
-              - Enables PortFast edge BPDU guard by default on all PortFast edge ports.
+              - Enables PortFast BPDU guard by default on all PortFast ports.
+            type: bool
+          edge_bpduguard_default:
+            description:
+              - Enables PortFast edge BPDU guard by default on all PortFast edge ports. Command for old IOS support.
             type: bool
       uplinkfast:
         description: UplinkFast feature
@@ -279,9 +291,9 @@ EXAMPLES = """
 # spanning-tree transmit hold-count 5
 # spanning-tree loopguard default
 # spanning-tree logging
-# spanning-tree portfast edge default
-# spanning-tree portfast edge bpduguard default
-# spanning-tree portfast edge bpdufilter default
+# spanning-tree portfast default
+# spanning-tree portfast bpduguard default
+# spanning-tree portfast bpdufilter default
 # no spanning-tree etherchannel guard misconfig
 # spanning-tree extend system-id
 # spanning-tree uplinkfast max-update-rate 32
@@ -316,58 +328,59 @@ EXAMPLES = """
 # ------------
 #
 # gathered:
-#     mode: mst
 #     backbonefast: true
 #     bridge_assurance: false
 #     etherchannel_guard_misconfig: false
-#     pathcost_method: long
-#     transmit_hold_count: 5
+#     forward_time:
+#     -   value: 20
+#         vlan_list: 1,7-20
+#     hello_time:
+#     -   value: 4
+#         vlan_list: 1,3,9
+#     -   value: 5
+#         vlan_list: 4,6-8
+#     -   value: 6
+#         vlan_list: '5'
 #     logging: true
 #     loopguard_default: true
-#     portfast:
-#         bpdufilter_default: true
-#         bpduguard_default: true
-#         edge_default: true
-#     priority:
-#         - value: 24576
-#           vlan_list: 1,3-5,7,9-11
-#     uplinkfast:
-#         enabled: true
-#         max_update_rate: 32
-#     forward_time:
-#         - value: 20
-#           vlan_list: 1,7-20
-#     hello_time:
-#         - value: 4
-#           vlan_list: 1,3,9
-#         - value: 5
-#           vlan_list: 4,6-8
-#         - value: 6
-#           vlan_list: 5
 #     max_age:
-#         - value: 38
-#           vlan_list: 1-2,4-5
+#     -   value: 38
+#         vlan_list: 1-2,4-5
+#     mode: mst
 #     mst:
+#         configuration:
+#             instances:
+#             -   instance: 1
+#                 vlan_list: 40-50
+#             -   instance: 2
+#                 vlan_list: 10-20
+#             name: NAME
+#             revision: 34
 #         forward_time: 25
 #         hello_time: 4
 #         max_age: 33
 #         max_hops: 33
-#         simulate_pvst_global: false
 #         priority:
-#             - instance: 0
-#               value: 12288
-#             - instance: 1
-#               value: 4096
-#             - instance: 5,7-9
-#               value: 57344
-#         configuration:
-#             name: "NAME"
-#             revision: 34
-#             instances:
-#                 - instance: 1
-#                   vlan_list: 40-50
-#                 - instance: 2
-#                   vlan_list: 10-20
+#         -   instance: '0'
+#             value: 12288
+#         -   instance: '1'
+#             value: 4096
+#         -   instance: 5,7-9
+#             value: 57344
+#         simulate_pvst_global: false
+#     pathcost_method: long
+#     portfast:
+#         bpdufilter_default: true
+#         bpduguard_default: true
+#         default: true
+#     priority:
+#     -   value: 24576
+#         vlan_list: 1,3-5,7,9-11
+#     transmit_hold_count: 5
+#     uplinkfast:
+#         enabled: true
+#         max_update_rate: 32
+
 
 # Using parsed
 
@@ -379,9 +392,9 @@ EXAMPLES = """
 # spanning-tree transmit hold-count 5
 # spanning-tree loopguard default
 # spanning-tree logging
-# spanning-tree portfast edge default
-# spanning-tree portfast edge bpduguard default
-# spanning-tree portfast edge bpdufilter default
+# spanning-tree portfast default
+# spanning-tree portfast bpduguard default
+# spanning-tree portfast bpdufilter default
 # no spanning-tree etherchannel guard misconfig
 # spanning-tree extend system-id
 # spanning-tree uplinkfast max-update-rate 32
@@ -417,58 +430,58 @@ EXAMPLES = """
 # ------------
 #
 # parsed:
-#    backbonefast: true
-#    bridge_assurance: false
-#    etherchannel_guard_misconfig: false
-#    forward_time:
-#    -   value: 20
-#        vlan_list: 1,7-20
-#    hello_time:
-#    -   value: 4
-#        vlan_list: 1,3,9
-#    -   value: 5
-#        vlan_list: 4,6-8
-#    -   value: 6
-#        vlan_list: '5'
-#    logging: true
-#    loopguard_default: true
-#    max_age:
-#    -   value: 38
-#        vlan_list: 1-2,4-5
-#    mode: mst
-#    mst:
-#        configuration:
-#            instances:
-#            -   instance: 1
-#                vlan_list: 40-50
-#            -   instance: 2
-#                vlan_list: 10-20
-#            name: NAME
-#            revision: 34
-#        forward_time: 25
-#        hello_time: 4
-#        max_age: 33
-#        max_hops: 33
-#        priority:
-#        -   instance: '0'
-#            value: 12288
-#        -   instance: '1'
-#            value: 4096
-#        -   instance: 5,7-9
-#            value: 57344
-#        simulate_pvst_global: false
-#    pathcost_method: long
-#    portfast:
-#        bpdufilter_default: true
-#        bpduguard_default: true
-#        edge_default: true
-#    priority:
-#    -   value: 24576
-#        vlan_list: 1,3-5,7,9-11
-#    transmit_hold_count: 5
-#    uplinkfast:
-#        enabled: true
-#        max_update_rate: 32
+#     backbonefast: true
+#     bridge_assurance: false
+#     etherchannel_guard_misconfig: false
+#     forward_time:
+#     -   value: 20
+#         vlan_list: 1,7-20
+#     hello_time:
+#     -   value: 4
+#         vlan_list: 1,3,9
+#     -   value: 5
+#         vlan_list: 4,6-8
+#     -   value: 6
+#         vlan_list: '5'
+#     logging: true
+#     loopguard_default: true
+#     max_age:
+#     -   value: 38
+#         vlan_list: 1-2,4-5
+#     mode: mst
+#     mst:
+#         configuration:
+#             instances:
+#             -   instance: 1
+#                 vlan_list: 40-50
+#             -   instance: 2
+#                 vlan_list: 10-20
+#             name: NAME
+#             revision: 34
+#         forward_time: 25
+#         hello_time: 4
+#         max_age: 33
+#         max_hops: 33
+#         priority:
+#         -   instance: '0'
+#             value: 12288
+#         -   instance: '1'
+#             value: 4096
+#         -   instance: 5,7-9
+#             value: 57344
+#         simulate_pvst_global: false
+#     pathcost_method: long
+#     portfast:
+#         bpdufilter_default: true
+#         bpduguard_default: true
+#         default: true
+#     priority:
+#     -   value: 24576
+#         vlan_list: 1,3-5,7,9-11
+#     transmit_hold_count: 5
+#     uplinkfast:
+#         enabled: true
+#         max_update_rate: 32
 
 # Using Rendered
 
@@ -518,8 +531,8 @@ EXAMPLES = """
             simulate_pvst_global: false
         pathcost_method: long
         portfast:
-            bpdufilter_default: true
-            bpduguard_default: true
+            edge_bpdufilter_default: true
+            edge_bpduguard_default: true
             edge_default: true
         priority:
         -   value: 24576
@@ -534,6 +547,8 @@ EXAMPLES = """
 #
 # rendered:
 # - spanning-tree backbonefast
+# - no spanning-tree bridge assurance
+# - no spanning-tree etherchannel guard misconfig
 # - spanning-tree logging
 # - spanning-tree loopguard default
 # - spanning-tree mode mst
@@ -544,6 +559,7 @@ EXAMPLES = """
 # - spanning-tree portfast edge bpduguard default
 # - spanning-tree uplinkfast
 # - spanning-tree uplinkfast max-update-rate 32
+# - no spanning-tree mst simulate pvst global
 # - spanning-tree vlan 1,7-20 forward-time 20
 # - spanning-tree vlan 5 hello-time 6
 # - spanning-tree vlan 4,6-8 hello-time 5
@@ -701,9 +717,9 @@ EXAMPLES = """
 # no spanning-tree bridge assurance
 # spanning-tree transmit hold-count 10
 # spanning-tree loopguard default
-# spanning-tree portfast edge default
-# spanning-tree portfast edge bpduguard default
-# spanning-tree portfast edge bpdufilter default
+# spanning-tree portfast default
+# spanning-tree portfast bpduguard default
+# spanning-tree portfast bpdufilter default
 # no spanning-tree etherchannel guard misconfig
 # spanning-tree extend system-id
 # spanning-tree uplinkfast max-update-rate 32
@@ -750,27 +766,27 @@ EXAMPLES = """
 # ------------
 #
 # commands:
-# - no spanning-tree backbonefast
-# - spanning-tree bridge assurance
-# - spanning-tree etherchannel guard misconfig
-# - spanning-tree logging
-# - no spanning-tree loopguard default
-# - spanning-tree mode rapid-pvst
-# - no spanning-tree pathcost method long
-# - no spanning-tree transmit hold-count 10
-# - no spanning-tree portfast edge default
-# - no spanning-tree portfast edge bpdufilter default
-# - no spanning-tree portfast edge bpduguard default
-# - no spanning-tree uplinkfast
-# - no spanning-tree uplinkfast max-update-rate 32
-# - spanning-tree mst simulate pvst global
-# - no spanning-tree vlan 1,7-20 forward-time 20
-# - no spanning-tree vlan 5 hello-time 6
-# - no spanning-tree vlan 4,6-8 hello-time 5
-# - no spanning-tree vlan 1,3,9 hello-time 4
-# - no spanning-tree vlan 1-2,4-5 max-age 38
-# - no spanning-tree vlan 7,9-11 priority 24576
-# - no spanning-tree mst configuration
+# no spanning-tree backbonefast
+# spanning-tree bridge assurance
+# spanning-tree etherchannel guard misconfig
+# spanning-tree logging
+# no spanning-tree loopguard default
+# spanning-tree mode rapid-pvst
+# no spanning-tree pathcost method long
+# no spanning-tree transmit hold-count 10
+# no spanning-tree portfast default
+# no spanning-tree portfast bpdufilter default
+# no spanning-tree portfast bpduguard default
+# no spanning-tree uplinkfast
+# no spanning-tree uplinkfast max-update-rate 32
+# spanning-tree mst simulate pvst global
+# no spanning-tree vlan 1,7-20 forward-time 20
+# no spanning-tree vlan 5 hello-time 6
+# no spanning-tree vlan 4,6-8 hello-time 5
+# no spanning-tree vlan 1,3,9 hello-time 4
+# no spanning-tree vlan 1-2,4-5 max-age 38
+# no spanning-tree vlan 7,9-11 priority 24576
+# no spanning-tree mst configuration
 
 # After state:
 # -------------

@@ -55,10 +55,13 @@ class Spanning_treeArgs(object):  # pylint: disable=R0903
                         ["network_default", "edge_default"],
                     ],
                     "options": {
+                        "default": {"type": "bool"},
                         "network_default": {"type": "bool"},
                         "edge_default": {"type": "bool"},
                         "bpdufilter_default": {"type": "bool"},
+                        "edge_bpdufilter_default": {"type": "bool"},
                         "bpduguard_default": {"type": "bool"},
+                        "edge_bpduguard_default": {"type": "bool"},
                     },
                 },
                 "uplinkfast": {

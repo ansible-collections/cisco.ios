@@ -17,7 +17,6 @@ created.
 """
 
 from ansible.module_utils.six import iteritems
-from ansible.utils.display import Display
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -29,9 +28,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.spanning_tree import (
     Spanning_treeTemplate,
 )
-
-
-display = Display()
 
 
 class Spanning_tree(ResourceModule):
@@ -56,10 +52,13 @@ class Spanning_tree(ResourceModule):
             "mode",
             "pathcost_method",
             "transmit_hold_count",
+            "portfast.default",
             "portfast.network_default",
             "portfast.edge_default",
             "portfast.bpdufilter_default",
+            "portfast.edge_bpdufilter_default",
             "portfast.bpduguard_default",
+            "portfast.edge_bpduguard_default",
             "uplinkfast.enabled",
             "uplinkfast.max_update_rate",
             "mst.simulate_pvst_global",
@@ -82,6 +81,11 @@ class Spanning_tree(ResourceModule):
             "mst.configuration.name",
             "mst.configuration.revision",
             "mst.configuration.instances",
+        ]
+        self.negated_parsers = [
+            "bridge_assurance",
+            "etherchannel_guard_misconfig",
+            "mst.simulate_pvst_global",
         ]
 
     def execute_module(self):
@@ -108,7 +112,7 @@ class Spanning_tree(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = self._dict_copy_deleted(wantd, haved)
+            haved = self._dict_copy_deleted(want=wantd, have=haved)
             wantd = {}
 
         self._compare_linear(wantd, haved)
@@ -121,8 +125,20 @@ class Spanning_tree(ResourceModule):
             if x == "mode":
                 wmode = get_from_dict(want, "mode")
                 hmode = get_from_dict(have, "mode")
-                if wmode is None and hmode == "pvst":
+                if wmode is None and (hmode == "pvst" or hmode == "rapid-pvst"):
                     continue
+            if x in self.negated_parsers:
+                inw = get_from_dict(want, x)
+                inh = get_from_dict(have, x)
+                if inw == inh:
+                    continue
+                if inh is None and not inw:
+                    self.addcmd(want, x, True)
+                elif inw is None and not inh:
+                    self.addcmd(have, x, False)
+                elif inw and inh is not None and not inh:
+                    self.addcmd(want, x, False)
+                continue
             self.compare([x], want=want, have=have)
 
     def _compare_complex(self, want, have):
@@ -257,10 +273,10 @@ class Spanning_tree(ResourceModule):
                     wmode = get_from_dict(want, "mode")
                     hmode = get_from_dict(have, "mode")
                     if not ((wmode is None and hmode == "mst") or wmode == "mst"):
-                        display.display(
-                            "WARNING: mst options like simulate_pvst_global, hello_time, forward_time, "
-                            "max_age, max_hops and priority will not be used until [spanning-tree "
-                            "mode mst] is enabled or already configured in device!",
+                        self._module.fail_json(
+                            msg = "mst options like simulate_pvst_global, hello_time, forward_time, "
+                                  "max_age, max_hops and priority cannot be used until [spanning-tree "
+                                  "mode mst] is enabled or already configured in device!",
                         )
                         continue
                 if not isinstance(wx, list):

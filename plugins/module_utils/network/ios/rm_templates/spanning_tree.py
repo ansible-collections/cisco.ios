@@ -175,6 +175,21 @@ class Spanning_treeTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "portfast.default",
+            "getval": re.compile(
+                r"""
+                (spanning-tree\sportfast\s(?P<default>default))?
+                \s*
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree portfast default",
+            "result": {
+                "portfast": {
+                    "default": "{{ not not default }}",
+                },
+            },
+        },
+        {
             "name": "portfast.network_default",
             "getval": re.compile(
                 r"""
@@ -205,14 +220,29 @@ class Spanning_treeTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "portfast.bpdufilter_default",
+            "name": "portfast.edge_bpdufilter_default",
             "getval": re.compile(
                 r"""
-                (spanning-tree\sportfast\sedge\sbpdufilter\s(?P<bpdufilter_default>default))?
+                (spanning-tree\sportfast\sedge\sbpdufilter\s(?P<edge_bpdufilter_default>default))?
                 \s*
                 $""", re.VERBOSE,
             ),
             "setval": "spanning-tree portfast edge bpdufilter default",
+            "result": {
+                "portfast": {
+                    "edge_bpdufilter_default": "{{ not not edge_bpdufilter_default }}",
+                },
+            },
+        },
+        {
+            "name": "portfast.bpdufilter_default",
+            "getval": re.compile(
+                r"""
+                (spanning-tree\sportfast\sbpdufilter\s(?P<bpdufilter_default>default))?
+                \s*
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree portfast bpdufilter default",
             "result": {
                 "portfast": {
                     "bpdufilter_default": "{{ not not bpdufilter_default }}",
@@ -220,14 +250,29 @@ class Spanning_treeTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "portfast.bpduguard_default",
+            "name": "portfast.edge_bpduguard_default",
             "getval": re.compile(
                 r"""
-                (spanning-tree\sportfast\sedge\sbpduguard\s(?P<bpduguard_default>default))?
+                (spanning-tree\sportfast\sedge\sbpduguard\s(?P<edge_bpduguard_default>default))?
                 \s*
                 $""", re.VERBOSE,
             ),
             "setval": "spanning-tree portfast edge bpduguard default",
+            "result": {
+                "portfast": {
+                    "edge_bpduguard_default": "{{ not not edge_bpduguard_default }}",
+                },
+            },
+        },
+        {
+            "name": "portfast.bpduguard_default",
+            "getval": re.compile(
+                r"""
+                (spanning-tree\sportfast\sbpduguard\s(?P<bpduguard_default>default))?
+                \s*
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree portfast bpduguard default",
             "result": {
                 "portfast": {
                     "bpduguard_default": "{{ not not bpduguard_default }}",

@@ -34,48 +34,23 @@ class TestIosSpanningTreeModule(TestIosModule):
     def setUp(self):
         super(TestIosSpanningTreeModule, self).setUp()
 
-        self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
-        )
-        self.get_config = self.mock_get_config.start()
-
-        self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
-        )
-        self.load_config = self.mock_load_config.start()
-
-        self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection",
-        )
-        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
-
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
-        self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
-        )
-        self.edit_config = self.mock_edit_config.start()
-
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.spanning_tree.spanning_tree."
             "Spanning_treeFacts.get_spanning_tree_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
-        self.maxDiff = None
 
     def tearDown(self):
         super(TestIosSpanningTreeModule, self).tearDown()
-        self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
-        self.mock_edit_config.stop()
-        self.mock_get_config.stop()
-        self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
+
 
     def test_ios_spanning_tree_gathered(self):
         self.execute_show_command.return_value = dedent(
@@ -88,7 +63,6 @@ class TestIosSpanningTreeModule(TestIosModule):
             spanning-tree portfast edge default
             spanning-tree portfast edge bpduguard default
             spanning-tree portfast edge bpdufilter default
-            no spanning-tree etherchannel guard misconfig
             spanning-tree extend system-id
             spanning-tree uplinkfast max-update-rate 32
             spanning-tree uplinkfast
@@ -118,7 +92,6 @@ class TestIosSpanningTreeModule(TestIosModule):
         gathered = {
             "backbonefast": True,
             "bridge_assurance": False,
-            "etherchannel_guard_misconfig": False,
             "forward_time": [
                 {
                     "value": 20,
@@ -185,8 +158,8 @@ class TestIosSpanningTreeModule(TestIosModule):
             },
             "pathcost_method": "long",
             "portfast": {
-                "bpdufilter_default": True,
-                "bpduguard_default": True,
+                "edge_bpdufilter_default": True,
+                "edge_bpduguard_default": True,
                 "edge_default": True,
             },
             "priority": [
@@ -319,8 +292,8 @@ class TestIosSpanningTreeModule(TestIosModule):
             },
             "pathcost_method": "long",
             "portfast": {
-                "bpdufilter_default": True,
-                "bpduguard_default": True,
+                "edge_bpdufilter_default": True,
+                "edge_bpduguard_default": True,
                 "edge_default": True,
             },
             "priority": [
@@ -338,6 +311,7 @@ class TestIosSpanningTreeModule(TestIosModule):
 
         result = self.execute_module(changed=False)
         self.assertEqual(result["parsed"], parsed)
+
 
     def test_ios_spanning_tree_rendered(self):
         set_module_args(
@@ -383,7 +357,7 @@ class TestIosSpanningTreeModule(TestIosModule):
                         "simulate_pvst_global": False,
                     },
                     "portfast": {
-                        "bpdufilter_default": True,
+                        "edge_bpdufilter_default": True,
                         "edge_default": True,
                     },
                     "hello_time": [
@@ -399,6 +373,9 @@ class TestIosSpanningTreeModule(TestIosModule):
         commands = [
             "spanning-tree mode mst",
             "spanning-tree backbonefast",
+            "no spanning-tree bridge assurance",
+            "no spanning-tree etherchannel guard misconfig",
+            "no spanning-tree mst simulate pvst global",
             "spanning-tree portfast edge default",
             "spanning-tree portfast edge bpdufilter default",
             "spanning-tree mst 0 priority 12288",
@@ -504,12 +481,10 @@ class TestIosSpanningTreeModule(TestIosModule):
             spanning-tree logging
             spanning-tree portfast edge default
             spanning-tree portfast edge bpdufilter default
-            spanning-tree etherchannel guard misconfig
             spanning-tree extend system-id
             spanning-tree uplinkfast max-update-rate 32
             spanning-tree uplinkfast
             spanning-tree pathcost method long
-            spanning-tree mst simulate pvst global
             spanning-tree mst hello-time 4
             spanning-tree mst forward-time 25
             spanning-tree mst max-age 33
@@ -567,7 +542,7 @@ class TestIosSpanningTreeModule(TestIosModule):
                         "simulate_pvst_global": False,
                     },
                     "portfast": {
-                        "bpdufilter_default": True,
+                        "edge_bpdufilter_default": True,
                         "edge_default": True,
                     },
                     "hello_time": [
@@ -592,6 +567,30 @@ class TestIosSpanningTreeModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_ios_spanning_tree_merged_idempotent5(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            spanning-tree mode pvst
+            """,
+        )
+        set_module_args(
+            dict(
+                config={
+                    "bridge_assurance": False,
+                    "etherchannel_guard_misconfig": False,
+                },
+                state="merged",
+            ),
+        )
+        commands = [
+            "no spanning-tree bridge assurance",
+            "no spanning-tree etherchannel guard misconfig",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+
 
     def test_ios_spanning_tree_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -757,9 +756,11 @@ class TestIosSpanningTreeModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
+
     def test_ios_spanning_tree_deleted_idempotent3(self):
         self.execute_show_command.return_value = dedent(
             """\
+            spanning-tree mode rapid-pvst
             no spanning-tree bridge assurance
             no spanning-tree etherchannel guard misconfig
             no spanning-tree mst simulate pvst global
@@ -778,12 +779,13 @@ class TestIosSpanningTreeModule(TestIosModule):
             ),
         )
         commands = [
+            "spanning-tree mst simulate pvst global",
             "spanning-tree bridge assurance",
             "spanning-tree etherchannel guard misconfig",
-            "spanning-tree mst simulate pvst global",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
+
 
     def test_ios_spanning_tree_deleted_idempotent4(self):
         self.execute_show_command.return_value = dedent(
@@ -796,7 +798,6 @@ class TestIosSpanningTreeModule(TestIosModule):
             spanning-tree portfast edge default
             spanning-tree portfast edge bpduguard default
             spanning-tree portfast edge bpdufilter default
-            spanning-tree etherchannel guard misconfig
             spanning-tree extend system-id
             spanning-tree uplinkfast max-update-rate 32
             spanning-tree uplinkfast
@@ -834,8 +835,8 @@ class TestIosSpanningTreeModule(TestIosModule):
                     },
                     "logging": False,
                     "portfast": {
-                        "bpdufilter_default": True,
-                        "bpduguard_default": True,
+                        "edge_bpdufilter_default": True,
+                        "edge_bpduguard_default": True,
                         "edge_default": True,
                     },
                     "backbonefast": True,
@@ -883,7 +884,6 @@ class TestIosSpanningTreeModule(TestIosModule):
             "no spanning-tree portfast edge default",
             "no spanning-tree portfast edge bpduguard default",
             "no spanning-tree backbonefast",
-            "no spanning-tree etherchannel guard misconfig",
             "no spanning-tree pathcost method long",
             "no spanning-tree vlan 9-12,18-20 forward-time 20",
             "no spanning-tree vlan 7 priority 24576",
@@ -900,5 +900,27 @@ class TestIosSpanningTreeModule(TestIosModule):
             "no instance 1 vlan 40-50",
             "exit",
         ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(set(result["commands"]), set(commands))
+
+    def test_ios_spanning_tree_deleted_idempotent5(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            spanning-tree mode rapid-pvst
+            spanning-tree extend system-id
+            spanning-tree transmit hold-count 5
+            spanning-tree loopguard default
+            """,
+        )
+        set_module_args(
+            dict(
+                config={},
+                state="deleted",
+            ),
+        )
+        commands = [
+            "no spanning-tree transmit hold-count 5",
+            "no spanning-tree loopguard default"
+         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
