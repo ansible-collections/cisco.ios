@@ -942,4 +942,4 @@ releases:
       - facts_fix.yml
       - snmp_log.yml
       - snmp_user_bug.yml
-    release_date: "2023-07-03"
+    release_date: "2023-07-05"
