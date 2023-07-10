@@ -110,10 +110,10 @@ replaced:
   after:
     mode: "rapid-pvst"
     hello_time:
-    - value: 4
-      vlan_list: "1,3,9"
-    - value: 5
-      vlan_list: "4,6-8"
+      - value: 4
+        vlan_list: "1,3,9"
+      - value: 5
+        vlan_list: "4,6-8"
 
 deleted:
   commands:
@@ -157,51 +157,51 @@ parsed:
     backbonefast: true
     bridge_assurance: false
     forward_time:
-    -   value: 20
+      - value: 20
         vlan_list: 1,7-20
     hello_time:
-    -   value: 4
+      - value: 4
         vlan_list: 1,3,9
-    -   value: 5
+      - value: 5
         vlan_list: 4,6-8
-    -   value: 6
-        vlan_list: '5'
+      - value: 6
+        vlan_list: "5"
     logging: true
     loopguard_default: true
     max_age:
-    -   value: 38
+      - value: 38
         vlan_list: 1-2,4-5
     mode: mst
     mst:
-        configuration:
-            instances:
-            -   instance: 1
-                vlan_list: 40-50
-            -   instance: 2
-                vlan_list: 10-20
-            name: NAME
-            revision: 34
-        forward_time: 25
-        hello_time: 4
-        max_age: 33
-        max_hops: 33
-        priority:
-        -   instance: '0'
-            value: 12288
-        -   instance: '1'
-            value: 4096
-        -   instance: 5,7-9
-            value: 57344
-        simulate_pvst_global: false
+      configuration:
+        instances:
+          - instance: 1
+            vlan_list: 40-50
+          - instance: 2
+            vlan_list: 10-20
+        name: NAME
+        revision: 34
+      forward_time: 25
+      hello_time: 4
+      max_age: 33
+      max_hops: 33
+      priority:
+        - instance: "0"
+          value: 12288
+        - instance: "1"
+          value: 4096
+        - instance: 5,7-9
+          value: 57344
+      simulate_pvst_global: false
     pathcost_method: long
     portfast:
-        bpdufilter_default: true
-        bpduguard_default: true
-        default: true
+      bpdufilter_default: true
+      bpduguard_default: true
+      default: true
     priority:
-    -   value: 24576
+      - value: 24576
         vlan_list: 1,3-5,7,9-11
     transmit_hold_count: 5
     uplinkfast:
-        enabled: true
-        max_update_rate: 32
+      enabled: true
+      max_update_rate: 32

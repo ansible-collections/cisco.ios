@@ -13,9 +13,9 @@
           backbonefast: false
           bridge_assurance: true
           hello_time:
-          -   value: 4
+            - value: 4
               vlan_list: 1,3,9
-          -   value: 5
+            - value: 5
               vlan_list: 4,6-8
           logging: false
           loopguard_default: false
