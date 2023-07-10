@@ -119,8 +119,8 @@
       register: result
       cisco.ios.ios_spanning_tree:
         config:
-          backbonefast: True
-          bridge_assurance: True
+          backbonefast: true
+          bridge_assurance: true
           portfast:
               bpdufilter_default: true
               default: true
@@ -133,7 +133,7 @@
                 vlan_list: 20-30
               name: NAME
               revision: 35
-            simulate_pvst_global: False
+            simulate_pvst_global: false
             forward_time: 25
             hello_time: 4
             max_age: 33
