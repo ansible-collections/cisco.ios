@@ -51,7 +51,6 @@ class TestIosSpanningTreeModule(TestIosModule):
         self.mock_get_resource_connection_facts.stop()
         self.mock_execute_show_command.stop()
 
-
     def test_ios_spanning_tree_gathered(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -311,7 +310,6 @@ class TestIosSpanningTreeModule(TestIosModule):
 
         result = self.execute_module(changed=False)
         self.assertEqual(result["parsed"], parsed)
-
 
     def test_ios_spanning_tree_rendered(self):
         set_module_args(
@@ -590,8 +588,6 @@ class TestIosSpanningTreeModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-
-
     def test_ios_spanning_tree_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -756,7 +752,6 @@ class TestIosSpanningTreeModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
 
-
     def test_ios_spanning_tree_deleted_idempotent3(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -785,7 +780,6 @@ class TestIosSpanningTreeModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))
-
 
     def test_ios_spanning_tree_deleted_idempotent4(self):
         self.execute_show_command.return_value = dedent(
@@ -920,7 +914,7 @@ class TestIosSpanningTreeModule(TestIosModule):
         )
         commands = [
             "no spanning-tree transmit hold-count 5",
-            "no spanning-tree loopguard default"
-         ]
+            "no spanning-tree loopguard default",
+        ]
         result = self.execute_module(changed=True)
         self.assertEqual(set(result["commands"]), set(commands))

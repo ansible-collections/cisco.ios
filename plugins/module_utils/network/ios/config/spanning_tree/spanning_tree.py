@@ -274,9 +274,9 @@ class Spanning_tree(ResourceModule):
                     hmode = get_from_dict(have, "mode")
                     if not ((wmode is None and hmode == "mst") or wmode == "mst"):
                         self._module.fail_json(
-                            msg = "mst options like simulate_pvst_global, hello_time, forward_time, "
-                                  "max_age, max_hops and priority cannot be used until [spanning-tree "
-                                  "mode mst] is enabled or already configured in device!",
+                            msg="mst options like simulate_pvst_global, hello_time, forward_time, "
+                            "max_age, max_hops and priority cannot be used until [spanning-tree "
+                            "mode mst] is enabled or already configured in device!",
                         )
                         continue
                 if not isinstance(wx, list):

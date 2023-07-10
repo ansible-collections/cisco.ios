@@ -11,8 +11,8 @@
       cisco.ios.ios_spanning_tree: &id001
         config:
           forward_time:
-          - value: 20
-            vlan_list: 4-9
+            - value: 20
+              vlan_list: 4-9
         state: deleted
 
     - name: Assert that correct set of commands were generated
