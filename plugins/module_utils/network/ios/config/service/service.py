@@ -115,7 +115,7 @@ class Service(ResourceModule):
             wantd = self._service_list_to_dict(service_default)
 
         # if state is replaced
-        elif self.state == "replaced":
+        elif self.state in ["replaced", "overridden"]:
             wantd = dict_merge(self._service_list_to_dict(service_default), wantd)
 
         self._compare(want=wantd, have=haved)

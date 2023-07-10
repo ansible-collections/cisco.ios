@@ -1834,6 +1834,7 @@ options:
     choices:
       - merged
       - replaced
+      - overridden
       - deleted
       - purged
       - gathered
@@ -1842,6 +1843,7 @@ options:
     default: merged
     description:
       - The state the configuration should be left in
+      - The module have declaratively similar behavior for replaced and overridden state.
       - The states I(rendered), I(gathered) and I(parsed) does not perform any change
         on the device.
       - The state I(rendered) will transform the configuration in C(config) option to
@@ -1855,7 +1857,7 @@ options:
         transforms it into JSON format as per the resource module parameters and the
         value is returned in the I(parsed) key within the result. The value of C(running_config)
         option should be the same format as the output of command I(show running-config
-        | include ip route|ipv6 route) executed on device. For state I(parsed) active
+        | section ^router bgp) executed on device. For state I(parsed) active
         connection to remote host is not required.
     type: str
 """
@@ -3049,6 +3051,7 @@ def main():
         required_if=[
             ["state", "merged", ["config"]],
             ["state", "replaced", ["config"]],
+            ["state", "overridden", ["config"]],
             ["state", "rendered", ["config"]],
             ["state", "parsed", ["running_config"]],
         ],

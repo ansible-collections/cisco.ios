@@ -115,6 +115,7 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li><div style="color: blue"><b>merged</b>&nbsp;&larr;</div></li>
                                     <li>replaced</li>
+                                    <li>overridden</li>
                                     <li>deleted</li>
                                     <li>rendered</li>
                                     <li>parsed</li>
@@ -123,6 +124,7 @@ Parameters
                 </td>
                 <td>
                         <div>The state the configuration should be left in</div>
+                        <div>The module have declaratively similar behavior for replaced and overridden state.</div>
                         <div>The states <em>rendered</em>, <em>gathered</em> and <em>parsed</em> does not perform any change on the device.</div>
                         <div>The state <em>rendered</em> will transform the configuration in <code>config</code> option to platform specific CLI commands which will be returned in the <em>rendered</em> key within the result. For state <em>rendered</em> active connection to remote host is not required.</div>
                         <div>The state <em>gathered</em> will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the <em>gathered</em> key within the result.</div>

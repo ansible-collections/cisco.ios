@@ -5,6 +5,38 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v5.0.0
+======
+
+Major Changes
+-------------
+
+- This release removes a previously deprecated modules, and a few attributes from this collection. Refer to **Removed Features** section for details.
+
+Minor Changes
+-------------
+
+- ios_facts - Add CPU utilization. (https://github.com/ansible-collections/cisco.ios/issues/779)
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- Deprecated ios_logging module in favor of ios_logging_global.
+- Deprecated next_hop_self attribute for bgp_address_family with nexthop_self.
+
+Bugfixes
+--------
+
+- ios_facts - Fix facts gathering when memory statistics head is not hexadecimal. (https://github.com/ansible-collections/cisco.ios/issues/776)
+- ios_snmp_server - Fixes error handling for snmp user when snmp agent is not enabled
+- ios_static_routes - Fix non vlan entries to have unique group identifier.
+- ios_static_routes - Fix parsers to parse interface attribute correctly.
+
+Documentation Changes
+---------------------
+
+- ios_facts - Add ansible_net_cpu_utilization.
+
 v4.6.1
 ======
 

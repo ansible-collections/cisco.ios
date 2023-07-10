@@ -1,13 +1,14 @@
 ---
 - ansible.builtin.debug: msg="START cli/all_facts.yaml on connection={{ ansible_connection }}"
 
-- name: Test getting all facts
+- name: Test fetching all facts
   register: result
   cisco.ios.ios_facts:
     gather_subset:
       - all
 
-- ansible.builtin.assert:
+- name: Assert output of all facts
+  ansible.builtin.assert:
     that:
       - result.changed == false
       - "'config' in result.ansible_facts.ansible_net_gather_subset"
