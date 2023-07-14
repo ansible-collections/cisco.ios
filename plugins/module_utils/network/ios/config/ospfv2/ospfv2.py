@@ -85,6 +85,7 @@ class Ospfv2(ResourceModule):
             "shutdown",
             "summary_address",
             "timers.throttle.lsa",
+            "timers.pacing",
             "timers.throttle.spf",
             "traffic_share",
             "ttl_security",

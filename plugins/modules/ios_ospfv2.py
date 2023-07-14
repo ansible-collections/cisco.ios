@@ -40,7 +40,9 @@ description:
   This module configures and manages the Open Shortest Path First (OSPF)
   version 2 on IOS platforms.
 version_added: 1.0.0
-author: Vinay M (@roverflow)
+author: 
+  - Sumit Jaiswal (@justjais)
+  - Vinay M (@roverflow)
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).

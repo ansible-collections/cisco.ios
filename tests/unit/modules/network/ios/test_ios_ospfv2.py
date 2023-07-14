@@ -496,7 +496,6 @@ class TestIosOspfV2Module(TestIosModule):
                             "summary_address": {
                                 "address": "172.16.1.0",
                                 "mask": "0.0.0.255",
-                                "not_advertise": True,
                                 "nssa_only": True,
                                 "tag": 12,
                             },
@@ -569,7 +568,8 @@ class TestIosOspfV2Module(TestIosModule):
             "queue-depth update 30",
             "router-id router1",
             "shutdown",
-            "summary-address 172.16.1.0 0.0.0.255 not-advertise",
+            "summary-address 172.16.1.0 0.0.0.255 nssa-only tag 12",
+            "timers pacing flood 25",
             "traffic-share min across-interfaces",
             "ttl-security all-interfaces hops 12",
             "area 5 authentication message-digest",
@@ -902,8 +902,6 @@ class TestIosOspfV2Module(TestIosModule):
                             "timers": {
                                 "lsa": 12,
                                 "pacing": {
-                                    "flood": 25,
-                                    "lsa_group": 15,
                                     "retransmission": 30,
                                 },
                                 "throttle": {
@@ -981,11 +979,13 @@ class TestIosOspfV2Module(TestIosModule):
             "router-id router1",
             "shutdown",
             "summary-address 172.16.1.0 0.0.0.255 not-advertise",
+            "timers pacing retransmission 30",
             "topology base",
             "traffic-share min across-interfaces",
             "ttl-security all-interfaces hops 12",
         ]
         result = self.execute_module(changed=False)
+        self.maxDiff = None
         self.assertEqual(sorted(result["rendered"]), commands)
 
     def test_ios_ospfv2_overridden_2(self):
@@ -1007,7 +1007,6 @@ class TestIosOspfV2Module(TestIosModule):
              distribute-list 10 out
              distribute-list 123 in
              domain-id 192.0.3.1
-             max-metric router-lsa on-startup 100
              area 10 capability default-exclusion
              passive-interface default
              no passive-interface GigabitEthernet0/1
@@ -1029,7 +1028,20 @@ class TestIosOspfV2Module(TestIosModule):
                                     {"name": "123", "direction": "in"},
                                 ],
                             },
-                            "domain_id": {"ip_address": {"address": "192.0.3.1"}},
+                            "queue_depth": {
+                                "hello": {
+                                    "unlimited": True,
+                                },
+                                "update": {
+                                    "unlimited": True,
+                                },
+                            },
+                            "domain_id": {"null": True},
+                            "timers" : {
+                                "pacing" : {
+                                    "lsa_group" : 25,
+                                }
+                            },
                             "max_metric": {"router_lsa": True, "on_startup": {"time": 100}},
                             "areas": [{"area_id": "10", "capability": True}],
                             "passive_interfaces": {
@@ -1051,7 +1063,22 @@ class TestIosOspfV2Module(TestIosModule):
                                 ],
                             },
                             "domain_id": {"ip_address": {"address": "192.0.3.1"}},
-                            "max_metric": {"router_lsa": True, "on_startup": {"time": 100}},
+                            "nsf": {
+                                "ietf": {
+                                    "strict_lsa_checking": True,
+                                },
+                            },
+                            "mpls": {
+                                "ldp": {
+                                    "sync": True,
+                                },
+                            },
+                            "timers" : {
+                                "pacing" : {
+                                    "flood" : 25,
+                                }
+                            },
+                            "max_metric": {"router_lsa": True, "on_startup": {"wait_for_bgp": True}},
                             "areas": [{"area_id": "11", "capability": True}],
                             "passive_interfaces": {
                                 "default": True,
@@ -1068,13 +1095,22 @@ class TestIosOspfV2Module(TestIosModule):
         )
 
         result = self.execute_module(changed=True)
+        print(result["commands"])
         commands = [
             "router ospf 200 vrf blue",
+            "domain-id null",
+            'queue-depth hello unlimited', 
+            'queue-depth update unlimited',
+            "timers pacing lsa-group 25",
             "no area 10 filter-list prefix test_prefix_in in",
             "distribute-list 110 out",
             "no distribute-list 10 out",
             "router ospf 210 vrf green",
             "auto-cost reference-bandwidth 5",
+            'max-metric router-lsa on-startup wait-for-bgp',
+            'mpls ldp sync',
+            'nsf ietf helper strict-lsa-checking',
+            "timers pacing flood 25",
             "area 11 capability default-exclusion",
             "no area 10 capability default-exclusion",
             "distribute-list 5120 out",
