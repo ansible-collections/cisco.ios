@@ -1037,10 +1037,10 @@ class TestIosOspfV2Module(TestIosModule):
                                 },
                             },
                             "domain_id": {"null": True},
-                            "timers" : {
-                                "pacing" : {
-                                    "lsa_group" : 25,
-                                }
+                            "timers": {
+                                "pacing": {
+                                    "lsa_group": 25,
+                                },
                             },
                             "max_metric": {"router_lsa": True, "on_startup": {"time": 100}},
                             "areas": [{"area_id": "10", "capability": True}],
@@ -1073,12 +1073,15 @@ class TestIosOspfV2Module(TestIosModule):
                                     "sync": True,
                                 },
                             },
-                            "timers" : {
-                                "pacing" : {
-                                    "flood" : 25,
-                                }
+                            "timers": {
+                                "pacing": {
+                                    "flood": 25,
+                                },
                             },
-                            "max_metric": {"router_lsa": True, "on_startup": {"wait_for_bgp": True}},
+                            "max_metric": {
+                                "router_lsa": True,
+                                "on_startup": {"wait_for_bgp": True},
+                            },
                             "areas": [{"area_id": "11", "capability": True}],
                             "passive_interfaces": {
                                 "default": True,
@@ -1099,17 +1102,17 @@ class TestIosOspfV2Module(TestIosModule):
         commands = [
             "router ospf 200 vrf blue",
             "domain-id null",
-            'queue-depth hello unlimited', 
-            'queue-depth update unlimited',
+            "queue-depth hello unlimited",
+            "queue-depth update unlimited",
             "timers pacing lsa-group 25",
             "no area 10 filter-list prefix test_prefix_in in",
             "distribute-list 110 out",
             "no distribute-list 10 out",
             "router ospf 210 vrf green",
             "auto-cost reference-bandwidth 5",
-            'max-metric router-lsa on-startup wait-for-bgp',
-            'mpls ldp sync',
-            'nsf ietf helper strict-lsa-checking',
+            "max-metric router-lsa on-startup wait-for-bgp",
+            "mpls ldp sync",
+            "nsf ietf helper strict-lsa-checking",
             "timers pacing flood 25",
             "area 11 capability default-exclusion",
             "no area 10 capability default-exclusion",
