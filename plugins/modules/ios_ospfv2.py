@@ -751,7 +751,7 @@ options:
               - Suppress routing updates on an interface (GigabitEthernet A/B)
               - Interface name with respective interface number
               - passive_interface param is DEPRECATED and a newer param passive_interfaces
-                with added functionality's is introduced, this attribute will be removed after 
+                with added functionality's is introduced, this attribute will be removed after
                 2026-07-18.
             type: str
           passive_interfaces:
