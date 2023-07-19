@@ -24,19 +24,6 @@ def _tmplt_ospf_address_family_cmd(config_data):
         return command
 
 
-def _tmplt_ospf_area_filter(config_data):
-    direction = config_data.get("direction")
-    name = config_data.get("name")
-    cmd = ""
-    if name and direction:
-        cmd = "area {area_id} filter-list prefix {name} {direction}".format(
-            area_id=config_data.get("area_id"),
-            name=name,
-            direction=direction,
-        )
-    return cmd
-
-
 def _tmplt_ospf_area_nssa(config_data):
     if "nssa" in config_data:
         nssa_data = config_data["nssa"]
@@ -179,36 +166,6 @@ def _tmplt_ospf_neighbor(config_data):
         return command
 
 
-def _tmplt_ospf_nsf_ietf(config_data):
-    if "ietf" in config_data["nsf"]:
-        command = "nsf ietf helper"
-        if "disable" in config_data["nsf"]["ietf"]:
-            command += " disable"
-        elif "strict_lsa_checking" in config_data["nsf"]["ietf"]:
-            command += " strict-lsa-checking"
-        return command
-
-
-def _tmplt_ospf_queue_depth_hello(config_data):
-    if "hello" in config_data["queue_depth"]:
-        command = "queue-depth hello"
-        if "max_packets" in config_data["queue_depth"]["hello"]:
-            command += " {max_packets}".format(**config_data["queue_depth"]["hello"])
-        elif "unlimited" in config_data["queue_depth"]["hello"]:
-            command += " unlimited"
-        return command
-
-
-def _tmplt_ospf_queue_depth_update(config_data):
-    if "update" in config_data["queue_depth"]:
-        command = "queue-depth update"
-        if "max_packets" in config_data["queue_depth"]["update"]:
-            command += " {max_packets}".format(**config_data["queue_depth"]["update"])
-        elif "unlimited" in config_data["queue_depth"]["update"]:
-            command += " unlimited"
-        return command
-
-
 def _tmplt_ospf_passive_interfaces(config_data):
     if "passive_interfaces" in config_data:
         if config_data["passive_interfaces"].get("interface"):
@@ -219,30 +176,6 @@ def _tmplt_ospf_passive_interfaces(config_data):
                 for each in config_data["passive_interfaces"]["interface"]:
                     cmd = "no passive-interface {0}".format(each)
         return cmd
-
-
-def _tmplt_ospf_summary_address(config_data):
-    if "summary_address" in config_data:
-        command = "summary-address {address} {mask}".format(**config_data["summary_address"])
-        if "not_advertise" in config_data["summary_address"]:
-            command += " not-advertise"
-        elif "nssa_only" in config_data["summary_address"]:
-            command += " nssa-only"
-            if "tag" in config_data["summary_address"]:
-                command += " tag {tag}".format(**config_data["summary_address"])
-        return command
-
-
-def _tmplt_ospf_timers_pacing(config_data):
-    if "pacing" in config_data["timers"]:
-        command = "timers pacing"
-        if "flood" in config_data["timers"]["pacing"]:
-            command += " flood {flood}".format(**config_data["timers"]["pacing"])
-        elif "lsa_group" in config_data["timers"]["pacing"]:
-            command += " lsa-group {lsa_group}".format(**config_data["timers"]["pacing"])
-        elif "retransmission" in config_data["timers"]["pacing"]:
-            command += " retransmission {retransmission}".format(**config_data["timers"]["pacing"])
-        return command
 
 
 class Ospfv2Template(NetworkTemplate):
@@ -410,14 +343,18 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_area_filter,
+            "setval" : "area {{ area_id }}"
+            " filter-list prefix {{ name }} {{ direction }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
                         "areas": {
                             "{{ area_id }}": {
                                 "area_id": "{{ area_id }}",
-                                "filter_list": [{"name": "{{ name }}", "direction": "{{ dir }}"}],
+                                "filter_list": [{
+                                    "name": "{{ name }}", 
+                                    "direction": "{{ dir }}"
+                                }],
                             },
                         },
                     },
@@ -1089,7 +1026,7 @@ class Ospfv2Template(NetworkTemplate):
                             },
                             "non_dc": {
                                 "number": "{{ non_dc_num|int }}",
-                                "disable": "{{ True if dc_disable is defined }}",
+                                "disable": "{{ True if non_dc_disable is defined }}",
                             },
                         },
                     },
@@ -1221,7 +1158,7 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "maximum-paths {{ maximum_paths }}",
+            "setval": "maximum-paths {{ maximum_paths|string }}",
             "result": {"processes": {"{{ pid }}": {"maximum_paths": "{{ paths }}"}}},
         },
         {
@@ -1373,26 +1310,49 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
-            "name": "nsf.ietf",
+            "name": "nsf.ietf.disable",
             "getval": re.compile(
                 r"""
                 \snsf
                 (\s(?P<ietf>ietf))
-                (\s(?P<helper>helper))?
-                (\s(?P<disable>disable))?
-                (\s(?P<strict>strict-lsa-checking))?
+                (\s(?P<helper>helper))
+                (\s(?P<disable>disable))
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_nsf_ietf,
+            "setval": "nsf ietf helper disable",
             "result": {
                 "processes": {
                     "{{ pid }}": {
                         "nsf": {
                             "ietf": {
-                                "helper": "{{ True if helper is defined }}",
-                                "disable": "{{ True if disable is defined }}",
-                                "strict_lsa_checking": "{{ True if strict is defined }}",
+                                "helper": "{{ True }}",
+                                "disable": "{{ True }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "nsf.ietf.strict_lsa_checking",
+            "getval": re.compile(
+                r"""
+                \snsf
+                (\s(?P<ietf>ietf))
+                (\s(?P<helper>helper))
+                (\s(?P<strict>strict-lsa-checking))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "nsf ietf helper strict-lsa-checking",
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "nsf": {
+                            "ietf": {
+                                "helper": "{{ True  }}",
+                                "strict_lsa_checking": "{{ True }}",
                             },
                         },
                     },
@@ -1471,23 +1431,22 @@ class Ospfv2Template(NetworkTemplate):
             "result": {"processes": {"{{ pid }}": {"priority": "{{ priority }}"}}},
         },
         {
-            "name": "queue_depth.hello",
+            "name": "queue_depth.hello.max_packets",
             "getval": re.compile(
                 r"""
                 \squeue-depth\shello
-                (\s(?P<max_packets>\d+))?
-                (\s(?P<unlimited>unlimited))?
+                (\s(?P<max_packets>\d+))
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_queue_depth_hello,
+            "setval" : "queue-depth hello "
+            "{{ queue_depth.hello.max_packets|string }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
                         "queue_depth": {
                             "hello": {
                                 "max_packets": "{{ max_packets }}",
-                                "unlimited": "{{ True if unlimited is defined }}",
                             },
                         },
                     },
@@ -1495,23 +1454,66 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
-            "name": "queue_depth.update",
+            "name": "queue_depth.hello.unlimited",
+            "getval": re.compile(
+                r"""
+                \squeue-depth\shello
+                (\s(?P<unlimited>unlimited))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval" : "queue-depth hello unlimited",
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "queue_depth": {
+                            "hello": {
+                                "unlimited": "{{ True }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "queue_depth.update.max_packets",
             "getval": re.compile(
                 r"""
                 \squeue-depth\supdate
                 (\s(?P<max_packets>\d+))?
-                (\s(?P<unlimited>unlimited))?
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_queue_depth_update,
+            "setval": "queue-depth update "
+            "{{ queue_depth['update'].max_packets|string }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
                         "queue_depth": {
                             "update": {
                                 "max_packets": "{{ max_packets }}",
-                                "unlimited": "{{ True if unlimited is defined }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "queue_depth.update.unlimited",
+            "getval": re.compile(
+                r"""
+                \squeue-depth\supdate
+                (\s(?P<unlimited>unlimited))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "queue-depth update unlimited",
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "queue_depth": {
+                            "update": {
+                                "unlimited": "{{ True }}",
                             },
                         },
                     },
@@ -1544,27 +1546,52 @@ class Ospfv2Template(NetworkTemplate):
             },
         },
         {
-            "name": "summary_address",
+            "name": "summary_address.not_advertise",
             "getval": re.compile(
                 r"""
                 \ssummary-address
-                (\s(?P<address>\S+))?
-                (\s(?P<mask>\S+))?
-                (\s(?P<not_adv>not-advertise))?
-                (\s(?P<nssa>nssa-only))?
-                (\stag\s(?P<tag>\d+))?
+                (\s(?P<address>\S+))
+                (\s(?P<mask>\S+))
+                (\s(?P<not_adv>not-advertise))
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_summary_address,
+            "setval": "summary-address "
+            "{{ summary_address.address + ' ' + summary_address.mask }} not-advertise",
             "result": {
                 "processes": {
                     "{{ pid }}": {
                         "summary_address": {
                             "address": "{{ address }}",
                             "mask": "{{ mask }}",
-                            "not_advertise": "{{ True if not_adv is defined }}",
-                            "nssa_only": "{{ True if nssa is defined }}",
+                            "not_advertise": "{{ True }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "summary_address.nssa_only",
+            "getval": re.compile(
+                r"""
+                \ssummary-address
+                (\s(?P<address>\S+))
+                (\s(?P<mask>\S+))
+                (\s(?P<nssa>nssa-only))
+                (\stag\s(?P<tag>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "summary-address "
+            "{{ summary_address.address + ' ' + summary_address.mask }} nssa-only"
+            "{{ ' tag ' + summary_address.tag|string if summary_address.tag is defined else '' }}",
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "summary_address": {
+                            "address": "{{ address }}",
+                            "mask": "{{ mask }}",
+                            "nssa_only": "{{ True }}",
                             "tag": "{{ tag }}",
                         },
                     },
@@ -1586,24 +1613,67 @@ class Ospfv2Template(NetworkTemplate):
             "result": {"processes": {"{{ pid }}": {"timers": {"lsa": "{{ lsa }}"}}}},
         },
         {
-            "name": "timers.pacing",
+            "name": "timers.pacing.flood",
             "getval": re.compile(
                 r"""
                 \stimers\spacing
-                (\sflood\s(?P<flood>\d+))?
-                (\slsa-group\s(?P<lsa_group>\d+))?
-                (\sretransmission\s(?P<retransmission>\d+))?
+                (\sflood\s(?P<flood>\d+))
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_timers_pacing,
+            "setval": "timers pacing"
+            "{{ ' flood ' + timers.pacing.flood|string if timers.pacing.flood is defined else '' }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
                         "timers": {
                             "pacing": {
-                                "flood": "{{ flood }}",
+                                "flood": "{{ flood }}",\
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "timers.pacing.lsa_group",
+            "getval": re.compile(
+                r"""
+                \stimers\spacing
+                (\slsa-group\s(?P<lsa_group>\d+))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "timers pacing"
+            "{{ ' lsa-group ' + timers.pacing.lsa_group|string if timers.pacing.lsa_group is defined else '' }}",
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "timers": {
+                            "pacing": {
                                 "lsa_group": "{{ lsa_group }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "timers.pacing.retransmission",
+            "getval": re.compile(
+                r"""
+                \stimers\spacing
+                (\sretransmission\s(?P<retransmission>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "timers pacing"
+            "{{ ' retransmission ' + timers.pacing.retransmission|string if timers.pacing.retransmission is defined else '' }}",
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "timers": {
+                            "pacing": {
                                 "retransmission": "{{ retransmission }}",
                             },
                         },
