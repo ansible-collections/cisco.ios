@@ -343,18 +343,19 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval" : "area {{ area_id }}"
-            " filter-list prefix {{ name }} {{ direction }}",
+            "setval": "area {{ area_id }}" " filter-list prefix {{ name }} {{ direction }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
                         "areas": {
                             "{{ area_id }}": {
                                 "area_id": "{{ area_id }}",
-                                "filter_list": [{
-                                    "name": "{{ name }}", 
-                                    "direction": "{{ dir }}"
-                                }],
+                                "filter_list": [
+                                    {
+                                        "name": "{{ name }}",
+                                        "direction": "{{ dir }}",
+                                    }
+                                ],
                             },
                         },
                     },
@@ -1439,8 +1440,7 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval" : "queue-depth hello "
-            "{{ queue_depth.hello.max_packets|string }}",
+            "setval": "queue-depth hello " "{{ queue_depth.hello.max_packets|string }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1462,7 +1462,7 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval" : "queue-depth hello unlimited",
+            "setval": "queue-depth hello unlimited",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1484,8 +1484,7 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "queue-depth update "
-            "{{ queue_depth['update'].max_packets|string }}",
+            "setval": "queue-depth update " "{{ queue_depth['update'].max_packets|string }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1628,7 +1627,7 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "timers": {
                             "pacing": {
-                                "flood": "{{ flood }}",\
+                                "flood": "{{ flood }}",
                             },
                         },
                     },
