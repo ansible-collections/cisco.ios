@@ -354,7 +354,7 @@ class Ospfv2Template(NetworkTemplate):
                                     {
                                         "name": "{{ name }}",
                                         "direction": "{{ dir }}",
-                                    }
+                                    },
                                 ],
                             },
                         },
