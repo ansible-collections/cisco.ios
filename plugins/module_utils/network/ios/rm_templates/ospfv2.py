@@ -354,7 +354,7 @@ class Ospfv2Template(NetworkTemplate):
                                     {
                                         "name": "{{ name }}",
                                         "direction": "{{ dir }}",
-                                    },
+                                    }
                                 ],
                             },
                         },
@@ -448,10 +448,6 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            # "setval": "area {{ area_id }} range {{ address }} {{ netmask }}"
-            # "{{ ' advertise' if advertise }}"
-            # "{{ ' not-advertise' if not_advertise }}"
-            # "{{ ' cost ' + cost|int if cost is defined }}",
             "setval": _tmplt_ospf_area_ranges,
             "result": {
                 "processes": {
@@ -1016,7 +1012,11 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_limit,
+            "setval": "limit retransmissions"
+            "{{ ' dc ' + limit.dc.number|string if limit.dc.number is defined }}"
+            "{{ ' dc disable' if limit.dc.disable and limit.dc.number is not defined }}"
+            "{{ ' non-dc ' + limit.non_dc.number|string if limit.non_dc.number is defined }}"
+            "{{ ' non-dc disable' if limit.non_dc.disable and limit.non_dc.number is not defined }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {

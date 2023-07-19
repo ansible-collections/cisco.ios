@@ -391,11 +391,9 @@ class TestIosOspfV2Module(TestIosModule):
                             "limit": {
                                 "dc": {
                                     "disable": True,
-                                    "number": 20,
                                 },
                                 "non_dc": {
                                     "disable": True,
-                                    "number": 10,
                                 },
                             },
                             "local_rib_criteria": {
@@ -546,7 +544,7 @@ class TestIosOspfV2Module(TestIosModule):
             "ignore lsa mospf",
             "interface-id snmp-if-index",
             "ispf",
-            "limit retransmissions dc 20 dc disable non-dc 10 non-dc disable",
+            "limit retransmissions dc disable non-dc disable",
             "local-rib-criteria forwarding-address inter-area-summary nssa-translation",
             "log-adjacency-changes detail",
             "max-lsa 10 10 warning-only",
@@ -949,7 +947,7 @@ class TestIosOspfV2Module(TestIosModule):
             "ignore lsa mospf",
             "interface-id snmp-if-index",
             "ispf",
-            "limit retransmissions dc 20 dc disable non-dc 10 non-dc disable",
+            "limit retransmissions dc 20 non-dc 10",
             "local-rib-criteria forwarding-address inter-area-summary nssa-translation",
             "log-adjacency-changes detail",
             "max-lsa 10 10 ignore-count 10 ignore-time 10 reset-time 10",
