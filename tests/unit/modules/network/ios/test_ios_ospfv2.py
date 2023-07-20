@@ -425,7 +425,6 @@ class TestIosOspfV2Module(TestIosModule):
                                         "area": "area1",
                                         "set": True,
                                     },
-                                    "sync": True,
                                 },
                                 "traffic_eng": {
                                     "area": "area12",
@@ -817,10 +816,6 @@ class TestIosOspfV2Module(TestIosModule):
                             "maximum_paths": 15,
                             "mpls": {
                                 "ldp": {
-                                    "autoconfig": {
-                                        "area": "area1",
-                                        "set": True,
-                                    },
                                     "sync": True,
                                 },
                                 "traffic_eng": {
@@ -953,7 +948,7 @@ class TestIosOspfV2Module(TestIosModule):
             "max-lsa 10 10 ignore-count 10 ignore-time 10 reset-time 10",
             "max-metric router-lsa external-lsa 10 include-stub on-startup 110 summary-lsa 20",
             "maximum-paths 15",
-            "mpls ldp autoconfig area area1",
+            "mpls ldp sync",
             "mpls traffic-eng area area12",
             "neighbor 172.16.1.0 cost 2 database-filter all out poll-interval 20 priority 10",
             "network 198.51.100.0 0.0.0.255 area 5",

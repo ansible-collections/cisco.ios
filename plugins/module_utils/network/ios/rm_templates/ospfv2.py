@@ -48,18 +48,6 @@ def _tmplt_ospf_area_nssa(config_data):
         return command
 
 
-def _tmplt_ospf_area_ranges(config_data):
-    cmd = "area {area_id} range".format(**config_data)
-    cmd += " {address} {netmask}".format(**config_data)
-    if "advertise" in config_data:
-        cmd += " advertise"
-    elif "not_advertise" in config_data:
-        cmd += " not-advertise"
-    if "cost" in config_data:
-        cmd += " cost {cost}".format(**config_data)
-    return cmd
-
-
 def _tmplt_ospf_domain_id(config_data):
     if "domain_id" in config_data:
         command = "domain-id"
@@ -70,22 +58,6 @@ def _tmplt_ospf_domain_id(config_data):
                     command += " secondary".format(**config_data["domain_id"]["ip_address"])
         elif "null" in config_data["domain_id"]:
             command += " null"
-        return command
-
-
-def _tmplt_ospf_limit(config_data):
-    if "limit" in config_data:
-        command = "limit retransmissions"
-        if "dc" in config_data["limit"]:
-            if "number" in config_data["limit"]["dc"]:
-                command += " dc {number}".format(**config_data["limit"]["dc"])
-            if "disable" in config_data["limit"]["dc"]:
-                command += " dc disable"
-        if "non_dc" in config_data["limit"]:
-            if "number" in config_data["limit"]["non_dc"]:
-                command += " non-dc {number}".format(**config_data["limit"]["non_dc"])
-            if "disable" in config_data["limit"]["dc"]:
-                command += " non-dc disable"
         return command
 
 
@@ -106,18 +78,6 @@ def _tmplt_ospf_max_metric(config_data):
         if "summary_lsa" in config_data["max_metric"]:
             command += " summary-lsa {summary_lsa}".format(**config_data["max_metric"])
         return command
-
-
-def _tmplt_ospf_mpls_ldp(config_data):
-    if "ldp" in config_data["mpls"]:
-        command = "mpls ldp"
-        if "autoconfig" in config_data["mpls"]["ldp"]:
-            command += " autoconfig"
-            if "area" in config_data["mpls"]["ldp"]["autoconfig"]:
-                command += " area {area}".format(**config_data["mpls"]["ldp"]["autoconfig"])
-        elif "sync" in config_data["mpls"]["ldp"]:
-            command += " sync"
-    return command
 
 
 def _tmplt_ospf_mpls_traffic_eng(config_data):
@@ -448,7 +408,10 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_area_ranges,
+            "setval": "area {{ area_id }} range {{ address }} {{ netmask }}"
+            "{{ (' advertise') if advertise is defined and advertise else '' }}"
+            "{{ (' not-advertise') if not_advertise is defined and not_advertise else '' }}"
+            "{{ (' cost ' + cost|string) if cost is defined else '' }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1163,17 +1126,17 @@ class Ospfv2Template(NetworkTemplate):
             "result": {"processes": {"{{ pid }}": {"maximum_paths": "{{ paths }}"}}},
         },
         {
-            "name": "mpls.ldp",
+            "name": "mpls.ldp.autoconfig",
             "getval": re.compile(
                 r"""
                 \smpls\sldp
-                (\s(?P<autoconfig>autoconfig))?
+                (\s(?P<autoconfig>autoconfig))
                 (\sarea\s(?P<area>\S+))?
-                (\s(?P<sync>sync))?
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_ospf_mpls_ldp,
+            "setval": "mpls ldp autoconfig"
+            "{{ ' area ' + mpls.ldp.autoconfig.area if mpls.ldp.autoconfig.area is defined }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {
@@ -1183,7 +1146,28 @@ class Ospfv2Template(NetworkTemplate):
                                     "set": "{{ True if autoconfig is defined and area is undefined }}",
                                     "area": "{{ area }}",
                                 },
-                                "sync": "{{ True if sync is defined }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "mpls.ldp.sync",
+            "getval": re.compile(
+                r"""
+                \smpls\sldp
+                (\s(?P<sync>sync))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "mpls ldp sync",
+            "result": {
+                "processes": {
+                    "{{ pid }}": {
+                        "mpls": {
+                            "ldp": {
+                                "sync": "{{ True }}",
                             },
                         },
                     },
