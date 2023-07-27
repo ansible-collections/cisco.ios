@@ -29,6 +29,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_ad
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_global.bgp_global import (
     Bgp_globalFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.evpn_global.evpn_global import (
+    Evpn_globalFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.hostname.hostname import (
     HostnameFacts,
 )
@@ -94,7 +97,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.
     VlansFacts,
 )
 
-
 FACT_LEGACY_SUBSETS = dict(default=Default, hardware=Hardware, interfaces=Interfaces, config=Config)
 
 FACT_RESOURCE_SUBSETS = dict(
@@ -122,6 +124,7 @@ FACT_RESOURCE_SUBSETS = dict(
     service=ServiceFacts,
     snmp_server=Snmp_serverFacts,
     hostname=HostnameFacts,
+    evpn_global=Evpn_globalFacts,
 )
 
 

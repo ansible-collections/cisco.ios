@@ -15,6 +15,8 @@ plugin_routing:
       redirect: cisco.ios.ios
     config:
       redirect: cisco.ios.ios
+    evpn_global:
+      redirect: cisco.ios.ios
     facts:
       redirect: cisco.ios.ios
     hostname:
@@ -34,6 +36,8 @@ plugin_routing:
     ios_command:
       redirect: cisco.ios.ios
     ios_config:
+      redirect: cisco.ios.ios
+    ios_evpn_global:
       redirect: cisco.ios.ios
     ios_facts:
       redirect: cisco.ios.ios
@@ -129,6 +133,8 @@ plugin_routing:
       redirect: cisco.ios.ios_command
     config:
       redirect: cisco.ios.ios_config
+    evpn_global:
+      redirect: cisco.ios.ios_evpn_global
     facts:
       redirect: cisco.ios.ios_facts
     hostname:
