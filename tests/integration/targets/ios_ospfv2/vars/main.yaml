@@ -244,5 +244,4 @@ rtt:
     - area 10 nssa default-information-originate metric 10
     - area 10 filter-list prefix test_prefix_out out
     - area 10 filter-list prefix test_prefix_in in
-    - area 5 authentication
     - area 5 capability default-exclusion

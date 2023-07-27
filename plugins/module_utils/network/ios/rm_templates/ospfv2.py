@@ -515,7 +515,7 @@ class Ospfv2Template(NetworkTemplate):
                 "processes": {
                     "{{ pid }}": {
                         "auto_cost": {
-                            "set": "{{ True }}",
+                            "set": True,
                             "reference_bandwidth": "{{ ref_band }}",
                         },
                     },
@@ -548,7 +548,7 @@ class Ospfv2Template(NetworkTemplate):
                 "processes": {
                     "{{ pid }}": {
                         "capability": {
-                            "lls": "{{ True }}",
+                            "lls": True,
                         },
                     },
                 },
@@ -568,7 +568,7 @@ class Ospfv2Template(NetworkTemplate):
                 "processes": {
                     "{{ pid }}": {
                         "capability": {
-                            "opaque": "{{ True }}",
+                            "opaque": True,
                         },
                     },
                 },
@@ -588,7 +588,7 @@ class Ospfv2Template(NetworkTemplate):
                 "processes": {
                     "{{ pid }}": {
                         "capability": {
-                            "transit": "{{ True }}",
+                            "transit": True,
                         },
                     },
                 },
@@ -608,7 +608,7 @@ class Ospfv2Template(NetworkTemplate):
                 "processes": {
                     "{{ pid }}": {
                         "capability": {
-                            "vrf_lite": "{{ True }}",
+                            "vrf_lite": True,
                         },
                     },
                 },
@@ -701,7 +701,7 @@ class Ospfv2Template(NetworkTemplate):
                 "processes": {
                     "{{ pid }}": {
                         "discard_route": {
-                            "set": "{{ True }}",
+                            "set": True,
                             "external": "{{ external }}",
                             "internal": "{{ internal }}",
                         },
@@ -1167,7 +1167,7 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "mpls": {
                             "ldp": {
-                                "sync": "{{ True }}",
+                                "sync": True,
                             },
                         },
                     },
@@ -1311,8 +1311,8 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "nsf": {
                             "ietf": {
-                                "helper": "{{ True }}",
-                                "disable": "{{ True }}",
+                                "helper": True,
+                                "disable": True,
                             },
                         },
                     },
@@ -1337,7 +1337,7 @@ class Ospfv2Template(NetworkTemplate):
                         "nsf": {
                             "ietf": {
                                 "helper": "{{ True  }}",
-                                "strict_lsa_checking": "{{ True }}",
+                                "strict_lsa_checking": True,
                             },
                         },
                     },
@@ -1452,7 +1452,7 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "queue_depth": {
                             "hello": {
-                                "unlimited": "{{ True }}",
+                                "unlimited": True,
                             },
                         },
                     },
@@ -1496,7 +1496,7 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "queue_depth": {
                             "update": {
-                                "unlimited": "{{ True }}",
+                                "unlimited": True,
                             },
                         },
                     },
@@ -1547,7 +1547,7 @@ class Ospfv2Template(NetworkTemplate):
                         "summary_address": {
                             "address": "{{ address }}",
                             "mask": "{{ mask }}",
-                            "not_advertise": "{{ True }}",
+                            "not_advertise": True,
                         },
                     },
                 },
@@ -1574,7 +1574,7 @@ class Ospfv2Template(NetworkTemplate):
                         "summary_address": {
                             "address": "{{ address }}",
                             "mask": "{{ mask }}",
-                            "nssa_only": "{{ True }}",
+                            "nssa_only": True,
                             "tag": "{{ tag }}",
                         },
                     },

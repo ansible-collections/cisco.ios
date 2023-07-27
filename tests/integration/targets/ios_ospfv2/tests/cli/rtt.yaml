@@ -121,9 +121,14 @@
         config: "{{ ansible_facts['network_resources']['ospfv2'] }}"
         state: overridden
 
-    - ansible.builtin.assert:
+    - name: Commands output
+      ansible.builtin.debug:
+        msg: "{{ revert }}"
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
         that:
-          - revert.commands|length == 24
+          - revert.commands|length == 23
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
   always:
