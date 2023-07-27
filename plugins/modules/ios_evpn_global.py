@@ -10,6 +10,7 @@ The module file for ios_evpn_global
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -126,10 +127,10 @@ EXAMPLES = """
 #         default_gateway:
 #           advertise: false
 #         ip:
-#           local_learning: 
+#           local_learning:
 #             disable: true
 #         flooding_suppression:
-#           address_resolution: 
+#           address_resolution:
 #             disable: false
 #     state: merged
 
@@ -169,7 +170,7 @@ EXAMPLES = """
 #        default_gateway:
 #          advertise: true
 #        flooding_suppression:
-#          address_resolution: 
+#          address_resolution:
 #            disable: true
 #    state: replaced
 
@@ -216,7 +217,7 @@ EXAMPLES = """
 
 # After state:
 # -------------
-# 
+#
 # Using gathered
 
 # Before state:
@@ -243,7 +244,7 @@ EXAMPLES = """
 #       vni: true
 #   router_id: Loopback1
 #   ip:
-#     local_learning: 
+#     local_learning:
 #       disable: true
 
 # Using Rendered
@@ -321,6 +322,7 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.evpn_global.evpn_global import (
     Evpn_globalArgs,
 )

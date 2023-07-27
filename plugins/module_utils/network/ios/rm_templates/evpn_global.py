@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,9 +16,11 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
+
 
 class Evpn_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
@@ -35,7 +38,7 @@ class Evpn_globalTemplate(NetworkTemplate):
             ),
             "setval": "default-gateway advertise",
             "result": {"default_gateway": {"advertise": True}},
-            "shared": True
+            "shared": True,
         },
         {
             "name": "flooding_suppression.address_resolution.disable",
@@ -49,11 +52,11 @@ class Evpn_globalTemplate(NetworkTemplate):
             "result": {
                 "flooding_suppression": {
                     "address_resolution": {
-                        "disable": True
-                    }
+                        "disable": True,
+                    },
                 },
             },
-            "shared": True
+            "shared": True,
         },
         {
             "name": "ip.local_learning.disable",
@@ -67,11 +70,11 @@ class Evpn_globalTemplate(NetworkTemplate):
             "result": {
                 "ip": {
                     "local_learning": {
-                        "disable": True
-                    }
+                        "disable": True,
+                    },
                 },
             },
-            "shared": True
+            "shared": True,
         },
         {
             "name": "replication_type",
@@ -83,7 +86,7 @@ class Evpn_globalTemplate(NetworkTemplate):
             ),
             "setval": "replication-type {{replication_type}}",
             "result": {"replication_type": "{{replication_type}}"},
-            "shared": True
+            "shared": True,
         },
         {
             "name": "route_target.auto.vni",
@@ -95,7 +98,7 @@ class Evpn_globalTemplate(NetworkTemplate):
             ),
             "setval": "route-target auto vni",
             "result": {"route_target": {"auto": {"vni": True}}},
-            "shared": True
+            "shared": True,
         },
         {
             "name": "router_id",
@@ -107,7 +110,7 @@ class Evpn_globalTemplate(NetworkTemplate):
             ),
             "setval": "router-id {{ router_id }}",
             "result": {"router_id": "{{router_id}}"},
-            "shared": True
+            "shared": True,
         },
     ]
     # fmt: on

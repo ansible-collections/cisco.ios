@@ -9,18 +9,18 @@
       register: result
       cisco.ios.ios_evpn_global: &id001
         config:
-            replication_type: ingress
-            route_target:
-              auto:
-                vni: true
-            default_gateway:
-              advertise: false
-            ip:
-              local_learning: 
-                disable: true
-            flooding_suppression:
-              address_resolution: 
-                disable: false
+          replication_type: ingress
+          route_target:
+            auto:
+              vni: true
+          default_gateway:
+            advertise: false
+          ip:
+            local_learning:
+              disable: true
+          flooding_suppression:
+            address_resolution:
+              disable: false
         state: merged
 
     - name: Ios_evpn_global merged - assert commands

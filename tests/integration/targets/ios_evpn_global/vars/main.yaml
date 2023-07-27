@@ -14,7 +14,7 @@ merged:
         vni: true
     router_id: Loopback1
     ip:
-      local_learning: 
+      local_learning:
         disable: true
 
 replaced:
@@ -25,7 +25,7 @@ replaced:
         vni: true
     router_id: Loopback1
     ip:
-      local_learning: 
+      local_learning:
         disable: true
   commands:
     - l2vpn evpn
@@ -72,7 +72,7 @@ gathered:
         vni: true
     router_id: Loopback1
     ip:
-      local_learning: 
+      local_learning:
         disable: true
 
 parsed:

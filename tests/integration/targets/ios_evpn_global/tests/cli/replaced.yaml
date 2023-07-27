@@ -10,13 +10,13 @@
       register: result
       cisco.ios.ios_evpn_global: &id001
         config:
-            replication_type: static
-            router_id: loopback2
-            default_gateway:
-              advertise: true
-            flooding_suppression:
-              address_resolution: 
-                disable: true
+          replication_type: static
+          router_id: loopback2
+          default_gateway:
+            advertise: true
+          flooding_suppression:
+            address_resolution:
+              disable: true
         state: replaced
 
     - name: Ios_evpn_global replaced - assert commands

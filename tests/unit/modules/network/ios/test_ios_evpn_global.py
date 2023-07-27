@@ -62,11 +62,11 @@ class TestIosEvpnGlobalModule(TestIosModule):
             ),
         )
         commands = [
-           "l2vpn evpn",
-           "no default-gateway advertise",
-           "replication-type ingress",
-           "route-target auto vni",
-           "ip local-learning disable",
+            "l2vpn evpn",
+            "no default-gateway advertise",
+            "replication-type ingress",
+            "route-target auto vni",
+            "ip local-learning disable",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -96,7 +96,7 @@ class TestIosEvpnGlobalModule(TestIosModule):
         commands = []
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
-        
+
     def test_ios_evpn_global_deleted(self):
         self.execute_show_command.return_value = dedent(
             """\

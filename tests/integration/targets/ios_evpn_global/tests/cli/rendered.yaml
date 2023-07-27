@@ -7,10 +7,10 @@
       register: result
       cisco.ios.ios_evpn_global:
         config:
-            replication_type: static
-            route_target:
-              auto:
-                vni: true
+          replication_type: static
+          route_target:
+            auto:
+              vni: true
         state: rendered
 
     - name: Ios_evpn_global rendered - assert commands

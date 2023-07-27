@@ -8,6 +8,6 @@
           vni: true
       router_id: Loopback1
       ip:
-        local_learning: 
+        local_learning:
           disable: true
     state: merged
