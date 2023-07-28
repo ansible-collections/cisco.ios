@@ -139,7 +139,7 @@ class TestIosEvpnGlobalModule(TestIosModule):
             dict(
                 config=dict(
                     replication_type="static",
-                    router_id="loopback2",
+                    router_id="Loopback2",
                     default_gateway=dict(advertise=True),
                     flooding_suppression=dict(address_resolution=dict(disable=True)),
                 ),
@@ -153,7 +153,7 @@ class TestIosEvpnGlobalModule(TestIosModule):
             "no ip local-learning disable",
             "replication-type static",
             "no route-target auto vni",
-            "router-id loopback2",
+            "router-id Loopback2",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -173,7 +173,7 @@ class TestIosEvpnGlobalModule(TestIosModule):
             dict(
                 config=dict(
                     replication_type="static",
-                    router_id="loopback2",
+                    router_id="Loopback2",
                     default_gateway=dict(advertise=True),
                     flooding_suppression=dict(address_resolution=dict(disable=True)),
                 ),

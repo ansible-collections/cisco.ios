@@ -11,7 +11,7 @@
       cisco.ios.ios_evpn_global: &id001
         config:
           replication_type: static
-          router_id: loopback2
+          router_id: Loopback2
           default_gateway:
             advertise: true
           flooding_suppression:

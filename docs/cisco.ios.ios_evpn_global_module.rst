@@ -412,7 +412,7 @@ Examples
     #  cisco.ios.ios_evpn_global:
     #    config:
     #        replication_type: static
-    #        router_id: loopback2
+    #        router_id: Loopback2
     #        default_gateway:
     #          advertise: true
     #        flooding_suppression:
@@ -429,7 +429,7 @@ Examples
     #       "no ip local-learning disable",
     #       "replication-type static",
     #       "no route-target auto vni",
-    #       "router-id loopback2"
+    #       "router-id Loopback2"
     #   ],
 
     # After state:

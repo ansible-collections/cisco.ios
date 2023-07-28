@@ -5,7 +5,7 @@ merged:
     - l2vpn evpn
     - replication-type ingress
     - route-target auto vni
-    - router-id loopback1
+    - router-id Loopback1
     - ip local-learning disable
   after:
     replication_type: ingress
@@ -34,7 +34,7 @@ replaced:
     - no ip local-learning disable
     - replication-type static
     - no route-target auto vni
-    - router-id loopback2
+    - router-id Loopback2
   after:
     replication_type: static
     router_id: Loopback2
