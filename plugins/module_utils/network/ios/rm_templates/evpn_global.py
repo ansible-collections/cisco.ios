@@ -104,7 +104,7 @@ class Evpn_globalTemplate(NetworkTemplate):
             "name": "router_id",
             "getval": re.compile(
                 r"""
-                \srouter-id(?P<router_id>\S+)
+                \srouter-id\s(?P<router_id>\S+)
                 $""",
                 re.VERBOSE,
             ),
