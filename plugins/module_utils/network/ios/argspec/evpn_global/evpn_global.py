@@ -76,6 +76,7 @@ class Evpn_globalArgs(object):  # pylint: disable=R0903
                 },
             },
         },
+        "running_config": {"type": "str"},
         "state": {
             "type": "str",
             "choices": [
@@ -88,6 +89,5 @@ class Evpn_globalArgs(object):  # pylint: disable=R0903
                 "parsed",
             ],
             "default": "merged",
-            "type": "str",
         },
     }  # pylint: disable=C0301
