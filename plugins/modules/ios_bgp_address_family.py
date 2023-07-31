@@ -43,11 +43,12 @@ options:
           afi:
             description: Address Family
             type: str
-            choices: ['ipv4', 'ipv6', 'l2vpn', 'nsap', 'rtfilter', 'vpnv4', 'vpnv6']
+            choices:
+              ["ipv4", "ipv6", "l2vpn", "nsap", "rtfilter", "vpnv4", "vpnv6"]
           safi:
             description: Address Family modifier
             type: str
-            choices: ['flowspec', 'mdt', 'multicast', 'mvpn', 'evpn', 'unicast']
+            choices: ["flowspec", "mdt", "multicast", "mvpn", "evpn", "unicast"]
           vrf:
             description: Specify parameters for a VPN Routing/Forwarding instance
             type: str
@@ -190,9 +191,9 @@ options:
                 type: int
               slow_peer:
                 description:
-                - Nexthop triggering
-                - This option is DEPRECATED and replaced with slow_peer_options,
-                  this attribute will be removed after 2025-01-01.
+                  - Nexthop triggering
+                  - This option is DEPRECATED and replaced with slow_peer_options,
+                    this attribute will be removed after 2025-01-01.
                 type: list
                 elements: dict
                 suboptions:
@@ -288,27 +289,27 @@ options:
             suboptions:
               neighbor_address:
                 description:
-                - Neighbor address (A.B.C.D)
-                - Neighbor tag
-                - Neighbor ipv6 address (X:X:X:X::X)
+                  - Neighbor address (A.B.C.D)
+                  - Neighbor tag
+                  - Neighbor ipv6 address (X:X:X:X::X)
                 type: str
               address:
                 description:
-                - Neighbor address (A.B.C.D)
-                - This option is DEPRECATED and replaced with neighbor_address,
-                  this attribute will be removed after 2025-01-01.
+                  - Neighbor address (A.B.C.D)
+                  - This option is DEPRECATED and replaced with neighbor_address,
+                    this attribute will be removed after 2025-01-01.
                 type: str
               tag:
                 description:
-                - Neighbor tag
-                - This option is DEPRECATED and replaced with neighbor_address,
-                  this attribute will be removed after 2025-01-01.
+                  - Neighbor tag
+                  - This option is DEPRECATED and replaced with neighbor_address,
+                    this attribute will be removed after 2025-01-01.
                 type: str
               ipv6_address:
                 description:
-                - Neighbor ipv6 address (X:X:X:X::X)
-                - This option is DEPRECATED and replaced with neighbor_address,
-                  this attribute will be removed after 2025-01-01.
+                  - Neighbor ipv6 address (X:X:X:X::X)
+                  - This option is DEPRECATED and replaced with neighbor_address,
+                    this attribute will be removed after 2025-01-01.
                 type: str
                 aliases:
                   - ipv6_adddress
@@ -418,7 +419,7 @@ options:
                             type: dict
                             suboptions:
                               igp_cost:
-                                description:  Point of Insertion After IGP
+                                description: Point of Insertion After IGP
                                 type: bool
                               pre_bestpath:
                                 description: Point of Insertion At Beginning
@@ -634,12 +635,6 @@ options:
                   warning_only:
                     description: Only give warning message when limit is exceeded
                     type: bool
-              next_hop_self:
-                description:
-                  - Disable the next hop calculation for this neighbor
-                  - This option is DEPRECATED and is replaced with nexthop_self which
-                    accepts dict as input this attribute will be removed after 2023-06-01.
-                type: bool
               nexthop_self:
                 description: Disable the next hop calculation for this neighbor
                 type: dict
@@ -664,9 +659,9 @@ options:
                     type: bool
               password:
                 description:
-                - Set a password
-                - This option is DEPRECATED and is replaced with password_options which
-                  accepts dict as input, this attribute will be removed after 2024-06-01.
+                  - Set a password
+                  - This option is DEPRECATED and is replaced with password_options which
+                    accepts dict as input, this attribute will be removed after 2024-06-01.
                 type: str
               password_options:
                 description: Set a password with encryption type
@@ -857,9 +852,9 @@ options:
                     type: int
               slow_peer:
                 description:
-                - Configure slow-peer
-                - This option is DEPRECATED and replaced with slow_peer_options,
-                  this attribute will be removed after 2025-01-01.
+                  - Configure slow-peer
+                  - This option is DEPRECATED and replaced with slow_peer_options,
+                    this attribute will be removed after 2025-01-01.
                 type: list
                 elements: dict
                 suboptions:
@@ -1023,7 +1018,7 @@ options:
                 type: str
           redistribute:
             description:
-            - Redistribute information from another routing protocol
+              - Redistribute information from another routing protocol
             type: list
             elements: dict
             suboptions:
@@ -1165,9 +1160,9 @@ options:
                     suboptions:
                       external:
                         description:
-                        - Redistribute OSPF external routes
-                        - This option is DEPRECATED and replaced with externals option,
-                          this attribute will be removed after 2025-01-01.
+                          - Redistribute OSPF external routes
+                          - This option is DEPRECATED and replaced with externals option,
+                            this attribute will be removed after 2025-01-01.
                         type: bool
                       externals:
                         description: Redistribute OSPF external routes
@@ -1184,21 +1179,21 @@ options:
                         type: bool
                       nssa_external:
                         description:
-                        - Redistribute OSPF NSSA external routes
-                        - This option is DEPRECATED and replaced with nssa_externals option,
-                          this attribute will be removed after 2025-01-01.
+                          - Redistribute OSPF NSSA external routes
+                          - This option is DEPRECATED and replaced with nssa_externals option,
+                            this attribute will be removed after 2025-01-01.
                         type: bool
                       type_1:
                         description:
-                        - Redistribute NSSA external type 1 routes
-                        - This option is DEPRECATED and replaced with nssa_externals.type_1 option,
-                          this attribute will be removed after 2025-01-01.
+                          - Redistribute NSSA external type 1 routes
+                          - This option is DEPRECATED and replaced with nssa_externals.type_1 option,
+                            this attribute will be removed after 2025-01-01.
                         type: bool
                       type_2:
                         description:
-                        - Redistribute NSSA external type 2 routes
-                        - This option is DEPRECATED and replaced with nssa_externals.type_2 option,
-                          this attribute will be removed after 2025-01-01.
+                          - Redistribute NSSA external type 2 routes
+                          - This option is DEPRECATED and replaced with nssa_externals.type_2 option,
+                            this attribute will be removed after 2025-01-01.
                         type: bool
                       nssa_externals:
                         description: Redistribute OSPF NSSA external routes
@@ -1232,9 +1227,9 @@ options:
                     suboptions:
                       external:
                         description:
-                        - Redistribute OSPF external routes
-                        - This option is DEPRECATED and replaced with externals,
-                          this attribute will be removed after 2025-01-01.
+                          - Redistribute OSPF external routes
+                          - This option is DEPRECATED and replaced with externals,
+                            this attribute will be removed after 2025-01-01.
                         type: bool
                       externals:
                         description: Redistribute OSPF external routes
@@ -1251,21 +1246,21 @@ options:
                         type: bool
                       nssa_external:
                         description:
-                        - Redistribute OSPF internal routes
-                        - This option is DEPRECATED and replaced with nssa_externals,
-                          this attribute will be removed after 2025-01-01.
+                          - Redistribute OSPF internal routes
+                          - This option is DEPRECATED and replaced with nssa_externals,
+                            this attribute will be removed after 2025-01-01.
                         type: bool
                       type_1:
                         description:
-                        - Redistribute NSSA external type 1 routes
-                        - This option is DEPRECATED and replaced with nssa_externals.type_1 option,
-                          this attribute will be removed after 2025-01-01.
+                          - Redistribute NSSA external type 1 routes
+                          - This option is DEPRECATED and replaced with nssa_externals.type_1 option,
+                            this attribute will be removed after 2025-01-01.
                         type: bool
                       type_2:
                         description:
-                        - Redistribute NSSA external type 2 routes
-                        - This option is DEPRECATED and replaced with nssa_externals.type_2 option,
-                          this attribute will be removed after 2025-01-01.
+                          - Redistribute NSSA external type 2 routes
+                          - This option is DEPRECATED and replaced with nssa_externals.type_2 option,
+                            this attribute will be removed after 2025-01-01.
                         type: bool
                       nssa_externals:
                         description: Redistribute OSPF NSSA external routes
@@ -1442,13 +1437,13 @@ options:
     type: str
   state:
     choices:
-    - merged
-    - replaced
-    - overridden
-    - deleted
-    - gathered
-    - rendered
-    - parsed
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - gathered
+      - rendered
+      - parsed
     default: merged
     description:
       - The state the configuration should be left in
@@ -2526,7 +2521,7 @@ EXAMPLES = """
 #  address-family ipv6 multicast
 #  exit-address-family
 
-- name: 'Delete ALL of configured AF BGP'
+- name: "Delete ALL of configured AF BGP"
   cisco.ios.ios_bgp_address_family:
     state: deleted
 

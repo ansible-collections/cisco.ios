@@ -49,7 +49,7 @@ class TestIosUserModule(TestIosModule):
         self.mock_get_config.stop()
         self.mock_load_config.stop()
 
-    def load_fixtures(self, commands=None, transport="cli"):
+    def load_fixtures(self, commands=None):
         self.get_config.return_value = load_fixture("ios_user_config.cfg")
         self.load_config.return_value = dict(diff=None, session="session")
 

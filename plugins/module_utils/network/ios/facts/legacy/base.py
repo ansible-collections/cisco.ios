@@ -125,26 +125,31 @@ class Default(FactsBase):
 
 
 class Hardware(FactsBase):
-    COMMANDS = ["dir", "show memory statistics"]
+    COMMANDS = ["dir", "show memory statistics", "show processes cpu | include CPU utilization"]
 
     def populate(self):
         warnings = list()
         super(Hardware, self).populate()
+
         data = self.responses[0]
         if data:
             self.facts["filesystems"] = self.parse_filesystems(data)
             self.facts["filesystems_info"] = self.parse_filesystems_info(data)
+        self.facts["cpu_utilization"] = self.parse_cpu_utilization(self.responses[2])
 
         data = self.responses[1]
         if data:
             if "Invalid input detected" in data:
                 warnings.append("Unable to gather memory statistics")
             else:
-                processor_line = [line for line in data.splitlines() if "Processor" in line].pop()
-                match = re.findall(r"\s(\d+)\s", processor_line)
-                if match:
-                    self.facts["memtotal_mb"] = int(match[0]) / 1048576
-                    self.facts["memfree_mb"] = int(match[2]) / 1048576
+                for line in data.splitlines():
+                    match = re.match(
+                        r"Processor\s+(\S+|\d+)\s+(?P<total>\d+)\s+\d+\s+(?P<free>\d+)",
+                        line,
+                    )
+                    if match:
+                        self.facts["memtotal_mb"] = int(match.group("total")) / 1048576
+                        self.facts["memfree_mb"] = int(match.group("free")) / 1048576
 
     def parse_filesystems(self, data):
         return re.findall(r"^Directory of (\S+)/", data, re.M)
@@ -162,6 +167,37 @@ class Hardware(FactsBase):
             if match:
                 facts[fs]["spacetotal_kb"] = int(match.group(1)) / 1024
                 facts[fs]["spacefree_kb"] = int(match.group(2)) / 1024
+        return facts
+
+    def parse_cpu_utilization(self, data):
+        facts = {}
+        regex_cpu_utilization = re.compile(
+            r"""
+            (^Core\s(?P<core>\d+)?:)?
+            (^|\s)CPU\sutilization\sfor\sfive\sseconds:
+            (\s(?P<f_sec>\d+)?%)?
+            (\s(?P<f_se_nom>\d+)%/(?P<f_s_denom>\d+)%\)?)?
+            ;\sone\sminute:\s(?P<a_min>\d+)?%
+            ;\sfive\sminutes:\s(?P<f_min>\d+)?%
+            """,
+            re.VERBOSE,
+        )
+        for line in data.split("\n"):
+            match_cpu_utilization = regex_cpu_utilization.match(line)
+            if match_cpu_utilization:
+                _core = "core"
+                if match_cpu_utilization.group("core"):
+                    _core = "core_" + str(match_cpu_utilization.group("core"))
+                facts[_core] = {}
+                facts[_core]["five_seconds"] = int(
+                    match_cpu_utilization.group("f_se_nom") or match_cpu_utilization.group("f_sec"),
+                )
+                facts[_core]["one_minute"] = int(match_cpu_utilization.group("a_min"))
+                facts[_core]["five_minutes"] = int(match_cpu_utilization.group("f_min"))
+                if match_cpu_utilization.group("f_s_denom"):
+                    facts[_core]["five_seconds_interrupt"] = int(
+                        match_cpu_utilization.group("f_s_denom"),
+                    )
         return facts
 
 

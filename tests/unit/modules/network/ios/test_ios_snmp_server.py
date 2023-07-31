@@ -22,33 +22,11 @@ class TestIosSnmpServerModule(TestIosModule):
 
     def setUp(self):
         super(TestIosSnmpServerModule, self).setUp()
-
-        self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
-        )
-        self.get_config = self.mock_get_config.start()
-
-        self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
-        )
-        self.load_config = self.mock_load_config.start()
-
-        self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection",
-        )
-        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
-
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
-
-        self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
-        )
-        self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.snmp_server.snmp_server."
@@ -56,14 +34,18 @@ class TestIosSnmpServerModule(TestIosModule):
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
+        self.mock_execute_show_command_user = patch(
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.snmp_server.snmp_server."
+            "Snmp_serverFacts.get_snmpv3_user_data",
+        )
+
+        self.execute_show_command_user = self.mock_execute_show_command_user.start()
+
     def tearDown(self):
         super(TestIosSnmpServerModule, self).tearDown()
-        self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
-        self.mock_edit_config.stop()
-        self.mock_get_config.stop()
-        self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
+        self.mock_execute_show_command_user.stop()
 
     def test_ios_snmp_server_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -412,6 +394,24 @@ class TestIosSnmpServerModule(TestIosModule):
             """,
         )
 
+        self.execute_show_command_user.return_value = dedent(
+            """\
+            User name: paul
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active access-list: ipv6
+            Authentication Protocol: MD5
+            Privacy Protocol: AES128
+            Group-name: familypaul
+
+            User name: replaceUser
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active access-list: 22
+            Authentication Protocol: MD5
+            Privacy Protocol: None
+            Group-snmp-server user paul familypaul v3 access ipv6name: replaceUser
+            """,
+        )
+
         playbook = {
             "config": {
                 "accounting": {"command": "default"},
@@ -623,6 +623,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     {"acl_v4": "24", "group": "newfamily", "username": "newuser", "version": "v1"},
                     {"acl_v4": "ipv6", "group": "familypaul", "username": "paul", "version": "v3"},
                     {"group": "replaceUser", "username": "replaceUser", "version": "v3"},
+                    {"acl_v4": "27", "group": "mfamily", "username": "flow", "version": "v3"},
                 ],
             },
         }
@@ -698,6 +699,7 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server user newuser newfamily v1 access 24",
             "snmp-server user paul familypaul v3 access ipv6",
             "snmp-server user replaceUser replaceUser v3",
+            "snmp-server user flow mfamily v3 access 27",
         ]
         playbook["state"] = "merged"
         set_module_args(playbook)
@@ -714,6 +716,7 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server user new@user! new.family$ v1 access 24
             snmp-server user paul familypaul v3 access ipv6 ipv6acl
             snmp-server user replaceUser replaceUser v3
+            snmp-server user flow mfamily v3 access 27
             snmp-server group group0 v3 auth
             snmp-server group group1 v1 notify me access 2
             snmp-server group group2 v3 priv
@@ -994,6 +997,7 @@ class TestIosSnmpServerModule(TestIosModule):
             "no snmp-server user new@user! new.family$ v1 access 24",
             "no snmp-server user paul familypaul v3 access ipv6 ipv6acl",
             "no snmp-server user replaceUser replaceUser v3",
+            "no snmp-server user flow mfamily v3 access 27",
         ]
         playbook["state"] = "deleted"
         set_module_args(playbook)
@@ -1359,8 +1363,6 @@ class TestIosSnmpServerModule(TestIosModule):
         self.maxDiff = None
         self.assertEqual(sorted(result["commands"]), sorted(overridden))
 
-    ####################
-
     def test_ios_snmp_server_parsed(self):
         set_module_args(
             dict(
@@ -1509,6 +1511,51 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server host 172.16.2.1 version 3 noauth replace-User!  slb pki
             """,
         )
+        self.execute_show_command_user.return_value = dedent(
+            """\
+            User name: TESTU22
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active IPv6 access-list: testv6acl
+            Authentication Protocol: MD5
+            Privacy Protocol: AES128
+            Group-name: TESTG
+
+            User name: TESTU23
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active access-list: aclWord
+            Authentication Protocol: MD5
+            Privacy Protocol: AES128
+            Group-name: TESTG
+
+            User name: TESTU24
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active access-list: 22
+            Authentication Protocol: MD5
+            Privacy Protocol: None
+            Group-name: TESTG
+
+            User name: TESTU25
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active access-list: 22
+            Authentication Protocol: MD5
+            Privacy Protocol: None
+            Group-name: TESTG
+
+            User name: testus2
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active
+            Authentication Protocol: MD5
+            Privacy Protocol: AES128
+            Group-name: TESTG
+
+            User name: TESTU
+            Engine ID: 800000090300525400012D4A
+            storage-type: nonvolatile        active
+            Authentication Protocol: MD5
+            Privacy Protocol: AES128
+            Group-name: TESTG
+            """,
+        )
         set_module_args(dict(state="gathered"))
         gathered = {
             "hosts": [
@@ -1527,6 +1574,42 @@ class TestIosSnmpServerModule(TestIosModule):
                     "version_option": "noauth",
                 },
                 {"host": "172.16.2.99", "community_string": "checktrap", "traps": ["isis", "hsrp"]},
+            ],
+            "users": [
+                {
+                    "group": "TESTG",
+                    "username": "TESTU",
+                },
+                {
+                    "acl_v6": "testv6acl",
+                    "group": "TESTG",
+                    "username": "TESTU22",
+                },
+                {
+                    "acl_v4": "aclWord",
+                    "group": "TESTG",
+                    "username": "TESTU23",
+                },
+                {
+                    "acl_v4": "22",
+                    "group": "TESTG",
+                    "username": "TESTU24",
+                },
+                {
+                    "acl_v4": "22",
+                    "group": "TESTG",
+                    "username": "TESTU25",
+                },
+                {
+                    "group": "TESTG",
+                    "username": "testus2",
+                },
+                {
+                    "acl_v4": "22",
+                    "group": "usrgrp",
+                    "username": "us1",
+                    "version": "v1",
+                },
             ],
         }
         result = self.execute_module(changed=False)
@@ -1700,3 +1783,96 @@ class TestIosSnmpServerModule(TestIosModule):
         result = self.execute_module(changed=False)
         self.maxDiff = None
         self.assertEqual(sorted(result["rendered"]), sorted(rendered))
+
+    def test_ios_snmpv3_user_server_merged(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            snmp-server user rhcisco testfamily v3 access ipv6
+            """,
+        )
+
+        self.execute_show_command_user.return_value = dedent(
+            """\
+            User name: replaceUser
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active access-list: 22
+            Authentication Protocol: MD5
+            Privacy Protocol: None
+            Group-name: replaceUser
+
+            User name: paul
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active access-list: ipv6
+            Authentication Protocol: MD5
+            Privacy Protocol: None
+            Group-name: familypaul
+
+            User name: flow
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active access-list: 27
+            Authentication Protocol: MD5
+            Privacy Protocol: None
+            Group-name: mfamily
+            """,
+        )
+
+        playbook = {
+            "config": {
+                "users": [
+                    {"acl_v4": "ipv6", "group": "familypaul", "username": "paul", "version": "v3"},
+                    {"acl_v4": "27", "group": "mfamily", "username": "flow", "version": "v3"},
+                ],
+            },
+        }
+        merged = [
+            "snmp-server user paul familypaul v3 access ipv6",
+            "snmp-server user flow mfamily v3 access 27",
+        ]
+
+        playbook["state"] = "merged"
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(merged))
+
+    def test_ios_snmpv3_user_server_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            snmp-server user newuser newfamily v1 access 24
+            """,
+        )
+
+        self.execute_show_command_user.return_value = dedent(
+            """\
+            User name: replaceUser
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active access-list: 22
+            Authentication Protocol: MD5
+            Privacy Protocol: None
+            Group-name: replaceUser
+
+            User name: flow
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active access-list: 27
+            Authentication Protocol: MD5
+            Privacy Protocol: None
+            Group-name: mfamily
+            """,
+        )
+
+        playbook = {
+            "config": {
+                "users": [
+                    {"group": "replaceUser", "username": "replaceUser", "version": "v3"},
+                    {"acl_v4": "27", "group": "mfamily", "username": "flow", "version": "v3"},
+                ],
+            },
+        }
+        overridden = [
+            "no snmp-server user flow mfamily v3",
+            "snmp-server user flow mfamily v3 access 27",
+            "no snmp-server user newuser newfamily v1 access 24",
+        ]
+        playbook["state"] = "overridden"
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(overridden))

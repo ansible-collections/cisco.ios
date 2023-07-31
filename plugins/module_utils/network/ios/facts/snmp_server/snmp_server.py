@@ -15,6 +15,7 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.snmp_server.snmp_server import (
@@ -33,7 +34,26 @@ class Snmp_serverFacts(object):
         self.argument_spec = Snmp_serverArgs.argument_spec
 
     def get_snmp_data(self, connection):
-        return connection.get("show running-config | section ^snmp")
+        _get_snmp_data = connection.get("show running-config | section ^snmp")
+        return _get_snmp_data
+
+    def get_snmpv3_user_data(self, connection):
+        """get snmpv3 user data from the device
+
+        :param connection: the device connection
+
+        :rtype: string
+        :returns: snmpv3 user data
+
+        Note: The seperate method is needed because the snmpv3 user data is not returned within the snmp-server config
+        """
+        try:
+            _get_snmpv3_user = connection.get("show snmp user")
+        except Exception as e:
+            if "agent not enabled" in str(e):
+                return ""
+            raise Exception("Unable to get snmp user data: %s" % str(e))
+        return _get_snmpv3_user
 
     def sort_list_dicts(self, objs):
         p_key = {
@@ -57,6 +77,39 @@ class Snmp_serverFacts(object):
                     element["traps"] = list(element.get("traps").split())
             return hosts
 
+    def get_snmpv3_user_facts(self, snmpv3_user):
+        """Parse the snmpv3_user data and return a list of users
+        example data-
+        User name: TESTU25
+        Engine ID: 000000090200000000000A0B
+        storage-type: nonvolatile        active access-list: 22
+        Authentication Protocol: MD5
+        Privacy Protocol: None
+        Group-name: TESTG
+        :param snmpv3_user: the snmpv3_user data which is a string
+
+        :rtype: list
+        :returns: list of users
+        """
+        user_sets = snmpv3_user.split("User ")
+        user_list = []
+        for user_set in user_sets:
+            one_set = {}
+            lines = user_set.splitlines()
+            for line in lines:
+                if line.startswith("name"):
+                    one_set["username"] = line.split(": ")[1]
+                if line.startswith("Group-name:"):
+                    one_set["group"] = line.split(": ")[1]
+                if "IPv6 access-list:" in line:
+                    one_set["acl_v6"] = line.split(": ")[-1]
+                if "active\taccess-list:" in line:
+                    one_set["acl_v4"] = line.split(": ")[-1]
+                one_set["version"] = "v3"  # defaults to version 3 data
+            if len(one_set):
+                user_list.append(one_set)
+        return user_list
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Snmp_server network resource
 
@@ -70,14 +123,24 @@ class Snmp_serverFacts(object):
         facts = {}
         objs = []
         params = {}
+        snmpv3_user = ""
 
         if not data:
             data = self.get_snmp_data(connection)
+            snmpv3_user = self.get_snmpv3_user_data(connection)  # gathers v3 user data
 
         # parse native config using the Snmp_server template
         snmp_server_parser = Snmp_serverTemplate(lines=data.splitlines(), module=self._module)
+        # parse snmpv3_user data using the get_snmpv3_user_facts method
+        snmp_user_data = self.get_snmpv3_user_facts(snmpv3_user)
         objs = snmp_server_parser.parse()
 
+        # add snmpv3_user data to the objs dictionary
+        if snmp_user_data:
+            if objs.get("users") is None:
+                objs["users"] = snmp_user_data
+            else:
+                objs["users"] = objs["users"] + snmp_user_data
         if objs:
             self.host_traps_string_to_list(objs.get("hosts"))
             self.sort_list_dicts(objs)

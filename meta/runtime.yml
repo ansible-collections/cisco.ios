@@ -43,8 +43,6 @@ plugin_routing:
       redirect: cisco.ios.ios
     ios_lldp:
       redirect: cisco.ios.ios
-    ios_logging:
-      redirect: cisco.ios.ios
     ios_logging_global:
       redirect: cisco.ios.ios
     ios_ntp:
@@ -149,10 +147,6 @@ plugin_routing:
       deprecation:
         removal_date: "2024-06-01"
         warning_text: See the plugin documentation for more details
-    ios_logging:
-      deprecation:
-        removal_date: "2023-06-01"
-        warning_text: See the plugin documentation for more details
     ios_ntp:
       deprecation:
         removal_date: "2024-01-01"
@@ -181,11 +175,6 @@ plugin_routing:
       redirect: cisco.ios.ios_lldp_global
     lldp_interfaces:
       redirect: cisco.ios.ios_lldp_interfaces
-    logging:
-      deprecation:
-        removal_date: "2023-06-01"
-        warning_text: See the plugin documentation for more details
-      redirect: cisco.ios.ios_logging
     logging_global:
       redirect: cisco.ios.ios_logging_global
     ntp:

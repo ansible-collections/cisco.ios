@@ -1,0 +1,4 @@
+CPU utilization for five seconds: 3%/2%; one minute: 1%; five minutes: 5%
+ PID Runtime(ms)     Invoked      uSecs   5Sec   1Min   5Min TTY Process
+Core 0: CPU utilization for five seconds: 4%; one minute: 0%; five minutes: 3%
+Core 1: CPU utilization for five seconds: 5%; one minute: 5%; five minutes: 3%

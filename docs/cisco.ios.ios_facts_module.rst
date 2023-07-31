@@ -65,7 +65,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>When supplied, this argument will restrict the facts collected to a given subset. Possible values for this argument include all and the resources like interfaces, vlans etc. Can specify a list of values to include a larger subset. Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected. Valid subsets are &#x27;bgp_global&#x27;, &#x27;l3_interfaces&#x27;, &#x27;lag_interfaces&#x27;, &#x27;ntp_global&#x27;, &#x27;acls&#x27;, &#x27;hostname&#x27;, &#x27;interfaces&#x27;, &#x27;lldp_interfaces&#x27;, &#x27;logging_global&#x27;, &#x27;ospf_interfaces&#x27;, &#x27;ospfv2&#x27;, &#x27;prefix_lists&#x27;, &#x27;static_routes&#x27;, &#x27;acl_interfaces&#x27;, &#x27;all&#x27;, &#x27;bgp_address_family&#x27;, &#x27;l2_interfaces&#x27;, &#x27;lacp&#x27;, &#x27;lacp_interfaces&#x27;, &#x27;lldp_global&#x27;, &#x27;ospfv3&#x27;, &#x27;snmp_server&#x27;, &#x27;vlans&#x27;.</div>
+                        <div>When supplied, this argument will restrict the facts collected to a given subset. Possible values for this argument include all and the resources like interfaces, vlans etc. Can specify a list of values to include a larger subset. Values can also be used with an initial <code>!</code> to specify that a specific subset should not be collected. Valid subsets are &#x27;bgp_global&#x27;, &#x27;l3_interfaces&#x27;, &#x27;lag_interfaces&#x27;, &#x27;ntp_global&#x27;, &#x27;acls&#x27;, &#x27;hostname&#x27;, &#x27;interfaces&#x27;, &#x27;lldp_interfaces&#x27;, &#x27;logging_global&#x27;, &#x27;ospf_interfaces&#x27;, &#x27;ospfv2&#x27;, &#x27;prefix_lists&#x27;, &#x27;static_routes&#x27;, &#x27;acl_interfaces&#x27;, &#x27;all&#x27;, &#x27;bgp_address_family&#x27;, &#x27;l2_interfaces&#x27;, &#x27;lacp&#x27;, &#x27;lacp_interfaces&#x27;, &#x27;lldp_global&#x27;, &#x27;ospfv3&#x27;, &#x27;snmp_server&#x27;, &#x27;vlans&#x27;, &#x27;service&#x27;.</div>
                 </td>
             </tr>
             <tr>
@@ -116,12 +116,12 @@ Examples
     - name: Gather only the config and default facts
       cisco.ios.ios_facts:
         gather_subset:
-        - config
+          - config
 
     - name: Do not gather hardware facts
       cisco.ios.ios_facts:
         gather_subset:
-        - '!hardware'
+          - "!hardware"
 
     - name: Gather legacy and resource facts
       cisco.ios.ios_facts:
@@ -131,10 +131,10 @@ Examples
     - name: Gather only the interfaces resource facts and no legacy facts
       cisco.ios.ios_facts:
         gather_subset:
-        - '!all'
-        - '!min'
+          - "!all"
+          - "!min"
         gather_network_resources:
-        - interfaces
+          - interfaces
 
     - name: Gather interfaces resource and minimal legacy facts
       cisco.ios.ios_facts:
@@ -222,6 +222,21 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                 <td>when config is configured</td>
                 <td>
                             <div>The current active config from the device</div>
+                    <br/>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>ansible_net_cpu_utilization</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when hardware is configured</td>
+                <td>
+                            <div>The current CPU utilization of the device</div>
                     <br/>
                 </td>
             </tr>

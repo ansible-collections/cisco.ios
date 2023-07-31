@@ -367,7 +367,6 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                         "warning_only": {"type": "bool"},
                                     },
                                 },
-                                "next_hop_self": {"type": "bool"},
                                 "nexthop_self": {
                                     "type": "dict",
                                     "options": {"set": {"type": "bool"}, "all": {"type": "bool"}},
