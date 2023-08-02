@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -18,10 +19,10 @@ __metaclass__ = type
 #
 # To update the argspec make the desired changes
 # in the documentation in the module file and re-run
-# ansible.content_builder commenting out 
+# ansible.content_builder commenting out
 # the path to external 'docstring' in build.yaml.
 #
-############################################## 
+##############################################
 
 """
 The arg spec for the ios_evpn_evi module
@@ -29,8 +30,7 @@ The arg spec for the ios_evpn_evi module
 
 
 class Evpn_eviArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_evpn_evi module
-    """
+    """The arg spec for the ios_evpn_evi module"""
 
     argument_spec = {
         "config": {
@@ -47,7 +47,7 @@ class Evpn_eviArgs(object):  # pylint: disable=R0903
                                 "enable": {"type": "bool"},
                                 "disable": {"type": "bool"},
                             },
-                        }
+                        },
                     },
                 },
                 "ip": {
@@ -59,7 +59,7 @@ class Evpn_eviArgs(object):  # pylint: disable=R0903
                                 "enable": {"type": "bool"},
                                 "disable": {"type": "bool"},
                             },
-                        }
+                        },
                     },
                 },
                 "encapsulation": {

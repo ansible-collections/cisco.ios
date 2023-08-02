@@ -1,23 +1,22 @@
 ---
 - name: Populate configuration
   vars:
-    lines:
-      "
+    lines: "
       l2vpn evpn instance 101 vlan-based
-       encapsulation vxlan
-       replication-type static
+      encapsulation vxlan
+      replication-type static
       !
       l2vpn evpn instance 102 vlan-based
-       encapsulation vxlan
-       replication-type ingress
+      encapsulation vxlan
+      replication-type ingress
       !
       l2vpn evpn instance 201 vlan-based
-       encapsulation vxlan
-       replication-type static
+      encapsulation vxlan
+      replication-type static
       !
       l2vpn evpn instance 202 vlan-based
-       encapsulation vxlan
-       replication-type ingress
+      encapsulation vxlan
+      replication-type ingress
       "
   ansible.netcommon.cli_config:
     config: "{{ lines }}"

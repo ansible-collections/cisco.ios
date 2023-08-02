@@ -10,6 +10,7 @@ The module file for ios_evpn_evi
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -126,8 +127,8 @@ EXAMPLES = """
 #             enable: False
 #         ip:
 #           local_learning:
-#             enable: True      
-#   
+#             enable: True
+#
 #       - evi: 202
 #         replication_type: static
 #         default_gateway:
@@ -135,8 +136,8 @@ EXAMPLES = """
 #             enable: True
 #         ip:
 #           local_learning:
-#             disable: True 
-#     state: merged 
+#             disable: True
+#     state: merged
 
 # Commands Fired:
 # ---------------
@@ -205,7 +206,7 @@ EXAMPLES = """
 #         replication_type: ingress
 #         default_gateway:
 #           advertise:
-#             enable: True 
+#             enable: True
 #       - evi: 202
 #         replication_type: ingress
 #     state: replaced
@@ -270,12 +271,12 @@ EXAMPLES = """
 #         replication_type: ingress
 #         default_gateway:
 #           advertise:
-#             enable: True 
+#             enable: True
 #       - evi: 202
 #         replication_type: static
 #         default_gateway:
 #           advertise:
-#             enable: True 
+#             enable: True
 #     state: overridden
 
 # Commands Fired:
@@ -324,7 +325,7 @@ EXAMPLES = """
 #     state: deleted
 
 # Commands Fired:
-# ---------------      
+# ---------------
 # "commands": [
 #       "no l2vpn evpn instance 101 vlan-based"
 #       ],
@@ -418,7 +419,7 @@ EXAMPLES = """
 #         replication_type: ingress
 #         default_gateway:
 #           advertise:
-#             enable: True 
+#             enable: True
 #       - evi: 202
 #         replication_type: ingress
 #     state: rendered
@@ -496,6 +497,7 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.evpn_evi.evpn_evi import (
     Evpn_eviArgs,
 )

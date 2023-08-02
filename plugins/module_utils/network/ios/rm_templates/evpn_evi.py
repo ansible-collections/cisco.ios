@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,9 +16,11 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
+
 
 class Evpn_eviTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
@@ -35,7 +38,7 @@ class Evpn_eviTemplate(NetworkTemplate):
             ),
             "setval": "l2vpn evpn instance {{ evi }} vlan-based",
             "result": {"{{ evi }}": {"evi": "{{ evi }}"}},
-            "shared": True
+            "shared": True,
         },
         {
             "name": "default_gateway.advertise.enable",
@@ -69,7 +72,7 @@ class Evpn_eviTemplate(NetworkTemplate):
             ),
             "setval": "encapsulation {{encapsulation}}",
             "result": {"{{ evi }}": {"encapsulation": "{{ encapsulation }}"}},
-        },
+                },
         {
             "name": "ip.local_learning.enable",
             "getval": re.compile(

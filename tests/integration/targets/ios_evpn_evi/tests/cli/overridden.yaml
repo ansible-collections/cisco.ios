@@ -15,12 +15,12 @@
             replication_type: ingress
             default_gateway:
               advertise:
-                enable: True 
+                enable: True
           - evi: 202
             replication_type: static
             default_gateway:
               advertise:
-                enable: True 
+                enable: True
         state: overridden
 
     - name: Assert that correct set of commands were generated

@@ -89,14 +89,14 @@ class TestIosEvpnEviModule(TestIosModule):
             ),
         )
         commands = [
-           "l2vpn evpn instance 101 vlan-based",
-           "ip local-learning enable",
-           "replication-type ingress",
-           "rd 1:1",
-           "l2vpn evpn instance 202 vlan-based",
-           "default-gateway advertise enable",
-           "ip local-learning disable",
-           "replication-type static"
+            "l2vpn evpn instance 101 vlan-based",
+            "ip local-learning enable",
+            "replication-type ingress",
+            "rd 1:1",
+            "l2vpn evpn instance 202 vlan-based",
+            "default-gateway advertise enable",
+            "ip local-learning disable",
+            "replication-type static",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -156,7 +156,7 @@ class TestIosEvpnEviModule(TestIosModule):
         commands = []
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
-        
+
     def test_ios_evpn_evi_deleted_evi(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -176,10 +176,10 @@ class TestIosEvpnEviModule(TestIosModule):
         set_module_args(
             dict(
                 config=list(
-                    {"evi": "101"}
-                ), 
-                state="deleted"
-            )
+                    {"evi": "101"},
+                ),
+                state="deleted",
+            ),
         )
         commands = [
             "no l2vpn evpn instance 101 vlan-based",
@@ -273,7 +273,7 @@ class TestIosEvpnEviModule(TestIosModule):
             "l2vpn evpn instance 202 vlan-based",
             "no default-gateway advertise enable",
             "no ip local-learning disable",
-            "replication-type ingress"
+            "replication-type ingress",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -370,7 +370,7 @@ class TestIosEvpnEviModule(TestIosModule):
             "no l2vpn evpn instance 201 vlan-based",
             "l2vpn evpn instance 202 vlan-based",
             "default-gateway advertise enable",
-            "replication-type static"
+            "replication-type static",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
