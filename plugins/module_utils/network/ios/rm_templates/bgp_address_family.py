@@ -1251,12 +1251,12 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "inherit",
             "getval": re.compile(
                 r"""
-                \s\sneighbor\s(?P<neighbor_address>\S+)\sinherit\speer-session
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sinherit\speer-policy
                 \s(?P<inherit>\S+)
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "neighbor {{ neighbor_address }} inherit peer-session"
+            "setval": "neighbor {{ neighbor_address }} inherit peer-policy"
             "{{ (' ' + inherit) if inherit is defined else '' }}",
             "result": {
                 "address_family": {
@@ -2670,4 +2670,26 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             },
         },
         # redistribute ends
+        {
+            "name": "advertise",
+            "getval": re.compile(
+                r"""
+                \s\sadvertise\s(?P<afi>l2vpn)
+                (\s(?P<safi>evpn))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "advertise {{ advertise.afi }}"
+            "{{ (' ' + advertise.safi ) if advertise.safi is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_AFI: {
+                        "advertise": {
+                            "afi": "{{ afi }}",
+                            "safi": "{{ safi }}",
+                        },
+                    },
+                },  
+            },
+        },
     ]

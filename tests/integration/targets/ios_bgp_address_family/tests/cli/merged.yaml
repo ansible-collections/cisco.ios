@@ -11,6 +11,22 @@
       cisco.ios.ios_bgp_address_family: &id001
         config:
           address_family:
+            - afi: l2vpn
+              safi: evpn
+              neighbor:
+                - address: 198.51.100.1
+                  activate: true
+                  inherit: LEAF-EVPN-PEER-POLICY
+            - afi: ipv4
+              vrf: green              
+              redistribute: 
+              - static:
+                  set: true
+              - connected:
+                  set: true
+              advertise:
+                afi: l2vpn
+                safi: evpn
             - afi: ipv4
               redistribute:
                 - connected:
