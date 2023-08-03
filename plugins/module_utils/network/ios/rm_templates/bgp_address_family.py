@@ -2674,8 +2674,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "advertise",
             "getval": re.compile(
                 r"""
-                \s\sadvertise\s(?P<afi>l2vpn)
-                (\s(?P<safi>evpn))?
+                \s\sadvertise\s(?P<ad_afi>l2vpn)
+                (\s(?P<ad_safi>evpn))?
                 $""",
                 re.VERBOSE,
             ),
@@ -2685,11 +2685,11 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 "address_family": {
                     UNIQUE_AFI: {
                         "advertise": {
-                            "afi": "{{ afi }}",
-                            "safi": "{{ safi }}",
+                            "afi": "{{ ad_afi }}",
+                            "safi": "{{ ad_safi }}",
                         },
                     },
-                },
+                },  
             },
         },
     ]
