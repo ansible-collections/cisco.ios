@@ -18,12 +18,12 @@
                   activate: true
                   inherit: LEAF-EVPN-PEER-POLICY
             - afi: ipv4
-              vrf: green              
-              redistribute: 
-              - static:
-                  set: true
-              - connected:
-                  set: true
+              vrf: green
+              redistribute:
+                - static:
+                    set: true
+                - connected:
+                    set: true
               advertise:
                 afi: l2vpn
                 safi: evpn

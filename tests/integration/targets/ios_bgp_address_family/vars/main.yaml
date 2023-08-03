@@ -41,12 +41,12 @@ merged:
         vrf: green
         advertise:
           afi: l2vpn
-          safi: evpn             
-        redistribute: 
-        - static:
-            set: true
-        - connected:
-            set: true
+          safi: evpn
+        redistribute:
+          - static:
+              set: true
+          - connected:
+              set: true
       - afi: ipv4
         redistribute:
           - connected:
