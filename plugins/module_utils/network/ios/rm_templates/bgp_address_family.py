@@ -2689,7 +2689,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             "safi": "{{ ad_safi }}",
                         },
                     },
-                },  
+                },
             },
         },
     ]
