@@ -7,6 +7,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -20,16 +21,15 @@ created.
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
+    ResourceModule,
+)
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
     param_list_to_dict,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
-    ResourceModule,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
+
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.vxlan_vtep import (
     Vxlan_vtepTemplate,
 )
@@ -49,12 +49,12 @@ class Vxlan_vtep(ResourceModule):
             tmplt=Vxlan_vtepTemplate(),
         )
         self.parsers = [
-        "source_interface",
-        "host_reachability_protocol",
+            "source_interface",
+            "host_reachability_protocol",
         ]
 
     def execute_module(self):
-        """ Execute the module
+        """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
@@ -66,21 +66,19 @@ class Vxlan_vtep(ResourceModule):
         return self.result
 
     def generate_commands(self):
-        """ Generate configuration commands to send based on
-            want, have and desired state.
+        """Generate configuration commands to send based on
+        want, have and desired state.
         """
 
         wantd, haved = self._interface_list_to_dict(self.want, self.have)
-                    
+
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
+            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             wantd_copy = wantd.copy()
             wantd = {}
 
@@ -96,22 +94,23 @@ class Vxlan_vtep(ResourceModule):
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the Vxlan_vtep network resource.
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the Vxlan_vtep network resource.
         """
 
-        begin = len(self.commands)        
+        begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
 
         self._compare_member_vnis(
-            want.pop("member", {}).get("vni", {}), 
-            have.pop("member", {}).get("vni", {})
+            want.pop("member", {}).get("vni", {}),
+            have.pop("member", {}).get("vni", {}),
         )
 
         if len(self.commands) != begin:
             self.commands.insert(
-                begin, self._tmplt.render(want or have, "interface", False)
+                begin,
+                self._tmplt.render(want or have, "interface", False),
             )
 
     def _compare_member_vnis(self, wantmv, havemv):
@@ -122,7 +121,7 @@ class Vxlan_vtep(ResourceModule):
             "l3vni": "vrf",
         }
 
-        for vni_type in ['l2vni', 'l3vni']:
+        for vni_type in ["l2vni", "l3vni"]:
             wantd = wantmv.get(vni_type, {})
             haved = havemv.get(vni_type, {})
             undel_vnis = haved.copy()
@@ -132,10 +131,10 @@ class Vxlan_vtep(ResourceModule):
                 if want != have:
                     # remove exiting config of the member VNI
                     self.addcmd(undel_vnis.pop(wvni, {}), PARSER_DICT[vni_type], True)
-                    if vni_type == 'l3vni':
-                        self._remove_existing_vnis_vrfs(want['vrf'], undel_vnis)
+                    if vni_type == "l3vni":
+                        self._remove_existing_vnis_vrfs(want["vrf"], undel_vnis)
                     self.addcmd(want, PARSER_DICT[vni_type])
-                    
+
             # remove remaining configs in have for replaced state
             for hvni, have in haved.items():
                 self.addcmd(have, PARSER_DICT[vni_type], True)
@@ -143,8 +142,8 @@ class Vxlan_vtep(ResourceModule):
     def _interface_list_to_dict(self, want, have):
         """Convert all list of dicts to dicts of dicts"""
 
-        wantd = {entry['interface']: entry for entry in want}
-        haved = {entry['interface']: entry for entry in have}
+        wantd = {entry["interface"]: entry for entry in want}
+        haved = {entry["interface"]: entry for entry in have}
 
         for each in wantd, haved:
             if each:
@@ -153,39 +152,39 @@ class Vxlan_vtep(ResourceModule):
                     if member_vni:
                         for vni_type in member_vni:
                             member_vni[vni_type] = param_list_to_dict(
-                                member_vni[vni_type], 
-                                unique_key='vni', 
-                                remove_key=False
+                                member_vni[vni_type],
+                                unique_key="vni",
+                                remove_key=False,
                             )
-                    
+
         return wantd, haved
 
     def _remove_existing_vnis_vrfs(self, want_vrf, haved):
         """Remove member VNIs of corresponding VRF"""
 
         vrf_haved = next(
-            (h for h in haved.values() if h['vrf'] == want_vrf),
-            None
+            (h for h in haved.values() if h["vrf"] == want_vrf),
+            None,
         )
         if vrf_haved:
-            self.addcmd(haved.pop(vrf_haved['vni']), 'vrf', True)
+            self.addcmd(haved.pop(vrf_haved["vni"]), "vrf", True)
 
     def _filtered_dict(self, want, have):
         """Remove other config from 'have' if 'member' key is present"""
-    
-        if 'member' in want:
+
+        if "member" in want:
             have_member = {}
-            want_vni_dict = want.get('member', {}).get('vni', {})
-            have_vni_dict = have.get('member', {}).get('vni', {})
-    
+            want_vni_dict = want.get("member", {}).get("vni", {})
+            have_vni_dict = have.get("member", {}).get("vni", {})
+
             for vni_type, have_vnis in have_vni_dict.items():
                 want_vnis = want_vni_dict.get(vni_type, {})
                 have_member[vni_type] = {
-                  vni: have_vni_dict[vni_type].get(vni) for vni in have_vnis if vni in want_vnis
+                    vni: have_vni_dict[vni_type].get(vni) for vni in have_vnis if vni in want_vnis
                 }
             have = {
-                'interface': have['interface'],
-                'member': {'vni': have_member},
+                "interface": have["interface"],
+                "member": {"vni": have_member},
             }
 
         return have

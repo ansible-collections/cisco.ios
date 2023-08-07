@@ -97,6 +97,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vxlan_
     Vxlan_vtepFacts,
 )
 
+
 FACT_LEGACY_SUBSETS = dict(default=Default, hardware=Hardware, interfaces=Interfaces, config=Config)
 
 FACT_RESOURCE_SUBSETS = dict(

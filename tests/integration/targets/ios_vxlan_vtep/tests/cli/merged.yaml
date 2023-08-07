@@ -15,19 +15,19 @@
               vni:
                 l2vni:
                   - vni: 10101
-                    replication: 
+                    replication:
                       type: ingress
                   - vni: 10102
-                    replication: 
+                    replication:
                       type: ingress
                   - vni: 10201
-                    replication: 
+                    replication:
                       type: static
                       mcast_group:
-                        ipv4: 225.0.0.101 
+                        ipv4: 225.0.0.101
                         ipv6: FF0E:225::101
                   - vni: 10202
-                    replication: 
+                    replication:
                       type: static
                       mcast_group:
                         ipv4: 225.0.0.102

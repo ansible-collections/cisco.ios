@@ -64,24 +64,24 @@ class TestIosVxlanVtepModule(TestIosModule):
                         vni=dict(
                             l2vni=list(
                                 dict(
-                                    vni='10101',
-                                    replication=dict(type='ingress'),
+                                    vni="10101",
+                                    replication=dict(type="ingress"),
                                 ),
                                 dict(
-                                    vni='10201',
+                                    vni="10201",
                                     replication=dict(
-                                        type='static',
+                                        type="static",
                                         mcast_group=dict(
-                                            ipv4='225.0.0.101',
-                                            ipv6='FF0E:225::101',
+                                            ipv4="225.0.0.101",
+                                            ipv6="FF0E:225::101",
                                         ),
                                     ),
                                 ),
                             ),
                             l3vni=list(
                                 dict(
-                                    vni='50901',
-                                    vrf='blue',
+                                    vni="50901",
+                                    vrf="blue",
                                 ),
                             ),
                         ),
@@ -91,15 +91,15 @@ class TestIosVxlanVtepModule(TestIosModule):
             ),
         )
         commands = [
-           "interface nve1",
-           "source-interface loopback2",
-           "no member vni 10101 mcast-group 225.0.0.101",
-           "member vni 10101 ingress-replication",
-           "no member vni 10201 mcast-group 225.0.0.101",
-           "member vni 10201 mcast-group 225.0.0.101 FF0E:225::101",
-           "no member vni 50901 vrf green",
-           "no member vni 50902 vrf blue",
-           "member vni 50901 vrf blue"
+            "interface nve1",
+            "source-interface loopback2",
+            "no member vni 10101 mcast-group 225.0.0.101",
+            "member vni 10101 ingress-replication",
+            "no member vni 10201 mcast-group 225.0.0.101",
+            "member vni 10201 mcast-group 225.0.0.101 FF0E:225::101",
+            "no member vni 50901 vrf green",
+            "no member vni 50902 vrf blue",
+            "member vni 50901 vrf blue",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -127,24 +127,24 @@ class TestIosVxlanVtepModule(TestIosModule):
                         vni=dict(
                             l2vni=list(
                                 dict(
-                                    vni='10101',
-                                    replication=dict(type='ingress'),
+                                    vni="10101",
+                                    replication=dict(type="ingress"),
                                 ),
                                 dict(
-                                    vni='10201',
+                                    vni="10201",
                                     replication=dict(
-                                        type='static',
+                                        type="static",
                                         mcast_group=dict(
-                                            ipv4='225.0.0.101',
-                                            ipv6='FF0E:225::101',
+                                            ipv4="225.0.0.101",
+                                            ipv6="FF0E:225::101",
                                         ),
                                     ),
                                 ),
                             ),
                             l3vni=list(
                                 dict(
-                                    vni='50901',
-                                    vrf='blue',
+                                    vni="50901",
+                                    vrf="blue",
                                 ),
                             ),
                         ),
@@ -178,20 +178,20 @@ class TestIosVxlanVtepModule(TestIosModule):
                         vni=dict(
                             l2vni=list(
                                 dict(
-                                    vni='10101',
+                                    vni="10101",
                                     replication=dict(
-                                        type='static',
+                                        type="static",
                                         mcast_group=dict(
-                                            ipv6='FF0E:225::101',
+                                            ipv6="FF0E:225::101",
                                         ),
                                     ),
                                 ),
                                 dict(
-                                    vni='10201',
+                                    vni="10201",
                                     replication=dict(
-                                        type='static',
+                                        type="static",
                                         mcast_group=dict(
-                                            ipv6='FF0E:225::102',
+                                            ipv6="FF0E:225::102",
                                         ),
                                     ),
                                 ),
@@ -235,20 +235,20 @@ class TestIosVxlanVtepModule(TestIosModule):
                         vni=dict(
                             l2vni=list(
                                 dict(
-                                    vni='10101',
+                                    vni="10101",
                                     replication=dict(
-                                        type='static',
+                                        type="static",
                                         mcast_group=dict(
-                                            ipv6='FF0E:225::101',
+                                            ipv6="FF0E:225::101",
                                         ),
                                     ),
                                 ),
                                 dict(
-                                    vni='10201',
+                                    vni="10201",
                                     replication=dict(
-                                        type='static',
+                                        type="static",
                                         mcast_group=dict(
-                                            ipv6='FF0E:225::102',
+                                            ipv6="FF0E:225::102",
                                         ),
                                     ),
                                 ),
@@ -263,7 +263,7 @@ class TestIosVxlanVtepModule(TestIosModule):
 
     def test_ios_vxlan_vtep_overridden(self):
         self.execute_show_command.return_value = dedent(
-        """\
+            """\
         interface nve1
          no ip address
          source-interface Loopback2
@@ -284,20 +284,20 @@ class TestIosVxlanVtepModule(TestIosModule):
                         vni=dict(
                             l2vni=list(
                                 dict(
-                                    vni='10101',
+                                    vni="10101",
                                     replication=dict(
-                                        type='static',
+                                        type="static",
                                         mcast_group=dict(
-                                            ipv6='FF0E:225::101',
+                                            ipv6="FF0E:225::101",
                                         ),
                                     ),
                                 ),
                                 dict(
-                                    vni='10201',
+                                    vni="10201",
                                     replication=dict(
-                                        type='static',
+                                        type="static",
                                         mcast_group=dict(
-                                            ipv6='FF0E:225::102',
+                                            ipv6="FF0E:225::102",
                                         ),
                                     ),
                                 ),
@@ -338,7 +338,7 @@ class TestIosVxlanVtepModule(TestIosModule):
             "no source-interface Loopback2",
             "no host-reachability protocol bgp",
             "no member vni 10101 mcast-group FF0E:225::101",
-            "no member vni 10201 mcast-group FF0E:225::102"
+            "no member vni 10201 mcast-group FF0E:225::102",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -362,22 +362,22 @@ class TestIosVxlanVtepModule(TestIosModule):
                         vni=dict(
                             l2vni=list(
                                 dict(
-                                    vni='10101',
+                                    vni="10101",
                                 ),
                                 dict(
-                                    vni='10201',
+                                    vni="10201",
                                 ),
                             ),
                         ),
                     ),
                 ),
-            ), 
-                state="deleted"
-            )
+            ),
+            state="deleted",
+        )
         commands = [
             "interface nve1",
             "no member vni 10101 mcast-group FF0E:225::101",
-            "no member vni 10201 mcast-group FF0E:225::102"            
+            "no member vni 10201 mcast-group FF0E:225::102",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["commands"]), sorted(commands))

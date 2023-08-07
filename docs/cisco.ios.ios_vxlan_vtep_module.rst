@@ -1,11 +1,11 @@
-.. _cisco.ios.ios_vxlan_vtep_interfaces_module:
+.. _cisco.ios.ios_vxlan_vtep_module:
 
 
-********************************
-cisco.ios.ios_vxlan_vtep_interfaces
-********************************
+************************
+cisco.ios.ios_vxlan_vtep
+************************
 
-**Resource module to configure VXLAN VTEP interfaces.**
+**Resource module to configure VXLAN VTEP interface.**
 
 
 Version added: 1.0.0
@@ -17,7 +17,7 @@ Version added: 1.0.0
 
 Synopsis
 --------
-- This module provides declarative management of VXLAN VTEP interfaces on Cisco IOS devices.
+- This module provides declarative management of VXLAN VTEP interface on Cisco IOS network devices.
 
 
 
@@ -39,49 +39,17 @@ Parameters
                     <b>config</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">dict</span>
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>A dictionary of VXLAN VTEP interface options</div>
+                        <div>A dictionary of VXLAN VTEP interface option</div>
                 </td>
             </tr>
                                 <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="6">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>interface</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                         / <span style="color: red">required</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>VXLAN VTEP interface</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="6">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>source_interface</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                <td>
-                </td>
-                </td>
-                <td>
-                        <div>Source interface for the VXLAN VTEP interface</div>
-                </td>
-            </tr>
-            <tr>
                     <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -92,22 +60,39 @@ Parameters
                     </div>
                 </td>
                 <td>
-                        <ul style="margin: 0; padding: 0"><b>Default:</b>
-                            <li>bgp</li>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>bgp</b>&nbsp;&larr;</div></li>
                         </ul>
                 </td>
                 <td>
                         <div>Host reachability using EVPN protocol</div>
                 </td>
             </tr>
-                <tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="6">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>interface</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>VXLAN VTEP interface</div>
+                </td>
+            </tr>
+            <tr>
                     <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>member</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">dict</span>
+                        <span style="color: purple">dictionary</span>
                     </div>
                 </td>
                 <td>
@@ -116,7 +101,7 @@ Parameters
                         <div>Configure VNI member</div>
                 </td>
             </tr>
-            <tr>
+                                <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
@@ -124,7 +109,7 @@ Parameters
                     <b>vni</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">dict</span>
+                        <span style="color: purple">dictionary</span>
                     </div>
                 </td>
                 <td>
@@ -133,7 +118,7 @@ Parameters
                         <div>Configure VNI information</div>
                 </td>
             </tr>
-            <tr>
+                                <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -142,8 +127,8 @@ Parameters
                     <b>l2vni</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">list</span>                         
-                         / <span style="color: purple">elements=dict</span>
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
                     </div>
                 </td>
                 <td>
@@ -152,26 +137,7 @@ Parameters
                         <div>Associates L2VNI with the VXLAN VTEP interface</div>
                 </td>
             </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>vni</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">int</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>VNI number</div>
-                </td>
-            </tr>
-            <tr>
+                                <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -181,7 +147,7 @@ Parameters
                     <b>replication</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">dict</span>
+                        <span style="color: purple">dictionary</span>
                     </div>
                 </td>
                 <td>
@@ -190,7 +156,7 @@ Parameters
                         <div>Replication type for the L2VNI</div>
                 </td>
             </tr>
-            <tr>
+                                <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -198,44 +164,19 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>type</b>
+                    <b>mcast</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                         / <span style="color: red">required</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>ingress</li>
-                                    <li>static</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Replication type</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>mcast_group</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dict</span>
+                        <span style="color: purple">dictionary</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>Configure multicast group for VNI(s)</div>
+                        <div>Configure multicast group for VN<em>s</em></div>
                 </td>
             </tr>
-            <tr>
+                                <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -277,41 +218,63 @@ Parameters
                         <div>IPv6 multicast group</div>
                 </td>
             </tr>
+
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
+                <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>l3vni</b>
+                    <b>type</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">list</span>                         
-                         / <span style="color: purple">elements=dict</span>
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>ingress</li>
+                                    <li>static</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Replication type</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vni</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>VNI type</div>
+                        <div>VNI number</div>
                 </td>
             </tr>
+
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
+                <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>vni</b>
+                    <b>l3vni</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">int</span>
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
                     </div>
                 </td>
                 <td>
@@ -320,14 +283,31 @@ Parameters
                         <div>Associates L3VNI with the VXLAN VTEP interface</div>
                 </td>
             </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vni</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>VNI number</div>
+                </td>
+            </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
+                <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>vrf</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -339,6 +319,25 @@ Parameters
                 </td>
                 <td>
                         <div>VRF name of the L3VNI</div>
+                </td>
+            </tr>
+
+
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="6">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>source_interface</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Source interface for the VXLAN VTEP interface</div>
                 </td>
             </tr>
 
@@ -357,10 +356,13 @@ Parameters
                                     <li>replaced</li>
                                     <li>overridden</li>
                                     <li>deleted</li>
+                                    <li>rendered</li>
+                                    <li>gathered</li>
+                                    <li>parsed</li>
                         </ul>
                 </td>
                 <td>
-                        <div>The state the configuration should be left in.</div>
+                        <div>The state the configuration should be left in</div>
                 </td>
             </tr>
     </table>
@@ -371,8 +373,8 @@ Notes
 -----
 
 .. note::
-   - Tested against Cisco IOSXE Version 17.3 on CML.
-   - Using deleted state without config will delete VXLAN VTEP interfaces.
+   - Tested against Cisco IOSl2 device with Version 15.2 on VIRL.
+   - Starting from v2.5.0, this module will fail when run against Cisco IOS devices that do not support VXLAN VTEP interface. The offline states (``rendered`` and ``parsed``) will work as expected.
    - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
 
 
@@ -396,28 +398,28 @@ Examples
     #  member vni 10201 mcast-group 225.0.0.101
     #  member vni 10202 ingress-replication
     #  member vni 50902 vrf blue
-   
-    - name: Merge the provided configuration with the device configuration  
-      cisco.ios.ios_vxlan_vtep:
-        config:
-        - interface: nve1
-          source_interface: loopback2
-          member:
-            vni:
-              l2vni:
-                - vni: 10101
-                  replication: 
-                    type: ingress
-                - vni: 10201
-                  replication: 
-                    type: static
-                    mcast_group:
-                      ipv4: 225.0.0.101 
-                      ipv6: FF0E:225::101
-              l3vni:
-                - vni: 50901
-                  vrf: blue
-        state: merged
+
+    # - name: Merge the provided configuration with the device configuration
+    #   cisco.ios.ios_vxlan_vtep:
+    #     config:
+    #     - interface: nve1
+    #       source_interface: loopback2
+    #       member:
+    #         vni:
+    #           l2vni:
+    #             - vni: 10101
+    #               replication:
+    #                 type: ingress
+    #             - vni: 10201
+    #               replication:
+    #                 type: static
+    #                 mcast_group:
+    #                   ipv4: 225.0.0.101
+    #                   ipv6: FF0E:225::101
+    #           l3vni:
+    #             - vni: 50901
+    #               vrf: blue
+    #     state: merged
 
     # Commands Fired:
     # ---------------
@@ -449,7 +451,6 @@ Examples
 
     # Before state:
     # -------------
-
     # interface nve1
     #  no ip address
     #  source-interface Loopback2
@@ -460,25 +461,25 @@ Examples
     #  member vni 10201 mcast-group 225.0.0.101 FF0E:225::101
     #  member vni 50901 vrf blue
 
-    - name: Replaces the device configuration with the provided configuration
-      cisco.ios.ios_vxlan_vtep:
-        config:
-        - interface: nve1
-          source_interface: Loopback2
-          member:
-            vni:
-              l2vni:
-                - vni: 10101
-                  replication: 
-                    type: static
-                    mcast_group:
-                      ipv6: FF0E:225::101
-                - vni: 10201
-                  replication: 
-                    type: static
-                    mcast_group:
-                      ipv6: FF0E:225::102
-        state: replaced 
+    # - name: Replaces the device configuration with the provided configuration
+    #   cisco.ios.ios_vxlan_vtep:
+    #     config:
+    #     - interface: nve1
+    #       source_interface: Loopback2
+    #       member:
+    #         vni:
+    #           l2vni:
+    #             - vni: 10101
+    #               replication:
+    #                 type: static
+    #                 mcast_group:
+    #                   ipv6: FF0E:225::101
+    #             - vni: 10201
+    #               replication:
+    #                 type: static
+    #                 mcast_group:
+    #                   ipv6: FF0E:225::102
+    #     state: replaced
 
     # Commands Fired:
     # ---------------
@@ -513,16 +514,16 @@ Examples
     #  member vni 10101 mcast-group FF0E:225::101
     #  member vni 10201 mcast-group FF0E:225::102
 
-    - name: "Delete VXLAN VTEP interface"
-      cisco.ios.ios_vxlan_vtep:
-      config:
-       - interface: nve1
-      state: deleted
+    # - name: "Delete VXLAN VTEP interface"
+    #   cisco.ios.ios_vxlan_vtep:
+    #     config:
+    #     - interface: nve1
+    #     state: deleted
 
     # Commands Fired:
     # ---------------
     #   "commands": [
-    #       "interface nve 1",
+    #       "interface nve1",
     #       "no source-interface Loopback2",
     #       "no host-reachability protocol bgp",
     #       "no member vni 10101 mcast-group FF0E:225::101",
@@ -535,19 +536,28 @@ Examples
     #  no ip address
 
     # Using state Deleted with member VNIs
-    #"(NOTE: This will delete only the member VNIs)"
 
-    - name: "Delete VXLAN VTEP interface with member VNIs"
-      cisco.ios.ios_vxlan_vtep:
-        config:
-        - interface: nve1
-          source_interface: Loopback2
-          member:
-            vni:
-              l2vni:
-                - vni: 10101
-                - vni: 10102
-        state: deleted 
+    # Before state:
+    # -------------
+    # interface nve1
+    #  no ip address
+    #  source-interface Loopback2
+    #  host-reachability protocol bgp
+    #  member vni 10101 mcast-group FF0E:225::101
+    #  member vni 10102 mcast-group 225.0.0.101
+    #  member vni 10201 mcast-group 225.0.0.101 FF0E:225::101
+
+    # - name: "Delete VXLAN VTEP interface with member VNIs"
+    #   cisco.ios.ios_vxlan_vtep:
+    #     config:
+    #     - interface: nve1
+    #       source_interface: Loopback2
+    #       member:
+    #         vni:
+    #           l2vni:
+    #             - vni: 10101
+    #             - vni: 10102
+    #     state: deleted
 
     # Commands Fired:
     # ---------------
@@ -565,26 +575,25 @@ Examples
     #  host-reachability protocol bgp
     #  member vni 10201 mcast-group 225.0.0.101 FF0E:225::101
 
-    # Using state Deleted without any config passed
-    #"(NOTE: This will delete all VXLAN VTEP interfaces)"
+    # Using state Deleted with no config
 
     # Before state:
     # -------------
     # interface nve1
     #  no ip address
-    #  source-interface Loopback1
+    #  source-interface Loopback2
     #  host-reachability protocol bgp
     #  member vni 10101 mcast-group FF0E:225::101
     #  member vni 10201 mcast-group FF0E:225::102
 
-    - name: "Delete VXLAN VTEP interfaces"
-      cisco.ios.ios_vxlan_vtep_interfaces:
-        state: deleted
+    # - name: "Delete VXLAN VTEP interface with no config"
+    #   cisco.ios.ios_vxlan_vtep:
+    #     state: deleted
 
     # Commands Fired:
     # ---------------
     #   "commands": [
-    #       "interface nve 1",
+    #       "interface nve1",
     #       "no source-interface Loopback2",
     #       "no host-reachability protocol bgp",
     #       "no member vni 10101 mcast-group FF0E:225::101",
@@ -595,6 +604,7 @@ Examples
     # -------------
     # interface nve1
     #  no ip address
+
 
 
 Return Values
@@ -615,7 +625,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <b>after</b>
                     <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
                     <div style="font-size: small">
-                      <span style="color: purple">dict</span>
+                      <span style="color: purple">dictionary</span>
                     </div>
                 </td>
                 <td>when changed</td>
@@ -632,10 +642,10 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <b>before</b>
                     <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
                     <div style="font-size: small">
-                      <span style="color: purple">dict</span>
+                      <span style="color: purple">dictionary</span>
                     </div>
                 </td>
-                <td>when state is <em>merged</em>, <em>replaced</em>, <em>overridden</em>, or <em>deleted</em></td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
                 <td>
                             <div>The configuration prior to the module execution.</div>
                     <br/>
@@ -652,7 +662,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                       <span style="color: purple">list</span>
                     </div>
                 </td>
-                <td>when state is <em>merged</em>, <em>replaced</em>, <em>overridden</em>, or <em>deleted</em></td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
                 <td>
                             <div>The set of commands pushed to the remote device.</div>
                     <br/>
@@ -671,4 +681,4 @@ Status
 Authors
 ~~~~~~~
 
-- Padmini Priyadarshini Sivaraj (@PadminiSivaraj)
+- Padmini Priyadarshini Sivaraj

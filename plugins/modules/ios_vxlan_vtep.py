@@ -10,6 +10,7 @@ The module file for ios_vxlan_vtep
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -41,24 +42,24 @@ options:
         - Source interface for the VXLAN VTEP interface
         type: str
       host_reachability_protocol:
-        description: 
+        description:
         - Host reachability using EVPN protocol
         type: str
         choices:
         - bgp
         default: bgp
       member:
-        description: 
+        description:
         - Configure VNI member
         type: dict
         suboptions:
           vni:
-            description: 
+            description:
             - Configure VNI information
             type: dict
             suboptions:
               l2vni:
-                description: 
+                description:
                 - Associates L2VNI with the VXLAN VTEP interface
                 type: list
                 elements: dict
@@ -85,7 +86,7 @@ options:
                             description: IPv6 multicast group
                             type: str
               l3vni:
-                description: 
+                description:
                 - Associates L3VNI with the VXLAN VTEP interface
                 type: list
                 elements: dict
@@ -129,7 +130,7 @@ EXAMPLES = """
 #  member vni 10202 ingress-replication
 #  member vni 50902 vrf blue
 
-# - name: Merge the provided configuration with the device configuration  
+# - name: Merge the provided configuration with the device configuration
 #   cisco.ios.ios_vxlan_vtep:
 #     config:
 #     - interface: nve1
@@ -138,13 +139,13 @@ EXAMPLES = """
 #         vni:
 #           l2vni:
 #             - vni: 10101
-#               replication: 
+#               replication:
 #                 type: ingress
 #             - vni: 10201
-#               replication: 
+#               replication:
 #                 type: static
 #                 mcast_group:
-#                   ipv4: 225.0.0.101 
+#                   ipv4: 225.0.0.101
 #                   ipv6: FF0E:225::101
 #           l3vni:
 #             - vni: 50901
@@ -200,16 +201,16 @@ EXAMPLES = """
 #         vni:
 #           l2vni:
 #             - vni: 10101
-#               replication: 
+#               replication:
 #                 type: static
 #                 mcast_group:
 #                   ipv6: FF0E:225::101
 #             - vni: 10201
-#               replication: 
+#               replication:
 #                 type: static
 #                 mcast_group:
 #                   ipv6: FF0E:225::102
-#     state: replaced  
+#     state: replaced
 
 # Commands Fired:
 # ---------------
@@ -248,7 +249,7 @@ EXAMPLES = """
 #   cisco.ios.ios_vxlan_vtep:
 #     config:
 #     - interface: nve1
-#     state: deleted 
+#     state: deleted
 
 # Commands Fired:
 # ---------------
@@ -287,7 +288,7 @@ EXAMPLES = """
 #           l2vni:
 #             - vni: 10101
 #             - vni: 10102
-#     state: deleted 
+#     state: deleted
 
 # Commands Fired:
 # ---------------
@@ -318,7 +319,7 @@ EXAMPLES = """
 
 # - name: "Delete VXLAN VTEP interface with no config"
 #   cisco.ios.ios_vxlan_vtep:
-#     state: deleted 
+#     state: deleted
 
 # Commands Fired:
 # ---------------
@@ -358,12 +359,13 @@ commands:
   type: list
   sample:
     - 'interface nve1'
-    - 'source-interface Loopback1' 
+    - 'source-interface Loopback1'
     - 'host-reachability protocol bgp'
     - 'member vni 10101 ingress-replication'
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vxlan_vtep.vxlan_vtep import (
     Vxlan_vtepArgs,
 )
