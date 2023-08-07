@@ -14,18 +14,18 @@
             route_distinguisher: "1:1"
             default_gateway:
               advertise:
-                enable: False
+                enable: false
             ip:
               local_learning:
-                enable: True
+                enable: true
           - evi: 202
             replication_type: static
             default_gateway:
               advertise:
-                enable: True
+                enable: true
             ip:
               local_learning:
-                disable: True
+                disable: true
         state: merged
 
     - name: Assert that correct set of commands were generated
