@@ -58,17 +58,17 @@ class Logging_globalFacts(object):
 
         if objFinal:
             for k, v in iteritems(objFinal):
-                if type(v) == list and k not in ["hosts", "source_interface", "filter"]:
+                if isinstance(v, list) and k not in ["hosts", "source_interface", "filter"]:
                     v.sort()
                     objFinal[k] = v
-                elif type(v) == list and k == "hosts":
+                elif isinstance(v, list) and k == "hosts":
                     objFinal[k] = sorted(
                         objFinal[k],
                         key=lambda item: item["host"] if item.get("host") else item.get("ipv6"),
                     )
-                elif type(v) == list and k == "source_interface":
+                elif isinstance(v, list) and k == "source_interface":
                     objFinal[k] = sorted(objFinal[k], key=lambda item: item["interface"])
-                elif type(v) == list and k == "filter":
+                elif isinstance(v, list) and k == "filter":
                     objFinal[k] = sorted(objFinal[k], key=lambda item: item["url"])
         ansible_facts["ansible_network_resources"].pop("logging_global", None)
 
