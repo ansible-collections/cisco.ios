@@ -1,2 +1,2 @@
 - bugfixes:
-  - The regex looking for errors in the terminal output was matching anything with '\S+ Error:'. Caused issues with 'show runnning-config' if this string appeared in the output. Updated the regex to require the % anchor.
+    - The regex looking for errors in the terminal output was matching anything with '\S+ Error:'. Caused issues with 'show runnning-config' if this string appeared in the output. Updated the regex to require the % anchor.
