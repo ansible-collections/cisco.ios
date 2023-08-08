@@ -1,0 +1,4 @@
+---
+minor_changes:
+  - Fixe an issue with some files that doesn't pass the PEP8 sanity check because `type(<obj>) == <type>` is not allowed.
+    We need to use `isinstance(<obj>,<type>)` function in place
