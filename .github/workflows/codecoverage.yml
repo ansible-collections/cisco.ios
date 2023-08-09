@@ -8,7 +8,7 @@ on:  # yamllint disable-line rule:truthy
 
 jobs:
   codecoverage:
-    uses: roverflow/github_actions/.github/workflows/coverage_network_devices.yml@codecov
+    uses: ansible-network/github_actions/.github/workflows/coverage_network_devices.yml@main
     with:
       collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git
