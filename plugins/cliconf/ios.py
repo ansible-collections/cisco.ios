@@ -321,16 +321,17 @@ class Cliconf(CliconfBase):
         commit_confirm = self.get_option("commit_confirm_immediate")
         if commit:
             self.configure()
-            for line in to_list(candidate):
-                if not isinstance(line, Mapping):
-                    line = {"command": line}
+            try:
+                for line in to_list(candidate):
+                    if not isinstance(line, Mapping):
+                        line = {"command": line}
 
-                cmd = line["command"]
-                if cmd != "end" and cmd[0] != "!":
-                    results.append(self.send_command(**line))
-                    requests.append(cmd)
-
-            self.send_command("end")
+                    cmd = line["command"]
+                    if cmd != "end" and cmd[0] != "!":
+                        results.append(self.send_command(**line))
+                        requests.append(cmd)
+            finally:
+                self.send_command("end")
             if commit_confirm:
                 self.send_command("configure confirm")
 
