@@ -3661,9 +3661,9 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>passive_interface param is deprecated and a newer param passive_interfaces with added functionality&#x27;s is introduced, please meke use of the new available passive_interfaces instead.</div>
                         <div>Suppress routing updates on an interface (GigabitEthernet A/B)</div>
                         <div>Interface name with respective interface number</div>
+                        <div>passive_interface param is DEPRECATED and a newer param passive_interfaces with added functionality&#x27;s is introduced, this attribute will be removed after 2026-07-18.</div>
                 </td>
             </tr>
             <tr>
@@ -5368,3 +5368,4 @@ Authors
 ~~~~~~~
 
 - Sumit Jaiswal (@justjais)
+- Vinay M (@roverflow)
