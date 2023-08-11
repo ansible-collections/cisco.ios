@@ -63,6 +63,8 @@ plugin_routing:
       redirect: cisco.ios.ios
     ios_system:
       redirect: cisco.ios.ios
+    ios_user_global:
+      redirect: cisco.ios.ios
     l2_interfaces:
       redirect: cisco.ios.ios
     l3_interfaces:
@@ -106,6 +108,8 @@ plugin_routing:
     system:
       redirect: cisco.ios.ios
     user:
+      redirect: cisco.ios.ios
+    user_global:
       redirect: cisco.ios.ios
     vlans:
       redirect: cisco.ios.ios
@@ -202,6 +206,8 @@ plugin_routing:
       redirect: cisco.ios.ios_system
     user:
       redirect: cisco.ios.ios_user
+    user_global:
+      redirect: cisco.ios.ios_user_global
     vlans:
       redirect: cisco.ios.ios_vlans
     vrf:

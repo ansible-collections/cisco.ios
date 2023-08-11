@@ -61,7 +61,7 @@ options:
         'ntp_global', 'acls', 'hostname', 'interfaces', 'lldp_interfaces', 'logging_global',
         'ospf_interfaces', 'ospfv2', 'prefix_lists', 'static_routes', 'acl_interfaces',
         'all', 'bgp_address_family', 'l2_interfaces', 'lacp', 'lacp_interfaces', 'lldp_global',
-        'ospfv3', 'snmp_server', 'vlans', 'service'.
+        'ospfv3', 'snmp_server', 'vlans', 'service', 'user_global'.
     type: list
     elements: str
   available_network_resources:
