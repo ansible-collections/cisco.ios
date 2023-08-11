@@ -1,0 +1,3 @@
+---
+trivial:
+  - codecov - added a new codecov workflow and changing codecov.yml for added functionality.

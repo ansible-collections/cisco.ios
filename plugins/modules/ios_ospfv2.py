@@ -40,7 +40,9 @@ description:
   This module configures and manages the Open Shortest Path First (OSPF)
   version 2 on IOS platforms.
 version_added: 1.0.0
-author: Sumit Jaiswal (@justjais)
+author:
+  - Sumit Jaiswal (@justjais)
+  - Vinay M (@roverflow)
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
@@ -746,11 +748,11 @@ options:
                     type: bool
           passive_interface:
             description:
-              - passive_interface param is deprecated and a newer param passive_interfaces
-                with added functionality's is introduced, please meke use of the new available
-                passive_interfaces instead.
               - Suppress routing updates on an interface (GigabitEthernet A/B)
               - Interface name with respective interface number
+              - passive_interface param is DEPRECATED and a newer param passive_interfaces
+                with added functionality's is introduced, this attribute will be removed after
+                2026-07-18.
             type: str
           passive_interfaces:
             description: Suppress routing updates on an interface
