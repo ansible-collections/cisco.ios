@@ -1,7 +1,12 @@
 ---
 codecov:
   require_ci_to_pass: true
-comment: false
+comment:
+  layout: " diff, flags, files"
+  behavior: default
+  require_changes: false
+  require_base: false
+  require_head: true
 coverage:
   status:
     patch: false
