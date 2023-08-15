@@ -74,10 +74,13 @@ class TestIosUserGlobalModule(TestIosModule):
                 "users": [
                     {
                         "name": "admin",
-                        "password": {
-                            "type": "secret",
-                            "hash": 9,
-                            "value": "$9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
+                        "command": "old",
+                        "parameters": {
+                            "password": {
+                                "type": "secret",
+                                "hash": 9,
+                                "value": "$9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
+                            },
                         },
                     },
                 ],
@@ -94,6 +97,7 @@ class TestIosUserGlobalModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             username johndoe secret 5 $5$cAYu$0he5yPyPAbXoXo6U0fjzb4NbLLyqDRehwQU3ysKEC33
+            username msmith password 0 supersecret
             """,
         )
 
@@ -111,10 +115,24 @@ class TestIosUserGlobalModule(TestIosModule):
                 "users": [
                     {
                         "name": "admin",
-                        "password": {
-                            "type": "secret",
-                            "hash": 9,
-                            "value": "$9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
+                        "parameters": {
+                            "password": {
+                                "type": "secret",
+                                "hash": 9,
+                                "value": "$9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
+                            },
+                        },
+                    },
+                    {
+                        "name": "msmith",
+                        "command": "new",
+                        "parameters": {
+                            "privilege": 15,
+                            "password": {
+                                "type": "secret",
+                                "hash": 9,
+                                "value": "$9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
+                            },
                         },
                     },
                 ],
@@ -123,12 +141,26 @@ class TestIosUserGlobalModule(TestIosModule):
         merged = [
             "enable secret 9 $9$q3zuC3f3vjWnWk$4BwPgPt25AUkm8Gts6aqW.NLK/90zBDnmWtOeMQqoDo",
             "username admin secret 9 $9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
+            "no username msmith",
+            "user-name msmith",
+            " privilege 15",
+            " secret 9 $9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
         ]
         playbook["state"] = "merged"
         set_module_args(playbook)
         result = self.execute_module(changed=True)
 
-        self.assertEqual(sorted(result["commands"]), sorted(merged))
+        self.assertEqual(
+            sorted(
+                list(
+                    map(
+                        lambda x: x["command"] if isinstance(x, dict) and "command" in x else x,
+                        result["commands"],
+                    ),
+                ),
+            ),
+            sorted(merged),
+        )
 
     def test_ios_user_global_deleted(self):
         self.execute_show_command.return_value = dedent(
@@ -138,18 +170,31 @@ class TestIosUserGlobalModule(TestIosModule):
         )
         playbook = {"config": {}}
         deleted = [
-            "no username johndoe secret 5 $5$cAYu$0he5yPyPAbXoXo6U0fjzb4NbLLyqDRehwQU3ysKEC33",
+            "no username johndoe",
         ]
         playbook["state"] = "deleted"
         set_module_args(playbook)
         self.maxDiff = None
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(deleted))
+        self.assertEqual(
+            sorted(
+                list(
+                    map(
+                        lambda x: x["command"] if isinstance(x, dict) and "command" in x else x,
+                        result["commands"],
+                    ),
+                ),
+            ),
+            sorted(deleted),
+        )
 
     def test_ios_user_global_overridden(self):
         self.execute_show_command.return_value = dedent(
             """\
             username johndoe secret 5 $5$cAYu$0he5yPyPAbXoXo6U0fjzb4NbLLyqDRehwQU3ysKEC33
+            user-name msmith
+             privilege 15
+             password 0 supersecure
             """,
         )
 
@@ -167,10 +212,25 @@ class TestIosUserGlobalModule(TestIosModule):
                 "users": [
                     {
                         "name": "admin",
-                        "password": {
-                            "type": "secret",
-                            "hash": 9,
-                            "value": "$9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
+                        "command": "old",
+                        "parameters": {
+                            "password": {
+                                "type": "secret",
+                                "hash": 9,
+                                "value": "$9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
+                            },
+                        },
+                    },
+                    {
+                        "name": "msmith",
+                        "command": "new",
+                        "parameters": {
+                            "privilege": 15,
+                            "password": {
+                                "type": "secret",
+                                "hash": 9,
+                                "value": "$9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
+                            },
                         },
                     },
                 ],
@@ -178,13 +238,26 @@ class TestIosUserGlobalModule(TestIosModule):
         }
         overridden = [
             "enable secret 9 $9$q3zuC3f3vjWnWk$4BwPgPt25AUkm8Gts6aqW.NLK/90zBDnmWtOeMQqoDo",
-            "no username johndoe secret 5 $5$cAYu$0he5yPyPAbXoXo6U0fjzb4NbLLyqDRehwQU3ysKEC33",
+            "no username johndoe",
             "username admin secret 9 $9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
+            "user-name msmith",
+            " secret 9 $9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
         ]
         playbook["state"] = "overridden"
         set_module_args(playbook)
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(overridden))
+
+        self.assertEqual(
+            sorted(
+                list(
+                    map(
+                        lambda x: x["command"] if isinstance(x, dict) and "command" in x else x,
+                        result["commands"],
+                    ),
+                ),
+            ),
+            sorted(overridden),
+        )
 
     def test_ios_user_global_overridden_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -208,10 +281,13 @@ class TestIosUserGlobalModule(TestIosModule):
                 "users": [
                     {
                         "name": "admin",
-                        "password": {
-                            "type": "secret",
-                            "hash": 9,
-                            "value": "$9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
+                        "command": "old",
+                        "parameters": {
+                            "password": {
+                                "type": "secret",
+                                "hash": 9,
+                                "value": "$9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
+                            },
                         },
                     },
                 ],
@@ -249,10 +325,13 @@ class TestIosUserGlobalModule(TestIosModule):
             "users": [
                 {
                     "name": "admin",
-                    "password": {
-                        "type": "secret",
-                        "hash": 9,
-                        "value": "$9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
+                    "command": "old",
+                    "parameters": {
+                        "password": {
+                            "type": "secret",
+                            "hash": 9,
+                            "value": "$9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
+                        },
                     },
                 },
             ],
@@ -282,10 +361,13 @@ class TestIosUserGlobalModule(TestIosModule):
             "users": [
                 {
                     "name": "admin",
-                    "password": {
-                        "type": "secret",
-                        "hash": 9,
-                        "value": "$9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
+                    "command": "old",
+                    "parameters": {
+                        "password": {
+                            "type": "secret",
+                            "hash": 9,
+                            "value": "$9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
+                        },
                     },
                 },
             ],
@@ -310,10 +392,13 @@ class TestIosUserGlobalModule(TestIosModule):
                     "users": [
                         {
                             "name": "admin",
-                            "password": {
-                                "type": "secret",
-                                "hash": 9,
-                                "value": "$9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
+                            "command": "old",
+                            "parameters": {
+                                "password": {
+                                    "type": "secret",
+                                    "hash": 9,
+                                    "value": "$9$oV7t.SyAkhiemE$D7GYIpVS/IOc0c15ev/n3p4Wo509XwQpPfyL1fuC5Dg",
+                                },
                             },
                         },
                     ],

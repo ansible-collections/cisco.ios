@@ -5,7 +5,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 #############################################
@@ -30,7 +29,8 @@ The arg spec for the ios_user_global module
 
 
 class User_globalArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_user_global module"""
+    """The arg spec for the ios_user_global module
+    """
 
     argument_spec = {
         "config": {
@@ -52,9 +52,9 @@ class User_globalArgs(object):  # pylint: disable=R0903
                                     "default": 0,
                                     "type": "int",
                                 },
-                                "value": {"type": "str", "required": True},
+                                "value": {"type": "str", "no_log": True},
                             },
-                            "no_log": True,
+                            "no_log": False,
                         },
                         "level": {"type": "int"},
                     },
@@ -64,25 +64,36 @@ class User_globalArgs(object):  # pylint: disable=R0903
                     "elements": "dict",
                     "options": {
                         "name": {"type": "str", "required": True},
-                        "description": {"type": "str"},
-                        "password": {
+                        "command": {
+                            "choices": ["new", "old"],
+                            "default": "old",
+                            "type": "str",
+                        },
+                        "parameters": {
                             "type": "dict",
                             "options": {
-                                "type": {
-                                    "choices": ["password", "secret"],
-                                    "default": "secret",
-                                    "type": "str",
+                                "nopassword": {"type": "bool"},
+                                "password": {
+                                    "type": "dict",
+                                    "options": {
+                                        "type": {
+                                            "choices": ["password", "secret"],
+                                            "default": "secret",
+                                            "type": "str",
+                                        },
+                                        "hash": {
+                                            "choices": [0, 5, 6, 7, 8, 9],
+                                            "default": 0,
+                                            "type": "int",
+                                        },
+                                        "value": {"type": "str", "no_log": True},
+                                    },
+                                    "no_log": False,
                                 },
-                                "hash": {
-                                    "choices": [0, 5, 6, 7, 8, 9],
-                                    "default": 0,
-                                    "type": "int",
-                                },
-                                "value": {"type": "str", "required": True},
+                                "privilege": {"type": "int"},
+                                "view": {"type": "str"},
                             },
-                            "no_log": True,
                         },
-                        "privilege": {"type": "int"},
                     },
                     "type": "list",
                 },
