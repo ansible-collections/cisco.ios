@@ -10,7 +10,6 @@ The module file for ios_user_global
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -66,7 +65,6 @@ options:
                   - The password should be complient with the C(hash) parameter choose
                     previously
                 type: str
-                required: true
           level:
             description:
               - Set exec level password
@@ -74,7 +72,7 @@ options:
             type: int
         type: list
       users:
-        description: Define a user
+        description: Define a user with new command
         elements: dict
         suboptions:
           name:
@@ -82,49 +80,66 @@ options:
               - The name of the user
             type: str
             required: true
-          description:
+          command:
             description:
-              - Add description to MAC user (MAX of 128 characters)
+              - Type of command used to manage this user
+              - Could be I(old) for C(username) or I(new) for C(user-name)
+            choices:
+              - new
+              - old
+            default: old
             type: str
-          password:
+          parameters:
             description:
-              -  Define the password or secret for user (MAX of 25 characters)
+              - List of parameters associated of the user
             type: dict
             suboptions:
-              type:
+              nopassword:
                 description:
-                  - Choose the type of password
-                  - I(password) for the old reversible algorythn
-                  - I(secret) to use the more recent and secure algorithm
-                choices:
-                  - password
-                  - secret
-                default: secret
-                type: str
-              hash:
+                  - No password is required for the user to log in
+                type: bool
+              password:
                 description:
-                  - Specifies the type of hash used in password provided
-                  - C(0) - UNENCRYPTED password (I(Default))
-                  - C(5) - MD5 HASHED secret
-                  - C(6) - ENCRYPTED password (require a crypto-key on device)
-                  - C(7) - HIDDEN password
-                  - C(8) - PBKDF2 HASHED secret
-                  - C(9) - SCRYPT HASHED secret
-                choices: [ 0, 5, 6, 7, 8, 9 ]
-                default: 0
+                  -  Define the password or secret for user (MAX of 25 characters)
+                type: dict
+                suboptions:
+                  type:
+                    description:
+                      - Choose the type of password
+                      - I(password) for the old reversible algorythn
+                      - I(secret) to use the more recent and secure algorithm
+                    choices:
+                      - password
+                      - secret
+                    default: secret
+                    type: str
+                  hash:
+                    description:
+                      - Specifies the type of hash used in password provided
+                      - C(0) - UNENCRYPTED password (I(Default))
+                      - C(5) - MD5 HASHED secret
+                      - C(6) - ENCRYPTED password (require a crypto-key on device)
+                      - C(7) - HIDDEN password
+                      - C(8) - PBKDF2 HASHED secret
+                      - C(9) - SCRYPT HASHED secret
+                    choices: [ 0, 5, 6, 7, 8, 9 ]
+                    default: 0
+                    type: int
+                  value:
+                    description:
+                      - The actual hashed password to be configured on the device
+                      - The password should be complient with the C(hash) parameter choose
+                        previously
+                    type: str
+              privilege:
+                description:
+                  - Set user privilege level
+                  - The I(privilege) value should be between C(1) and C(15)
                 type: int
-              value:
+              view:
                 description:
-                  - The actual hashed password to be configured on the device
-                  - The password should be complient with the C(hash) parameter choose
-                    previously
+                  - Set view name
                 type: str
-                required: true
-          privilege:
-            description:
-              - Set user privilege level
-              - The I(privilege) value should be between C(1) and C(15)
-            type: int
         type: list
   running_config:
     description:
@@ -159,7 +174,7 @@ options:
         transforms it into JSON format as per the resource module parameters and the
         value is returned in the I(parsed) key within the result. The value of C(running_config)
         option should be the same format as the output of command
-        I(show running-config | section ^username|^enable) executed on device. For state I(parsed)
+        I(show running-config | section ^username|^enable) executed on device. For state I(parsed) 
         active connection to remote host is not required.
     type: str
 """
@@ -440,7 +455,6 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.user_global.user_global import (
     User_globalArgs,
 )

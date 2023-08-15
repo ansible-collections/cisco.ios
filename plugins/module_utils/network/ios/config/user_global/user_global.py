@@ -50,8 +50,11 @@ class User_global(ResourceModule):
         self.parsers = []
         self.list_parsers = [
             "enable",
-            "users",
         ]
+        self.list_complex_parsers = {
+            "old": "users",
+            "new": "user-name",
+        }
 
     def execute_module(self):
         """Execute the module
@@ -89,6 +92,7 @@ class User_global(ResourceModule):
         """
         self.compare(parsers=self.parsers, want=want, have=have)
         self._compare_lists_attrs(want, have)
+        self._compare_list_complex_parsers(want=want.get("users", {}), have=have.get("users", {}))
 
     def _compare_lists_attrs(self, want, have):
         """Compare list of dict"""
@@ -103,6 +107,56 @@ class User_global(ResourceModule):
                     self.addcmd(wanting, _parser)
             for key, haveing in iteritems(i_have):
                 self.addcmd(haveing, _parser, negate=True)
+
+    def _compare_list_complex_parsers(self, want, have):
+        """Compare complex dict users with two different parsers"""
+        for key, wanting in iteritems(want):
+            haveing = have.pop(key, {})
+            w_command = wanting.get("command", "old")
+            w_parser = self.list_complex_parsers[w_command]
+            h_command = haveing.get("command", "old")
+            h_parser = self.list_complex_parsers[h_command]
+            if wanting != haveing:
+                if haveing and (
+                    w_command != h_command
+                    or h_command == "old"
+                    and self.state in ["overridden", "replaced"]
+                ):
+                    self.addcmd(
+                        haveing,
+                        h_parser + ".name" if h_command == "new" else h_parser,
+                        negate=True,
+                    )
+                    if wanting["command"] == "new":
+                        self.addcmd(wanting, w_parser + ".name")
+                        for k in wanting["parameters"].keys():
+                            self.addcmd(wanting, w_parser + "." + k)
+                    else:
+                        self.addcmd(wanting, w_parser)
+                elif haveing and w_command == h_command and w_command == "new":
+                    self.addcmd(wanting, w_parser + ".name")
+                    for k, k_wanting in wanting["parameters"].items():
+                        k_haveing = haveing["parameters"].pop(k, None)
+                        if not k_haveing or k_wanting != k_haveing:
+                            self.addcmd(wanting, w_parser + "." + k)
+                    if self.state in ["overridden", "replaced"]:
+                        for k, k_haveing in haveing["parameters"].items():
+                            self.addcmd(haveing, h_parser + "." + k, negate=True)
+                else:
+                    if w_command == "new":
+                        self.addcmd(wanting, w_parser + ".name")
+                        for k in wanting["parameters"].keys():
+                            self.addcmd(wanting, w_parser + "." + k)
+                    else:
+                        self.addcmd(wanting, w_parser)
+        for key, haveing in have.items():
+            h_command = haveing.get("command", "old")
+            h_parser = self.list_complex_parsers[h_command]
+            self.addcmd(
+                haveing,
+                h_parser + ".name" if h_command == "new" else h_parser,
+                negate=True,
+            )
 
     def _users_list_to_dict(self, data):
         """Convert all list of dicts to dicts of dicts"""

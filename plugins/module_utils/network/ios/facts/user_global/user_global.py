@@ -33,7 +33,7 @@ class User_globalFacts(object):
         self.argument_spec = User_globalArgs.argument_spec
 
     def get_users_data(self, connection):
-        return connection.get("show running-config | section ^username|^enable")
+        return connection.get("show running-config | section ^username|^user-name|^enable")
 
     def sort_list_dicts(self, objs):
         p_key = {
@@ -69,6 +69,7 @@ class User_globalFacts(object):
         user_global_parser = User_globalTemplate(lines=data.splitlines(), module=self._module)
         objs = user_global_parser.parse()
 
+        objs["users"] = list(objs["users"].values())
         if objs:
             self.sort_list_dicts(objs)
 
