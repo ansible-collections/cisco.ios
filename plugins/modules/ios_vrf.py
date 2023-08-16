@@ -326,40 +326,42 @@ def add_command_to_vrf(name, cmd, commands):
         commands.extend(["vrf definition %s" % name])
     commands.append(cmd)
 
+
 KEY_TO_COMMAND_MAP = {
     "auto_discovery": "mdt auto-discovery ",
     "default": "mdt default vxlan ",
     "data_mcast": "mdt data vxlan ",
     "data_threshold": "mdt data threshold ",
-    "overlay": "mdt overlay "
+    "overlay": "mdt overlay ",
 }
 
-def add_mdt_commands(afi_dict, vrf_name, commands):
 
-    for key, value in afi_dict['mdt'].items():
+def add_mdt_commands(afi_dict, vrf_name, commands):
+    for key, value in afi_dict["mdt"].items():
         cmd = KEY_TO_COMMAND_MAP[key]
 
-        if key in ['default', 'data_mcast']:
-            cmd = cmd + value['vxlan_mcast_group']
+        if key in ["default", "data_mcast"]:
+            cmd = cmd + value["vxlan_mcast_group"]
             add_command_to_vrf(vrf_name, cmd, commands)
-        elif key == 'data_threshold':
+        elif key == "data_threshold":
             cmd = cmd + str(value)
             add_command_to_vrf(vrf_name, cmd, commands)
-        elif key == 'auto_discovery':
-            if value['vxlan']['enable']:
-                cmd = cmd + 'vxlan'
-            if value['vxlan'].get('inter_as'):
-                cmd = cmd + ' ' + 'inter-as'
+        elif key == "auto_discovery":
+            if value["vxlan"]["enable"]:
+                cmd = cmd + "vxlan"
+            if value["vxlan"].get("inter_as"):
+                cmd = cmd + " " + "inter-as"
             add_command_to_vrf(vrf_name, cmd, commands)
-        elif key == 'overlay':
-            if value['use_bgp']['enable']:
-                cmd = cmd + 'use-bgp'
-            if value['use_bgp'].get('spt_only'):
-                cmd = cmd + ' ' + 'spt-only'
+        elif key == "overlay":
+            if value["use_bgp"]["enable"]:
+                cmd = cmd + "use-bgp"
+            if value["use_bgp"].get("spt_only"):
+                cmd = cmd + " " + "spt-only"
             add_command_to_vrf(vrf_name, cmd, commands)
 
+
 def map_obj_to_commands(updates, module):
-    commands = list()        
+    commands = list()
     for update in updates:
         want, have = update
 
@@ -449,27 +451,29 @@ def map_obj_to_commands(updates, module):
             add_command_to_vrf(want["name"], cmd, commands)
         if needs_update(want, have, "address_family"):
             for want_mdt in want["address_family"]:
-                afi = want_mdt['afi']
+                afi = want_mdt["afi"]
                 af_dict = {}
-                data_dict= want_mdt['mdt'].pop('data', {})
+                data_dict = want_mdt["mdt"].pop("data", {})
                 if data_dict:
-                    if 'vxlan_mcast_group' in data_dict:
-                        want_mdt['mdt']['data_mcast'] = {"vxlan_mcast_group": data_dict['vxlan_mcast_group']}
-                    if 'threshold' in data_dict:
-                        want_mdt['mdt']['data_threshold'] = data_dict['threshold']
-                        
-                for key_in, value_in in want_mdt['mdt'].items():
+                    if "vxlan_mcast_group" in data_dict:
+                        want_mdt["mdt"]["data_mcast"] = {
+                            "vxlan_mcast_group": data_dict["vxlan_mcast_group"]
+                        }
+                    if "threshold" in data_dict:
+                        want_mdt["mdt"]["data_threshold"] = data_dict["threshold"]
+
+                for key_in, value_in in want_mdt["mdt"].items():
                     have_mdt = next(
-                        (i for i in have["address_family"] if i["afi"] == afi), 
-                        None
+                        (i for i in have["address_family"] if i["afi"] == afi),
+                        None,
                     )
 
-                    if needs_update(want_mdt['mdt'], have_mdt['mdt'], key_in):
+                    if needs_update(want_mdt["mdt"], have_mdt["mdt"], key_in):
                         af_dict.update({key_in: value_in})
                 if af_dict:
                     cmd = "address-family" + " " + str(afi)
                     add_command_to_vrf(want["name"], cmd, commands)
-                    add_mdt_commands({"mdt":af_dict}, want["name"], commands)
+                    add_mdt_commands({"mdt": af_dict}, want["name"], commands)
                     add_command_to_vrf(want["name"], "exit-address-family", commands)
 
         if want["interfaces"] is not None:
@@ -604,63 +608,75 @@ def parse_export_ipv6(configobj, name):
 def parse_mdt(configobj, name):
     cfg = configobj["vrf definition %s" % name]
     mdt_list = []
-    
-    for ip in ['ipv4', 'ipv6']:
+
+    for ip in ["ipv4", "ipv6"]:
         ret_dict = {}
         try:
-            subcfg = cfg["address-family "+ip]
+            subcfg = cfg["address-family " + ip]
             subcfg = "\n".join(subcfg.children)
         except KeyError:
             subcfg = ""
             pass
-        
-        re1 = re.compile(r'^mdt +auto\-discovery +(?P<option>\S+)(\s+(?P<inter_as>inter\-as))?$')
-        re2 = re.compile(r'^mdt +default +vxlan +(?P<mcast_group>\S+)$')
-        re3 = re.compile(r'^mdt +data +vxlan +(?P<mcast_group>.+)$')
-        re4 = re.compile(r'^mdt +data +threshold +(?P<threshold_value>\d+)$')
-        re5 = re.compile(r'^mdt +overlay +(?P<use_bgp>use-bgp)(\s+(?P<spt_only>spt-only))?$')
+
+        re1 = re.compile(r"^mdt +auto\-discovery +(?P<option>\S+)(\s+(?P<inter_as>inter\-as))?$")
+        re2 = re.compile(r"^mdt +default +vxlan +(?P<mcast_group>\S+)$")
+        re3 = re.compile(r"^mdt +data +vxlan +(?P<mcast_group>.+)$")
+        re4 = re.compile(r"^mdt +data +threshold +(?P<threshold_value>\d+)$")
+        re5 = re.compile(r"^mdt +overlay +(?P<use_bgp>use-bgp)(\s+(?P<spt_only>spt-only))?$")
 
         for line in subcfg.splitlines():
             line = line.strip()
             m = re1.match(line)
             if m:
                 group = m.groupdict()
-                ret_dict.setdefault('auto_discovery', {}).setdefault(
-                    group['option'], {}).setdefault('enable', True)
-                if group['inter_as']:
-                    ret_dict.setdefault('auto_discovery', {}).setdefault(
-                    group['option'], {}).setdefault('inter_as', True)
+                ret_dict.setdefault("auto_discovery", {}).setdefault(
+                    group["option"],
+                    {},
+                ).setdefault("enable", True)
+                if group["inter_as"]:
+                    ret_dict.setdefault("auto_discovery", {}).setdefault(
+                        group["option"],
+                        {},
+                    ).setdefault("inter_as", True)
                 continue
 
             m = re2.match(line)
             if m:
                 group = m.groupdict()
-                ret_dict.setdefault('default', {}).setdefault(
-                    'vxlan_mcast_group', group['mcast_group'])
+                ret_dict.setdefault("default", {}).setdefault(
+                    "vxlan_mcast_group",
+                    group["mcast_group"],
+                )
                 continue
 
             m = re3.match(line)
             if m:
                 group = m.groupdict()
-                ret_dict.setdefault('data_mcast', {}).setdefault(
-                    'vxlan_mcast_group', group['mcast_group'])
+                ret_dict.setdefault("data_mcast", {}).setdefault(
+                    "vxlan_mcast_group",
+                    group["mcast_group"],
+                )
                 continue
 
             m = re4.match(line)
             if m:
                 group = m.groupdict()
-                ret_dict.setdefault('data_threshold', int(group['threshold_value']))
+                ret_dict.setdefault("data_threshold", int(group["threshold_value"]))
 
             m = re5.match(line)
             if m:
                 group = m.groupdict()
-                ret_dict.setdefault('overlay', {}).setdefault(
-                    'use_bgp', {}).setdefault('enable', True)
-                if group['spt_only']:
-                    ret_dict.setdefault('overlay', {}).setdefault(
-                        'use_bgp', {}).setdefault('spt_only', True)
+                ret_dict.setdefault("overlay", {}).setdefault(
+                    "use_bgp",
+                    {},
+                ).setdefault("enable", True)
+                if group["spt_only"]:
+                    ret_dict.setdefault("overlay", {}).setdefault(
+                        "use_bgp",
+                        {},
+                    ).setdefault("spt_only", True)
 
-        mdt_list.append({'afi': ip, 'mdt': ret_dict})    
+        mdt_list.append({"afi": ip, "mdt": ret_dict})
     return mdt_list
 
 

@@ -427,8 +427,8 @@ class TestIosVrfModule(TestIosModule):
                             },
                             "auto_discovery": {
                                 "vxlan": {
-                                   "enable": true,
-                                   "inter_as": true,
+                                    "enable": true,
+                                    "inter_as": true,
                                 },
                             },
                             "default": {
@@ -451,16 +451,16 @@ class TestIosVrfModule(TestIosModule):
                             },
                             "auto_discovery": {
                                 "vxlan": {
-                                   "enable": true,
-                                   "inter_as": true
+                                    "enable": true,
+                                    "inter_as": true,
                                 },
                             },
                             "default": {
-                                "vxlan_mcast_group": "239.1.1.2"
+                                "vxlan_mcast_group": "239.1.1.2",
                             },
                         },
                     },
-                ]
+                ],
             },
         )
         commands = [
@@ -475,10 +475,9 @@ class TestIosVrfModule(TestIosModule):
             "mdt overlay use-bgp spt-only",
             "mdt auto-discovery vxlan inter-as",
             "mdt default vxlan 239.1.1.2",
-            "exit-address-family"
+            "exit-address-family",
         ]
         self.execute_module(changed=True, commands=commands, sort=False)
-
 
     def test_ios_mdt_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -525,8 +524,8 @@ class TestIosVrfModule(TestIosModule):
                             },
                             "auto_discovery": {
                                 "vxlan": {
-                                   "enable": true,
-                                   "inter_as": true,
+                                    "enable": true,
+                                    "inter_as": true,
                                 },
                             },
                             "default": {
@@ -549,16 +548,16 @@ class TestIosVrfModule(TestIosModule):
                             },
                             "auto_discovery": {
                                 "vxlan": {
-                                   "enable": true,
-                                   "inter_as": true
+                                    "enable": true,
+                                    "inter_as": true,
                                 },
                             },
                             "default": {
-                                "vxlan_mcast_group": "239.1.1.2"
+                                "vxlan_mcast_group": "239.1.1.2",
                             },
                         },
                     },
-                ]
+                ],
             },
         )
         self.execute_module(changed=True, commands=[], sort=False)
