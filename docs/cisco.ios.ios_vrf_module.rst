@@ -29,12 +29,13 @@ Parameters
 
     <table  border=0 cellpadding=0 class="documentation-table">
         <tr>
-            <th colspan="1">Parameter</th>
+            <th colspan="6">Parameter</th>
             <th>Choices/<font color="blue">Defaults</font></th>
             <th width="100%">Comments</th>
         </tr>
             <tr>
-                <td colspan="1">
+                <td class="elbow-placeholder"></td>
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>associated_interfaces</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -50,7 +51,8 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td class="elbow-placeholder"></td>
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>delay</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -66,7 +68,8 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td class="elbow-placeholder"></td>
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>description</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -81,7 +84,8 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td class="elbow-placeholder"></td>
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>interfaces</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -97,7 +101,8 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td class="elbow-placeholder"></td>
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>name</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -112,7 +117,8 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td class="elbow-placeholder"></td>
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>purge</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -131,7 +137,8 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td class="elbow-placeholder"></td>
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>rd</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -146,7 +153,8 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td class="elbow-placeholder"></td>
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_both</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -162,7 +170,8 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td class="elbow-placeholder"></td>
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_both_ipv4</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -178,7 +187,8 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td class="elbow-placeholder"></td>
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_both_ipv6</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -194,7 +204,8 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td class="elbow-placeholder"></td>
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_export</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -210,7 +221,8 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td class="elbow-placeholder"></td>
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_export_ipv4</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -226,7 +238,8 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td class="elbow-placeholder"></td>
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_export_ipv6</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -242,7 +255,8 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td class="elbow-placeholder"></td>
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_import</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -258,7 +272,8 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td class="elbow-placeholder"></td>
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_import_ipv4</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -274,7 +289,8 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td class="elbow-placeholder"></td>
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>route_import_ipv6</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -290,7 +306,321 @@ Parameters
                 </td>
             </tr>
             <tr>
+                <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>address_family</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dict</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Address-family configuration submode to the VRF.</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>afi</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>ipv4</li>
+                                    <li>ipv6</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Address-family identifier</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mdt</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dict</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Backbone Multicast Distribution Tree</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>overlay</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dict</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Overlay data</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>use_bgp</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dict</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Use BGP for Overlay Signaling</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
                 <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>enable</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">bool</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>true</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enable BGP for Overlay Signaling</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>spt_only</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">bool</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>true</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enable SPT-only ASM mode</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>auto_discovery</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dict</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>BGP auto-discovery for MVPN</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vxlan</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dict</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>BGP auto-discovery for VXLAN</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>enable</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">bool</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>true</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enable BGP auto-discovery for VXLAN</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>inter_as</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">bool</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>true</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enable Inter-AS BGP auto-discovery for VXLAN</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>default</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dict</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>The default group</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vxlan_mcast_group</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>VXLAN multicast group address</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>data</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dict</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>MDT data trees</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vxlan_mcast_group</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>VXLAN multicast group address</div>
+                </td>
+            </tr>
+            <tr>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>threshold</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">int</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>MDT switching threshold</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -309,7 +639,7 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="1">
+                <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>vrfs</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -450,6 +780,40 @@ Examples
           - 1:100
           - 3:100
 
+    - name:
+        Creates MDT in address-family configuration
+        submode for the VRF with the same parameters
+      cisco.ios.ios_vrf:
+        name: blue
+        rd: 1:101
+        address_family:
+        - afi: ipv4
+          mdt:
+            overlay:
+              use_bgp:
+                enable: true
+                spt_only: true
+            auto_discovery:
+              vxlan:
+                enable: true
+                inter_as: true
+            default:
+              vxlan_mcast_group: 239.1.1.1
+            data:
+              vxlan_mcast_group: 225.2.2.0 0.0.0.255
+              threshold: 111
+        - afi: ipv6
+          mdt:
+            overlay:
+              use_bgp:
+                enable: true
+                spt_only: true
+            auto_discovery:
+              vxlan:
+                enable: true
+                inter_as: true
+            default:
+              vxlan_mcast_group: 239.1.1.2
 
 
 Return Values

@@ -21,6 +21,7 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
+from textwrap import dedent
 
 from ansible_collections.cisco.ios.plugins.modules import ios_vrf
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
@@ -388,3 +389,176 @@ class TestIosVrfModule(TestIosModule):
         set_module_args(dict(name="test_19", interfaces=["Ethernet1"]))
         commands = ["interface Ethernet1", "vrf forwarding test_19", "ip address 1.2.3.4/5"]
         self.execute_module(changed=True, commands=commands, sort=False)
+
+    def test_ios_mdt(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            vrf definition blue
+             description blue VRF defn
+             rd 2:2
+             !
+             address-family ipv4
+              route-target export 2:2
+              route-target import 2:2
+              route-target export 2:2 stitching
+              route-target import 2:2 stitching
+             exit-address-family
+             !
+             address-family ipv6
+              route-target export 2:2
+              route-target import 2:2
+              route-target import 2:2 stitching
+             exit-address-family
+            """,
+        )
+
+        set_module_args(
+            {
+                "name": "blue",
+                "address_family": [
+                    {
+                        "afi": "ipv4",
+                        "mdt": {
+                            "overlay": {
+                                "use_bgp": {
+                                    "enable": true,
+                                    "spt_only": true,
+                                },
+                            },
+                            "auto_discovery": {
+                                "vxlan": {
+                                   "enable": true,
+                                   "inter_as": true,
+                                },
+                            },
+                            "default": {
+                                "vxlan_mcast_group": "239.1.1.1",
+                            },
+                            "data": {
+                                "vxlan_mcast_group": "225.2.2.0 0.0.0.255",
+                                "threshold": "112",
+                            },
+                        },
+                    },
+                    {
+                        "afi": "ipv6",
+                        "mdt": {
+                            "overlay": {
+                                "use_bgp": {
+                                    "enable": true,
+                                    "spt_only": true,
+                                },
+                            },
+                            "auto_discovery": {
+                                "vxlan": {
+                                   "enable": true,
+                                   "inter_as": true
+                                },
+                            },
+                            "default": {
+                                "vxlan_mcast_group": "239.1.1.2"
+                            },
+                        },
+                    },
+                ]
+            },
+        )
+        commands = [
+            "vrf definition blue",
+            "address-family ipv4",
+            "mdt overlay use-bgp spt-only",
+            "mdt auto-discovery vxlan inter-as",
+            "mdt data vxlan 225.2.2.0 0.0.0.255",
+            "mdt data threshold 112",
+            "exit-address-family",
+            "address-family ipv6",
+            "mdt overlay use-bgp spt-only",
+            "mdt auto-discovery vxlan inter-as",
+            "mdt default vxlan 239.1.1.2",
+            "exit-address-family"
+        ]
+        self.execute_module(changed=True, commands=commands, sort=False)
+
+
+    def test_ios_mdt_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            vrf definition blue
+             description blue VRF defn
+             rd 2:2
+             !
+             address-family ipv4
+              mdt auto-discovery vxlan inter-as
+              mdt default vxlan 239.1.1.1
+              mdt data vxlan 225.2.2.0 0.0.0.255
+              mdt data threshold 112
+              mdt overlay use-bgp spt-only
+              route-target export 2:2
+              route-target import 2:2
+              route-target export 2:2 stitching
+              route-target import 2:2 stitching
+             exit-address-family
+             !
+             address-family ipv6
+              mdt auto-discovery vxlan inter-as
+              mdt default vxlan 239.1.1.2
+              mdt overlay use-bgp spt-only
+              route-target export 2:2
+              route-target import 2:2
+              route-target import 2:2 stitching
+             exit-address-family
+            """,
+        )
+
+        set_module_args(
+            {
+                "name": "blue",
+                "address_family": [
+                    {
+                        "afi": "ipv4",
+                        "mdt": {
+                            "overlay": {
+                                "use_bgp": {
+                                    "enable": true,
+                                    "spt_only": true,
+                                },
+                            },
+                            "auto_discovery": {
+                                "vxlan": {
+                                   "enable": true,
+                                   "inter_as": true,
+                                },
+                            },
+                            "default": {
+                                "vxlan_mcast_group": "239.1.1.1",
+                            },
+                            "data": {
+                                "vxlan_mcast_group": "225.2.2.0 0.0.0.255",
+                                "threshold": "112",
+                            },
+                        },
+                    },
+                    {
+                        "afi": "ipv6",
+                        "mdt": {
+                            "overlay": {
+                                "use_bgp": {
+                                    "enable": true,
+                                    "spt_only": true,
+                                },
+                            },
+                            "auto_discovery": {
+                                "vxlan": {
+                                   "enable": true,
+                                   "inter_as": true
+                                },
+                            },
+                            "default": {
+                                "vxlan_mcast_group": "239.1.1.2"
+                            },
+                        },
+                    },
+                ]
+            },
+        )
+        self.execute_module(changed=True, commands=[], sort=False)
