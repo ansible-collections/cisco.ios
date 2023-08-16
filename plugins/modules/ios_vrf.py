@@ -457,7 +457,7 @@ def map_obj_to_commands(updates, module):
                 if data_dict:
                     if "vxlan_mcast_group" in data_dict:
                         want_mdt["mdt"]["data_mcast"] = {
-                            "vxlan_mcast_group": data_dict["vxlan_mcast_group"]
+                            "vxlan_mcast_group": data_dict["vxlan_mcast_group"],
                         }
                     if "threshold" in data_dict:
                         want_mdt["mdt"]["data_threshold"] = data_dict["threshold"]
