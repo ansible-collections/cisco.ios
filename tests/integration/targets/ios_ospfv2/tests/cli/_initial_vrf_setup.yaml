@@ -1,6 +1,16 @@
 ---
 - name: Create and setup VRF configuration
   vars:
-    lines: "vrf definition ospf_vrf\naddress-family ipv4\nvrf definition blue\naddress-family ipv4\n"
-  ansible.netcommon.cli_config:
+    lines:
+      - ip vrf blue
+      - rd 100:1
+      - route-target export 100:1
+      - route-target import 100:1
+      - exit
+      - ip vrf ospf_vrf
+      - rd 100:2
+      - route-target export 100:2
+      - route-target import 100:2
+      - exit
+  cisco.ios.ios_config:
     config: "{{ lines }}"
