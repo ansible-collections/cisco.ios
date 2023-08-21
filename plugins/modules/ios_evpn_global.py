@@ -18,12 +18,10 @@ module: ios_evpn_global
 short_description: Resource module to configure L2VPN EVPN.
 description: This module provides declarative management of L2VPN EVPN on Cisco IOS network
   devices.
-version_added: 1.0.0
+version_added: 5.0.0
 author: Padmini Priyadarshini Sivaraj (@PadminiSivaraj)
 notes:
-  - Tested against Cisco IOSl2 device with Version 15.2 on VIRL.
-  - Starting from v2.5.0, this module will fail when run against Cisco IOS devices that do
-    not support L2VPN EVPN. The offline states (C(rendered) and C(parsed)) will work as expected.
+  - Tested against Cisco IOS device with Version 17.13.01 on Cat9k on CML.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
