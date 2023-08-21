@@ -1,0 +1,9 @@
+minor_changes:
+  - ospfv2 - optimized all the regex to perform better
+  - ospfv2 - optimized the config side code for quicker comparison and execution
+  - ospfv2 - fix area ranges rendering
+  - ospfv2 - fix passive interfaces rendering
+  - ospfv2 - aliased passive_interface to passive_interfaces that supports a list of interfaces
+  - ospfv2 - added more tests to improve coverage for the rm_template
+deprecated_features:
+  - ospfv2 - removed passive_interface to passive_interfaces that supports a list of interfaces
