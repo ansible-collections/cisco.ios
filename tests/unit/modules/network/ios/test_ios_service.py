@@ -369,7 +369,6 @@ class TestIosServiceModule(TestIosModule):
 
         self.assertEqual(sorted(result["commands"]), sorted(replaced))
 
-
     ####################
 
     def test_ios_service_parsed(self):

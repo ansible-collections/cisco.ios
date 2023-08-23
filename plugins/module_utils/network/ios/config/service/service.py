@@ -105,8 +105,8 @@ class Service(ResourceModule):
             "password_recovery": True,
         }
 
-        if 'private_config_encryption' in haved:
-            service_default['private_config_encryption'] = True
+        if "private_config_encryption" in haved:
+            service_default["private_config_encryption"] = True
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
