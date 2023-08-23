@@ -10,6 +10,7 @@ The module file for ios_user_global
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -174,7 +175,7 @@ options:
         transforms it into JSON format as per the resource module parameters and the
         value is returned in the I(parsed) key within the result. The value of C(running_config)
         option should be the same format as the output of command
-        I(show running-config | section ^username|^enable) executed on device. For state I(parsed) 
+        I(show running-config | section ^username|^enable) executed on device. For state I(parsed)
         active connection to remote host is not required.
     type: str
 """
@@ -455,6 +456,7 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.user_global.user_global import (
     User_globalArgs,
 )
