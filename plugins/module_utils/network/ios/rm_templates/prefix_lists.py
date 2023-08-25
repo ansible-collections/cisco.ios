@@ -22,23 +22,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
-def _tmplt_set_prefix_lists(config_data):
-    if "prefix_list" in config_data:
-        if config_data.get("afi") == "ipv4":
-            config_data["afi"] = "ip"
-        cmd = "{afi} prefix-list {name}".format(**config_data)
-        if config_data.get("prefix_list"):
-            if config_data["prefix_list"].get("description"):
-                cmd += " description {description}".format(**config_data["prefix_list"])
-            else:
-                cmd += " seq {sequence} {action} {prefix}".format(**config_data["prefix_list"])
-                if config_data["prefix_list"].get("ge"):
-                    cmd += " ge {ge}".format(**config_data["prefix_list"])
-                if config_data["prefix_list"].get("le"):
-                    cmd += " le {le}".format(**config_data["prefix_list"])
-        return cmd
-
-
 class Prefix_listsTemplate(NetworkTemplate):
     def __init__(self, lines=None):
         super(Prefix_listsTemplate, self).__init__(lines=lines, tmplt=self)
