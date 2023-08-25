@@ -885,8 +885,6 @@ commands:
   sample: ['ip prefix-list 10 description this is test description', 'ip prefix-list 10 seq 5 deny 1.0.0.0/8 le 15']
 """
 
-import debugpy
-
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.prefix_lists.prefix_lists import (
@@ -895,10 +893,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.pref
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.prefix_lists.prefix_lists import (
     Prefix_lists,
 )
-
-
-debugpy.listen(3000)
-debugpy.wait_for_client()
 
 
 def main():
