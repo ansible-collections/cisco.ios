@@ -48,40 +48,52 @@ class Prefix_listsTemplate(NetworkTemplate):
             "name": "prefix_list",
             "getval": re.compile(
                 r"""
-                ^(?P<afi>ip|ipv6)*
-                \s*prefix-list*
-                \s*(?P<name>\S+)*
-                \s*(?P<description>description\s\S.*)*
-                \s*(?P<sequence>seq\s\S+)*
-                \s*(?P<action>deny|permit)*
-                \s*(?P<prefix>(?:[0-9]{1,3}\.){3}[0-9]{1,3}/\d+|(([0-9a-fA-F]{0,4}:){1,7}[0-9a-fA-F]{0,4}/\d+))*
-                \s*(?P<ge>ge\s\d+)*
-                \s*(?P<le>le\s\d+)*
+                ^(?P<afi>ip|ipv6)\sprefix-list
+                (\s(?P<name>\S+))
+                (\sseq\s(?P<sequence>\d+))?
+                (\s(?P<action>deny|permit))?
+                (\s(?P<prefix>\S+))?
+                (\sge\s(?P<ge>\d+))?
+                (\sle\s(?P<le>\d+))?
                 $""",
                 re.VERBOSE,
             ),
             "setval": _tmplt_set_prefix_lists,
+            "shared": True,
             "result": {
-                "{{ afi + '_' + name }}": {
+                "{{ afi + name }}": {
                     "afi": "{{ 'ipv4' if afi is defined and afi=='ip' else 'ipv6' }}",
-                    "prefix_lists": [
+                    "name": "{{ name }}",
+                    "entries": [
                         {
-                            "name": "{{ name if name is defined }}",
-                            "description": "{{ description.split('description ')[1] if description is defined }}",
-                            "entries": {
-                                # Description at this level is deprecated, should be removed when we plan to remove the
-                                # Description from entries level
-                                "description": "{{ description.split('description ')[1] if description is defined }}",
-                                "sequence": "{{ sequence.split(' ')[1] if sequence is defined }}",
-                                "action": "{{ action if action is defined }}",
-                                "prefix": "{{ prefix if prefix is defined }}",
-                                "ge": "{{ ge.split(' ')[1] if ge is defined }}",
-                                "le": "{{ le.split(' ')[1] if le is defined }}",
-                            },
+                            "sequence": "{{ sequence }}",
+                            "action": "{{ action }}",
+                            "prefix": "{{ prefix }}",
+                            "ge": "{{ ge }}",
+                            "le": "{{ le }}",
                         },
                     ],
                 },
             },
+        },
+        {
+            "name": "description",
+            "getval": re.compile(
+                r"""
+                ^(?P<afi>ip|ipv6)\sprefix-list
+                (\s(?P<name>\S+))
+                (\sdescription\s(?P<description>.+$))?
+                """,
+                re.VERBOSE,
+            ),
+            "setval": "description {{ route_server_context.description }}",
             "shared": True,
+            "result": {
+                "{{ afi + name }}": {
+                    "name": "{{ name }}",
+                    "afi": "{{ 'ipv4' if afi is defined and afi=='ip' else 'ipv6' }}",
+                    "description": "{{ description }}",
+                },
+            },
         },
     ]

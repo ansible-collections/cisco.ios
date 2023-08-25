@@ -63,7 +63,6 @@ class Prefix_lists(ResourceModule):
         want, have and desired state.
         """
         wantd = {entry["afi"]: entry for entry in self.want}
-
         haved = {entry["afi"]: entry for entry in self.have}
 
         # Convert each of config list to dict
@@ -76,158 +75,39 @@ class Prefix_lists(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            temp = None
-            for k, v in iteritems(haved):
-                if k in wantd:
-                    if wantd[k].get("prefix_lists"):
-                        want_afi_name = wantd[k].get("prefix_lists", {})
-                        haved[k]["prefix_lists"] = {
-                            key: val
-                            for key, val in iteritems(v.get("prefix_lists"))
-                            if key in want_afi_name
-                        }
-                elif wantd:
-                    temp = k
-            if temp:
-                haved.pop(k)
+            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             wantd = {}
-            for k, have in iteritems(haved):
-                for key, val in iteritems(have["prefix_lists"]):
-                    if k == "ipv4":
-                        k = "ip"
-                    self.commands.append("no {0} prefix-list {1}".format(k, key))
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
             for k, have in iteritems(haved):
-                want_afi = wantd.get(k, {})
-                for key, val in iteritems(have["prefix_lists"]):
-                    if k == "ipv4":
-                        k = "ip"
-                    if want_afi and key not in want_afi.get("prefix_lists"):
-                        self.commands.append("no {0} prefix-list {1}".format(k, key))
+                if k not in wantd:
+                    self._compare(wants={}, haveing=have)
 
         for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, {}))
-        # alligning cmd with negate cmd 1st followed by config cmd
-        if self.state in ["overridden", "replaced"]:
-            self.commands = [each for each in self.commands if "no" in each] + [
-                each for each in self.commands if "no" not in each
-            ]
+            self._compare(wants=want, haveing=haved.pop(k, {}))
 
-    def _compare(self, want, have):
+    def _compare(self, wants, haveing):
         """Leverages the base class `compare()` method and
         populates the list of commands to be run by comparing
         the `want` and `have` data with the `parsers` defined
-        for the Prefix_lists network resource.
+        for the Lag_interfaces network resource.
         """
-        if want != have and self.state != "deleted":
-            for k, v in iteritems(want["prefix_lists"]):
-                if have.get("prefix_lists") and have["prefix_lists"].get(k):
-                    have_prefix = have["prefix_lists"].pop(k, {})
-                    for key, val in iteritems(v.get("entries")):
-                        if have_prefix.get("entries"):
-                            have_prefix_param = have_prefix["entries"].pop(key, {})
-                        else:
-                            have_prefix_param = None
-                        if have_prefix.get("description"):
-                            self.compare(
-                                parsers=self.parsers,
-                                want={
-                                    "afi": want["afi"],
-                                    "name": k,
-                                    "prefix_list": {"description": v["description"]},
-                                },
-                                have={
-                                    "afi": want["afi"],
-                                    "name": k,
-                                    "prefix_list": {"description": have_prefix.pop("description")},
-                                },
-                            )
-                        if have_prefix_param and val != have_prefix_param:
-                            if key == "description":
-                                # Code snippet should be removed when Description param is removed from
-                                # entries level as this supports deprecated level of Description
-                                self.compare(
-                                    parsers=self.parsers,
-                                    want={"afi": want["afi"], "name": k, "prefix_list": {key: val}},
-                                    have={
-                                        "afi": have["afi"],
-                                        "name": k,
-                                        "prefix_list": {key: have_prefix_param},
-                                    },
-                                )
-                            else:
-                                if self.state == "merged" and have_prefix_param.get(
-                                    "sequence",
-                                ) == val.get("sequence"):
-                                    self._module.fail_json(
-                                        "Cannot update existing sequence {0} of Prefix Lists {1} with state merged.".format(
-                                            val.get("sequence"),
-                                            k,
-                                        )
-                                        + " Please use state replaced or overridden.",
-                                    )
-                                self.compare(
-                                    parsers=self.parsers,
-                                    want=dict(),
-                                    have={
-                                        "afi": have["afi"],
-                                        "name": k,
-                                        "prefix_list": have_prefix_param,
-                                    },
-                                )
-                                self.compare(
-                                    parsers=self.parsers,
-                                    want={"afi": want["afi"], "name": k, "prefix_list": val},
-                                    have={
-                                        "afi": have["afi"],
-                                        "name": k,
-                                        "prefix_list": have_prefix_param,
-                                    },
-                                )
-                        elif val and val != have_prefix_param:
-                            self.compare(
-                                parsers=self.parsers,
-                                want={"afi": want["afi"], "name": k, "prefix_list": val},
-                                have=dict(),
-                            )
-                    if have_prefix and (self.state == "replaced" or self.state == "overridden"):
-                        if have_prefix.get("description"):
-                            # Code snippet should be removed when Description param is removed from
-                            # entries level as this supports deprecated level of Description
-                            self.compare(
-                                parsers=self.parsers,
-                                want=dict(),
-                                have={
-                                    "afi": want["afi"],
-                                    "name": k,
-                                    "prefix_list": {"description": have_prefix["description"]},
-                                },
-                            )
-                        for key, val in iteritems(have_prefix.get("entries")):
-                            self.compare(
-                                parsers=self.parsers,
-                                want=dict(),
-                                have={"afi": have["afi"], "name": k, "prefix_list": val},
-                            )
-                elif v:
-                    if v.get("description"):
-                        self.compare(
-                            parsers=self.parsers,
-                            want={
-                                "afi": want["afi"],
-                                "name": k,
-                                "prefix_list": {"description": v["description"]},
-                            },
-                            have=dict(),
-                        )
-                    for key, val in iteritems(v.get("entries")):
-                        self.compare(
-                            parsers=self.parsers,
-                            want={"afi": want["afi"], "name": k, "prefix_list": val},
-                            have=dict(),
-                        )
+
+        for key, entry in wants.items():
+            begin = len(self.commands)
+            if entry != haveing.pop(key, {}):
+                self.addcmd(entry, "channel", False)
+            if len(self.commands) != begin:
+                self.commands.insert(begin, self._tmplt.render(entry, "member", False))
+
+        # remove remaining items in have for replaced
+        for key, entry in haveing.items():
+            if key:
+                begin = len(self.commands)
+                self.addcmd(entry, "channel", True)
+                if len(self.commands) != begin:
+                    self.commands.insert(begin, self._tmplt.render(entry, "member", False))
 
     def list_to_dict(self, param):
         if param:
