@@ -15,3 +15,17 @@
           - result.changed == false
           - parsed['config']|symmetric_difference(result.parsed) == []
   when: ansible_net_version != "15.6(2)T"
+
+- block:
+    - name: Parse the commands for provided configuration
+      become: true
+      register: result
+      cisco.ios.ios_vlans:
+        running_config: "{{ lookup('file', '_parsed_vlan_config.cfg') }}"
+        configuration: True
+        state: parsed
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed_vlan_config['config']|symmetric_difference(result.parsed) == []

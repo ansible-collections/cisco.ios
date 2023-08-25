@@ -44,6 +44,7 @@ class Vlans(ConfigBase):
         :rtype: A dictionary
         :returns: The current configuration as a dictionary
         """
+
         facts, _warnings = Facts(self._module).get_facts(
             self.gather_subset,
             self.gather_network_resources,
@@ -63,7 +64,12 @@ class Vlans(ConfigBase):
         result = {"changed": False}
         commands = list()
         warnings = list()
-
+        self.configuration = self._module.params["configuration"]
+        if not self.configuration:
+            self.have_now = list()
+            self.vlan_parent = "vlan {0}"
+        else:
+            self.vlan_parent = "vlan configuration {0}"
         if self.state in self.ACTION_STATES:
             existing_vlans_facts = self.get_vlans_facts()
         else:
@@ -173,6 +179,7 @@ class Vlans(ConfigBase):
         commands = []
 
         want_local = want
+        self.have_now = have.copy()
         for each in have:
             count = 0
             for every in want_local:
@@ -260,12 +267,14 @@ class Vlans(ConfigBase):
             commands.insert(0, vlan_id)
         if cmd not in commands:
             commands.append(cmd)
-
+        
     def _set_config(self, want, have):
         # Set the interface config based on the want and have config
         commands = []
-        vlan = "vlan {0}".format(want.get("vlan_id"))
+        config_cmds = []
 
+        vlan = self.vlan_parent.format(want.get("vlan_id"))
+        
         def negate_have_config(want_diff, have_diff, vlan, commands):
             name = dict(have_diff).get("name")
             if name and not dict(want_diff).get("name"):
@@ -303,69 +312,133 @@ class Vlans(ConfigBase):
             if have_diff and (self.state == "replaced" or self.state == "overridden"):
                 negate_have_config(diff, have_diff, vlan, commands)
 
-            name = dict(diff).get("name")
-            state = dict(diff).get("state")
-            shutdown = dict(diff).get("shutdown")
-            mtu = dict(diff).get("mtu")
-            remote_span = dict(diff).get("remote_span")
-            private_vlan = dict(diff).get("private_vlan")
+            if not self.configuration:
+                name = dict(diff).get("name")
+                state = dict(diff).get("state")
+                shutdown = dict(diff).get("shutdown")
+                mtu = dict(diff).get("mtu")
+                remote_span = dict(diff).get("remote_span")
+                private_vlan = dict(diff).get("private_vlan")
 
-            if name:
-                self.add_command_to_config_list(vlan, "name {0}".format(name), commands)
-            if state:
-                self.add_command_to_config_list(vlan, "state {0}".format(state), commands)
-            if mtu:
-                self.add_command_to_config_list(vlan, "mtu {0}".format(mtu), commands)
-            if remote_span:
-                self.add_command_to_config_list(vlan, "remote-span", commands)
+                if name:
+                    self.add_command_to_config_list(vlan, "name {0}".format(name), commands)
+                if state:
+                    self.add_command_to_config_list(vlan, "state {0}".format(state), commands)
+                if mtu:
+                    self.add_command_to_config_list(vlan, "mtu {0}".format(mtu), commands)
+                if remote_span:
+                    self.add_command_to_config_list(vlan, "remote-span", commands)
 
-            if private_vlan:
-                private_vlan_type = dict(private_vlan).get("type")
-                private_vlan_associated = dict(private_vlan).get("associated")
-                if private_vlan_type:
-                    self.add_command_to_config_list(
-                        vlan,
-                        "private-vlan {0}".format(private_vlan_type),
-                        commands,
+                if private_vlan:
+                    private_vlan_type = dict(private_vlan).get("type")
+                    private_vlan_associated = dict(private_vlan).get("associated")
+                    if private_vlan_type:
+                        self.add_command_to_config_list(
+                            vlan,
+                            "private-vlan {0}".format(private_vlan_type),
+                            commands,
+                        )
+                    if private_vlan_associated:
+                        associated_list = ",".join(
+                            str(e) for e in private_vlan_associated
+                        )  # Convert python list to string with elements separated by a comma
+                        self.add_command_to_config_list(
+                            vlan,
+                            "private-vlan association {0}".format(associated_list),
+                            commands,
+                        )
+                if shutdown == "enabled":
+                    self.add_command_to_config_list(vlan, "shutdown", commands)
+                elif shutdown == "disabled":
+                    self.add_command_to_config_list(vlan, "no shutdown", commands)
+            else:
+                member_dict = dict(diff).get("member")
+                if member_dict:
+                    member_dict = dict(member_dict)
+                    member_vni = member_dict.get("vni")
+                    member_evi = member_dict.get("evi")
+                    commands.extend(
+                        self._remove_vlan_vni_evi_mapping(
+                            want
+                        )
                     )
-                if private_vlan_associated:
-                    associated_list = ",".join(
-                        str(e) for e in private_vlan_associated
-                    )  # Convert python list to string with elements separated by a comma
-                    self.add_command_to_config_list(
+                    commands.extend([
                         vlan,
-                        "private-vlan association {0}".format(associated_list),
-                        commands,
-                    )
+                        self._get_member_cmds(member_dict),
+                    ])
 
-            if shutdown == "enabled":
-                self.add_command_to_config_list(vlan, "shutdown", commands)
-            elif shutdown == "disabled":
-                self.add_command_to_config_list(vlan, "no shutdown", commands)
         elif have_diff and (self.state == "replaced" or self.state == "overridden"):
             negate_have_config(diff, have_diff, vlan, commands)
-
         return commands
 
     def _clear_config(self, want, have):
         # Delete the interface config based on the want and have config
         commands = []
-        vlan = "vlan {0}".format(have.get("vlan_id"))
+        vlan = self.vlan_parent.format(have.get("vlan_id"))
 
         if (
             have.get("vlan_id")
-            and "default" not in have.get("name")
+            and "default" not in have.get("name", "")
             and (have.get("vlan_id") != want.get("vlan_id") or self.state == "deleted")
         ):
             self.remove_command_from_config_list(vlan, "vlan", commands)
-        elif "default" not in have.get("name"):
-            if have.get("mtu") != want.get("mtu"):
-                self.remove_command_from_config_list(vlan, "mtu", commands)
-            if have.get("remote_span") != want.get("remote_span") and want.get("remote_span"):
-                self.remove_command_from_config_list(vlan, "remote-span", commands)
-            if have.get("shutdown") != want.get("shutdown") and want.get("shutdown"):
-                self.remove_command_from_config_list(vlan, "shutdown", commands)
-            if have.get("state") != want.get("state") and want.get("state"):
-                self.remove_command_from_config_list(vlan, "state", commands)
-
+            if self.configuration and self.state == "overridden":
+                self.have_now.remove(have)
+        if "default" not in have.get("name", ""):
+            if not self.configuration:
+                if have.get("mtu") != want.get("mtu"):
+                    self.remove_command_from_config_list(vlan, "mtu", commands)
+                if have.get("remote_span") != want.get("remote_span") and want.get("remote_span"):
+                    self.remove_command_from_config_list(vlan, "remote-span", commands)
+                if have.get("shutdown") != want.get("shutdown") and want.get("shutdown"):
+                    self.remove_command_from_config_list(vlan, "shutdown", commands)
+                if have.get("state") != want.get("state") and want.get("state"):
+                    self.remove_command_from_config_list(vlan, "state", commands)
         return commands
+
+    def _remove_vlan_vni_evi_mapping(self, want_dict):
+
+        commands = []
+        have_copy = self.have_now.copy()
+        vlan = want_dict['vlan_id']
+        for vlan_dict in have_copy:
+            if vlan_dict['vlan_id'] == vlan:
+                if 'member' in vlan_dict:
+                    commands.extend([
+                        self.vlan_parent.format(vlan),
+                        self._get_member_cmds(
+                            vlan_dict.get('member', {}),
+                            prefix = 'no'
+                        )
+                    ])
+                    vlan_dict.pop('member')
+            if vlan_dict['vlan_id'] != vlan:
+                delete_member = False
+                if vlan_dict.get('member', {}).get('vni') == want_dict['member'].get('vni'):
+                    delete_member = True
+                if vlan_dict.get('member', {}).get('evi') == want_dict['member'].get('evi'):
+                    delete_member = True
+                if delete_member:
+                    commands.extend([
+                        self.vlan_parent.format(vlan_dict['vlan_id']),
+                        self._get_member_cmds(
+                            vlan_dict.get('member', {}),
+                            prefix = 'no'
+                        )
+                    ])
+                    self.have_now.remove(vlan_dict)
+        return commands
+
+    def _get_member_cmds(self, member_dict, prefix=''):
+        cmd = ''
+        if prefix:
+            prefix = prefix + ' '
+        member_vni = member_dict.get('vni') 
+        member_evi = member_dict.get('evi')
+
+        if member_evi:
+            cmd = prefix + "member evpn-instance {0} vni {1}".format(member_evi, member_vni)
+        elif member_vni:
+            cmd = prefix + "member vni {0}".format(member_vni)
+        
+        return cmd

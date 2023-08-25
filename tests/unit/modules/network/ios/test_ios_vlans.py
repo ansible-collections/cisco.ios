@@ -96,6 +96,26 @@ class TestIosVlansModule(TestIosModule):
         commands = ["vlan 200", "name test_vlan_200", "state active", "remote-span", "no shutdown"]
         self.assertEqual(result["commands"], commands)
 
+    def test_ios_vlans_config_merged(self):
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        vlan_id=101,
+                        member=dict(
+                            evi=101,
+                            vni=10101,
+                        )
+                    ),
+                ],
+                state="merged",
+                configuration=True,
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = ["vlan configuration 101", "member evpn-instance 101 vni 10101"]
+        self.assertEqual(result["commands"], commands)
+
     def test_ios_vlans_merged_idempotent(self):
         set_module_args(
             dict(
@@ -157,6 +177,24 @@ class TestIosVlansModule(TestIosModule):
         )
         self.execute_module(changed=False, commands=[], sort=True)
 
+    def test_ios_vlans_config_merged_idempotent(self):
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        vlan_id=101,
+                        member=dict(
+                            evi=101,
+                            vni=10101,
+                        )
+                    ),
+                ],
+                state="merged",
+                configuration=True,
+            ),
+        )
+        self.execute_module(changed=False, commands=[], sort=True)
+        
     def test_ios_vlans_replaced(self):
         set_module_args(
             dict(
@@ -311,6 +349,47 @@ class TestIosVlansModule(TestIosModule):
 
         self.assertEqual(result["commands"], commands)
 
+    def test_ios_vlans_config_overridden(self):
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        vlan_id=101,
+                        member=dict(
+                            evi=102,
+                            vni=10102,
+                        )
+                    ),
+                    dict(
+                        vlan_id=102,
+                        member=dict(
+                            evi=101,
+                            vni=10101,
+                        )
+                    ),
+                ],
+                state="merged",
+                configuration=True,
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = [
+            "vlan configuration 101",
+            "no member evpn-instance 101 vni 10101",
+            "vlan configuration 102",
+            "no member evpn-instance 102 vni 10102",
+            "vlan configuration 101",
+            "member evpn-instance 102 vni 10102",
+            "vlan configuration 102",
+            "member evpn-instance 101 vni 10101",
+            "no vlan configuration 201",
+            "no vlan configuration 202",
+            "no vlan configuration 901",
+            "no vlan configuration 902"
+        ]
+
+        self.assertEqual(result["commands"], commands)
+
     def test_ios_vlans_overridden_idempotent(self):
         set_module_args(
             dict(
@@ -372,10 +451,41 @@ class TestIosVlansModule(TestIosModule):
         )
         self.execute_module(changed=False, commands=[], sort=True)
 
-    def test_ios_delete_vlans_config(self):
+    def test_ios_vlans_config_overridden(self):
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        vlan_id=101,
+                        member=dict(
+                            evi=102,
+                            vni=10102,
+                        )
+                    ),
+                    dict(
+                        vlan_id=102,
+                        member=dict(
+                            evi=101,
+                            vni=10101,
+                        )
+                    ),
+                ],
+                state="merged",
+                configuration=True,
+            ),
+        )
+        self.execute_module(changed=False, commands=[], sort=True)
+
+    def test_ios_delete_vlans(self):
         set_module_args(dict(config=[dict(vlan_id=150)], state="deleted"))
         result = self.execute_module(changed=True)
         commands = ["no vlan 150"]
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_delete_vlans_config(self):
+        set_module_args(dict(config=[dict(vlan_id=101)], configuration=True, state="deleted"))
+        result = self.execute_module(changed=True)
+        commands = ["no vlan configuration 101"]
         self.assertEqual(result["commands"], commands)
 
     def test_vlans_rendered(self):
@@ -394,6 +504,24 @@ class TestIosVlansModule(TestIosModule):
             ),
         )
         commands = ["name test_vlan_200", "no shutdown", "remote-span", "state active", "vlan 200"]
+        result = self.execute_module(changed=False)
+        self.assertEqual(sorted(result["rendered"]), commands)
+
+    def test_vlans_config_rendered(self):
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        vlan_id=101,
+                    ),
+                ],
+                state="rendered",
+            ),
+        )
+        commands = [
+            "vlan configuration 101",
+            "member evpn-instance 101 vni 10101"
+        ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), commands)
 
@@ -583,6 +711,50 @@ class TestIosVlansModule(TestIosModule):
         self.maxDiff = None
         self.assertEqual(result["parsed"], parsed)
 
+    def test_vlan_config_parsed(self):
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    vlan configuration 101
+                     member evpn-instance 101 vni 10101
+                    vlan configuration 102
+                     member evpn-instance 102 vni 10102
+                    vlan configuration 901
+                     member vni 50901
+                    """,
+                ),
+                state="parsed",
+                configuration=True,
+            ),
+        )
+        parsed = [
+            {
+                "member": {
+                    "evi": 101,
+                    "vni": 10101
+                },
+                "vlan_id": 101
+            },
+            {
+                "member": {
+                    "evi": 102,
+                    "vni": 10102
+                },
+                "vlan_id": 102
+            },
+            {
+                "member": {
+                    "vni": 50901
+                },
+                "vlan_id": 901
+            }
+        ]
+
+        result = self.execute_module(changed=False)
+        self.maxDiff = None
+        self.assertEqual(result["parsed"], parsed)
+
     def test_ios_vlans_gathered(self):
         set_module_args(dict(state="gathered"))
         gathered = [
@@ -643,6 +815,55 @@ class TestIosVlansModule(TestIosModule):
                 "shutdown": "enabled",
                 "mtu": 4472,
             },
+        ]
+        result = self.execute_module(changed=False)
+
+        self.maxDiff = None
+        self.assertEqual(result["gathered"], gathered)
+
+    def test_ios_vlans_config_gathered(self):
+        set_module_args(dict(configuration=True, state="gathered"))
+        gathered = [
+            {
+                "member": {
+                    "evi": 101,
+                    "vni": 10101
+                },
+                "vlan_id": 101
+            },
+            {
+                "member": {
+                    "evi": 102,
+                    "vni": 10102
+                },
+                "vlan_id": 102
+            },
+            {
+                "member": {
+                    "evi": 201,
+                    "vni": 10201
+                },
+                "vlan_id": 201
+            },
+            {
+                "member": {
+                    "evi": 202,
+                    "vni": 10202
+                },
+                "vlan_id": 202
+            },
+            {
+                "member": {
+                    "vni": 50901
+                },
+                "vlan_id": 901
+            },
+            {
+                "member": {
+                    "vni": 50902
+                },
+                "vlan_id": 902
+            }
         ]
         result = self.execute_module(changed=False)
 

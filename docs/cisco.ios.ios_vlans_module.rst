@@ -139,7 +139,57 @@ Parameters
                         <div>Private VLAN type</div>
                 </td>
             </tr>
-
+            <tr>
+                <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>member</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Members of VLAN.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vni</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">int</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>VXLAN VNI.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>evi</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">int</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Ethernet Virtual Private Network (EVPN)</div>
+                </td>
+            </tr>
+            
             <tr>
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
@@ -233,6 +283,21 @@ Parameters
                         <div>This option is used only with state <em>parsed</em>.</div>
                         <div>The value of this option should be the output received from the IOS device by executing the command <b>show vlan</b>.</div>
                         <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into Ansible structured data as per the resource module&#x27;s argspec and the value is then returned in the <em>parsed</em> key within the result.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>configuration</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">bool</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>When set to true, deals with vlan configuration CLIs</div>
                 </td>
             </tr>
             <tr>
@@ -353,6 +418,46 @@ Examples
     # ------------------------------------------------------------------------------
     # 10
 
+    
+    
+    # Using merged (configuration: True)
+    
+    # Before state:
+    # -------------
+    #
+    # Leaf-01#show run nve | sec ^vlan configuration
+    # vlan configuration 101
+    #  member evpn-instance 101 vni 10101
+    # vlan configuration 201
+    #  member evpn-instance 201 vni 10201
+    
+    
+    - name: Merge provided configuration with device configuration
+      cisco.ios.ios_vlans:
+        config:
+          - vlan_id: 102
+            member: 
+              vni: 10102
+              evi: 102
+          - vlan_id: 901
+            member: 
+              vni: 50901
+        configuration: true
+        state: merged
+    
+    # After state:
+    # ------------
+    #
+    # Leaf-01#show run nve | sec ^vlan configuration
+    # vlan configuration 101
+    #  member evpn-instance 101 vni 10101
+    # vlan configuration 102
+    #  member evpn-instance 102 vni 10102
+    # vlan configuration 201
+    #  member evpn-instance 201 vni 10201
+    # vlan configuration 901
+    #  member vni 50901
+
     # Using overridden
 
     # Before state:
@@ -414,6 +519,45 @@ Examples
     # 1003 tr    101003     1500  -      -      -        -    -        0      0
     # 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
     # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
+
+    
+# Using overridden (configuration: True)
+
+    # Before state:
+    # -------------
+    #
+    # Leaf-01#show run nve | sec ^vlan configuration
+    # vlan configuration 101
+    #  member evpn-instance 101 vni 10101
+    # vlan configuration 102
+    #  member evpn-instance 102 vni 10102
+    # vlan configuration 201
+    #  member evpn-instance 201 vni 10201
+    # vlan configuration 901
+    #  member vni 50901
+
+    - name: Override device configuration of all VLANs with provided configuration
+      cisco.ios.ios_vlans:
+        config:
+          - vlan_id: 101
+            member: 
+              vni: 10102
+              evi: 102
+          - vlan_id: 102
+            member: 
+              vni: 10101
+              evi: 101
+        configuration: true
+        state: overridden
+
+    # After state:
+    # ------------
+    #
+    # Leaf-01#show run nve | sec ^vlan configuration
+    # vlan configuration 101
+    #  member evpn-instance 102 vni 10102
+    # vlan configuration 102
+    #  member evpn-instance 101 vni 10101
 
     # Using replaced
 
@@ -575,6 +719,39 @@ Examples
     # 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
     # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
 
+    # Using deleted (configuration: True)
+    
+    # Before state:
+    # -------------
+    #
+    # Leaf-01#show run nve | sec ^vlan configuration
+    # vlan configuration 101
+    #  member evpn-instance 101 vni 10101
+    # vlan configuration 102
+    #  member evpn-instance 102 vni 10102
+    # vlan configuration 201
+    #  member evpn-instance 201 vni 10201
+    # vlan configuration 901
+    #  member vni 50901
+
+    - name: Delete attributes of given VLANs
+      cisco.ios.ios_vlans:
+        config:
+          - vlan_id: 101
+        configuration: True
+        state: deleted
+
+    # After state:
+    # -------------
+    #
+    # Leaf-01#show run nve | sec ^vlan configuration
+    # vlan configuration 102
+    #  member evpn-instance 102 vni 10102
+    # vlan configuration 201
+    #  member evpn-instance 201 vni 10201
+    # vlan configuration 901
+    #  member vni 50901
+
     # Using Deleted without any config passed
     #"(NOTE: This will delete all of configured vlans attributes)"
 
@@ -631,6 +808,40 @@ Examples
     # 1003 tr    101003     1500  -      -      -        -    -        0      0
     # 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
     # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
+
+    # Using Deleted without any config passed (configuration: True)
+    #"(NOTE: This will delete all of configured vlans attributes)"
+
+    # Before state:
+    # -------------
+    #
+    # Leaf-01#show run nve | sec ^vlan configuration
+    # vlan configuration 101
+    #  member evpn-instance 101 vni 10101
+    # vlan configuration 102
+    #  member evpn-instance 102 vni 10102
+    # vlan configuration 201
+    #  member evpn-instance 201 vni 10201
+    # vlan configuration 202
+    #  member evpn-instance 202 vni 10202
+    # vlan configuration 901
+    #  member vni 50901
+
+    - name: Delete attributes of ALL VLANs
+      cisco.ios.ios_vlans:
+        configuration: True
+        state: deleted
+
+    # After state:
+    # -------------
+    #
+    # Leaf-01#show run nve | sec ^vlan configuration
+    # no vlan configuration 101
+    # no vlan configuration 102
+    # no vlan configuration 201
+    # no vlan configuration 202
+    # no vlan configuration 901
+    # no vlan configuration 902
 
     # Using Gathered
 
@@ -761,6 +972,75 @@ Examples
     # ------------------------------------------------------------------------------
     # 10
 
+    # Using Gathered (configuration: True)
+
+    # Before state:
+    # -------------
+    #
+    # Leaf-01#show run nve | sec ^vlan configuration
+    # vlan configuration 101
+    #  member evpn-instance 101 vni 10101
+    # vlan configuration 102
+    #  member evpn-instance 102 vni 10102
+    # vlan configuration 201
+    #  member evpn-instance 201 vni 10201
+    # vlan configuration 202
+    #  member evpn-instance 202 vni 10202
+    # vlan configuration 901
+    #  member vni 50901
+
+    - name: Gather listed vlans with provided configurations
+      cisco.ios.ios_vlans:
+        config:
+        configuration: True
+        state: gathered
+
+    # Module Execution Result:
+    # ------------------------
+    #
+    # gathered = [
+    #     {
+    #         "member": {
+    #             "evi": 101,
+    #             "vni": 10101
+    #         },
+    #         "vlan_id": 101
+    #     },
+    #     {
+    #         "member": {
+    #             "evi": 102,
+    #             "vni": 10102
+    #         },
+    #         "vlan_id": 102
+    #     },
+    #     {
+    #         "member": {
+    #             "evi": 201,
+    #             "vni": 10201
+    #         },
+    #         "vlan_id": 201
+    #     },
+    #     {
+    #         "member": {
+    #             "evi": 202,
+    #             "vni": 10202
+    #         },
+    #         "vlan_id": 202
+    #     },
+    #     {
+    #         "member": {
+    #             "vni": 50901
+    #         },
+    #         "vlan_id": 901
+    #     },
+    #     {
+    #         "member": {
+    #             "vni": 50902
+    #         },
+    #         "vlan_id": 902
+    #     }
+    # ]
+
     # Using Rendered
 
     - name: Render the commands for provided  configuration
@@ -801,6 +1081,31 @@ Examples
     #         "state suspend",
     #         "shutdown"
     #     ]
+
+    # Using Rendered (configuration: True)
+
+    - name: Render the commands for provided  configuration
+      cisco.ios.ios_vlans:
+        config:
+          - vlan_id: 101
+            member: 
+              vni: 10101
+              evi: 101
+          - vlan_id: 102
+            member: 
+              vni: 10102
+              evi: 102
+        state: rendered
+
+    # Module Execution Result:
+    # ------------------------
+    #
+    # "rendered": [
+    #     "vlan configuration 101",
+    #     "member evpn-instance 101 vni 10101",
+    #     "vlan configuration 102",
+    #     "member evpn-instance 102 vni 10102"
+    # ]
 
     # Using Parsed
 
@@ -896,7 +1201,49 @@ Examples
     #         }
     #     ]
 
+    # Using Parsed (configuration: True)
 
+    # File: parsed.cfg
+    # ----------------
+    #
+    # vlan configuration 101
+    #  member evpn-instance 101 vni 10101
+    # vlan configuration 102
+    #  member evpn-instance 102 vni 10102
+    # vlan configuration 901
+    #  member vni 50901
+
+    - name: Parse the commands for provided configuration
+      cisco.ios.ios_vlans:
+        running_config: "{{ lookup('file', './parsed.cfg') }}"
+        configuration: True
+        state: parsed
+
+    # Module Execution Result:
+    # ------------------------
+    #
+    # "parsed": [
+    #     {
+    #         "member": {
+    #             "evi": 101,
+    #             "vni": 10101
+    #         },
+    #         "vlan_id": 101
+    #     },
+    #     {
+    #         "member": {
+    #             "evi": 102,
+    #             "vni": 10102
+    #         },
+    #         "vlan_id": 102
+    #     },
+    #     {
+    #         "member": {
+    #             "vni": 50901
+    #         },
+    #         "vlan_id": 901
+    #     }
+    # ]
 
 Return Values
 -------------

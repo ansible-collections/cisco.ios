@@ -93,6 +93,43 @@ merged:
       shutdown: enabled
       state: active
       vlan_id: 1005
+merged_vlan_config:
+  before:
+    - vlan_id: 101
+      member:
+        evi: 101
+        vni: 10101
+    - vlan_id: 102
+      member:
+        evi: 102
+        vni: 10102
+    - vlan_id: 901
+      member:
+        vni: 50901
+  commands:
+    - vlan configuration 201
+    - member evpn-instance 201 vni 10201
+    - vlan configuration 902
+    - member vni 50902
+  after:
+    - vlan_id: 101
+      member:
+        evi: 101
+        vni: 10101
+    - vlan_id: 102
+      member:
+        evi: 102
+        vni: 10102
+    - vlan_id: 201
+      member:
+        evi: 201
+        vni: 10201
+    - vlan_id: 901
+      member:
+        vni: 50901
+    - vlan_id: 902
+      member:
+        vni: 50902
 replaced:
   before:
     - mtu: 1500
@@ -278,6 +315,39 @@ overridden:
       shutdown: enabled
       state: active
       vlan_id: 1005
+overridden_vlan_config:
+  before:
+    - vlan_id: 101
+      member:
+        evi: 101
+        vni: 10101
+    - vlan_id: 102
+      member:
+        evi: 102
+        vni: 10102
+    - vlan_id: 901
+      member:
+        vni: 50901
+  commands:
+    - vlan configuration 101
+    - no member evpn-instance 101 vni 10101
+    - vlan configuration 102
+    - no member evpn-instance 102 vni 10102
+    - vlan configuration 101
+    - member evpn-instance 102 vni 10102
+    - vlan configuration 102
+    - member evpn-instance 101 vni 10101
+    - no vlan configuration 901
+
+  after:
+    - vlan_id: 101
+      member:
+        evi: 102
+        vni: 10102
+    - vlan_id: 102
+      member:
+        evi: 101
+        vni: 10101
 deleted:
   before:
     - mtu: 1500
@@ -350,6 +420,26 @@ deleted:
       shutdown: enabled
       state: active
       vlan_id: 1005
+deleted_vlan_config:
+  before:
+    - vlan_id: 101
+      member:
+        evi: 101
+        vni: 10101
+    - vlan_id: 102
+      member:
+        evi: 102
+        vni: 10102
+    - vlan_id: 901
+      member:
+        vni: 50901
+  commands:
+    - no vlan configuration 101
+    - no vlan configuration 102
+    - no vlan configuration 901
+
+  after: []
+
 gathered:
   config:
     - mtu: 1500
@@ -392,6 +482,20 @@ gathered:
       shutdown: enabled
       state: active
       vlan_id: 1005
+
+gathered_vlan_config:
+    - vlan_id: 101
+      member:
+        evi: 101
+        vni: 10101
+    - vlan_id: 102
+      member:
+        evi: 102
+        vni: 10102
+    - vlan_id: 901
+      member:
+        vni: 50901
+
 parsed:
   config:
     - mtu: 1500
@@ -435,6 +539,30 @@ parsed:
       state: active
       vlan_id: 1005
 
+parsed_vlan_config:
+    - vlan_id: 101
+      member:
+        evi: 101
+        vni: 10101
+    - vlan_id: 102
+      member:
+        evi: 102
+        vni: 10102
+    - vlan_id: 201
+      member:
+        evi: 201
+        vni: 10201
+    - vlan_id: 202
+      member:
+        evi: 202
+        vni: 10202
+    - vlan_id: 901
+      member:
+        vni: 50901
+    - vlan_id: 902
+      member:
+        vni: 50902
+
 rendered:
   commands:
     - vlan 10
@@ -451,6 +579,15 @@ rendered:
     - name Vlan_30
     - state suspend
     - shutdown
+
+rendered_vlan_config:
+  commands:
+    - vlan configuration 101
+    - member evpn-instance 101 vni 10101
+    - vlan configuration 102
+    - member evpn-instance 102 vni 10102
+    - vlan configuration 901
+    - member vni 50901
 
 rtt:
   commands:

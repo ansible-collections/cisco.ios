@@ -55,9 +55,17 @@ class VlansArgs(object):
                         "associated": {"type": "list", "elements": "int"},
                     },
                 },
+                "member": {
+                    "type": "dict",
+                    "options": {
+                        "vni": {"type": "int", "required": True},
+                        "evi": {"type": "int"},
+                    },
+                },
             },
             "type": "list",
         },
+        "configuration": {"type": "bool"},
         "running_config": {"type": "str"},
         "state": {
             "choices": [
