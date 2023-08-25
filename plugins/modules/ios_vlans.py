@@ -97,7 +97,7 @@ options:
             elements: int
       member:
         description:
-          - Members of VLAN 
+          - Members of VLAN
         type: dict
         suboptions:
           vni:
@@ -239,11 +239,11 @@ EXAMPLES = """
   cisco.ios.ios_vlans:
     config:
       - vlan_id: 102
-        member: 
+        member:
           vni: 10102
           evi: 102
       - vlan_id: 901
-        member: 
+        member:
           vni: 50901
     configuration: true
     state: merged
@@ -343,11 +343,11 @@ EXAMPLES = """
   cisco.ios.ios_vlans:
     config:
       - vlan_id: 101
-        member: 
+        member:
           vni: 10102
           evi: 102
       - vlan_id: 102
-        member: 
+        member:
           vni: 10101
           evi: 101
     configuration: true
@@ -523,7 +523,7 @@ EXAMPLES = """
 # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
 
 # Using deleted (configuration: True)
- 
+
 # Before state:
 # -------------
 #
@@ -762,11 +762,11 @@ EXAMPLES = """
   cisco.ios.ios_vlans:
     config:
       - vlan_id: 101
-        member: 
+        member:
           vni: 10101
           evi: 101
       - vlan_id: 102
-        member: 
+        member:
           vni: 10102
           evi: 102
     state: rendered

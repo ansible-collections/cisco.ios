@@ -484,17 +484,17 @@ gathered:
       vlan_id: 1005
 
 gathered_vlan_config:
-    - vlan_id: 101
-      member:
-        evi: 101
-        vni: 10101
-    - vlan_id: 102
-      member:
-        evi: 102
-        vni: 10102
-    - vlan_id: 901
-      member:
-        vni: 50901
+  - vlan_id: 101
+    member:
+      evi: 101
+      vni: 10101
+  - vlan_id: 102
+    member:
+      evi: 102
+      vni: 10102
+  - vlan_id: 901
+    member:
+      vni: 50901
 
 parsed:
   config:
@@ -540,28 +540,28 @@ parsed:
       vlan_id: 1005
 
 parsed_vlan_config:
-    - vlan_id: 101
-      member:
-        evi: 101
-        vni: 10101
-    - vlan_id: 102
-      member:
-        evi: 102
-        vni: 10102
-    - vlan_id: 201
-      member:
-        evi: 201
-        vni: 10201
-    - vlan_id: 202
-      member:
-        evi: 202
-        vni: 10202
-    - vlan_id: 901
-      member:
-        vni: 50901
-    - vlan_id: 902
-      member:
-        vni: 50902
+  - vlan_id: 101
+    member:
+      evi: 101
+      vni: 10101
+  - vlan_id: 102
+    member:
+      evi: 102
+      vni: 10102
+  - vlan_id: 201
+    member:
+      evi: 201
+      vni: 10201
+  - vlan_id: 202
+    member:
+      evi: 202
+      vni: 10202
+  - vlan_id: 901
+    member:
+      vni: 50901
+  - vlan_id: 902
+    member:
+      vni: 50902
 
 rendered:
   commands:

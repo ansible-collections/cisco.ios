@@ -105,7 +105,7 @@ class TestIosVlansModule(TestIosModule):
                         member=dict(
                             evi=101,
                             vni=10101,
-                        )
+                        ),
                     ),
                 ],
                 state="merged",
@@ -186,7 +186,7 @@ class TestIosVlansModule(TestIosModule):
                         member=dict(
                             evi=101,
                             vni=10101,
-                        )
+                        ),
                     ),
                 ],
                 state="merged",
@@ -194,7 +194,7 @@ class TestIosVlansModule(TestIosModule):
             ),
         )
         self.execute_module(changed=False, commands=[], sort=True)
-        
+
     def test_ios_vlans_replaced(self):
         set_module_args(
             dict(
@@ -358,14 +358,14 @@ class TestIosVlansModule(TestIosModule):
                         member=dict(
                             evi=102,
                             vni=10102,
-                        )
+                        ),
                     ),
                     dict(
                         vlan_id=102,
                         member=dict(
                             evi=101,
                             vni=10101,
-                        )
+                        ),
                     ),
                 ],
                 state="merged",
@@ -385,7 +385,7 @@ class TestIosVlansModule(TestIosModule):
             "no vlan configuration 201",
             "no vlan configuration 202",
             "no vlan configuration 901",
-            "no vlan configuration 902"
+            "no vlan configuration 902",
         ]
 
         self.assertEqual(result["commands"], commands)
@@ -460,14 +460,14 @@ class TestIosVlansModule(TestIosModule):
                         member=dict(
                             evi=102,
                             vni=10102,
-                        )
+                        ),
                     ),
                     dict(
                         vlan_id=102,
                         member=dict(
                             evi=101,
                             vni=10101,
-                        )
+                        ),
                     ),
                 ],
                 state="merged",
@@ -520,7 +520,7 @@ class TestIosVlansModule(TestIosModule):
         )
         commands = [
             "vlan configuration 101",
-            "member evpn-instance 101 vni 10101"
+            "member evpn-instance 101 vni 10101",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), commands)
@@ -732,23 +732,23 @@ class TestIosVlansModule(TestIosModule):
             {
                 "member": {
                     "evi": 101,
-                    "vni": 10101
+                    "vni": 10101,
                 },
-                "vlan_id": 101
+                "vlan_id": 101,
             },
             {
                 "member": {
                     "evi": 102,
-                    "vni": 10102
+                    "vni": 10102,
                 },
-                "vlan_id": 102
+                "vlan_id": 102,
             },
             {
                 "member": {
-                    "vni": 50901
+                    "vni": 50901,
                 },
-                "vlan_id": 901
-            }
+                "vlan_id": 901,
+            },
         ]
 
         result = self.execute_module(changed=False)
@@ -827,43 +827,43 @@ class TestIosVlansModule(TestIosModule):
             {
                 "member": {
                     "evi": 101,
-                    "vni": 10101
+                    "vni": 10101,
                 },
-                "vlan_id": 101
+                "vlan_id": 101,
             },
             {
                 "member": {
                     "evi": 102,
-                    "vni": 10102
+                    "vni": 10102,
                 },
-                "vlan_id": 102
+                "vlan_id": 102,
             },
             {
                 "member": {
                     "evi": 201,
-                    "vni": 10201
+                    "vni": 10201,
                 },
-                "vlan_id": 201
+                "vlan_id": 201,
             },
             {
                 "member": {
                     "evi": 202,
-                    "vni": 10202
+                    "vni": 10202,
                 },
-                "vlan_id": 202
+                "vlan_id": 202,
             },
             {
                 "member": {
-                    "vni": 50901
+                    "vni": 50901,
                 },
-                "vlan_id": 901
+                "vlan_id": 901,
             },
             {
                 "member": {
-                    "vni": 50902
+                    "vni": 50902,
                 },
-                "vlan_id": 902
-            }
+                "vlan_id": 902,
+            },
         ]
         result = self.execute_module(changed=False)
 

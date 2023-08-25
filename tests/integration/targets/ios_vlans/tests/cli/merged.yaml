@@ -70,13 +70,13 @@
       register: result
       cisco.ios.ios_vlans: &id001
         config:
-        - vlan_id: 201
-          member:
-            vni: 10201
-            evi: 201
-        - vlan_id: 902
-          member:
-            vni: 50902
+          - vlan_id: 201
+            member:
+              vni: 10201
+              evi: 201
+          - vlan_id: 902
+            member:
+              vni: 50902
         configuration: True
         state: merged
 

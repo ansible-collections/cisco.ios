@@ -53,6 +53,57 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>member</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Members of VLAN</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>evi</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Ethernet Virtual Private Network (EVPN)</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vni</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>VxLan vni</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>mtu</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -139,57 +190,7 @@ Parameters
                         <div>Private VLAN type</div>
                 </td>
             </tr>
-            <tr>
-                <td class="elbow-placeholder"></td>
-                <td colspan="2">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>member</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Members of VLAN.</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>vni</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">int</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>VXLAN VNI.</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>evi</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">int</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Ethernet Virtual Private Network (EVPN)</div>
-                </td>
-            </tr>
-            
+
             <tr>
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
@@ -271,6 +272,25 @@ Parameters
             <tr>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>configuration</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>When set to true, deals with vlan configuration CLIs</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>running_config</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -283,21 +303,6 @@ Parameters
                         <div>This option is used only with state <em>parsed</em>.</div>
                         <div>The value of this option should be the output received from the IOS device by executing the command <b>show vlan</b>.</div>
                         <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into Ansible structured data as per the resource module&#x27;s argspec and the value is then returned in the <em>parsed</em> key within the result.</div>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>configuration</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">bool</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>When set to true, deals with vlan configuration CLIs</div>
                 </td>
             </tr>
             <tr>
@@ -418,10 +423,8 @@ Examples
     # ------------------------------------------------------------------------------
     # 10
 
-    
-    
     # Using merged (configuration: True)
-    
+
     # Before state:
     # -------------
     #
@@ -430,21 +433,21 @@ Examples
     #  member evpn-instance 101 vni 10101
     # vlan configuration 201
     #  member evpn-instance 201 vni 10201
-    
-    
+
+
     - name: Merge provided configuration with device configuration
       cisco.ios.ios_vlans:
         config:
           - vlan_id: 102
-            member: 
+            member:
               vni: 10102
               evi: 102
           - vlan_id: 901
-            member: 
+            member:
               vni: 50901
         configuration: true
         state: merged
-    
+
     # After state:
     # ------------
     #
@@ -520,8 +523,8 @@ Examples
     # 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
     # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
 
-    
-# Using overridden (configuration: True)
+
+    # Using overridden (configuration: True)
 
     # Before state:
     # -------------
@@ -540,11 +543,11 @@ Examples
       cisco.ios.ios_vlans:
         config:
           - vlan_id: 101
-            member: 
+            member:
               vni: 10102
               evi: 102
           - vlan_id: 102
-            member: 
+            member:
               vni: 10101
               evi: 101
         configuration: true
@@ -720,7 +723,7 @@ Examples
     # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
 
     # Using deleted (configuration: True)
-    
+
     # Before state:
     # -------------
     #
@@ -843,135 +846,6 @@ Examples
     # no vlan configuration 901
     # no vlan configuration 902
 
-    # Using Gathered
-
-    # Before state:
-    # -------------
-    #
-    # vios_l2#show vlan
-    # VLAN Name                             Status    Ports
-    # ---- -------------------------------- --------- -------------------------------
-    # 1    default                          active    Gi0/1, Gi0/2
-    # 10   vlan_10                          active
-    # 20   vlan_20                          act/lshut
-    # 30   vlan_30                          sus/lshut
-    # 1002 fddi-default                     act/unsup
-    # 1003 token-ring-default               act/unsup
-    # 1004 fddinet-default                  act/unsup
-    # 1005 trnet-default                    act/unsup
-    #
-    # VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
-    # ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
-    # 1    enet  100001     1500  -      -      -        -    -        0      0
-    # 10   enet  100010     1500  -      -      -        -    -        0      0
-    # 20   enet  100020     610   -      -      -        -    -        0      0
-    # 30   enet  100030     1500  -      -      -        -    -        0      0
-    # 1002 fddi  101002     1500  -      -      -        -    -        0      0
-    # 1003 tr    101003     1500  -      -      -        -    -        0      0
-    # 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
-    # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
-    #
-    # Remote SPAN VLANs
-    # ------------------------------------------------------------------------------
-    # 10
-
-    - name: Gather listed vlans with provided configurations
-      cisco.ios.ios_vlans:
-        config:
-        state: gathered
-
-    # Module Execution Result:
-    # ------------------------
-    #
-    # "gathered": [
-    #         {
-    #             "mtu": 1500,
-    #             "name": "default",
-    #             "shutdown": "disabled",
-    #             "state": "active",
-    #             "vlan_id": 1
-    #         },
-    #         {
-    #             "mtu": 1500,
-    #             "name": "VLAN0010",
-    #             "shutdown": "disabled",
-    #             "state": "active",
-    #             "vlan_id": 10
-    #         },
-    #         {
-    #             "mtu": 1500,
-    #             "name": "VLAN0020",
-    #             "shutdown": "disabled",
-    #             "state": "active",
-    #             "vlan_id": 20
-    #         },
-    #         {
-    #             "mtu": 1500,
-    #             "name": "VLAN0030",
-    #             "shutdown": "disabled",
-    #             "state": "active",
-    #             "vlan_id": 30
-    #         },
-    #         {
-    #             "mtu": 1500,
-    #             "name": "fddi-default",
-    #             "shutdown": "enabled",
-    #             "state": "active",
-    #             "vlan_id": 1002
-    #         },
-    #         {
-    #             "mtu": 1500,
-    #             "name": "token-ring-default",
-    #             "shutdown": "enabled",
-    #             "state": "active",
-    #             "vlan_id": 1003
-    #         },
-    #         {
-    #             "mtu": 1500,
-    #             "name": "fddinet-default",
-    #             "shutdown": "enabled",
-    #             "state": "active",
-    #             "vlan_id": 1004
-    #         },
-    #         {
-    #             "mtu": 1500,
-    #             "name": "trnet-default",
-    #             "shutdown": "enabled",
-    #             "state": "active",
-    #             "vlan_id": 1005
-    #         }
-    #     ]
-
-    # After state:
-    # ------------
-    #
-    # vios_l2#show vlan
-    # VLAN Name                             Status    Ports
-    # ---- -------------------------------- --------- -------------------------------
-    # 1    default                          active    Gi0/1, Gi0/2
-    # 10   vlan_10                          active
-    # 20   vlan_20                          act/lshut
-    # 30   vlan_30                          sus/lshut
-    # 1002 fddi-default                     act/unsup
-    # 1003 token-ring-default               act/unsup
-    # 1004 fddinet-default                  act/unsup
-    # 1005 trnet-default                    act/unsup
-    #
-    # VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
-    # ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
-    # 1    enet  100001     1500  -      -      -        -    -        0      0
-    # 10   enet  100010     1500  -      -      -        -    -        0      0
-    # 20   enet  100020     610   -      -      -        -    -        0      0
-    # 30   enet  100030     1500  -      -      -        -    -        0      0
-    # 1002 fddi  101002     1500  -      -      -        -    -        0      0
-    # 1003 tr    101003     1500  -      -      -        -    -        0      0
-    # 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
-    # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
-    #
-    # Remote SPAN VLANs
-    # ------------------------------------------------------------------------------
-    # 10
-
     # Using Gathered (configuration: True)
 
     # Before state:
@@ -1088,11 +962,11 @@ Examples
       cisco.ios.ios_vlans:
         config:
           - vlan_id: 101
-            member: 
+            member:
               vni: 10101
               evi: 101
           - vlan_id: 102
-            member: 
+            member:
               vni: 10102
               evi: 102
         state: rendered
@@ -1244,6 +1118,8 @@ Examples
     #         "vlan_id": 901
     #     }
     # ]
+
+
 
 Return Values
 -------------
