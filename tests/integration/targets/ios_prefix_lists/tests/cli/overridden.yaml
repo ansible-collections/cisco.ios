@@ -33,13 +33,13 @@
                 name: test_override
           - afi: ipv6
             prefix_lists:
-              entries:
-                - action: deny
-                  ge: 80
-                  le: 100
-                  prefix: 2001:DB8:0:4::/64
-                  sequence: 10
-              name: test_ipv6
+              - entries:
+                  - action: deny
+                    ge: 80
+                    le: 100
+                    prefix: 2001:DB8:0:4::/64
+                    sequence: 10
+                name: test_ipv6
         state: overridden
 
     - name: Assert that correct set of commands were generated
