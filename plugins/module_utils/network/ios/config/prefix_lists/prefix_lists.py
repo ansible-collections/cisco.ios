@@ -65,9 +65,8 @@ class Prefix_lists(ResourceModule):
         wantd = {entry["afi"]: entry for entry in self.want}
         haved = {entry["afi"]: entry for entry in self.have}
 
-        # Convert each of config list to dict
-        for each in wantd, haved:
-            self.list_to_dict(each)
+        self._prefix_list_transform(wantd)
+        self._prefix_list_transform(haved)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -76,55 +75,140 @@ class Prefix_lists(ResourceModule):
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
             haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
-            wantd = {}
+            for key, hvalue in iteritems(haved):
+                wvalue = wantd.pop(key, {})
+                if wvalue:
+                    wplists = wvalue.get("prefix_lists", {})
+                    hplists = hvalue.get("prefix_lists", {})
+                    hvalue["prefix_lists"] = {
+                        k: v for k, v in iteritems(hplists) if k in wplists or not wplists
+                    }
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
             for k, have in iteritems(haved):
                 if k not in wantd:
-                    self._compare(wants={}, haveing=have)
+                    self._compare(want={}, have=have)
 
         for k, want in iteritems(wantd):
-            self._compare(wants=want, haveing=haved.pop(k, {}))
+            self._compare(want=want, have=haved.pop(k, {}))
 
-    def _compare(self, wants, haveing):
+    def _compare(self, want, have):
         """Leverages the base class `compare()` method and
         populates the list of commands to be run by comparing
         the `want` and `have` data with the `parsers` defined
-        for the Lag_interfaces network resource.
+        for the Prefix_lists network resource.
         """
+        wplists = want.get("prefix_lists", {})
+        hplists = have.get("prefix_lists", {})
+        for wk, wentry in iteritems(wplists):
+            hentry = hplists.pop(wk, {})
+            self.compare(["description"], want=wentry, have=hentry)
+            # compare sequences
+            self._compare_seqs(wentry.pop("entries", {}), hentry.pop("entries", {}))
 
-        for key, entry in wants.items():
-            begin = len(self.commands)
-            if entry != haveing.pop(key, {}):
-                self.addcmd(entry, "channel", False)
-            if len(self.commands) != begin:
-                self.commands.insert(begin, self._tmplt.render(entry, "member", False))
+        if self.state in ["overridden", "deleted"]:
+            # remove remaining prefix lists
+            for h in hplists.values():
+                self.commands.append(
+                    "no {0} prefix-list {1}".format(h["afi"].replace("ipv4", "ip"), h["name"]),
+                )
 
-        # remove remaining items in have for replaced
-        for key, entry in haveing.items():
-            if key:
-                begin = len(self.commands)
-                self.addcmd(entry, "channel", True)
-                if len(self.commands) != begin:
-                    self.commands.insert(begin, self._tmplt.render(entry, "member", False))
-
-    def list_to_dict(self, param):
-        if param:
-            for key, val in iteritems(param):
-                if val.get("prefix_lists"):
-                    temp_prefix_list = {}
-                    for each in val["prefix_lists"]:
-                        temp_entries = dict()
-                        if each.get("entries"):
-                            for every in each["entries"]:
-                                temp_entries.update({str(every["sequence"]): every})
-                        temp_prefix_list.update(
-                            {
-                                each["name"]: {
-                                    "description": each.get("description"),
-                                    "entries": temp_entries,
-                                },
-                            },
+    def _compare_seqs(self, want, have):
+        for wseq, wentry in iteritems(want):
+            hentry = have.pop(wseq, {})
+            if hentry != wentry:
+                if hentry:
+                    if self.state == "merged":
+                        self._module.fail_json(
+                            msg="Cannot update existing sequence {0} of prefix list {1} with state merged."
+                            " Please use state replaced or overridden.".format(
+                                hentry["sequence"],
+                                hentry["name"],
+                            ),
                         )
-                    val["prefix_lists"] = temp_prefix_list
+                    else:
+                        self.addcmd(hentry, "entry", negate=True)
+                self.addcmd(wentry, "entry")
+        # remove remaining entries from have prefix list
+        for hseq in have.values():
+            self.addcmd(hseq, "entry", negate=True)
+
+    def _prefix_list_transform(self, entry):
+        for afi, value in iteritems(entry):
+            if "prefix_lists" in value:
+                for plist in value["prefix_lists"]:
+                    plist.update({"afi": afi})
+                    if "entries" in plist:
+                        for seq in plist["entries"]:
+                            seq.update({"afi": afi, "name": plist["name"]})
+                        plist["entries"] = {x["sequence"]: x for x in plist["entries"]}
+                value["prefix_lists"] = {entry["name"]: entry for entry in value["prefix_lists"]}
+
+    # def generate_commands(self):
+    #     """Generate configuration commands to send based on
+    #     want, have and desired state.
+    #     """
+    #     # Convert each of config list to dict
+    #     wantd = self.list_to_dict(self.want)
+    #     haved = self.list_to_dict(self.have)
+
+    #     # if state is merged, merge want onto have and then compare
+    #     if self.state == "merged":
+    #         wantd = dict_merge(haved, wantd)
+
+    #     # if state is deleted, empty out wantd and set haved to wantd
+    #     if self.state == "deleted":
+    #         haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+    #         wantd = {}
+
+    #     # remove superfluous config for overridden and deleted
+    #     if self.state in ["overridden", "deleted"]:
+    #         for k, have in iteritems(haved):
+    #             if k not in wantd:
+    #                 self._compare(wants={}, haveing=have)
+
+    #     for k, want in iteritems(wantd):
+    #         self._compare(wants=want, haveing=haved.pop(k, {}))
+
+    # def _compare(self, wants, haveing):
+    #     """Leverages the base class `compare()` method and
+    #     populates the list of commands to be run by comparing
+    #     the `want` and `have` data with the `parsers` defined
+    #     for the Lag_interfaces network resource.
+    #     """
+
+    #     for key, entry in wants.items():
+    #         begin = len(self.commands)
+    #         if entry != haveing.pop(key, {}):
+    #             self.addcmd(entry, "channel", False)
+    #         if len(self.commands) != begin:
+    #             self.commands.insert(begin, self._tmplt.render(entry, "member", False))
+
+    #     # remove remaining items in have for replaced
+    #     for key, entry in haveing.items():
+    #         if key:
+    #             begin = len(self.commands)
+    #             self.addcmd(entry, "channel", True)
+    #             if len(self.commands) != begin:
+    #                 self.commands.insert(begin, self._tmplt.render(entry, "member", False))
+
+    # def list_to_dict(self, param):
+    #     prefix_lists = {}
+    #     if param:
+    #         for afi in param:
+    #             for pref in afi.get("prefix_lists"):
+    #                 if not pref.get("entries"):
+    #                     pref["afi"] = afi.get("afi")
+    #                     prefix_lists[pref.get("name") + "_desc_" + afi.get("afi")] = pref
+    #                 else:
+    #                     if pref.get("description"):
+    #                         prefix_lists[pref.get("name") + "_desc_" + afi.get("afi")] = pref
+    #                     entries = pref.pop("entries")
+    #                     for entr in entries:
+    #                         entr["afi"] = afi.get("afi")
+    #                         entr["name"] = pref.get("name")
+    #                         prefix_lists[
+    #                             pref.get("name") + str(entr.get("sequence")) + afi.get("afi")
+    #                         ] = entr
+    #     return prefix_lists

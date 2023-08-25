@@ -45,7 +45,7 @@ class Prefix_listsTemplate(NetworkTemplate):
 
     PARSERS = [
         {
-            "name": "prefix_list",
+            "name": "entry",
             "getval": re.compile(
                 r"""
                 ^(?P<afi>ip|ipv6)\sprefix-list
@@ -58,7 +58,12 @@ class Prefix_listsTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": _tmplt_set_prefix_lists,
+            "setval": "{{ 'ip' if afi == 'ipv4' else afi }} prefix-list {{ name }}"
+            "{{ (' seq ' + sequence|string) if sequence|d('') else '' }}"
+            " {{ action }}"
+            " {{ prefix }}"
+            "{{ (' ge ' + ge|string) if ge|d('') else '' }}"
+            "{{ (' le ' + le|string) if le|d('') else '' }}",
             "shared": True,
             "result": {
                 "{{ afi + name }}": {
@@ -86,7 +91,7 @@ class Prefix_listsTemplate(NetworkTemplate):
                 """,
                 re.VERBOSE,
             ),
-            "setval": "description {{ route_server_context.description }}",
+            "setval": "{{ 'ip' if afi == 'ipv4' else afi }} prefix-list {{ name }} description {{ description }}",
             "shared": True,
             "result": {
                 "{{ afi + name }}": {
