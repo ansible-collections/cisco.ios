@@ -391,7 +391,7 @@ class Vlans(ConfigBase):
             self.remove_command_from_config_list(vlan, "vlan", commands)
             if self.configuration and self.state == "overridden":
                 self.have_now.remove(have)
-        if "default" not in have.get("name", ""):
+        elif "default" not in have.get("name", ""):
             if not self.configuration:
                 if have.get("mtu") != want.get("mtu"):
                     self.remove_command_from_config_list(vlan, "mtu", commands)
