@@ -11,16 +11,17 @@ concurrency:
   cancel-in-progress: true
 
 on:  # yamllint disable-line rule:truthy
-  push:
-    # branches to consider in the event; optional, defaults to all
-    branches:
-      - main
-      - 'releases/**'
-      - 'stable/**'
-    # Prevent a 2nd run after the changelog is updated
-    paths-ignore:
-      - CHANGELOG.rst
-      - changelogs/changelog.yaml
+  # # auto generate changelog and add PR by ansibuddy
+  # push:
+  #   # branches to consider in the event; optional, defaults to all
+  #   branches:
+  #     - main
+  #     - 'releases/**'
+  #     - 'stable/**'
+  #   # Prevent a 2nd run after the changelog is updated
+  #   paths-ignore:
+  #     - CHANGELOG.rst
+  #     - changelogs/changelog.yaml
   workflow_dispatch:
 
 env:

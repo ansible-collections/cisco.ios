@@ -19,7 +19,9 @@ short_description: Resource module to configure prefix lists.
 description:
   - This module configures and manages the attributes of prefix list on Cisco IOS.
 version_added: 2.2.0
-author: Sumit Jaiswal (@justjais)
+author:
+  - Sagar Paul (@KB-perByte)
+  - Sumit Jaiswal (@justjais)
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).

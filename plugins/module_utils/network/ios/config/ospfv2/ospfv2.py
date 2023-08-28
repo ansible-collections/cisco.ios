@@ -33,10 +33,6 @@ class Ospfv2(ResourceModule):
     The ios_ospfv2 class
     """
 
-    gather_subset = ["!all", "!min"]
-
-    gather_network_resources = ["ospfv2"]
-
     def __init__(self, module):
         super(Ospfv2, self).__init__(
             empty_fact_val={},
@@ -46,39 +42,97 @@ class Ospfv2(ResourceModule):
             tmplt=Ospfv2Template(),
         )
 
+        self.parsers = [
+            "adjacency",
+            "address_family",
+            "auto_cost",
+            "bfd",
+            "capability.lls",
+            "capability.opaque",
+            "capability.transit",
+            "capability.vrf_lite",
+            "compatible",
+            "default_information",
+            "default_metric",
+            "discard_route",
+            "distance.admin_distance",
+            "distance.ospf",
+            "distribute_list.prefix",
+            "distribute_list.route_map",
+            "domain_id",
+            "domain_tag",
+            "event_log",
+            "help",
+            "ignore",
+            "interface_id",
+            "ispf",
+            "limit",
+            "local_rib_criteria",
+            "log_adjacency_changes",
+            "max_lsa",
+            "max_metric",
+            "maximum_paths",
+            "mpls.ldp.autoconfig",
+            "mpls.ldp.sync",
+            "mpls.traffic_eng",
+            "neighbor",
+            "nsf.cisco",
+            "nsf.ietf.disable",
+            "nsf.ietf.strict_lsa_checking",
+            "prefix_suppression",
+            "priority",
+            "queue_depth.hello.max_packets",
+            "queue_depth.hello.unlimited",
+            "queue_depth.update.max_packets",
+            "queue_depth.update.unlimited",
+            "router_id",
+            "shutdown",
+            "summary_address.not_advertise",
+            "summary_address.nssa_only",
+            "timers.throttle.lsa",
+            "timers.pacing.flood",
+            "timers.pacing.lsa_group",
+            "timers.pacing.retransmission",
+            "timers.throttle.spf",
+            "traffic_share",
+            "ttl_security",
+        ]
+
     def execute_module(self):
         """Execute the module
 
         :rtype: A dictionary
         :returns: The result from module execution
         """
-        self.gen_config()
-        self.run_commands()
+        if self.state not in ["parsed", "gathered"]:
+            self.generate_commands()
+            self.run_commands()
         return self.result
 
-    def gen_config(self):
+    def generate_commands(self):
         """Select the appropriate function based on the state provided
 
         :rtype: A list
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
+        haved, wantd = dict(), dict()
+
         if self.want:
-            wantd = {}
             for entry in self.want.get("processes", []):
+                entry = self._handle_deprecated(entry)
                 wantd.update({(entry["process_id"], entry.get("vrf")): entry})
-        else:
-            wantd = {}
+
         if self.have:
-            haved = {}
             for entry in self.have.get("processes", []):
+                # entry = self._handle_deprecated(entry)
                 haved.update({(entry["process_id"], entry.get("vrf")): entry})
-        else:
-            haved = {}
 
         # turn all lists of dicts into dicts prior to merge
         for each in wantd, haved:
-            self.list_to_dict(each)
+            if each:
+                self._list_to_dict(each)
+
         # if state is merged, merge want onto have
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
@@ -103,60 +157,31 @@ class Ospfv2(ResourceModule):
             self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
-        parsers = [
-            "adjacency",
-            "address_family",
-            "auto_cost",
-            "bfd",
-            "capability",
-            "compatible",
-            "default_information",
-            "default_metric",
-            "discard_route",
-            "distance.admin_distance",
-            "distance.ospf",
-            "distribute_list.acls",
-            "distribute_list.prefix",
-            "distribute_list.route_map",
-            "domain_id",
-            "domain_tag",
-            "event_log",
-            "help",
-            "ignore",
-            "interface_id",
-            "ispf",
-            "limit",
-            "local_rib_criteria",
-            "log_adjacency_changes",
-            "max_lsa",
-            "max_metric",
-            "maximum_paths",
-            "mpls.ldp",
-            "mpls.traffic_eng",
-            "neighbor",
-            "network",
-            "nsf.cisco",
-            "nsf.ietf",
-            "passive_interface",
-            "prefix_suppression",
-            "priority",
-            "queue_depth.hello",
-            "queue_depth.update",
-            "router_id",
-            "shutdown",
-            "summary_address",
-            "timers.throttle.lsa",
-            "timers.throttle.spf",
-            "traffic_share",
-            "ttl_security",
-        ]
-
         if want != have:
             self.addcmd(want or have, "pid", False)
-            self.compare(parsers, want, have)
+            self.compare(self.parsers, want, have)
             self._areas_compare(want, have)
+            self._complex_compare(want, have)
             if want.get("passive_interfaces"):
                 self._passive_interfaces_compare(want, have)
+
+    def _complex_compare(self, want, have):
+        complex_parsers = ["distribute_list.acls", "network"]
+        for _parser in complex_parsers:
+            if _parser == "distribute_list.acls":
+                wdist = want.get("distribute_list", {}).get("acls", {})
+                hdist = have.get("distribute_list", {}).get("acls", {})
+            else:
+                wdist = want.get(_parser, {})
+                hdist = have.get(_parser, {})
+            for key, wanting in iteritems(wdist):
+                haveing = hdist.pop(key, {})
+                if wanting != haveing:
+                    if haveing and self.state in ["overridden", "replaced"]:
+                        self.addcmd(haveing, _parser, negate=True)
+                    self.addcmd(wanting, _parser, False)
+            for key, haveing in iteritems(hdist):
+                self.addcmd(haveing, _parser, negate=True)
 
     def _areas_compare(self, want, have):
         wareas = want.get("areas", {})
@@ -168,42 +193,40 @@ class Ospfv2(ResourceModule):
 
     def _area_compare(self, want, have):
         parsers = [
-            "area.authentication",
-            "area.capability",
-            "area.default_cost",
-            "area.nssa",
-            "area.nssa.translate",
-            "area.ranges",
-            "area.sham_link",
-            "area.stub",
+            "authentication",
+            "capability",
+            "default_cost",
+            "nssa",
+            "nssa.translate",
+            "sham_link",
+            "stub",
         ]
         self.compare(parsers=parsers, want=want, have=have)
-        self._area_compare_filters(want, have)
+        self._area_complex_compare(want, have, want.get("area_id"))
 
-    def _area_compare_filters(self, wantd, haved):
-        for name, entry in iteritems(wantd):
-            h_item = haved.pop(name, {})
-            if entry != h_item and name == "filter_list":
-                filter_list_entry = {}
-                filter_list_entry["area_id"] = wantd["area_id"]
-                if h_item:
-                    li_diff = [
-                        item for item in entry + h_item if item not in entry or item not in h_item
-                    ]
-                else:
-                    li_diff = entry
-                filter_list_entry["filter_list"] = li_diff
-                self.addcmd(filter_list_entry, "area.filter_list", False)
-        for name, entry in iteritems(haved):
-            if name == "filter_list":
-                self.addcmd(entry, "area.filter_list", True)
+    def _area_complex_compare(self, want, have, area_id):
+        area_complex_parsers = ["filter_list", "ranges"]
+        for _parser in area_complex_parsers:
+            wantr = want.get(_parser, {})
+            haver = have.get(_parser, {})
+            for key, wanting in iteritems(wantr):
+                haveing = have.pop(key, {})
+                haveing["area_id"] = area_id
+                wanting["area_id"] = area_id
+                if wanting != haveing:
+                    if haveing and self.state in ["overridden", "replaced"]:
+                        self.addcmd(haveing, _parser, negate=True)
+                    self.addcmd(wanting, _parser, False)
+            for key, haveing in iteritems(haver):
+                haveing["area_id"] = area_id
+                self.addcmd(haveing, _parser, negate=True)
 
     def _passive_interfaces_compare(self, want, have):
-        parsers = ["passive_interfaces"]
+        parsers = ["passive_interfaces.default", "passive_interfaces.interface"]
         h_pi = None
         for k, v in iteritems(want["passive_interfaces"]):
-            h_pi = have.get("passive_interfaces", [])
-            if h_pi and h_pi.get(k) and h_pi.get(k) != v:
+            h_pi = have.get("passive_interfaces", {})
+            if h_pi.get(k) and h_pi.get(k) != v:
                 for each in v["name"]:
                     h_interface_name = h_pi[k].get("name", [])
                     if each not in h_interface_name:
@@ -243,42 +266,51 @@ class Ospfv2(ResourceModule):
                             }
                             self.compare(
                                 parsers=parsers,
-                                want={"passive_interface": temp},
+                                want={"passive_interfaces": temp},
                                 have=dict(),
                             )
                     elif k == "default":
                         self.compare(
                             parsers=parsers,
                             want=dict(),
-                            have={"passive_interface": {"default": True}},
+                            have={"passive_interfaces": {"default": True}},
                         )
 
-    def list_to_dict(self, param):
-        if param:
-            for _pid, proc in iteritems(param):
-                for area in proc.get("areas", []):
-                    ranges = {}
-                    for entry in area.get("ranges", []):
-                        ranges.update({entry["address"]: entry})
-                    if bool(ranges):
-                        area["ranges"] = ranges
-                    filter_list = {}
-                    for entry in area.get("filter_list", []):
-                        filter_list.update({entry["direction"]: entry})
-                    if bool(filter_list):
-                        area["filter_list"] = filter_list
-                temp = {}
-                for entry in proc.get("areas", []):
-                    temp.update({entry["area_id"]: entry})
-                proc["areas"] = temp
-                if proc.get("distribute_list"):
-                    if "acls" in proc.get("distribute_list"):
-                        temp = {}
-                        for entry in proc["distribute_list"].get("acls", []):
-                            temp.update({entry["name"]: entry})
-                        proc["distribute_list"]["acls"] = temp
-                if proc.get("passive_interfaces") and proc["passive_interfaces"].get("interface"):
-                    temp = {}
-                    for entry in proc["passive_interfaces"]["interface"].get("name", []):
-                        temp.update({entry: entry})
-                    proc["passive_interfaces"]["interface"]["name"] = temp
+    def _list_to_dict(self, param):
+        for _pid, proc in param.items():
+            # convert list to dict for areas
+            for area in proc.get("areas", []):
+                area["ranges"] = {entry["address"]: entry for entry in area.get("ranges", [])}
+                area["filter_list"] = {
+                    entry["direction"]: entry for entry in area.get("filter_list", [])
+                }
+
+            proc["areas"] = {entry["area_id"]: entry for entry in proc.get("areas", [])}
+
+            # list to dict for distribute_list
+            distribute_list = proc.get("distribute_list", {})
+            if "acls" in distribute_list:
+                distribute_list["acls"] = {
+                    entry["name"]: entry for entry in distribute_list["acls"]
+                }
+
+            # list to dict for passive_interfaces
+            passive_interfaces = proc.get("passive_interfaces", {}).get("interface", {})
+            if passive_interfaces.get("name"):
+                passive_interfaces["name"] = {entry: entry for entry in passive_interfaces["name"]}
+
+            # list to dict for network
+            if proc.get("network"):
+                proc["network"] = {entry["address"]: entry for entry in proc["network"]}
+
+    def _handle_deprecated(self, config):
+        if config.get("passive_interface"):
+            passive_interfaces = config.get("passive_interfaces", {})
+            interface = passive_interfaces.get("interface", {})
+            name_list = interface.get("name", [])
+            if not name_list:
+                name_list.append(config["passive_interface"])
+            else:
+                name_list.extend(config["passive_interface"])
+            del config["passive_interface"]
+        return config
