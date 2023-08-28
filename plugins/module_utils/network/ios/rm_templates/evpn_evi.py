@@ -61,7 +61,7 @@ class Evpn_eviTemplate(NetworkTemplate):
             ),
             "setval": "default-gateway advertise disable",
             "result": {"{{ evi }}": {"default_gateway": {"advertise": {"disable": True}}}},
-        },        
+        },
         {
             "name": "encapsulation",
             "getval": re.compile(
