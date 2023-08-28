@@ -31,7 +31,7 @@ class TestIosVxlanVtepModule(TestIosModule):
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vxlan_vtep.vxlan_vtep."
-            "InterfacesFacts.get_vxlan_vtep_data",
+            "Vxlan_vtepFacts.get_vxlan_vtep_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
