@@ -400,14 +400,14 @@ class TestIosVrfModule(TestIosModule):
                         "mdt": {
                             "overlay": {
                                 "use_bgp": {
-                                    "enable": true,
-                                    "spt_only": true,
+                                    "enable": True,
+                                    "spt_only": True,
                                 },
                             },
                             "auto_discovery": {
                                 "vxlan": {
-                                    "enable": true,
-                                    "inter_as": true,
+                                    "enable": True,
+                                    "inter_as": True,
                                 },
                             },
                             "default": {
@@ -424,14 +424,14 @@ class TestIosVrfModule(TestIosModule):
                         "mdt": {
                             "overlay": {
                                 "use_bgp": {
-                                    "enable": true,
-                                    "spt_only": true,
+                                    "enable": True,
+                                    "spt_only": True,
                                 },
                             },
                             "auto_discovery": {
                                 "vxlan": {
-                                    "enable": true,
-                                    "inter_as": true,
+                                    "enable": True,
+                                    "inter_as": True,
                                 },
                             },
                             "default": {
