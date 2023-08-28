@@ -61,8 +61,8 @@ class Evpn_eviTemplate(NetworkTemplate):
             ),
             "setval": "default-gateway advertise disable",
             "result": {"{{ evi }}": {"default_gateway": {"advertise": {"disable": True}}}},
-        },
-                {
+        },        
+        {
             "name": "encapsulation",
             "getval": re.compile(
                 r"""
@@ -72,7 +72,7 @@ class Evpn_eviTemplate(NetworkTemplate):
             ),
             "setval": "encapsulation {{encapsulation}}",
             "result": {"{{ evi }}": {"encapsulation": "{{ encapsulation }}"}},
-                },
+        },
         {
             "name": "ip.local_learning.enable",
             "getval": re.compile(
