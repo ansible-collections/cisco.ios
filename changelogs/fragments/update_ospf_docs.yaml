@@ -1,0 +1,5 @@
+---
+doc_changes:
+  - Update examples for ospfv2
+  - Update examples for ospfv3
+  - Update examples for ospf_interfaces

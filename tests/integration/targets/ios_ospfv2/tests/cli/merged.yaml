@@ -19,8 +19,6 @@
               areas:
                 - area_id: "5"
                   capability: true
-                  authentication:
-                    enable: true
                 - area_id: "10"
                   authentication:
                     message_digest: true
