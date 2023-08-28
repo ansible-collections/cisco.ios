@@ -19,7 +19,7 @@ short_description: Resource module to configure VXLAN VTEP interface.
 description: This module provides declarative management of VXLAN VTEP interface on Cisco IOS network
   devices.
 version_added: 1.0.0
-author: Padmini Priyadarshini Sivaraj
+author: Padmini Priyadarshini Sivaraj (@PadminiSivaraj)
 notes:
   - Tested against Cisco IOSl2 device with Version 15.2 on VIRL.
   - Starting from v2.5.0, this module will fail when run against Cisco IOS devices that do
