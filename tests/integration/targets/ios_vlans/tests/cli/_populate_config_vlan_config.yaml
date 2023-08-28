@@ -1,7 +1,6 @@
 ---
 - name: Setup
-  vars:
-    lines:"""
+  vars: lines:"""
     vlan configuration 101
     member evpn-instance 101 vni 10101
     vlan configuration 102
