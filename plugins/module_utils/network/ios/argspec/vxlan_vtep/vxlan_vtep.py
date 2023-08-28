@@ -59,7 +59,7 @@ class Vxlan_vtepArgs(object):  # pylint: disable=R0903
                                             "type": "dict",
                                             "options": {
                                                 "type": {
-                                                    "type": "str", 
+                                                    "type": "str",
                                                     "required": True,
                                                     "choices": ["ingress", "static"],
                                                 },
