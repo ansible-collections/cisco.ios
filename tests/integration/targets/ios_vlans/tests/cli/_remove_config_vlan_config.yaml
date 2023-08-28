@@ -1,7 +1,6 @@
 ---
 - name: Remove configuration
-  vars:
-    lines: """
+  vars: lines: """
     no vlan configuration 101
     no vlan configuration 102
     no vlan configuration 901
