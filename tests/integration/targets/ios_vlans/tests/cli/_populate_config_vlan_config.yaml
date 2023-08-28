@@ -1,15 +1,14 @@
 ---
 - name: Setup
   vars:
-    lines:
-    "
+    lines:"""
     vlan configuration 101
     member evpn-instance 101 vni 10101
     vlan configuration 102
     member evpn-instance 102 vni 10102
     vlan configuration 901
     member vni 50901
-    "
+    """
   when: ansible_net_version != "15.6(2)T"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"
