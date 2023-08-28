@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_prefix_lists - fix deleted state to remove exisiting prefix lists from configuration.
