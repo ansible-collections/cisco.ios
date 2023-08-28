@@ -371,7 +371,7 @@ class Vlans(ConfigBase):
                         [
                             vlan,
                             self._get_member_cmds(member_dict),
-                        ]
+                        ],
                     )
 
         elif have_diff and (self.state == "replaced" or self.state == "overridden"):
@@ -417,7 +417,7 @@ class Vlans(ConfigBase):
                                 vlan_dict.get("member", {}),
                                 prefix="no",
                             ),
-                        ]
+                        ],
                     )
                     vlan_dict.pop("member")
             if vlan_dict["vlan_id"] != vlan:
@@ -434,7 +434,7 @@ class Vlans(ConfigBase):
                                 vlan_dict.get("member", {}),
                                 prefix="no",
                             ),
-                        ]
+                        ],
                     )
                     self.have_now.remove(vlan_dict)
         return commands
