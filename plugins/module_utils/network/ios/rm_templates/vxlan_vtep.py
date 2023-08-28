@@ -77,8 +77,10 @@ class Vxlan_vtepTemplate(NetworkTemplate):
             ),
             "setval": "member vni {{ vni }}"
             "{{ (' ' + 'ingress-replication') if replication.type == 'ingress' else (' ' + 'mcast-group') }}"
-            "{{ (' ' + replication.mcast_group.ipv4) if replication.mcast_group is defined and replication.mcast_group.ipv4 is defined and replication.type == 'static' else '' }}"
-            "{{ (' ' + replication.mcast_group.ipv6) if replication.mcast_group is defined and replication.mcast_group.ipv6 is defined and replication.type == 'static' else '' }}",
+            "{{ (' ' + replication.mcast_group.ipv4) if replication.mcast_group is defined and "
+            "replication.mcast_group.ipv4 is defined and replication.type == 'static' else '' }}"
+            "{{ (' ' + replication.mcast_group.ipv6) if replication.mcast_group is defined and "
+            "replication.mcast_group.ipv6 is defined and replication.type == 'static' else '' }}",
             "result": {
                 "{{ interface }}": {
                     "member": {
