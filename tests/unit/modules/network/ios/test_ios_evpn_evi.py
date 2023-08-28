@@ -68,20 +68,20 @@ class TestIosEvpnEviModule(TestIosModule):
                         "replication_type": "ingress",
                         "route_distinguisher": "1:1",
                         "default_gateway": {
-                            "advertise": {"enable": false},
+                            "advertise": {"enable": False},
                         },
                         "ip": {
-                            "local_learning": {"enable": true},
+                            "local_learning": {"enable": True},
                         },
                     },
                     {
                         "evi": "202",
                         "replication_type": "static",
                         "default_gateway": {
-                            "advertise": {"enable": true},
+                            "advertise": {"enable": True},
                         },
                         "ip": {
-                            "local_learning": {"disable": true},
+                            "local_learning": {"disable": True},
                         },
                     },
                 ],
@@ -133,20 +133,20 @@ class TestIosEvpnEviModule(TestIosModule):
                         "replication_type": "ingress",
                         "route_distinguisher": "1:1",
                         "default_gateway": {
-                            "advertise": {"enable": false},
+                            "advertise": {"enable": False},
                         },
                         "ip": {
-                            "local_learning": {"enable": true},
+                            "local_learning": {"enable": True},
                         },
                     },
                     {
                         "evi": "202",
                         "replication_type": "static",
                         "default_gateway": {
-                            "advertise": {"enable": true},
+                            "advertise": {"enable": True},
                         },
                         "ip": {
-                            "local_learning": {"disable": true},
+                            "local_learning": {"disable": True},
                         },
                     },
                 ],
@@ -254,7 +254,7 @@ class TestIosEvpnEviModule(TestIosModule):
                         "evi": "101",
                         "replication_type": "ingress",
                         "default_gateway": {
-                            "advertise": {"enable": true},
+                            "advertise": {"enable": True},
                         },
                     },
                     {
@@ -307,7 +307,7 @@ class TestIosEvpnEviModule(TestIosModule):
                         "evi": "101",
                         "replication_type": "ingress",
                         "default_gateway": {
-                            "advertise": {"enable": true},
+                            "advertise": {"enable": True},
                         },
                     },
                     {
@@ -351,14 +351,14 @@ class TestIosEvpnEviModule(TestIosModule):
                         "evi": "101",
                         "replication_type": "ingress",
                         "default_gateway": {
-                            "advertise": {"enable": true},
+                            "advertise": {"enable": True},
                         },
                     },
                     {
                         "evi": "202",
                         "replication_type": "static",
                         "default_gateway": {
-                            "advertise": {"enable": true},
+                            "advertise": {"enable": True},
                         },
                     },
                 ],
@@ -397,14 +397,14 @@ class TestIosEvpnEviModule(TestIosModule):
                         "evi": "101",
                         "replication_type": "ingress",
                         "default_gateway": {
-                            "advertise": {"enable": true},
+                            "advertise": {"enable": True},
                         },
                     },
                     {
                         "evi": "202",
                         "replication_type": "static",
                         "default_gateway": {
-                            "advertise": {"enable": true},
+                            "advertise": {"enable": True},
                         },
                     },
                 ],
