@@ -30,12 +30,13 @@
                   authentication:
                     message_digest: true
             - process_id: 100
-              vrf: ospf_vrf
+              vrf: blue
               domain_id:
                 ip_address:
                   address: 192.0.5.1
               auto_cost:
                 reference_bandwidth: 5
+                set: true
               areas:
                 - area_id: "5"
                   authentication:
@@ -62,11 +63,12 @@
           - "{{ overridden['after']['processes'] | symmetric_difference(result['after']['processes']) | length == 0 }}"
 
     - name: Override provided OSPF v2 configuration (idempotent)
-      register: result
+      register: result_id
       cisco.ios.ios_ospfv2: *id001
+
     - name: Assert that task was idempotent
       ansible.builtin.assert:
         that:
-          - result['changed'] == false
+          - result_id['changed'] == false
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

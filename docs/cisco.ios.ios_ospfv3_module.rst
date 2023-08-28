@@ -6572,92 +6572,6 @@ Examples
 
 .. code-block:: yaml
 
-    # Using deleted
-
-    # Before state:
-    # -------------
-    #
-    # router-ios#sh running-config | section ^router ospfv3
-    # router ospfv3 1
-    #  max-metric router-lsa on-startup 110
-    #  area 10 nssa default-information-originate metric 10
-    #  !
-    #  address-family ipv4 unicast vrf blue
-    #   adjacency stagger 50 50
-    #   area 25 nssa default-information-originate metric 25 nssa-only
-    #  exit-address-family
-    # router ospfv3 200
-    #  max-metric router-lsa on-startup 100
-    #  auto-cost reference-bandwidth 4
-    #  !
-    #  address-family ipv4 unicast
-    #   adjacency stagger 200 200
-    #  exit-address-family
-
-    - name: Delete provided OSPF V3 processes
-      cisco.ios.ios_ospfv3:
-        config:
-          processes:
-            - process_id: 1
-        state: deleted
-
-    # Commands Fired:
-    # ---------------
-    #
-    # "commands": [
-    #        "no router ospfv3 1"
-    #    ]
-
-    # After state:
-    # -------------
-    # router-ios#sh running-config | section ^router ospfv3
-    # router ospfv3 200
-    #  max-metric router-lsa on-startup 100
-    #  auto-cost reference-bandwidth 4
-    #  !
-    #  address-family ipv4 unicast
-    #   adjacency stagger 200 200
-    #  exit-address-family
-
-    # Using deleted without any config passed (NOTE: This will delete all OSPFV3 configuration from device)
-
-    # Before state:
-    # -------------
-    #
-    # router-ios#sh running-config | section ^router ospfv3
-    # router ospfv3 1
-    #  max-metric router-lsa on-startup 110
-    #  area 10 nssa default-information-originate metric 10
-    #  !
-    #  address-family ipv4 unicast vrf blue
-    #   adjacency stagger 50 50
-    #   area 25 nssa default-information-originate metric 25 nssa-only
-    #  exit-address-family
-    # router ospfv3 200
-    #  max-metric router-lsa on-startup 100
-    #  auto-cost reference-bandwidth 4
-    #  !
-    #  address-family ipv4 unicast
-    #   adjacency stagger 200 200
-    #  exit-address-family
-
-    - name: Delete all OSPF processes
-      cisco.ios.ios_ospfv3:
-        state: deleted
-
-    # Commands Fired:
-    # ---------------
-    #
-    # "commands": [
-    #        "no router ospfv3 200",
-    #        "no router ospfv3 1"
-    #    ]
-
-    # After state:
-    # -------------
-    # router-ios#sh running-config | section ^router ospfv3
-    # router-ios#
-
     # Using merged
 
     # Before state:
@@ -6714,24 +6628,64 @@ Examples
                 reference_bandwidth: 4
         state: merged
 
-    # Commands Fired:
-    # ---------------
+    # Task Output:
+    # ------------
+
+    # before: {}
     #
-    #  "commands": [
-    #         "router ospfv3 1",
-    #         "max-metric router-lsa on-startup 110",
-    #         "area 10 nssa default-information-originate metric 10",
-    #         "address-family ipv4 unicast vrf blue",
-    #         "adjacency stagger 50 50",
-    #         "area 25 nssa default-information-originate metric 25 nssa-only",
-    #         "exit-address-family",
-    #         "router ospfv3 200",
-    #         "auto-cost reference-bandwidth 4",
-    #         "max-metric router-lsa on-startup 100",
-    #         "address-family ipv4 unicast",
-    #         "adjacency stagger 200 200",
-    #         "exit-address-family"
-    #     ]
+    # commands:
+    # - router ospfv3 1
+    # - max-metric router-lsa on-startup 110
+    # - area 10 nssa default-information-originate metric 10
+    # - address-family ipv4 unicast vrf blue
+    # - adjacency stagger 50 50
+    # - area 25 nssa default-information-originate metric 25 nssa-only
+    # - exit-address-family
+    # - router ospfv3 200
+    # - auto-cost reference-bandwidth 4
+    # - max-metric router-lsa on-startup 100
+    # - address-family ipv4 unicast
+    # - adjacency stagger 200 200
+    # - exit-address-family
+    #
+    # after:
+    #     processes:
+    #     - address_family:
+    #       - adjacency:
+    #           max_adjacency: 50
+    #           min_adjacency: 50
+    #         afi: ipv4
+    #         areas:
+    #         - area_id: '25'
+    #           nssa:
+    #             default_information_originate:
+    #               metric: 25
+    #               nssa_only: true
+    #         unicast: true
+    #         vrf: blue
+    #       areas:
+    #       - area_id: '10'
+    #         nssa:
+    #           default_information_originate:
+    #             metric: 10
+    #       max_metric:
+    #         on_startup:
+    #           time: 110
+    #         router_lsa: true
+    #       process_id: 1
+    #     - address_family:
+    #       - adjacency:
+    #           max_adjacency: 200
+    #           min_adjacency: 200
+    #         afi: ipv4
+    #         unicast: true
+    #       auto_cost:
+    #         reference_bandwidth: 4
+    #       max_metric:
+    #         on_startup:
+    #           time: 100
+    #         router_lsa: true
+    #       process_id: 200
 
     # After state:
     # -------------
@@ -6752,6 +6706,187 @@ Examples
     #  address-family ipv4 unicast
     #   adjacency stagger 200 200
     #  exit-address-family
+
+    # Using deleted
+
+    # Before state:
+    # -------------
+    #
+    # router-ios#sh running-config | section ^router ospfv3
+    # router ospfv3 1
+    #  max-metric router-lsa on-startup 110
+    #  area 10 nssa default-information-originate metric 10
+    #  !
+    #  address-family ipv4 unicast vrf blue
+    #   adjacency stagger 50 50
+    #   area 25 nssa default-information-originate metric 25 nssa-only
+    #  exit-address-family
+    # router ospfv3 200
+    #  max-metric router-lsa on-startup 100
+    #  auto-cost reference-bandwidth 4
+    #  !
+    #  address-family ipv4 unicast
+    #   adjacency stagger 200 200
+    #  exit-address-family
+
+    - name: Delete provided OSPF V3 processes
+      cisco.ios.ios_ospfv3:
+        config:
+          processes:
+            - process_id: 1
+        state: deleted
+
+    # Task Output:
+    # ------------
+
+    # before:
+    #     processes:
+    #     - address_family:
+    #       - adjacency:
+    #           max_adjacency: 50
+    #           min_adjacency: 50
+    #         afi: ipv4
+    #         areas:
+    #         - area_id: '25'
+    #           nssa:
+    #             default_information_originate:
+    #               metric: 25
+    #               nssa_only: true
+    #         unicast: true
+    #         vrf: blue
+    #       areas:
+    #       - area_id: '10'
+    #         nssa:
+    #           default_information_originate:
+    #             metric: 10
+    #       max_metric:
+    #         on_startup:
+    #           time: 110
+    #         router_lsa: true
+    #       process_id: 1
+    #     - address_family:
+    #       - adjacency:
+    #           max_adjacency: 200
+    #           min_adjacency: 200
+    #         afi: ipv4
+    #         unicast: true
+    #       auto_cost:
+    #         reference_bandwidth: 4
+    #       max_metric:
+    #         on_startup:
+    #           time: 100
+    #         router_lsa: true
+    #       process_id: 200
+    #
+    # commands:
+    # - no router ospfv3 1
+    #
+    # parsed:
+    #     processes:
+    #     - address_family:
+    #       - adjacency:
+    #           max_adjacency: 200
+    #           min_adjacency: 200
+    #         afi: ipv4
+    #         unicast: true
+    #       auto_cost:
+    #         reference_bandwidth: 4
+    #       max_metric:
+    #         on_startup:
+    #           time: 100
+    #         router_lsa: true
+    #       process_id: 200
+    #
+    # After state:
+    # ------------
+    # router-ios#sh running-config | section ^router ospfv3
+    # router ospfv3 200
+    #  max-metric router-lsa on-startup 100
+    #  auto-cost reference-bandwidth 4
+    #  !
+    #  address-family ipv4 unicast
+    #   adjacency stagger 200 200
+    #  exit-address-family
+
+    # Using deleted without any config passed (NOTE: This will delete all OSPFV3 configuration from device)
+
+    # Before state:
+    # -------------
+    #
+    # router-ios#sh running-config | section ^router ospfv3
+    # router ospfv3 1
+    #  max-metric router-lsa on-startup 110
+    #  area 10 nssa default-information-originate metric 10
+    #  !
+    #  address-family ipv4 unicast vrf blue
+    #   adjacency stagger 50 50
+    #   area 25 nssa default-information-originate metric 25 nssa-only
+    #  exit-address-family
+    # router ospfv3 200
+    #  max-metric router-lsa on-startup 100
+    #  auto-cost reference-bandwidth 4
+    #  !
+    #  address-family ipv4 unicast
+    #   adjacency stagger 200 200
+    #  exit-address-family
+
+    - name: Delete all OSPF processes
+      cisco.ios.ios_ospfv3:
+        state: deleted
+
+    # Task Output:
+    # ------------
+
+    # before:
+    #     processes:
+    #     - address_family:
+    #       - adjacency:
+    #           max_adjacency: 50
+    #           min_adjacency: 50
+    #         afi: ipv4
+    #         areas:
+    #         - area_id: '25'
+    #           nssa:
+    #             default_information_originate:
+    #               metric: 25
+    #               nssa_only: true
+    #         unicast: true
+    #         vrf: blue
+    #       areas:
+    #       - area_id: '10'
+    #         nssa:
+    #           default_information_originate:
+    #             metric: 10
+    #       max_metric:
+    #         on_startup:
+    #           time: 110
+    #         router_lsa: true
+    #       process_id: 1
+    #     - address_family:
+    #       - adjacency:
+    #           max_adjacency: 200
+    #           min_adjacency: 200
+    #         afi: ipv4
+    #         unicast: true
+    #       auto_cost:
+    #         reference_bandwidth: 4
+    #       max_metric:
+    #         on_startup:
+    #           time: 100
+    #         router_lsa: true
+    #       process_id: 200
+    #
+    # commands:
+    # - no router ospfv3 200
+    # - no router ospfv3 1
+    #
+    # after: {}
+    #
+    # After state:
+    # ------------
+    # router-ios#sh running-config | section ^router ospfv3
+    # router-ios#
+
 
     # Using overridden
 
@@ -6802,23 +6937,86 @@ Examples
                       metric: 10
         state: overridden
 
-    # Commands Fired:
-    # ---------------
+    # Task Output:
+    # ------------
+
+    # before:
+    #     processes:
+    #     - address_family:
+    #       - adjacency:
+    #           max_adjacency: 50
+    #           min_adjacency: 50
+    #         afi: ipv4
+    #         areas:
+    #         - area_id: '25'
+    #           nssa:
+    #             default_information_originate:
+    #               metric: 25
+    #               nssa_only: true
+    #         unicast: true
+    #         vrf: blue
+    #       areas:
+    #       - area_id: '10'
+    #         nssa:
+    #           default_information_originate:
+    #             metric: 10
+    #       max_metric:
+    #         on_startup:
+    #           time: 110
+    #         router_lsa: true
+    #       process_id: 1
+    #     - address_family:
+    #       - adjacency:
+    #           max_adjacency: 200
+    #           min_adjacency: 200
+    #         afi: ipv4
+    #         unicast: true
+    #       auto_cost:
+    #         reference_bandwidth: 4
+    #       max_metric:
+    #         on_startup:
+    #           time: 100
+    #         router_lsa: true
+    #       process_id: 200
     #
-    # "commands": [
-    #         "no router ospfv3 1",
-    #         "router ospfv3 200",
-    #         "no auto-cost reference-bandwidth 4",
-    #         "max-metric router-lsa on-startup 200",
-    #         "area 10 nssa default-information-originate metric 10",
-    #         "address-family ipv4 unicast",
-    #         "adjacency stagger 50 50",
-    #         "area 200 nssa default-information-originate metric 200 nssa-only",
-    #         "exit-address-family"
-    #     ]
+    # commands:
+    # - no router ospfv3 1
+    # - router ospfv3 200
+    # - no auto-cost reference-bandwidth 4
+    # - max-metric router-lsa on-startup 200
+    # - area 10 nssa default-information-originate metric 10
+    # - address-family ipv4 unicast
+    # - adjacency stagger 50 50
+    # - area 200 nssa default-information-originate metric 200 nssa-only
+    # - exit-address-family
+    #
+    # after:
+    #     processes:
+    #     - address_family:
+    #       - adjacency:
+    #           max_adjacency: 50
+    #           min_adjacency: 50
+    #         afi: ipv4
+    #         areas:
+    #         - area_id: '200'
+    #           nssa:
+    #             default_information_originate:
+    #               metric: 200
+    #               nssa_only: true
+    #         unicast: true
+    #       areas:
+    #       - area_id: '10'
+    #         nssa:
+    #           default_information_originate:
+    #             metric: 10
+    #       max_metric:
+    #         on_startup:
+    #           time: 200
+    #         router_lsa: true
+    #       process_id: 200
 
     # After state:
-    # -------------
+    # ------------
     #
     # router-ios#sh running-config | section ^router ospfv3
     # router ospfv3 200
@@ -6852,7 +7050,7 @@ Examples
     #   adjacency stagger 200 200
     #  exit-address-family
 
-    - name: Replaced provided OSPFV3 configuration
+    - name: Perform replace with provided configurations.
       cisco.ios.ios_ospfv3:
         config:
           processes:
@@ -6880,19 +7078,103 @@ Examples
                       metric: 10
         state: replaced
 
-    # Commands Fired:
-    # ---------------
-    # "commands": [
-    #         "router ospfv3 200",
-    #         "no auto-cost reference-bandwidth 4",
-    #         "max-metric router-lsa on-startup 200",
-    #         "area 10 nssa default-information-originate metric 10",
-    #         "address-family ipv4 unicast",
-    #         "adjacency stagger 50 50",
-    #         "area 200 nssa default-information-originate metric 200 nssa-only",
-    #         "exit-address-family"
-    #     ]
+    # Task Output:
+    # ------------
 
+    # before:
+    #     processes:
+    #     - address_family:
+    #       - adjacency:
+    #           max_adjacency: 50
+    #           min_adjacency: 50
+    #         afi: ipv4
+    #         areas:
+    #         - area_id: '25'
+    #           nssa:
+    #             default_information_originate:
+    #               metric: 25
+    #               nssa_only: true
+    #         unicast: true
+    #         vrf: blue
+    #       areas:
+    #       - area_id: '10'
+    #         nssa:
+    #           default_information_originate:
+    #             metric: 10
+    #       max_metric:
+    #         on_startup:
+    #           time: 110
+    #         router_lsa: true
+    #       process_id: 1
+    #     - address_family:
+    #       - adjacency:
+    #           max_adjacency: 200
+    #           min_adjacency: 200
+    #         afi: ipv4
+    #         unicast: true
+    #       auto_cost:
+    #         reference_bandwidth: 4
+    #       max_metric:
+    #         on_startup:
+    #           time: 100
+    #         router_lsa: true
+    #       process_id: 200
+    #
+    # commands:
+    # - router ospfv3 200
+    # - no auto-cost reference-bandwidth 4
+    # - max-metric router-lsa on-startup 200
+    # - area 10 nssa default-information-originate metric 10
+    # - address-family ipv4 unicast
+    # - adjacency stagger 50 50
+    # - area 200 nssa default-information-originate metric 200 nssa-only
+    # - exit-address-family
+    #
+    # after:
+    #     processes:
+    #     - address_family:
+    #       - adjacency:
+    #           max_adjacency: 50
+    #           min_adjacency: 50
+    #         afi: ipv4
+    #         areas:
+    #         - area_id: '25'
+    #           nssa:
+    #             default_information_originate:
+    #               metric: 25
+    #               nssa_only: true
+    #         unicast: true
+    #         vrf: blue
+    #       areas:
+    #       - area_id: '10'
+    #         nssa:
+    #           default_information_originate:
+    #             metric: 10
+    #       max_metric:
+    #         on_startup:
+    #           time: 110
+    #         router_lsa: true
+    #       process_id: 1
+    #     - address_family:
+    #       - afi: ipv4
+    #         areas:
+    #         - area_id: '200'
+    #           nssa:
+    #             default_information_originate:
+    #               metric: 200
+    #               nssa_only: true
+    #         unicast: true
+    #       areas:
+    #       - area_id: '10'
+    #         nssa:
+    #           default_information_originate:
+    #             metric: 10
+    #       max_metric:
+    #         on_startup:
+    #           time: 200
+    #         router_lsa: true
+    #       process_id: 200
+    #
     # After state:
     # -------------
     # router-ios#sh running-config | section ^router ospfv3
@@ -6940,76 +7222,47 @@ Examples
         config:
         state: gathered
 
-    # Module Execution Result:
-    # ------------------------
+    # Task Output:
+    # ------------
     #
-    # "gathered": {
-    #         "processes": [
-    #             {
-    #                 "address_family": [
-    #                     {
-    #                         "adjacency": {
-    #                             "max_adjacency": 50,
-    #                             "min_adjacency": 50
-    #                         },
-    #                         "afi": "ipv4",
-    #                         "areas": [
-    #                             {
-    #                                 "area_id": "25",
-    #                                 "nssa": {
-    #                                     "default_information_originate": {
-    #                                         "metric": 25,
-    #                                         "nssa_only": true
-    #                                     }
-    #                                 }
-    #                             }
-    #                         ],
-    #                         "unicast": true,
-    #                         "vrf": "blue"
-    #                     }
-    #                 ],
-    #                 "areas": [
-    #                     {
-    #                         "area_id": "10",
-    #                         "nssa": {
-    #                             "default_information_originate": {
-    #                                 "metric": 10
-    #                             }
-    #                         }
-    #                     }
-    #                 ],
-    #                 "max_metric": {
-    #                     "on_startup": {
-    #                         "time": 110
-    #                     },
-    #                     "router_lsa": true
-    #                 },
-    #                 "process_id": 1
-    #             },
-    #             {
-    #                 "address_family": [
-    #                     {
-    #                         "adjacency": {
-    #                             "max_adjacency": 200,
-    #                             "min_adjacency": 200
-    #                         },
-    #                         "afi": "ipv4",
-    #                         "unicast": true
-    #                     }
-    #                 ],
-    #                 "auto_cost": {
-    #                     "reference_bandwidth": 4
-    #                 },
-    #                 "max_metric": {
-    #                     "on_startup": {
-    #                         "time": 100
-    #                     },
-    #                     "router_lsa": true
-    #                 },
-    #                 "process_id": 200
-    #             }
-    #         ]
-    #     }
+    # parsed:
+    #     processes:
+    #     - address_family:
+    #       - adjacency:
+    #           max_adjacency: 50
+    #           min_adjacency: 50
+    #         afi: ipv4
+    #         areas:
+    #         - area_id: '25'
+    #           nssa:
+    #             default_information_originate:
+    #               metric: 25
+    #               nssa_only: true
+    #         unicast: true
+    #         vrf: blue
+    #       areas:
+    #       - area_id: '10'
+    #         nssa:
+    #           default_information_originate:
+    #             metric: 10
+    #       max_metric:
+    #         on_startup:
+    #           time: 110
+    #         router_lsa: true
+    #       process_id: 1
+    #     - address_family:
+    #       - adjacency:
+    #           max_adjacency: 200
+    #           min_adjacency: 200
+    #         afi: ipv4
+    #         unicast: true
+    #       auto_cost:
+    #         reference_bandwidth: 4
+    #       max_metric:
+    #         on_startup:
+    #           time: 100
+    #         router_lsa: true
+    #       process_id: 200
 
     # After state:
     # ------------
@@ -7081,24 +7334,24 @@ Examples
                 reference_bandwidth: 4
         state: rendered
 
-    # Module Execution Result:
-    # ------------------------
-    #
-    # "rendered": [
-    #         "router ospfv3 1",
-    #         "max-metric router-lsa on-startup 110",
-    #         "area 10 nssa default-information-originate metric 10",
-    #         "address-family ipv4 unicast vrf blue",
-    #         "adjacency stagger 50 50",
-    #         "area 25 nssa default-information-originate metric 25 nssa-only",
-    #         "exit-address-family",
-    #         "router ospfv3 200",
-    #         "auto-cost reference-bandwidth 4",
-    #         "max-metric router-lsa on-startup 100",
-    #         "address-family ipv4 unicast",
-    #         "adjacency stagger 200 200",
-    #         "exit-address-family"
-    #     ]
+    # Task Output:
+    # ------------
+
+    # rendered:
+    # - router ospfv3 1
+    # - max-metric router-lsa on-startup 110
+    # - area 10 nssa default-information-originate metric 10
+    # - address-family ipv4 unicast vrf blue
+    # - adjacency stagger 50 50
+    # - area 25 nssa default-information-originate metric 25 nssa-only
+    # - exit-address-family
+    # - router ospfv3 200
+    # - auto-cost reference-bandwidth 4
+    # - max-metric router-lsa on-startup 100
+    # - address-family ipv4 unicast
+    # - adjacency stagger 200 200
+    # - exit-address-family
+
 
     # Using Parsed
 
@@ -7121,59 +7374,52 @@ Examples
     #   adjacency stagger 200 200
     #  exit-address-family
 
-    - name: Parse the provided configuration with the existing running configuration
+    - name: Parse the provided configuration and display structured ospfv3 facts.
       cisco.ios.ios_ospfv3:
         running_config: "{{ lookup('file', 'parsed.cfg') }}"
         state: parsed
 
-    # Module Execution Result:
-    # ------------------------
+    # Task Output:
+    # ------------
     #
-    # "parsed": {
-    #         "processes": [
-    #             {
-    #                 "address_family": [
-    #                     {
-    #                         "adjacency": {
-    #                             "max_adjacency": 50,
-    #                             "min_adjacency": 50
-    #                         },
-    #                         "afi": "ipv4",
-    #                         "areas": [
-    #                             {
-    #                                 "area_id": "25",
-    #                                 "nssa": {
-    #                                     "default_information_originate": {
-    #                                         "metric": 25,
-    #                                         "nssa_only": true
-    #                                     }
-    #                                 }
-    #                             }
-    #                         ],
-    #                         "unicast": true,
-    #                         "vrf": "blue"
-    #                     }
-    #                 ],
-    #                 "areas": [
-    #                     {
-    #                         "area_id": "10",
-    #                         "nssa": {
-    #                             "default_information_originate": {
-    #                                 "metric": 10
-    #                             }
-    #                         }
-    #                     }
-    #                 ],
-    #                 "max_metric": {
-    #                     "on_startup": {
-    #                         "time": 110
-    #                     },
-    #                     "router_lsa": true
-    #                 },
-    #                 "process_id": 1
-    #             }
-    #         ]
-    #     }
+    # parsed:
+    #     processes:
+    #     - address_family:
+    #       - adjacency:
+    #           max_adjacency: 50
+    #           min_adjacency: 50
+    #         afi: ipv4
+    #         areas:
+    #         - area_id: '25'
+    #           nssa:
+    #             default_information_originate:
+    #               metric: 25
+    #               nssa_only: true
+    #         unicast: true
+    #         vrf: blue
+    #       areas:
+    #       - area_id: '10'
+    #         nssa:
+    #           default_information_originate:
+    #             metric: 10
+    #       max_metric:
+    #         on_startup:
+    #           time: 110
+    #         router_lsa: true
+    #       process_id: 1
+    #     - address_family:
+    #       - adjacency:
+    #           max_adjacency: 200
+    #           min_adjacency: 200
+    #         afi: ipv4
+    #         unicast: true
+    #       auto_cost:
+    #         reference_bandwidth: 4
+    #       max_metric:
+    #         on_startup:
+    #           time: 100
+    #         router_lsa: true
+    #       process_id: 200
 
 
 
@@ -7240,6 +7486,57 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
                         <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router ospfv3 1&#x27;, &#x27;address-family ipv4 unicast vrf blue&#x27;, &#x27;adjacency stagger 50 50&#x27;]</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>gathered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>gathered</code></td>
+                <td>
+                            <div>Facts about the network resource gathered from the remote device as structured data.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>parsed</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>parsed</code></td>
+                <td>
+                            <div>The device native config provided in <em>running_config</em> option parsed into structured data as per module argspec.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>rendered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>rendered</code></td>
+                <td>
+                            <div>The provided configuration in the task rendered in device-native format (offline).</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;router ospfv3 1&#x27;, &#x27;max-metric router-lsa on-startup 110&#x27;, &#x27;area 10 nssa default-information-originate metric 10&#x27;]</div>
                 </td>
             </tr>
     </table>
