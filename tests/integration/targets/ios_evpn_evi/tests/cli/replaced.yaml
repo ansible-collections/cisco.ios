@@ -14,7 +14,7 @@
             replication_type: ingress
             default_gateway:
               advertise:
-                enable: True
+                enable: true
           - evi: 202
             replication_type: ingress
         state: replaced
@@ -40,7 +40,7 @@
     - name: Assert that task was idempotent
       ansible.builtin.assert:
         that:
-          - result['changed'] == False
+          - result['changed'] == false
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
