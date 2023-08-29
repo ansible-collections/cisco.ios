@@ -14,7 +14,7 @@ merged:
   after:
     - interface: nve1
       source_interface: loopback1
-      host_reachability_bgp: True
+      host_reachability_bgp: true
       member:
         vni:
           l2vni:
@@ -45,7 +45,7 @@ replaced:
   before:
     - interface: nve1
       source_interface: loopback1
-      host_reachability_bgp: True
+      host_reachability_bgp: true
       member:
         vni:
           l2vni:
@@ -76,7 +76,7 @@ replaced:
   after:
     - interface: nve1
       source_interface: loopback1
-      host_reachability_bgp: True
+      host_reachability_bgp: true
       member:
         vni:
           l2vni:
@@ -98,7 +98,7 @@ overridden:
   before:
     - interface: nve1
       source_interface: loopback1
-      host_reachability_bgp: True
+      host_reachability_bgp: true
       member:
         vni:
           l2vni:
@@ -129,7 +129,7 @@ overridden:
   after:
     - interface: nve1
       source_interface: loopback1
-      host_reachability_bgp: True
+      host_reachability_bgp: true
       member:
         vni:
           l2vni:
@@ -151,7 +151,7 @@ deleted:
   before:
     - interface: nve1
       source_interface: loopback1
-      host_reachability_bgp: True
+      host_reachability_bgp: true
       member:
         vni:
           l2vni:
@@ -196,7 +196,7 @@ gathered:
   config:
     - interface: nve1
       source_interface: loopback1
-      host_reachability_bgp: True
+      host_reachability_bgp: true
       member:
         vni:
           l2vni:
@@ -228,7 +228,7 @@ parsed:
   config:
     - interface: nve1
       source_interface: loopback1
-      host_reachability_bgp: True
+      host_reachability_bgp: true
       member:
         vni:
           l2vni:
