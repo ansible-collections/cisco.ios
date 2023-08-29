@@ -435,7 +435,7 @@ class TestIosVrfModule(TestIosModule):
                                 },
                             },
                             "default": {
-                                "vxlan_mcast_group": "239.1.1.2",
+                                "vxlan_mcast_group": "239.1.1.2"
                             },
                         },
                     },
