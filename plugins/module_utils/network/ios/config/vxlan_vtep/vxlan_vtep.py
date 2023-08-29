@@ -50,7 +50,7 @@ class Vxlan_vtep(ResourceModule):
         )
         self.parsers = [
             "source_interface",
-            "host_reachability_protocol",
+            "host_reachability_bgp",
         ]
 
     def execute_module(self):

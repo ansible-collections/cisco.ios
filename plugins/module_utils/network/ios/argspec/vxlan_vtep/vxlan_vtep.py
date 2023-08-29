@@ -39,10 +39,9 @@ class Vxlan_vtepArgs(object):  # pylint: disable=R0903
             "options": {
                 "interface": {"type": "str", "required": True},
                 "source_interface": {"type": "str"},
-                "host_reachability_protocol": {
-                    "type": "str",
-                    "choices": ["bgp"],
-                    "default": "bgp",
+                "host_reachability_bgp": {
+                    "type": "bool",
+                    "default": True,
                 },
                 "member": {
                     "type": "dict",

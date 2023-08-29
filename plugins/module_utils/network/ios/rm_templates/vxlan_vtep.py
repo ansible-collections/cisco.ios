@@ -50,17 +50,15 @@ class Vxlan_vtepTemplate(NetworkTemplate):
             "result": {"{{ interface }}": {"source_interface": "{{ source_interface }}"}},
         },
         {
-            "name": "host_reachability_protocol",
+            "name": "host_reachability_bgp",
             "getval": re.compile(
-                r"""\s+host-reachability\sprotocol
-                    \s(?P<host_reachability_protocol>\S+)
-                    $""",
+                r"""\s+host-reachability\sprotocol\sbgp$""",
                 re.VERBOSE,
             ),
-            "setval": "host-reachability protocol {{ host_reachability_protocol }}",
+            "setval": "host-reachability protocol bgp",
             "result": {
                 "{{ interface }}": {
-                    "host_reachability_protocol": "{{ host_reachability_protocol }}",
+                    "host_reachability_bgp": True,
                 },
             },
         },

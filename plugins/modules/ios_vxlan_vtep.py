@@ -39,13 +39,11 @@ options:
         description:
         - Source interface for the VXLAN VTEP interface
         type: str
-      host_reachability_protocol:
+      host_reachability_bgp:
         description:
         - Host reachability using EVPN protocol
-        type: str
-        choices:
-        - bgp
-        default: bgp
+        type: bool
+        default: True
       member:
         description:
         - Configure VNI member

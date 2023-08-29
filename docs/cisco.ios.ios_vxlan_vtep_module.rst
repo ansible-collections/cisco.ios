@@ -53,15 +53,15 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>host_reachability_protocol</b>
+                    <b>host_reachability_bgp</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">string</span>
+                        <span style="color: purple">bool</span>
                     </div>
                 </td>
                 <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li><div style="color: blue"><b>bgp</b>&nbsp;&larr;</div></li>
+                        <ul style="margin: 0; padding: 0"><b>Default:</b>
+                                    <li><div style="color: blue"><b>True</b>&nbsp;&larr;</div></li>
                         </ul>
                 </td>
                 <td>
