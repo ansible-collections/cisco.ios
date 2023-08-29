@@ -58,30 +58,32 @@ class TestIosVxlanVtepModule(TestIosModule):
         set_module_args(
             dict(
                 config=list(
-                    interface="nve1",
-                    source_interface="loopback2",
-                    member=dict(
-                        vni=dict(
-                            l2vni=list(
-                                dict(
-                                    vni="10101",
-                                    replication=dict(type="ingress"),
-                                ),
-                                dict(
-                                    vni="10201",
-                                    replication=dict(
-                                        type="static",
-                                        mcast_group=dict(
-                                            ipv4="225.0.0.101",
-                                            ipv6="FF0E:225::101",
+                    dict(
+                        interface="nve1",
+                        source_interface="loopback2",
+                        member=dict(
+                            vni=dict(
+                                l2vni=list(
+                                    dict(
+                                        vni="10101",
+                                        replication=dict(type="ingress"),
+                                    ),
+                                    dict(
+                                        vni="10201",
+                                        replication=dict(
+                                            type="static",
+                                            mcast_group=dict(
+                                                ipv4="225.0.0.101",
+                                                ipv6="FF0E:225::101",
+                                            ),
                                         ),
                                     ),
                                 ),
-                            ),
-                            l3vni=list(
-                                dict(
-                                    vni="50901",
-                                    vrf="blue",
+                                l3vni=list(
+                                    dict(
+                                        vni="50901",
+                                        vrf="blue",
+                                    ),
                                 ),
                             ),
                         ),
@@ -121,30 +123,32 @@ class TestIosVxlanVtepModule(TestIosModule):
         set_module_args(
             dict(
                 config=list(
-                    interface="nve1",
-                    source_interface="loopback2",
-                    member=dict(
-                        vni=dict(
-                            l2vni=list(
-                                dict(
-                                    vni="10101",
-                                    replication=dict(type="ingress"),
-                                ),
-                                dict(
-                                    vni="10201",
-                                    replication=dict(
-                                        type="static",
-                                        mcast_group=dict(
-                                            ipv4="225.0.0.101",
-                                            ipv6="FF0E:225::101",
+                    dict(
+                        interface="nve1",
+                        source_interface="loopback2",
+                        member=dict(
+                            vni=dict(
+                                l2vni=list(
+                                    dict(
+                                        vni="10101",
+                                        replication=dict(type="ingress"),
+                                    ),
+                                    dict(
+                                        vni="10201",
+                                        replication=dict(
+                                            type="static",
+                                            mcast_group=dict(
+                                                ipv4="225.0.0.101",
+                                                ipv6="FF0E:225::101",
+                                            ),
                                         ),
                                     ),
                                 ),
-                            ),
-                            l3vni=list(
-                                dict(
-                                    vni="50901",
-                                    vrf="blue",
+                                l3vni=list(
+                                    dict(
+                                        vni="50901",
+                                        vrf="blue",
+                                    ),
                                 ),
                             ),
                         ),
@@ -172,26 +176,28 @@ class TestIosVxlanVtepModule(TestIosModule):
         set_module_args(
             dict(
                 config=list(
-                    interface="nve1",
-                    source_interface="loopback2",
-                    member=dict(
-                        vni=dict(
-                            l2vni=list(
-                                dict(
-                                    vni="10101",
-                                    replication=dict(
-                                        type="static",
-                                        mcast_group=dict(
-                                            ipv6="FF0E:225::101",
+                    dict(
+                        interface="nve1",
+                        source_interface="loopback2",
+                        member=dict(
+                            vni=dict(
+                                l2vni=list(
+                                    dict(
+                                        vni="10101",
+                                        replication=dict(
+                                            type="static",
+                                            mcast_group=dict(
+                                                ipv6="FF0E:225::101",
+                                            ),
                                         ),
                                     ),
-                                ),
-                                dict(
-                                    vni="10201",
-                                    replication=dict(
-                                        type="static",
-                                        mcast_group=dict(
-                                            ipv6="FF0E:225::102",
+                                    dict(
+                                        vni="10201",
+                                        replication=dict(
+                                            type="static",
+                                            mcast_group=dict(
+                                                ipv6="FF0E:225::102",
+                                            ),
                                         ),
                                     ),
                                 ),
@@ -229,26 +235,28 @@ class TestIosVxlanVtepModule(TestIosModule):
         set_module_args(
             dict(
                 config=list(
-                    interface="nve1",
-                    source_interface="loopback2",
-                    member=dict(
-                        vni=dict(
-                            l2vni=list(
-                                dict(
-                                    vni="10101",
-                                    replication=dict(
-                                        type="static",
-                                        mcast_group=dict(
-                                            ipv6="FF0E:225::101",
+                    dict(
+                        interface="nve1",
+                        source_interface="loopback2",
+                        member=dict(
+                            vni=dict(
+                                l2vni=list(
+                                    dict(
+                                        vni="10101",
+                                        replication=dict(
+                                            type="static",
+                                            mcast_group=dict(
+                                                ipv6="FF0E:225::101",
+                                            ),
                                         ),
                                     ),
-                                ),
-                                dict(
-                                    vni="10201",
-                                    replication=dict(
-                                        type="static",
-                                        mcast_group=dict(
-                                            ipv6="FF0E:225::102",
+                                    dict(
+                                        vni="10201",
+                                        replication=dict(
+                                            type="static",
+                                            mcast_group=dict(
+                                                ipv6="FF0E:225::102",
+                                            ),
                                         ),
                                     ),
                                 ),
@@ -278,26 +286,28 @@ class TestIosVxlanVtepModule(TestIosModule):
         set_module_args(
             dict(
                 config=list(
-                    interface="nve1",
-                    source_interface="loopback2",
-                    member=dict(
-                        vni=dict(
-                            l2vni=list(
-                                dict(
-                                    vni="10101",
-                                    replication=dict(
-                                        type="static",
-                                        mcast_group=dict(
-                                            ipv6="FF0E:225::101",
+                    dict(
+                        interface="nve1",
+                        source_interface="loopback2",
+                        member=dict(
+                            vni=dict(
+                                l2vni=list(
+                                    dict(
+                                        vni="10101",
+                                        replication=dict(
+                                            type="static",
+                                            mcast_group=dict(
+                                                ipv6="FF0E:225::101",
+                                            ),
                                         ),
                                     ),
-                                ),
-                                dict(
-                                    vni="10201",
-                                    replication=dict(
-                                        type="static",
-                                        mcast_group=dict(
-                                            ipv6="FF0E:225::102",
+                                    dict(
+                                        vni="10201",
+                                        replication=dict(
+                                            type="static",
+                                            mcast_group=dict(
+                                                ipv6="FF0E:225::102",
+                                            ),
                                         ),
                                     ),
                                 ),
@@ -357,15 +367,17 @@ class TestIosVxlanVtepModule(TestIosModule):
         set_module_args(
             dict(
                 config=list(
-                    interface="nve1",
-                    member=dict(
-                        vni=dict(
-                            l2vni=list(
-                                dict(
-                                    vni="10101",
-                                ),
-                                dict(
-                                    vni="10201",
+                    dict(
+                        interface="nve1",
+                        member=dict(
+                            vni=dict(
+                                l2vni=list(
+                                    dict(
+                                        vni="10101",
+                                    ),
+                                    dict(
+                                        vni="10201",
+                                    ),
                                 ),
                             ),
                         ),
