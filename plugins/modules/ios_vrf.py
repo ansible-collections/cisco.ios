@@ -464,7 +464,7 @@ def map_obj_to_commands(updates, module):
 
                 for key_in, value_in in want_mdt["mdt"].items():
                     have_mdt = next(
-                        (i for i in have["address_family"] if i["afi"] == afi),
+                        (i for i in have.get("address_family", {}) if i["afi"] == afi),
                         None,
                     )
 
