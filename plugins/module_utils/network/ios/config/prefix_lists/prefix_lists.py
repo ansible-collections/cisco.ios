@@ -19,7 +19,7 @@ created.
 """
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
@@ -63,12 +63,10 @@ class Prefix_lists(ResourceModule):
         want, have and desired state.
         """
         wantd = {entry["afi"]: entry for entry in self.want}
-
         haved = {entry["afi"]: entry for entry in self.have}
 
-        # Convert each of config list to dict
-        for each in wantd, haved:
-            self.list_to_dict(each)
+        self._prefix_list_transform(wantd)
+        self._prefix_list_transform(haved)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -76,48 +74,24 @@ class Prefix_lists(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            temp = None
-            for k, v in iteritems(haved):
-                if k in wantd:
-                    if wantd[k].get("prefix_lists"):
-                        want_afi_name = wantd[k].get("prefix_lists", {})
-                        haved[k]["prefix_lists"] = {
-                            key: val
-                            for key, val in iteritems(v.get("prefix_lists"))
-                            if key in want_afi_name
-                        }
-                elif wantd:
-                    temp = k
-            if temp:
-                haved.pop(k)
-            wantd = {}
-            for k, have in iteritems(haved):
-                for key, val in iteritems(have["prefix_lists"]):
-                    if k == "ipv4":
-                        k = "ip"
-                    self.commands.append(
-                        "no {0} prefix-list {1}".format(k, key),
-                    )
+            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            for key, hvalue in iteritems(haved):
+                wvalue = wantd.pop(key, {})
+                if wvalue:
+                    wplists = wvalue.get("prefix_lists", {})
+                    hplists = hvalue.get("prefix_lists", {})
+                    hvalue["prefix_lists"] = {
+                        k: v for k, v in iteritems(hplists) if k in wplists or not wplists
+                    }
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
             for k, have in iteritems(haved):
-                want_afi = wantd.get(k, {})
-                for key, val in iteritems(have["prefix_lists"]):
-                    if k == "ipv4":
-                        k = "ip"
-                    if want_afi and key not in want_afi.get("prefix_lists"):
-                        self.commands.append(
-                            "no {0} prefix-list {1}".format(k, key),
-                        )
+                if k not in wantd:
+                    self._compare(want={}, have=have)
 
         for k, want in iteritems(wantd):
             self._compare(want=want, have=haved.pop(k, {}))
-        # alligning cmd with negate cmd 1st followed by config cmd
-        if self.state in ["overridden", "replaced"]:
-            self.commands = [each for each in self.commands if "no" in each] + [
-                each for each in self.commands if "no" not in each
-            ]
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -125,167 +99,48 @@ class Prefix_lists(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Prefix_lists network resource.
         """
-        if want != have and self.state != "deleted":
-            for k, v in iteritems(want["prefix_lists"]):
-                if have.get("prefix_lists") and have["prefix_lists"].get(k):
-                    have_prefix = have["prefix_lists"].pop(k, {})
-                    for key, val in iteritems(v.get("entries")):
-                        if have_prefix.get("entries"):
-                            have_prefix_param = have_prefix["entries"].pop(
-                                key,
-                                {},
-                            )
-                        else:
-                            have_prefix_param = None
-                        if have_prefix.get("description"):
-                            self.compare(
-                                parsers=self.parsers,
-                                want={
-                                    "afi": want["afi"],
-                                    "name": k,
-                                    "prefix_list": {
-                                        "description": v["description"],
-                                    },
-                                },
-                                have={
-                                    "afi": want["afi"],
-                                    "name": k,
-                                    "prefix_list": {
-                                        "description": have_prefix.pop(
-                                            "description",
-                                        ),
-                                    },
-                                },
-                            )
-                        if have_prefix_param and val != have_prefix_param:
-                            if key == "description":
-                                # Code snippet should be removed when Description param is removed from
-                                # entries level as this supports deprecated level of Description
-                                self.compare(
-                                    parsers=self.parsers,
-                                    want={
-                                        "afi": want["afi"],
-                                        "name": k,
-                                        "prefix_list": {key: val},
-                                    },
-                                    have={
-                                        "afi": have["afi"],
-                                        "name": k,
-                                        "prefix_list": {
-                                            key: have_prefix_param,
-                                        },
-                                    },
-                                )
-                            else:
-                                if self.state == "merged" and have_prefix_param.get(
-                                    "sequence",
-                                ) == val.get("sequence"):
-                                    self._module.fail_json(
-                                        "Cannot update existing sequence {0} of Prefix Lists {1} with state merged.".format(
-                                            val.get("sequence"),
-                                            k,
-                                        )
-                                        + " Please use state replaced or overridden.",
-                                    )
-                                self.compare(
-                                    parsers=self.parsers,
-                                    want=dict(),
-                                    have={
-                                        "afi": have["afi"],
-                                        "name": k,
-                                        "prefix_list": have_prefix_param,
-                                    },
-                                )
-                                self.compare(
-                                    parsers=self.parsers,
-                                    want={
-                                        "afi": want["afi"],
-                                        "name": k,
-                                        "prefix_list": val,
-                                    },
-                                    have={
-                                        "afi": have["afi"],
-                                        "name": k,
-                                        "prefix_list": have_prefix_param,
-                                    },
-                                )
-                        elif val and val != have_prefix_param:
-                            self.compare(
-                                parsers=self.parsers,
-                                want={
-                                    "afi": want["afi"],
-                                    "name": k,
-                                    "prefix_list": val,
-                                },
-                                have=dict(),
-                            )
-                    if have_prefix and (self.state == "replaced" or self.state == "overridden"):
-                        if have_prefix.get("description"):
-                            # Code snippet should be removed when Description param is removed from
-                            # entries level as this supports deprecated level of Description
-                            self.compare(
-                                parsers=self.parsers,
-                                want=dict(),
-                                have={
-                                    "afi": want["afi"],
-                                    "name": k,
-                                    "prefix_list": {
-                                        "description": have_prefix["description"],
-                                    },
-                                },
-                            )
-                        for key, val in iteritems(have_prefix.get("entries")):
-                            self.compare(
-                                parsers=self.parsers,
-                                want=dict(),
-                                have={
-                                    "afi": have["afi"],
-                                    "name": k,
-                                    "prefix_list": val,
-                                },
-                            )
-                elif v:
-                    if v.get("description"):
-                        self.compare(
-                            parsers=self.parsers,
-                            want={
-                                "afi": want["afi"],
-                                "name": k,
-                                "prefix_list": {
-                                    "description": v["description"],
-                                },
-                            },
-                            have=dict(),
-                        )
-                    for key, val in iteritems(v.get("entries")):
-                        self.compare(
-                            parsers=self.parsers,
-                            want={
-                                "afi": want["afi"],
-                                "name": k,
-                                "prefix_list": val,
-                            },
-                            have=dict(),
-                        )
+        wplists = want.get("prefix_lists", {})
+        hplists = have.get("prefix_lists", {})
+        for wk, wentry in iteritems(wplists):
+            hentry = hplists.pop(wk, {})
+            self.compare(["description"], want=wentry, have=hentry)
+            # compare sequences
+            self._compare_seqs(wentry.pop("entries", {}), hentry.pop("entries", {}))
 
-    def list_to_dict(self, param):
-        if param:
-            for key, val in iteritems(param):
-                if val.get("prefix_lists"):
-                    temp_prefix_list = {}
-                    for each in val["prefix_lists"]:
-                        temp_entries = dict()
-                        if each.get("entries"):
-                            for every in each["entries"]:
-                                temp_entries.update(
-                                    {str(every["sequence"]): every},
-                                )
-                        temp_prefix_list.update(
-                            {
-                                each["name"]: {
-                                    "description": each.get("description"),
-                                    "entries": temp_entries,
-                                },
-                            },
+        if self.state in ["overridden", "deleted"]:
+            # remove remaining prefix lists
+            for h in hplists.values():
+                self.commands.append(
+                    "no {0} prefix-list {1}".format(h["afi"].replace("ipv4", "ip"), h["name"]),
+                )
+
+    def _compare_seqs(self, want, have):
+        for wseq, wentry in iteritems(want):
+            hentry = have.pop(wseq, {})
+            if hentry != wentry:
+                if hentry:
+                    if self.state == "merged":
+                        self._module.fail_json(
+                            msg="Cannot update existing sequence {0} of prefix list {1} with state merged."
+                            " Please use state replaced or overridden.".format(
+                                hentry["sequence"],
+                                hentry["name"],
+                            ),
                         )
-                    val["prefix_lists"] = temp_prefix_list
+                    else:
+                        self.addcmd(hentry, "entry", negate=True)
+                self.addcmd(wentry, "entry")
+        # remove remaining entries from have prefix list
+        for hseq in have.values():
+            self.addcmd(hseq, "entry", negate=True)
+
+    def _prefix_list_transform(self, entry):
+        for afi, value in iteritems(entry):
+            if "prefix_lists" in value:
+                for plist in value["prefix_lists"]:
+                    plist.update({"afi": afi})
+                    if "entries" in plist:
+                        for seq in plist["entries"]:
+                            seq.update({"afi": afi, "name": plist["name"]})
+                        plist["entries"] = {x["sequence"]: x for x in plist["entries"]}
+                value["prefix_lists"] = {entry["name"]: entry for entry in value["prefix_lists"]}

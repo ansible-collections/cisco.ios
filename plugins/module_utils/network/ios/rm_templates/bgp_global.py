@@ -17,7 +17,7 @@ the given network resource.
 
 import re
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
 
@@ -1493,7 +1493,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} ha-mode"
-            "{{ (' graceful-restart') if ha_mode.set is defined else '' }}"
+            "{{ (' graceful-restart') if ha_mode.set|d(False) is defined else '' }}"
             "{{ (' disable') if ha_mode.disable is defined else '' }}",
             "result": {
                 "neighbors": {
@@ -1671,7 +1671,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }}"
-            "{{ (' shutdown') if shutdown.set is defined else '' }}"
+            "{{ (' shutdown') if shutdown.set|d(False) is defined else '' }}"
             "{{ (' graceful '+ shutdown.graceful|string) if shutdown.graceful is defined else '' }}"
             "{{ (' community '+ shutdown.community|string) if shutdown.community is defined else '' }}"
             "{{ (' local-preference') if shutdown.local_preference|d(False) else '' }}",
@@ -1701,7 +1701,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {"neighbors": {"{{ neighbor_address }}": {"soft_reconfiguration": True}}},
         },
         {
-            "name": "timers",
+            "name": "ntimers",
             "getval": re.compile(
                 r"""
                 \sneighbor\s(?P<neighbor_address>\S+)\stimers
@@ -1712,9 +1712,9 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} timers"
-            "{{ (' ' + timers.interval|string) if timers.interval is defined else '' }}"
-            "{{ (' ' + timers.holdtime|string) if timers.holdtime is defined else '' }}"
-            "{{ (' ' + timers.min_holdtime|string) if timers.min_holdtime is defined else '' }}",
+            "{{ (' ' + ntimers.interval|string) if ntimers.interval is defined else '' }}"
+            "{{ (' ' + ntimers.holdtime|string) if ntimers.holdtime is defined else '' }}"
+            "{{ (' ' + ntimers.min_holdtime|string) if ntimers.min_holdtime is defined else '' }}",
             "result": {
                 "neighbors": {
                     "{{ neighbor_address }}": {

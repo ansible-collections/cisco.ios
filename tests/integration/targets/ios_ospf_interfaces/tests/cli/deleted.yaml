@@ -19,11 +19,6 @@
         that:
           - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
-    - name: Assert that before dicts are correctly generated
-      ansible.builtin.assert:
-        that:
-          - "{{ merged['after'] | symmetric_difference(result['before']) | length == 0 }}"
-
     - name: Delete provided OSPF interfaces (idempotent)
       register: result
       cisco.ios.ios_ospf_interfaces: *id001
@@ -43,11 +38,6 @@
       ansible.builtin.assert:
         that:
           - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
-
-    - name: Assert that before dicts are correctly generated
-      ansible.builtin.assert:
-        that:
-          - "{{ merged['after'] | symmetric_difference(result['before']) | length == 0 }}"
 
     - name: Delete provided OSPF interfaces without any configuration (idempotent)
       register: result

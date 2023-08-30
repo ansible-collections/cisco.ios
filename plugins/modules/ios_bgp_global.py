@@ -25,6 +25,8 @@ notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
+  - The module examples uses callback plugin (stdout_callback = yaml) to generate task
+    output in yaml format.
 options:
   config:
     description: A dictionary of options for bgp configurations.
@@ -35,9 +37,9 @@ options:
         type: str
       aggregate_address:
         description:
-        - Configure BGP aggregate entry
-        - This option is DEPRECATED and is replaced with aggregate_addresses which
-          accepts list of dict as input, this attribute will be removed after 2024-06-01.
+          - Configure BGP aggregate entry
+          - This option is DEPRECATED and is replaced with aggregate_addresses which
+            accepts list of dict as input, this attribute will be removed after 2024-06-01.
         type: dict
         suboptions:
           address:
@@ -147,9 +149,9 @@ options:
             type: bool
           bestpath:
             description:
-            - Change the default bestpath selection
-            - This option is DEPRECATED and replaced with bestpath_options of type dict,
-              this attribute will be removed after 2024-06-01.
+              - Change the default bestpath selection
+              - This option is DEPRECATED and replaced with bestpath_options of type dict,
+                this attribute will be removed after 2024-06-01.
             type: list
             elements: dict
             suboptions:
@@ -181,7 +183,7 @@ options:
                     type: bool
           bestpath_options:
             description:
-            - Change the default bestpath selection
+              - Change the default bestpath selection
             type: dict
             suboptions:
               aigp:
@@ -374,9 +376,9 @@ options:
                 type: int
           inject_map:
             description:
-            - Routemap which specifies prefixes to inject
-            - This option is DEPRECATED and is updated with inject_maps which is a
-              list of dict, this attribute will be removed after 2024-06-01.
+              - Routemap which specifies prefixes to inject
+              - This option is DEPRECATED and is updated with inject_maps which is a
+                list of dict, this attribute will be removed after 2024-06-01.
             type: dict
             suboptions:
               name:
@@ -417,20 +419,20 @@ options:
                 suboptions:
                   ipv4_with_subnet:
                     description:
-                    - IPv4 subnet range(A.B.C.D/nn)
-                    - This option is DEPRECATED and is updated with host_with_subnet which is a
-                      common attribute for address, this attribute will be removed after 2024-06-01.
+                      - IPv4 subnet range(A.B.C.D/nn)
+                      - This option is DEPRECATED and is updated with host_with_subnet which is a
+                        common attribute for address, this attribute will be removed after 2024-06-01.
                     type: str
                   ipv6_with_subnet:
                     description:
-                    - IPv6 subnet range(X:X:X:X::X/<0-128>)
-                    - This option is DEPRECATED and is updated with host_with_subnet which is a
-                      common attribute for address attribute will be removed after 2024-06-01.
+                      - IPv6 subnet range(X:X:X:X::X/<0-128>)
+                      - This option is DEPRECATED and is updated with host_with_subnet which is a
+                        common attribute for address attribute will be removed after 2024-06-01.
                     type: str
                   host_with_subnet:
                     description:
-                    - IPv4 subnet range(A.B.C.D/nn)
-                    - IPv6 subnet range(X:X:X:X::X/<0-128>)
+                      - IPv4 subnet range(A.B.C.D/nn)
+                      - IPv6 subnet range(X:X:X:X::X/<0-128>)
                     type: str
                   peer_group:
                     description: Member of the peer-group
@@ -474,10 +476,10 @@ options:
                     type: bool
           nopeerup_delay:
             description:
-            - Set how long BGP will wait for the first peer to come up before beginning the update delay or
-              graceful restart timers (in seconds)
-            - This option is DEPRECATED and is replaced with nopeerup_delay_options which is of type dict,
-              this attribute will be removed after 2024-06-01.
+              - Set how long BGP will wait for the first peer to come up before beginning the update delay or
+                graceful restart timers (in seconds)
+              - This option is DEPRECATED and is replaced with nopeerup_delay_options which is of type dict,
+                this attribute will be removed after 2024-06-01.
             type: list
             elements: dict
             suboptions:
@@ -503,7 +505,8 @@ options:
                   - Please refer vendor documentation for valid values
                 type: int
           nopeerup_delay_options:
-            description: Set how long BGP will wait for the first peer to come up before beginning the update delay or
+            description:
+              Set how long BGP will wait for the first peer to come up before beginning the update delay or
               graceful restart timers (in seconds)
             type: dict
             suboptions:
@@ -788,9 +791,9 @@ options:
             type: str
       distribute_list:
         description:
-        - Filter networks in routing updates
-        - This option is DEPRECATED and is replaced with distributes which is of type list of dict,
-          this attribute will be removed after 2024-06-01.
+          - Filter networks in routing updates
+          - This option is DEPRECATED and is replaced with distributes which is of type list of dict,
+            this attribute will be removed after 2024-06-01.
         type: dict
         suboptions:
           acl:
@@ -840,27 +843,27 @@ options:
         suboptions:
           neighbor_address:
             description:
-            - Neighbor address (A.B.C.D)
-            - Neighbor tag
-            - Neighbor ipv6 address (X:X:X:X::X)
+              - Neighbor address (A.B.C.D)
+              - Neighbor tag
+              - Neighbor ipv6 address (X:X:X:X::X)
             type: str
           address:
             description:
-            - Neighbor address (A.B.C.D)
-            - This option is DEPRECATED and replaced with neighbor_address,
-              this attribute will be removed after 2024-06-01.
+              - Neighbor address (A.B.C.D)
+              - This option is DEPRECATED and replaced with neighbor_address,
+                this attribute will be removed after 2024-06-01.
             type: str
           tag:
             description:
-            - Neighbor tag
-            - This option is DEPRECATED and replaced with neighbor_address,
-              this attribute will be removed after 2024-06-01.
+              - Neighbor tag
+              - This option is DEPRECATED and replaced with neighbor_address,
+                this attribute will be removed after 2024-06-01.
             type: str
           ipv6_adddress:
             description:
-            - Neighbor ipv6 address (X:X:X:X::X)
-            - This option is DEPRECATED and replaced with neighbor_address,
-              this attribute will be removed after 2024-06-01.
+              - Neighbor ipv6 address (X:X:X:X::X)
+              - This option is DEPRECATED and replaced with neighbor_address,
+                this attribute will be removed after 2024-06-01.
             type: str
           activate:
             description: Enable the Address Family for this Neighbor
@@ -953,7 +956,7 @@ options:
                         type: dict
                         suboptions:
                           igp_cost:
-                            description:  Point of Insertion After IGP
+                            description: Point of Insertion After IGP
                             type: bool
                           pre_bestpath:
                             description: Point of Insertion At Beginning
@@ -1177,9 +1180,9 @@ options:
                 type: bool
           password:
             description:
-            - Set a password
-            - This option is DEPRECATED and is replaced with password_options which
-              accepts dict as input, this attribute will be removed after 2024-06-01.
+              - Set a password
+              - This option is DEPRECATED and is replaced with password_options which
+                accepts dict as input, this attribute will be removed after 2024-06-01.
             type: str
           password_options:
             description: Set a password with encryption type
@@ -1270,9 +1273,9 @@ options:
                 type: bool
           route_map:
             description:
-            - Apply route map to neighbor
-            - This option is DEPRECATED and is replaced with route_maps which
-              accepts list of dict as input, this attribute will be removed after 2024-06-01.
+              - Apply route map to neighbor
+              - This option is DEPRECATED and is replaced with route_maps which
+                accepts list of dict as input, this attribute will be removed after 2024-06-01.
             type: dict
             suboptions:
               name:
@@ -1481,7 +1484,7 @@ options:
             description: Set default weight for routes from this neighbor
             type: int
       networks:
-        description:  Specify a network to announce via BGP
+        description: Specify a network to announce via BGP
         type: list
         elements: dict
         suboptions:
@@ -1495,7 +1498,7 @@ options:
             description: Route-map to modify the attributes
             type: str
           backdoor:
-            description:  Specify a BGP backdoor route
+            description: Specify a BGP backdoor route
             type: bool
       redistribute:
         description: Redistribute information from another routing protocol
@@ -1733,9 +1736,9 @@ options:
                 type: bool
       route_server_context:
         description:
-        - Enter route server context command mode
-        - This option is DEPRECATED as it is out of scope of the module,
-          this attribute will be removed after 2024-06-01.
+          - Enter route server context command mode
+          - This option is DEPRECATED as it is out of scope of the module,
+            this attribute will be removed after 2024-06-01.
         type: dict
         suboptions:
           name:
@@ -1748,11 +1751,11 @@ options:
               afi:
                 description: Address family
                 type: str
-                choices: ['ipv4', 'ipv6']
+                choices: ["ipv4", "ipv6"]
               modifier:
                 description: Address Family modifier
                 type: str
-                choices: ['multicast', 'unicast']
+                choices: ["multicast", "unicast"]
               import_map:
                 description:
                   - Import matching routes using a route map
@@ -1763,9 +1766,9 @@ options:
             type: str
       scope:
         description:
-        - Enter scope command mode
-        - This option is DEPRECATED as is not valid within the scope of module,
-          this attribute will be removed after 2024-06-01.
+          - Enter scope command mode
+          - This option is DEPRECATED as is not valid within the scope of module,
+            this attribute will be removed after 2024-06-01.
         type: dict
         suboptions:
           global:
@@ -1791,9 +1794,9 @@ options:
             type: bool
       template:
         description:
-        - Enter template command mode
-        - This option is DEPRECATED as is not valid within the scope of module,
-          this attribute will be removed after 2024-06-01.
+          - Enter template command mode
+          - This option is DEPRECATED as is not valid within the scope of module,
+            this attribute will be removed after 2024-06-01.
         type: dict
         suboptions:
           peer_policy:
@@ -1831,6 +1834,7 @@ options:
     choices:
       - merged
       - replaced
+      - overridden
       - deleted
       - purged
       - gathered
@@ -1839,6 +1843,7 @@ options:
     default: merged
     description:
       - The state the configuration should be left in
+      - The module have declaratively similar behavior for replaced and overridden state.
       - The states I(rendered), I(gathered) and I(parsed) does not perform any change
         on the device.
       - The state I(rendered) will transform the configuration in C(config) option to
@@ -1852,11 +1857,10 @@ options:
         transforms it into JSON format as per the resource module parameters and the
         value is returned in the I(parsed) key within the result. The value of C(running_config)
         option should be the same format as the output of command I(show running-config
-        | include ip route|ipv6 route) executed on device. For state I(parsed) active
+        | section ^router bgp) executed on device. For state I(parsed) active
         connection to remote host is not required.
     type: str
 """
-
 
 EXAMPLES = """
 # Using merged
@@ -1914,8 +1918,25 @@ EXAMPLES = """
     state: merged
 
 # Task Output:
-# ---------------
-
+# ------------
+#
+# before: {}
+# commands:
+# - router bgp 65000
+# - timers bgp 100 200 150
+# - bgp advertise-best-external
+# - bgp bestpath compare-routerid
+# - bgp dampening 1 1 1 1
+# - bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+# - bgp log-neighbor-changes
+# - bgp nopeerup-delay post-boot 10
+# - network 192.0.2.3
+# - network 192.0.2.2
+# - neighbor 192.0.2.1 remote-as 100
+# - neighbor 192.0.2.1 description merge neighbor
+# - neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
+# - neighbor 192.0.2.1 route-map test-route out
+# - redistribute connected metric 10
 # after:
 #   as_number: '65000'
 #   bgp:
@@ -1961,23 +1982,6 @@ EXAMPLES = """
 #     keepalive: 100
 #     min_holdtime: 150
 
-# commands:
-# - router bgp 65000
-# - timers bgp 100 200 150
-# - bgp advertise-best-external
-# - bgp bestpath compare-routerid
-# - bgp dampening 1 1 1 1
-# - bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
-# - bgp log-neighbor-changes
-# - bgp nopeerup-delay post-boot 10
-# - network 192.0.2.3
-# - network 192.0.2.2
-# - neighbor 192.0.2.1 remote-as 100
-# - neighbor 192.0.2.1 description merge neighbor
-# - neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
-# - neighbor 192.0.2.1 route-map test-route out
-# - redistribute connected metric 10
-
 # After state:
 # ------------
 #
@@ -1998,7 +2002,6 @@ EXAMPLES = """
 #  neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
 #  neighbor 192.0.2.1 route-map test-route out
 
-
 # Using replaced
 
 # Before state:
@@ -2018,7 +2021,6 @@ EXAMPLES = """
 #  neighbor 198.0.2.1 aigp send cost-community 100 poi igp-cost transitive
 #  neighbor 198.0.2.1 route-map test-route out
 
-
 - name: Replaces device configuration of listed global BGP with provided configuration
   cisco.ios.ios_bgp_global:
     config:
@@ -2036,7 +2038,7 @@ EXAMPLES = """
         - address: 192.0.2.4
       neighbor:
         - address: 192.0.2.5
-          description:  replace neighbor
+          description: replace neighbor
           remote_as: 100
           slow_peer:
             detection:
@@ -2044,7 +2046,7 @@ EXAMPLES = """
     state: replaced
 
 # Task Output:
-# ---------------
+# ------------
 #
 # before:
 #   as_number: '65000'
@@ -2082,7 +2084,21 @@ EXAMPLES = """
 #   networks:
 #   - address: 192.0.2.2
 #   - address: 192.0.2.3
-
+#
+# commands:
+# - router bgp 65000
+# - no bgp bestpath compare-routerid
+# - bgp bestpath med confed
+# - no bgp dampening 1 1 1 1
+# - no bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+# - bgp nopeerup-delay cold-boot 20
+# - network 192.0.2.4
+# - no network 192.0.2.2
+# - no network 192.0.2.3
+# - neighbor 192.0.2.5 remote-as 100
+# - neighbor 192.0.2.5 description replace neighbor
+# - neighbor 192.0.2.5 slow-peer detection disable
+# - no neighbor 198.0.2.1
 # after:
 #   as_number: '65000'
 #   bgp:
@@ -2103,21 +2119,6 @@ EXAMPLES = """
 #         disable: true
 #   networks:
 #   - address: 192.0.2.4
-
-# commands:
-# - router bgp 65000
-# - no bgp bestpath compare-routerid
-# - bgp bestpath med confed
-# - no bgp dampening 1 1 1 1
-# - no bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
-# - bgp nopeerup-delay cold-boot 20
-# - network 192.0.2.4
-# - no network 192.0.2.2
-# - no network 192.0.2.3
-# - neighbor 192.0.2.5 remote-as 100
-# - neighbor 192.0.2.5 description replace neighbor
-# - neighbor 192.0.2.5 slow-peer detection disable
-# - no neighbor 198.0.2.1
 
 # After state:
 # -------------
@@ -2158,8 +2159,8 @@ EXAMPLES = """
     state: deleted
 
 # Task Output:
-# ---------------
-
+# ------------
+#
 # before:
 #   as_number: '65000'
 #   bgp:
@@ -2193,10 +2194,6 @@ EXAMPLES = """
 #     route_maps:
 #     - name: test-route
 #       out: true
-
-# after:
-#   as_number: '65000'
-
 # commands:
 # - router bgp 65000
 # - no bgp advertise-best-external
@@ -2206,6 +2203,8 @@ EXAMPLES = """
 # - no bgp log-neighbor-changes
 # - no bgp nopeerup-delay post-boot 10
 # - no neighbor 192.0.2.1
+# after:
+#   as_number: '65000'
 
 # After state:
 # -------------
@@ -2213,9 +2212,7 @@ EXAMPLES = """
 # vios#sh running-config | section ^router bgp
 # router bgp 65000
 
-
 # Using Deleted without any config passed
-#"(NOTE: This will delete all of configured global BGP)"
 
 # Before state:
 # -------------
@@ -2232,14 +2229,13 @@ EXAMPLES = """
 #  neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
 #  neighbor 192.0.2.1 route-map test-route out
 
-
-- name: "Delete global BGP without config"
+- name: Delete global BGP without config
   cisco.ios.ios_bgp_global:
     state: deleted
 
 # Task Output:
-# ---------------
-
+# ------------
+#
 # before:
 #   as_number: '65000'
 #   bgp:
@@ -2273,10 +2269,6 @@ EXAMPLES = """
 #     route_maps:
 #     - name: test-route
 #       out: true
-
-# after:
-#   as_number: '65000'
-
 # commands:
 # - router bgp 65000
 # - no bgp advertise-best-external
@@ -2285,6 +2277,8 @@ EXAMPLES = """
 # - no bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
 # - no bgp nopeerup-delay post-boot 10
 # - no neighbor 198.51.100.1
+# after:
+#   as_number: '65000'
 
 # After state:
 # -------------
@@ -2292,8 +2286,7 @@ EXAMPLES = """
 # vios#sh running-config | section ^router bgp
 # router bgp 65000
 
-# Using Purged
-#"(NOTE: This WILL delete the configured global BGP)"
+# Using purged - would delete all configuration
 
 # Before state:
 # -------------
@@ -2310,15 +2303,15 @@ EXAMPLES = """
 #  neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
 #  neighbor 192.0.2.1 route-map test-route out
 
-
-- name: 'Delete the configured global BGP (Note: This WILL delete the the configured
-    global BGP)'
+- name:
+    "Delete the configured global BGP (Note: This WILL delete the the configured
+    global BGP)"
   cisco.ios.ios_bgp_global:
     state: purged
 
 # Task Output:
-# ---------------
-
+# ------------
+#
 # before:
 #   as_number: '65000'
 #   bgp:
@@ -2352,479 +2345,363 @@ EXAMPLES = """
 #     route_maps:
 #     - name: test-route
 #       out: true
-
 # commands:
 #  - no router bgp 65000
+# after: {}
 
 # After state:
 # -------------
 #
 # vios#sh running-config | section ^router bgp
 
-# Using Gathered
+# Using gathered
 
 # Before state:
 # -------------
 #
 # vios#sh running-config | section ^router bgp
 # router bgp 65000
+#  bgp log-neighbor-changes
 #  bgp nopeerup-delay post-boot 10
 #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
 #  bgp bestpath compare-routerid
 #  bgp dampening 1 1 1 1
 #  bgp advertise-best-external
+#  network 192.0.2.3
+#  timers bgp 100 200 150
+#  redistribute connected metric 10
 #  neighbor 192.0.2.1 remote-as 100
 #  neighbor 192.0.2.1 description merge neighbor
 #  neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
 #  neighbor 192.0.2.1 route-map test-route out
 
-
-- name: Gather listed global BGP with provided configurations
+- name: Gather facts for bgp_global
   cisco.ios.ios_bgp_global:
     config:
     state: gathered
 
-# Module Execution Result:
-# ------------------------
+# Task Output:
+# ------------
 #
-# "gathered": {
-#         "as_number": "65000",
-#         "bgp": {
-#             "advertise_best_external": true,
-#             "bestpath_options": {
-#                 "compare_routerid": true
-#             },
-#             "dampening": {
-#                 "max_suppress": 1,
-#                 "penalty_half_time": 1,
-#                 "reuse_route_val": 1,
-#                 "suppress_route_val": 1
-#             },
-#             "graceful_shutdown": {
-#                 "community": "100",
-#                 "local_preference": 100,
-#                 "neighbors": {
-#                     "time": 50
-#                 }
-#             },
-#             "nopeerup_delay_options": {
-#                 "post_boot": 10
-#             }
-#         },
-#         "neighbors": [
-#             {
-#                 "aigp": {
-#                     "send": {
-#                         "cost_community": {
-#                             "id": 100,
-#                             "poi": {
-#                                 "igp_cost": true,
-#                                 "transitive": true
-#                             }
-#                         }
-#                     }
-#                 },
-#                 "description": "merge neighbor",
-#                 "neighbor_address": "192.0.2.1",
-#                 "remote_as": "100",
-#                 "route_maps": [
-#                     {
-#                         "name": "test-route",
-#                         "out": true
-#                     }
-#                 ]
-#             }
-#         ]
-#     },
-#     "invocation": {
-#         "module_args": {
-#             "config": null,
-#             "running_config": null,
-#             "state": "gathered"
-#         }
-#     }
-# }
+# gathered:
+#   as_number: '65000'
+#   bgp:
+#     advertise_best_external: true
+#     bestpath_options:
+#       compare_routerid: true
+#     dampening:
+#       max_suppress: 1
+#       penalty_half_time: 1
+#       reuse_route_val: 1
+#       suppress_route_val: 1
+#     graceful_shutdown:
+#       community: '100'
+#       local_preference: 100
+#       neighbors:
+#         time: 50
+#     log_neighbor_changes: true
+#     nopeerup_delay_options:
+#       post_boot: 10
+#   neighbors:
+#   - aigp:
+#       send:
+#         cost_community:
+#           id: 100
+#           poi:
+#             igp_cost: true
+#             transitive: true
+#     description: merge neighbor
+#     neighbor_address: 192.0.2.1
+#     remote_as: '100'
+#     route_maps:
+#     - name: test-route
+#       out: true
+#   networks:
+#   - address: 192.0.2.3
+#   redistribute:
+#   - connected:
+#       metric: 10
+#       set: true
+#   timers:
+#     holdtime: 200
+#     keepalive: 100
+#     min_holdtime: 150
 
 # Using Rendered
 
 - name: Rendered the provided configuration with the existing running configuration
   cisco.ios.ios_bgp_global:
-    config: >-
-        {{
-            {
-            "aggregate_addresses": [
-                {
-                    "address": "192.0.2.1",
-                    "attribute_map": "testMap1",
-                    "netmask": "255.255.255.0",
-                    "summary_only": true
-                },
-                {
-                    "address": "192.0.2.2",
-                    "as_set": true,
-                    "netmask": "255.255.255.0"
-                },
-                {
-                    "address": "192.0.2.3",
-                    "as_set": true,
-                    "netmask": "255.255.255.0"
-                }
-            ],
-            "as_number": "65000",
-            "auto_summary": true,
-            "bgp": {
-                "additional_paths": {
-                    "install": true,
-                    "receive": true
-                },
-                "aggregate_timer": 0,
-                "always_compare_med": true,
-                "asnotation": true,
-                "bestpath_options": {
-                    "aigp": true,
-                    "compare_routerid": true,
-                    "med": {
-                        "confed": true,
-                        "missing_as_worst": true
-                    }
-                },
-                "confederation": {
-                    "identifier": "22"
-                },
-                "consistency_checker": {
-                    "error_message": {
-                        "interval": 10,
-                        "set": true
-                    }
-                },
-                "dampening": {
-                    "route_map": "routeMap1Test"
-                },
-                "deterministic_med": true,
-                "graceful_restart": {
-                    "restart_time": 2,
-                    "stalepath_time": 22
-                },
-                "graceful_shutdown": {
-                    "community": "77",
-                    "local_preference": 230,
-                    "vrfs": {
-                        "time": 31
-                    }
-                },
-                "inject_maps": [
-                    {
-                        "copy_attributes": true,
-                        "exist_map_name": "Testmap3",
-                        "name": "map2"
-                    },
-                    {
-                        "copy_attributes": true,
-                        "exist_map_name": "Testmap2",
-                        "name": "map1"
-                    }
-                ],
-                "listen": {
-                    "limit": 200,
-                    "range": {
-                        "host_with_subnet": "192.0.2.1/24",
-                        "peer_group": "PaulNetworkGroup"
-                    }
-                },
-                "log_neighbor_changes": true,
-                "maxas_limit": 2,
-                "maxcommunity_limit": 3,
-                "maxextcommunity_limit": 3,
-                "nexthop": {
-                    "route_map": "RouteMap1",
-                    "trigger": {
-                        "delay": 2
-                    }
-                },
-                "nopeerup_delay_options": {
-                    "cold_boot": 2,
-                    "nsf_switchover": 10,
-                    "post_boot": 22,
-                    "user_initiated": 22
-                },
-                "recursion": true,
-                "redistribute_internal": true,
-                "refresh": {
-                    "max_eor_time": 700,
-                    "stalepath_time": 800
-                },
-                "router_id": {
-                    "vrf": true
-                },
-                "scan_time": 22,
-                "slow_peer": {
-                    "detection": {
-                        "threshold": 345
-                    },
-                    "split_update_group": {
-                        "dynamic": true,
-                        "permanent": true
-                    }
-                },
-                "sso": true,
-                "suppress_inactive": true,
-                "update_delay": 2,
-                "update_group": true
-            },
-            "bmp": {
-                "buffer_size": 22,
-                "server": 2
-            },
-            "distance": {
-                "bgp": {
-                    "routes_external": 2,
-                    "routes_internal": 3,
-                    "routes_local": 4
-                },
-                "mbgp": {
-                    "routes_external": 2,
-                    "routes_internal": 3,
-                    "routes_local": 5
-                }
-            },
-            "distributes": [
-                {
-                    "in": true,
-                    "prefix": "prefixTest"
-                },
-                {
-                    "out": true,
-                    "gateway": "gatewayTest"
-                },
-                {
-                    "out": true,
-                    "acl": "300",
-                    "interface": "Loopback0"
-                }
-            ],
-            "maximum_paths": {
-                "ibgp": 2,
-                "paths": 2
-            },
-            "maximum_secondary_paths": {
-                "ibgp": 22,
-                "paths": 22
-            },
-            "neighbors": [
-                {
-                    "advertise": {
-                        "diverse_path": {
-                            "backup": true
-                        }
-                    },
-                    "neighbor_address": "192.0.2.8",
-                    "route_reflector_client": true
-                },
-                {
-                    "neighbor_address": "192.0.2.9",
-                    "remote_as": 64500,
-                    "update_source": "Loopback0",
-                    "route_maps":[{
-                        "name": "rmp1",
-                        "in": true,
-                    },{
-                        "name": "rmp2",
-                        "in": true,
-                    },]
-                },
-                {
-                    "neighbor_address": "192.0.2.10",
-                    "remote_as": 64500,
-                    "update_source": "Loopback1"
-                },
-                {
-                    "activate": true,
-                    "neighbor_address": "192.0.2.11",
-                    "remote_as": 45000,
-                    "send_community": {
-                        "extended": true
-                    }
-                },
-                {
-                    "activate": true,
-                    "neighbor_address": "192.0.2.12",
-                    "remote_as": 45000
-                },
-                {
-                    "neighbor_address": "192.0.2.13",
-                    "remote_as": 6553601,
-                    "shutdown": {
-                        "set": true,
-                        "graceful": 10,
-                        "community": 20,
-                    }
-                },
-                {
-                    "activate": true,
-                    "advertise": {
-                        "additional_paths": {
-                            "group_best": true
-                        }
-                    },
-                    "neighbor_address": "2001:DB8::1037"
-                },
-                {
-                    "neighbor_address": "testNebTag",
-                    "peer_group": "5",
-                    "soft_reconfiguration": true,
-                    "version": 4
-                }
-            ],
-            "networks": [
-                {
-                    "address": "192.0.2.15",
-                    "backdoor": true,
-                    "netmask": "55.255.255.0",
-                    "route_map": "mp1"
-                },
-                {
-                    "address": "192.0.2.16",
-                    "backdoor": true,
-                    "netmask": "255.255.255.0",
-                    "route_map": "mp2"
-                },
-                {
-                    "address": "192.0.2.17",
-                    "backdoor": true,
-                    "netmask": "255.255.255.0",
-                    "route_map": "mp2"
-                }
-            ],
-            "redistribute": [
-                {
-                    "static": {
-                        "metric": 33,
-                        "route_map": "rmp1"
-                    }
-                },
-                {
-                    "application": {
-                        "metric": 22,
-                        "name": "app1"
-                    }
-                },
-                {
-                    "application": {
-                        "metric": 33,
-                        "name": "app2",
-                        "route_map": "mp1"
-                    }
-                },
-                {
-                    "connected": {
-                        "metric": 22
-                    }
-                },
-                {
-                    "mobile": {
-                        "metric": 211
-                    }
-                }
-            ],
-            "route_server_context": {
-                "description": "checking description as line"
-            }
-        }
-        }}
+    config:
+      aggregate_addresses:
+        - address: 192.0.2.1
+          attribute_map: testMap1
+          netmask: 255.255.255.0
+          summary_only: true
+        - address: 192.0.2.2
+          as_set: true
+          netmask: 255.255.255.0
+        - address: 192.0.2.3
+          as_set: true
+          netmask: 255.255.255.0
+      as_number: "65000"
+      auto_summary: true
+      bgp:
+        additional_paths:
+          install: true
+          receive: true
+        aggregate_timer: 0
+        always_compare_med: true
+        asnotation: true
+        bestpath_options:
+          aigp: true
+          compare_routerid: true
+          med:
+            confed: true
+            missing_as_worst: true
+        confederation:
+          identifier: "22"
+        consistency_checker:
+          error_message:
+            interval: 10
+            set: true
+        dampening:
+          route_map: routeMap1Test
+        deterministic_med: true
+        graceful_restart:
+          restart_time: 2
+          stalepath_time: 22
+        graceful_shutdown:
+          community: "77"
+          local_preference: 230
+          vrfs:
+            time: 31
+        inject_maps:
+          - copy_attributes: true
+            exist_map_name: Testmap3
+            name: map2
+          - copy_attributes: true
+            exist_map_name: Testmap2
+            name: map1
+        listen:
+          limit: 200
+          range:
+            host_with_subnet: 192.0.2.1/24
+            peer_group: PaulNetworkGroup
+        log_neighbor_changes: true
+        maxas_limit: 2
+        maxcommunity_limit: 3
+        maxextcommunity_limit: 3
+        nexthop:
+          route_map: RouteMap1
+          trigger:
+            delay: 2
+        nopeerup_delay_options:
+          cold_boot: 2
+          nsf_switchover: 10
+          post_boot: 22
+          user_initiated: 22
+        recursion: true
+        redistribute_internal: true
+        refresh:
+          max_eor_time: 700
+          stalepath_time: 800
+        router_id:
+          vrf: true
+        scan_time: 22
+        slow_peer:
+          detection:
+            threshold: 345
+          split_update_group:
+            dynamic: true
+            permanent: true
+        sso: true
+        suppress_inactive: true
+        update_delay: 2
+        update_group: true
+      bmp:
+        buffer_size: 22
+        server: 2
+      distance:
+        bgp:
+          routes_external: 2
+          routes_internal: 3
+          routes_local: 4
+        mbgp:
+          routes_external: 2
+          routes_internal: 3
+          routes_local: 5
+      distributes:
+        - in: true
+          prefix: prefixTest
+        - gateway: gatewayTest
+          out: true
+        - acl: "300"
+          interface: Loopback0
+          out: true
+      maximum_paths:
+        ibgp: 2
+        paths: 2
+      maximum_secondary_paths:
+        ibgp: 22
+        paths: 22
+      neighbors:
+        - neighbor_address: 192.0.2.10
+          remote_as: "64500"
+          update_source: Loopback1
+        - activate: true
+          neighbor_address: 192.0.2.11
+          remote_as: "45000"
+          send_community:
+            extended: true
+        - activate: true
+          neighbor_address: 192.0.2.12
+          remote_as: "45000"
+        - neighbor_address: 192.0.2.13
+          remote_as: "6553601"
+        - advertise:
+            diverse_path:
+              backup: true
+          neighbor_address: 192.0.2.8
+          route_reflector_client: true
+        - neighbor_address: 192.0.2.9
+          remote_as: "64500"
+          route_maps:
+            - in: true
+              name: rmp1
+            - in: true
+              name: rmp2
+          update_source: Loopback0
+        - activate: true
+          advertise:
+            additional_paths:
+              group_best: true
+          neighbor_address: 2001:DB8::1037
+        - neighbor_address: testNebTag
+          peer_group: "5"
+          soft_reconfiguration: true
+          version: 4
+      networks:
+        - address: 192.0.2.15
+          backdoor: true
+          netmask: 55.255.255.0
+          route_map: mp1
+        - address: 192.0.2.16
+          backdoor: true
+          netmask: 255.255.255.0
+          route_map: mp2
+        - address: 192.0.2.17
+          backdoor: true
+          netmask: 255.255.255.0
+          route_map: mp2
+      redistribute:
+        - static:
+            metric: 33
+            route_map: rmp1
+            set: true
+        - application:
+            metric: 22
+            name: app1
+        - application:
+            metric: 33
+            name: app2
+            route_map: mp1
+        - connected:
+            metric: 22
+            set: true
+        - mobile:
+            metric: 211
+            set: true
     state: rendered
 
-# Module Execution Result:
-# ------------------------
+# Task Output:
+# ------------
 #
-# "rendered": [
-#         "router bgp 65000",
-#         "auto-summary",
-#         "bmp buffer-size 22",
-#         "bmp server 2",
-#         "distance bgp 2 3 4",
-#         "distance mbgp 2 3 5",
-#         "maximum-paths 2",
-#         "maximum-paths ibgp 2",
-#         "maximum-secondary-paths 22",
-#         "maximum-secondary-paths ibgp 22",
-#         "description checking description as line",
-#         "bgp additional-paths install receive",
-#         "bgp aggregate-timer 0",
-#         "bgp always-compare-med",
-#         "bgp asnotation dot",
-#         "bgp bestpath aigp ignore",
-#         "bgp bestpath compare-routerid",
-#         "bgp bestpath med confed missing-as-worst",
-#         "bgp confederation identifier 22",
-#         "bgp consistency-checker error-message interval 10",
-#         "bgp dampening route-map routeMap1Test",
-#         "bgp deterministic-med",
-#         "bgp graceful-restart restart-time 2",
-#         "bgp graceful-restart stalepath-time 22",
-#         "bgp graceful-shutdown all vrfs 31 local-preference 230 community 77",
-#         "bgp listen limit 200",
-#         "bgp listen range 192.0.2.1/24 peer-group PaulNetworkGroup",
-#         "bgp log-neighbor-changes",
-#         "bgp maxas-limit 2",
-#         "bgp maxcommunity-limit 3",
-#         "bgp maxextcommunity-limit 3",
-#         "bgp nexthop route-map RouteMap1",
-#         "bgp nexthop trigger delay 2",
-#         "bgp nopeerup-delay cold-boot 2",
-#         "bgp nopeerup-delay post-boot 22",
-#         "bgp nopeerup-delay nsf-switchover 10",
-#         "bgp nopeerup-delay user-initiated 22",
-#         "bgp recursion host",
-#         "bgp redistribute-internal",
-#         "bgp refresh max-eor-time 700",
-#         "bgp refresh stalepath-time 800",
-#         "bgp router-id vrf auto-assign",
-#         "bgp scan-time 22",
-#         "bgp slow-peer detection threshold 345",
-#         "bgp slow-peer split-update-group dynamic permanent",
-#         "bgp sso route-refresh-enable",
-#         "bgp suppress-inactive",
-#         "bgp update-delay 2",
-#         "bgp update-group split as-override",
-#         "bgp inject-map map2 exist-map Testmap3 copy-attributes",
-#         "bgp inject-map map1 exist-map Testmap2 copy-attributes",
-#         "distribute-list prefix prefixTest in",
-#         "distribute-list gateway gatewayTest out",
-#         "distribute-list 300 out Loopback0",
-#         "aggregate-address 192.0.2.1 255.255.255.0 summary-only attribute-map testMap1",
-#         "aggregate-address 192.0.2.2 255.255.255.0 as-set",
-#         "aggregate-address 192.0.2.3 255.255.255.0 as-set",
-#         "network 192.0.2.15 mask 55.255.255.0 route-map mp1 backdoor",
-#         "network 192.0.2.16 mask 255.255.255.0 route-map mp2 backdoor",
-#         "network 192.0.2.17 mask 255.255.255.0 route-map mp2 backdoor",
-#         "neighbor 192.0.2.8 advertise diverse-path backup",
-#         "neighbor 192.0.2.8 route-reflector-client",
-#         "neighbor 192.0.2.9 remote-as 64500",
-#         "neighbor 192.0.2.9 update-source Loopback0",
-#         "neighbor 192.0.2.9 route-map rmp1 in",
-#         "neighbor 192.0.2.9 route-map rmp2 in",
-#         "neighbor 192.0.2.10 remote-as 64500",
-#         "neighbor 192.0.2.10 update-source Loopback1",
-#         "neighbor 192.0.2.11 remote-as 45000",
-#         "neighbor 192.0.2.11 activate",
-#         "neighbor 192.0.2.11 send-community extended",
-#         "neighbor 192.0.2.12 remote-as 45000",
-#         "neighbor 192.0.2.12 activate",
-#         "neighbor 192.0.2.13 remote-as 6553601",
-#         "neighbor 192.0.2.13 shutdown graceful 10 community 20",
-#         "neighbor 2001:DB8::1037 activate",
-#         "neighbor 2001:DB8::1037 advertise additional-paths group-best",
-#         "neighbor testNebTag peer-group 5",
-#         "neighbor testNebTag soft-reconfiguration inbound",
-#         "neighbor testNebTag version 4",
-#         "redistribute static metric 33 route-map rmp1",
-#         "redistribute application app1 metric 22",
-#         "redistribute application app2 metric 33 route-map mp1",
-#         "redistribute connected metric 22",
-#         "redistribute mobile metric 211"
-#     ]
+# rendered:
+# - router bgp 65000
+# - auto-summary
+# - bmp buffer-size 22
+# - bmp server 2
+# - distance bgp 2 3 4
+# - distance mbgp 2 3 5
+# - maximum-paths 2
+# - maximum-paths ibgp 2
+# - maximum-secondary-paths 22
+# - maximum-secondary-paths ibgp 22
+# - bgp additional-paths install receive
+# - bgp aggregate-timer 0
+# - bgp always-compare-med
+# - bgp asnotation dot
+# - bgp bestpath aigp ignore
+# - bgp bestpath compare-routerid
+# - bgp bestpath med confed missing-as-worst
+# - bgp confederation identifier 22
+# - bgp consistency-checker error-message interval 10
+# - bgp dampening route-map routeMap1Test
+# - bgp deterministic-med
+# - bgp graceful-restart restart-time 2
+# - bgp graceful-restart stalepath-time 22
+# - bgp graceful-shutdown all vrfs 31 local-preference 230 community 77
+# - bgp listen limit 200
+# - bgp listen range 192.0.2.1/24 peer-group PaulNetworkGroup
+# - bgp log-neighbor-changes
+# - bgp maxas-limit 2
+# - bgp maxcommunity-limit 3
+# - bgp maxextcommunity-limit 3
+# - bgp nexthop route-map RouteMap1
+# - bgp nexthop trigger delay 2
+# - bgp nopeerup-delay cold-boot 2
+# - bgp nopeerup-delay post-boot 22
+# - bgp nopeerup-delay nsf-switchover 10
+# - bgp nopeerup-delay user-initiated 22
+# - bgp recursion host
+# - bgp redistribute-internal
+# - bgp refresh max-eor-time 700
+# - bgp refresh stalepath-time 800
+# - bgp router-id vrf auto-assign
+# - bgp scan-time 22
+# - bgp slow-peer detection threshold 345
+# - bgp slow-peer split-update-group dynamic permanent
+# - bgp sso route-refresh-enable
+# - bgp suppress-inactive
+# - bgp update-delay 2
+# - bgp update-group split as-override
+# - bgp inject-map map2 exist-map Testmap3 copy-attributes
+# - bgp inject-map map1 exist-map Testmap2 copy-attributes
+# - distribute-list prefix prefixTest in
+# - distribute-list gateway gatewayTest out
+# - distribute-list 300 out Loopback0
+# - aggregate-address 192.0.2.1 255.255.255.0 summary-only attribute-map testMap1
+# - aggregate-address 192.0.2.2 255.255.255.0 as-set
+# - aggregate-address 192.0.2.3 255.255.255.0 as-set
+# - network 192.0.2.15 mask 55.255.255.0 route-map mp1 backdoor
+# - network 192.0.2.16 mask 255.255.255.0 route-map mp2 backdoor
+# - network 192.0.2.17 mask 255.255.255.0 route-map mp2 backdoor
+# - neighbor 192.0.2.10 remote-as 64500
+# - neighbor 192.0.2.10 update-source Loopback1
+# - neighbor 192.0.2.11 remote-as 45000
+# - neighbor 192.0.2.11 activate
+# - neighbor 192.0.2.11 send-community extended
+# - neighbor 192.0.2.12 remote-as 45000
+# - neighbor 192.0.2.12 activate
+# - neighbor 192.0.2.13 remote-as 6553601
+# - neighbor 192.0.2.8 advertise diverse-path backup
+# - neighbor 192.0.2.8 route-reflector-client
+# - neighbor 192.0.2.9 remote-as 64500
+# - neighbor 192.0.2.9 update-source Loopback0
+# - neighbor 192.0.2.9 route-map rmp1 in
+# - neighbor 192.0.2.9 route-map rmp2 in
+# - neighbor 2001:DB8::1037 activate
+# - neighbor 2001:DB8::1037 advertise additional-paths group-best
+# - neighbor testNebTag peer-group 5
+# - neighbor testNebTag soft-reconfiguration inbound
+# - neighbor testNebTag version 4
+# - redistribute static metric 33 route-map rmp1
+# - redistribute application app1 metric 22
+# - redistribute application app2 metric 33 route-map mp1
+# - redistribute connected metric 22
+# - redistribute mobile metric 211
 
-# Using Parsed
+# Using parsed
 
 # File: parsed.cfg
 # ----------------
@@ -2920,286 +2797,189 @@ EXAMPLES = """
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
-# Module Execution Result:
-# ------------------------
+# Task Output:
+# ------------
 #
-#  "parsed": {
-#         "aggregate_addresses": [
-#             {
-#                 "address": "192.0.2.1",
-#                 "attribute_map": "testMap1",
-#                 "netmask": "255.255.255.0",
-#                 "summary_only": true
-#             },
-#             {
-#                 "address": "192.0.2.2",
-#                 "as_set": true,
-#                 "netmask": "255.255.255.0"
-#             },
-#             {
-#                 "address": "192.0.2.3",
-#                 "as_set": true,
-#                 "netmask": "255.255.255.0"
-#             }
-#         ],
-#         "as_number": "65000",
-#         "auto_summary": true,
-#         "bgp": {
-#             "additional_paths": {
-#                 "install": true,
-#                 "receive": true
-#             },
-#             "aggregate_timer": 0,
-#             "always_compare_med": true,
-#             "asnotation": true,
-#             "bestpath_options": {
-#                 "aigp": true,
-#                 "compare_routerid": true,
-#                 "med": {
-#                     "confed": true,
-#                     "missing_as_worst": true
-#                 }
-#             },
-#             "confederation": {
-#                 "identifier": "22"
-#             },
-#             "consistency_checker": {
-#                 "error_message": {
-#                     "interval": 10,
-#                     "set": true
-#                 }
-#             },
-#             "dampening": {
-#                 "route_map": "routeMap1Test"
-#             },
-#             "deterministic_med": true,
-#             "graceful_restart": {
-#                 "restart_time": 2,
-#                 "stalepath_time": 22
-#             },
-#             "graceful_shutdown": {
-#                 "community": "77",
-#                 "local_preference": 230,
-#                 "vrfs": {
-#                     "time": 31
-#                 }
-#             },
-#             "inject_maps": [
-#                 {
-#                     "copy_attributes": true,
-#                     "exist_map_name": "Testmap3",
-#                     "name": "map2"
-#                 },
-#                 {
-#                     "copy_attributes": true,
-#                     "exist_map_name": "Testmap2",
-#                     "name": "map1"
-#                 }
-#             ],
-#             "listen": {
-#                 "limit": 200,
-#                 "range": {
-#                     "host_with_subnet": "192.0.2.1/24",
-#                     "peer_group": "PaulNetworkGroup"
-#                 }
-#             },
-#             "log_neighbor_changes": true,
-#             "maxas_limit": 2,
-#             "maxcommunity_limit": 3,
-#             "maxextcommunity_limit": 3,
-#             "nexthop": {
-#                 "route_map": "RouteMap1",
-#                 "trigger": {
-#                     "delay": 2
-#                 }
-#             },
-#             "nopeerup_delay_options": {
-#                 "cold_boot": 2,
-#                 "nsf_switchover": 10,
-#                 "post_boot": 22,
-#                 "user_initiated": 22
-#             },
-#             "recursion": true,
-#             "redistribute_internal": true,
-#             "refresh": {
-#                 "max_eor_time": 700,
-#                 "stalepath_time": 800
-#             },
-#             "router_id": {
-#                 "vrf": true
-#             },
-#             "scan_time": 22,
-#             "slow_peer": {
-#                 "detection": {
-#                     "threshold": 345
-#                 },
-#                 "split_update_group": {
-#                     "dynamic": true,
-#                     "permanent": true
-#                 }
-#             },
-#             "sso": true,
-#             "suppress_inactive": true,
-#             "update_delay": 2,
-#             "update_group": true
-#         },
-#         "bmp": {
-#             "buffer_size": 22,
-#             "server": 2
-#         },
-#         "distance": {
-#             "bgp": {
-#                 "routes_external": 2,
-#                 "routes_internal": 3,
-#                 "routes_local": 4
-#             },
-#             "mbgp": {
-#                 "routes_external": 2,
-#                 "routes_internal": 3,
-#                 "routes_local": 5
-#             }
-#         },
-#         "distributes": [
-#             {
-#                 "in": true,
-#                 "prefix": "prefixTest"
-#             },
-#             {
-#                 "gateway": "gatewayTest",
-#                 "out": true
-#             },
-#             {
-#                 "acl": "300",
-#                 "interface": "Loopback0",
-#                 "out": true
-#             }
-#         ],
-#         "maximum_paths": {
-#             "ibgp": 2,
-#             "paths": 2
-#         },
-#         "maximum_secondary_paths": {
-#             "ibgp": 22,
-#             "paths": 22
-#         },
-#         "neighbors": [
-#             {
-#                 "neighbor_address": "192.0.2.10",
-#                 "remote_as": "64500",
-#                 "update_source": "Loopback1"
-#             },
-#             {
-#                 "activate": true,
-#                 "neighbor_address": "192.0.2.11",
-#                 "remote_as": "45000",
-#                 "send_community": {
-#                     "extended": true
-#                 }
-#             },
-#             {
-#                 "activate": true,
-#                 "neighbor_address": "192.0.2.12",
-#                 "remote_as": "45000"
-#             },
-#             {
-#                 "neighbor_address": "192.0.2.13",
-#                 "remote_as": "6553601"
-#             },
-#             {
-#                 "advertise": {
-#                     "diverse_path": {
-#                         "backup": true
-#                     }
-#                 },
-#                 "neighbor_address": "192.0.2.8",
-#                 "route_reflector_client": true
-#             },
-#             {
-#                 "neighbor_address": "192.0.2.9",
-#                 "remote_as": "64500",
-#                 "route_maps": [
-#                     {
-#                         "in": true,
-#                         "name": "rmp1"
-#                     },
-#                     {
-#                         "in": true,
-#                         "name": "rmp2"
-#                     }
-#                 ],
-#                 "update_source": "Loopback0"
-#             },
-#             {
-#                 "activate": true,
-#                 "advertise": {
-#                     "additional_paths": {
-#                         "group_best": true
-#                     }
-#                 },
-#                 "neighbor_address": "2001:DB8::1037"
-#             },
-#             {
-#                 "neighbor_address": "testNebTag",
-#                 "peer_group": "5",
-#                 "soft_reconfiguration": true,
-#                 "version": 4
-#             }
-#         ],
-#         "networks": [
-#             {
-#                 "address": "192.0.2.15",
-#                 "backdoor": true,
-#                 "netmask": "55.255.255.0",
-#                 "route_map": "mp1"
-#             },
-#             {
-#                 "address": "192.0.2.16",
-#                 "backdoor": true,
-#                 "netmask": "255.255.255.0",
-#                 "route_map": "mp2"
-#             },
-#             {
-#                 "address": "192.0.2.17",
-#                 "backdoor": true,
-#                 "netmask": "255.255.255.0",
-#                 "route_map": "mp2"
-#             }
-#         ],
-#         "redistribute": [
-#             {
-#                 "static": {
-#                     "metric": 33,
-#                     "route_map": "rmp1",
-#                     "set": true
-#                 }
-#             },
-#             {
-#                 "application": {
-#                     "metric": 22,
-#                     "name": "app1"
-#                 }
-#             },
-#             {
-#                 "application": {
-#                     "metric": 33,
-#                     "name": "app2",
-#                     "route_map": "mp1"
-#                 }
-#             },
-#             {
-#                 "connected": {
-#                     "metric": 22,
-#                     "set": true
-#                 }
-#             },
-#             {
-#                 "mobile": {
-#                     "metric": 21,
-#                     "set": true
-#                 }
-#             }
-#         ]
-#     }
+# parsed:
+#     aggregate_addresses:
+#     - address: 192.0.2.1
+#       attribute_map: testMap1
+#       netmask: 255.255.255.0
+#       summary_only: true
+#     - address: 192.0.2.2
+#       as_set: true
+#       netmask: 255.255.255.0
+#     - address: 192.0.2.3
+#       as_set: true
+#       netmask: 255.255.255.0
+#     as_number: '65000'
+#     auto_summary: true
+#     bgp:
+#       additional_paths:
+#         install: true
+#         receive: true
+#       aggregate_timer: 0
+#       always_compare_med: true
+#       asnotation: true
+#       bestpath_options:
+#         aigp: true
+#         compare_routerid: true
+#         med:
+#           confed: true
+#           missing_as_worst: true
+#       confederation:
+#         identifier: '22'
+#       consistency_checker:
+#         error_message:
+#           interval: 10
+#           set: true
+#       dampening:
+#         route_map: routeMap1Test
+#       deterministic_med: true
+#       graceful_restart:
+#         restart_time: 2
+#         stalepath_time: 22
+#       graceful_shutdown:
+#         community: '77'
+#         local_preference: 230
+#         vrfs:
+#           time: 31
+#       inject_maps:
+#       - copy_attributes: true
+#         exist_map_name: Testmap3
+#         name: map2
+#       - copy_attributes: true
+#         exist_map_name: Testmap2
+#         name: map1
+#       listen:
+#         limit: 200
+#         range:
+#           host_with_subnet: 192.0.2.1/24
+#           peer_group: PaulNetworkGroup
+#       log_neighbor_changes: true
+#       maxas_limit: 2
+#       maxcommunity_limit: 3
+#       maxextcommunity_limit: 3
+#       nexthop:
+#         route_map: RouteMap1
+#         trigger:
+#           delay: 2
+#       nopeerup_delay_options:
+#         cold_boot: 2
+#         nsf_switchover: 10
+#         post_boot: 22
+#         user_initiated: 22
+#       recursion: true
+#       redistribute_internal: true
+#       refresh:
+#         max_eor_time: 700
+#         stalepath_time: 800
+#       router_id:
+#         vrf: true
+#       scan_time: 22
+#       slow_peer:
+#         detection:
+#           threshold: 345
+#         split_update_group:
+#           dynamic: true
+#           permanent: true
+#       sso: true
+#       suppress_inactive: true
+#       update_delay: 2
+#       update_group: true
+#     bmp:
+#       buffer_size: 22
+#       server: 2
+#     distance:
+#       bgp:
+#         routes_external: 2
+#         routes_internal: 3
+#         routes_local: 4
+#       mbgp:
+#         routes_external: 2
+#         routes_internal: 3
+#         routes_local: 5
+#     distributes:
+#     - in: true
+#       prefix: prefixTest
+#     - gateway: gatewayTest
+#       out: true
+#     - acl: '300'
+#       interface: Loopback0
+#       out: true
+#     maximum_paths:
+#       ibgp: 2
+#       paths: 2
+#     maximum_secondary_paths:
+#       ibgp: 22
+#       paths: 22
+#     neighbors:
+#     - neighbor_address: 192.0.2.10
+#       remote_as: '64500'
+#       update_source: Loopback1
+#     - activate: true
+#       neighbor_address: 192.0.2.11
+#       remote_as: '45000'
+#       send_community:
+#         extended: true
+#     - activate: true
+#       neighbor_address: 192.0.2.12
+#       remote_as: '45000'
+#     - neighbor_address: 192.0.2.13
+#       remote_as: '6553601'
+#     - advertise:
+#         diverse_path:
+#           backup: true
+#       neighbor_address: 192.0.2.8
+#       route_reflector_client: true
+#     - neighbor_address: 192.0.2.9
+#       remote_as: '64500'
+#       route_maps:
+#       - in: true
+#         name: rmp1
+#       - in: true
+#         name: rmp2
+#       update_source: Loopback0
+#     - activate: true
+#       advertise:
+#         additional_paths:
+#           group_best: true
+#       neighbor_address: 2001:DB8::1037
+#     - neighbor_address: testNebTag
+#       peer_group: '5'
+#       soft_reconfiguration: true
+#       version: 4
+#     networks:
+#     - address: 192.0.2.15
+#       backdoor: true
+#       netmask: 55.255.255.0
+#       route_map: mp1
+#     - address: 192.0.2.16
+#       backdoor: true
+#       netmask: 255.255.255.0
+#       route_map: mp2
+#     - address: 192.0.2.17
+#       backdoor: true
+#       netmask: 255.255.255.0
+#       route_map: mp2
+#     redistribute:
+#     - static:
+#         metric: 33
+#         route_map: rmp1
+#         set: true
+#     - application:
+#         metric: 22
+#         name: app1
+#     - application:
+#         metric: 33
+#         name: app2
+#         route_map: mp1
+#     - connected:
+#         metric: 22
+#         set: true
+#     - mobile:
+#         metric: 21
+#         set: true
 """
 
 
@@ -3272,6 +3052,7 @@ def main():
         required_if=[
             ["state", "merged", ["config"]],
             ["state", "replaced", ["config"]],
+            ["state", "overridden", ["config"]],
             ["state", "rendered", ["config"]],
             ["state", "parsed", ["running_config"]],
         ],

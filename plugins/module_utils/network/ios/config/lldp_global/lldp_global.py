@@ -63,9 +63,7 @@ class Lldp_global(ConfigBase):
             self.gather_network_resources,
             data=data,
         )
-        lldp_global_facts = facts["ansible_network_resources"].get(
-            "lldp_global",
-        )
+        lldp_global_facts = facts["ansible_network_resources"].get("lldp_global")
         if not lldp_global_facts:
             return {}
 
@@ -142,26 +140,22 @@ class Lldp_global(ConfigBase):
                   to the desired configuration
         """
         commands = []
-        if self.state in ("merged", "replaced", "rendered") and not want:
+        if self.state in ("merged", "replaced", "overridden", "rendered") and not want:
             self._module.fail_json(
-                msg="value of config parameter must not be empty for state {0}".format(
-                    self.state,
-                ),
+                msg="value of config parameter must not be empty for state {0}".format(self.state),
             )
 
-        if self.state == "overridden":
-            commands = self._state_overridden(want, have)
         elif self.state == "deleted":
             commands = self._state_deleted(want, have)
         elif self.state in ("merged", "rendered"):
             commands = self._state_merged(want, have)
-        elif self.state == "replaced":
+        elif self.state in ["replaced", "overridden"]:
             commands = self._state_replaced(want, have)
 
         return commands
 
     def _state_replaced(self, want, have):
-        """The command generator when state is replaced
+        """The command generator when state is replaced/overridden
 
         :param want: the desired configuration as a dictionary
         :param have: the current configuration as a dictionary

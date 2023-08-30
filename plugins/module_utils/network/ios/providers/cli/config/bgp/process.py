@@ -64,9 +64,7 @@ class Provider(CliProvider):
         else:
             self._validate_input(config)
             if operation == "replace":
-                if existing_as and int(existing_as) != self.get_value(
-                    "config.bgp_as",
-                ):
+                if existing_as and int(existing_as) != self.get_value("config.bgp_as"):
                     commands.append("no router bgp %s" % existing_as)
                     config = None
 

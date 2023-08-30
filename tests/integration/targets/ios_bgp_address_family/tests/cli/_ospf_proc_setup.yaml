@@ -1,0 +1,8 @@
+---
+- name: Create OSPF processes for redistribution
+  cisco.ios.ios_ospfv2:
+    config:
+      processes:
+        - process_id: 123
+        - process_id: 124
+    state: merged

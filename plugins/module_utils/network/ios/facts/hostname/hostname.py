@@ -52,20 +52,13 @@ class HostnameFacts(object):
             data = self.get_hostname_data(connection)
 
         # parse native config using the Hostname template
-        hostname_parser = HostnameTemplate(
-            lines=data.splitlines(),
-            module=self._module,
-        )
+        hostname_parser = HostnameTemplate(lines=data.splitlines(), module=self._module)
         objs = hostname_parser.parse()
 
         ansible_facts["ansible_network_resources"].pop("hostname", None)
 
         params = utils.remove_empties(
-            hostname_parser.validate_config(
-                self.argument_spec,
-                {"config": objs},
-                redact=True,
-            ),
+            hostname_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
         facts["hostname"] = params.get("config", {})

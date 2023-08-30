@@ -368,91 +368,92 @@ Examples
 
 .. code-block:: yaml
 
-    - name: configure top level configuration
+    - name: Configure top level configuration
       cisco.ios.ios_config:
         lines: hostname {{ inventory_hostname }}
 
-    - name: configure interface settings
+    - name: Configure interface settings
       cisco.ios.ios_config:
         lines:
-        - description test interface
-        - ip address 172.31.1.1 255.255.255.0
+          - description test interface
+          - ip address 172.31.1.1 255.255.255.0
         parents: interface Ethernet1
 
-    - name: configure ip helpers on multiple interfaces
+    - name: Configure ip helpers on multiple interfaces
       cisco.ios.ios_config:
         lines:
-        - ip helper-address 172.26.1.10
-        - ip helper-address 172.26.3.8
-        parents: '{{ item }}'
+          - ip helper-address 172.26.1.10
+          - ip helper-address 172.26.3.8
+        parents: "{{ item }}"
       with_items:
-      - interface Ethernet1
-      - interface Ethernet2
-      - interface GigabitEthernet1
+        - interface Ethernet1
+        - interface Ethernet2
+        - interface GigabitEthernet1
 
-    - name: configure policer in Scavenger class
+    - name: Configure policer in Scavenger class
       cisco.ios.ios_config:
         lines:
-        - conform-action transmit
-        - exceed-action drop
+          - conform-action transmit
+          - exceed-action drop
         parents:
-        - policy-map Foo
-        - class Scavenger
-        - police cir 64000
+          - policy-map Foo
+          - class Scavenger
+          - police cir 64000
 
-    - name: load new acl into device
+    - name: Load new acl into device
       cisco.ios.ios_config:
         lines:
-        - 10 permit ip host 192.0.2.1 any log
-        - 20 permit ip host 192.0.2.2 any log
-        - 30 permit ip host 192.0.2.3 any log
-        - 40 permit ip host 192.0.2.4 any log
-        - 50 permit ip host 192.0.2.5 any log
+          - 10 permit ip host 192.0.2.1 any log
+          - 20 permit ip host 192.0.2.2 any log
+          - 30 permit ip host 192.0.2.3 any log
+          - 40 permit ip host 192.0.2.4 any log
+          - 50 permit ip host 192.0.2.5 any log
         parents: ip access-list extended test
         before: no ip access-list extended test
         match: exact
 
-    - name: check the running-config against master config
+    - name: Check the running-config against master config
       cisco.ios.ios_config:
         diff_against: intended
         intended_config: "{{ lookup('file', 'master.cfg') }}"
 
-    - name: check the startup-config against the running-config
+    - name: Check the startup-config against the running-config
       cisco.ios.ios_config:
         diff_against: startup
         diff_ignore_lines:
-        - ntp clock .*
+          - ntp clock .*
 
-    - name: save running to startup when modified
+    - name: Save running to startup when modified
       cisco.ios.ios_config:
         save_when: modified
 
-    - name: for idempotency, use full-form commands
+    - name: For idempotency, use full-form commands
       cisco.ios.ios_config:
         lines:
           # - shut
-        - shutdown
+          - shutdown
         # parents: int gig1/0/11
         parents: interface GigabitEthernet1/0/11
 
     # Set boot image based on comparison to a group_var (version) and the version
     # that is returned from the `ios_facts` module
-    - name: SETTING BOOT IMAGE
+    - name: Setting boot image
       cisco.ios.ios_config:
         lines:
-        - no boot system
-        - boot system flash bootflash:{{new_image}}
-        host: '{{ inventory_hostname }}'
+          - no boot system
+          - boot system flash bootflash:{{new_image}}
+        host: "{{ inventory_hostname }}"
       when: ansible_net_version != version
-    - name: render a Jinja2 template onto an IOS device
+
+    - name: Render a Jinja2 template onto an IOS device
       cisco.ios.ios_config:
-        backup: yes
+        backup: true
         src: ios_template.j2
 
-    - name: configurable backup path
+    - name: Configurable backup path
       cisco.ios.ios_config:
         src: ios_template.j2
-        backup: yes
+        backup: true
         backup_options:
           filename: backup.cfg
           dir_path: /home/user

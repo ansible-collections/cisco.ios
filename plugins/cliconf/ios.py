@@ -163,14 +163,10 @@ class Cliconf(CliconfBase):
     @enable_mode
     def get_config(self, source="running", flags=None, format=None):
         if source not in ("running", "startup"):
-            raise ValueError(
-                "fetching configuration from %s is not supported" % source,
-            )
+            raise ValueError("fetching configuration from %s is not supported" % source)
 
         if format:
-            raise ValueError(
-                "'format' value %s is not supported for get_config" % format,
-            )
+            raise ValueError("'format' value %s is not supported for get_config" % format)
 
         if not flags:
             flags = []
@@ -231,9 +227,7 @@ class Cliconf(CliconfBase):
         option_values = self.get_option_values()
 
         if candidate is None and device_operations["supports_generate_diff"]:
-            raise ValueError(
-                "candidate configuration is required to generate diff",
-            )
+            raise ValueError("candidate configuration is required to generate diff")
 
         if diff_match not in option_values["diff_match"]:
             raise ValueError(
@@ -255,11 +249,7 @@ class Cliconf(CliconfBase):
         if running and diff_match != "none":
             # running configuration
             have_src, have_banners = self._extract_banners(running)
-            running_obj = NetworkConfig(
-                indent=1,
-                contents=have_src,
-                ignore_lines=diff_ignore_lines,
-            )
+            running_obj = NetworkConfig(indent=1, contents=have_src, ignore_lines=diff_ignore_lines)
             configdiffobjs = candidate_obj.difference(
                 running_obj,
                 path=path,
@@ -284,7 +274,6 @@ class Cliconf(CliconfBase):
         :return: None
         """
         if self.get_option("commit_confirm_timeout") or self.get_option("commit_confirm_immediate"):
-
             commit_timeout = (
                 self.get_option("commit_confirm_timeout")
                 if self.get_option("commit_confirm_timeout")
@@ -309,39 +298,22 @@ class Cliconf(CliconfBase):
                     "Please set up archiving and try again",
                 )
 
-            if not re.search(
-                r"%No Rollback Confirmed Change pending",
-                rollback_state,
-            ):
+            if not re.search(r"%No Rollback Confirmed Change pending", rollback_state):
                 raise ValueError(
                     "Existing rollback change already pending. "
                     "Please resolve by issuing 'configure confirm' "
                     "or 'configure revert now'",
                 )
 
-            self.send_command(
-                f"configure terminal revert timer {commit_timeout}",
-            )
+            self.send_command(f"configure terminal revert timer {commit_timeout}")
         else:
             self.send_command("configure terminal")
 
     @enable_mode
-    def edit_config(
-        self,
-        candidate=None,
-        commit=True,
-        replace=None,
-        comment=None,
-    ):
+    def edit_config(self, candidate=None, commit=True, replace=None, comment=None):
         resp = {}
         operations = self.get_device_operations()
-        self.check_edit_config_capability(
-            operations,
-            candidate,
-            commit,
-            replace,
-            comment,
-        )
+        self.check_edit_config_capability(operations, candidate, commit, replace, comment)
 
         results = []
         requests = []
@@ -369,13 +341,7 @@ class Cliconf(CliconfBase):
         resp["response"] = results
         return resp
 
-    def edit_macro(
-        self,
-        candidate=None,
-        commit=True,
-        replace=None,
-        comment=None,
-    ):
+    def edit_macro(self, candidate=None, commit=True, replace=None, comment=None):
         """
         ios_config:
           lines: "{{ macro_lines }}"
@@ -386,13 +352,7 @@ class Cliconf(CliconfBase):
         """
         resp = {}
         operations = self.get_device_operations()
-        self.check_edit_config_capability(
-            operations,
-            candidate,
-            commit,
-            replace,
-            comment,
-        )
+        self.check_edit_config_capability(operations, candidate, commit, replace, comment)
 
         results = []
         requests = []
@@ -433,9 +393,7 @@ class Cliconf(CliconfBase):
         if not command:
             raise ValueError("must provide value of command to execute")
         if output:
-            raise ValueError(
-                "'output' value %s is not supported for get" % output,
-            )
+            raise ValueError("'output' value %s is not supported for get" % output)
 
         return self.send_command(
             command=command,
@@ -515,22 +473,12 @@ class Cliconf(CliconfBase):
 
     def get_capabilities(self):
         result = super(Cliconf, self).get_capabilities()
-        result["rpc"] += [
-            "edit_banner",
-            "get_diff",
-            "run_commands",
-            "get_defaults_flag",
-        ]
+        result["rpc"] += ["edit_banner", "get_diff", "run_commands", "get_defaults_flag"]
         result["device_operations"] = self.get_device_operations()
         result.update(self.get_option_values())
         return json.dumps(result)
 
-    def edit_banner(
-        self,
-        candidate=None,
-        multiline_delimiter="@",
-        commit=True,
-    ):
+    def edit_banner(self, candidate=None, multiline_delimiter="@", commit=True):
         """
         Edit banner on remote device
         :param banners: Banners to be loaded in json format
@@ -576,9 +524,7 @@ class Cliconf(CliconfBase):
 
             output = cmd.pop("output", None)
             if output:
-                raise ValueError(
-                    "'output' value %s is not supported for run_commands" % output,
-                )
+                raise ValueError("'output' value %s is not supported for run_commands" % output)
 
             try:
                 out = self.send_command(**cmd)
@@ -624,14 +570,8 @@ class Cliconf(CliconfBase):
                     " response window: %s" % self._connection._last_recv_window,
                 )
 
-            if re.search(
-                r"config.*\)#",
-                to_text(out, errors="surrogate_then_replace").strip(),
-            ):
-                self._connection.queue_message(
-                    "vvvv",
-                    "wrong context, sending end to device",
-                )
+            if re.search(r"config.*\)#", to_text(out, errors="surrogate_then_replace").strip()):
+                self._connection.queue_message("vvvv", "wrong context, sending end to device")
                 self._connection.send_command("end")
 
     def _extract_banners(self, config):

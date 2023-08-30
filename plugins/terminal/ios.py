@@ -34,12 +34,7 @@ display = Display()
 
 
 class TerminalModule(TerminalBase):
-
-    terminal_stdout_re = [
-        re.compile(
-            rb"[\r\n]?[\w\+\-\.:\/\[\]]+(?:\([^\)]+\)){0,3}(?:[>#]) ?$",
-        ),
-    ]
+    terminal_stdout_re = [re.compile(rb"[\r\n]?[\w\+\-\.:\/\[\]]+(?:\([^\)]+\)){0,3}(?:[>#]) ?$")]
 
     privilege_level_re = re.compile(r"Current privilege level is (\d+)$")
 
@@ -55,10 +50,13 @@ class TerminalModule(TerminalBase):
         re.compile(rb"'[^']' +returned error code: ?\d+"),
         re.compile(rb"Bad mask", re.I),
         re.compile(rb"% ?(\S+) ?overlaps with ?(\S+)", re.I),
-        re.compile(rb"[%\S] ?Error: ?[\s]+", re.I),
-        re.compile(rb"[%\S] ?Informational: ?[\s]+", re.I),
+        re.compile(rb"% ?(\S+) ?Error: ?[\s]+", re.I),
+        re.compile(rb"% ?(\S+) ?Informational: ?[\s]+", re.I),
         re.compile(rb"Command authorization failed"),
         re.compile(rb"Command Rejected: ?[\s]+", re.I),
+        re.compile(rb"% General session commands not allowed under the address family", re.I),
+        re.compile(rb"% BGP: Error initializing topology", re.I),
+        re.compile(rb"%SNMP agent not enabled", re.I),
     ]
 
     terminal_config_prompt = re.compile(r"^.+\(config(-.*)?\)#$")
@@ -66,9 +64,7 @@ class TerminalModule(TerminalBase):
     def get_privilege_level(self):
         try:
             cmd = {"command": "show privilege"}
-            result = self._exec_cli_command(
-                to_bytes(json.dumps(cmd), errors="surrogate_or_strict"),
-            )
+            result = self._exec_cli_command(to_bytes(json.dumps(cmd), errors="surrogate_or_strict"))
         except AnsibleConnectionFailure as e:
             raise AnsibleConnectionFailure(
                 "unable to fetch privilege, with error: %s" % (e.message),
@@ -76,9 +72,7 @@ class TerminalModule(TerminalBase):
 
         prompt = self.privilege_level_re.search(result)
         if not prompt:
-            raise AnsibleConnectionFailure(
-                "unable to check privilege level [%s]" % result,
-            )
+            raise AnsibleConnectionFailure("unable to check privilege level [%s]" % result)
 
         return int(prompt.group(1))
 
@@ -88,19 +82,13 @@ class TerminalModule(TerminalBase):
             self._exec_cli_command(b"terminal length 0")
         except AnsibleConnectionFailure:
             try:
-                self._exec_cli_command(
-                    b"screen-length 0",
-                )  # support to SD-WAN mode
+                self._exec_cli_command(b"screen-length 0")  # support to SD-WAN mode
                 _is_sdWan = True
             except AnsibleConnectionFailure:  # fails as length required for handling prompt
-                raise AnsibleConnectionFailure(
-                    "unable to set terminal parameters",
-                )
+                raise AnsibleConnectionFailure("unable to set terminal parameters")
         try:
             if _is_sdWan:
-                self._exec_cli_command(
-                    b"screen-width 512",
-                )  # support to SD-WAN mode
+                self._exec_cli_command(b"screen-width 512")  # support to SD-WAN mode
             else:
                 self._exec_cli_command(b"terminal width 512")
                 try:
@@ -120,16 +108,11 @@ class TerminalModule(TerminalBase):
         if passwd:
             # Note: python-3.5 cannot combine u"" and r"" together.  Thus make
             # an r string and use to_text to ensure it's text on both py2 and py3.
-            cmd["prompt"] = to_text(
-                r"[\r\n]?(?:.*)?[Pp]assword: ?$",
-                errors="surrogate_or_strict",
-            )
+            cmd["prompt"] = to_text(r"[\r\n]?(?:.*)?[Pp]assword: ?$", errors="surrogate_or_strict")
             cmd["answer"] = passwd
             cmd["prompt_retry_check"] = True
         try:
-            self._exec_cli_command(
-                to_bytes(json.dumps(cmd), errors="surrogate_or_strict"),
-            )
+            self._exec_cli_command(to_bytes(json.dumps(cmd), errors="surrogate_or_strict"))
             prompt = self._get_prompt()
             privilege_level = self.get_privilege_level()
         except AnsibleConnectionFailure as e:

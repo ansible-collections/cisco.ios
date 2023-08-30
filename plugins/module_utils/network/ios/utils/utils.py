@@ -15,11 +15,8 @@ import socket
 
 from itertools import count, groupby
 
+from ansible.module_utils.common.network import is_masklen, to_netmask
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    is_masklen,
-    to_netmask,
-)
 
 
 def remove_command_from_config_list(interface, cmd, commands):
@@ -80,7 +77,7 @@ def new_dict_to_set(input_dict, temp_list, test_set, count=0):
                 temp_list.append(k)
                 for each in v:
                     if isinstance(each, dict):
-                        if [True for i in each.values() if type(i) == list]:
+                        if [True for i in each.values() if isinstance(i, list)]:
                             new_dict_to_set(each, temp_list, test_set, count)
                         else:
                             new_dict_to_set(each, temp_list, test_set, 0)

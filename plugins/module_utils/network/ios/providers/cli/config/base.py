@@ -14,7 +14,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 
 
 class ConfigBase(object):
-
     argument_spec = {}
 
     mutually_exclusive = []

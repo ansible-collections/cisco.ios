@@ -19,7 +19,9 @@ short_description: Resource module to configure prefix lists.
 description:
   - This module configures and manages the attributes of prefix list on Cisco IOS.
 version_added: 2.2.0
-author: Sumit Jaiswal (@justjais)
+author:
+  - Sagar Paul (@KB-perByte)
+  - Sumit Jaiswal (@justjais)
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
@@ -34,7 +36,7 @@ options:
         description:
           - The Address Family Indicator (AFI) for the  prefix list.
         type: str
-        choices: ['ipv4', 'ipv6']
+        choices: ["ipv4", "ipv6"]
       prefix_lists:
         description: List of Prefix-lists.
         type: list
@@ -44,7 +46,7 @@ options:
             description: Name of a prefix-list
             type: str
           description:
-            description:  Prefix-list specific description
+            description: Prefix-list specific description
             type: str
           entries:
             description: Prefix-lists supported params.
@@ -54,7 +56,7 @@ options:
               action:
                 description: Specify packets to be rejected or forwarded
                 type: str
-                choices: ['deny', 'permit']
+                choices: ["deny", "permit"]
               sequence:
                 description: sequence number of an entry
                 type: int
@@ -80,12 +82,12 @@ options:
                 type: int
   running_config:
     description:
-    - This option is used only with state I(parsed).
-    - The value of this option should be the output received from the IOS device by
-      executing the command B(sh bgp).
-    - The state I(parsed) reads the configuration from C(running_config) option and
-      transforms it into Ansible structured data as per the resource module's argspec
-      and the value is then returned in the I(parsed) key within the result.
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the IOS device by
+        executing the command B(sh bgp).
+      - The state I(parsed) reads the configuration from C(running_config) option and
+        transforms it into Ansible structured data as per the resource module's argspec
+        and the value is then returned in the I(parsed) key within the result.
     type: str
   state:
     description:

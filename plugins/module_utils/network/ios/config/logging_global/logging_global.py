@@ -21,7 +21,7 @@ from copy import deepcopy
 
 from ansible.module_utils._text import to_text
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
@@ -58,7 +58,8 @@ class Logging_global(ResourceModule):
             "esm",
             "exception",
             "facility",
-            "history",
+            "history.size",
+            "history.severity",
             "monitor",
             "logging_on",
             "origin_id",
@@ -72,11 +73,7 @@ class Logging_global(ResourceModule):
             "userinfo",
         ]
         self.list_parsers = ["hosts", "filter", "source_interface"]
-        self.complex_parsers = [
-            "message_counter",
-            "discriminator",
-            "snmp_trap",
-        ]
+        self.complex_parsers = ["message_counter", "discriminator", "snmp_trap"]
 
     def execute_module(self):
         """Execute the module
@@ -151,11 +148,7 @@ class Logging_global(ResourceModule):
 
     def list_to_dict(self, data):
         """Convert all list of dicts to dicts of dicts"""
-        p_key = {
-            "filter": "url",
-            "hosts": "host",
-            "source_interface": "interface",
-        }
+        p_key = {"filter": "url", "hosts": "host", "source_interface": "interface"}
         if data.get("hosts"):  # handle aliased hostname as host
             for v in data.get("hosts"):
                 if v.get("hostname"):

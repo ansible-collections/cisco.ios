@@ -19,7 +19,7 @@ created.
 """
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
@@ -121,45 +121,21 @@ class Route_maps(ResourceModule):
                             and have_entry.get("description")
                             != want["entries"][k].get("description")
                         ):
-                            self.compare(
-                                parsers=["description"],
-                                want=dict(),
-                                have=have_entry,
-                            )
-                        self.compare(
-                            parsers=self.parsers,
-                            want=want["entries"][k],
-                            have=have_entry,
-                        )
+                            self.compare(parsers=["description"], want=dict(), have=have_entry)
+                        self.compare(parsers=self.parsers, want=want["entries"][k], have=have_entry)
                         have_match = have_entry.get("match")
                         want_match = v.get("match")
                         if have_match and want_match:
-                            self.list_type_compare(
-                                "match",
-                                want=want_match,
-                                have=have_match,
-                            )
+                            self.list_type_compare("match", want=want_match, have=have_match)
                         elif not have_match and want_match:
-                            self.list_type_compare(
-                                "match",
-                                want=want_match,
-                                have=dict(),
-                            )
+                            self.list_type_compare("match", want=want_match, have=dict())
                         have_set = have_entry.get("set")
                         want_set = v.get("set")
 
                         if have_set and want_set:
-                            self.list_type_compare(
-                                "set",
-                                want=want_set,
-                                have=have_set,
-                            )
+                            self.list_type_compare("set", want=want_set, have=have_set)
                         elif not have_set and want_set:
-                            self.list_type_compare(
-                                "set",
-                                want=want_set,
-                                have=dict(),
-                            )
+                            self.list_type_compare("set", want=want_set, have=dict())
 
                     if cmd_len != len(self.commands):
                         route_map_cmd = "route-map {route_map}".format(**want)
@@ -171,25 +147,13 @@ class Route_maps(ResourceModule):
                         cmd_len = len(self.commands)
             else:
                 for k, v in iteritems(want["entries"]):
-                    self.compare(
-                        parsers=self.parsers,
-                        want=want["entries"][k],
-                        have=dict(),
-                    )
+                    self.compare(parsers=self.parsers, want=want["entries"][k], have=dict())
                     want_match = v.get("match")
                     if want_match:
-                        self.list_type_compare(
-                            "match",
-                            want=want_match,
-                            have=dict(),
-                        )
+                        self.list_type_compare("match", want=want_match, have=dict())
                     want_set = v.get("set")
                     if want_set:
-                        self.list_type_compare(
-                            "set",
-                            want=want_set,
-                            have=dict(),
-                        )
+                        self.list_type_compare("set", want=want_set, have=dict())
                     if cmd_len != len(self.commands):
                         route_map_cmd = "route-map {route_map}".format(**want)
                         if want["entries"][k].get("action"):
@@ -225,21 +189,13 @@ class Route_maps(ResourceModule):
                         have={compare_type: {k: have_v}},
                     )
                 else:
-                    self.compare(
-                        parsers=parsers,
-                        want={compare_type: {k: v}},
-                        have=dict(),
-                    )
+                    self.compare(parsers=parsers, want={compare_type: {k: v}}, have=dict())
 
             if k in ["community"]:
                 if have_v:
                     if have_v != v:
                         if self.state == "overridden" or self.state == "replaced":
-                            self.compare(
-                                parsers=parsers,
-                                want={},
-                                have={compare_type: {k: have_v}},
-                            )
+                            self.compare(parsers=parsers, want={}, have={compare_type: {k: have_v}})
                         elif self.state == "merged":
                             for _key, _val in have_v.items():
                                 if isinstance(_val, list):
@@ -253,11 +209,7 @@ class Route_maps(ResourceModule):
                             have={compare_type: {k: have_v}},
                         )
                 else:
-                    self.compare(
-                        parsers=parsers,
-                        want={compare_type: {k: v}},
-                        have=dict(),
-                    )
+                    self.compare(parsers=parsers, want={compare_type: {k: v}}, have=dict())
 
             if k in ["ip", "ipv6"]:
                 for key, val in iteritems(v):
@@ -300,11 +252,7 @@ class Route_maps(ResourceModule):
                                 have={compare_type: {k: {key: val}}},
                             )
                 else:
-                    self.compare(
-                        parsers=parsers,
-                        want=dict(),
-                        have={compare_type: {k: v}},
-                    )
+                    self.compare(parsers=parsers, want=dict(), have={compare_type: {k: v}})
 
     def list_to_dict(self, param):
         if param:
@@ -321,16 +269,12 @@ class Route_maps(ResourceModule):
                     for every in val["entries"]:
                         match = every.get("match")
                         if match:
-                            if match.get("as_path") and match.get(
-                                "as_path",
-                            ).get("acls"):
+                            if match.get("as_path") and match.get("as_path").get("acls"):
                                 match["as_path"]["acls"] = convert_to_dict(
                                     match["as_path"]["acls"],
                                     "acl",
                                 )
-                            if match.get("community") and match.get(
-                                "community",
-                            ).get("name"):
+                            if match.get("community") and match.get("community").get("name"):
                                 match["community"]["name"] = convert_to_dict(
                                     match["community"]["name"],
                                     "name",
@@ -354,32 +298,26 @@ class Route_maps(ResourceModule):
                                     "route_source",
                                 ]:
                                     if match["ip"].get(each_ip_param):
-                                        if match["ip"][each_ip_param].get(
-                                            "acls",
-                                        ):
+                                        if match["ip"][each_ip_param].get("acls"):
                                             match["ip"][each_ip_param]["acls"] = convert_to_dict(
                                                 match["ip"][each_ip_param]["acls"],
                                                 "acl",
                                             )
-                                        elif match["ip"][each_ip_param].get(
-                                            "prefix_lists",
-                                        ):
+                                        elif match["ip"][each_ip_param].get("prefix_lists"):
                                             match["ip"][each_ip_param][
                                                 "prefix_lists"
                                             ] = convert_to_dict(
                                                 match["ip"][each_ip_param]["prefix_lists"],
                                                 "prefix_list",
                                             )
-                            if match.get("local_preference") and match.get(
-                                "local_preference",
-                            ).get("value"):
+                            if match.get("local_preference") and match.get("local_preference").get(
+                                "value",
+                            ):
                                 match["local_preference"]["value"] = convert_to_dict(
                                     match["local_preference"]["value"],
                                     "value",
                                 )
-                            if match.get("mdt_group") and match.get(
-                                "mdt_group",
-                            ).get("acls"):
+                            if match.get("mdt_group") and match.get("mdt_group").get("acls"):
                                 match["mdt_group"]["acls"] = convert_to_dict(
                                     match["mdt_group"]["acls"],
                                     "acl",
@@ -391,9 +329,7 @@ class Route_maps(ResourceModule):
                                 )
                             if match.get("security_group"):
                                 for each_sg_param in ["source", "destination"]:
-                                    if match.get("security_group").get(
-                                        each_sg_param,
-                                    ):
+                                    if match.get("security_group").get(each_sg_param):
                                         match["security_group"][each_sg_param] = convert_to_dict(
                                             match["security_group"][each_sg_param],
                                             each_sg_param,
@@ -401,10 +337,7 @@ class Route_maps(ResourceModule):
                         set = every.get("set")
                         if set:
                             if set.get("interfaces"):
-                                set["interfaces"] = convert_to_dict(
-                                    set["interfaces"],
-                                    "interface",
-                                )
+                                set["interfaces"] = convert_to_dict(set["interfaces"], "interface")
                             if set.get("as_path"):
                                 _k = set.get("as_path").get("prepend")
                                 if _k:
@@ -422,10 +355,7 @@ class Route_maps(ResourceModule):
                                     # convert to asplain for correct sorting
                                     if ":" in _k["number"]:
                                         _k["number"] = list(
-                                            map(
-                                                to_asplain,
-                                                _k["number"].split(" "),
-                                            ),
+                                            map(to_asplain, _k["number"].split(" ")),
                                         )
                                     else:
                                         _k["number"] = _k["number"].split(" ")
@@ -435,7 +365,5 @@ class Route_maps(ResourceModule):
 
                         action = every.get("action")
                         sequence = every.get("sequence")
-                        temp_entries.update(
-                            {action + "_" + str(sequence): every},
-                        )
+                        temp_entries.update({action + "_" + str(sequence): every})
                     val["entries"] = temp_entries

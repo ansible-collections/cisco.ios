@@ -1483,7 +1483,7 @@ Parameters
                         <div>The states <em>rendered</em>, <em>gathered</em> and <em>parsed</em> does not perform any change on the device.</div>
                         <div>The state <em>rendered</em> will transform the configuration in <code>config</code> option to platform specific CLI commands which will be returned in the <em>rendered</em> key within the result. For state <em>rendered</em> active connection to remote host is not required.</div>
                         <div>The state <em>gathered</em> will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the <em>gathered</em> key within the result.</div>
-                        <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into JSON format as per the resource module parameters and the value is returned in the <em>parsed</em> key within the result. The value of <code>running_config</code> option should be the same format as the output of command <em>show running-config | include ip route|ipv6 route</em> executed on device. For state <em>parsed</em> active connection to remote host is not required.</div>
+                        <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into JSON format as per the resource module parameters and the value is returned in the <em>parsed</em> key within the result. The value of <code>running_config</code> option should be the same format as the output of command <em>show running-config | section ^interface</em> executed on device. For state <em>parsed</em> active connection to remote host is not required.</div>
                 </td>
             </tr>
     </table>
@@ -1529,19 +1529,60 @@ Examples
           - name: GigabitEthernet0/1
         state: deleted
 
-    #  Commands Fired:
-    #  ---------------
-    #
-    #  "commands": [
-    #         "interface GigabitEthernet0/1",
-    #         "no ipv6 ospf 55 area 105",
-    #         "no ipv6 ospf adjacency stagger disable",
-    #         "no ipv6 ospf priority 20",
-    #         "no ipv6 ospf transmit-delay 30"
-    #     ]
+    # Task Output:
+    # ------------
 
+    # before:
+    #   - name: GigabitEthernet0/0
+    #   - address_family:
+    #     - adjacency: true
+    #       afi: ipv6
+    #       priority: 20
+    #       process:
+    #         area_id: '105'
+    #         id: 55
+    #       transmit_delay: 30
+    #     name: GigabitEthernet0/1
+    #   - address_family:
+    #     - adjacency: true
+    #       afi: ipv4
+    #       cost:
+    #         interface_cost: 30
+    #       priority: 40
+    #       process:
+    #         area_id: '20'
+    #         id: 10
+    #       ttl_security:
+    #         hops: 50
+    #         set: true
+    #     name: GigabitEthernet0/2
+    #
+    # commands:
+    # - interface GigabitEthernet0/1
+    # - no ipv6 ospf 55 area 105
+    # - no ipv6 ospf adjacency stagger disable
+    # - no ipv6 ospf priority 20
+    # - no ipv6 ospf transmit-delay 30
+    #
+    # after:
+    #   - name: GigabitEthernet0/0
+    #   - name: GigabitEthernet0/1
+    #   - address_family:
+    #     - adjacency: true
+    #       afi: ipv4
+    #       cost:
+    #         interface_cost: 30
+    #       priority: 40
+    #       process:
+    #         area_id: '20'
+    #         id: 10
+    #       ttl_security:
+    #         hops: 50
+    #         set: true
+    #     name: GigabitEthernet0/2
+    #
     # After state:
-    # -------------
+    # ------------
     # router-ios#sh running-config | section ^interface
     # interface GigabitEthernet0/0
     # interface GigabitEthernet0/1
@@ -1575,22 +1616,51 @@ Examples
       cisco.ios.ios_ospf_interfaces:
         state: deleted
 
-    # Commands Fired:
-    # ---------------
+    # Task Output:
+    # ------------
+
+    # before:
+    #   - name: GigabitEthernet0/0
+    #   - address_family:
+    #     - adjacency: true
+    #       afi: ipv6
+    #       priority: 20
+    #       process:
+    #         area_id: '105'
+    #         id: 55
+    #       transmit_delay: 30
+    #     name: GigabitEthernet0/1
+    #   - address_family:
+    #     - adjacency: true
+    #       afi: ipv4
+    #       cost:
+    #         interface_cost: 30
+    #       priority: 40
+    #       process:
+    #         area_id: '20'
+    #         id: 10
+    #       ttl_security:
+    #         hops: 50
+    #         set: true
+    #     name: GigabitEthernet0/2
     #
-    #  "commands": [
-    #         "interface GigabitEthernet0/2",
-    #         "no ip ospf 10 area 20",
-    #         "no ip ospf adjacency stagger disable",
-    #         "no ip ospf cost 30",
-    #         "no ip ospf priority 40",
-    #         "no ip ospf ttl-security hops 50",
-    #         "interface GigabitEthernet0/1",
-    #         "no ipv6 ospf 55 area 105",
-    #         "no ipv6 ospf adjacency stagger disable",
-    #         "no ipv6 ospf priority 20",
-    #         "no ipv6 ospf transmit-delay 30"
-    #     ]
+    # commands:
+    # - interface GigabitEthernet0/2
+    # - no ip ospf 10 area 20
+    # - no ip ospf adjacency stagger disable
+    # - no ip ospf cost 30
+    # - no ip ospf priority 40
+    # - no ip ospf ttl-security hops 50
+    # - interface GigabitEthernet0/1
+    # - no ipv6 ospf 55 area 105
+    # - no ipv6 ospf adjacency stagger disable
+    # - no ipv6 ospf priority 20
+    # - no ipv6 ospf transmit-delay 30
+    #
+    # after:
+    #   - name: GigabitEthernet0/0
+    #   - name: GigabitEthernet0/1
+    #   - name: GigabitEthernet0/2
 
     # After state:
     # -------------
@@ -1644,29 +1714,67 @@ Examples
                 transmit_delay: 45
         state: merged
 
-    #  Commands Fired:
-    #  ---------------
+    # Task Output:
+    # ------------
+    # before: []
     #
-    #   "commands": [
-    #         "interface GigabitEthernet0/1",
-    #         "ip ospf 10 area 30",
-    #         "ip ospf adjacency stagger disable",
-    #         "ip ospf bfd",
-    #         "ip ospf cost 5",
-    #         "ip ospf dead-interval 5",
-    #         "ip ospf demand-circuit ignore",
-    #         "ip ospf network broadcast",
-    #         "ip ospf priority 25",
-    #         "ip ospf resync-timeout 10",
-    #         "ip ospf shutdown",
-    #         "ip ospf ttl-security hops 50",
-    #         "ipv6 ospf 35 area 45",
-    #         "ipv6 ospf adjacency stagger disable",
-    #         "ipv6 ospf database-filter all out",
-    #         "ipv6 ospf manet peering link-metrics 10",
-    #         "ipv6 ospf priority 55",
-    #         "ipv6 ospf transmit-delay 45"
-    #     ]
+    # commands:
+    # - interface GigabitEthernet0/1
+    # - ip ospf 10 area 30
+    # - ip ospf adjacency stagger disable
+    # - ip ospf bfd
+    # - ip ospf cost 5
+    # - ip ospf dead-interval 5
+    # - ip ospf demand-circuit ignore
+    # - ip ospf network broadcast
+    # - ip ospf priority 25
+    # - ip ospf resync-timeout 10
+    # - ip ospf shutdown
+    # - ip ospf ttl-security hops 50
+    # - ipv6 ospf 35 area 45
+    # - ipv6 ospf adjacency stagger disable
+    # - ipv6 ospf database-filter all out
+    # - ipv6 ospf manet peering link-metrics 10
+    # - ipv6 ospf priority 55
+    # - ipv6 ospf transmit-delay 45
+    #
+    # after:
+    #   - name: GigabitEthernet0/0
+    #   - address_family:
+    #     - adjacency: true
+    #       afi: ipv4
+    #       bfd: true
+    #       cost:
+    #         interface_cost: 5
+    #       dead_interval:
+    #         time: 5
+    #       demand_circuit:
+    #         enable: true
+    #         ignore: true
+    #       network:
+    #         broadcast: true
+    #       priority: 25
+    #       process:
+    #         area_id: '30'
+    #         id: 10
+    #       resync_timeout: 10
+    #       shutdown: true
+    #       ttl_security:
+    #         hops: 50
+    #         set: true
+    #     - adjacency: true
+    #       afi: ipv6
+    #       database_filter: true
+    #       manet:
+    #         link_metrics:
+    #           cost_threshold: 10
+    #       priority: 55
+    #       process:
+    #         area_id: '45'
+    #         id: 35
+    #       transmit_delay: 45
+    #     name: GigabitEthernet0/1
+    #   - name: GigabitEthernet0/2
 
     # After state:
     # -------------
@@ -1720,7 +1828,7 @@ Examples
     #  ipv6 ospf manet peering link-metrics 10
     # interface GigabitEthernet0/2
 
-    - name: Override provided OSPF Interfaces configuration
+    - name: Override running config with provided OSPF Interfaces configuration
       cisco.ios.ios_ospf_interfaces:
         config:
           - name: GigabitEthernet0/1
@@ -1746,35 +1854,97 @@ Examples
                   hops: 50
         state: overridden
 
-    # Commands Fired:
-    # ---------------
+    # Task Output:
+    # ------------
     #
-    #  "commands": [
-    #         "interface GigabitEthernet0/2",
-    #         "ip ospf 10 area 20",
-    #         "ip ospf adjacency stagger disable",
-    #         "ip ospf cost 30",
-    #         "ip ospf priority 40",
-    #         "ip ospf ttl-security hops 50",
-    #         "interface GigabitEthernet0/1",
-    #         "ipv6 ospf 55 area 105",
-    #         "no ipv6 ospf database-filter all out",
-    #         "no ipv6 ospf manet peering link-metrics 10",
-    #         "ipv6 ospf priority 20",
-    #         "ipv6 ospf transmit-delay 30",
-    #         "no ip ospf 10 area 30",
-    #         "no ip ospf adjacency stagger disable",
-    #         "no ip ospf bfd",
-    #         "no ip ospf cost 5",
-    #         "no ip ospf dead-interval 5",
-    #         "no ip ospf demand-circuit ignore",
-    #         "no ip ospf network broadcast",
-    #         "no ip ospf priority 25",
-    #         "no ip ospf resync-timeout 10",
-    #         "no ip ospf shutdown",
-    #         "no ip ospf ttl-security hops 50"
-    #     ]
-
+    # before:
+    #   - name: GigabitEthernet0/0
+    #   - address_family:
+    #     - adjacency: true
+    #       afi: ipv4
+    #       bfd: true
+    #       cost:
+    #         interface_cost: 5
+    #       dead_interval:
+    #         time: 5
+    #       demand_circuit:
+    #         enable: true
+    #         ignore: true
+    #       network:
+    #         broadcast: true
+    #       priority: 25
+    #       process:
+    #         area_id: '30'
+    #         id: 10
+    #       resync_timeout: 10
+    #       shutdown: true
+    #       ttl_security:
+    #         hops: 50
+    #         set: true
+    #     - adjacency: true
+    #       afi: ipv6
+    #       database_filter: true
+    #       manet:
+    #         link_metrics:
+    #           cost_threshold: 10
+    #       priority: 55
+    #       process:
+    #         area_id: '45'
+    #         id: 35
+    #       transmit_delay: 45
+    #     name: GigabitEthernet0/1
+    #   - name: GigabitEthernet0/2
+    #
+    # commands:
+    # - interface GigabitEthernet0/2
+    # - ip ospf 10 area 20
+    # - ip ospf adjacency stagger disable
+    # - ip ospf cost 30
+    # - ip ospf priority 40
+    # - ip ospf ttl-security hops 50
+    # - interface GigabitEthernet0/1
+    # - ipv6 ospf 55 area 105
+    # - no ipv6 ospf database-filter all out
+    # - no ipv6 ospf manet peering link-metrics 10
+    # - ipv6 ospf priority 20
+    # - ipv6 ospf transmit-delay 30
+    # - no ip ospf 10 area 30
+    # - no ip ospf adjacency stagger disable
+    # - no ip ospf bfd
+    # - no ip ospf cost 5
+    # - no ip ospf dead-interval 5
+    # - no ip ospf demand-circuit ignore
+    # - no ip ospf network broadcast
+    # - no ip ospf priority 25
+    # - no ip ospf resync-timeout 10
+    # - no ip ospf shutdown
+    # - no ip ospf ttl-security hops 50
+    #
+    # parsed:
+    #   - name: GigabitEthernet0/0
+    #   - address_family:
+    #     - adjacency: true
+    #       afi: ipv6
+    #       priority: 20
+    #       process:
+    #         area_id: '105'
+    #         id: 55
+    #       transmit_delay: 30
+    #     name: GigabitEthernet0/1
+    #   - address_family:
+    #     - adjacency: true
+    #       afi: ipv4
+    #       cost:
+    #         interface_cost: 30
+    #       priority: 40
+    #       process:
+    #         area_id: '20'
+    #         id: 10
+    #       ttl_security:
+    #         hops: 50
+    #         set: true
+    #     name: GigabitEthernet0/2
+    #
     # After state:
     # -------------
     #
@@ -1833,18 +2003,102 @@ Examples
                 transmit_delay: 30
         state: replaced
 
-    # Commands Fired:
-    # ---------------
-    #  "commands": [
-    #         "interface GigabitEthernet0/2",
-    #         "ipv6 ospf 55 area 105",
-    #         "ipv6 ospf adjacency stagger disable",
-    #         "ipv6 ospf priority 20",
-    #         "ipv6 ospf transmit-delay 30"
-    #     ]
+    # Task Output:
+    # ------------
+    #
+    # before:
+    #   - name: GigabitEthernet0/0
+    #   - address_family:
+    #     - adjacency: true
+    #       afi: ipv4
+    #       bfd: true
+    #       cost:
+    #         interface_cost: 5
+    #       dead_interval:
+    #         time: 5
+    #       demand_circuit:
+    #         enable: true
+    #         ignore: true
+    #       network:
+    #         broadcast: true
+    #       priority: 25
+    #       process:
+    #         area_id: '30'
+    #         id: 10
+    #       resync_timeout: 10
+    #       shutdown: true
+    #       ttl_security:
+    #         hops: 50
+    #         set: true
+    #     - adjacency: true
+    #       afi: ipv6
+    #       database_filter: true
+    #       manet:
+    #         link_metrics:
+    #           cost_threshold: 10
+    #       priority: 55
+    #       process:
+    #         area_id: '45'
+    #         id: 35
+    #       transmit_delay: 45
+    #     name: GigabitEthernet0/1
+    #   - name: GigabitEthernet0/2
+    #
+    # commands:
+    # - interface GigabitEthernet0/2
+    # - ipv6 ospf 55 area 105
+    # - ipv6 ospf adjacency stagger disable
+    # - ipv6 ospf priority 20
+    # - ipv6 ospf transmit-delay 30
+    #
+    # after:
+    #   - name: GigabitEthernet0/0
+    #   - address_family:
+    #     - adjacency: true
+    #       afi: ipv4
+    #       bfd: true
+    #       cost:
+    #         interface_cost: 5
+    #       dead_interval:
+    #         time: 5
+    #       demand_circuit:
+    #         enable: true
+    #         ignore: true
+    #       network:
+    #         broadcast: true
+    #       priority: 25
+    #       process:
+    #         area_id: '30'
+    #         id: 10
+    #       resync_timeout: 10
+    #       shutdown: true
+    #       ttl_security:
+    #         hops: 50
+    #         set: true
+    #     - adjacency: true
+    #       afi: ipv6
+    #       database_filter: true
+    #       manet:
+    #         link_metrics:
+    #           cost_threshold: 10
+    #       priority: 55
+    #       process:
+    #         area_id: '45'
+    #         id: 35
+    #       transmit_delay: 45
+    #     name: GigabitEthernet0/1
+    #   - address_family:
+    #     - adjacency: true
+    #       afi: ipv6
+    #       priority: 20
+    #       process:
+    #         area_id: '105'
+    #         id: 55
+    #       transmit_delay: 30
+    #     name: GigabitEthernet0/2
 
     # After state:
-    # -------------
+    # ------------
     # router-ios#sh running-config | section ^interface
     # interface GigabitEthernet0/0
     # interface GigabitEthernet0/1
@@ -1903,65 +2157,46 @@ Examples
         config:
         state: gathered
 
-    # Module Execution Result:
-    # ------------------------
+    # Task Output:
+    # ------------
     #
-    #  "gathered": [
-    #         {
-    #             "name": "GigabitEthernet0/2"
-    #         },
-    #         {
-    #             "address_family": [
-    #                 {
-    #                     "adjacency": true,
-    #                     "afi": "ipv4",
-    #                     "bfd": true,
-    #                     "cost": {
-    #                         "interface_cost": 5
-    #                     },
-    #                     "dead_interval": {
-    #                         "time": 5
-    #                     },
-    #                     "demand_circuit": {
-    #                         "ignore": true
-    #                     },
-    #                     "network": {
-    #                         "broadcast": true
-    #                     },
-    #                     "priority": 25,
-    #                     "process": {
-    #                         "area_id": "30",
-    #                         "id": 10
-    #                     },
-    #                     "resync_timeout": 10,
-    #                     "shutdown": true,
-    #                     "ttl_security": {
-    #                         "hops": 50
-    #                     }
-    #                 },
-    #                 {
-    #                     "adjacency": true,
-    #                     "afi": "ipv6",
-    #                     "database_filter": true,
-    #                     "manet": {
-    #                         "link_metrics": {
-    #                             "cost_threshold": 10
-    #                         }
-    #                     },
-    #                     "priority": 55,
-    #                     "process": {
-    #                         "area_id": "45",
-    #                         "id": 35
-    #                     },
-    #                     "transmit_delay": 45
-    #                 }
-    #             ],
-    #             "name": "GigabitEthernet0/1"
-    #         },
-    #         {
-    #             "name": "GigabitEthernet0/0"
-    #         }
-    #  ]
+    # gathered:
+    #   - name: GigabitEthernet0/0
+    #   - address_family:
+    #     - adjacency: true
+    #       afi: ipv4
+    #       bfd: true
+    #       cost:
+    #         interface_cost: 5
+    #       dead_interval:
+    #         time: 5
+    #       demand_circuit:
+    #         enable: true
+    #         ignore: true
+    #       network:
+    #         broadcast: true
+    #       priority: 25
+    #       process:
+    #         area_id: '30'
+    #         id: 10
+    #       resync_timeout: 10
+    #       shutdown: true
+    #       ttl_security:
+    #         hops: 50
+    #         set: true
+    #     - adjacency: true
+    #       afi: ipv6
+    #       database_filter: true
+    #       manet:
+    #         link_metrics:
+    #           cost_threshold: 10
+    #       priority: 55
+    #       process:
+    #         area_id: '45'
+    #         id: 35
+    #       transmit_delay: 45
+    #     name: GigabitEthernet0/1
+    #   - name: GigabitEthernet0/2
 
     # After state:
     # ------------
@@ -2027,29 +2262,29 @@ Examples
                 transmit_delay: 45
         state: rendered
 
-    # Module Execution Result:
-    # ------------------------
+    # Task Output:
+    # ------------
     #
-    #  "rendered": [
-    #         "interface GigabitEthernet0/1",
-    #         "ip ospf 10 area 30",
-    #         "ip ospf adjacency stagger disable",
-    #         "ip ospf bfd",
-    #         "ip ospf cost 5",
-    #         "ip ospf dead-interval 5",
-    #         "ip ospf demand-circuit ignore",
-    #         "ip ospf network broadcast",
-    #         "ip ospf priority 25",
-    #         "ip ospf resync-timeout 10",
-    #         "ip ospf shutdown",
-    #         "ip ospf ttl-security hops 50",
-    #         "ipv6 ospf 35 area 45",
-    #         "ipv6 ospf adjacency stagger disable",
-    #         "ipv6 ospf database-filter all out",
-    #         "ipv6 ospf manet peering link-metrics 10",
-    #         "ipv6 ospf priority 55",
-    #         "ipv6 ospf transmit-delay 45"
-    #     ]
+    # rendered:
+    # - interface GigabitEthernet0/1
+    # - ip ospf 10 area 30
+    # - ip ospf adjacency stagger disable
+    # - ip ospf bfd
+    # - ip ospf cost 5
+    # - ip ospf dead-interval 5
+    # - ip ospf demand-circuit ignore
+    # - ip ospf network broadcast
+    # - ip ospf priority 25
+    # - ip ospf resync-timeout 10
+    # - ip ospf shutdown
+    # - ip ospf ttl-security hops 50
+    # - ipv6 ospf 35 area 45
+    # - ipv6 ospf adjacency stagger disable
+    # - ipv6 ospf database-filter all out
+    # - ipv6 ospf manet peering link-metrics 10
+    # - ipv6 ospf priority 55
+    # - ipv6 ospf transmit-delay 45
+    #
 
     # Using Parsed
 
@@ -2082,66 +2317,46 @@ Examples
         running_config: "{{ lookup('file', 'parsed.cfg') }}"
         state: parsed
 
-    # Module Execution Result:
-    # ------------------------
+    # Task Output:
+    # ------------
     #
-    #  "parsed": [
-    #         },
-    #         {
-    #             "name": "GigabitEthernet0/2"
-    #         },
-    #         {
-    #             "address_family": [
-    #                 {
-    #                     "adjacency": true,
-    #                     "afi": "ipv4",
-    #                     "bfd": true,
-    #                     "cost": {
-    #                         "interface_cost": 5
-    #                     },
-    #                     "dead_interval": {
-    #                         "time": 5
-    #                     },
-    #                     "demand_circuit": {
-    #                         "ignore": true
-    #                     },
-    #                     "network": {
-    #                         "broadcast": true
-    #                     },
-    #                     "priority": 25,
-    #                     "process": {
-    #                         "area_id": "30",
-    #                         "id": 10
-    #                     },
-    #                     "resync_timeout": 10,
-    #                     "shutdown": true,
-    #                     "ttl_security": {
-    #                         "hops": 50
-    #                     }
-    #                 },
-    #                 {
-    #                     "adjacency": true,
-    #                     "afi": "ipv6",
-    #                     "database_filter": true,
-    #                     "manet": {
-    #                         "link_metrics": {
-    #                             "cost_threshold": 10
-    #                         }
-    #                     },
-    #                     "priority": 55,
-    #                     "process": {
-    #                         "area_id": "45",
-    #                         "id": 35
-    #                     },
-    #                     "transmit_delay": 45
-    #                 }
-    #             ],
-    #             "name": "GigabitEthernet0/1"
-    #         },
-    #         {
-    #             "name": "GigabitEthernet0/0"
-    #         }
-    #     ]
+    # parsed:
+    #   - name: GigabitEthernet0/2
+    #   - address_family:
+    #     - adjacency: true
+    #       afi: ipv4
+    #       bfd: true
+    #       cost:
+    #         interface_cost: 5
+    #       dead_interval:
+    #         time: 5
+    #       demand_circuit:
+    #         enable: true
+    #         ignore: true
+    #       network:
+    #         broadcast: true
+    #       priority: 25
+    #       process:
+    #         area_id: '30'
+    #         id: 10
+    #       resync_timeout: 10
+    #       shutdown: true
+    #       ttl_security:
+    #         hops: 50
+    #         set: true
+    #     - adjacency: true
+    #       afi: ipv6
+    #       database_filter: true
+    #       manet:
+    #         link_metrics:
+    #           cost_threshold: 10
+    #       priority: 55
+    #       process:
+    #         area_id: '45'
+    #         id: 35
+    #       transmit_delay: 45
+    #     name: GigabitEthernet0/1
+    #   - name: GigabitEthernet0/0
 
 
 
@@ -2163,16 +2378,15 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <b>after</b>
                     <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
                     <div style="font-size: small">
-                      <span style="color: purple">dictionary</span>
+                      <span style="color: purple">list</span>
                     </div>
                 </td>
                 <td>when changed</td>
                 <td>
-                            <div>The resulting configuration model invocation.</div>
+                            <div>The resulting configuration after module execution.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">The configuration returned will always be in the same format
-     of the parameters above.</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
                 </td>
             </tr>
             <tr>
@@ -2181,16 +2395,15 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <b>before</b>
                     <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
                     <div style="font-size: small">
-                      <span style="color: purple">dictionary</span>
+                      <span style="color: purple">list</span>
                     </div>
                 </td>
-                <td>always</td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
                 <td>
-                            <div>The configuration prior to the model invocation.</div>
+                            <div>The configuration prior to the module execution.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">The configuration returned will always be in the same format
-     of the parameters above.</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
                 </td>
             </tr>
             <tr>
@@ -2202,12 +2415,63 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                       <span style="color: purple">list</span>
                     </div>
                 </td>
-                <td>always</td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
                 <td>
                             <div>The set of commands pushed to the remote device.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface GigabitEthernet0/1&#x27;, &#x27;ip ospf 10 area 30&#x27;, &#x27;ip ospf cost 5&#x27;, &#x27;ip ospf priority 25&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface GigabitEthernet2&#x27;, &#x27;ip ospf priority 40&#x27;, &#x27;ip ospf adjacency stagger disable&#x27;]</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>gathered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>gathered</code></td>
+                <td>
+                            <div>Facts about the network resource gathered from the remote device as structured data.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>parsed</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>parsed</code></td>
+                <td>
+                            <div>The device native config provided in <em>running_config</em> option parsed into structured data as per module argspec.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>rendered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>rendered</code></td>
+                <td>
+                            <div>The provided configuration in the task rendered in device-native format (offline).</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface GigabitEthernet2&#x27;, &#x27;ip ospf priority 40&#x27;, &#x27;ip ospf adjacency stagger disable&#x27;]</div>
                 </td>
             </tr>
     </table>
@@ -2221,4 +2485,5 @@ Status
 Authors
 ~~~~~~~
 
+- Sagar Paul (@KB-perByte)
 - Sumit Jaiswal (@justjais)

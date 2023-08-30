@@ -65,10 +65,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                         "address": {"type": "str"},
                         "autoconfig": {
                             "type": "dict",
-                            "options": {
-                                "enable": {"type": "bool"},
-                                "default": {"type": "bool"},
-                            },
+                            "options": {"enable": {"type": "bool"}, "default": {"type": "bool"}},
                         },
                         "dhcp": {
                             "type": "dict",

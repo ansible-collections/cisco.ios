@@ -53,36 +53,23 @@ class Logging_globalFacts(object):
             data = self.get_logging_data(connection)
 
         # parse native config using the Logging_global template
-        logging_global_parser = Logging_globalTemplate(
-            lines=data.splitlines(),
-            module=self._module,
-        )
+        logging_global_parser = Logging_globalTemplate(lines=data.splitlines(), module=self._module)
         objFinal = logging_global_parser.parse()
 
         if objFinal:
             for k, v in iteritems(objFinal):
-                if type(v) == list and k not in [
-                    "hosts",
-                    "source_interface",
-                    "filter",
-                ]:
+                if isinstance(v, list) and k not in ["hosts", "source_interface", "filter"]:
                     v.sort()
                     objFinal[k] = v
-                elif type(v) == list and k == "hosts":
+                elif isinstance(v, list) and k == "hosts":
                     objFinal[k] = sorted(
                         objFinal[k],
                         key=lambda item: item["host"] if item.get("host") else item.get("ipv6"),
                     )
-                elif type(v) == list and k == "source_interface":
-                    objFinal[k] = sorted(
-                        objFinal[k],
-                        key=lambda item: item["interface"],
-                    )
-                elif type(v) == list and k == "filter":
-                    objFinal[k] = sorted(
-                        objFinal[k],
-                        key=lambda item: item["url"],
-                    )
+                elif isinstance(v, list) and k == "source_interface":
+                    objFinal[k] = sorted(objFinal[k], key=lambda item: item["interface"])
+                elif isinstance(v, list) and k == "filter":
+                    objFinal[k] = sorted(objFinal[k], key=lambda item: item["url"])
         ansible_facts["ansible_network_resources"].pop("logging_global", None)
 
         params = utils.remove_empties(

@@ -41,11 +41,7 @@ class Acl_interfacesArgs(object):  # pylint: disable=R0903
                     "type": "list",
                     "elements": "dict",
                     "options": {
-                        "afi": {
-                            "type": "str",
-                            "required": True,
-                            "choices": ["ipv4", "ipv6"],
-                        },
+                        "afi": {"type": "str", "required": True, "choices": ["ipv4", "ipv6"]},
                         "acls": {
                             "type": "list",
                             "elements": "dict",

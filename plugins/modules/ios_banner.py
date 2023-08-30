@@ -24,11 +24,11 @@ module: ios_banner
 author: Ricardo Carrillo Cruz (@rcarrillocruz)
 short_description: Module to configure multiline banners.
 description:
-- This will configure both login and motd banners on remote devices running Cisco
-  IOS. It allows playbooks to add or remote banner text from the active running configuration.
+  - This will configure both login and motd banners on remote devices running Cisco
+    IOS. It allows playbooks to add or remote banner text from the active running configuration.
 version_added: 1.0.0
 extends_documentation_fragment:
-- cisco.ios.ios
+  - cisco.ios.ios
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
@@ -36,36 +36,37 @@ notes:
 options:
   banner:
     description:
-    - Specifies which banner should be configured on the remote device. In Ansible
-      2.4 and earlier only I(login) and I(motd) were supported.
+      - Specifies which banner should be configured on the remote device. In Ansible
+        2.4 and earlier only I(login) and I(motd) were supported.
     required: true
     choices:
-    - login
-    - motd
-    - exec
-    - incoming
-    - slip-ppp
+      - login
+      - motd
+      - exec
+      - incoming
+      - slip-ppp
     type: str
   multiline_delimiter:
     description:
-    - Specify the delimiting character than will be used for configuration.
-    default: '@'
+      - Specify the delimiting character than will be used for configuration.
+    default: "@"
     type: str
   text:
     description:
-    - The banner text that should be present in the remote device running configuration.  This
-      argument accepts a multiline string, with no empty lines. Requires I(state=present).
+      - The banner text that should be present in the remote device running configuration.  This
+        argument accepts a multiline string, with no empty lines. Requires I(state=present).
     type: str
   state:
     description:
-    - Specifies whether or not the configuration is present in the current devices
-      active running configuration.
+      - Specifies whether or not the configuration is present in the current devices
+        active running configuration.
     default: present
     type: str
     choices:
-    - present
-    - absent
+      - present
+      - absent
 """
+
 EXAMPLES = """
 - name: Configure the login banner
   cisco.ios.ios_banner:
@@ -84,7 +85,7 @@ EXAMPLES = """
 - name: Configure banner from file
   cisco.ios.ios_banner:
     banner: motd
-    text: "{{ lookup('file', './config_partial/raw_banner.cfg') }}"
+    text: "{{ lookup('file', './config_partial/raw_banner.cfg') }}" # Use unix formatted text files (LF not CRLF) to avoid idempotency issues.
     state: present
 
 - name: Configure the login banner using delimiter
@@ -94,6 +95,7 @@ EXAMPLES = """
     text: this is my login banner
     state: present
 """
+
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device

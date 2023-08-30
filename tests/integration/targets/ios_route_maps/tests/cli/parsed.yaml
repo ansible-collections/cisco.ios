@@ -8,10 +8,7 @@
     running_config: "{{ lookup('file', '_parsed.cfg') }}"
     state: parsed
 
-- ansible.builtin.debug:
-    msg: "{{ merged['after'] | symmetric_difference(result['parsed']) }}"
-
 - ansible.builtin.assert:
     that:
       - result.changed == false
-      - "{{ merged['after'] | symmetric_difference(result['parsed']) |length == 0 }}"
+      - "{{ parsed['config'] | symmetric_difference(result['parsed']) |length == 0 }}"

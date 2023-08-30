@@ -70,7 +70,7 @@ class TestIosVlansModule(TestIosModule):
         self.mock_execute_show_command.stop()
         self.mock_l2_device_command.stop()
 
-    def load_fixtures(self, commands=None, transport="cli"):
+    def load_fixtures(self, commands=None):
         def load_from_file(*args, **kwargs):
             return load_fixture("ios_vlans_config.cfg")
 
@@ -93,26 +93,14 @@ class TestIosVlansModule(TestIosModule):
             ),
         )
         result = self.execute_module(changed=True)
-        commands = [
-            "vlan 200",
-            "name test_vlan_200",
-            "state active",
-            "remote-span",
-            "no shutdown",
-        ]
+        commands = ["vlan 200", "name test_vlan_200", "state active", "remote-span", "no shutdown"]
         self.assertEqual(result["commands"], commands)
 
     def test_ios_vlans_merged_idempotent(self):
         set_module_args(
             dict(
                 config=[
-                    dict(
-                        mtu=1500,
-                        name="default",
-                        shutdown="disabled",
-                        state="active",
-                        vlan_id=1,
-                    ),
+                    dict(mtu=1500, name="default", shutdown="disabled", state="active", vlan_id=1),
                     dict(
                         mtu=610,
                         name="RemoteIsInMyName",
@@ -180,33 +168,14 @@ class TestIosVlansModule(TestIosModule):
                         remote_span=True,
                         vlan_id=200,
                     ),
-                    dict(
-                        name="Replace_RemoteIsInMyName",
-                        remote_span=True,
-                        vlan_id=123,
-                    ),
+                    dict(name="Replace_RemoteIsInMyName", remote_span=True, vlan_id=123),
                     dict(
                         name="pvlan-primary",
-                        private_vlan=dict(
-                            type="primary",
-                            associated=[11, 12],
-                        ),
+                        private_vlan=dict(type="primary", associated=[11, 12]),
                         vlan_id=10,
                     ),
-                    dict(
-                        name="pvlan-community",
-                        private_vlan=dict(
-                            type="community",
-                        ),
-                        vlan_id=11,
-                    ),
-                    dict(
-                        name="pvlan-isolated",
-                        private_vlan=dict(
-                            type="isolated",
-                        ),
-                        vlan_id=12,
-                    ),
+                    dict(name="pvlan-community", private_vlan=dict(type="community"), vlan_id=11),
+                    dict(name="pvlan-isolated", private_vlan=dict(type="isolated"), vlan_id=12),
                 ],
                 state="replaced",
             ),
@@ -250,13 +219,7 @@ class TestIosVlansModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    dict(
-                        mtu=1500,
-                        name="default",
-                        shutdown="disabled",
-                        state="active",
-                        vlan_id=1,
-                    ),
+                    dict(mtu=1500, name="default", shutdown="disabled", state="active", vlan_id=1),
                     dict(
                         mtu=610,
                         name="RemoteIsInMyName",
@@ -324,11 +287,7 @@ class TestIosVlansModule(TestIosModule):
                         remote_span=True,
                         vlan_id=200,
                     ),
-                    dict(
-                        name="Override_RemoteIsInMyName",
-                        remote_span=True,
-                        vlan_id=123,
-                    ),
+                    dict(name="Override_RemoteIsInMyName", remote_span=True, vlan_id=123),
                 ],
                 state="overridden",
             ),
@@ -356,13 +315,7 @@ class TestIosVlansModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    dict(
-                        mtu=1500,
-                        name="default",
-                        shutdown="disabled",
-                        state="active",
-                        vlan_id=1,
-                    ),
+                    dict(mtu=1500, name="default", shutdown="disabled", state="active", vlan_id=1),
                     dict(
                         mtu=610,
                         name="RemoteIsInMyName",
@@ -440,13 +393,7 @@ class TestIosVlansModule(TestIosModule):
                 state="rendered",
             ),
         )
-        commands = [
-            "name test_vlan_200",
-            "no shutdown",
-            "remote-span",
-            "state active",
-            "vlan 200",
-        ]
+        commands = ["name test_vlan_200", "no shutdown", "remote-span", "state active", "vlan 200"]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), commands)
 
@@ -537,9 +484,7 @@ class TestIosVlansModule(TestIosModule):
                 "state": "active",
                 "shutdown": "disabled",
                 "mtu": 1500,
-                "private_vlan": {
-                    "type": "primary",
-                },
+                "private_vlan": {"type": "primary"},
             },
             {
                 "name": "pvlan-isolated",
@@ -547,9 +492,7 @@ class TestIosVlansModule(TestIosModule):
                 "state": "active",
                 "shutdown": "disabled",
                 "mtu": 1500,
-                "private_vlan": {
-                    "type": "isolated",
-                },
+                "private_vlan": {"type": "isolated"},
             },
             {
                 "name": "pvlan-community",
@@ -557,9 +500,7 @@ class TestIosVlansModule(TestIosModule):
                 "state": "active",
                 "shutdown": "disabled",
                 "mtu": 1500,
-                "private_vlan": {
-                    "type": "community",
-                },
+                "private_vlan": {"type": "community"},
             },
             {
                 "name": "pvlan-2p",
@@ -567,13 +508,7 @@ class TestIosVlansModule(TestIosModule):
                 "state": "active",
                 "shutdown": "disabled",
                 "mtu": 1500,
-                "private_vlan": {
-                    "type": "primary",
-                    "associated": [
-                        21,
-                        22,
-                    ],
-                },
+                "private_vlan": {"type": "primary", "associated": [21, 22]},
             },
             {
                 "name": "pvlan-2i",
@@ -581,9 +516,7 @@ class TestIosVlansModule(TestIosModule):
                 "state": "active",
                 "shutdown": "disabled",
                 "mtu": 1500,
-                "private_vlan": {
-                    "type": "isolated",
-                },
+                "private_vlan": {"type": "isolated"},
             },
             {
                 "name": "pvlan-2c",
@@ -591,9 +524,7 @@ class TestIosVlansModule(TestIosModule):
                 "state": "active",
                 "shutdown": "disabled",
                 "mtu": 1500,
-                "private_vlan": {
-                    "type": "community",
-                },
+                "private_vlan": {"type": "community"},
             },
             {
                 "name": "dummy-default",

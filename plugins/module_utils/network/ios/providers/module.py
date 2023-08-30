@@ -14,7 +14,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers im
 
 
 class NetworkModule(AnsibleModule):
-
     fail_on_missing_provider = True
 
     def __init__(self, connection=None, *args, **kwargs):
@@ -36,11 +35,7 @@ class NetworkModule(AnsibleModule):
             if network_api == "cliconf":
                 connection_type = "network_cli"
 
-            cls = providers.get(
-                network_os,
-                self._name.split(".")[-1],
-                connection_type,
-            )
+            cls = providers.get(network_os, self._name.split(".")[-1], connection_type)
 
             if not cls:
                 msg = "unable to find suitable provider for network os %s" % network_os

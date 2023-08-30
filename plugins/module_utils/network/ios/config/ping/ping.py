@@ -71,10 +71,7 @@ class Ping:
         self.result["commands"] = self.build_ping(self.module.params)
 
     def run_command(self):
-        ping_results = run_commands(
-            self.module,
-            commands=self.result["commands"],
-        )
+        ping_results = run_commands(self.module, commands=self.result["commands"])
         return ping_results
 
     def process_result(self, ping_results):
@@ -84,7 +81,7 @@ class Ping:
         Returns the percent of packet loss, received packets, transmitted packets, and RTT data.
         """
 
-        if type(ping_results) == list:
+        if isinstance(ping_results, list):
             ping_results = ping_results[0]
 
         ping_data = PingTemplate(lines=ping_results.splitlines())

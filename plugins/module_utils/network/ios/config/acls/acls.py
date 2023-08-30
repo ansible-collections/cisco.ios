@@ -16,7 +16,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
@@ -127,9 +127,7 @@ class Acls(ResourceModule):
             )  # handle aces
 
             end = len(self.commands)
-            self.commands[begin:end] = rearrange_cmds(
-                self.commands[begin:],
-            )
+            self.commands[begin:end] = rearrange_cmds(self.commands[begin:])
 
             if len(self.commands) != begin or (not have and want):
                 _cmd = self.acl_name_cmd(wname, afi, acl_type)

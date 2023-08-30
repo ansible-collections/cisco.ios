@@ -14,7 +14,7 @@ from ansible_collections.cisco.ios.plugins.modules import ios_bgp_address_family
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
-from .ios_module import TestIosModule, load_fixture
+from .ios_module import TestIosModule
 
 
 class TestIosBgpAddressFamilyModule(TestIosModule):
@@ -23,32 +23,11 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
     def setUp(self):
         super(TestIosBgpAddressFamilyModule, self).setUp()
 
-        self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
-        )
-        self.get_config = self.mock_get_config.start()
-
-        self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
-        )
-        self.load_config = self.mock_load_config.start()
-
-        self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection",
-        )
-        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
-
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
-
-        self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
-        )
-        self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_address_family.bgp_address_family."
@@ -58,11 +37,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
 
     def tearDown(self):
         super(TestIosBgpAddressFamilyModule, self).tearDown()
-        self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
-        self.mock_edit_config.stop()
-        self.mock_get_config.stop()
-        self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
 
     def test_ios_bgp_address_family_merged(self):
@@ -681,14 +656,17 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             afi="ipv4",
                             bgp=dict(redistribute_internal=True),
                             redistribute=[
+                                dict(connected=dict(set=True)),
                                 dict(
-                                    connected=dict(set=True),
                                     ospf=dict(
+                                        process_id=200,
+                                        metric=100,
                                         match=dict(
-                                            external=True,
                                             internal=True,
-                                            type_1=True,
-                                            type_2=True,
+                                            externals=dict(
+                                                type_1=True,
+                                                type_2=True,
+                                            ),
                                         ),
                                     ),
                                 ),
@@ -792,6 +770,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                 state="overridden",
             ),
         )
+
         self.execute_module(changed=False, commands=[])
 
     def test_ios_bgp_address_family_deleted(self):
@@ -1098,7 +1077,22 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                 {
                     "afi": "ipv4",
                     "bgp": {"redistribute_internal": True},
-                    "redistribute": [{"connected": {"set": True}}],
+                    "redistribute": [
+                        {"connected": {"set": True}},
+                        {
+                            "ospf": {
+                                "process_id": 200,
+                                "metric": 100,
+                                "match": {
+                                    "internal": True,
+                                    "externals": {
+                                        "type_1": True,
+                                        "type_2": True,
+                                    },
+                                },
+                            },
+                        },
+                    ],
                     "neighbors": [
                         {
                             "send_community": {"set": True},
@@ -1323,6 +1317,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "address-family ipv4 multicast",
             "no default-metric 12",
             "no distance bgp 10 10 100",
+            "no redistribute ospf 200",
             "no table-map test_tableMap filter",
             "no network 198.51.111.11 mask 255.255.255.255 route-map test",
             "no aggregate-address 192.0.3.1 255.255.255.255 as-confed-set",

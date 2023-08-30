@@ -20,7 +20,7 @@ from itertools import groupby
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lag_interfaces.lag_interfaces import (
-    Lag_interfacesArgs,
+    Lag_InterfacesArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.lag_interfaces import (
     Lag_interfacesTemplate,
@@ -32,7 +32,7 @@ class Lag_interfacesFacts(object):
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
-        self.argument_spec = Lag_interfacesArgs.argument_spec
+        self.argument_spec = Lag_InterfacesArgs.argument_spec
 
     def get_lag_interfaces_data(self, connection):
         return connection.get("show running-config | section ^interface")
@@ -54,10 +54,7 @@ class Lag_interfacesFacts(object):
             data = self.get_lag_interfaces_data(connection)
 
         # parse native config using the Lag_interfaces template
-        lag_interfaces_parser = Lag_interfacesTemplate(
-            lines=data.splitlines(),
-            module=self._module,
-        )
+        lag_interfaces_parser = Lag_interfacesTemplate(lines=data.splitlines(), module=self._module)
         objs = self.process_facts(list(lag_interfaces_parser.parse().values()))
         ansible_facts["ansible_network_resources"].pop("lag_interfaces", None)
 
@@ -69,7 +66,7 @@ class Lag_interfacesFacts(object):
             ),
         )
 
-        facts["lag_interfaces"] = params.get("config", {})
+        facts["lag_interfaces"] = params.get("config", [])
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts

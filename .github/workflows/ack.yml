@@ -1,0 +1,15 @@
+---
+# See https://github.com/ansible-community/devtools/blob/main/.github/workflows/ack.yml
+name: ack
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:  # yamllint disable-line rule:truthy
+  pull_request_target:
+    types: [opened, labeled, unlabeled, synchronize]
+
+jobs:
+  ack:
+    uses: ansible/devtools/.github/workflows/ack.yml@main

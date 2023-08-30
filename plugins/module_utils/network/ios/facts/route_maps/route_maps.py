@@ -79,36 +79,24 @@ class Route_mapsFacts(object):
                     if val.get("entries"):
                         if val["entries"].get("match"):
                             if val["entries"]["match"].get("ip"):
-                                for k_ip, v_ip in iteritems(
-                                    val["entries"]["match"]["ip"],
-                                ):
+                                for k_ip, v_ip in iteritems(val["entries"]["match"]["ip"]):
                                     if v_ip.get("acls"):
                                         if "src-pfx" in v_ip["acls"]:
-                                            v_ip["acls"].pop(
-                                                v_ip["acls"].index("src-pfx"),
-                                            )
+                                            v_ip["acls"].pop(v_ip["acls"].index("src-pfx"))
                                         elif "dest-pfx" in v_ip["acls"]:
-                                            v_ip["acls"].pop(
-                                                v_ip["acls"].index("dest-pfx"),
-                                            )
+                                            v_ip["acls"].pop(v_ip["acls"].index("dest-pfx"))
                         temp_dict["entries"].append(val["entries"])
                 temp_dict["entries"] = sorted(
                     temp_dict["entries"],
                     key=lambda k, sk="sequence": k[sk],
                 )
                 final_objs.append(temp_dict)
-            final_objs = sorted(
-                final_objs,
-                key=lambda k, sk="route_map": k[sk],
-            )
+            final_objs = sorted(final_objs, key=lambda k, sk="route_map": k[sk])
 
             ansible_facts["ansible_network_resources"].pop("route_maps", None)
 
             params = utils.remove_empties(
-                utils.validate_config(
-                    self.argument_spec,
-                    {"config": final_objs},
-                ),
+                utils.validate_config(self.argument_spec, {"config": final_objs}),
             )
 
             facts["route_maps"] = params["config"]

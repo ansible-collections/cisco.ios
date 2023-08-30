@@ -31,7 +31,6 @@ from .ios_module import TestIosModule, load_fixture
 
 
 class TestIosCommandModule(TestIosModule):
-
     module = ios_command
 
     def setUp(self):
@@ -88,41 +87,29 @@ class TestIosCommandModule(TestIosModule):
 
     def test_ios_command_retries(self):
         wait_for = 'result[0] contains "test string"'
-        set_module_args(
-            dict(commands=["show version"], wait_for=wait_for, retries=2),
-        )
+        set_module_args(dict(commands=["show version"], wait_for=wait_for, retries=2))
         self.execute_module(failed=True)
-        self.assertEqual(self.run_commands.call_count, 2)
+        self.assertEqual(self.run_commands.call_count, 3)
+
+    def test_ios_command_retries_0(self):
+        set_module_args(dict(commands=["show version"], retries=0))
+        self.execute_module(failed=False)
+        self.assertEqual(self.run_commands.call_count, 1)
 
     def test_ios_command_match_any(self):
-        wait_for = [
-            'result[0] contains "Cisco IOS"',
-            'result[0] contains "test string"',
-        ]
-        set_module_args(
-            dict(commands=["show version"], wait_for=wait_for, match="any"),
-        )
+        wait_for = ['result[0] contains "Cisco IOS"', 'result[0] contains "test string"']
+        set_module_args(dict(commands=["show version"], wait_for=wait_for, match="any"))
         self.execute_module()
 
     def test_ios_command_match_all(self):
-        wait_for = [
-            'result[0] contains "Cisco IOS"',
-            'result[0] contains "IOSv Software"',
-        ]
-        set_module_args(
-            dict(commands=["show version"], wait_for=wait_for, match="all"),
-        )
+        wait_for = ['result[0] contains "Cisco IOS"', 'result[0] contains "IOSv Software"']
+        set_module_args(dict(commands=["show version"], wait_for=wait_for, match="all"))
         self.execute_module()
 
     def test_ios_command_match_all_failure(self):
-        wait_for = [
-            'result[0] contains "Cisco IOS"',
-            'result[0] contains "test string"',
-        ]
+        wait_for = ['result[0] contains "Cisco IOS"', 'result[0] contains "test string"']
         commands = ["show version", "show version"]
-        set_module_args(
-            dict(commands=commands, wait_for=wait_for, match="all"),
-        )
+        set_module_args(dict(commands=commands, wait_for=wait_for, match="all"))
         self.execute_module(failed=True)
 
     def test_ios_command_configure_check_warning(self):

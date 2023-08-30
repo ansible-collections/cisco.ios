@@ -23,32 +23,11 @@ class TestIosLoggingGlobalModule(TestIosModule):
     def setUp(self):
         super(TestIosLoggingGlobalModule, self).setUp()
 
-        self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
-        )
-        self.get_config = self.mock_get_config.start()
-
-        self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
-        )
-        self.load_config = self.mock_load_config.start()
-
-        self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection",
-        )
-        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
-
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
-
-        self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
-        )
-        self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.logging_global.logging_global."
@@ -58,11 +37,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
 
     def tearDown(self):
         super(TestIosLoggingGlobalModule, self).tearDown()
-        self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
-        self.mock_edit_config.stop()
-        self.mock_get_config.stop()
-        self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
 
     def test_ios_logging_global_merged_idempotent(self):
@@ -83,6 +58,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging host 172.16.1.1
             logging exception 4099
             logging history alerts
+            logging history size 400
             logging facility local5
             logging snmp-trap errors
             logging monitor warnings
@@ -123,25 +99,16 @@ class TestIosLoggingGlobalModule(TestIosModule):
                 exception=4099,
                 facility="local5",
                 filter=[
-                    dict(
-                        url="tftp://172.16.2.18/ESM/elate.tcl",
-                        args="TESTInst2",
-                    ),
-                    dict(
-                        url="tftp://172.16.2.14/ESM/escalate.tcl",
-                        args="TESTInst",
-                    ),
+                    dict(url="tftp://172.16.2.18/ESM/elate.tcl", args="TESTInst2"),
+                    dict(url="tftp://172.16.2.14/ESM/escalate.tcl", args="TESTInst"),
                 ],
-                history=dict(severity="alerts"),
+                history=dict(severity="alerts", size=400),
                 hosts=[
                     dict(hostname="172.16.1.1"),
                     dict(hostname="172.16.1.11", xml=True),
                     dict(hostname="172.16.1.25", filtered=True),
                     dict(hostname="172.16.1.10", stream=10, filtered=True),
-                    dict(
-                        hostname="172.16.1.13",
-                        transport=dict(tcp=dict(port=514)),
-                    ),
+                    dict(hostname="172.16.1.13", transport=dict(tcp=dict(port=514))),
                 ],
                 message_counter=["log", "debug"],
                 monitor=dict(severity="warnings"),
@@ -153,10 +120,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
                 reload=dict(severity="alerts"),
                 server_arp=True,
                 snmp_trap=["errors"],
-                source_interface=[
-                    dict(interface="GBit1/0"),
-                    dict(interface="CTunnel2"),
-                ],
+                source_interface=[dict(interface="GBit1/0"), dict(interface="CTunnel2")],
                 trap="errors",
                 userinfo=True,
             ),
@@ -183,6 +147,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging exception 4099
             logging facility local5
             logging history alerts
+            logging history size 400
             logging monitor warnings
             logging origin-id hostname
             logging persistent batch 4444
@@ -207,7 +172,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
                 esm=dict(config=True),
                 exception=4099,
                 facility="local5",
-                history=dict(severity="alerts"),
+                history=dict(severity="alerts", size=400),
                 monitor=dict(severity="warnings"),
                 origin_id=dict(tag="hostname"),
                 persistent=dict(batch=4444),
@@ -232,6 +197,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             "no logging exception 4099",
             "no logging facility local5",
             "no logging history alerts",
+            "no logging history size 400",
             "no logging monitor warnings",
             "no logging origin-id hostname",
             "no logging persistent batch 4444",
@@ -272,31 +238,19 @@ class TestIosLoggingGlobalModule(TestIosModule):
             config=dict(
                 discriminator=["msglog01 severity includes 5"],
                 filter=[
-                    dict(
-                        url="tftp://172.16.2.18/ESM/elate.tcl",
-                        args="TESTInst2",
-                    ),
-                    dict(
-                        url="tftp://172.16.2.14/ESM/escalate.tcl",
-                        args="TESTInst",
-                    ),
+                    dict(url="tftp://172.16.2.18/ESM/elate.tcl", args="TESTInst2"),
+                    dict(url="tftp://172.16.2.14/ESM/escalate.tcl", args="TESTInst"),
                 ],
                 hosts=[
                     dict(host="172.16.1.1"),
                     dict(hostname="172.16.1.11", xml=True),
                     dict(host="172.16.1.25", filtered=True),
                     dict(hostname="172.16.1.10", stream=10, filtered=True),
-                    dict(
-                        hostname="172.16.1.13",
-                        transport=dict(tcp=dict(port=514)),
-                    ),
+                    dict(hostname="172.16.1.13", transport=dict(tcp=dict(port=514))),
                 ],
                 message_counter=["log", "debug"],
                 snmp_trap=["errors"],
-                source_interface=[
-                    dict(interface="GBit1/0"),
-                    dict(interface="CTunnel2"),
-                ],
+                source_interface=[dict(interface="GBit1/0"), dict(interface="CTunnel2")],
             ),
         )
         deleted = [
@@ -334,6 +288,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging exception 4099
             logging facility local5
             logging history alerts
+            logging history size 400
             logging monitor warnings
             logging origin-id hostname
             logging persistent batch 4444
@@ -350,31 +305,19 @@ class TestIosLoggingGlobalModule(TestIosModule):
             config=dict(
                 discriminator=["msglog01 severity includes 5"],
                 filter=[
-                    dict(
-                        url="tftp://172.16.2.18/ESM/elate.tcl",
-                        args="TESTInst2",
-                    ),
-                    dict(
-                        url="tftp://172.16.2.14/ESM/escalate.tcl",
-                        args="TESTInst",
-                    ),
+                    dict(url="tftp://172.16.2.18/ESM/elate.tcl", args="TESTInst2"),
+                    dict(url="tftp://172.16.2.14/ESM/escalate.tcl", args="TESTInst"),
                 ],
                 hosts=[
                     dict(hostname="172.16.1.1"),
                     dict(hostname="172.16.1.11", xml=True),
                     dict(hostname="172.16.1.25", filtered=True),
                     dict(hostname="172.16.1.10", stream=10, filtered=True),
-                    dict(
-                        hostname="172.16.1.13",
-                        transport=dict(tcp=dict(port=514)),
-                    ),
+                    dict(hostname="172.16.1.13", transport=dict(tcp=dict(port=514))),
                 ],
                 message_counter=["log", "debug"],
                 snmp_trap=["errors"],
-                source_interface=[
-                    dict(interface="GBit1/0"),
-                    dict(interface="CTunnel2"),
-                ],
+                source_interface=[dict(interface="GBit1/0"), dict(interface="CTunnel2")],
             ),
         )
         overridden = [
@@ -389,6 +332,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             "no logging exception 4099",
             "no logging facility local5",
             "no logging history alerts",
+            "no logging history size 400",
             "no logging monitor warnings",
             "no logging origin-id hostname",
             "no logging persistent batch 4444",
@@ -458,19 +402,9 @@ class TestIosLoggingGlobalModule(TestIosModule):
                         ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7304",
                         discriminator="msglog01 severity includes 5",
                     ),
-                    dict(
-                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7314",
-                        sequence_num_session=True,
-                    ),
-                    dict(
-                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7324",
-                        vrf="vpn1",
-                    ),
-                    dict(
-                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7334",
-                        stream=10,
-                        filtered=True,
-                    ),
+                    dict(ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7314", sequence_num_session=True),
+                    dict(ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7324", vrf="vpn1"),
+                    dict(ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7334", stream=10, filtered=True),
                     dict(
                         ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7344",
                         session_id=dict(tag="ipv4"),
@@ -482,11 +416,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
                     dict(
                         ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7374",
                         vrf="Apn2",
-                        transport=dict(
-                            udp=dict(
-                                discriminator="msglog01 severity includes 5",
-                            ),
-                        ),
+                        transport=dict(udp=dict(discriminator="msglog01 severity includes 5")),
                     ),
                     dict(
                         ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7384",
@@ -579,13 +509,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         )
         set_module_args(dict(state="gathered"))
         gathered = dict(
-            hosts=[
-                dict(
-                    hostname="172.16.1.1",
-                    vrf="vpn-1",
-                    transport=dict(tcp=dict(audit=True)),
-                ),
-            ],
+            hosts=[dict(hostname="172.16.1.1", vrf="vpn-1", transport=dict(tcp=dict(audit=True)))],
         )
         result = self.execute_module(changed=False)
 
@@ -596,11 +520,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         set_module_args(
             dict(
                 config=dict(
-                    rate_limit=dict(
-                        console=True,
-                        size=2,
-                        except_severity="warnings",
-                    ),
+                    rate_limit=dict(console=True, size=2, except_severity="warnings"),
                     reload=dict(message_limit=10, severity="alerts"),
                     persistent=dict(
                         url="flash0:172.16.0.1",
@@ -610,16 +530,11 @@ class TestIosLoggingGlobalModule(TestIosModule):
                         notify=True,
                     ),
                     queue_limit=dict(trap=1000),
-                    buffered=dict(
-                        discriminator="notifications",
-                        filtered=True,
-                    ),
+                    buffered=dict(discriminator="notifications", filtered=True),
                     hosts=[
                         dict(
                             ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7364",
-                            transport=dict(
-                                tcp=dict(session_id=dict(tag="hostname")),
-                            ),
+                            transport=dict(tcp=dict(session_id=dict(tag="hostname"))),
                         ),
                     ],
                 ),
@@ -702,16 +617,9 @@ class TestIosLoggingGlobalModule(TestIosModule):
             """,
         )
         playbook = dict(
-            config=dict(
-                hosts=[
-                    dict(hostname="172.16.2.15", session_id=dict(text="Test")),
-                ],
-            ),
+            config=dict(hosts=[dict(hostname="172.16.2.15", session_id=dict(text="Test"))]),
         )
-        replaced = [
-            "no logging host 172.16.1.1",
-            "logging host 172.16.2.15 session-id string Test",
-        ]
+        replaced = ["no logging host 172.16.1.1", "logging host 172.16.2.15 session-id string Test"]
         playbook["state"] = "replaced"
         set_module_args(playbook)
         result = self.execute_module(changed=True)
@@ -726,6 +634,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             no logging console
             no logging monitor
             logging history notifications
+            logging history size 400
             logging origin-id hostname
             logging source-interface GigabitEthernet0 vrf Mgmt-intf
             logging host 172.16.0.1 transport udp port 10000
@@ -735,21 +644,15 @@ class TestIosLoggingGlobalModule(TestIosModule):
         playbook = {
             "config": {
                 "buffered": {"size": 64000},
-                "history": {"severity": "notifications"},
+                "history": {"severity": "notifications", "size": 400},
                 "hosts": [
                     {"hostname": "172.16.0.1", "vrf": "Mgmt-intf"},
                     {"hostname": "172.16.0.3", "vrf": "Mgmt-intf"},
                     {"hostname": "172.16.0.4", "vrf": "Mgmt-intf"},
                 ],
                 "origin_id": {"tag": "hostname"},
-                "rate_limit": {
-                    "console": True,
-                    "except_severity": "errors",
-                    "size": 10,
-                },
-                "source_interface": [
-                    {"interface": "GigabitEthernet0", "vrf": "Mgmt-intf"},
-                ],
+                "rate_limit": {"console": True, "except_severity": "errors", "size": 10},
+                "source_interface": [{"interface": "GigabitEthernet0", "vrf": "Mgmt-intf"}],
                 "trap": "informational",
             },
         }

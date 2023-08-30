@@ -747,3 +747,199 @@ releases:
       - 708-fix-interface-vrf-assignment.yaml
       - 717_acls_bug_fix.yaml
     release_date: "2023-01-13"
+  4.3.1:
+    changes:
+      bugfixes:
+        - ios_bgp_address_family - Reorder parsers to generate correct oder of configuration
+          lines.
+    fragments:
+      - fix_lint.yaml
+      - reorder_parsers_bgp_add.yaml
+      - rm_base.yaml
+    release_date: "2023-01-30"
+  4.4.0:
+    changes:
+      bugfixes:
+        - ios_acls - fix rendering of object-groups in source and destination at ace
+          level.
+        - ios_bgp_address_family - fix facts generation of default originate option.
+        - ios_bgp_global - fix neighbor shutdown command on set value being false.
+        - ios_command - Run & evaluate commands at least once even when retries is set
+          to 0 (https://github.com/ansible-collections/cisco.nxos/issues/607).
+        - ios_ospf_interfaces - fix dead-interval rendering wrong facts when hello-multiplier
+          is configured.
+      doc_changes:
+        - ospfv2 - fix documentation for ospfv2 module (networks parameter).
+      minor_changes:
+        - ios_facts - Add ip value to ansible_net_neighbors dictionary for cdp neighbours.
+          (https://github.com/ansible-collections/cisco.ios/pull/748)
+        - ios_facts - Add ip value to ansible_net_neighbors dictionary for lldp neighbours.
+          (https://github.com/ansible-collections/cisco.ios/pull/760)
+        - ios_interfaces - Add mode attribute in ios_interfaces, which supports layer2
+          and layer3 as options.
+    fragments:
+      - acls_object_group_fix.yaml
+      - bgp_add_family_fix.yaml
+      - bgp_shutdown.yaml
+      - fix_file_formatting_precommit.yaml
+      - fix_sanity_test.yaml
+      - fix_sanity_test_uts.yaml
+      - fix_tests_downstream.yaml
+      - fix_uts.yaml
+      - interface_mode.yaml
+      - net_neighbor_have_ip.yaml
+      - ospf_interface_minimal.yaml
+      - ospfv2_module_docfix.yml
+      - retry_ios_command.yaml
+    release_date: "2023-02-28"
+  4.4.1:
+    changes:
+      bugfixes:
+        - Fix parser to read groups in snmp-server.
+        - Fix parser to read transceiver in snmp-server.
+        - ios_acls - fix processing of source information on extended acls entries.
+        - ios_acls - prevent rendering of mac access-lists in facts.
+        - ios_static_routes - fix configure generation order for ipv4 and ipv6 routes.
+        - ios_static_routes - fix module to be idempotent with replaced and overridden
+          state.
+      doc_changes:
+        - ios_banner - Enhance example with comment.
+    fragments:
+      - add_comment_doc.yml
+      - add_uts_missing_old_module.yaml
+      - ci_codecov.yaml
+      - codecov_fix.yml
+      - codecov_from_repo.yml
+      - codecov_workfow_fix.yml
+      - fix_acls_rendering_mac.yaml
+      - fix_host_acls_rendering.yaml
+      - fix_static_routes.yaml
+      - snmp_fix_cmd_rendering.yaml
+    release_date: "2023-04-04"
+  4.5.0:
+    changes:
+      bugfixes:
+        - ios_bgp_address_family - fix issue where no commands are generated when redistributing
+          OSPFv2 and OSPFv3
+        - ios_bgp_address_family - fix missing negations in overridden and replaced
+          states when redistributing OSPF
+        - ios_bgp_address_family - fix option and syntax for OSPF E1 and E2 routes
+        - ios_bgp_address_family - fix option and syntax for OSPF N1 and N2 routes
+        - ios_bgp_address_family - fix order of generated OSPF redistribution command
+          options to achieve idempotency
+        - ios_bgp_global - fix configuration of timers under neighbor. (https://github.com/ansible-collections/cisco.ios/issues/794)
+        - ios_l3_interfaces - prevent configuration line generation when enable is false.
+        - ios_logging_global - logging history configuration command fixed for supported
+          appliance versions.
+      deprecated_features:
+        - ios_bgp_address_family - deprecate redistribute.ospf.match.external with redistribute.ospf.match.externals
+          which enables attributes for OSPF type E1 and E2 routes
+        - ios_bgp_address_family - deprecate redistribute.ospf.match.nssa_external with
+          redistribute.ospf.match.nssa_externals which enables attributes for OSPF type
+          N1 and N2 routes
+        - ios_bgp_address_family - deprecate redistribute.ospf.match.type_1 with redistribute.ospf.match.nssa_externals.type_1
+        - ios_bgp_address_family - deprecate redistribute.ospf.match.type_2 with redistribute.ospf.match.nssa_externals.type_2
+      doc_changes:
+        - Update examples for bgp_address family.
+        - bgp_global - Updated documentation with examples and task output.
+      minor_changes:
+        - ios_bgp_address_family - add option redistribute.ospf.include_connected when
+          redistributing OSPF in IPv6 AFI
+        - ios_bgp_address_family - add option redistribute.ospf.match.externals.type_1
+          to allow
+        - ios_bgp_address_family - add option redistribute.ospf.match.externals.type_2
+          to allow
+        - specification of OSPF E1 routes
+        - specification of OSPF E2 routes
+    fragments:
+      - 783_bgp_af_ospf_redis_issues.yaml
+      - bgp_global_timer_render.yml
+      - issue_702_renew.yml
+      - logging_global_history_bug.yml
+      - update_bgp_af_docs.yaml
+      - update_bgp_global_docs.yaml
+    release_date: "2023-04-18"
+  4.6.0:
+    changes:
+      bugfixes:
+        - ios_facts - fix calculation of memory from bytes to megabytes; grab correct
+          output element for free memory (https://github.com/ansible-collections/cisco.ios/issues/763)
+        - ospfv2 - Fixed rendering of capability command with vrf_lite.
+        - ospfv3 - Fixed rendering of capability command with vrf_lite.
+      doc_changes:
+        - ios_bgp_address_family - Fixed examples formatting.
+        - ios_bgp_global - Fixed examples formatting.
+        - ios_interfaces - Corrected inteface names in documentation.
+        - ios_interfaces - Fixed module documentation and examples.
+        - ios_l2_interfaces - Fixed module documentation and examples.
+        - ios_l3_interfaces - Fixed module documentation and examples.
+        - ios_l3_interfaces - Fixed module examples, update tasks to generate address
+          and not network interface.
+        - ios_static_routes - Corrected static routes before state in documentation.
+        - ios_static_routes - Fixed examples formatting.
+      minor_changes:
+        - ios_interfaces - Add template attribute to provide support for cisco ios templates.
+        - ios_service - Create module to manage service configuration on IOS switches
+    fragments:
+      - add_periodic_jobs_gha.yml
+      - fix_intergration_tests.yml
+      - healthcheck_1.yml
+      - interfaces_staticorutes.yml
+      - ios_facts_memorycalc.yaml
+      - ios_interface_templates.yml
+      - ios_l3_interfaces_doc_changes.yml
+      - ios_service_changes.yml
+      - vrf_lite_ospf_v2_v3.yml
+    modules:
+      - description: Resource module to configure service.
+        name: ios_service
+        namespace: ""
+    release_date: "2023-06-01"
+  4.6.1:
+    changes:
+      bugfixes:
+        - ios_l3_interfaces - account for secondary/primary when comparing ipv4 addresses.
+          (https://github.com/ansible-collections/cisco.ios/issues/826)
+        - ios_lag_interfaces - Fix empty facts to be a list.
+        - ios_ospf_interface - Fix configuration rendering for ipv4 and ipv6 configurations.
+        - ios_ospf_interface - Fix replaced and overridden state, action to negate superfluous
+          configuration.
+        - ios_snmp_server - Add default versions to version 3 users.
+        - snmp_server - update module to get snmp_server user configuration.
+      doc_changes:
+        - Lint examples as per ansible-lint.
+    fragments:
+      - cap_python.yml
+      - ios_l3_interfaces_secondary.yml
+      - lint_examples.yml
+      - ospf_intf_fix.yml
+      - snmpv3_user_render.yml
+      - update_galaxy.yml
+    release_date: "2023-06-13"
+  5.0.0:
+    changes:
+      bugfixes:
+        - ios_facts - Fix facts gathering when memory statistics head is not hexadecimal.
+          (https://github.com/ansible-collections/cisco.ios/issues/776)
+        - ios_snmp_server - Fixes error handling for snmp user when snmp agent is not
+          enabled
+        - ios_static_routes - Fix non vlan entries to have unique group identifier.
+        - ios_static_routes - Fix parsers to parse interface attribute correctly.
+      doc_changes:
+        - ios_facts - Add ansible_net_cpu_utilization.
+      major_changes:
+        - This release removes a previously deprecated modules, and a few attributes
+          from this collection. Refer to **Removed Features** section for details.
+      minor_changes:
+        - ios_facts - Add CPU utilization. (https://github.com/ansible-collections/cisco.ios/issues/779)
+      removed_features:
+        - Deprecated ios_logging module in favor of ios_logging_global.
+        - Deprecated next_hop_self attribute for bgp_address_family with nexthop_self.
+    fragments:
+      - cpu_util.yml
+      - depr_logging.yml
+      - enable_states.yml
+      - facts_fix.yml
+      - snmp_log.yml
+      - snmp_user_bug.yml
+    release_date: "2023-07-05"

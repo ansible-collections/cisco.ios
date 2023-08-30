@@ -16,7 +16,7 @@ the given network resource.
 """
 import re
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
 
@@ -159,6 +159,30 @@ class AclsTemplate(NetworkTemplate):
             "shared": True,
         },
         {
+            "name": "_mac_acls_name",  #
+            "getval": re.compile(
+                r"""^(?P<acl_type>Standard|Extended|Reflexive)*
+                    \s*(?P<afi>MAC)*
+                    \s*access
+                    \s*list*
+                    \s*(?P<acl_name>.+)*
+                    $""",
+                re.VERBOSE,
+            ),
+            "compval": "name",
+            "setval": "",
+            "result": {
+                "acls": {
+                    "{{ acl_name|d() }}": {
+                        "name": "{{ acl_name }}",
+                        "acl_type": "{{ acl_type.lower() if acl_type is defined }}",
+                        "afi": "{{ afi }}",
+                    },
+                },
+            },
+            "shared": True,
+        },
+        {
             "name": "remarks",
             "getval": re.compile(
                 r"""\s+remark
@@ -233,15 +257,21 @@ class AclsTemplate(NetworkTemplate):
         {
             "name": "aces",
             "getval": re.compile(
-                r"""\s*(?P<sequence>\d+)*
-                        \s*(?P<grant>deny|permit)*
+                r"""\s*((?P<sequence>\d+))?
+                        (\s*(?P<grant>deny|permit))
                         (\sevaluate\s(?P<evaluate>\S+))?
-                        (\s(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipv6|ipinip|ip|nos|ospf|pcp|pim|sctp|tcp|udp))?
                         (\s(?P<protocol_num>\d+))?
-                        (\s(?P<source>((object-group\s\S+\s|)(any|(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})\s\S+|host\s\S+)))?)
+                        (\s(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipv6|ipinip|ip|nos|ospf|pcp|pim|sctp|tcp|udp))?
+                        ((\s(?P<source_any>any))|
+                        (\sobject-group\s(?P<source_obj_grp>\S+))|
+                        (\shost\s(?P<source_host>\S+))|
+                        (\s(?P<source_address>(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})\s\S+)))?
                         (\s(?P<source_port_protocol>(eq|gts|gt|lt|neq)\s(\S+|\d+)))?
                         (\srange\s(?P<srange_start>\d+)\s(?P<srange_end>\d+))?
-                        (\s(?P<destination>((object-group\s\S+\s|)(any|\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}\s\S+|host\s\S+)))?)
+                        (\s(?P<dest_any>any))?
+                        (\sobject-group\s(?P<dest_obj_grp>\S+))?
+                        (\shost\s(?P<dest_host>\S+))?
+                        (\s(?P<dest_address>(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})\s\S+))?
                         (\s(?P<dest_port_protocol>(eq|gts|lt|neq)\s(\S+|\d+)))?
                         (\srange\s(?P<drange_start>\d+)\s(?P<drange_end>\d+))?
                         (\s(?P<icmp_igmp_tcp_protocol>administratively-prohibited|alternate-address|conversion-error|dod-host-prohibited|dod-net-prohibited|echo-reply|echo|general-parameter-problem|host-isolated|host-precedence-unreachable|host-redirect|host-tos-redirect|host-tos-unreachable|host-unknown|host-unreachable|information-reply|information-request|mask-reply|mask-request|mobile-redirect|net-redirect|net-tos-redirect|net-tos-unreachable|net-unreachable|network-unknown|no-room-for-option|option-missing|packet-too-big|parameter-problem|port-unreachable|precedence-unreachable|protocol-unreachable|reassembly-timeout|redirect|router-advertisement|router-solicitation|source-quench|source-route-failed|time-exceeded|timestamp-reply|timestamp-request|traceroute|ttl-exceeded|unreachable|dvmrp|host-query|mtrace-resp|mtrace-route|pim|trace|v1host-report|v2host-report|v2leave-group|v3host-report|ack|established|fin|psh|rst|syn|urg))?
@@ -277,8 +307,10 @@ class AclsTemplate(NetworkTemplate):
                                 "protocol_number": "{{ protocol_num }}",
                                 "icmp_igmp_tcp_protocol": "{{ icmp_igmp_tcp_protocol }}",
                                 "source": {
-                                    "remove": "{{ source }}",
-                                    "object_group": "{{ source.split(' ')[1] if source is defined and 'object-group' in source }}",
+                                    "address": "{{ source_address }}",
+                                    "any": "{{ not not source_any }}",
+                                    "host": "{{ source_host }}",
+                                    "object_group": "{{ source_obj_grp }}",
                                     "port_protocol": {
                                         "{{ source_port_protocol.split(' ')[0] if source_port_protocol is defined else None }}": "{{\
                                             source_port_protocol.split(' ')[1] if source_port_protocol is defined else None }}",
@@ -289,8 +321,10 @@ class AclsTemplate(NetworkTemplate):
                                     },
                                 },
                                 "destination": {
-                                    "remove": "{{ destination }}",
-                                    "object_group": "{{ destination.split(' ')[1] if destination is defined and 'object-group' in destination else None }}",
+                                    "address": "{{ dest_address }}",
+                                    "any": "{{ not not dest_any }}",
+                                    "host": "{{ dest_host }}",
+                                    "object_group": "{{ dest_obj_grp }}",
                                     "port_protocol": {
                                         "{{ dest_port_protocol.split(' ')[0] if dest_port_protocol is defined else None }}": "{{\
                                             dest_port_protocol.split(' ')[1] if dest_port_protocol is defined else None }}",

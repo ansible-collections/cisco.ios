@@ -37,8 +37,4 @@ class TextVaultSecret(VaultSecret):
     @property
     def bytes(self):
         """The text encoded with encoding, unless we specifically set _bytes."""
-        return self._bytes or to_bytes(
-            self.text,
-            encoding=self.encoding,
-            errors=self.errors,
-        )
+        return self._bytes or to_bytes(self.text, encoding=self.encoding, errors=self.errors)

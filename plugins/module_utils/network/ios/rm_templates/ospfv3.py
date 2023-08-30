@@ -6,13 +6,12 @@ __metaclass__ = type
 import re
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network_template import (
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
 
 
 def _tmplt_ospfv3_cmd(process):
-
     command = "router ospfv3 {process_id}".format(**process)
     if "vrf" in process:
         command += " vrf {vrf}".format(**process)
@@ -82,11 +81,11 @@ def _tmplt_ospf_area_nssa(config_data):
             command += " default-information-originate"
             if "metric" in config_data["nssa"]["default_information_originate"]:
                 command += " metric {metric}".format(
-                    **config_data["nssa"]["default_information_originate"]
+                    **config_data["nssa"]["default_information_originate"],
                 )
             if "metric_type" in config_data["nssa"]["default_information_originate"]:
                 command += " metric-type {metric_type}".format(
-                    **config_data["nssa"]["default_information_originate"]
+                    **config_data["nssa"]["default_information_originate"],
                 )
             if "nssa_only" in config_data["nssa"]["default_information_originate"]:
                 command += " nssa-only"
@@ -151,7 +150,7 @@ def _tmplt_ospf_auto_cost(config_data):
         command = "auto-cost"
         if "reference_bandwidth" in config_data["auto_cost"]:
             command += " reference-bandwidth {reference_bandwidth}".format(
-                **config_data["auto_cost"]
+                **config_data["auto_cost"],
             )
         return command
 
@@ -165,7 +164,7 @@ def _tmplt_ospf_capability(config_data):
         elif "transit" in config_data["capability"]:
             command = "capability transit"
         elif "vrf_lite" in config_data["capability"]:
-            command = "capability vrf_lite"
+            command = "capability vrf-lite"
         return command
 
 
@@ -211,7 +210,7 @@ def _tmplt_ospf_distance_admin_distance(config_data):
         command = "distance {distance}".format(**config_data["distance"]["admin_distance"])
         if "address" in config_data["distance"]["admin_distance"]:
             command += " {address} {wildcard_bits}".format(
-                **config_data["distance"]["admin_distance"]
+                **config_data["distance"]["admin_distance"],
             )
         if "acl" in config_data["distance"]["admin_distance"]:
             command += " {acl}".format(**config_data["distance"]["admin_distance"])
@@ -302,9 +301,7 @@ def _tmplt_ospf_manet(config_data):
                 cmd += " redundancy {redundancy}".format(**config_data["manet"]["peering"])
             command.append(cmd)
         if "willingness" in config_data["manet"]:
-            command.append(
-                "manet willingness".format(**config_data["manet"]["willingness"]),
-            )
+            command.append("manet willingness".format(**config_data["manet"]["willingness"]))
     return command
 
 
@@ -398,17 +395,17 @@ def _tmplt_ospf_mpls_traffic_eng(config_data):
             command += " area {area}".format(**config_data["mpls"]["traffic_eng"])
         elif "autoroute_exclude" in config_data["mpls"]["traffic_eng"]:
             command += " autoroute-exclude prefix-list {autoroute_exclude}".format(
-                **config_data["mpls"]["traffic_eng"]
+                **config_data["mpls"]["traffic_eng"],
             )
         elif "interface" in config_data["mpls"]["traffic_eng"]:
             command += " interface {int_type}".format(
-                **config_data["mpls"]["traffic_eng"]["interface"]
+                **config_data["mpls"]["traffic_eng"]["interface"],
             )
             if "area" in config_data["mpls"]["traffic_eng"]["interface"]:
                 command += " area {area}".format(**config_data["mpls"]["traffic_eng"]["interface"])
         elif "mesh_group" in config_data["mpls"]["traffic_eng"]:
             command += " mesh-group {id} {interface}".format(
-                **config_data["mpls"]["traffic_eng"]["mesh_group"]
+                **config_data["mpls"]["traffic_eng"]["mesh_group"],
             )
             if "area" in config_data["mpls"]["traffic_eng"]["mesh_group"]:
                 command += " area {area}".format(**config_data["mpls"]["traffic_eng"]["mesh_group"])
@@ -416,7 +413,7 @@ def _tmplt_ospf_mpls_traffic_eng(config_data):
             command += " multicast-intact"
         elif "router_id_interface" in config_data["mpls"]["traffic_eng"]:
             command += " router-id {router_id_interface}".format(
-                **config_data["mpls"]["traffic_eng"]
+                **config_data["mpls"]["traffic_eng"],
             )
         return command
 
@@ -519,11 +516,7 @@ def _tmplt_ospf_ttl_security(config_data):
 
 class Ospfv3Template(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(Ospfv3Template, self).__init__(
-            lines=lines,
-            tmplt=self,
-            module=module,
-        )
+        super(Ospfv3Template, self).__init__(lines=lines, tmplt=self, module=module)
 
     PARSERS = [
         {
@@ -537,9 +530,7 @@ class Ospfv3Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": _tmplt_ospfv3_cmd,
-            "result": {
-                "processes": {"{{ pid }}": {"process_id": "{{ pid|int }}"}},
-            },
+            "result": {"processes": {"{{ pid }}": {"process_id": "{{ pid|int }}"}}},
             "shared": True,
         },
         {
@@ -662,12 +653,7 @@ class Ospfv3Template(NetworkTemplate):
                         "areas": {
                             "{{ area_id }}": {
                                 "area_id": "{{ area_id }}",
-                                "filter_list": [
-                                    {
-                                        "name": "{{ name }}",
-                                        "direction": "{{ dir }}",
-                                    },
-                                ],
+                                "filter_list": [{"name": "{{ name }}", "direction": "{{ dir }}"}],
                             },
                         },
                     },
@@ -869,11 +855,7 @@ class Ospfv3Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "bfd all-interfaces",
-            "result": {
-                "processes": {
-                    "{{ pid }}": {"bfd": "{{ True if bfd is defined }}"},
-                },
-            },
+            "result": {"processes": {"{{ pid }}": {"bfd": "{{ True if bfd is defined }}"}}},
         },
         {
             "name": "capability",
@@ -953,13 +935,7 @@ class Ospfv3Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "default-metric {{ default_metric }}",
-            "result": {
-                "processes": {
-                    "{{ pid }}": {
-                        "default_metric": "{{ default_metric| int}}",
-                    },
-                },
-            },
+            "result": {"processes": {"{{ pid }}": {"default_metric": "{{ default_metric| int}}"}}},
         },
         {
             "name": "discard_route",
@@ -1110,11 +1086,7 @@ class Ospfv3Template(NetworkTemplate):
             "result": {
                 "processes": {
                     "{{ pid }}": {
-                        "distribute_list": {
-                            "route_map": {
-                                "name": "{{ route_map.split(" ")[1] }}",
-                            },
-                        },
+                        "distribute_list": {"route_map": {"name": "{{ route_map.split(" ")[1] }}"}},
                     },
                 },
             },
@@ -1153,9 +1125,7 @@ class Ospfv3Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "domain-tag {{ domain_tag }}",
-            "result": {
-                "processes": {"{{ pid }}": {"domain_tag": "{{ tag|int }}"}},
-            },
+            "result": {"processes": {"{{ pid }}": {"domain_tag": "{{ tag|int }}"}}},
         },
         {
             "name": "event_log",
@@ -1189,11 +1159,7 @@ class Ospfv3Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "help",
-            "result": {
-                "processes": {
-                    "{{ pid }}": {"help": "{{ True if help is defined }}"},
-                },
-            },
+            "result": {"processes": {"{{ pid }}": {"help": "{{ True if help is defined }}"}}},
         },
         {
             "name": "ignore",
@@ -1203,11 +1169,7 @@ class Ospfv3Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "ignore lsa mospf",
-            "result": {
-                "processes": {
-                    "{{ pid }}": {"ignore": "{{ True if ignore is defined }}"},
-                },
-            },
+            "result": {"processes": {"{{ pid }}": {"ignore": "{{ True if ignore is defined }}"}}},
         },
         {
             "name": "interface_id",
@@ -1219,9 +1181,7 @@ class Ospfv3Template(NetworkTemplate):
             "setval": "interface-id snmp-if-index",
             "result": {
                 "processes": {
-                    "{{ pid }}": {
-                        "interface_id": "{{ True if interface_id is defined }}",
-                    },
+                    "{{ pid }}": {"interface_id": "{{ True if interface_id is defined }}"},
                 },
             },
         },
@@ -1233,11 +1193,7 @@ class Ospfv3Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "ispf",
-            "result": {
-                "processes": {
-                    "{{ pid }}": {"ispf": "{{ True if ispf is defined }}"},
-                },
-            },
+            "result": {"processes": {"{{ pid }}": {"ispf": "{{ True if ispf is defined }}"}}},
         },
         {
             "name": "limit",
@@ -1422,9 +1378,7 @@ class Ospfv3Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "maximum-paths {{ maximum_paths }}",
-            "result": {
-                "processes": {"{{ pid }}": {"maximum_paths": "{{ paths }}"}},
-            },
+            "result": {"processes": {"{{ pid }}": {"maximum_paths": "{{ paths }}"}}},
         },
         {
             "name": "mpls.ldp",
@@ -1605,11 +1559,7 @@ class Ospfv3Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "passive-interface {{ passive_interface }}",
-            "result": {
-                "processes": {
-                    "{{ pid }}": {"passive_interface": "{{ interface }}"},
-                },
-            },
+            "result": {"processes": {"{{ pid }}": {"passive_interface": "{{ interface }}"}}},
         },
         {
             "name": "prefix_suppression",
@@ -1621,9 +1571,7 @@ class Ospfv3Template(NetworkTemplate):
             "setval": "prefix-suppression",
             "result": {
                 "processes": {
-                    "{{ pid }}": {
-                        "prefix_suppression": "{{ True if prefix_sup is defined }}",
-                    },
+                    "{{ pid }}": {"prefix_suppression": "{{ True if prefix_sup is defined }}"},
                 },
             },
         },
@@ -1636,9 +1584,7 @@ class Ospfv3Template(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "priority {{ priority }}",
-            "result": {
-                "processes": {"{{ pid }}": {"priority": "{{ priority }}"}},
-            },
+            "result": {"processes": {"{{ pid }}": {"priority": "{{ priority }}"}}},
         },
         {
             "name": "queue_depth.hello",
@@ -1710,11 +1656,7 @@ class Ospfv3Template(NetworkTemplate):
             ),
             "setval": "shutdown",
             "result": {
-                "processes": {
-                    "{{ pid }}": {
-                        "shutdown": "{{ True if shutdown is defined }}",
-                    },
-                },
+                "processes": {"{{ pid }}": {"shutdown": "{{ True if shutdown is defined }}"}},
             },
         },
         {
@@ -1729,9 +1671,7 @@ class Ospfv3Template(NetworkTemplate):
             ),
             "setval": "timers lsa arrival {{ timers.lsa }}",
             "compval": "lsa",
-            "result": {
-                "processes": {"{{ pid }}": {"timers": {"lsa": "{{ lsa }}"}}},
-            },
+            "result": {"processes": {"{{ pid }}": {"timers": {"lsa": "{{ lsa }}"}}}},
         },
         {
             "name": "timers.pacing",
@@ -1829,11 +1769,7 @@ class Ospfv3Template(NetworkTemplate):
             ),
             "setval": "traffic-share min across-interfaces",
             "result": {
-                "processes": {
-                    "{{ pid }}": {
-                        "traffic_share": "{{ True if traffic is defined }}",
-                    },
-                },
+                "processes": {"{{ pid }}": {"traffic_share": "{{ True if traffic is defined }}"}},
             },
         },
         {
@@ -2022,12 +1958,7 @@ class Ospfv3Template(NetworkTemplate):
                         "areas": {
                             "{{ area_id }}": {
                                 "area_id": "{{ area_id }}",
-                                "filter_list": [
-                                    {
-                                        "name": "{{ name }}",
-                                        "direction": "{{ dir }}",
-                                    },
-                                ],
+                                "filter_list": [{"name": "{{ name }}", "direction": "{{ dir }}"}],
                             },
                         },
                     },
@@ -2233,9 +2164,7 @@ class Ospfv3Template(NetworkTemplate):
             ),
             "setval": "bfd all-interfaces",
             "compval": "bfd",
-            "result": {
-                "address_family": [{"bfd": "{{ True if bfd is defined }}"}],
-            },
+            "result": {"address_family": [{"bfd": "{{ True if bfd is defined }}"}]},
         },
         {
             "name": "address_family.capability",
@@ -2319,11 +2248,7 @@ class Ospfv3Template(NetworkTemplate):
             ),
             "setval": "default-metric {{ default_metric }}",
             "compval": "default_metric",
-            "result": {
-                "address_family": [
-                    {"default_metric": "{{ default_metric| int}}"},
-                ],
-            },
+            "result": {"address_family": [{"default_metric": "{{ default_metric| int}}"}]},
         },
         {
             "name": "address_family.discard_route",
@@ -2474,13 +2399,7 @@ class Ospfv3Template(NetworkTemplate):
             "compval": "distribute_list.route_map",
             "result": {
                 "address_family": [
-                    {
-                        "distribute_list": {
-                            "route_map": {
-                                "name": "{{ route_map.split(" ")[1] }}",
-                            },
-                        },
-                    },
+                    {"distribute_list": {"route_map": {"name": "{{ route_map.split(" ")[1] }}"}}},
                 ],
             },
         },
@@ -2580,9 +2499,7 @@ class Ospfv3Template(NetworkTemplate):
             ),
             "setval": "help",
             "compval": "help",
-            "result": {
-                "address_family": [{"help": "{{ True if help is defined }}"}],
-            },
+            "result": {"address_family": [{"help": "{{ True if help is defined }}"}]},
         },
         {
             "name": "address_family.interface_id",
@@ -2594,9 +2511,7 @@ class Ospfv3Template(NetworkTemplate):
             "setval": "interface-id snmp-if-index",
             "compval": "interface_id",
             "result": {
-                "address_family": [
-                    {"interface_id": "{{ True if interface_id is defined }}"},
-                ],
+                "address_family": [{"interface_id": "{{ True if interface_id is defined }}"}],
             },
         },
         {
@@ -2800,9 +2715,7 @@ class Ospfv3Template(NetworkTemplate):
             ),
             "setval": "passive-interface {{ passive_interface }}",
             "compval": "passive_interface",
-            "result": {
-                "address_family": [{"passive_interface": "{{ interface }}"}],
-            },
+            "result": {"address_family": [{"passive_interface": "{{ interface }}"}]},
         },
         {
             "name": "address_family.prefix_suppression",
@@ -2814,11 +2727,7 @@ class Ospfv3Template(NetworkTemplate):
             "setval": "prefix-suppression",
             "compval": "prefix_suppression",
             "result": {
-                "address_family": [
-                    {
-                        "prefix_suppression": "{{ True if prefix_sup is defined }}",
-                    },
-                ],
+                "address_family": [{"prefix_suppression": "{{ True if prefix_sup is defined }}"}],
             },
         },
         {
@@ -2920,11 +2829,7 @@ class Ospfv3Template(NetworkTemplate):
             ),
             "setval": "shutdown",
             "compval": "shutdown",
-            "result": {
-                "address_family": [
-                    {"shutdown": "{{ True if shutdown is defined }}"},
-                ],
-            },
+            "result": {"address_family": [{"shutdown": "{{ True if shutdown is defined }}"}]},
         },
         {
             "name": "address_family.timers.lsa",

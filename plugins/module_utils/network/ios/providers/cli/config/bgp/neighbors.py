@@ -66,10 +66,7 @@ class Neighbors(CliProvider):
             return cmd
 
     def _render_description(self, item, config=None):
-        cmd = "neighbor %s description %s" % (
-            item["neighbor"],
-            item["description"],
-        )
+        cmd = "neighbor %s description %s" % (item["neighbor"], item["description"])
         if not config or cmd not in config:
             return cmd
 
@@ -83,10 +80,7 @@ class Neighbors(CliProvider):
             return cmd
 
     def _render_update_source(self, item, config=None):
-        cmd = "neighbor %s update-source %s" % (
-            item["neighbor"],
-            item["update_source"],
-        )
+        cmd = "neighbor %s update-source %s" % (item["neighbor"], item["update_source"])
         if not config or cmd not in config:
             return cmd
 
@@ -96,18 +90,12 @@ class Neighbors(CliProvider):
             return cmd
 
     def _render_ebgp_multihop(self, item, config=None):
-        cmd = "neighbor %s ebgp-multihop %s" % (
-            item["neighbor"],
-            item["ebgp_multihop"],
-        )
+        cmd = "neighbor %s ebgp-multihop %s" % (item["neighbor"], item["ebgp_multihop"])
         if not config or cmd not in config:
             return cmd
 
     def _render_peer_group(self, item, config=None):
-        cmd = "neighbor %s peer-group %s" % (
-            item["neighbor"],
-            item["peer_group"],
-        )
+        cmd = "neighbor %s peer-group %s" % (item["neighbor"], item["peer_group"])
         if not config or cmd not in config:
             return cmd
 
@@ -200,25 +188,16 @@ class AFNeighbors(CliProvider):
             return cmd
 
     def _render_maximum_prefix(self, item, config=None):
-        cmd = "neighbor %s maximum-prefix %s" % (
-            item["neighbor"],
-            item["maximum_prefix"],
-        )
+        cmd = "neighbor %s maximum-prefix %s" % (item["neighbor"], item["maximum_prefix"])
         if not config or cmd not in config:
             return cmd
 
     def _render_prefix_list_in(self, item, config=None):
-        cmd = "neighbor %s prefix-list %s in" % (
-            item["neighbor"],
-            item["prefix_list_in"],
-        )
+        cmd = "neighbor %s prefix-list %s in" % (item["neighbor"], item["prefix_list_in"])
         if not config or cmd not in config:
             return cmd
 
     def _render_prefix_list_out(self, item, config=None):
-        cmd = "neighbor %s prefix-list %s out" % (
-            item["neighbor"],
-            item["prefix_list_out"],
-        )
+        cmd = "neighbor %s prefix-list %s out" % (item["neighbor"], item["prefix_list_out"])
         if not config or cmd not in config:
             return cmd

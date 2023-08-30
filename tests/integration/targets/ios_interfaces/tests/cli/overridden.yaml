@@ -17,14 +17,15 @@
             name: Loopback999
           - enabled: true
             name: GigabitEthernet1
-            description: mgmt interface do not change
+            description: Management interface do not change
           - description: this is interface1
             enabled: true
             name: GigabitEthernet2
+            speed: 1000
           - name: GigabitEthernet3
             description: Configured and Overridden by Ansible-Network
             enabled: true
-            mtu: 2000
+            speed: 1000
           - enabled: false
             name: GigabitEthernet4
         state: overridden

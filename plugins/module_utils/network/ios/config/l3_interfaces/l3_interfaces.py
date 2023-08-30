@@ -18,7 +18,7 @@ __metaclass__ = type
 import re
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
@@ -117,10 +117,7 @@ class L3_interfaces(ResourceModule):
         begin = len(self.commands)
         self._compare_lists(want=want, have=have)
         if len(self.commands) != begin:
-            self.commands.insert(
-                begin,
-                self._tmplt.render(want or have, "name", False),
-            )
+            self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
 
     def _compare_lists(self, want, have):
         _d = {}
@@ -155,12 +152,51 @@ class L3_interfaces(ResourceModule):
                     if hacls == wacls:
                         hacls = {}
                 self.validate_ips(afi, want=entry, have=hacls.get(key, {}))
+
+                if entry.get("secondary", False) is True:
+                    continue
+                # entry is set as primary
+                hacl = hacls.get(key, {})
+                if hacl.get("secondary", False) is True:
+                    hacl = {}
+                self.validate_ips(afi, want=entry, have=hacl)
+
+                if hacl:
+                    hacls.pop(key, {})
+
                 self.compare(
                     parsers=self.parsers,
                     want={afi: entry},
-                    have={afi: hacls.pop(key, {})},
+                    have={afi: hacl},
                 )
+
+            for key, entry in wacls.items():
+                if entry.get("secondary", False) is False:
+                    continue
+                # entry is set as secondary
+                hacl = hacls.get(key, {})
+                if hacl.get("secondary", False) is False:
+                    # hacl is set as primary, if wacls has no other primary entry we must keep
+                    # this entry as primary (so we'll compare entry to hacl and not
+                    # generate commands)
+                    if list(filter(lambda w: w.get("secondary", False) is False, wacls.values())):
+                        # another primary is in wacls
+                        hacl = {}
+                self.validate_ips(afi, want=entry, have=hacl)
+
+                if hacl:
+                    hacls.pop(key, {})
+
+                self.compare(
+                    parsers=self.parsers,
+                    want={afi: entry},
+                    have={afi: hacl},
+                )
+
             # remove remaining items in have for replaced
+            # these can be subnets that are no longer used
+            # or secondaries that have moved to primary
+            # or primary that has moved to secondary
             for key, entry in hacls.items():
                 self.validate_ips(afi, have=entry)
                 self.compare(parsers=self.parsers, want={}, have={afi: entry})
@@ -310,12 +346,8 @@ class L3_interfaces(ResourceModule):
                                 {
                                     "dhcp": {
                                         "dhcp": {
-                                            "client_id": each.get(
-                                                "dhcp_client",
-                                            ),
-                                            "hostname": each.get(
-                                                "dhcp_hostname",
-                                            ),
+                                            "client_id": each.get("dhcp_client"),
+                                            "hostname": each.get("dhcp_hostname"),
                                         },
                                     },
                                 },

@@ -16,7 +16,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible.module_utils._text import to_text
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.resource_module import (
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
@@ -90,10 +90,7 @@ class Acl_interfaces(ResourceModule):
         begin = len(self.commands)
         self._compare_lists(want=want, have=have)
         if len(self.commands) != begin:
-            self.commands.insert(
-                begin,
-                self._tmplt.render(want or have, "interface", False),
-            )
+            self.commands.insert(begin, self._tmplt.render(want or have, "interface", False))
 
     def _compare_lists(self, want, have):
         wdict = want.get("access_groups", {})

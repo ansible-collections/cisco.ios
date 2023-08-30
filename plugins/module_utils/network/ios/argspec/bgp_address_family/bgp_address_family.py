@@ -367,7 +367,6 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                         "warning_only": {"type": "bool"},
                                     },
                                 },
-                                "next_hop_self": {"type": "bool"},
                                 "nexthop_self": {
                                     "type": "dict",
                                     "options": {"set": {"type": "bool"}, "all": {"type": "bool"}},
@@ -668,12 +667,27 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                     "type": "dict",
                                     "options": {
                                         "process_id": {"type": "int"},
+                                        "include_connected": {"type": "bool"},
                                         "match": {
                                             "type": "dict",
                                             "options": {
                                                 "external": {"type": "bool"},
                                                 "internal": {"type": "bool"},
+                                                "externals": {
+                                                    "type": "dict",
+                                                    "options": {
+                                                        "type_1": {"type": "bool"},
+                                                        "type_2": {"type": "bool"},
+                                                    },
+                                                },
                                                 "nssa_external": {"type": "bool"},
+                                                "nssa_externals": {
+                                                    "type": "dict",
+                                                    "options": {
+                                                        "type_1": {"type": "bool"},
+                                                        "type_2": {"type": "bool"},
+                                                    },
+                                                },
                                                 "type_1": {"type": "bool"},
                                                 "type_2": {"type": "bool"},
                                             },
@@ -692,7 +706,21 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                             "options": {
                                                 "external": {"type": "bool"},
                                                 "internal": {"type": "bool"},
+                                                "externals": {
+                                                    "type": "dict",
+                                                    "options": {
+                                                        "type_1": {"type": "bool"},
+                                                        "type_2": {"type": "bool"},
+                                                    },
+                                                },
                                                 "nssa_external": {"type": "bool"},
+                                                "nssa_externals": {
+                                                    "type": "dict",
+                                                    "options": {
+                                                        "type_1": {"type": "bool"},
+                                                        "type_2": {"type": "bool"},
+                                                    },
+                                                },
                                                 "type_1": {"type": "bool"},
                                                 "type_2": {"type": "bool"},
                                             },

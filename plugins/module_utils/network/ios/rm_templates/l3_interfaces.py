@@ -47,13 +47,21 @@ def ip_tmplt(config_data):
     return cmd
 
 
+def ipv4_dhcp(config_data):
+    _data = config_data.get("ipv4", {}).get("dhcp")
+    if not _data.get("enable", True):
+        return ""
+    cmd = "ip address dhcp"
+    if _data.get("client_id"):
+        cmd += " client-id {client_id}".format(**_data)
+    if _data.get("hostname"):
+        cmd += " hostname {hostname}".format(**_data)
+    return cmd
+
+
 class L3_interfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(L3_interfacesTemplate, self).__init__(
-            lines=lines,
-            tmplt=self,
-            module=module,
-        )
+        super(L3_interfacesTemplate, self).__init__(lines=lines, tmplt=self, module=module)
 
     # fmt: off
     PARSERS = [
@@ -157,9 +165,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            "setval": "{{ 'ip address dhcp' if ipv4.dhcp.enable is defined|d(False) or (ipv4.dhcp.client_id is defined or ipv4.dhcp.hostname) else ''}}"
-            "{{ (' client-id ' + ipv4.dhcp.client_id) if ipv4.dhcp.client_id is defined else ''}}"
-            "{{ (' hostname ' + ipv4.dhcp.hostname) if ipv4.dhcp.hostname is defined else ''}}",
+            "setval": ipv4_dhcp,
             "result": {
                 "{{ name }}": {
                     "ipv4": [

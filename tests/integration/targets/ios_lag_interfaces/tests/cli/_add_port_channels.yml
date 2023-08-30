@@ -1,0 +1,7 @@
+---
+- name: Add Port-channels for tests
+  cisco.ios.ios_interfaces:
+    config:
+      - name: Port-channel10
+      - name: Port-channel40
+    state: merged
