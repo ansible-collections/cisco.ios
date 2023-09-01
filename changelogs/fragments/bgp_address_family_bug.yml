@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - bgp_address_family - fix deleted string with int concat issue in bgp_address_family.
