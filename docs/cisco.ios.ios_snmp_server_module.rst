@@ -8837,7 +8837,7 @@ Notes
 -----
 
 .. note::
-   - Tested against Cisco IOSv Version <TODO> and IOS-XE v<TODO>.
+   - Tested against Cisco IOSXE Version 17.3 on CML.
    - This module works with connection ``network_cli``.
 
 
@@ -9981,7 +9981,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>The set of commands pushed to the remote device.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;sample command 1&#x27;, &#x27;sample command 2&#x27;, &#x27;sample command 3&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;snmp-server host 172.16.2.99 informs version 2c check msdp stun&#x27;, &#x27;snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB&#x27;, &#x27;snmp-server group grp1 v1 notify me access 2&#x27;]</div>
                 </td>
             </tr>
             <tr>
@@ -10032,7 +10032,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>The provided configuration in the task rendered in device-native format (offline).</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;sample command 1&#x27;, &#x27;sample command 2&#x27;, &#x27;sample command 3&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;snmp-server enable traps ipsec cryptomap attach&#x27;, &#x27;snmp-server password-policy policy1 define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3&#x27;, &#x27;snmp-server cache interval 2&#x27;]</div>
                 </td>
             </tr>
     </table>
