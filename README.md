@@ -68,8 +68,8 @@ Name | Description
 [cisco.ios.ios_snmp_server](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_snmp_server_module.rst)|Resource module to configure snmp server.
 [cisco.ios.ios_static_routes](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_static_routes_module.rst)|Resource module to configure static routes.
 [cisco.ios.ios_system](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_system_module.rst)|Module to manage the system attributes.
-[cisco.ios.ios_user](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_user_module.rst)|Module to manage the aggregates of local users.
-[cisco.ios.ios_user_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_user_global_module.rst)|Resource module to configure user and enable
+[cisco.ios.ios_user](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_user_module.rst)|(deprecated, removed after 2024-10-01) Module to manage the aggregates of local users.
+[cisco.ios.ios_users](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_users_module.rst)|Resource module to configure user and enable
 [cisco.ios.ios_vlans](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vlans_module.rst)|Resource module to configure VLANs.
 [cisco.ios.ios_vrf](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vrf_module.rst)|Module to configure VRF definitions.
 

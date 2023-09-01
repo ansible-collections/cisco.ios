@@ -23,18 +23,18 @@ __metaclass__ = type
 
 from textwrap import dedent
 
-from ansible_collections.cisco.ios.plugins.modules import ios_user_global
+from ansible_collections.cisco.ios.plugins.modules import ios_users
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
 
 
-class TestIosUserGlobalModule(TestIosModule):
-    module = ios_user_global
+class TestIosUsersModule(TestIosModule):
+    module = ios_users
 
     def setUp(self):
-        super(TestIosUserGlobalModule, self).setUp()
+        super(TestIosUsersModule, self).setUp()
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
@@ -42,17 +42,17 @@ class TestIosUserGlobalModule(TestIosModule):
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_execute_show_command = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.user_global.user_global."
-            "User_globalFacts.get_users_data",
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.users.users."
+            "UsersFacts.get_users_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
     def tearDown(self):
-        super(TestIosUserGlobalModule, self).tearDown()
+        super(TestIosUsersModule, self).tearDown()
         self.mock_get_resource_connection_facts.stop()
         self.mock_execute_show_command.stop()
 
-    def test_ios_user_global_merged_idempotent(self):
+    def test_ios_users_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
             enable secret 9 $9$q3zuC3f3vjWnWk$4BwPgPt25AUkm8Gts6aqW.NLK/90zBDnmWtOeMQqoDo
@@ -93,7 +93,7 @@ class TestIosUserGlobalModule(TestIosModule):
 
         self.assertEqual(sorted(result["commands"]), sorted(merged))
 
-    def test_ios_user_global_merged(self):
+    def test_ios_users_merged(self):
         self.execute_show_command.return_value = dedent(
             """\
             username johndoe secret 5 $5$cAYu$0he5yPyPAbXoXo6U0fjzb4NbLLyqDRehwQU3ysKEC33
@@ -162,7 +162,7 @@ class TestIosUserGlobalModule(TestIosModule):
             sorted(merged),
         )
 
-    def test_ios_user_global_deleted(self):
+    def test_ios_users_deleted(self):
         self.execute_show_command.return_value = dedent(
             """\
             username johndoe secret 5 $5$cAYu$0he5yPyPAbXoXo6U0fjzb4NbLLyqDRehwQU3ysKEC33
@@ -188,7 +188,7 @@ class TestIosUserGlobalModule(TestIosModule):
             sorted(deleted),
         )
 
-    def test_ios_user_global_overridden(self):
+    def test_ios_users_overridden(self):
         self.execute_show_command.return_value = dedent(
             """\
             username johndoe secret 5 $5$cAYu$0he5yPyPAbXoXo6U0fjzb4NbLLyqDRehwQU3ysKEC33
@@ -259,7 +259,7 @@ class TestIosUserGlobalModule(TestIosModule):
             sorted(overridden),
         )
 
-    def test_ios_user_global_overridden_idempotent(self):
+    def test_ios_users_overridden_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
             enable secret 9 $9$q3zuC3f3vjWnWk$4BwPgPt25AUkm8Gts6aqW.NLK/90zBDnmWtOeMQqoDo
@@ -300,7 +300,7 @@ class TestIosUserGlobalModule(TestIosModule):
         self.maxDiff = None
         self.assertEqual(sorted(result["commands"]), sorted(overridden))
 
-    def test_ios_user_global_parsed(self):
+    def test_ios_users_parsed(self):
         set_module_args(
             dict(
                 running_config=dedent(
@@ -340,7 +340,7 @@ class TestIosUserGlobalModule(TestIosModule):
         self.maxDiff = None
         self.assertEqual(result["parsed"], parsed)
 
-    def test_ios_user_global_gathered(self):
+    def test_ios_users_gathered(self):
         self.execute_show_command.return_value = dedent(
             """\
             enable secret 9 $9$q3zuC3f3vjWnWk$4BwPgPt25AUkm8Gts6aqW.NLK/90zBDnmWtOeMQqoDo
@@ -376,7 +376,7 @@ class TestIosUserGlobalModule(TestIosModule):
         self.maxDiff = None
         self.assertEqual(sorted(result["gathered"]), sorted(gathered))
 
-    def test_ios_user_global_rendered(self):
+    def test_ios_users_rendered(self):
         set_module_args(
             {
                 "config": {

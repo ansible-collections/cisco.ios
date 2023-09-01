@@ -1,0 +1,9 @@
+---
+minor_changes:
+  - ios_users - Put a module to replace the module ios_user with a files covered by standards (construct with `resource_module_models`)
+
+bugfixes:
+  - gitignore - Add the line to not commit temporary files from VIM (`*.swp`)
+
+deprecated_features:
+  - ios_user - Indicate as deprecated and replaced by the module ios_users with more functionnality

@@ -23,7 +23,7 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_user
 author: Trishna Guha (@trishnaguha)
-short_description: Module to manage the aggregates of local users.
+short_description: (deprecated, removed after 2024-10-01) Module to manage the aggregates of local users.
 description:
   - This module provides declarative management of the local usernames configured on
     network devices. It allows playbooks to manage either individual usernames or the
@@ -34,6 +34,10 @@ notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
+deprecated:
+  alternative: ios_users
+  why: Updated module released with more functionality.
+  removed_at_date: "2024-10-01"
 options:
   aggregate:
     description:

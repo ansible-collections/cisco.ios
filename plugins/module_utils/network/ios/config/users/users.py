@@ -11,7 +11,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 """
-The ios_user_global config file.
+The ios_users config file.
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to its desired end-state is
@@ -29,23 +29,23 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
 )
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.user_global import (
-    User_globalTemplate,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.users import (
+    UsersTemplate,
 )
 
 
-class User_global(ResourceModule):
+class Users(ResourceModule):
     """
-    The ios_user_global config class
+    The ios_users config class
     """
 
     def __init__(self, module):
-        super(User_global, self).__init__(
+        super(Users, self).__init__(
             empty_fact_val={},
             facts_module=Facts(module),
             module=module,
-            resource="user_global",
-            tmplt=User_globalTemplate(),
+            resource="users",
+            tmplt=UsersTemplate(),
         )
         self.parsers = []
         self.list_parsers = [
@@ -88,7 +88,7 @@ class User_global(ResourceModule):
         """Leverages the base class `compare()` method and
         populates the list of commands to be run by comparing
         the `want` and `have` data with the `parsers` defined
-        for the User_global network resource.
+        for the Users network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
         self._compare_lists_attrs(want, have)
