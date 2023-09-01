@@ -460,9 +460,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.users.users import (
     UsersArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.users.users import (
-    Users,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.users.users import Users
 
 
 def main():

@@ -20,6 +20,8 @@ DEPRECATED
 :Why: Updated module released with more functionality.
 :Alternative: ios_users
 
+
+
 Synopsis
 --------
 - This module provides declarative management of the local usernames configured on network devices. It allows playbooks to manage either individual usernames or the aggregate of usernames in the current running config. It also supports purging usernames from the configuration that are not explicitly defined.
@@ -635,6 +637,7 @@ Status
 
 - This module will be removed in a release after 2024-10-01. *[deprecated]*
 - For more information see `DEPRECATED`_.
+
 
 Authors
 ~~~~~~~
