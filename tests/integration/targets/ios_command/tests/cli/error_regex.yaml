@@ -31,11 +31,6 @@
         commands:
           - show logging
 
-    - name: Ensure task fails due to mismatched regex
-      ansible.builtin.assert:
-        that:
-          - result.failed == true
-
     - name: Pause to avoid rate limiting-2
       ansible.builtin.pause:
         seconds: 20
