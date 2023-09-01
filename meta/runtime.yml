@@ -35,6 +35,10 @@ plugin_routing:
       deprecation:
         removal_date: "2024-01-01"
         warning_text: See the plugin documentation for more details
+    ios_user:
+      deprecation:
+        removal_date: "2024-10-01"
+        warning_text: See the plugin documentation for more details
     l2_interfaces:
       redirect: cisco.ios.ios_l2_interfaces
     l3_interfaces:
@@ -85,9 +89,12 @@ plugin_routing:
     system:
       redirect: cisco.ios.ios_system
     user:
+      deprecation:
+        removal_date: "2024-10-01"
+        warning_text: See the plugin documentation for more details
       redirect: cisco.ios.ios_user
-    user_global:
-      redirect: cisco.ios.ios_user_global
+    users:
+      redirect: cisco.ios.ios_users
     vlans:
       redirect: cisco.ios.ios_vlans
     vrf:

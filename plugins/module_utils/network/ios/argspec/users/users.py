@@ -25,12 +25,12 @@ __metaclass__ = type
 ##############################################
 
 """
-The arg spec for the ios_user_global module
+The arg spec for the ios_users module
 """
 
 
-class User_globalArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_user_global module"""
+class UsersArgs(object):  # pylint: disable=R0903
+    """The arg spec for the ios_users module"""
 
     argument_spec = {
         "config": {

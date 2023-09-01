@@ -5,7 +5,7 @@
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 """
-The module file for ios_user_global
+The module file for ios_users
 """
 
 from __future__ import absolute_import, division, print_function
@@ -14,7 +14,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
-module: ios_user_global
+module: ios_users
 short_description: Resource module to configure user and enable
 description:
   - This module provides declarative management of user and enable on Cisco IOS devices
@@ -193,7 +193,7 @@ EXAMPLES = """
 # ------------
 
 - name: Apply the provided configuration
-  cisco.ios.ios_user_global:
+  cisco.ios.ios_users:
     config:
       enable:
         - password:
@@ -233,7 +233,7 @@ EXAMPLES = """
 # -------------
 
 - name: Remove all existing configuration
-  cisco.ios.ios_user_global:
+  cisco.ios.ios_users:
     state: deleted
 
 # Commands Fired:
@@ -264,7 +264,7 @@ EXAMPLES = """
 # --------------
 
 - name: Override commands with provided configuration
-  cisco.ios.ios_user_global:
+  cisco.ios.ios_users:
     config:
       enable:
         - password:
@@ -307,7 +307,7 @@ EXAMPLES = """
 # --------------
 
 - name: Gather listed snmp config
-  cisco.ios.ios_user_global:
+  cisco.ios.ios_users:
     state: gathered
 
 # Module Execution Result:
@@ -341,7 +341,7 @@ EXAMPLES = """
 # --------------
 
 - name: Render the commands for provided configuration
-  cisco.ios.ios_user_global:
+  cisco.ios.ios_users:
     config:
       enable:
         - password:
@@ -377,7 +377,7 @@ EXAMPLES = """
 # ------------
 
 - name: Parse the provided configuration with the existing running configuration
-  cisco.ios.ios_user_global:
+  cisco.ios.ios_users:
     running_config: "{{ lookup('file', 'parsed.cfg') }}"
     state: parsed
 
@@ -457,11 +457,11 @@ parsed:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.user_global.user_global import (
-    User_globalArgs,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.users.users import (
+    UsersArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.user_global.user_global import (
-    User_global,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.users.users import (
+    Users,
 )
 
 
@@ -472,7 +472,7 @@ def main():
     :returns: the result form module invocation
     """
     module = AnsibleModule(
-        argument_spec=User_globalArgs.argument_spec,
+        argument_spec=UsersArgs.argument_spec,
         mutually_exclusive=[["config", "running_config"]],
         required_if=[
             ["state", "merged", ["config"]],
@@ -484,7 +484,7 @@ def main():
         supports_check_mode=True,
     )
 
-    result = User_global(module).execute_module()
+    result = Users(module).execute_module()
     module.exit_json(**result)
 
 
