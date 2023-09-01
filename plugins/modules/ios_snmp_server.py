@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# Copyright 2023 Red Hat
+# Copyright 2022 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -20,7 +20,7 @@ description:
   - This module provides declarative management of SNMP server on Cisco IOS devices.
 module: ios_snmp_server
 notes:
-  - Tested against Cisco IOSv Version <TODO> and IOS-XE v<TODO>.
+  - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
 options:
   config:
@@ -2549,17 +2549,17 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - snmp-server host 172.16.2.99 informs version 2c check msdp stun
+    - snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB
+    - snmp-server group grp1 v1 notify me access 2
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - snmp-server enable traps ipsec cryptomap attach
+    - snmp-server password-policy policy1 define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3
+    - snmp-server cache interval 2
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
