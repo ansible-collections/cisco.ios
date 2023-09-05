@@ -9664,6 +9664,7 @@ Examples
     #   networks:
     #   - address: 192.0.2.2
     #   - address: 192.0.2.3
+    #
     # commands:
     # - router bgp 65000
     # - no bgp bestpath compare-routerid

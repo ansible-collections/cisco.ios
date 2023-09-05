@@ -1145,7 +1145,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} filter-list"
-            "{{ (' ' + filter_list.as_path_acl) if filter_list.as_path_acl is defined else '' }}"
+            "{{ (' ' + filter_list.as_path_acl|string) if filter_list.as_path_acl is defined else '' }}"
             "{{ (' in') if filter_list.in|d(False) else '' }}"
             "{{ (' out') if filter_list.out|d(False) else '' }}",
             "result": {
