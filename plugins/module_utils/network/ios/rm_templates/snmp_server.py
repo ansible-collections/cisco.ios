@@ -1928,13 +1928,15 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\s(?P<vrf_up>vrf-up))?
                 """, re.VERBOSE,
             ),
-            "setval": "snmp-server enable traps mpls vpn"
+            "setval": "{% if 'vpn' in traps.mpls and traps.mpls.vpn.enable %}"
+                      "snmp-server enable traps mpls vpn"
                       "{{ ' illegal-label' if traps.mpls.vpn.illegal_label|d(False) else '' }}"
                       "{{ ' max-thresh-cleared' if traps.mpls.vpn.max_thresh_cleared|d(False) else '' }}"
                       "{{ ' max-threshold' if traps.mpls.vpn.max_threshold|d(False) else '' }}"
                       "{{ ' mid-threshold' if traps.mpls.vpn.mid_threshold|d(False) else '' }}"
                       "{{ ' vrf-down' if traps.mpls.vpn.vrf_down|d(False) else '' }}"
-                      "{{ ' vrf-up' if traps.mpls.vpn.vrf_up|d(False) else '' }}",
+                      "{{ ' vrf-up' if traps.mpls.vpn.vrf_up|d(False) else '' }}"
+                      "{% endif %}",
             "result": {
                 "traps": {
                     "mpls": {

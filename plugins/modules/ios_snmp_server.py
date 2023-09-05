@@ -14,6 +14,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
+---
 author:
   - Sagar Paul (@KB-perByte)
 description:
@@ -896,6 +897,12 @@ options:
                     type: bool
                 type: dict
             type: dict
+          mpls_vpn:
+            description:
+              - Enable SNMP mpls traps
+              - This option is DEPRECATED and is replaced with mpls which accepts dict as input
+              - This attribute will be removed after 2024-09-01
+            type: bool
           msdp:
             description: Enable SNMP msdp traps
             type: bool
@@ -1450,7 +1457,7 @@ options:
       - The states I(replaced) and I(overridden) have identical
         behaviour for this module.
     type: str
-short_description: Resource module to configure snmp server
+short_description: Resource module to configure snmp server.
 version_added: 2.6.0
 """
 

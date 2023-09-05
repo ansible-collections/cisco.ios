@@ -525,6 +525,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                             },
                             "type": "dict",
                         },
+                        "mpls_vpn": {"type": "bool"},
                         "msdp": {"type": "bool"},
                         "mvpn": {"type": "bool"},
                         "nhrp": {
