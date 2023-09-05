@@ -214,7 +214,9 @@ class Snmp_server(ResourceModule):
 
         # Take in count the traps config mpls_vpn which is DEPRECATED and replaced by mpls.vpn
         if "traps" in wantd and "mpls_vpn" in wantd["traps"]:
-            wantd["traps"] = dict_merge(wantd["traps"], {"mpls": {"vpn": {"enable": wantd["traps"]["mpls_vpn"]}}})
+            wantd["traps"] = dict_merge(
+                wantd["traps"], {"mpls": {"vpn": {"enable": wantd["traps"]["mpls_vpn"]}}}
+            )
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
