@@ -59,30 +59,30 @@ class TestIosVxlanVtepModule(TestIosModule):
             dict(
                 config=[
                     {
-                        "interface":"nve1",
-                        "source_interface":"loopback2",
-                        "member":{
-                            "vni":{
-                                "l2vni":[
+                        "interface": "nve1",
+                        "source_interface": "loopback2",
+                        "member": {
+                            "vni": {
+                                "l2vni": [
                                     {
-                                        "vni":"10101",
-                                        "replication":{"type": "ingress"},
+                                        "vni": "10101",
+                                        "replication": {"type": "ingress"},
                                     },
                                     {
-                                        "vni":"10201",
+                                        "vni": "10201",
                                         "replication": {
-                                            "type":"static",
-                                            "mcast_group":{
-                                                "ipv4":"225.0.0.101",
-                                                "ipv6":"FF0E:225::101",
+                                            "type": "static",
+                                            "mcast_group": {
+                                                "ipv4": "225.0.0.101",
+                                                "ipv6": "FF0E:225::101",
                                             },
                                         },
                                     },
                                 ],
-                                "l3vni":[
+                                "l3vni": [
                                     {
-                                        "vni":"50901",
-                                        "vrf":"blue",
+                                        "vni": "50901",
+                                        "vrf": "blue",
                                     },
                                 ],
                             },
@@ -124,30 +124,30 @@ class TestIosVxlanVtepModule(TestIosModule):
             dict(
                 config=[
                     {
-                        "interface":"nve1",
-                        "source_interface":"loopback2",
-                        "member":{
-                            "vni":{
-                                "l2vni":[
+                        "interface": "nve1",
+                        "source_interface": "loopback2",
+                        "member": {
+                            "vni": {
+                                "l2vni": [
                                     {
-                                        "vni":"10101",
-                                        "replication":{"type":"ingress"},
+                                        "vni": "10101",
+                                        "replication": {"type": "ingress"},
                                     },
                                     {
-                                        "vni":"10201",
-                                        "replication":{
-                                            "type":"static",
-                                            "mcast_group":{
-                                                "ipv4":"225.0.0.101",
-                                                "ipv6":"FF0E:225::101",
+                                        "vni": "10201",
+                                        "replication": {
+                                            "type": "static",
+                                            "mcast_group": {
+                                                "ipv4": "225.0.0.101",
+                                                "ipv6": "FF0E:225::101",
                                             },
                                         },
                                     },
                                 ],
-                                "l3vni":[
+                                "l3vni": [
                                     {
-                                        "vni":"50901",
-                                        "vrf":"blue",
+                                        "vni": "50901",
+                                        "vrf": "blue",
                                     },
                                 ],
                             },
@@ -177,26 +177,26 @@ class TestIosVxlanVtepModule(TestIosModule):
             dict(
                 config=[
                     {
-                        "interface":"nve1",
-                        "source_interface":"loopback2",
-                        "member":{
-                            "vni":{
-                                "l2vni":[
+                        "interface": "nve1",
+                        "source_interface": "loopback2",
+                        "member": {
+                            "vni": {
+                                "l2vni": [
                                     {
-                                        "vni":"10101",
-                                        "replication":{
-                                            "type":"static",
-                                            "mcast_group":{
-                                                "ipv6":"FF0E:225::101",
+                                        "vni": "10101",
+                                        "replication": {
+                                            "type": "static",
+                                            "mcast_group": {
+                                                "ipv6": "FF0E:225::101",
                                             },
                                         },
                                     },
                                     {
-                                        "vni":"10201",
-                                        "replication":{
-                                            "type":"static",
-                                            "mcast_group":{
-                                                "ipv6":"FF0E:225::102",
+                                        "vni": "10201",
+                                        "replication": {
+                                            "type": "static",
+                                            "mcast_group": {
+                                                "ipv6": "FF0E:225::102",
                                             },
                                         },
                                     },
@@ -236,26 +236,26 @@ class TestIosVxlanVtepModule(TestIosModule):
             dict(
                 config=[
                     {
-                        "interface":"nve1",
-                        "source_interface":"loopback2",
-                        "member":{
-                            "vni":{
-                                "l2vni":[
+                        "interface": "nve1",
+                        "source_interface": "loopback2",
+                        "member": {
+                            "vni": {
+                                "l2vni": [
                                     {
-                                        "vni":"10101",
-                                        "replication":{
-                                            "type":"static",
-                                            "mcast_group":{
-                                                "ipv6":"FF0E:225::101",
+                                        "vni": "10101",
+                                        "replication": {
+                                            "type": "static",
+                                            "mcast_group": {
+                                                "ipv6": "FF0E:225::101",
                                             },
                                         },
                                     },
                                     {
-                                        "vni":"10201",
-                                        "replication":{
-                                            "type":"static",
-                                            "mcast_group":{
-                                                "ipv6":"FF0E:225::102",
+                                        "vni": "10201",
+                                        "replication": {
+                                            "type": "static",
+                                            "mcast_group": {
+                                                "ipv6": "FF0E:225::102",
                                             },
                                         },
                                     },
@@ -287,26 +287,26 @@ class TestIosVxlanVtepModule(TestIosModule):
             dict(
                 config=[
                     {
-                        "interface":"nve1",
-                        "source_interface":"loopback2",
-                        "member":{
-                            "vni":{
-                                "l2vni":[
+                        "interface": "nve1",
+                        "source_interface": "loopback2",
+                        "member": {
+                            "vni": {
+                                "l2vni": [
                                     {
-                                        "vni":"10101",
-                                        "replication":{
-                                            "type":"static",
-                                            "mcast_group":{
-                                                "ipv6":"FF0E:225::101",
+                                        "vni": "10101",
+                                        "replication": {
+                                            "type": "static",
+                                            "mcast_group": {
+                                                "ipv6": "FF0E:225::101",
                                             },
                                         },
                                     },
                                     {
-                                        "vni":"10201",
-                                        "replication":{
-                                            "type":"static",
-                                            "mcast_group":{
-                                                "ipv6":"FF0E:225::102",
+                                        "vni": "10201",
+                                        "replication": {
+                                            "type": "static",
+                                            "mcast_group": {
+                                                "ipv6": "FF0E:225::102",
                                             },
                                         },
                                     },
@@ -368,12 +368,12 @@ class TestIosVxlanVtepModule(TestIosModule):
             dict(
                 config=[
                     {
-                        "interface":"nve1",
-                        "member":{
-                            "vni":{
-                                "l2vni":[
-                                    {"vni":"10101"},
-                                    {"vni":"10201"},
+                        "interface": "nve1",
+                        "member": {
+                            "vni": {
+                                "l2vni": [
+                                    {"vni": "10101"},
+                                    {"vni": "10201"},
                                 ],
                             },
                         },
