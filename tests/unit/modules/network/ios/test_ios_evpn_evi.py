@@ -372,7 +372,7 @@ class TestIosEvpnEviModule(TestIosModule):
             "default-gateway advertise enable",
             "replication-type static",
         ]
-        result = self.execute_module(changed=False)
+        result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_evpn_evi_overridden_idempotent(self):
