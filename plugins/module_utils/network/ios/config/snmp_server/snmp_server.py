@@ -34,6 +34,20 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 
 
+def handle_deprecates(wantd):
+    """Remove deprecated attributes and set the replacment"""
+
+    # Take in count the traps config mpls_vpn which is DEPRECATED and replaced by mpls.vpn
+    if "traps" in wantd and "mpls_vpn" in wantd["traps"]:
+        wantd["traps"] = dict_merge(
+            wantd["traps"], 
+            {"mpls": {"vpn": {"enable": wantd["traps"]["mpls_vpn"]}}}
+        )
+        wantd["traps"].pop("mpls_vpn")
+
+    return wantd
+
+
 class Snmp_server(ResourceModule):
     """
     The ios_snmp_server config class
@@ -212,12 +226,7 @@ class Snmp_server(ResourceModule):
         wantd = self._snmp_list_to_dict(self.want)
         haved = self._snmp_list_to_dict(self.have)
 
-        # Take in count the traps config mpls_vpn which is DEPRECATED and replaced by mpls.vpn
-        if "traps" in wantd and "mpls_vpn" in wantd["traps"]:
-            wantd["traps"] = dict_merge(
-                wantd["traps"],
-                {"mpls": {"vpn": {"enable": wantd["traps"]["mpls_vpn"]}}},
-            )
+        wantd = handle_deprecates(wantd=wantd)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
