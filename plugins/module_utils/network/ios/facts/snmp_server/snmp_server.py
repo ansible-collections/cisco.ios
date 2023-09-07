@@ -15,6 +15,7 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
+import re
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
@@ -93,18 +94,36 @@ class Snmp_serverFacts(object):
         """
         user_sets = snmpv3_user.split("User ")
         user_list = []
+        re_snmp_auth = re.compile(r"^Authentication Protocol:\s*(MD5|SHA)")
+        re_snmp_priv = re.compile(r"^Privacy Protocol:\s*(3DES|AES|DES)([0-9]*)")
+        re_snmp_acl = re.compile(r"^.*active\s+(access-list: (\S+)|)\s*(IPv6 access-list: (\S+)|)")
         for user_set in user_sets:
             one_set = {}
             lines = user_set.splitlines()
             for line in lines:
                 if line.startswith("name"):
                     one_set["username"] = line.split(": ")[1]
+                    continue
                 if line.startswith("Group-name:"):
                     one_set["group"] = line.split(": ")[1]
-                if "IPv6 access-list:" in line:
-                    one_set["acl_v6"] = line.split(": ")[-1]
-                if "active\taccess-list:" in line:
-                    one_set["acl_v4"] = line.split(": ")[-1]
+                    continue
+                re_match = re_snmp_auth.search(line)
+                if re_match:
+                    one_set["authentication"] = {"algorithm": re_match.group(1).lower()}
+                    continue
+                re_match = re_snmp_priv.search(line)
+                if re_match:
+                    one_set["encryption"] = {"priv": re_match.group(1).lower()}
+                    if re_match.group(2):
+                        one_set["encryption"]["priv_option"] = re_match.group(2)
+                    continue
+                re_match = re_snmp_acl.search(line)
+                if re_match:
+                    if re_match.group(2):
+                        one_set["acl_v4"] = re_match.group(2)
+                    if re_match.group(4):
+                        one_set["acl_v6"] = re_match.group(4)
+                    continue
                 one_set["version"] = "v3"  # defaults to version 3 data
             if len(one_set):
                 user_list.append(one_set)
