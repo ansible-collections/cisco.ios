@@ -33,7 +33,6 @@
           - afi: ipv6
             prefix_lists:
               - name: test_ipv6
-                description: this is ipv6 replace test
                 entries:
                   - action: deny
                     prefix: 2001:DB8:0:4::/64
