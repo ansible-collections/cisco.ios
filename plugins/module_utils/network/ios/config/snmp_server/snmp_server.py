@@ -40,8 +40,8 @@ def handle_deprecates(wantd):
     # Take in count the traps config mpls_vpn which is DEPRECATED and replaced by mpls.vpn
     if "traps" in wantd and "mpls_vpn" in wantd["traps"]:
         wantd["traps"] = dict_merge(
-            wantd["traps"], 
-            {"mpls": {"vpn": {"enable": wantd["traps"]["mpls_vpn"]}}}
+            wantd["traps"],
+            {"mpls": {"vpn": {"enable": wantd["traps"]["mpls_vpn"]}}},
         )
         wantd["traps"].pop("mpls_vpn")
 
