@@ -301,7 +301,48 @@ class TestIosServiceModule(TestIosModule):
         playbook = {
             "config": {
                 "call_home": True,
-                "private_config_encryption": True,
+                "timestamps": [
+                    {
+                        "msg": "debug",
+                        "timestamp": "datetime",
+                        "datetime_options": {
+                            "msec": True,
+                        },
+                    },
+                    {
+                        "msg": "log",
+                        "timestamp": "datetime",
+                        "datetime_options": {
+                            "msec": True,
+                        },
+                    },
+                ],
+            },
+        }
+        replaced = []
+        playbook["state"] = "replaced"
+        set_module_args(playbook)
+        result = self.execute_module(changed=False)
+        self.maxDiff = None
+
+        self.assertEqual(sorted(result["commands"]), sorted(replaced))
+
+    def test_ios_service_replaced_idempotent_old(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            service slave-log
+            service timestamps debug datetime msec
+            service timestamps log datetime msec
+            service prompt config
+            service counters max age 0
+            service dhcp
+            service call-home
+            service password-recovery
+            """,
+        )
+        playbook = {
+            "config": {
+                "call_home": True,
                 "timestamps": [
                     {
                         "msg": "debug",
