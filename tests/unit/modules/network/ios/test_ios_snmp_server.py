@@ -398,7 +398,7 @@ class TestIosSnmpServerModule(TestIosModule):
             """\
             User name: paul
             Engine ID: 000000090200000000000A0B
-            storage-type: nonvolatile        active access-list: ipv6
+            storage-type: nonvolatile        active access-list ipv6: ipv6only
             Authentication Protocol: MD5
             Privacy Protocol: AES128
             Group-name: familypaul
@@ -621,7 +621,12 @@ class TestIosSnmpServerModule(TestIosModule):
                 },
                 "users": [
                     {"acl_v4": "24", "group": "newfamily", "username": "newuser", "version": "v1"},
-                    {"acl_v4": "ipv6", "group": "familypaul", "username": "paul", "version": "v3"},
+                    {
+                        "acl_v6": "ipv6only",
+                        "group": "familypaul",
+                        "username": "paul",
+                        "version": "v3",
+                    },
                     {"group": "replaceUser", "username": "replaceUser", "version": "v3"},
                     {"acl_v4": "27", "group": "mfamily", "username": "flow", "version": "v3"},
                 ],
@@ -697,8 +702,8 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server context contextWord2",
             "snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11",
             "snmp-server user newuser newfamily v1 access 24",
-            "snmp-server user paul familypaul v3 access ipv6",
-            "snmp-server user replaceUser replaceUser v3",
+            "snmp-server user paul familypaul v3 access ipv6 ipv6only",
+            "snmp-server user replaceUser replaceUser v3 access 22",
             "snmp-server user flow mfamily v3 access 27",
         ]
         playbook["state"] = "merged"
@@ -1274,7 +1279,12 @@ class TestIosSnmpServerModule(TestIosModule):
                 },
                 "users": [
                     {"acl_v4": "24", "group": "newfamily", "username": "newuser", "version": "v1"},
-                    {"acl_v4": "ipv6", "group": "familypaul", "username": "paul", "version": "v3"},
+                    {
+                        "acl_v6": "ipv6acl",
+                        "group": "familypaul",
+                        "username": "paul",
+                        "version": "v3",
+                    },
                     {"group": "replaceUser", "username": "replaceUser", "version": "v3"},
                 ],
                 "views": [
@@ -1317,7 +1327,7 @@ class TestIosSnmpServerModule(TestIosModule):
             "no snmp-server context contextBAD",
             "snmp-server password-policy policy1 define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3",
             "snmp-server password-policy policy2 define min-len 12 upper-case 12 special-char 22 change 9",
-            "snmp-server user paul familypaul v3 access ipv6",
+            "snmp-server user paul familypaul v3 access ipv6 ipv6acl",
             "snmp-server view newView TestFamilyName included",
             "no snmp-server enable traps vtp",
             "no snmp-server view test-view! test-test included",
@@ -1787,7 +1797,7 @@ class TestIosSnmpServerModule(TestIosModule):
     def test_ios_snmpv3_user_server_merged(self):
         self.execute_show_command.return_value = dedent(
             """\
-            snmp-server user rhcisco testfamily v3 access ipv6
+            snmp-server user rhcisco testfamily v3 access ipv4
             """,
         )
 
@@ -1802,14 +1812,14 @@ class TestIosSnmpServerModule(TestIosModule):
 
             User name: paul
             Engine ID: 000000090200000000000A0B
-            storage-type: nonvolatile        active access-list: ipv6
+            storage-type: nonvolatile        active access-list: 22
             Authentication Protocol: MD5
             Privacy Protocol: None
             Group-name: familypaul
 
             User name: flow
             Engine ID: 000000090200000000000A0B
-            storage-type: nonvolatile        active access-list: 27
+            storage-type: nonvolatile        active access-list: 22
             Authentication Protocol: MD5
             Privacy Protocol: None
             Group-name: mfamily
@@ -1819,13 +1829,23 @@ class TestIosSnmpServerModule(TestIosModule):
         playbook = {
             "config": {
                 "users": [
-                    {"acl_v4": "ipv6", "group": "familypaul", "username": "paul", "version": "v3"},
-                    {"acl_v4": "27", "group": "mfamily", "username": "flow", "version": "v3"},
+                    {
+                        "acl_v6": "ipv6acl",
+                        "group": "familypaul",
+                        "username": "paul",
+                        "version": "v3",
+                    },
+                    {
+                        "acl_v4": "27",
+                        "group": "mfamily",
+                        "username": "flow",
+                        "version": "v3",
+                    },
                 ],
             },
         }
         merged = [
-            "snmp-server user paul familypaul v3 access ipv6",
+            "snmp-server user paul familypaul v3 access ipv6 ipv6acl 22",
             "snmp-server user flow mfamily v3 access 27",
         ]
 
@@ -1862,13 +1882,27 @@ class TestIosSnmpServerModule(TestIosModule):
         playbook = {
             "config": {
                 "users": [
-                    {"group": "replaceUser", "username": "replaceUser", "version": "v3"},
-                    {"acl_v4": "27", "group": "mfamily", "username": "flow", "version": "v3"},
+                    {
+                        "acl_v4": "22",
+                        "authentication": {
+                            "algorithm": "md5",
+                            "password": "replaceUser",
+                        },
+                        "group": "replaceUser",
+                        "username": "replaceUser",
+                        "version": "v3",
+                    },
+                    {
+                        "acl_v4": "27",
+                        "group": "mfamily",
+                        "username": "flow",
+                        "version": "v3",
+                    },
                 ],
             },
         }
         overridden = [
-            "no snmp-server user flow mfamily v3",
+            "no snmp-server user flow mfamily v3 access 27",
             "snmp-server user flow mfamily v3 access 27",
             "no snmp-server user newuser newfamily v1 access 24",
         ]
