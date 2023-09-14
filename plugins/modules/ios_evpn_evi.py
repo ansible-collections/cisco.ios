@@ -28,7 +28,7 @@ options:
   config:
     description: A dictionary of L2VPN Ethernet Virtual Private Network (EVPN) EVI configuration
     type: list
-    element: dict
+    elements: dict
     suboptions:
       evi:
         description: EVPN instance value
@@ -77,6 +77,16 @@ options:
       route_distinguisher:
         description: EVPN Route Distinguisher
         type: str
+  running_config:
+    description:
+      - This option is used only with state I(parsed).
+      - The value of this option should be the output received from the IOS
+        device by executing the command B(sh running-config nve | section ^l2vpn evpn$).
+      - The state I(parsed) reads the configuration from C(running_config)
+        option and transforms it into Ansible structured data as per the
+        resource module's argspec and the value is then returned in the
+        I(parsed) key within the result.
+    type: str
   state:
     description:
       - The state the configuration should be left in
