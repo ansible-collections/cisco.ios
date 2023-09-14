@@ -177,14 +177,14 @@ class TestIosEvpnEviModule(TestIosModule):
             dict(
                 config=[
                     {
-                        "evi": "101"
+                        "evi": "101",
                     },
                 ],
                 state="deleted",
             ),
         )
         commands = [
-            "no l2vpn evpn instance 101 vlan-based"
+            "no l2vpn evpn instance 101 vlan-based",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -416,4 +416,3 @@ class TestIosEvpnEviModule(TestIosModule):
         commands = []
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
-        
