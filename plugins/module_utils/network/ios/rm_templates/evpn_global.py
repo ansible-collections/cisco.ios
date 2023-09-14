@@ -38,7 +38,6 @@ class Evpn_globalTemplate(NetworkTemplate):
             ),
             "setval": "default-gateway advertise",
             "result": {"default_gateway": {"advertise": True}},
-            "shared": True,
         },
         {
             "name": "flooding_suppression.address_resolution.disable",
