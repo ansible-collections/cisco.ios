@@ -1049,7 +1049,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 """, re.VERBOSE,
             ),
             "setval": "snmp-server enable traps envmon"
-                      "{{ ' fan' if traps.envmon.fan|d(False) else '' }}"
+                      "{{ ' fan' if traps.envmon.fan_enable|d(False) else '' }}"
                       "{{ ' shutdown' if traps.envmon.shutdown|d(False) else '' }}"
                       "{{ ' supply' if traps.envmon.supply|d(False) else '' }}"
                       "{{ ' temperature' if traps.envmon.temperature|d(False) else '' }}"
@@ -1058,7 +1058,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 "traps": {
                     "envmon": {
                         "enable": True,
-                        "fan": "{{ True if fan else False }}",
+                        "fan_enable": "{{ True if fan else False }}",
                         "shutdown": "{{ True if shutdown else False }}",
                         "supply": "{{ True if supply else False }}",
                         "temperature": "{{ True if temperature else False }}",

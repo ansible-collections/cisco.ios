@@ -1440,7 +1440,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     "status": True,
                     "supply": True,
                     "temperature": True,
-                    "fan": True,
+                    "fan_enable": True,
                 },
                 "ethernet": {
                     "cfm": {

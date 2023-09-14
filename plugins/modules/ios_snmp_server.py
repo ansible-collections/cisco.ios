@@ -180,9 +180,9 @@ options:
             elements: str
           version:
             choices:
-              - "1"
+              - '1'
               - 2c
-              - "3"
+              - '3'
             description: Notification message SNMP version.
             type: str
           version_option:
@@ -487,6 +487,28 @@ options:
                 description: Enable/disable envmon traps
                 type: bool
               fan:
+                description:
+                  - Enable SNMP envmon fan traps
+                  - This option is DEPRECATED and is replaced with fan_enable which accepts bool as input
+                  - This attribute will be removed after 2024-09-01
+                suboptions:
+                  enable:
+                    description: Enable/disable fan traps
+                    type: bool
+                  shutdown:
+                    description: Enable SNMP environmental monitor shutdown traps
+                    type: bool
+                  status:
+                    description: Enable SNMP environmental status change traps
+                    type: bool
+                  supply:
+                    description: Enable SNMP environmental monitor supply traps
+                    type: bool
+                  temperature:
+                    description: Enable SNMP environmental monitor temperature traps
+                    type: bool
+                type: dict
+              fan_enable:
                 description: Enable SNMP envmon fan traps
                 type: bool
               shutdown:

@@ -331,11 +331,18 @@ class Snmp_server(ResourceModule):
         """Remove deprecated attributes and set the replacment"""
 
         # Take in count the traps config mpls_vpn which is DEPRECATED and replaced by mpls.vpn
-        if "traps" in want and "mpls_vpn" in want["traps"]:
-            want["traps"] = dict_merge(
-                want["traps"],
-                {"mpls": {"vpn": {"enable": want["traps"]["mpls_vpn"]}}},
-            )
-            want["traps"].pop("mpls_vpn")
+        if "traps" in want:
+            if "mpls_vpn" in want["traps"]:
+                want["traps"] = dict_merge(
+                    want["traps"],
+                    {"mpls": {"vpn": {"enable": want["traps"]["mpls_vpn"]}}},
+                )
+                want["traps"].pop("mpls_vpn")
+            if "envmon" in want["traps"] and "fan" in want["traps"]["envmon"]:
+                want["traps"]["envmon"]["fan_enable"] = want["traps"]["envmon"]["fan"].get(
+                    "enable", 
+                    False,
+                )
+                want["traps"]["envmon"].pop("fan")
 
         return want

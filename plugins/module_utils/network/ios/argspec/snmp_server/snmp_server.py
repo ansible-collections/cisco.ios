@@ -140,8 +140,8 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                 "manager": {"type": "int"},
                 "packet_size": {"type": "int"},
                 "password_policy": {
-                    "no_log": False,
                     "elements": "dict",
+                    "no_log": False,
                     "options": {
                         "change": {"type": "int"},
                         "digits": {"type": "int"},
@@ -277,7 +277,17 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                         "envmon": {
                             "options": {
                                 "enable": {"type": "bool"},
-                                "fan": {"type": "bool"},
+                                "fan": {
+                                    "options": {
+                                        "enable": {"type": "bool"},
+                                        "shutdown": {"type": "bool"},
+                                        "status": {"type": "bool"},
+                                        "supply": {"type": "bool"},
+                                        "temperature": {"type": "bool"},
+                                    },
+                                    "type": "dict",
+                                },
+                                "fan_enable": {"type": "bool"},
                                 "shutdown": {"type": "bool"},
                                 "status": {"type": "bool"},
                                 "supply": {"type": "bool"},
