@@ -340,7 +340,7 @@ class Snmp_server(ResourceModule):
                 want["traps"].pop("mpls_vpn")
             if "envmon" in want["traps"] and "fan" in want["traps"]["envmon"]:
                 want["traps"]["envmon"]["fan_enable"] = want["traps"]["envmon"]["fan"].get(
-                    "enable", 
+                    "enable",
                     False,
                 )
                 want["traps"]["envmon"].pop("fan")
