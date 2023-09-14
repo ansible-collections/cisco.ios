@@ -353,137 +353,189 @@ Examples
 
 .. code-block:: yaml
 
-    # Using state merged
+    # Using merged
 
     # Before state:
     # -------------
+    #
+    # Leaf-01#show running-config nve | section ^l2vpn evpn$
     # l2vpn evpn
     #  replication-type static
     #  router-id Loopback1
     #  default-gateway advertise
 
-    # - name: Merge provided configuration with device configuration
-    #   cisco.ios.ios_evpn_global:
-    #     config:
-    #         replication_type: ingress
-    #         route_target:
-    #           auto:
-    #             vni: true
-    #         default_gateway:
-    #           advertise: false
-    #         ip:
-    #           local_learning:
-    #             disable: true
-    #         flooding_suppression:
-    #           address_resolution:
-    #             disable: false
-    #     state: merged
+    - name: Merge provided configuration with device configuration
+      cisco.ios.ios_evpn_global:
+        config:
+            replication_type: ingress
+            route_target:
+              auto:
+                vni: true
+            default_gateway:
+              advertise: false
+            ip:
+              local_learning:
+                disable: true
+            flooding_suppression:
+              address_resolution:
+                disable: false
+        state: merged
 
-    # Commands Fired:
-    # ---------------
-    #   "commands": [
-    #       "l2vpn evpn",
-    #       "no default-gateway advertise",
-    #       "replication-type ingress",
-    #       "route-target auto vni",
-    #       "ip local-learning disable",
-    #   ]
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - replication_type: static
+    #   router_id: Loopback1
+    #   default_gateway:
+    #     advertise: true
+    # commands:
+    # - l2vpn evpn
+    #   no default-gateway advertise
+    #   replication-type ingress
+    #   route-target auto vni
+    #   ip local-learning disable
+    # after:
+    # - replication_type: ingress
+    #   router_id: Loopback1
+    #   route_target:
+    #     auto:
+    #       vni: true
+    #   ip:
+    #     local_learning:
+    #       disable: true
 
     # After state:
     # ------------
+    #
+    # Leaf-01#show running-config nve | section ^l2vpn evpn$
     # l2vpn evpn
     #  replication-type ingress
     #  router-id Loopback1
     #  ip local-learning disable
     #  route-target auto vni
 
-    # Using state replaced
+    # Using replaced
 
     # Before state:
     # -------------
+    #
+    # Leaf-01#show running-config nve | section ^l2vpn evpn$
     # l2vpn evpn
     #  replication-type ingress
     #  router-id Loopback1
     #  ip local-learning disable
     #  route-target auto vni
 
-    #- name: Replaces device configuration for EVPN global with provided configuration
-    #  cisco.ios.ios_evpn_global:
-    #    config:
-    #        replication_type: static
-    #        router_id: Loopback2
-    #        default_gateway:
-    #          advertise: true
-    #        flooding_suppression:
-    #          address_resolution:
-    #            disable: true
-    #    state: replaced
+    - name: Replaces device configuration for EVPN global with provided configuration
+      cisco.ios.ios_evpn_global:
+        config:
+            replication_type: static
+            router_id: Loopback2
+            default_gateway:
+              advertise: true
+            flooding_suppression:
+              address_resolution:
+                disable: true
+        state: replaced
 
-    # Commands Fired:
-    # ---------------
-    #   "commands": [
-    #       "l2vpn evpn",
-    #       "default-gateway advertise",
-    #       "flooding-suppression address-resolution disable",
-    #       "no ip local-learning disable",
-    #       "replication-type static",
-    #       "no route-target auto vni",
-    #       "router-id Loopback2"
-    #   ],
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - replication_type: ingress
+    #   router_id: Loopback1
+    #   route_target:
+    #     auto:
+    #       vni: true
+    #   ip:
+    #     local_learning:
+    #       disable: true
+    # commands:
+    # - l2vpn evpn
+    # - default-gateway advertise
+    # - flooding-suppression address-resolution disable
+    # - no ip local-learning disable
+    # - replication-type static
+    # - no route-target auto vni
+    # - router-id Loopback2
+    # after:
+    # - replication_type: ingress
+    #   router_id: Loopback2
+    #   default_gateway:
+    #     advertise: true
+    #   flooding_suppression:
+    #     address_resolution:
+    #      disable: true
 
     # After state:
     # ------------
+    #
+    # Leaf-01#show running-config nve | section ^l2vpn evpn$
     # l2vpn evpn
     #  replication-type static
     #  flooding-suppression address-resolution disable
     #  router-id Loopback2
     #  default-gateway advertise
 
-    # Using state Deleted
+    # Using Deleted
 
     # Before state:
     # -------------
+    #
+    # Leaf-01#show running-config nve | section ^l2vpn evpn$
     # l2vpn evpn
     #  replication-type static
     #  flooding-suppression address-resolution disable
     #  router-id Loopback2
     #  default-gateway advertise
 
-    # - name: Delete EVPN global
-    #   cisco.ios.ios_evpn_global:
-    #     config:
-    #     state: deleted
+    - name: Delete EVPN global
+      cisco.ios.ios_evpn_global:
+        config:
+        state: deleted
 
-    # Commands Fired:
-    # ---------------
-    #  "commands": [
-    #      "no l2vpn evpn"
-    #      ]
+    # before:
+    # - replication_type: ingress
+    #   router_id: Loopback2
+    #   default_gateway:
+    #     advertise: true
+    #   flooding_suppression:
+    #     address_resolution:
+    #      disable: true
+    # commands:
+    # - no l2vpn evpn
+    # after:
+    #
 
     # After state:
     # -------------
     #
+    # Leaf-01#show running-config nve | section ^l2vpn evpn$
+    #
+
     # Using gathered
 
     # Before state:
     # -------------
     #
+    # Leaf-01#show running-config nve | section ^l2vpn evpn$
     # l2vpn evpn
     #  replication-type ingress
     #  router-id Loopback1
     #  ip local-learning disable
     #  route-target auto vni
 
-    # - name: Gather facts for evpn_global
-    #   cisco.ios.ios_evpn_global:
-    #     config:
-    #     state: gathered
+    - name: Gather facts of l2vpn evpn
+      cisco.ios.ios_evpn_global:
+        config:
+        state: gathered
 
     # Task Output:
     # ------------
     #
     # gathered:
-    #   replication_type: ingress
+    # - replication_type: ingress
     #   route_target:
     #     auto:
     #       vni: true
@@ -492,16 +544,16 @@ Examples
     #     local_learning:
     #       disable: true
 
-    # Using Rendered
+    # Using rendered
 
-    # - name: Rendered the provided configuration with the existing running configuration
-    #   cisco.ios.ios_evpn_global:
-    #     config:
-    #         replication_type: static
-    #         route_target:
-    #           auto:
-    #             vni: true
-    #     state: rendered
+    - name: Render the commands for provided configuration
+      cisco.ios.ios_evpn_global:
+        config:
+            replication_type: static
+            route_target:
+              auto:
+                vni: true
+        state: rendered
 
     # Task Output:
     # ------------
@@ -522,22 +574,22 @@ Examples
     #  default-gateway advertise
     #  route-target auto vni
 
-    # - name: Parse the commands for provided configuration
-    #   cisco.ios.ios_evpn_global:
-    #     running_config: "{{ lookup('file', 'parsed.cfg') }}"
-    #     state: parsed
+    - name: Parse the provided configuration
+      cisco.ios.ios_evpn_global:
+        running_config: "{{ lookup('file', 'parsed.cfg') }}"
+        state: parsed
 
     # Task Output:
     # ------------
     #
     # parsed:
-    #     replication_type: ingress
-    #     route_target:
-    #       auto:
-    #         vni: true
-    #     router_id: Loopback1
-    #     default_gateway:
-    #       advertise: true
+    # - replication_type: ingress
+    #   route_target:
+    #     auto:
+    #       vni: true
+    #   router_id: Loopback1
+    #   default_gateway:
+    #     advertise: true
 
 
 
@@ -602,6 +654,57 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
                         <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;l2vpn evpn&#x27;, &#x27;replication-type ingress&#x27;, &#x27;router_id Loopback1&#x27;]</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>gathered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>gathered</code></td>
+                <td>
+                            <div>Facts about the network resource gathered from the remote device as structured data.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>parsed</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>parsed</code></td>
+                <td>
+                            <div>The device native config provided in <em>running_config</em> option parsed into structured data as per module argspec.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>rendered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>rendered</code></td>
+                <td>
+                            <div>The provided configuration in the task rendered in device-native format (offline).</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;l2vpn evpn&#x27;, &#x27;replication-type static&#x27;, &#x27;route-target auto vni&#x27;]</div>
                 </td>
             </tr>
     </table>
