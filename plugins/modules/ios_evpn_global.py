@@ -106,137 +106,189 @@ options:
 
 EXAMPLES = """
 
-# Using state merged
+# Using merged
 
 # Before state:
 # -------------
+#
+# Leaf-01#show running-config nve | section ^l2vpn evpn$
 # l2vpn evpn
 #  replication-type static
 #  router-id Loopback1
 #  default-gateway advertise
 
-# - name: Merge provided configuration with device configuration
-#   cisco.ios.ios_evpn_global:
-#     config:
-#         replication_type: ingress
-#         route_target:
-#           auto:
-#             vni: true
-#         default_gateway:
-#           advertise: false
-#         ip:
-#           local_learning:
-#             disable: true
-#         flooding_suppression:
-#           address_resolution:
-#             disable: false
-#     state: merged
+- name: Merge provided configuration with device configuration
+  cisco.ios.ios_evpn_global:
+    config:
+        replication_type: ingress
+        route_target:
+          auto:
+            vni: true
+        default_gateway:
+          advertise: false
+        ip:
+          local_learning:
+            disable: true
+        flooding_suppression:
+          address_resolution:
+            disable: false
+    state: merged
 
-# Commands Fired:
-# ---------------
-#   "commands": [
-#       "l2vpn evpn",
-#       "no default-gateway advertise",
-#       "replication-type ingress",
-#       "route-target auto vni",
-#       "ip local-learning disable",
-#   ]
+# Task Output
+# -----------
+#
+# before:
+# - replication_type: static
+#   router_id: Loopback1
+#   default_gateway:
+#     advertise: true
+# commands:
+# - l2vpn evpn
+#   no default-gateway advertise
+#   replication-type ingress
+#   route-target auto vni
+#   ip local-learning disable
+# after:
+# - replication_type: ingress
+#   router_id: Loopback1
+#   route_target:
+#     auto:
+#       vni: true
+#   ip:
+#     local_learning:
+#       disable: true
 
 # After state:
 # ------------
+#
+# Leaf-01#show running-config nve | section ^l2vpn evpn$
 # l2vpn evpn
 #  replication-type ingress
 #  router-id Loopback1
 #  ip local-learning disable
 #  route-target auto vni
 
-# Using state replaced
+# Using replaced
 
 # Before state:
 # -------------
+#
+# Leaf-01#show running-config nve | section ^l2vpn evpn$
 # l2vpn evpn
 #  replication-type ingress
 #  router-id Loopback1
 #  ip local-learning disable
 #  route-target auto vni
 
-#- name: Replaces device configuration for EVPN global with provided configuration
-#  cisco.ios.ios_evpn_global:
-#    config:
-#        replication_type: static
-#        router_id: Loopback2
-#        default_gateway:
-#          advertise: true
-#        flooding_suppression:
-#          address_resolution:
-#            disable: true
-#    state: replaced
+- name: Replaces device configuration for EVPN global with provided configuration
+  cisco.ios.ios_evpn_global:
+    config:
+        replication_type: static
+        router_id: Loopback2
+        default_gateway:
+          advertise: true
+        flooding_suppression:
+          address_resolution:
+            disable: true
+    state: replaced
 
-# Commands Fired:
-# ---------------
-#   "commands": [
-#       "l2vpn evpn",
-#       "default-gateway advertise",
-#       "flooding-suppression address-resolution disable",
-#       "no ip local-learning disable",
-#       "replication-type static",
-#       "no route-target auto vni",
-#       "router-id Loopback2"
-#   ],
+# Task Output
+# -----------
+#
+# before:
+# - replication_type: ingress
+#   router_id: Loopback1
+#   route_target:
+#     auto:
+#       vni: true
+#   ip:
+#     local_learning:
+#       disable: true
+# commands:
+# - l2vpn evpn
+# - default-gateway advertise
+# - flooding-suppression address-resolution disable
+# - no ip local-learning disable
+# - replication-type static
+# - no route-target auto vni
+# - router-id Loopback2
+# after:
+# - replication_type: ingress
+#   router_id: Loopback2
+#   default_gateway:
+#     advertise: true
+#   flooding_suppression:
+#     address_resolution:
+#      disable: true
 
 # After state:
 # ------------
+#
+# Leaf-01#show running-config nve | section ^l2vpn evpn$
 # l2vpn evpn
 #  replication-type static
 #  flooding-suppression address-resolution disable
 #  router-id Loopback2
 #  default-gateway advertise
 
-# Using state Deleted
+# Using Deleted
 
 # Before state:
 # -------------
+#
+# Leaf-01#show running-config nve | section ^l2vpn evpn$
 # l2vpn evpn
 #  replication-type static
 #  flooding-suppression address-resolution disable
 #  router-id Loopback2
 #  default-gateway advertise
 
-# - name: Delete EVPN global
-#   cisco.ios.ios_evpn_global:
-#     config:
-#     state: deleted
+- name: Delete EVPN global
+  cisco.ios.ios_evpn_global:
+    config:
+    state: deleted
 
-# Commands Fired:
-# ---------------
-#  "commands": [
-#      "no l2vpn evpn"
-#      ]
+# before:
+# - replication_type: ingress
+#   router_id: Loopback2
+#   default_gateway:
+#     advertise: true
+#   flooding_suppression:
+#     address_resolution:
+#      disable: true
+# commands:
+# - no l2vpn evpn
+# after:
+#
 
 # After state:
 # -------------
 #
+# Leaf-01#show running-config nve | section ^l2vpn evpn$
+#
+
 # Using gathered
 
 # Before state:
 # -------------
 #
+# Leaf-01#show running-config nve | section ^l2vpn evpn$
 # l2vpn evpn
 #  replication-type ingress
 #  router-id Loopback1
 #  ip local-learning disable
 #  route-target auto vni
 
-# - name: Gather facts for evpn_global
-#   cisco.ios.ios_evpn_global:
-#     config:
-#     state: gathered
+- name: Gather facts of l2vpn evpn
+  cisco.ios.ios_evpn_global:
+    config:
+    state: gathered
 
 # Task Output:
 # ------------
 #
 # gathered:
-#   replication_type: ingress
+# - replication_type: ingress
 #   route_target:
 #     auto:
 #       vni: true
@@ -245,16 +297,16 @@ EXAMPLES = """
 #     local_learning:
 #       disable: true
 
-# Using Rendered
+# Using rendered
 
-# - name: Rendered the provided configuration with the existing running configuration
-#   cisco.ios.ios_evpn_global:
-#     config:
-#         replication_type: static
-#         route_target:
-#           auto:
-#             vni: true
-#     state: rendered
+- name: Render the commands for provided configuration
+  cisco.ios.ios_evpn_global:
+    config:
+        replication_type: static
+        route_target:
+          auto:
+            vni: true
+    state: rendered
 
 # Task Output:
 # ------------
@@ -275,22 +327,22 @@ EXAMPLES = """
 #  default-gateway advertise
 #  route-target auto vni
 
-# - name: Parse the commands for provided configuration
-#   cisco.ios.ios_evpn_global:
-#     running_config: "{{ lookup('file', 'parsed.cfg') }}"
-#     state: parsed
+- name: Parse the provided configuration
+  cisco.ios.ios_evpn_global:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
 
 # Task Output:
 # ------------
 #
 # parsed:
-#     replication_type: ingress
-#     route_target:
-#       auto:
-#         vni: true
-#     router_id: Loopback1
-#     default_gateway:
-#       advertise: true
+# - replication_type: ingress
+#   route_target:
+#     auto:
+#       vni: true
+#   router_id: Loopback1
+#   default_gateway:
+#     advertise: true
 
 """
 
@@ -317,6 +369,28 @@ commands:
     - "l2vpn evpn"
     - "replication-type ingress"
     - "router_id Loopback1"
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - l2vpn evpn
+    - replication-type static
+    - route-target auto vni
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
 
 from ansible.module_utils.basic import AnsibleModule
