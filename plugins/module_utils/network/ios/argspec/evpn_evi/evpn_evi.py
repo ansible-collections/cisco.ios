@@ -74,6 +74,7 @@ class Evpn_eviArgs(object):  # pylint: disable=R0903
                 "route_distinguisher": {"type": "str"},
             },
         },
+        "running_config": {"type": "str"},
         "state": {
             "type": "str",
             "choices": [
