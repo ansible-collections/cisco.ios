@@ -178,6 +178,22 @@ class TestIosVlansModule(TestIosModule):
         self.execute_module(changed=False, commands=[], sort=True)
 
     def test_ios_vlans_config_merged_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            vlan configuration 101
+             member evpn-instance 101 vni 10101
+            vlan configuration 102
+             member evpn-instance 102 vni 10102
+            vlan configuration 201
+             member evpn-instance 201 vni 10201
+            vlan configuration 202
+             member evpn-instance 202 vni 10202
+            vlan configuration 901
+             member vni 50901
+            vlan configuration 902
+             member vni 50902
+            """,
+        )
         set_module_args(
             dict(
                 config=[
@@ -893,3 +909,4 @@ class TestIosVlansModule(TestIosModule):
 
         self.maxDiff = None
         self.assertEqual(result["gathered"], gathered)
+        
