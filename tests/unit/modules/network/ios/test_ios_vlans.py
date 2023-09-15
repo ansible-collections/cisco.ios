@@ -909,4 +909,3 @@ class TestIosVlansModule(TestIosModule):
 
         self.maxDiff = None
         self.assertEqual(result["gathered"], gathered)
-        
