@@ -502,11 +502,11 @@ class TestIosVlansModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    {"vlan_id":101}
-                ], 
-                configuration=True, 
-                state="deleted"
-            )
+                    {"vlan_id": 101},
+                ],
+                configuration=True,
+                state="deleted",
+            ),
         )
         result = self.execute_module(changed=True)
         commands = ["no vlan configuration 101"]
@@ -893,4 +893,3 @@ class TestIosVlansModule(TestIosModule):
 
         self.maxDiff = None
         self.assertEqual(result["gathered"], gathered)
-        
