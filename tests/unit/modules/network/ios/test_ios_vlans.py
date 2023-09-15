@@ -366,6 +366,22 @@ class TestIosVlansModule(TestIosModule):
         self.assertEqual(result["commands"], commands)
 
     def test_ios_vlans_config_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            vlan configuration 101
+             member evpn-instance 101 vni 10101
+            vlan configuration 102
+             member evpn-instance 102 vni 10102
+            vlan configuration 201
+             member evpn-instance 201 vni 10201
+            vlan configuration 202
+             member evpn-instance 202 vni 10202
+            vlan configuration 901
+             member vni 50901
+            vlan configuration 902
+             member vni 50902
+            """,
+        )
         set_module_args(
             dict(
                 config=[
@@ -384,7 +400,7 @@ class TestIosVlansModule(TestIosModule):
                         ),
                     ),
                 ],
-                state="merged",
+                state="overridden",
                 configuration=True,
             ),
         )
@@ -463,31 +479,6 @@ class TestIosVlansModule(TestIosModule):
                     ),
                 ],
                 state="overridden",
-            ),
-        )
-        self.execute_module(changed=False, commands=[], sort=True)
-
-    def test_ios_vlans_config_overridden(self):
-        set_module_args(
-            dict(
-                config=[
-                    dict(
-                        vlan_id=101,
-                        member=dict(
-                            evi=102,
-                            vni=10102,
-                        ),
-                    ),
-                    dict(
-                        vlan_id=102,
-                        member=dict(
-                            evi=101,
-                            vni=10101,
-                        ),
-                    ),
-                ],
-                state="merged",
-                configuration=True,
             ),
         )
         self.execute_module(changed=False, commands=[], sort=True)
