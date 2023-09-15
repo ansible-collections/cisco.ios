@@ -67,9 +67,9 @@ class Vlans(ConfigBase):
         result = {"changed": False}
         commands = list()
         warnings = list()
+        self.have_now = list()
         self.configuration = self._module.params["configuration"]
         if not self.configuration:
-            self.have_now = list()
             self.vlan_parent = "vlan {0}"
         else:
             self.vlan_parent = "vlan configuration {0}"
