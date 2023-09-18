@@ -34,7 +34,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 class AclsFacts(object):
     """The ios_acls fact class"""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module):
         self._module = module
         self.argument_spec = AclsArgs.argument_spec
 
