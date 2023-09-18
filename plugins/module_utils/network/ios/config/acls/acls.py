@@ -192,6 +192,7 @@ class Acls(ResourceModule):
                 list(wace.get("protocol_options"))[0] == hace.get("protocol")
             ):
                 hace.pop("protocol")
+                hace["protocol_options"] = wace.get("protocol_options")
         return hace
 
     def acl_name_cmd(self, name, afi, acl_type):

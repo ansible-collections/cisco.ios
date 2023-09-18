@@ -123,7 +123,7 @@ class TestIosAclsModule(TestIosModule):
                                     ),
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(tcp=dict(ack="true")),
+                                        protocol_options=dict(tcp=dict(ack="True")),
                                         sequence="200",
                                         source=dict(object_group="test_network_og"),
                                         destination=dict(object_group="test_network_og"),
@@ -234,7 +234,7 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(tcp=dict(ack="true")),
+                                        protocol_options=dict(tcp=dict(ack="True")),
                                         source=dict(
                                             address="198.51.100.0",
                                             wildcard_bits="0.0.0.255",
@@ -401,7 +401,7 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(tcp=dict(syn="true")),
+                                        protocol_options=dict(tcp=dict(syn="True")),
                                         source=dict(
                                             address="198.51.100.0",
                                             wildcard_bits="0.0.0.255",
@@ -570,7 +570,7 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(icmp=dict(echo="true")),
+                                        protocol_options=dict(icmp=dict(echo="True")),
                                         sequence="10",
                                         source=dict(address="192.0.2.0", wildcard_bits="0.0.0.255"),
                                         destination=dict(
@@ -592,11 +592,11 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(tcp=dict(ack="true")),
+                                        protocol_options=dict(tcp=dict(ack="True")),
                                         sequence="10",
-                                        source=dict(any="true", port_protocol=dict(eq="www")),
+                                        source=dict(any="True", port_protocol=dict(eq="www")),
                                         destination=dict(
-                                            any="true",
+                                            any="True",
                                             port_protocol=dict(eq="telnet"),
                                         ),
                                         dscp="af11",
@@ -628,7 +628,7 @@ class TestIosAclsModule(TestIosModule):
                                         grant="deny",
                                         sequence="10",
                                         remarks=["check for remark", "remark for acl 110"],
-                                        protocol_options=dict(tcp=dict(syn="true")),
+                                        protocol_options=dict(tcp=dict(syn="True")),
                                         source=dict(address="192.0.2.0", wildcard_bits="0.0.0.255"),
                                         destination=dict(
                                             address="192.0.3.0",
@@ -808,7 +808,7 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(tcp=dict(ack="true")),
+                                        protocol_options=dict(tcp=dict(ack="True")),
                                         source=dict(
                                             address="198.51.100.0",
                                             wildcard_bits="0.0.0.255",
@@ -1454,3 +1454,245 @@ class TestIosAclsModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
+
+    def test_ios_acls_overridden_bug(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Extended IP access list NET-MGMT-VTY
+                10 permit tcp 10.58.77.248 0.0.0.7 any eq 22
+                20 permit tcp host 10.161.115.173 any eq 22
+                30 permit tcp host 10.161.115.182 any eq 22
+                40 permit tcp host 10.162.240.200 any eq 22
+                50 permit tcp host 10.182.30.9 any eq 22
+                60 permit tcp host 10.162.32.170 any eq 22
+                70 permit tcp host 10.162.32.171 any eq 22
+                80 permit tcp host 10.162.241.10 any eq 22
+                90 permit tcp host 10.58.8.22 any eq 22
+                100 permit tcp host 10.233.6.10 any eq 22
+                110 permit tcp host 10.233.6.11 any eq 22
+                120 permit tcp host 10.110.137.105 any eq 22
+                130 permit tcp host 10.182.70.13 any eq 22
+                140 permit tcp host 10.182.70.14 any eq 22
+                150 permit tcp host 10.182.70.19 any eq 22
+                160 deny ip any any log
+            Extended IP access list ntp-peer
+                10 permit ip host 10.162.14.21 any
+                20 permit ip host 10.162.14.22 any
+                30 permit ip host 10.162.14.23 any
+                40 permit ip host 10.162.14.24 any
+                50 permit ip host 10.162.15.21 any
+                60 permit ip host 10.162.15.22 any
+                70 permit ip host 10.16.8.21 any
+                80 permit ip host 10.16.8.22 any
+                90 deny ip any any log
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "acls": [
+                            {
+                                "aces": [
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol_options": {"ip": True},
+                                        "sequence": 10,
+                                        "source": {"host": "10.162.14.21"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol_options": {"ip": True},
+                                        "sequence": 20,
+                                        "source": {"host": "10.162.14.22"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol_options": {"ip": True},
+                                        "sequence": 30,
+                                        "source": {"host": "10.162.14.23"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol_options": {"ip": True},
+                                        "sequence": 40,
+                                        "source": {"host": "10.162.14.24"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol_options": {"ip": True},
+                                        "sequence": 50,
+                                        "source": {"host": "10.162.15.21"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol_options": {"ip": True},
+                                        "sequence": 60,
+                                        "source": {"host": "10.162.15.22"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol_options": {"ip": True},
+                                        "sequence": 70,
+                                        "source": {"host": "10.16.8.21"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol_options": {"ip": True},
+                                        "sequence": 80,
+                                        "source": {"host": "10.16.8.22"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "deny",
+                                        "log": {"set": True},
+                                        "protocol": "ip",
+                                        "sequence": 90,
+                                        "source": {"any": True},
+                                    },
+                                ],
+                                "acl_type": "extended",
+                                "name": "ntp-peer",
+                            },
+                            {"aces": [], "acl_type": "extended", "name": "ntp-serve"},
+                            {
+                                "aces": [
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 10,
+                                        "source": {
+                                            "address": "10.58.77.248",
+                                            "wildcard_bits": "0.0.0.7",
+                                        },
+                                    },
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 20,
+                                        "source": {"host": "10.161.115.173"},
+                                    },
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 30,
+                                        "source": {"host": "10.161.115.182"},
+                                    },
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 40,
+                                        "source": {"host": "10.162.240.200"},
+                                    },
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 50,
+                                        "source": {"host": "10.182.30.9"},
+                                    },
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 60,
+                                        "source": {"host": "10.162.32.170"},
+                                    },
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 70,
+                                        "source": {"host": "10.162.32.171"},
+                                    },
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 80,
+                                        "source": {"host": "10.162.241.10"},
+                                    },
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 90,
+                                        "source": {"host": "10.58.8.22"},
+                                    },
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 100,
+                                        "source": {"host": "10.233.6.10"},
+                                    },
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 110,
+                                        "source": {"host": "10.233.6.11"},
+                                    },
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 120,
+                                        "source": {"host": "10.110.137.105"},
+                                    },
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 130,
+                                        "source": {"host": "10.182.70.13"},
+                                    },
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 140,
+                                        "source": {"host": "10.182.70.14"},
+                                    },
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 150,
+                                        "source": {"host": "10.182.70.19"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "deny",
+                                        "log": {"set": True},
+                                        "protocol": "ip",
+                                        "sequence": 160,
+                                        "source": {"any": True},
+                                    },
+                                ],
+                                "acl_type": "extended",
+                                "name": "NET-MGMT-VTY",
+                            },
+                        ],
+                        "afi": "ipv4",
+                    }
+                ],
+                state="overridden",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        commands = []
+        self.assertEqual(sorted(result["commands"]), sorted(commands))

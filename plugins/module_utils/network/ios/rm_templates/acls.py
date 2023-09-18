@@ -322,7 +322,7 @@ class AclsTemplate(NetworkTemplate):
                                         "eq": "{{ seq }}",
                                         "gt": "{{ sgt }}",
                                         "lt": "{{ slt }}",
-                                        "neq": "{{ neq }}",
+                                        "neq": "{{ sneq }}",
                                         "range": {
                                             "start": "{{ srange_start if srange_start is defined else None }}",
                                             "end": "{{ srange_end if srange_end is defined else None }}",
