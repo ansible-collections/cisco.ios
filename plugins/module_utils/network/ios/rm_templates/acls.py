@@ -260,7 +260,7 @@ class AclsTemplate(NetworkTemplate):
                         (\s*(?P<grant>deny|permit))
                         (\sevaluate\s(?P<evaluate>\S+))?
                         (\s(?P<protocol_num>\d+))?
-                        (\s(?P<protocol>ahp|eigrp|any|esp|gre|icmp|igmp|ipv6|ipinip|ip|nos|ospf|pcp|pim|sctp|tcp|udp))?
+                        (\s(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipv6|ipinip|ip|nos|ospf|pcp|pim|sctp|tcp|udp))?
                         ((\s(?P<source_any>any))|
                         (\sobject-group\s(?P<source_obj_grp>\S+))|
                         (\shost\s(?P<source_host>\S+))|

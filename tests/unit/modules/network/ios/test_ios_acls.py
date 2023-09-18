@@ -303,7 +303,7 @@ class TestIosAclsModule(TestIosModule):
                                             "wildcard_bits": "0.0.0.255",
                                         },
                                         "destination": {"any": True, "port_protocol": {"eq": "22"}},
-                                        "log": {"user_cookie": "testLog"},
+                                        "log": {"set": True, "user_cookie": "testLog"},
                                     },
                                     {
                                         "sequence": 20,
@@ -468,7 +468,7 @@ class TestIosAclsModule(TestIosModule):
                                             "wildcard_bits": "0.0.0.255",
                                         },
                                         "destination": {"any": True, "port_protocol": {"eq": "22"}},
-                                        "log": {"user_cookie": "testLog"},
+                                        "log": {"set": True, "user_cookie": "testLog"},
                                     },
                                     {
                                         "sequence": 20,
