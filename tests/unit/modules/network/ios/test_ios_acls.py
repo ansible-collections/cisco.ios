@@ -282,6 +282,9 @@ class TestIosAclsModule(TestIosModule):
                 deny tcp any eq www any eq telnet ack dscp af11 sequence 10
             Extended IP access list test_pre
                 10 permit ip any any precedence internet
+            Extended IP access list test-idem
+                10 permit ip host 10.153.14.21 any
+                20 permit ip host 10.153.14.22 any
             """,
         )
         set_module_args(
@@ -370,6 +373,26 @@ class TestIosAclsModule(TestIosModule):
                                 ],
                             },
                         ],
+                    },
+                    {
+                        "aces": [
+                            {
+                                "destination": {"any": True},
+                                "grant": "permit",
+                                "protocol_options": {"ip": True},
+                                "sequence": 10,
+                                "source": {"host": "10.153.14.21"},
+                            },
+                            {
+                                "destination": {"any": True},
+                                "grant": "permit",
+                                "protocol_options": {"ip": True},
+                                "sequence": 20,
+                                "source": {"host": "10.153.14.22"},
+                            },
+                        ],
+                        "acl_type": "extended",
+                        "name": "test-idem",
                     },
                 ],
                 state="replaced",
