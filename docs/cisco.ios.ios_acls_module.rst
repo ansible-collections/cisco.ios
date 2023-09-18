@@ -4276,7 +4276,7 @@ Examples
     # Extended IP access list R1_TRAFFIC
     #     10 deny tcp any eq www any eq telnet ack dscp af11
     # Extended IP access list test
-         10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
+    #     10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
 
     - name: Replaces device configuration of listed acls with provided configuration
       cisco.ios.ios_acls:
