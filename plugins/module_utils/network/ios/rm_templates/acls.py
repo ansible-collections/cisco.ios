@@ -163,7 +163,7 @@ class AclsTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""^(?P<acl_type>Standard|Extended|Reflexive)
                     (\s(?P<afi>MAC))
-                    (\s(access-list))
+                    (\saccess\slist)
                     (\s(?P<acl_name>.+))
                     $""",
                 re.VERBOSE,
