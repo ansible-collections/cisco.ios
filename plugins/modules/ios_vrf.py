@@ -465,10 +465,10 @@ def map_obj_to_commands(updates, module):
                 for key_in, value_in in want_mdt["mdt"].items():
                     have_mdt = next(
                         (i for i in have.get("address_family", {}) if i["afi"] == afi),
-                        None,
+                        {},
                     )
 
-                    if needs_update(want_mdt["mdt"], have_mdt["mdt"], key_in):
+                    if needs_update(want_mdt["mdt"], have_mdt.get("mdt"), key_in):
                         af_dict.update({key_in: value_in})
                 if af_dict:
                     cmd = "address-family" + " " + str(afi)
