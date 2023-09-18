@@ -653,34 +653,7 @@ EXAMPLES = """
 # Before state:
 # -------------
 #
-# vios#sh access-lists
-# Extended IP access list 100
-#    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
-
-- name: Merge provided configuration with device configuration
-  cisco.ios.ios_acls:
-    config:
-      - afi: ipv4
-        acls:
-          - name: 100
-            aces:
-              - sequence: 10
-                protocol_options:
-                  icmp:
-                    traceroute: true
-    state: merged
-
-# After state:
-# ------------
-#
-# Play Execution fails, with error:
-# Cannot update existing sequence 10 of ACLs 100 with state merged.
-# Please use state replaced or overridden.
-
-# Before state:
-# -------------
-#
-# vios#sh access-lists
+# vios#show access-lists
 # Extended IP access list 110
 #    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
 
@@ -705,6 +678,12 @@ EXAMPLES = """
                 protocol_options:
                   icmp:
                     traceroute: true
+                source:
+                  address: 192.168.3.0
+                  wildcard_bits: 255.255.255.0
+                destination:
+                  any: True
+                grant: permit
               - grant: deny
                 protocol_options:
                   tcp:
@@ -715,7 +694,7 @@ EXAMPLES = """
                   host: 198.51.110.0
                   port_protocol:
                     eq: telnet
-          - name: test
+          - name: extended_acl_1
             acl_type: extended
             aces:
               - grant: deny
@@ -787,29 +766,187 @@ EXAMPLES = """
                 dscp: af11
     state: merged
 
-# Commands fired:
-# ---------------
+# Task Output
+# -----------
 #
-# - ip access-list standard std_acl
-# - deny 192.168.1.200
-# - deny 192.168.2.0 0.0.0.255
-# - ip access-list extended 110
-# - 10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
-# - deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
-# - ip access-list extended test
-# - deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
-# - ip access-list extended 123
-# - deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
-# - deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
-# - remark remarks for extended ACL 1
-# - remark check ACL
-# - ipv6 access-list R1_TRAFFIC
-# - deny tcp any eq www any eq telnet ack dscp af11
+# before:
+#  - acls:
+#    - aces:
+#      - destination:
+#          address: 192.0.3.0
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: icmp
+#        protocol_options:
+#          icmp:
+#            echo: true
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      acl_type: extended
+#      name: '100'
+#    afi: ipv4
+# commands:
+#  - ip access-list extended 110
+#  - deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
+#  - 30 permit icmp 192.168.3.0 255.255.255.0 any traceroute
+#  - ip access-list extended extended_acl_1
+#  - deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
+#  - ip access-list standard std_acl
+#  - deny 192.168.1.20
+#  - deny 192.168.2.0 0.0.0.255
+#  - ip access-list extended 123
+#  - deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
+#  - deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
+#  - remark remarks for extended ACL 1
+#  - remark check ACL
+#  - ipv6 access-list R1_TRAFFIC
+#  - deny tcp any eq www any eq telnet ack dscp af11
+#
+# after:
+#  - acls:
+#    - aces:
+#      - destination:
+#          address: 192.0.3.0
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: icmp
+#        protocol_options:
+#          icmp:
+#            echo: true
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      - destination:
+#          host: 198.51.110.0
+#          port_protocol:
+#            eq: telnet
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 20
+#        source:
+#          host: 198.51.100.0
+#      - destination:
+#          any: true
+#        grant: permit
+#        protocol: icmp
+#        protocol_options:
+#          icmp:
+#            traceroute: true
+#        sequence: 30
+#        source:
+#          address: 0.0.0.0
+#          wildcard_bits: 255.255.255.0
+#      acl_type: extended
+#      name: '110'
+#    - aces:
+#      - destination:
+#          address: 198.51.101.0
+#          port_protocol:
+#            eq: telnet
+#          wildcard_bits: 0.0.0.255
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 10
+#        source:
+#          address: 198.51.100.0
+#          wildcard_bits: 0.0.0.255
+#        tos:
+#          service_value: 12
+#      - destination:
+#          address: 192.0.4.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 20
+#        source:
+#          address: 192.0.3.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          lt: 20
+#      - remarks:
+#        - remarks for extended ACL 1
+#        - check ACL
+#      acl_type: extended
+#      name: '123'
+#    - aces:
+#      - destination:
+#          address: 192.0.3.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        grant: deny
+#        option:
+#          traceroute: true
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            fin: true
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      acl_type: extended
+#      name: extended_acl_1
+#    - aces:
+#      - grant: deny
+#        sequence: 10
+#        source:
+#          host: 192.168.1.20
+#      - grant: deny
+#        sequence: 20
+#        source:
+#          address: 192.168.2.0
+#          wildcard_bits: 0.0.0.255
+#      acl_type: standard
+#      name: std_acl
+#    afi: ipv4
+#  - acls:
+#    - aces:
+#      - destination:
+#          any: true
+#          port_protocol:
+#            eq: telnet
+#        dscp: af11
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 10
+#        source:
+#          any: true
+#          port_protocol:
+#            eq: www
+#      name: R1_TRAFFIC
+#    afi: ipv6
 
 # After state:
 # ------------
 #
-# vios#sh access-lists
+# vios#show access-lists
 # Standard IP access list std_acl
 #    10 deny   192.168.1.200
 #    20 deny   192.168.2.0, wildcard bits 0.0.0.255
@@ -826,25 +963,63 @@ EXAMPLES = """
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
+# vios#show running-config | include ip(v6)* access-list|remark
+# ip access-list standard std_acl
+# ip access-list extended extended_acl_1
+# ip access-list extended 110
+# ip access-list extended 123
+#  remark remarks for extended ACL 1
+#  remark check ACL
+# ipv6 access-list R1_TRAFFIC
+
+# Using merged (update existing ACE - will fail)
+
+# Before state:
+# -------------
+#
+# vios#show access-lists
+# Extended IP access list 100
+#    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
+
+- name: Merge provided configuration with device configuration
+  cisco.ios.ios_acls:
+    config:
+      - afi: ipv4
+        acls:
+          - name: 100
+            aces:
+              - sequence: 10
+                protocol_options:
+                  icmp:
+                    traceroute: true
+    state: merged
+
+# After state:
+# ------------
+#
+# Play Execution fails, with error:
+# Cannot update existing sequence 10 of ACLs 100 with state merged.
+# Please use state replaced or overridden.
+
 # Using replaced
 
 # Before state:
 # -------------
 #
-# vios#sh access-lists
+# vios#show access-lists
 # Standard IP access list std_acl
-#    10 deny   192.168.1.200
-#    20 deny   192.168.2.0, wildcard bits 0.0.0.255
+#     10 deny   192.168.1.200
+#     20 deny   192.168.2.0, wildcard bits 0.0.0.255
 # Extended IP access list 110
-#    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
-#    20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
+#     10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
+#     20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
 # Extended IP access list 123
-#    10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
-#    20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
+#     10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
+#     20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
+# Extended IP access list R1_TRAFFIC
+#     10 deny tcp any eq www any eq telnet ack dscp af11
 # Extended IP access list test
-#    10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
-# IPv6 access list R1_TRAFFIC
-#    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+#     10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
 
 - name: Replaces device configuration of listed acls with provided configuration
   cisco.ios.ios_acls:
@@ -890,14 +1065,270 @@ EXAMPLES = """
                   eq: 10
     state: replaced
 
-# Commands fired:
-# ---------------
+# Task Output
+# -----------
 #
-# - no ip access-list extended 110
-# - ip access-list extended 110
-# - deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www syn dscp ef ttl eq 10
-# - ip access-list extended 150
-# - 20 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10
+# before:
+#  - acls:
+#    - aces:
+#      - destination:
+#          address: 192.0.3.0
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: icmp
+#        protocol_options:
+#          icmp:
+#            traceroute: true
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      - destination:
+#          host: 198.51.110.0
+#          port_protocol:
+#            eq: telnet
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 20
+#        source:
+#          host: 198.51.100.0
+#      acl_type: extended
+#      name: '110'
+#    - aces:
+#      - destination:
+#          address: 198.51.101.0
+#          port_protocol:
+#            eq: telnet
+#          wildcard_bits: 0.0.0.255
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 10
+#        source:
+#          address: 198.51.100.0
+#          wildcard_bits: 0.0.0.255
+#        tos:
+#          service_value: 12
+#      - destination:
+#          address: 192.0.4.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 20
+#        source:
+#          address: 192.0.3.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          lt: 20
+#      acl_type: extended
+#      name: '123'
+#    - aces:
+#      - destination:
+#          any: true
+#          port_protocol:
+#            eq: telnet
+#        dscp: af11
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 10
+#        source:
+#          any: true
+#          port_protocol:
+#            eq: www
+#      acl_type: extended
+#      name: R1_TRAFFIC
+#    - aces:
+#      - grant: deny
+#        sequence: 10
+#        source:
+#          host: 192.168.1.200
+#      - grant: deny
+#        sequence: 20
+#        source:
+#          address: 192.168.2.0
+#          wildcard_bits: 0.0.0.255
+#      acl_type: standard
+#      name: std_acl
+#    - aces:
+#      - destination:
+#          address: 192.0.3.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        grant: deny
+#        option:
+#          traceroute: true
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            fin: true
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      acl_type: extended
+#      name: test
+#    afi: ipv4
+#
+# commands:
+#  - ip access-list extended 110
+#  - no 10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
+#  - no 20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
+#  - deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www syn dscp ef ttl eq 10
+#  - ip access-list extended 150
+#  - 20 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10
+#
+# after:
+#  - acls:
+#    - aces:
+#      - destination:
+#          address: 192.0.3.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            syn: true
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      acl_type: extended
+#      name: '110'
+#    - aces:
+#      - destination:
+#          address: 198.51.101.0
+#          port_protocol:
+#            eq: telnet
+#          wildcard_bits: 0.0.0.255
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 10
+#        source:
+#          address: 198.51.100.0
+#          wildcard_bits: 0.0.0.255
+#        tos:
+#          service_value: 12
+#      - destination:
+#          address: 192.0.4.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 20
+#        source:
+#          address: 192.0.3.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          lt: 20
+#      acl_type: extended
+#      name: '123'
+#    - aces:
+#      - destination:
+#          address: 198.51.110.0
+#          port_protocol:
+#            eq: telnet
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            syn: true
+#        sequence: 20
+#        source:
+#          address: 198.51.100.0
+#          port_protocol:
+#            eq: telnet
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      acl_type: extended
+#      name: '150'
+#    - aces:
+#      - destination:
+#          any: true
+#          port_protocol:
+#            eq: telnet
+#        dscp: af11
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 10
+#        source:
+#          any: true
+#          port_protocol:
+#            eq: www
+#      acl_type: extended
+#      name: R1_TRAFFIC
+#    - aces:
+#      - grant: deny
+#        sequence: 10
+#        source:
+#          host: 192.168.1.200
+#      - grant: deny
+#        sequence: 20
+#        source:
+#          address: 192.168.2.0
+#          wildcard_bits: 0.0.0.255
+#      acl_type: standard
+#      name: std_acl
+#    - aces:
+#      - destination:
+#          address: 192.0.3.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        grant: deny
+#        option:
+#          traceroute: true
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            fin: true
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      acl_type: extended
+#      name: test
+#    afi: ipv4
 
 # After state:
 # -------------
@@ -925,18 +1356,18 @@ EXAMPLES = """
 #
 # vios#sh access-lists
 # Standard IP access list std_acl
-#    10 deny   192.168.1.200
-#    20 deny   192.168.2.0, wildcard bits 0.0.0.255
+#     10 deny   192.168.1.200
+#     20 deny   192.168.2.0, wildcard bits 0.0.0.255
 # Extended IP access list 110
-#    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
-#    20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
+#     10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
+#     20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
 # Extended IP access list 123
-#    10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
-#    20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
+#     10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
+#     20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
+# Extended IP access list R1_TRAFFIC
+#     10 deny tcp any eq www any eq telnet ack dscp af11
 # Extended IP access list test
-#    10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
-# IPv6 access list R1_TRAFFIC
-#    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+#     10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
 
 - name: Override device configuration of all acls with provided configuration
   cisco.ios.ios_acls:
@@ -985,73 +1416,394 @@ EXAMPLES = """
                   eq: 10
     state: overridden
 
-# Commands fired:
-# ---------------
+# Task Output
+# -----------
 #
-# - no ip access-list standard std_acl
-# - no ip access-list extended 110
-# - no ip access-list extended 123
-# - no ip access-list extended 150
-# - no ip access-list extended test
-# - no ipv6 access-list R1_TRAFFIC
-# - ip access-list extended 150
-# - 10 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10
-# - ip access-list extended 110
-# - 20 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq www ack dscp ef ttl eq 10
+# before:
+#  - acls:
+#    - aces:
+#      - destination:
+#          address: 192.0.3.0
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: icmp
+#        protocol_options:
+#          icmp:
+#            traceroute: true
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      - destination:
+#          host: 198.51.110.0
+#          port_protocol:
+#            eq: telnet
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 20
+#        source:
+#          host: 198.51.100.0
+#      acl_type: extended
+#      name: '110'
+#    - aces:
+#      - destination:
+#          address: 198.51.101.0
+#          port_protocol:
+#            eq: telnet
+#          wildcard_bits: 0.0.0.255
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 10
+#        source:
+#          address: 198.51.100.0
+#          wildcard_bits: 0.0.0.255
+#        tos:
+#          service_value: 12
+#      - destination:
+#          address: 192.0.4.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 20
+#        source:
+#          address: 192.0.3.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          lt: 20
+#      acl_type: extended
+#      name: '123'
+#    - aces:
+#      - destination:
+#          any: true
+#          port_protocol:
+#            eq: telnet
+#        dscp: af11
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 10
+#        source:
+#          any: true
+#          port_protocol:
+#            eq: www
+#      acl_type: extended
+#      name: R1_TRAFFIC
+#    - aces:
+#      - grant: deny
+#        sequence: 10
+#        source:
+#          host: 192.168.1.200
+#      - grant: deny
+#        sequence: 20
+#        source:
+#          address: 192.168.2.0
+#          wildcard_bits: 0.0.0.255
+#      acl_type: standard
+#      name: std_acl
+#    - aces:
+#      - destination:
+#          address: 192.0.3.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        grant: deny
+#        option:
+#          traceroute: true
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            fin: true
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      acl_type: extended
+#      name: test
+#    afi: ipv4
+#
+# commands:
+#  - ip access-list extended 110
+#  - no 20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
+#  - no 10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
+#  - 20 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq www ack dscp ef ttl eq 10
+#  - ip access-list extended 150
+#  - 10 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10
+#  - no ip access-list extended 123
+#  - no ip access-list extended R1_TRAFFIC
+#  - no ip access-list standard std_acl
+#  - no ip access-list extended test
+#
+# after:
+#  - acls:
+#    - aces:
+#      - destination:
+#          address: 198.51.110.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 20
+#        source:
+#          address: 198.51.100.0
+#          port_protocol:
+#            eq: telnet
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      acl_type: extended
+#      name: '110'
+#    - aces:
+#      - destination:
+#          address: 198.51.110.0
+#          port_protocol:
+#            eq: telnet
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            syn: true
+#        sequence: 10
+#        source:
+#          address: 198.51.100.0
+#          port_protocol:
+#            eq: telnet
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      acl_type: extended
+#      name: '150'
+#    afi: ipv4
 
 # After state:
 # -------------
 #
-# vios#sh access-lists
+# vios#show access-lists
 # Extended IP access list 110
-#    20 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq www ack dscp ef ttl eq 10
+#     20 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq www ack dscp ef ttl eq 10
 # Extended IP access list 150
-#    10 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10
+#     10 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10
 
-# Using Deleted
+
+# Using deleted - delete ACL(s)
 
 # Before state:
 # -------------
 #
 # vios#sh access-lists
 # Standard IP access list std_acl
-#    10 deny   192.168.1.200
-#    20 deny   192.168.2.0, wildcard bits 0.0.0.255
+#     10 deny   192.168.1.200
+#     20 deny   192.168.2.0, wildcard bits 0.0.0.255
 # Extended IP access list 110
-#    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
-#    20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
+#     10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
+#     20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
 # Extended IP access list 123
-#    10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
-#    20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
-# Extended IP access list test
-#    10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
-# IPv6 access list R1_TRAFFIC
-#    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+#     10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
+#     20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
+# Extended IP access list extended_acl_1
+#     10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
 
 - name: "Delete ACLs (Note: This won't delete the all configured ACLs)"
   cisco.ios.ios_acls:
     config:
       - afi: ipv4
         acls:
-          - name: test
+          - name: extended_acl_1
             acl_type: extended
           - name: 110
-      - afi: ipv6
-        acls:
-          - name: R1_TRAFFIC
     state: deleted
 
-# Commands fired:
-# ---------------
+# Task Output
+# -----------
 #
-# - no ip access-list extended test
-# - no ip access-list extended 110
-# - no ipv6 access-list R1_TRAFFIC
+# before:
+#  - acls:
+#    - aces:
+#      - destination:
+#          address: 192.0.3.0
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: icmp
+#        protocol_options:
+#          icmp:
+#            traceroute: true
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      - destination:
+#          host: 198.51.110.0
+#          port_protocol:
+#            eq: telnet
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 20
+#        source:
+#          host: 198.51.100.0
+#      acl_type: extended
+#      name: '110'
+#    - aces:
+#      - destination:
+#          address: 198.51.101.0
+#          port_protocol:
+#            eq: telnet
+#          wildcard_bits: 0.0.0.255
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 10
+#        source:
+#          address: 198.51.100.0
+#          wildcard_bits: 0.0.0.255
+#        tos:
+#          service_value: 12
+#      - destination:
+#          address: 192.0.4.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 20
+#        source:
+#          address: 192.0.3.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          lt: 20
+#      acl_type: extended
+#      name: '123'
+#    - aces:
+#      - grant: deny
+#        sequence: 10
+#        source:
+#          host: 192.168.1.200
+#      - grant: deny
+#        sequence: 20
+#        source:
+#          address: 192.168.2.0
+#          wildcard_bits: 0.0.0.255
+#      acl_type: standard
+#      name: std_acl
+#    - aces:
+#      - destination:
+#          address: 192.0.3.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        grant: deny
+#        option:
+#          traceroute: true
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            fin: true
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      acl_type: extended
+#      name: extended_acl_1
+#    afi: ipv4
+#
+#  commands:
+#  - no ip access-list extended 110
+#  - no ip access-list extended extended_acl_1
+#
+# after:
+#  - acls:
+#    - aces:
+#      - destination:
+#          address: 198.51.101.0
+#          port_protocol:
+#            eq: telnet
+#          wildcard_bits: 0.0.0.255
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 10
+#        source:
+#          address: 198.51.100.0
+#          wildcard_bits: 0.0.0.255
+#        tos:
+#          service_value: 12
+#      - destination:
+#          address: 192.0.4.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 20
+#        source:
+#          address: 192.0.3.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          lt: 20
+#      acl_type: extended
+#      name: '123'
+#    - aces:
+#      - grant: deny
+#        sequence: 10
+#        source:
+#          host: 192.168.1.200
+#      - grant: deny
+#        sequence: 20
+#        source:
+#          address: 192.168.2.0
+#          wildcard_bits: 0.0.0.255
+#      acl_type: standard
+#      name: std_acl
+#    afi: ipv4
 
 # After state:
 # -------------
 #
-# vios#sh access-lists
+# vios#show access-lists
 # Standard IP access list std_acl
 #    10 deny   192.168.1.200
 #    20 deny   192.168.2.0, wildcard bits 0.0.0.255
@@ -1059,23 +1811,25 @@ EXAMPLES = """
 #    10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
 #    20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
 
+# Using deleted - delete ACLs based on AFI
+
 # Before state:
 # -------------
 #
-# vios#sh access-lists
+# vios#show access-lists
 # Standard IP access list std_acl
-#    10 deny   192.168.1.200
-#    20 deny   192.168.2.0, wildcard bits 0.0.0.255
+#     10 deny   192.168.1.200
+#     20 deny   192.168.2.0, wildcard bits 0.0.0.255
 # Extended IP access list 110
-#    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
-#    20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
+#     10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
+#     20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
 # Extended IP access list 123
-#    10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
-#    20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
+#     10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
+#     20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
 # Extended IP access list test
-#    10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
+#     10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
 # IPv6 access list R1_TRAFFIC
-#    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+#     deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
 - name: "Delete ACLs based on AFI (Note: This won't delete the all configured ACLs)"
   cisco.ios.ios_acls:
@@ -1083,63 +1837,331 @@ EXAMPLES = """
       - afi: ipv4
     state: deleted
 
-# Commands fired:
-# ---------------
+# Task Output
+# -----------
 #
-# - no ip access-list standard std_acl
-# - no ip access-list extended test
-# - no ip access-list extended 110
-# - no ip access-list extended 123
+# before:
+#  - acls:
+#    - aces:
+#      - destination:
+#          address: 192.0.3.0
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: icmp
+#        protocol_options:
+#          icmp:
+#            traceroute: true
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      - destination:
+#          host: 198.51.110.0
+#          port_protocol:
+#            eq: telnet
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 20
+#        source:
+#          host: 198.51.100.0
+#      acl_type: extended
+#      name: '110'
+#    - aces:
+#      - destination:
+#          address: 198.51.101.0
+#          port_protocol:
+#            eq: telnet
+#          wildcard_bits: 0.0.0.255
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 10
+#        source:
+#          address: 198.51.100.0
+#          wildcard_bits: 0.0.0.255
+#        tos:
+#          service_value: 12
+#      - destination:
+#          address: 192.0.4.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 20
+#        source:
+#          address: 192.0.3.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          lt: 20
+#      acl_type: extended
+#      name: '123'
+#    - aces:
+#      - grant: deny
+#        sequence: 10
+#        source:
+#          host: 192.168.1.200
+#      - grant: deny
+#        sequence: 20
+#        source:
+#          address: 192.168.2.0
+#          wildcard_bits: 0.0.0.255
+#      acl_type: standard
+#      name: std_acl
+#    - aces:
+#      - destination:
+#          address: 192.0.3.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        grant: deny
+#        option:
+#          traceroute: true
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            fin: true
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      acl_type: extended
+#      name: test
+#    afi: ipv4
+#  - acls:
+#    - aces:
+#      - destination:
+#          any: true
+#          port_protocol:
+#            eq: telnet
+#        dscp: af11
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 10
+#        source:
+#          any: true
+#          port_protocol:
+#            eq: www
+#      name: R1_TRAFFIC
+#    afi: ipv6
+#
+# commands:
+#  - no ip access-list extended 110
+#  - no ip access-list extended 123
+#  - no ip access-list standard std_acl
+#  - no ip access-list extended test
+#
+# after:
+#  - acls:
+#    - aces:
+#      - destination:
+#          any: true
+#          port_protocol:
+#            eq: telnet
+#        dscp: af11
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 10
+#        source:
+#          any: true
+#          port_protocol:
+#            eq: www
+#      name: R1_TRAFFIC
+#    afi: ipv6
 
 # After state:
 # -------------
 #
-# vios#sh access-lists
+# vios#show access-lists
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-# Using Deleted without any config passed
-#"(NOTE: This will delete all of configured ACLs)"
+
+# Using deleted - delete all ACLs
 
 # Before state:
 # -------------
 #
 # vios#sh access-lists
 # Standard IP access list std_acl
-#    10 deny   192.168.1.200
-#    20 deny   192.168.2.0, wildcard bits 0.0.0.255
+#     10 deny   192.168.1.200
+#     20 deny   192.168.2.0, wildcard bits 0.0.0.255
 # Extended IP access list 110
-#    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
-#    20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
+#     10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
+#     20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
 # Extended IP access list 123
-#    10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
-#    20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
+#     10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
+#     20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
 # Extended IP access list test
-#    10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
+#     10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
 # IPv6 access list R1_TRAFFIC
-#    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+#     deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-- name:
-    "Delete ALL of configured ACLs (Note: This WILL delete the all configured
-    ACLs)"
+- name: Delete ALL of configured ACLs
   cisco.ios.ios_acls:
     state: deleted
 
-# Commands fired:
-# ---------------
+# Task Output
+# -----------
 #
-# - no ip access-list extended test
-# - no ip access-list extended 110
-# - no ip access-list extended 123
-# - no ip access-list extended test
-# - no ipv6 access-list R1_TRAFFIC
+# before:
+#  - acls:
+#    - aces:
+#      - destination:
+#          address: 192.0.3.0
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: icmp
+#        protocol_options:
+#          icmp:
+#            traceroute: true
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      - destination:
+#          host: 198.51.110.0
+#          port_protocol:
+#            eq: telnet
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 20
+#        source:
+#          host: 198.51.100.0
+#      acl_type: extended
+#      name: '110'
+#    - aces:
+#      - destination:
+#          address: 198.51.101.0
+#          port_protocol:
+#            eq: telnet
+#          wildcard_bits: 0.0.0.255
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 10
+#        source:
+#          address: 198.51.100.0
+#          wildcard_bits: 0.0.0.255
+#        tos:
+#          service_value: 12
+#      - destination:
+#          address: 192.0.4.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 20
+#        source:
+#          address: 192.0.3.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          lt: 20
+#      acl_type: extended
+#      name: '123'
+#    - aces:
+#      - grant: deny
+#        sequence: 10
+#        source:
+#          host: 192.168.1.200
+#      - grant: deny
+#        sequence: 20
+#        source:
+#          address: 192.168.2.0
+#          wildcard_bits: 0.0.0.255
+#      acl_type: standard
+#      name: std_acl
+#    - aces:
+#      - destination:
+#          address: 192.0.3.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        grant: deny
+#        option:
+#          traceroute: true
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            fin: true
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      acl_type: extended
+#      name: test
+#    afi: ipv4
+#  - acls:
+#    - aces:
+#      - destination:
+#          any: true
+#          port_protocol:
+#            eq: telnet
+#        dscp: af11
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 10
+#        source:
+#          any: true
+#          port_protocol:
+#            eq: www
+#      name: R1_TRAFFIC
+#    afi: ipv6
+#
+# commands:
+#  - no ip access-list extended test
+#  - no ip access-list extended 110
+#  - no ip access-list extended 123
+#  - no ip access-list extended test
+#  - no ipv6 access-list R1_TRAFFIC
+#
+# after: []
 
 # After state:
 # -------------
 #
-# vios#sh access-lists
+# vios#show access-lists
 
-# Using Gathered
+
+# Using gathered
 
 # Before state:
 # -------------
@@ -1159,169 +2181,138 @@ EXAMPLES = """
 # IPv6 access list R1_TRAFFIC
 #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
 
-- name: Gather listed acls with provided configurations
+- name: Gather ACLs configuration from target device
   cisco.ios.ios_acls:
-    config:
     state: gathered
 
 # Module Execution Result:
 # ------------------------
 #
-# "gathered": [
-#         {
-#             "acls": [
-#                 {
-#                     "aces": [
-#                         {
-#                             "destination": {
-#                                 "address": "192.0.3.0",
-#                                 "wildcard_bits": "0.0.0.255"
-#                             },
-#                             "dscp": "ef",
-#                             "grant": "deny",
-#                             "protocol_options": {
-#                                 "icmp": {
-#                                     "echo": true
-#                                 }
-#                             },
-#                             "sequence": 10,
-#                             "source": {
-#                                 "address": "192.0.2.0",
-#                                 "wildcard_bits": "0.0.0.255"
-#                             },
-#                             "ttl": {
-#                                 "eq": 10
-#                             }
-#                         }
-#                     ],
-#                     "acl_type": "extended",
-#                     "name": "110"
-#                 },
-#                 {
-#                     "aces": [
-#                         {
-#                             "destination": {
-#                                 "address": "198.51.101.0",
-#                                 "port_protocol": {
-#                                     "eq": "telnet"
-#                                 },
-#                                 "wildcard_bits": "0.0.0.255"
-#                             },
-#                             "grant": "deny",
-#                             "protocol_options": {
-#                                 "tcp": {
-#                                     "ack": true
-#                                 }
-#                             },
-#                             "sequence": 10,
-#                             "source": {
-#                                 "address": "198.51.100.0",
-#                                 "wildcard_bits": "0.0.0.255"
-#                             },
-#                             "tos": {
-#                                 "service_value": 12
-#                             }
-#                         },
-#                         {
-#                             "destination": {
-#                                 "address": "192.0.4.0",
-#                                 "port_protocol": {
-#                                     "eq": "www"
-#                                 },
-#                                 "wildcard_bits": "0.0.0.255"
-#                             },
-#                             "dscp": "ef",
-#                             "grant": "deny",
-#                             "protocol_options": {
-#                                 "tcp": {
-#                                     "ack": true
-#                                 }
-#                             },
-#                             "sequence": 20,
-#                             "source": {
-#                                 "address": "192.0.3.0",
-#                                 "wildcard_bits": "0.0.0.255"
-#                             },
-#                             "ttl": {
-#                                 "lt": 20
-#                             }
-#                         }
-#                     ],
-#                     "acl_type": "extended",
-#                     "name": "123"
-#                 },
-#                 {
-#                     "aces": [
-#                         {
-#                             "destination": {
-#                                 "address": "192.0.3.0",
-#                                 "port_protocol": {
-#                                     "eq": "www"
-#                                 },
-#                                 "wildcard_bits": "0.0.0.255"
-#                             },
-#                             "grant": "deny",
-#                             "option": {
-#                                 "traceroute": true
-#                             },
-#                             "protocol_options": {
-#                                 "tcp": {
-#                                     "fin": true
-#                                 }
-#                             },
-#                             "sequence": 10,
-#                             "source": {
-#                                 "address": "192.0.2.0",
-#                                 "wildcard_bits": "0.0.0.255"
-#                             },
-#                             "ttl": {
-#                                 "eq": 10
-#                             }
-#                         }
-#                     ],
-#                     "acl_type": "extended",
-#                     "name": "test_acl"
-#                 }
-#             ],
-#             "afi": "ipv4"
-#         },
-#         {
-#             "acls": [
-#                 {
-#                     "aces": [
-#                         {
-#                             "destination": {
-#                                 "any": true,
-#                                 "port_protocol": {
-#                                     "eq": "telnet"
-#                                 }
-#                             },
-#                             "dscp": "af11",
-#                             "grant": "deny",
-#                             "protocol_options": {
-#                                 "tcp": {
-#                                     "ack": true
-#                                 }
-#                             },
-#                             "sequence": 10,
-#                             "source": {
-#                                 "any": true,
-#                                 "port_protocol": {
-#                                     "eq": "www"
-#                                 }
-#                             }
-#                         }
-#                     ],
-#                     "name": "R1_TRAFFIC"
-#                 }
-#             ],
-#             "afi": "ipv6"
-#         }
-#     ]
+# before:
+#  - acls:
+#    - aces:
+#      - destination:
+#          address: 192.0.3.0
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: icmp
+#        protocol_options:
+#          icmp:
+#            traceroute: true
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      - destination:
+#          host: 198.51.110.0
+#          port_protocol:
+#            eq: telnet
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 20
+#        source:
+#          host: 198.51.100.0
+#      acl_type: extended
+#      name: '110'
+#    - aces:
+#      - destination:
+#          address: 198.51.101.0
+#          port_protocol:
+#            eq: telnet
+#          wildcard_bits: 0.0.0.255
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 10
+#        source:
+#          address: 198.51.100.0
+#          wildcard_bits: 0.0.0.255
+#        tos:
+#          service_value: 12
+#      - destination:
+#          address: 192.0.4.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        dscp: ef
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 20
+#        source:
+#          address: 192.0.3.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          lt: 20
+#      acl_type: extended
+#      name: '123'
+#    - aces:
+#      - grant: deny
+#        sequence: 10
+#        source:
+#          host: 192.168.1.200
+#      - grant: deny
+#        sequence: 20
+#        source:
+#          address: 192.168.2.0
+#          wildcard_bits: 0.0.0.255
+#      acl_type: standard
+#      name: std_acl
+#    - aces:
+#      - destination:
+#          address: 192.0.3.0
+#          port_protocol:
+#            eq: www
+#          wildcard_bits: 0.0.0.255
+#        grant: deny
+#        option:
+#          traceroute: true
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            fin: true
+#        sequence: 10
+#        source:
+#          address: 192.0.2.0
+#          wildcard_bits: 0.0.0.255
+#        ttl:
+#          eq: 10
+#      acl_type: extended
+#      name: test
+#    afi: ipv4
+#  - acls:
+#    - aces:
+#      - destination:
+#          any: true
+#          port_protocol:
+#            eq: telnet
+#        dscp: af11
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 10
+#        source:
+#          any: true
+#          port_protocol:
+#            eq: www
+#      name: R1_TRAFFIC
+#    afi: ipv6
 
-# Using Rendered
+# Using rendered
 
-- name: Rendered the provided configuration with the existing running configuration
+- name: Render the provided configuration into platform specific configuration lines
   cisco.ios.ios_acls:
     config:
       - afi: ipv4
@@ -1368,12 +2359,12 @@ EXAMPLES = """
 # Module Execution Result:
 # ------------------------
 #
-# "rendered": [
-#         "ip access-list extended 110",
-#         "10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www syn dscp ef ttl eq 10",
-#         "ip access-list extended 150",
-#         "deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10"
-#     ]
+# rendered:
+#  - ip access-list extended 110
+#  - 10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www syn dscp ef ttl eq 10
+#  - ip access-list extended 150
+#  - deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10
+#
 
 # Using Parsed
 
@@ -1391,39 +2382,26 @@ EXAMPLES = """
 # Module Execution Result:
 # ------------------------
 #
-# "parsed": [
-#         {
-#             "acls": [
-#                 {
-#                     "aces": [
-#                         {
-#                             "destination": {
-#                                 "any": true,
-#                                 "port_protocol": {
-#                                     "eq": "telnet"
-#                                 }
-#                             },
-#                             "dscp": "af11",
-#                             "grant": "deny",
-#                             "protocol_options": {
-#                                 "tcp": {
-#                                     "ack": true
-#                                 }
-#                             },
-#                             "source": {
-#                                 "any": true,
-#                                 "port_protocol": {
-#                                     "eq": "www"
-#                                 }
-#                             }
-#                         }
-#                     ],
-#                     "name": "R1_TRAFFIC"
-#                 }
-#             ],
-#             "afi": "ipv6"
-#         }
-#     ]
+# parsed:
+#  - acls:
+#    - aces:
+#      - destination:
+#          any: true
+#          port_protocol:
+#            eq: telnet
+#        dscp: af11
+#        grant: deny
+#        protocol: tcp
+#        protocol_options:
+#          tcp:
+#            ack: true
+#        sequence: 10
+#        source:
+#          any: true
+#          port_protocol:
+#            eq: www
+#      name: R1_TRAFFIC
+#    afi: ipv6
 """
 
 RETURN = """
