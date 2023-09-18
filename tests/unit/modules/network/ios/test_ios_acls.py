@@ -1688,7 +1688,7 @@ class TestIosAclsModule(TestIosModule):
                             },
                         ],
                         "afi": "ipv4",
-                    }
+                    },
                 ],
                 state="overridden",
             ),
