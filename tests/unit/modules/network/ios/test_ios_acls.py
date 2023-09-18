@@ -337,6 +337,26 @@ class TestIosAclsModule(TestIosModule):
                             },
                             {"name": "test_acl", "acl_type": "standard"},
                             {
+                                "aces": [
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol_options": {"ip": True},
+                                        "sequence": 10,
+                                        "source": {"host": "10.153.14.21"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol_options": {"ip": True},
+                                        "sequence": 20,
+                                        "source": {"host": "10.153.14.22"},
+                                    },
+                                ],
+                                "acl_type": "extended",
+                                "name": "test-idem",
+                            },
+                            {
                                 "name": "test_pre",
                                 "acl_type": "extended",
                                 "aces": [
@@ -373,26 +393,6 @@ class TestIosAclsModule(TestIosModule):
                                 ],
                             },
                         ],
-                    },
-                    {
-                        "aces": [
-                            {
-                                "destination": {"any": True},
-                                "grant": "permit",
-                                "protocol_options": {"ip": True},
-                                "sequence": 10,
-                                "source": {"host": "10.153.14.21"},
-                            },
-                            {
-                                "destination": {"any": True},
-                                "grant": "permit",
-                                "protocol_options": {"ip": True},
-                                "sequence": 20,
-                                "source": {"host": "10.153.14.22"},
-                            },
-                        ],
-                        "acl_type": "extended",
-                        "name": "test-idem",
                     },
                 ],
                 state="replaced",
