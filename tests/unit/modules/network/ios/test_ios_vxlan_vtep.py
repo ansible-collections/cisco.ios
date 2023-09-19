@@ -389,4 +389,3 @@ class TestIosVxlanVtepModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
-        
