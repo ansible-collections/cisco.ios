@@ -468,7 +468,7 @@ def map_obj_to_commands(updates, module):
                         {},
                     )
 
-                    if needs_update(want_mdt["mdt"], have_mdt.get("mdt"), key_in):
+                    if needs_update(want_mdt["mdt"], have_mdt.get("mdt", {}), key_in):
                         af_dict.update({key_in: value_in})
                 if af_dict:
                     cmd = "address-family" + " " + str(afi)
