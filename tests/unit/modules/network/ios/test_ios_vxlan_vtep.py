@@ -60,7 +60,7 @@ class TestIosVxlanVtepModule(TestIosModule):
                 config=[
                     {
                         "interface": "nve1",
-                        "source_interface": "loopback2",
+                        "source_interface": "Loopback2",
                         "member": {
                             "vni": {
                                 "l2vni": [
@@ -94,7 +94,7 @@ class TestIosVxlanVtepModule(TestIosModule):
         )
         commands = [
             "interface nve1",
-            "source-interface loopback2",
+            "source-interface Loopback2",
             "no member vni 10101 mcast-group 225.0.0.101",
             "member vni 10101 ingress-replication",
             "no member vni 10201 mcast-group 225.0.0.101",
@@ -113,10 +113,10 @@ class TestIosVxlanVtepModule(TestIosModule):
              no ip address
              source-interface Loopback2
              host-reachability protocol bgp
-             member vni 10102 ingress-replication
-             member vni 10202 ingress-replication
              member vni 10101 ingress-replication
+             member vni 10102 ingress-replication
              member vni 10201 mcast-group 225.0.0.101 FF0E:225::101
+             member vni 10202 ingress-replication
              member vni 50901 vrf blue
             """,
         )
@@ -125,7 +125,7 @@ class TestIosVxlanVtepModule(TestIosModule):
                 config=[
                     {
                         "interface": "nve1",
-                        "source_interface": "loopback2",
+                        "source_interface": "Loopback2",
                         "member": {
                             "vni": {
                                 "l2vni": [
@@ -166,10 +166,10 @@ class TestIosVxlanVtepModule(TestIosModule):
              no ip address
              source-interface Loopback2
              host-reachability protocol bgp
-             member vni 10102 ingress-replication
-             member vni 10202 ingress-replication
              member vni 10101 ingress-replication
+             member vni 10102 ingress-replication
              member vni 10201 mcast-group 225.0.0.101 FF0E:225::101
+             member vni 10202 ingress-replication
              member vni 50901 vrf blue
             """,
         )
@@ -178,7 +178,7 @@ class TestIosVxlanVtepModule(TestIosModule):
                 config=[
                     {
                         "interface": "nve1",
-                        "source_interface": "loopback2",
+                        "source_interface": "Loopback2",
                         "member": {
                             "vni": {
                                 "l2vni": [
@@ -237,7 +237,7 @@ class TestIosVxlanVtepModule(TestIosModule):
                 config=[
                     {
                         "interface": "nve1",
-                        "source_interface": "loopback2",
+                        "source_interface": "Loopback2",
                         "member": {
                             "vni": {
                                 "l2vni": [
@@ -288,7 +288,7 @@ class TestIosVxlanVtepModule(TestIosModule):
                 config=[
                     {
                         "interface": "nve1",
-                        "source_interface": "loopback2",
+                        "source_interface": "Loopback2",
                         "member": {
                             "vni": {
                                 "l2vni": [
@@ -379,8 +379,8 @@ class TestIosVxlanVtepModule(TestIosModule):
                         },
                     },
                 ],
+                state="deleted",
             ),
-            state="deleted",
         )
         commands = [
             "interface nve1",
@@ -389,3 +389,4 @@ class TestIosVxlanVtepModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+        
