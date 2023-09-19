@@ -31,7 +31,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 class Vxlan_vtepFacts(object):
     """The ios vxlan_vtep facts class"""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module):
         self._module = module
         self.argument_spec = Vxlan_vtepArgs.argument_spec
 
