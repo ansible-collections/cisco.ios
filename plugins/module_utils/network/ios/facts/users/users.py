@@ -69,7 +69,7 @@ class UsersFacts(object):
         users_parser = UsersTemplate(lines=data.splitlines(), module=self._module)
         objs = users_parser.parse()
 
-        objs["users"] = list(objs["users"].values())
+        objs["users"] = list(objs.get("users", {}).values())
         if objs:
             self.sort_list_dicts(objs)
 
@@ -79,7 +79,7 @@ class UsersFacts(object):
             users_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
-        facts["users"] = params["config"]
+        facts["users"] = params.get("config", {})
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
