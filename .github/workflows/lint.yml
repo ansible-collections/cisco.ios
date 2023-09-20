@@ -1,8 +1,8 @@
 ---
 name: ansible-lint
-on:
+on:  # yamllint disable-line rule:truthy
   pull_request:
-    branches: ["main", "stable", "release/v*"]
+    branches: ["main"]
 jobs:
   build:
     name: Ansible Lint  # Naming the build is important to use it as a status check
