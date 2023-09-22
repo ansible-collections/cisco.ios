@@ -141,7 +141,7 @@ Examples
 
     - name: Run show version on remote devices
       cisco.ios.ios_command:
-        commands: show version'
+        commands: show version
 
     # output-
 
