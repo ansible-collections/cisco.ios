@@ -396,7 +396,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\sremote\s(?P<remote>\S+))?
                 (\sudp-port\s(?P<udp_port>\d+))?
                 (\s(?P<version>v1|v3|v2c))?
-                (\s(?P<version_option>auth|encrypted))?
+                (\s(?P<version_option>encrypted))?
                 (\saccess\sipv6\s(?P<acl_v6>\S+))?
                 (\saccess\s(?P<acl_v4>\S+|\d+))?
                 (\svrf\s(?P<vrf>\S+))?
@@ -409,13 +409,17 @@ class Snmp_serverTemplate(NetworkTemplate):
                       "{{ (' udp-port ' + udp_port|string) if udp_port is defined else '' }}"
                       "{{ (' ' + version) if version is defined else '' }}"
                       "{{ (' ' + version_option) if version_option is defined else '' }}"
-                      "{{ (' auth ' + authentication.algorithm) if authentication is defined and authentication.algorithm is defined else '' }}"
-                      "{{ (' ' + authentication.password) if authentication is defined and authentication.password is defined else '' }}"
-                      "{{ (' priv ' + encryption.priv) if encryption is defined and encryption.priv is defined else '' }}"
-                      "{{ (' ' + encryption.priv_option) if encryption is defined and encryption.priv_option is defined else '' }}"
-                      "{{ (' ' + encryption.password) if encryption is defined and encryption.password is defined else '' }}"
-                      "{{ (' access ' + acl_v4|string) if acl_v4 is defined else '' }}"
-                      "{{ (' access ipv6 ' + acl_v6) if acl_v6 is defined else '' }}"
+                      "{% if authentication is defined and 'algorithm' in authentication and 'password' in authentication %}"
+                      "{{ (' auth ' + authentication.algorithm + ' ' + authentication.password) }}"
+                      "{% if encryption is defined and 'priv' in encryption and 'password' in encryption %}"
+                      "{{ (' priv ' + encryption.priv) }}"
+                      "{{ (' ' + encryption.priv_option) if 'priv_option' in encryption else '' }}"
+                      "{{ (' ' + encryption.password) }}"
+                      "{% endif %}"
+                      "{% endif %}"
+                      "{{ (' access') if acl_v6 is defined or acl_v4 is defined else '' }}"
+                      "{{ (' ipv6 ' + acl_v6) if acl_v6 is defined else '' }}"
+                      "{{ (' ' + acl_v4|string) if acl_v4 is defined else '' }}"
                       "{{ (' vrf ' + vrf) if vrf is defined else '' }}",
             "result": {
                 "users": [
