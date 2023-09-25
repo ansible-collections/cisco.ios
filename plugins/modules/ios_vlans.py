@@ -102,8 +102,9 @@ options:
         suboptions:
           vni:
             description:
-              - VxLan vni
+              - VXLAN vni
             type: int
+            required: true
           evi:
             description:
               - Ethernet Virtual Private Network (EVPN)
