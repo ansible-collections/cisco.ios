@@ -58,7 +58,7 @@ options:
     description:
       - The list of address families with MDT parameters to be configured on the remote IOS device.
     type: list
-    elements: dict  
+    elements: dict
   rd:
     description:
       - The router-distinguisher value uniquely identifies the VRF to routing processes
