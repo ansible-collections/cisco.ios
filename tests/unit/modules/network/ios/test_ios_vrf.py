@@ -447,6 +447,7 @@ class TestIosVrfModule(TestIosModule):
             "address-family ipv4",
             "mdt overlay use-bgp spt-only",
             "mdt auto-discovery vxlan inter-as",
+            "mdt default vxlan 239.1.1.1",
             "mdt data vxlan 225.2.2.0 0.0.0.255",
             "mdt data threshold 112",
             "exit-address-family",
