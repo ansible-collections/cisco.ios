@@ -59,7 +59,6 @@ class Vxlan_vtepArgs(object):  # pylint: disable=R0903
                                             "options": {
                                                 "type": {
                                                     "type": "str",
-                                                    "required": True,
                                                     "choices": ["ingress", "static"],
                                                 },
                                                 "mcast_group": {
