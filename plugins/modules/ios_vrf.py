@@ -54,6 +54,11 @@ options:
         VRF definition value accepts alphanumeric characters used to provide additional
         information about the VRF.
     type: str
+  address_family:
+    description:
+      - The list of address families with MDT parameters to be configured on the remote IOS device.
+    type: list
+    elements: dict  
   rd:
     description:
       - The router-distinguisher value uniquely identifies the VRF to routing processes
