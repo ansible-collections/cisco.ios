@@ -123,7 +123,7 @@ class TestIosAclsModule(TestIosModule):
                                     ),
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(tcp=dict(ack="true")),
+                                        protocol_options=dict(tcp=dict(ack="True")),
                                         sequence="200",
                                         source=dict(object_group="test_network_og"),
                                         destination=dict(object_group="test_network_og"),
@@ -234,7 +234,7 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(tcp=dict(ack="true")),
+                                        protocol_options=dict(tcp=dict(ack="True")),
                                         source=dict(
                                             address="198.51.100.0",
                                             wildcard_bits="0.0.0.255",
@@ -282,6 +282,9 @@ class TestIosAclsModule(TestIosModule):
                 deny tcp any eq www any eq telnet ack dscp af11 sequence 10
             Extended IP access list test_pre
                 10 permit ip any any precedence internet
+            Extended IP access list test-idem
+                10 permit ip host 10.153.14.21 any
+                20 permit ip host 10.153.14.22 any
             """,
         )
         set_module_args(
@@ -303,7 +306,7 @@ class TestIosAclsModule(TestIosModule):
                                             "wildcard_bits": "0.0.0.255",
                                         },
                                         "destination": {"any": True, "port_protocol": {"eq": "22"}},
-                                        "log": {"user_cookie": "testLog"},
+                                        "log": {"set": True, "user_cookie": "testLog"},
                                     },
                                     {
                                         "sequence": 20,
@@ -333,6 +336,26 @@ class TestIosAclsModule(TestIosModule):
                                 ],
                             },
                             {"name": "test_acl", "acl_type": "standard"},
+                            {
+                                "aces": [
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol_options": {"ip": True},
+                                        "sequence": 10,
+                                        "source": {"host": "10.153.14.21"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol_options": {"ip": True},
+                                        "sequence": 20,
+                                        "source": {"host": "10.153.14.22"},
+                                    },
+                                ],
+                                "acl_type": "extended",
+                                "name": "test-idem",
+                            },
                             {
                                 "name": "test_pre",
                                 "acl_type": "extended",
@@ -401,7 +424,7 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(tcp=dict(syn="true")),
+                                        protocol_options=dict(tcp=dict(syn="True")),
                                         source=dict(
                                             address="198.51.100.0",
                                             wildcard_bits="0.0.0.255",
@@ -468,7 +491,7 @@ class TestIosAclsModule(TestIosModule):
                                             "wildcard_bits": "0.0.0.255",
                                         },
                                         "destination": {"any": True, "port_protocol": {"eq": "22"}},
-                                        "log": {"user_cookie": "testLog"},
+                                        "log": {"set": True, "user_cookie": "testLog"},
                                     },
                                     {
                                         "sequence": 20,
@@ -570,7 +593,7 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(icmp=dict(echo="true")),
+                                        protocol_options=dict(icmp=dict(echo="True")),
                                         sequence="10",
                                         source=dict(address="192.0.2.0", wildcard_bits="0.0.0.255"),
                                         destination=dict(
@@ -592,11 +615,11 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(tcp=dict(ack="true")),
+                                        protocol_options=dict(tcp=dict(ack="True")),
                                         sequence="10",
-                                        source=dict(any="true", port_protocol=dict(eq="www")),
+                                        source=dict(any="True", port_protocol=dict(eq="www")),
                                         destination=dict(
-                                            any="true",
+                                            any="True",
                                             port_protocol=dict(eq="telnet"),
                                         ),
                                         dscp="af11",
@@ -628,7 +651,7 @@ class TestIosAclsModule(TestIosModule):
                                         grant="deny",
                                         sequence="10",
                                         remarks=["check for remark", "remark for acl 110"],
-                                        protocol_options=dict(tcp=dict(syn="true")),
+                                        protocol_options=dict(tcp=dict(syn="True")),
                                         source=dict(address="192.0.2.0", wildcard_bits="0.0.0.255"),
                                         destination=dict(
                                             address="192.0.3.0",
@@ -808,7 +831,7 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         grant="deny",
-                                        protocol_options=dict(tcp=dict(ack="true")),
+                                        protocol_options=dict(tcp=dict(ack="True")),
                                         source=dict(
                                             address="198.51.100.0",
                                             wildcard_bits="0.0.0.255",
