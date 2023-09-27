@@ -317,7 +317,7 @@ class TestIosVxlanVtepModule(TestIosModule):
                 ],
                 state="overridden",
             ),
-        ),
+        )
         commands = [
             "interface nve1",
             "no member vni 10101 ingress-replication",
