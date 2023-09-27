@@ -1,0 +1,6 @@
+---
+bugfixes:
+  - plugins/cliconf/ios.py - fix sending ``end`` command.
+    In some situations module cisco/ios/plugins/cliconf/ios.py
+    does not send ``end`` command after ``configure terminal`` command.
+    This patch ensures that in all cases ``end`` command will be send to device.
