@@ -192,6 +192,7 @@ class Acls(ResourceModule):
                 list(wace.get("protocol_options"))[0] == hace.get("protocol")
             ):
                 hace.pop("protocol")
+                hace["protocol_options"] = wace.get("protocol_options")
         return hace
 
     def acl_name_cmd(self, name, afi, acl_type):
@@ -226,9 +227,15 @@ class Acls(ResourceModule):
                         if acl.get("aces"):
                             temp_rem = []  # remarks if defined in an ace
                             for ace in acl.get("aces"):  # each ace turned to dict
-                                if ace.get("destination") and ace.get("destination", {}).get(
-                                    "port_protocol",
-                                    {},
+                                if (
+                                    ace.get("destination")
+                                    and ace.get("destination", {}).get(
+                                        "port_protocol",
+                                        {},
+                                    )
+                                    and not ace.get("destination", {})
+                                    .get("port_protocol", {})
+                                    .get("range")
                                 ):
                                     for k, v in (
                                         ace.get("destination", {}).get("port_protocol", {}).items()
