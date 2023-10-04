@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_logging_global - fix configuration order to configure discriminator before buffer.
