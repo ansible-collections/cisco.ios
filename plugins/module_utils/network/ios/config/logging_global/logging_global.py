@@ -108,9 +108,9 @@ class Logging_global(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Logging_global network resource.
         """
+        self._compare_complex_attrs(want, have)
         self.compare(parsers=self.parsers, want=want, have=have)
         self._compare_lists_attrs(want, have)
-        self._compare_complex_attrs(want, have)
 
     def _compare_lists_attrs(self, want, have):
         """Compare list of dict"""
