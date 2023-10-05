@@ -32,6 +32,8 @@ Bugfixes
 - bgp_address_family - fix deleted string with int concat issue in bgp_address_family.
 - ios_acls - Fix protocol_options rendering corrects processing of overridden/ replaced state.
 - ios_acls - Fix standard acls rendering.
+- ios_bgp_address_family - fix rendering of remote_as configuration with period.
+- ios_logging_global - fix configuration order to configure discriminator before buffer.
 - ios_prefix_lists - fix deleted state to remove exisiting prefix lists from configuration.
 - ios_service - Put condition to add `private_config_encryption` in default services
 

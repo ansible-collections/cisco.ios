@@ -953,6 +953,9 @@ releases:
         - ios_acls - Fix protocol_options rendering corrects processing of overridden/
           replaced state.
         - ios_acls - Fix standard acls rendering.
+        - ios_bgp_address_family - fix rendering of remote_as configuration with period.
+        - ios_logging_global - fix configuration order to configure discriminator before
+          buffer.
         - ios_prefix_lists - fix deleted state to remove exisiting prefix lists from
           configuration.
         - ios_service - Put condition to add `private_config_encryption` in default
@@ -981,13 +984,16 @@ releases:
         - ospfv2 - optimized all the regex to perform better
         - ospfv2 - optimized the config side code for quicker comparison and execution
     fragments:
+      - bgp_add_fam_route_maps.yaml
       - bgp_address_family_bug.yml
       - bug_ios_service-private_config_encryption.yml
       - codecov_pr.yml
+      - fix_ospfv2_integration_test.yml
       - fix_prefix_list_docs.yaml
       - ios_acls.yaml
       - ios_acls_fix.yaml
       - ios_snmp_user.yml
+      - logging_global_order.yaml
       - pep8_bugfix.yml
       - prefix_list_fix.yaml
       - rework_ospfv2.yml
