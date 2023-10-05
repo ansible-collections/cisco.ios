@@ -11,7 +11,7 @@ v5.1.0
 Minor Changes
 -------------
 
-- Fixe an issue with some files that doesn't pass the PEP8 sanity check because `type(<obj>) == <type>` is not allowed. We need to use `isinstance(<obj>,<type>)` function in place
+- Fix an issue with some files that doesn't pass the PEP8 sanity check because `type(<obj>) == <type>` is not allowed. We need to use `isinstance(<obj>,<type>)` function in place
 - ios_snmp_user - update the user part to compare correctly the auth and privacy parts.
 - ospfv2 - added more tests to improve coverage for the rm_template
 - ospfv2 - aliased passive_interface to passive_interfaces that supports a list of interfaces
