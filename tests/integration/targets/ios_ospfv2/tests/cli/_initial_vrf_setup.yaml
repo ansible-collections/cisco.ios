@@ -1,16 +1,9 @@
 ---
 - name: Create and setup VRF configuration
-  vars:
+  cisco.ios.ios_config:
     lines:
-      - ip vrf blue
       - rd 100:1
       - route-target export 100:1
       - route-target import 100:1
-      - exit
-      - ip vrf ospf_vrf
-      - rd 100:2
-      - route-target export 100:2
-      - route-target import 100:2
-      - exit
-  cisco.ios.ios_config:
-    config: "{{ lines }}"
+    parents:
+      - ip vrf blue
