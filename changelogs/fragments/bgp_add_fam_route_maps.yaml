@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_bgp_address_family - fix rendering of remote_as configuration with period.
