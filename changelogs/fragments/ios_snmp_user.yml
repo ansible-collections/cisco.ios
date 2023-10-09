@@ -1,3 +1,0 @@
----
-minor_changes:
-  - ios_snmp_user - update the user part to compare correctly the auth and privacy parts.
