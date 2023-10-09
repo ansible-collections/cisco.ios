@@ -61,9 +61,8 @@
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
 
-- block:
-    - ansible.builtin.include_tasks: _remove_config_vlan_config.yaml
-    - ansible.builtin.include_tasks: _populate_config_vlan_config.yaml
+- ansible.builtin.include_tasks: _remove_config_vlan_config.yaml
+- ansible.builtin.include_tasks: _populate_config_vlan_config.yaml
 
 - block:
     - name: Merge provided configuration with device configuration
