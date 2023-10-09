@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_service - Put condition to add `private_config_encryption` in default services
