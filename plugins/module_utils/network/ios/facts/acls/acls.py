@@ -38,16 +38,21 @@ class AclsFacts(object):
         self._module = module
         self.argument_spec = AclsArgs.argument_spec
 
+    # def get_acl_data(self, connection):
+    #     # Get the access-lists from the ios router
+    #     # Get the remarks on access-lists from the ios router
+    #     # alternate command 'sh run partition access-list' but has a lot of ordering issues
+    #     # and incomplete ACLs are not viewed correctly
+    #     _acl_data = connection.get("show access-list")
+    #     _remarks_data = connection.get("show running-config | include ip(v6)* access-list|remark")
+    #     if _remarks_data:
+    #         _acl_data += "\n" + _remarks_data
+    #     return _acl_data
+
     def get_acl_data(self, connection):
-        # Get the access-lists from the ios router
-        # Get the remarks on access-lists from the ios router
-        # alternate command 'sh run partition access-list' but has a lot of ordering issues
-        # and incomplete ACLs are not viewed correctly
-        _acl_data = connection.get("show access-list")
-        _remarks_data = connection.get("show running-config | include ip(v6)* access-list|remark")
-        if _remarks_data:
-            _acl_data += "\n" + _remarks_data
-        return _acl_data
+        # Removed the show access-list
+        # Removed the show running-config | include ip(v6)* access-list|remark
+        return connection.get("sh running-config | section access-list")
 
     def sanitize_data(self, data):
         """removes matches or extra config info that is added on acl match"""

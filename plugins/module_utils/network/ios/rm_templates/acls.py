@@ -122,88 +122,29 @@ class AclsTemplate(NetworkTemplate):
         {
             "name": "acls_name",
             "getval": re.compile(
-                r"""^(?P<acl_type>Standard|Extended|Reflexive)*
-                    \s*(?P<afi>IP|IPv6)*
-                    \s*access*
-                    \s*list*
-                    \s*(?P<acl_name>.+)*
+                r"""^(?P<afi>ip|ipv6|mac)
+                    (\s(access-list))
+                    (\s(?P<acl_type>standard|extended|reflexive))?
+                    (\s(?P<acl_name>\S+))
                     $""",
                 re.VERBOSE,
             ),
-            "compval": "name",
             "setval": "name",
             "result": {
                 "acls": {
                     "{{ acl_name|d() }}": {
                         "name": "{{ acl_name }}",
                         "acl_type": "{{ acl_type.lower() if acl_type is defined }}",
-                        "afi": "{{ 'ipv4' if afi == 'IP' else 'ipv6' }}",
+                        "afi": "{{ 'ipv4' if afi == 'ip' else 'ipv6' }}",
                     },
                 },
             },
             "shared": True,
         },
         {
-            "name": "_acls_name",
+            "name": "remarks_ipv4",
             "getval": re.compile(
-                r"""^(ip|ipv6)
-                    (\s(access-list))
-                    (\s(standard|extended))
-                    (\s(?P<acl_name_r>\S+))
-                    $""",
-                re.VERBOSE,
-            ),
-            "compval": "name",
-            "setval": "ip access-list",
-            "result": {},
-            "shared": True,
-        },
-        {
-            "name": "_mac_acls_name",  # mac acls to be removed
-            "getval": re.compile(
-                r"""^(?P<acl_type>Standard|Extended|Reflexive)
-                    (\s(?P<afi>MAC))
-                    (\saccess\slist)
-                    (\s(?P<acl_name>.+))
-                    $""",
-                re.VERBOSE,
-            ),
-            "compval": "name",
-            "setval": "",
-            "result": {
-                "acls": {
-                    "{{ acl_name|d() }}": {
-                        "name": "{{ acl_name }}",
-                        "acl_type": "{{ acl_type.lower() if acl_type is defined }}",
-                        "afi": "{{ afi }}",
-                    },
-                },
-            },
-            "shared": True,
-        },
-        {
-            "name": "remarks",
-            "getval": re.compile(
-                r"""\s+remark
-                    (\s(?P<remarks>.+))?
-                    $""",
-                re.VERBOSE,
-            ),
-            "setval": "remark {{ remarks }}",
-            "result": {
-                "acls": {
-                    "{{ acl_name_r|d() }}": {
-                        "name": "{{ acl_name_r }}",
-                        "aces": [{"remarks": "{{ remarks }}"}],
-                    },
-                },
-            },
-        },
-        {
-            "name": "remarks_type_linear",
-            "getval": re.compile(
-                r"""^(access-list)
-                    (\s(?P<acl_name_linear>\S+))
+                r"""\s*((?P<sequence>\d+))
                     (\sremark\s(?P<remarks>.+))
                     $""",
                 re.VERBOSE,
@@ -211,9 +152,49 @@ class AclsTemplate(NetworkTemplate):
             "setval": "remark {{ remarks }}",
             "result": {
                 "acls": {
-                    "{{ acl_name_linear|d() }}": {
-                        "name": "{{ acl_name_linear }}",
-                        "aces": [{"remarks": "{{ remarks }}"}],
+                    "{{ acl_name|d() }}": {
+                        "name": "{{ acl_name }}",
+                        "{{ sequence }}": [
+                            "{{ remarks }}",
+                        ],
+                    },
+                },
+            },
+        },
+        {
+            "name": "remarks_ipv4_no_seq",
+            "getval": re.compile(
+                r"""\s*^remark\s(?P<remarks>.+)$""",
+                re.VERBOSE,
+            ),
+            "setval": "remark {{ remarks }}",
+            "result": {
+                "acls": {
+                    "{{ acl_name|d() }}": {
+                        "name": "{{ acl_name }}",
+                        "remarks": [
+                            "{{ remarks }}",
+                        ],
+                    },
+                },
+            },
+        },
+        {
+            "name": "remarks_ipv6",
+            "getval": re.compile(
+                r"""\s*(sequence\s(?P<sequence>\d+))
+                    (\sremark\s(?P<remarks>.+))
+                    $""",
+                re.VERBOSE,
+            ),
+            "setval": "remark {{ remarks }}",
+            "result": {
+                "acls": {
+                    "{{ acl_name|d() }}": {
+                        "name": "{{ acl_name }}",
+                        "{{ sequence }}": [
+                            "{{ remarks }}",
+                        ],
                     },
                 },
             },
@@ -222,11 +203,10 @@ class AclsTemplate(NetworkTemplate):
             "name": "aces_ipv4_standard",
             "getval": re.compile(
                 r"""\s*(?P<sequence>\d+)*
-                        \s(?P<grant>deny|permit)?
-                        (\s+(?P<address>(?!ahp|any|eigrp|esp|gre|icmp|igmp|ipv6|ipinip|ip|nos|object-group|ospf|pcp|pim|sctp|tcp|udp)\S+|\S+,))?
+                        (\s(?P<grant>deny|permit))
+                        (\s+(?P<address>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)))?
+                        (\s(?P<wildcard>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)))?
                         (\s*(?P<any>any))?
-                        (\swildcard\sbits\s(?P<wildcard>\S+))?
-                        (\shost\s(?P<host>\S+))?
                         (\s(?P<log>log))?
                     $""",
                 re.VERBOSE,
@@ -244,7 +224,6 @@ class AclsTemplate(NetworkTemplate):
                                     "address": "{{ address }}",
                                     "wildcard_bits": "{{ wildcard }}",
                                     "any": "{{ not not any }}",
-                                    "host": "{{ host }}",
                                 },
                                 "log": {"set": "{{ not not log }}"},
                             },
@@ -256,11 +235,12 @@ class AclsTemplate(NetworkTemplate):
         {
             "name": "aces",
             "getval": re.compile(
-                r"""\s*((?P<sequence>\d+))?
+                r"""(\s*(?P<sequence>\d+))?
+                        (\s*sequence\s(?P<sequence_ipv6>\d+))?
                         (\s*(?P<grant>deny|permit))
                         (\sevaluate\s(?P<evaluate>\S+))?
                         (\s(?P<protocol_num>\d+))?
-                        (\s(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipv6|ipinip|ip|nos|ospf|pcp|pim|sctp|tcp|udp))?
+                        (\s*(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipv6|ipinip|ip|nos|ospf|pcp|pim|sctp|tcp|udp))?
                         ((\s(?P<source_any>any))|
                         (\sobject-group\s(?P<source_obj_grp>\S+))|
                         (\shost\s(?P<source_host>\S+))|
@@ -294,7 +274,6 @@ class AclsTemplate(NetworkTemplate):
                         (\sttl\sgt\s(?P<ttl_gt>\d+))?
                         (\sttl\slt\s(?P<ttl_lt>\d+))?
                         (\sttl\sneg\s(?P<ttl_neg>\d+))?
-                        (\ssequence\s(?P<sequence_ipv6>\d+))?
                     """,
                 re.VERBOSE,
             ),
