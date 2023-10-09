@@ -354,6 +354,12 @@ class Bgp_address_family(ResourceModule):
                         # slow_peer to slow_peer_options
                         if neib.get("slow_peer"):  # only one slow_peer is allowed
                             neib["slow_peer_options"] = neib.pop("slow_peer")[0]
+                        # we can skip deprecating these by handling the int to str conversion here
+                        # int to float is not considered considering the size of as numbers
+                        if neib.get("remote_as"):
+                            neib["remote_as"] = str(neib.get("remote_as"))
+                        if neib.get("local_as") and neib.get("local_as", {}).get("number"):
+                            neib["local_as"]["number"] = str(neib["local_as"]["number"])
                         # make dict neighbors dict
                         tmp[neib[p_key[k]]] = neib
                     _af["neighbors"] = tmp

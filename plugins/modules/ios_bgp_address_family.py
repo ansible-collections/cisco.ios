@@ -603,7 +603,7 @@ options:
                     description:
                       - AS number used as local AS
                       - Please refer vendor documentation for valid values
-                    type: int
+                    type: str
                   dual_as:
                     description: Accept either real AS or local AS from the ebgp peer
                     type: bool
@@ -781,7 +781,7 @@ options:
                 description:
                   - Specify a BGP neighbor
                   - AS of remote neighbor
-                type: int
+                type: str
               remove_private_as:
                 description: Remove private AS number from outbound updates
                 type: dict
