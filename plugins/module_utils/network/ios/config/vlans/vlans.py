@@ -308,8 +308,8 @@ class Vlans(ConfigBase):
 
         # Get the diff b/w want n have
 
-        want_dict = dict_to_set(want)
-        have_dict = dict_to_set(have)
+        want_dict = dict_to_set(want, sort_dictionary=True)
+        have_dict = dict_to_set(have, sort_dictionary=True)
         diff = want_dict - have_dict
         have_diff = have_dict - want_dict
 
