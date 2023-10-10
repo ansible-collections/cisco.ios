@@ -72,6 +72,7 @@ class TestIosVlansModule(TestIosModule):
         )
         self.execute_show_command_2 = self.mock_execute_show_command_2.start()
 
+
     def tearDown(self):
         super(TestIosVlansModule, self).tearDown()
         self.mock_get_resource_connection_config.stop()
@@ -681,8 +682,8 @@ class TestIosVlansModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
-            "vlan configuration 101",
-            "member evpn-instance 101 vni 10101",
+            "vlan configuration 101", 
+            "member evpn-instance 101 vni 10101"
         ]
         self.assertEqual(result["commands"], commands)
 
@@ -822,6 +823,7 @@ class TestIosVlansModule(TestIosModule):
                         ),
                     ),
                 ],
+                configuration=True,
                 state="rendered",
             ),
         )
