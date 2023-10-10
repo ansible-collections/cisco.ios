@@ -687,6 +687,7 @@ class TestIosVlansModule(TestIosModule):
         self.assertEqual(result["commands"], commands)
 
     def test_ios_vlans_config_merged_idempotent(self):
+        self.execute_show_command_2 = self.mock_execute_show_command_2.start()
         self.execute_show_command_2.return_value = dedent(
             """\
             vlan configuration 101
