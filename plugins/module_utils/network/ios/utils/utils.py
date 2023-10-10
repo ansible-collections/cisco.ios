@@ -107,9 +107,10 @@ def new_dict_to_set(input_dict, temp_list, test_set, count=0):
                         test_set.add(tuple(iteritems(temp_dict)))
     return test_dict
 
+
 def dict_to_set(sample_dict, sort_dictionary=False):
     if sort_dictionary:
-       sample_dict = sort_dict(sample_dict)
+        sample_dict = sort_dict(sample_dict)
     # Generate a set with passed dictionary for comparison
     test_dict = dict()
     if isinstance(sample_dict, dict):
@@ -423,6 +424,7 @@ def vlan_range_to_list(vlans):
                 result.append(a)
         return numerical_sort(result)
     return result
+
 
 def sort_dict(dictionary):
     sorted_dict = dict()
