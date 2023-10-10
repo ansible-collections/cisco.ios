@@ -50,16 +50,6 @@ class TestIosVlansModule(TestIosModule):
         )
         self.edit_config = self.mock_edit_config.start()
 
-        self.mock_execute_show_command = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.vlans."
-            "VlansFacts.get_vlans_data",
-        )
-        self.execute_show_command = self.mock_execute_show_command.start()
-        self.mock_l2_device_command = patch(
-            "ansible_collections.cisco.ios.plugins.modules.ios_vlans._is_l2_device",
-        )
-        self._l2_device_command = self.mock_l2_device_command.start()
-
         self.mock_get_resource_connection_facts_2 = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
@@ -71,6 +61,16 @@ class TestIosVlansModule(TestIosModule):
             "VlansFacts.get_vlans_data",
         )
         self.execute_show_command_2 = self.mock_execute_show_command_2.start()
+
+        self.mock_execute_show_command = patch(
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.vlans."
+            "VlansFacts.get_vlans_data",
+        )
+        self.execute_show_command = self.mock_execute_show_command.start()
+        self.mock_l2_device_command = patch(
+            "ansible_collections.cisco.ios.plugins.modules.ios_vlans._is_l2_device",
+        )
+        self._l2_device_command = self.mock_l2_device_command.start()
 
     def tearDown(self):
         super(TestIosVlansModule, self).tearDown()
@@ -681,8 +681,8 @@ class TestIosVlansModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
-            "vlan configuration 101",
-            "member evpn-instance 101 vni 10101",
+            "vlan configuration 101", 
+            "member evpn-instance 101 vni 10101"
         ]
         self.assertEqual(result["commands"], commands)
 
@@ -831,7 +831,7 @@ class TestIosVlansModule(TestIosModule):
             "member evpn-instance 101 vni 10101",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), commands)
+        self.assertEqual(result["rendered"], commands)
 
     def test_vlans_config_parsed(self):
         set_module_args(
