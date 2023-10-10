@@ -144,7 +144,8 @@ class AclsTemplate(NetworkTemplate):
         {
             "name": "remarks_ipv4",
             "getval": re.compile(
-                r"""\s*((?P<sequence>\d+))
+                r"""((?P<order>^\d+))
+                    (\s*(?P<sequence>\d+))
                     (\sremark\s(?P<remarks>.+))
                     $""",
                 re.VERBOSE,
@@ -154,17 +155,31 @@ class AclsTemplate(NetworkTemplate):
                 "acls": {
                     "{{ acl_name|d() }}": {
                         "name": "{{ acl_name }}",
-                        "{{ sequence }}": [
-                            "{{ remarks }}",
+                        "aces": [
+                            {
+                                "the_remark": "{{ remarks }}",
+                                "order": "{{ order }}",
+                                "is_remark_for": "{{ sequence }}",
+                            },
                         ],
                     },
                 },
             },
+            # "resultx": {
+            #     "acls": {
+            #         "{{ acl_name|d() }}": {
+            #             "name": "{{ acl_name }}",
+            #             "{{ sequence }}": [
+            #                 {"{{ order }}": "{{ remarks }}"},
+            #             ],
+            #         },
+            #     },
+            # },
         },
         {
             "name": "remarks_ipv4_no_seq",
             "getval": re.compile(
-                r"""\s*^remark\s(?P<remarks>.+)$""",
+                r"""(?P<order>^\d+)\s*remark\s(?P<remarks>.+)$""",
                 re.VERBOSE,
             ),
             "setval": "remark {{ remarks }}",
@@ -172,13 +187,28 @@ class AclsTemplate(NetworkTemplate):
                 "acls": {
                     "{{ acl_name|d() }}": {
                         "name": "{{ acl_name }}",
-                        "remarks": [
-                            "{{ remarks }}",
+                        "aces": [
+                            {
+                                "the_remark": "{{ remarks }}",
+                                "order": "{{ order }}",
+                                "is_remark_for": "remark",
+                            },
                         ],
                     },
                 },
             },
         },
+        #     "result": {
+        #         "acls": {
+        #             "{{ acl_name|d() }}": {
+        #                 "name": "{{ acl_name }}",
+        #                 "remarks": [
+        #                     {"{{ order }}": "{{ remarks }}"},
+        #                 ],
+        #             },
+        #         },
+        #     },
+        # },
         {
             "name": "remarks_ipv6",
             "getval": re.compile(
@@ -192,8 +222,8 @@ class AclsTemplate(NetworkTemplate):
                 "acls": {
                     "{{ acl_name|d() }}": {
                         "name": "{{ acl_name }}",
-                        "{{ sequence }}": [
-                            "{{ remarks }}",
+                        "aces": [
+                            {"sequence": "{{ sequence }}", "remarks": ["{{ remarks }}"]},
                         ],
                     },
                 },
@@ -202,7 +232,7 @@ class AclsTemplate(NetworkTemplate):
         {
             "name": "aces_ipv4_standard",
             "getval": re.compile(
-                r"""\s*(?P<sequence>\d+)*
+                r"""(\s*(?P<sequence>\d+))
                         (\s(?P<grant>deny|permit))
                         (\s+(?P<address>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)))?
                         (\s(?P<wildcard>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)))?

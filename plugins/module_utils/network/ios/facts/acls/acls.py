@@ -18,6 +18,7 @@ __metaclass__ = type
 import re
 
 from ansible.module_utils.six import iteritems
+from ansible.module_utils._text import to_text
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
@@ -57,10 +58,16 @@ class AclsFacts(object):
     def sanitize_data(self, data):
         """removes matches or extra config info that is added on acl match"""
         re_data = ""
+        remarks_idx = 0
         for da in data.split("\n"):
             if "match" in da:
                 mod_da = re.sub(r"\([^()]*\)", "", da)
                 re_data += mod_da[:-1] + "\n"
+            elif re.match(r"\s*\d+\sremark.+", da, re.IGNORECASE) or re.match(
+                r"\s*remark.+", da, re.IGNORECASE
+            ):
+                remarks_idx += 1
+                re_data += to_text(remarks_idx) + " " + da + "\n"
             else:
                 re_data += da + "\n"
         return re_data
@@ -136,14 +143,25 @@ class AclsFacts(object):
             def collect_remarks(aces):
                 """makes remarks list per ace"""
                 ace_entry = []
-                rem = []
+                ace_rem = []
+                rem = {}
                 for i in aces:
-                    if i.get("remarks"):
-                        rem.append(i.pop("remarks"))
+                    if i.get("is_remark_for"):
+                        if not rem.get(i.get("is_remark_for")):
+                            rem[i.get("is_remark_for")] = {"remarks": []}
+                            rem[i.get("is_remark_for")]["remarks"].append(i.get("the_remark"))
+                        else:
+                            rem[i.get("is_remark_for")]["remarks"].append(i.get("the_remark"))
                     else:
+                        if rem:
+                            if rem.get(i.get("sequence")):
+                                ace_rem = rem.pop(i.get("sequence"))
+                                i["remarks"] = ace_rem.get("remarks")
                         ace_entry.append(i)
-                if rem:
-                    ace_entry.append({"remarks": rem})
+
+                if rem:  # pending remarks
+                    pending_rem = rem.get("remark")
+                    ace_entry.append({"remarks": pending_rem.get("remarks")})
                 return ace_entry
 
             for each in temp_v4:
@@ -153,7 +171,7 @@ class AclsFacts(object):
 
             for each in temp_v6:
                 if each.get("aces"):
-                    each["aces"] = collect_remarks(each.get("aces"))
+                    # each["aces"] = collect_remarks(each.get("aces"))
                     process_protocol_options(each)
 
         objs = []
