@@ -17,8 +17,8 @@ __metaclass__ = type
 
 import re
 
-from ansible.module_utils.six import iteritems
 from ansible.module_utils._text import to_text
+from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
@@ -64,7 +64,9 @@ class AclsFacts(object):
                 mod_da = re.sub(r"\([^()]*\)", "", da)
                 re_data += mod_da[:-1] + "\n"
             elif re.match(r"\s*\d+\sremark.+", da, re.IGNORECASE) or re.match(
-                r"\s*remark.+", da, re.IGNORECASE
+                r"\s*remark.+",
+                da,
+                re.IGNORECASE,
             ):
                 remarks_idx += 1
                 re_data += to_text(remarks_idx) + " " + da + "\n"
