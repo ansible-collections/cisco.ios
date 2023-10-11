@@ -720,7 +720,6 @@ class TestIosVlansModule(TestIosModule):
             ),
         )
         self.execute_module(changed=False, commands=[], sort=True)
-        self.mock_execute_show_command_2.stop()
 
     def test_ios_vlans_config_overridden(self):
         self.execute_show_command_2 = self.mock_execute_show_command_2.start()
@@ -778,7 +777,6 @@ class TestIosVlansModule(TestIosModule):
             "no vlan configuration 902",
         ]
         self.assertEqual(result["commands"], commands)
-        self.mock_execute_show_command_2.stop()
 
     def test_ios_delete_vlans_config(self):
         self.execute_show_command_2 = self.mock_execute_show_command_2.start()
@@ -810,7 +808,6 @@ class TestIosVlansModule(TestIosModule):
         result = self.execute_module(changed=True)
         commands = ["no vlan configuration 101"]
         self.assertEqual(result["commands"], commands)
-        self.mock_execute_show_command_2.stop()
 
     def test_vlans_config_rendered(self):
         self.execute_show_command_2.return_value = dedent(
