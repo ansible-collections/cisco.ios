@@ -81,7 +81,7 @@
       ansible.builtin.assert:
         that:
           - "{{ overridden_vlan_config['after'] | symmetric_difference(result['after']) | length == 0 }}"
-          
+
     - name: Override device configuration of all interfaces with provided configuration (idempotent)
       register: result
       cisco.ios.ios_vlans: *id002
