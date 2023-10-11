@@ -811,7 +811,7 @@ class TestIosVlansModule(TestIosModule):
         commands = ["no vlan configuration 101"]
         self.assertEqual(result["commands"], commands)
         self.mock_execute_show_command_2.stop()
-        
+
     def test_vlans_config_rendered(self):
         self.execute_show_command_2.return_value = dedent(
             """\
