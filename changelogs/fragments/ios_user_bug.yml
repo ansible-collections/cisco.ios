@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "ios_user - Fix password command not being generated when both sshkey and configured_password attribute are defined."

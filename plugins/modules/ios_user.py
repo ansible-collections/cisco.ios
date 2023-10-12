@@ -394,7 +394,7 @@ def map_obj_to_commands(updates, module):
         if needs_update(want, have, "sshkey"):
             add_ssh(commands, want, want["sshkey"])
         if needs_update(want, have, "configured_password"):
-            if update_password == "always" or not have["configured_password"]:
+            if update_password == "always" or not have:
                 if have and have["password_type"] and password_type != have["password_type"]:
                     module.fail_json(
                         msg="Can not have both a user password and a user secret."
