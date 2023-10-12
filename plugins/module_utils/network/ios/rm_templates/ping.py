@@ -49,7 +49,8 @@ class PingTemplate(NetworkTemplate):
             "{{ (' timeout ' + timeout|string) if timeout is defined else '' }}"
             "{{ (' ingress ' + ingress) if ingress is defined else '' }}"
             "{{ (' egress ' + egress) if egress is defined else '' }}"
-            "{{ (' source ' + source) if source is defined else '' }}",
+            "{{ (' source ' + source) if source is defined else '' }}"
+            "{{ (' size ' + size|string) if size is defined else '' }}",
             'result': {
                 "ping": {
                     'loss_percentage': '{{ 100 - pct|int }}%',
