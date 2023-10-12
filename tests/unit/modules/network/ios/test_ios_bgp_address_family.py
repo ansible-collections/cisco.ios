@@ -118,7 +118,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             neighbors=[
                                 dict(
                                     neighbor_address="198.51.100.1",
-                                    remote_as=65100,
+                                    remote_as="65.11",
                                     route_maps=[dict(name="test-route-out", out="true")],
                                     prefix_lists=[dict(name="AS65100-PREFIX-OUT", out="true")],
                                 ),
@@ -144,7 +144,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "bgp aggregate-timer 20",
             "bgp dmzlink-bw",
             "bgp scan-time 10",
-            "neighbor 198.51.100.1 remote-as 65100",
+            "neighbor 198.51.100.1 remote-as 65.11",
             "neighbor 198.51.100.1 route-map test-route-out out",
             "network 192.0.1.1 route-map test_route",
             "default-metric 10",
@@ -228,7 +228,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               network 198.51.110.10 mask 255.255.255.255 backdoor
               aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
               neighbor 198.51.100.1 remote-as 10
-              neighbor 198.51.100.1 local-as 20
+              neighbor 198.51.100.1 local-as 10.64760
               neighbor 198.51.100.1 activate
               neighbor 198.51.100.1 next-hop-self all
               neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
@@ -321,7 +321,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                             },
                                         },
                                     },
-                                    "local_as": {"number": 20, "set": True},
+                                    "local_as": {"number": "10.64760", "set": True},
                                     "neighbor_address": "198.51.100.1",
                                     "nexthop_self": {"all": True},
                                     "prefix_lists": [{"name": "AS65100-PREFIX-OUT", "out": True}],
@@ -1163,8 +1163,8 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                     ],
                     "neighbors": [
                         {
-                            "remote_as": 10,
-                            "local_as": {"set": True, "number": 20},
+                            "remote_as": "10",
+                            "local_as": {"set": True, "number": "20"},
                             "activate": True,
                             "neighbor_address": "198.51.100.1",
                             "nexthop_self": {"all": True},
