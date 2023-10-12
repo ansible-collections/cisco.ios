@@ -214,21 +214,6 @@ Parameters
                         <div>The VRF to use for forwarding.</div>
                 </td>
             </tr>
-            <tr>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>size</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>specify size of packet.</div>
-                </td>
-            </tr>
     </table>
     <br/>
 
