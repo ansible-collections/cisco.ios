@@ -75,6 +75,10 @@ options:
     description:
       - The VRF to use for forwarding.
     type: str
+  size:
+    description:
+      - The size of packet.
+    type: int
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - For a general purpose network module, see the L(net_ping,https://docs.ansible.com/ansible/latest/collections/ansible/netcommon/net_ping_module.html)
