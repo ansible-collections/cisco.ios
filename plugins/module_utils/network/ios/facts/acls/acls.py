@@ -55,6 +55,16 @@ class AclsFacts(object):
         # Removed the show running-config | include ip(v6)* access-list|remark
         return connection.get("sh running-config | section access-list")
 
+    def get_acl_names(self, connection):
+        # this information is required to scoop out the access lists which has no aces
+        return connection.get("sh access-lists | include access list")
+
+    def populate_empty_acls(self, raw_acls, raw_acls_name):
+        for aclnames, acldata in raw_acls_name.get("acls").items():
+            if aclnames not in raw_acls.get("acls").keys():
+                raw_acls["acls"][aclnames] = acldata
+        return raw_acls
+
     def sanitize_data(self, data):
         """removes matches or extra config info that is added on acl match"""
         re_data = ""
@@ -82,21 +92,31 @@ class AclsFacts(object):
         :rtype: dictionary
         :returns: facts
         """
+        namedata = ""
 
         if not data:
             data = self.get_acl_data(connection)
+            namedata = self.get_acl_names(connection)
 
         if data:
             data = self.sanitize_data(data)
 
-        rmmod = NetworkTemplate(lines=data.splitlines(), tmplt=AclsTemplate())
-        current = rmmod.parse()
+        # parse main information
+        templateObjMain = NetworkTemplate(lines=data.splitlines(), tmplt=AclsTemplate())
+        raw_acls = templateObjMain.parse()
+
+        if namedata:
+            # parse main information
+            templateObjName = NetworkTemplate(lines=namedata.splitlines(), tmplt=AclsTemplate())
+            raw_acl_names = templateObjName.parse()
+
+        raw_acls = self.populate_empty_acls(raw_acls, raw_acl_names)
 
         temp_v4 = []
         temp_v6 = []
 
-        if current.get("acls"):
-            for k, v in iteritems(current.get("acls")):
+        if raw_acls.get("acls"):
+            for k, v in iteritems(raw_acls.get("acls")):
                 if v.get("afi") == "ipv4" and v.get("acl_type") in ["standard", "extended"]:
                     del v["afi"]
                     temp_v4.append(v)
@@ -113,6 +133,14 @@ class AclsFacts(object):
                     _temp_addr = temp.get("address", "")
                     ace[typ]["address"] = _temp_addr.split(" ")[0]
                     ace[typ]["wildcard_bits"] = _temp_addr.split(" ")[1]
+                if temp.get("ipv6_address"):
+                    _temp_addr = temp.get("ipv6_address", "")
+                    if len(_temp_addr.split(" ")) == 2:
+                        ipv6_add = ace[typ].pop("ipv6_address")
+                        ace[typ]["address"] = ipv6_add.split(" ")[0]
+                        ace[typ]["wildcard_bits"] = ipv6_add.split(" ")[1]
+                    else:
+                        ace[typ]["address"] = ace[typ].pop("ipv6_address")
 
             def process_protocol_options(each):
                 for each_ace in each.get("aces"):

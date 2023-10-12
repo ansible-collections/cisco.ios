@@ -120,6 +120,28 @@ class AclsTemplate(NetworkTemplate):
 
     PARSERS = [
         {
+            "name": "only_acls_name",
+            "getval": re.compile(
+                r"""^(?P<acl_type>Standard|Extended|Reflexive)*
+                    \s*(?P<afi>IP|IPv6)*
+                    \s*access*
+                    \s*list*
+                    \s*(?P<acl_name>.+)*
+                    $""",
+                re.VERBOSE,
+            ),
+            "setval": "",
+            "result": {
+                "acls": {
+                    "{{ acl_name|d() }}": {
+                        "name": "{{ acl_name }}",
+                        "acl_type": "{{ acl_type.lower() if acl_type is defined }}",
+                        "afi": "{{ 'ipv4' if afi == 'IP' else 'ipv6' }}",
+                    },
+                },
+            },
+        },
+        {
             "name": "acls_name",
             "getval": re.compile(
                 r"""^(?P<afi>ip|ipv6|mac)
@@ -142,7 +164,7 @@ class AclsTemplate(NetworkTemplate):
             "shared": True,
         },
         {
-            "name": "remarks_ipv4",
+            "name": "remarks",
             "getval": re.compile(
                 r"""((?P<order>^\d+))
                     (\s*(?P<sequence>\d+))
@@ -165,16 +187,6 @@ class AclsTemplate(NetworkTemplate):
                     },
                 },
             },
-            # "resultx": {
-            #     "acls": {
-            #         "{{ acl_name|d() }}": {
-            #             "name": "{{ acl_name }}",
-            #             "{{ sequence }}": [
-            #                 {"{{ order }}": "{{ remarks }}"},
-            #             ],
-            #         },
-            #     },
-            # },
         },
         {
             "name": "remarks_ipv4_no_seq",
@@ -198,17 +210,6 @@ class AclsTemplate(NetworkTemplate):
                 },
             },
         },
-        #     "result": {
-        #         "acls": {
-        #             "{{ acl_name|d() }}": {
-        #                 "name": "{{ acl_name }}",
-        #                 "remarks": [
-        #                     {"{{ order }}": "{{ remarks }}"},
-        #                 ],
-        #             },
-        #         },
-        #     },
-        # },
         {
             "name": "remarks_ipv6",
             "getval": re.compile(
@@ -270,10 +271,11 @@ class AclsTemplate(NetworkTemplate):
                         (\s*(?P<grant>deny|permit))
                         (\sevaluate\s(?P<evaluate>\S+))?
                         (\s(?P<protocol_num>\d+))?
-                        (\s*(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipv6|ipinip|ip|nos|ospf|pcp|pim|sctp|tcp|udp))?
+                        (\s*(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipinip|ipv6|ip|nos|ospf|pcp|pim|sctp|tcp|ip|udp))?
                         ((\s(?P<source_any>any))|
                         (\sobject-group\s(?P<source_obj_grp>\S+))|
                         (\shost\s(?P<source_host>\S+))|
+                        (\s(?P<ipv6_source_address>\S+/\d+))|
                         (\s(?P<source_address>(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})\s\S+)))?
                         (\seq\s(?P<seq>(\S+|\d+)))?
                         (\sgt\s(?P<sgt>(\S+|\d+)))?
@@ -283,6 +285,7 @@ class AclsTemplate(NetworkTemplate):
                         (\s(?P<dest_any>any))?
                         (\sobject-group\s(?P<dest_obj_grp>\S+))?
                         (\shost\s(?P<dest_host>\S+))?
+                        (\s(?P<ipv6_dest_address>\S+/\d+))?
                         (\s(?P<dest_address>(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})\s\S+))?
                         (\seq\s(?P<deq>(\S+|\d+)))?
                         (\sgt\s(?P<dgt>(\S+|\d+)))?
@@ -324,6 +327,7 @@ class AclsTemplate(NetworkTemplate):
                                 "icmp_igmp_tcp_protocol": "{{ icmp_igmp_tcp_protocol }}",
                                 "source": {
                                     "address": "{{ source_address }}",
+                                    "ipv6_address": "{{ ipv6_source_address }}",
                                     "any": "{{ not not source_any }}",
                                     "host": "{{ source_host }}",
                                     "object_group": "{{ source_obj_grp }}",
@@ -340,6 +344,7 @@ class AclsTemplate(NetworkTemplate):
                                 },
                                 "destination": {
                                     "address": "{{ dest_address }}",
+                                    "ipv6_address": "{{ ipv6_dest_address }}",
                                     "any": "{{ not not dest_any }}",
                                     "host": "{{ dest_host }}",
                                     "object_group": "{{ dest_obj_grp }}",
