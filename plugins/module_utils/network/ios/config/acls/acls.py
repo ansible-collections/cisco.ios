@@ -278,7 +278,7 @@ class Acls(ResourceModule):
                                             )
 
                                 if ace.get(
-                                    "remarks"
+                                    "remarks",
                                 ):  # index aces inside of each ace don't cluster them all
                                     rem_ace = {}
                                     # en_name = str(acl.get("name")) + "remark"
