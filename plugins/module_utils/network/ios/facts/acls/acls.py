@@ -39,17 +39,6 @@ class AclsFacts(object):
         self._module = module
         self.argument_spec = AclsArgs.argument_spec
 
-    # def get_acl_data(self, connection):
-    #     # Get the access-lists from the ios router
-    #     # Get the remarks on access-lists from the ios router
-    #     # alternate command 'sh run partition access-list' but has a lot of ordering issues
-    #     # and incomplete ACLs are not viewed correctly
-    #     _acl_data = connection.get("show access-list")
-    #     _remarks_data = connection.get("show running-config | include ip(v6)* access-list|remark")
-    #     if _remarks_data:
-    #         _acl_data += "\n" + _remarks_data
-    #     return _acl_data
-
     def get_acl_data(self, connection):
         # Removed the show access-list
         # Removed the show running-config | include ip(v6)* access-list|remark
@@ -60,8 +49,11 @@ class AclsFacts(object):
         return connection.get("sh access-lists | include access list")
 
     def populate_empty_acls(self, raw_acls, raw_acls_name):
+        # this would update empty acls to the full acls entry
         for aclnames, acldata in raw_acls_name.get("acls").items():
             if aclnames not in raw_acls.get("acls").keys():
+                if not raw_acls.get("acls"):
+                    raw_acls["acls"] = {}
                 raw_acls["acls"][aclnames] = acldata
         return raw_acls
 
@@ -106,11 +98,10 @@ class AclsFacts(object):
         raw_acls = templateObjMain.parse()
 
         if namedata:
-            # parse main information
+            # parse just names to update empty acls
             templateObjName = NetworkTemplate(lines=namedata.splitlines(), tmplt=AclsTemplate())
             raw_acl_names = templateObjName.parse()
-
-        raw_acls = self.populate_empty_acls(raw_acls, raw_acl_names)
+            raw_acls = self.populate_empty_acls(raw_acls, raw_acl_names)
 
         temp_v4 = []
         temp_v6 = []

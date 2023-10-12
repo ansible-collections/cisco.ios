@@ -151,11 +151,7 @@ class Acls(ResourceModule):
 
         def pop_remark(r_entry, afi):
             """Takes out remarks from ace entry as remarks not same
-                does not mean the ace entry to be re-introduced
-
-            Args:
-                r_entry (_type_): ace entry full
-                afi (_type_): ipv4 or ipv6
+            does not mean the ace entry to be re-introduced
             """
             if r_entry.get("remarks"):
                 return r_entry.pop("remarks")
