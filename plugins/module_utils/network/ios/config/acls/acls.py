@@ -165,8 +165,11 @@ class Acls(ResourceModule):
                 # rem_hentry = hentry.get("remarks")
 
             if hentry != wentry:  # will let in if ace is same but remarks is not same
-                rem_hentry["remarks"] = pop_remark(hentry, afi)
-                rem_wentry["remarks"] = pop_remark(wentry, afi)
+                if hentry:
+                    rem_hentry["remarks"] = pop_remark(hentry, afi)
+                if wentry:
+                    rem_wentry["remarks"] = pop_remark(wentry, afi)
+
                 if hentry:
                     if self.state == "merged":
                         self._module.fail_json(
