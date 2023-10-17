@@ -463,7 +463,14 @@ options:
                     type: bool
                 type: dict
               remarks:
-                description: The remarks/description of the ACL.
+                description:
+                  - The remarks/description of the ACL.
+                  - The remarks attribute used within an ace with or without a
+                    sequence number will produce remarks that are pushed
+                    before the ace entry.
+                  - Remarks entry used as the only key in as the list option
+                    will produce non ace specific remarks, these remarks would be
+                    pushed at the end of all the aces for an acl.
                 elements: str
                 type: list
               sequence:
@@ -633,8 +640,9 @@ options:
         and transforms it into JSON format as per the resource module parameters
         and the value is returned in the I(parsed) key within the result. The
         value of C(running_config) option should be the same format as the output
-        of commands I(show access-list) and
-        I(show running-config | include ip(v6)* access-list|remark) executed on
+        of commands I(sh running-config | section access-list) for all acls related information
+        and I(sh access-lists | include access list) to obtain configuration specific of
+        an empty acls, the following commands are executed on
         device. Config data from both the commands should be kept together one after
         another for the parsers to pick the commands correctly.
         For state I(parsed) active connection to remote host is not required.
