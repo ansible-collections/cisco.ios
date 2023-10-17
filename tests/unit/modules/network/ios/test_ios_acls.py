@@ -784,9 +784,9 @@ class TestIosAclsModule(TestIosModule):
                                 "protocol_options": {"protocol_number": 134},
                             },
                         ],
-                    }
+                    },
                 ],
-            }
+            },
         ]
         self.assertEqual(parsed_list, result["parsed"])
 

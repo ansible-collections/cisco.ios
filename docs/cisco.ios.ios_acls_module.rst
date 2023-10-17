@@ -3910,8 +3910,8 @@ Examples
     # Before state:
     # -------------
     #
-    # vios#show access-lists
-    # Extended IP access list 110
+    # vios#sh running-config | section access-list
+    # ip access-list extended 110
     #    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
 
     - name: Merge provided configuration with device configuration
@@ -4203,22 +4203,22 @@ Examples
     # After state:
     # ------------
     #
-    # vios#show access-lists
-    # Standard IP access list std_acl
+    # vios#sh running-config | section access-list
+    # ip access-list standard std_acl
     #    10 deny   192.168.1.200
-    #    20 deny   192.168.2.0, wildcard bits 0.0.0.255
-    # Extended IP access list 100
+    #    20 deny   192.168.2.0 0.0.0.255
+    # ip access-list extended 100
     #    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
-    # Extended IP access list 110
+    # ip access-list extended 110
     #    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
     #    20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
-    # Extended IP access list 123
+    # ip access-list extended 123
     #    10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     #    20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
-    # Extended IP access list test
+    # ip access-list extended test
     #    10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
-    # IPv6 access list R1_TRAFFIC
-    #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+    # ipv6 access-list R1_TRAFFIC
+    #    sequence 10 deny tcp any eq www any eq telnet ack dscp af11
 
     # vios#show running-config | include ip(v6)* access-list|remark
     # ip access-list standard std_acl
@@ -4234,8 +4234,8 @@ Examples
     # Before state:
     # -------------
     #
-    # vios#show access-lists
-    # Extended IP access list 100
+    # vios#sh running-config | section access-list
+    # ip access-list extended 100
     #    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
 
     - name: Merge provided configuration with device configuration
@@ -4263,19 +4263,19 @@ Examples
     # Before state:
     # -------------
     #
-    # vios#show access-lists
-    # Standard IP access list std_acl
+    # vios#sh running-config | section access-list
+    # ip access-list standard std_acl
     #     10 deny   192.168.1.200
-    #     20 deny   192.168.2.0, wildcard bits 0.0.0.255
-    # Extended IP access list 110
+    #     20 deny   192.168.2.0 0.0.0.255
+    # ip access-list extended 110
     #     10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
     #     20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
-    # Extended IP access list 123
+    # ip access-list extended 123
     #     10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     #     20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
-    # Extended IP access list R1_TRAFFIC
+    # ip access-list extended R1_TRAFFIC
     #     10 deny tcp any eq www any eq telnet ack dscp af11
-    # Extended IP access list test
+    # ip access-list extended test
     #     10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
 
     - name: Replaces device configuration of listed acls with provided configuration
@@ -4591,20 +4591,20 @@ Examples
     # -------------
     #
     # vios#sh access-lists
-    # Standard IP access list std_acl
+    # ip access-list standard std_acl
     #    10 deny   192.168.1.200
-    #    20 deny   192.168.2.0, wildcard bits 0.0.0.255
-    # Extended IP access list 110
+    #    20 deny   192.168.2.0 0.0.0.255
+    # ip access-list extended 110
     #    10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www syn dscp ef ttl eq 10
-    # Extended IP access list 123
+    # ip access-list extended 123
     #    10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     #    20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
-    # Extended IP access list 150
+    # ip access-list extended 150
     #    20 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10
-    # Extended IP access list test
+    # ip access-list extended test
     #    10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
-    # IPv6 access list R1_TRAFFIC
-    #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+    # ipv6 access-list R1_TRAFFIC
+    #    sequence 10 deny tcp any eq www any eq telnet ack dscp af11
 
     # Using overridden
 
@@ -4612,18 +4612,18 @@ Examples
     # -------------
     #
     # vios#sh access-lists
-    # Standard IP access list std_acl
+    # ip access-list standard std_acl
     #     10 deny   192.168.1.200
-    #     20 deny   192.168.2.0, wildcard bits 0.0.0.255
-    # Extended IP access list 110
+    #     20 deny   192.168.2.0 0.0.0.255
+    # ip access-list extended 110
     #     10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
     #     20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
-    # Extended IP access list 123
+    # ip access-list extended 123
     #     10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     #     20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
-    # Extended IP access list R1_TRAFFIC
+    # ip access-list extended R1_TRAFFIC
     #     10 deny tcp any eq www any eq telnet ack dscp af11
-    # Extended IP access list test
+    # ip access-list extended test
     #     10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
 
     - name: Override device configuration of all acls with provided configuration
@@ -4860,10 +4860,10 @@ Examples
     # After state:
     # -------------
     #
-    # vios#show access-lists
-    # Extended IP access list 110
+    # vios#sh running-config | section access-list
+    # ip access-list extended 110
     #     20 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq www ack dscp ef ttl eq 10
-    # Extended IP access list 150
+    # ip access-list extended 150
     #     10 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10
 
 
@@ -4873,16 +4873,16 @@ Examples
     # -------------
     #
     # vios#sh access-lists
-    # Standard IP access list std_acl
+    # ip access-list standard std_acl
     #     10 deny   192.168.1.200
-    #     20 deny   192.168.2.0, wildcard bits 0.0.0.255
-    # Extended IP access list 110
+    #     20 deny   192.168.2.0 0.0.0.255
+    # ip access-list extended 110
     #     10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
     #     20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
-    # Extended IP access list 123
+    # ip access-list extended 123
     #     10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     #     20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
-    # Extended IP access list extended_acl_1
+    # ip access-list extended extended_acl_1
     #     10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
 
     - name: "Delete ACLs (Note: This won't delete the all configured ACLs)"
@@ -5060,11 +5060,11 @@ Examples
     # After state:
     # -------------
     #
-    # vios#show access-lists
-    # Standard IP access list std_acl
+    # vios#sh running-config | section access-list
+    # ip access-list standard std_acl
     #    10 deny   192.168.1.200
-    #    20 deny   192.168.2.0, wildcard bits 0.0.0.255
-    # Extended IP access list 123
+    #    20 deny   192.168.2.0 0.0.0.255
+    # ip access-list extended 123
     #    10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     #    20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
 
@@ -5073,20 +5073,20 @@ Examples
     # Before state:
     # -------------
     #
-    # vios#show access-lists
-    # Standard IP access list std_acl
+    # vios#sh running-config | section access-list
+    # ip access-list standard std_acl
     #     10 deny   192.168.1.200
-    #     20 deny   192.168.2.0, wildcard bits 0.0.0.255
-    # Extended IP access list 110
+    #     20 deny   192.168.2.0 0.0.0.255
+    # ip access-list extended 110
     #     10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
     #     20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
-    # Extended IP access list 123
+    # ip access-list extended 123
     #     10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     #     20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
-    # Extended IP access list test
+    # ip access-list extended test
     #     10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
-    # IPv6 access list R1_TRAFFIC
-    #     deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+    # ipv6 access-list R1_TRAFFIC
+    #     sequence 10 deny tcp any eq www any eq telnet ack dscp af11
 
     - name: "Delete ACLs based on AFI (Note: This won't delete the all configured ACLs)"
       cisco.ios.ios_acls:
@@ -5249,9 +5249,9 @@ Examples
     # After state:
     # -------------
     #
-    # vios#show access-lists
-    # IPv6 access list R1_TRAFFIC
-    #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+    # vios#sh running-config | section access-list
+    # ipv6 access-list R1_TRAFFIC
+    #    sequence 10 deny tcp any eq www any eq telnet ack dscp af11
 
 
     # Using deleted - delete all ACLs
@@ -5260,19 +5260,19 @@ Examples
     # -------------
     #
     # vios#sh access-lists
-    # Standard IP access list std_acl
+    # ip access-list standard std_acl
     #     10 deny   192.168.1.200
-    #     20 deny   192.168.2.0, wildcard bits 0.0.0.255
-    # Extended IP access list 110
+    #     20 deny   192.168.2.0 0.0.0.255
+    # ip access-list extended 110
     #     10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
     #     20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
-    # Extended IP access list 123
+    # ip access-list extended 123
     #     10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     #     20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
-    # Extended IP access list test
+    # ip access-list extended test
     #     10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
-    # IPv6 access list R1_TRAFFIC
-    #     deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+    # ipv6 access-list R1_TRAFFIC
+    #     sequence 10 deny tcp any eq www any eq telnet ack dscp af11
 
     - name: Delete ALL of configured ACLs
       cisco.ios.ios_acls:
@@ -5415,7 +5415,7 @@ Examples
     # After state:
     # -------------
     #
-    # vios#show access-lists
+    # vios#sh running-config | section access-list
 
 
     # Using gathered
@@ -5424,19 +5424,19 @@ Examples
     # -------------
     #
     # vios#sh access-lists
-    # Standard IP access list std_acl
+    # ip access-list standard std_acl
     #    10 deny   192.168.1.200
-    #    20 deny   192.168.2.0, wildcard bits 0.0.0.255
-    # Extended IP access list 110
+    #    20 deny   192.168.2.0 0.0.0.255
+    # ip access-list extended 110
     #    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
     #    20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
-    # Extended IP access list 123
+    # ip access-list extended 123
     #    10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     #    20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
-    # Extended IP access list test
+    # ip access-list extended test
     #    10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
-    # IPv6 access list R1_TRAFFIC
-    #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+    # ipv6 access-list R1_TRAFFIC
+    #    sequence 10 deny tcp any eq www any eq telnet ack dscp af11
 
     - name: Gather ACLs configuration from target device
       cisco.ios.ios_acls:
