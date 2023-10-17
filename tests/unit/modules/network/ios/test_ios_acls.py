@@ -164,6 +164,326 @@ class TestIosAclsModule(TestIosModule):
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
+    def test_ios_acls_merged_remarks_positional(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            """,
+        )
+        self.execute_show_command_name.return_value = dedent(
+            """\
+            Standard IP access list test_acl
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "acls": [
+                            {
+                                "aces": [
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "ip",
+                                        "sequence": 10,
+                                        "source": {
+                                            "address": "10.40.150.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                    },
+                                    {
+                                        "destination": {
+                                            "address": "10.40.150.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "grant": "permit",
+                                        "protocol": "ip",
+                                        "sequence": 20,
+                                        "source": {"any": True},
+                                    },
+                                ],
+                                "acl_type": "extended",
+                                "name": "199",
+                            },
+                            {
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "sequence": 10,
+                                        "source": {
+                                            "address": "10.182.250.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                    }
+                                ],
+                                "acl_type": "standard",
+                                "name": "42",
+                            },
+                            {
+                                "aces": [
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 10,
+                                        "source": {
+                                            "address": "10.57.66.243",
+                                            "wildcard_bits": "0.0.0.7",
+                                        },
+                                    },
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 20,
+                                        "source": {"host": "10.160.114.111"},
+                                    },
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 30,
+                                        "source": {"host": "10.160.115.22"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "deny",
+                                        "log": {"set": True},
+                                        "protocol": "ip",
+                                        "sequence": 40,
+                                        "source": {"any": True},
+                                    },
+                                ],
+                                "acl_type": "extended",
+                                "name": "NET-MGMT-VTY",
+                            },
+                            {
+                                "aces": [
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "ip",
+                                        "remarks": [
+                                            "FIRST REMARK BEFORE LINE 10",
+                                            "============",
+                                            "ALLOW HOST FROM BUILDING 10",
+                                        ],
+                                        "sequence": 10,
+                                        "source": {"host": "1.1.1.1"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "ip",
+                                        "remarks": [
+                                            "FIRST REMARK BEFORE LINE 20",
+                                            "============",
+                                            "ALLOW HOST FROM BUILDING 20",
+                                        ],
+                                        "sequence": 20,
+                                        "source": {"host": "2.2.2.2"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "ip",
+                                        "remarks": [
+                                            "FIRST REMARK BEFORE LINE 30",
+                                            "============",
+                                            "ALLOW NEW HOST FROM BUILDING 10",
+                                        ],
+                                        "sequence": 30,
+                                        "source": {"host": "3.3.3.3"},
+                                    },
+                                    {
+                                        "remarks": [
+                                            "FIRST REMARK AT END OF ACL",
+                                            "SECOND REMARK AT END OF ACL",
+                                        ]
+                                    },
+                                ],
+                                "acl_type": "extended",
+                                "name": "TEST",
+                            },
+                            {
+                                "aces": [
+                                    {
+                                        "remarks": [
+                                            "empty remark 1",
+                                            "empty remark 2",
+                                            "empty remark never ends",
+                                        ]
+                                    }
+                                ],
+                                "acl_type": "extended",
+                                "name": "empty_ip_ex_acl",
+                            },
+                            {
+                                "aces": [
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "ip",
+                                        "remarks": [
+                                            "I am a test ace",
+                                            "I am right after the test ace",
+                                            "I third the test ace",
+                                        ],
+                                        "sequence": 100,
+                                        "source": {"host": "100.100.100.100"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "ip",
+                                        "remarks": [
+                                            "I am the next test ace",
+                                            "I am the next ace to the next ace",
+                                        ],
+                                        "sequence": 110,
+                                        "source": {"host": "10.40.150.0"},
+                                    },
+                                    {"remarks": ["I am the peace ace", "Peace out"]},
+                                ],
+                                "acl_type": "extended",
+                                "name": "mytest",
+                            },
+                        ],
+                        "afi": "ipv4",
+                    },
+                    {
+                        "acls": [
+                            {
+                                "aces": [
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "ipv6",
+                                        "sequence": 10,
+                                        "source": {"address": "2001:ABAD:BEEF:1221::/64"},
+                                    },
+                                    {
+                                        "destination": {
+                                            "host": "2001:ABAD:BEEF:1212::1",
+                                            "port_protocol": {"eq": "www"},
+                                        },
+                                        "grant": "deny",
+                                        "protocol": "tcp",
+                                        "sequence": 20,
+                                        "source": {"host": "2001:ABAD:BEEF:2345::1"},
+                                    },
+                                ],
+                                "name": "R1_TRAFFIC",
+                            },
+                            {
+                                "aces": [
+                                    {"remarks": ["empty remark 1"], "sequence": 10},
+                                    {"remarks": ["empty remark 2"], "sequence": 20},
+                                    {"remarks": ["empty remark never ends"], "sequence": 30},
+                                ],
+                                "name": "empty_ipv6_acl",
+                            },
+                            {
+                                "aces": [
+                                    {"remarks": ["I am a ipv6 ace"], "sequence": 10},
+                                    {"remarks": ["I am test"], "sequence": 20},
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 30,
+                                        "source": {"any": True},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "udp",
+                                        "sequence": 40,
+                                        "source": {"any": True},
+                                    },
+                                    {"remarks": ["I am new set of ipv6 ace"], "sequence": 50},
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "icmp",
+                                        "sequence": 60,
+                                        "source": {"any": True},
+                                    },
+                                ],
+                                "name": "ipv6_acl",
+                            },
+                        ],
+                        "afi": "ipv6",
+                    },
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = [
+            "ip access-list extended mytest",
+            "remark I am a test ace",
+            "remark I am right after the test ace",
+            "remark I third the test ace",
+            "100 permit ip host 100.100.100.100 any",
+            "remark I am the next test ace",
+            "remark I am the next ace to the next ace",
+            "110 permit ip host 10.40.150.0 any",
+            "remark I am the peace ace",
+            "remark Peace out",
+            "ip access-list extended 199",
+            "10 permit ip 10.40.150.0 0.0.0.255 any",
+            "20 permit ip any 10.40.150.0 0.0.0.255",
+            "ip access-list extended NET-MGMT-VTY",
+            "10 permit tcp 10.57.66.243 0.0.0.7 any eq 22",
+            "20 permit tcp host 10.160.114.111 any eq 22",
+            "30 permit tcp host 10.160.115.22 any eq 22",
+            "40 deny ip any any log",
+            "ip access-list extended empty_ip_ex_acl",
+            "remark empty remark 1",
+            "remark empty remark 2",
+            "remark empty remark never ends",
+            "ip access-list extended TEST",
+            "remark FIRST REMARK BEFORE LINE 10",
+            "remark ============",
+            "remark ALLOW HOST FROM BUILDING 10",
+            "10 permit ip host 1.1.1.1 any",
+            "remark FIRST REMARK BEFORE LINE 20",
+            "remark ============",
+            "remark ALLOW HOST FROM BUILDING 20",
+            "20 permit ip host 2.2.2.2 any",
+            "remark FIRST REMARK BEFORE LINE 30",
+            "remark ============",
+            "remark ALLOW NEW HOST FROM BUILDING 10",
+            "30 permit ip host 3.3.3.3 any",
+            "remark FIRST REMARK AT END OF ACL",
+            "remark SECOND REMARK AT END OF ACL",
+            "ip access-list standard 42",
+            "10 permit 10.182.250.0 0.0.0.255",
+            "ipv6 access-list R1_TRAFFIC",
+            "permit ipv6 2001:ABAD:BEEF:1221::/64 any sequence 10",
+            "deny tcp host 2001:ABAD:BEEF:2345::1 host 2001:ABAD:BEEF:1212::1 eq www sequence 20",
+            "ipv6 access-list empty_ipv6_acl",
+            "remark empty remark 1",
+            " sequence 10",
+            "remark empty remark 2",
+            " sequence 20",
+            "remark empty remark never ends",
+            " sequence 30",
+            "ipv6 access-list ipv6_acl",
+            "remark I am a ipv6 ace",
+            " sequence 10",
+            "remark I am test",
+            " sequence 20",
+            "permit tcp any any sequence 30",
+            "permit udp any any sequence 40",
+            "remark I am new set of ipv6 ace",
+            " sequence 50",
+            "permit icmp any any sequence 60",
+        ]
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
     def test_ios_acls_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\

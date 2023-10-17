@@ -50,8 +50,14 @@ class AclsFacts(object):
 
     def populate_empty_acls(self, raw_acls, raw_acls_name):
         # this would update empty acls to the full acls entry
-        for aclnames, acldata in raw_acls_name.get("acls").items():
-            if aclnames not in raw_acls.get("acls").keys():
+        if raw_acls and raw_acls_name:
+            for aclnames, acldata in raw_acls_name.get("acls").items():
+                if aclnames not in raw_acls.get("acls").keys():
+                    if not raw_acls.get("acls"):
+                        raw_acls["acls"] = {}
+                    raw_acls["acls"][aclnames] = acldata
+        elif raw_acls_name and not raw_acls:
+            for aclnames, acldata in raw_acls_name.get("acls").items():
                 if not raw_acls.get("acls"):
                     raw_acls["acls"] = {}
                 raw_acls["acls"][aclnames] = acldata
