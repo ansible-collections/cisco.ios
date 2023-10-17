@@ -215,7 +215,7 @@ class TestIosAclsModule(TestIosModule):
                                             "address": "10.182.250.0",
                                             "wildcard_bits": "0.0.0.255",
                                         },
-                                    }
+                                    },
                                 ],
                                 "acl_type": "standard",
                                 "name": "42",
@@ -300,7 +300,7 @@ class TestIosAclsModule(TestIosModule):
                                         "remarks": [
                                             "FIRST REMARK AT END OF ACL",
                                             "SECOND REMARK AT END OF ACL",
-                                        ]
+                                        ],
                                     },
                                 ],
                                 "acl_type": "extended",
@@ -313,8 +313,8 @@ class TestIosAclsModule(TestIosModule):
                                             "empty remark 1",
                                             "empty remark 2",
                                             "empty remark never ends",
-                                        ]
-                                    }
+                                        ],
+                                    },
                                 ],
                                 "acl_type": "extended",
                                 "name": "empty_ip_ex_acl",
