@@ -162,7 +162,6 @@ class Acls(ResourceModule):
 
             if hentry:
                 hentry = self.sanitize_protocol_options(wentry, hentry)
-                # rem_hentry = hentry.get("remarks")
 
             if hentry != wentry:  # will let in if ace is same but remarks is not same
                 if hentry:
@@ -198,7 +197,7 @@ class Acls(ResourceModule):
         # remove remaining entries from have aces list
         for hseq in have.values():
             if hseq.get("remarks"):  # remove remarks that are extra in have
-                for rems in hseq.get("remarks"):
+                for krems, rems in hseq.get("remarks").items():
                     self.addcmd({"remarks": rems}, "remarks", negate=True)
             else:  # remove extra aces
                 self.addcmd(add_afi(hseq, afi), "aces", negate=True)

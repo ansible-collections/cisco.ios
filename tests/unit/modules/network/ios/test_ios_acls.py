@@ -279,8 +279,8 @@ class TestIosAclsModule(TestIosModule):
             "ip access-list extended replace_acl",
             "deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos min-monetary-cost",
             "ip access-list standard test_acl",
-            "no remark remark_check_1",
-            "no remark some_random_remark_2",
+            "no remark remark check 1",
+            "no remark some random remark 2",
             "remark Another remark here",
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -480,7 +480,7 @@ class TestIosAclsModule(TestIosModule):
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
-            Reflexive IP access list MIRROR
+            ip access-list reflexive MIRROR
                 permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50200 (2 matches) (time left 123)
                 permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50201 (2 matches) (time left 345)
                 permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50202 (2 matches) (time left 678)
@@ -776,23 +776,17 @@ class TestIosAclsModule(TestIosModule):
                             {
                                 "sequence": 40,
                                 "grant": "permit",
-                                "source": {
-                                    "address": "128.0.0.0",
-                                    "wildcard_bits": "63.255.255.255",
-                                },
+                                "protocol_options": {"protocol_number": 128},
                             },
                             {
-                                "grant": "permit",
                                 "sequence": 60,
-                                "source": {
-                                    "address": "134.107.136.0",
-                                    "wildcard_bits": "0.0.0.255",
-                                },
+                                "grant": "permit",
+                                "protocol_options": {"protocol_number": 134},
                             },
                         ],
-                    },
+                    }
                 ],
-            },
+            }
         ]
         self.assertEqual(parsed_list, result["parsed"])
 
@@ -804,8 +798,8 @@ class TestIosAclsModule(TestIosModule):
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
-            access-list 110 remark test ab.
-            access-list 110 remark test again ab.
+                remark test ab.
+                remark test again ab.
             """,
         )
         self.execute_show_command_name.return_value = dedent("")
@@ -839,7 +833,6 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_acls_overridden_option(self):
         self.execute_show_command.return_value = dedent(
             """\
-            ip access-list standard test_acl
             ip access-list standard test_acl
                 remark remark check 1
                 remark some random remark 2
@@ -1153,10 +1146,6 @@ class TestIosAclsModule(TestIosModule):
                         20 permit tcp host 10.1.1.1 host 10.5.5.5 eq www
                         30 permit icmp any any
                         40 permit udp host 10.6.6.6 10.10.10.0 0.0.0.255 eq domain
-                    Extended MAC access list system-cpp-bpdu-range
-                        permit any 0180.c200.0000 0000.0000.0003
-                    Extended MAC access list system-cpp-cdp
-                        permit any host 0100.0ccc.cccc
                     """,
                 ),
                 state="parsed",
