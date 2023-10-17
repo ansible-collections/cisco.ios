@@ -5,12 +5,11 @@
   cisco.nxos.nxos_config:
     lines:
       - "no ip access-list extended test"
-     
+
 - name: "Populate nxos acls configuration with replace block and lines options"
   register: result1
   cisco.ios.ios_config:
-    lines:
-            "{{ lookup('template', 'basic/acl_config.j2')  }}"
+    lines: "{{ lookup('template', 'basic/acl_config.j2')  }}"
     replace: block
 
 - ansible.builtin.assert:
