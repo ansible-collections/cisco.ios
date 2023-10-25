@@ -1,0 +1,7 @@
+---
+minor_changes:
+  - ios_snmp_server - Update the module to manage correctly a lot of traps not take in count
+  - ios_snmp_server - Fix an issue with cbgp2 to take in count correctly the bgp traps
+deprecated_features:
+  - ios_snmp_server - deprecate traps.mpls_vpn with traps.mpls
+  - ios_snmp_server - deprecate traps.envmon.fan with traps.envmon.fan_enable
