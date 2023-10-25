@@ -77,72 +77,121 @@ class Snmp_server(ResourceModule):
             "views",
         ]
         self.complex_parsers = [
+            "traps.aaa_server",
             "traps.auth_framework",
             "traps.bfd",
             "traps.bgp",
+            "traps.bgp.cbgp2",
             "traps.bridge",
+            "traps.bulkstat",
+            "traps.call_home",
             "traps.casa",
+            "traps.cef",
             "traps.cnpd",
             "traps.config",
             "traps.config_copy",
             "traps.config_ctid",
+            "traps.cpu",
             "traps.dhcp",
+            "traps.dlsw",
             "traps.eigrp",
-            "traps.entity",
             "traps.energywise",
+            "traps.entity",
+            "traps.entity_diag",
+            "traps.entity_perf",
+            "traps.entity_state",
+            "traps.envmon",
+            "traps.errdisable",
+            "traps.ether_oam",
+            "traps.ethernet.cfm.alarm",
+            "traps.ethernet.cfm.cc",
+            "traps.ethernet.cfm.crosscheck",
+            "traps.ethernet.evc",
             "traps.event_manager",
+            "traps.flash",
+            "traps.flex_links",
+            "traps.firewall",
             "traps.flowmon",
+            "traps.frame_relay",
+            "traps.frame_relay.subif",
             "traps.fru_ctrl",
             "traps.hsrp",
-            "traps.ipsla",
-            "traps.isis",
-            "traps.msdp",
-            "traps.mvpn",
-            "traps.mpls_vpn",
-            "traps.pki",
-            "traps.pw_vc",
-            "traps.rsvp",
-            "traps.syslog",
-            "traps.transceiver_all",
-            "traps.tty",
-            "traps.vrrp",
-            "traps.vrfmib",
-            "traps.ipmulticast",
             "traps.ike.policy.add",
             "traps.ike.policy.delete",
             "traps.ike.tunnel.start",
             "traps.ike.tunnel.stop",
+            "traps.ipmulticast",
             "traps.ipsec.cryptomap.add",
-            "traps.ipsec.cryptomap.delete",
             "traps.ipsec.cryptomap.attach",
+            "traps.ipsec.cryptomap.delete",
             "traps.ipsec.cryptomap.detach",
+            "traps.ipsec.too_many_sas",
             "traps.ipsec.tunnel.start",
             "traps.ipsec.tunnel.stop",
-            "traps.ipsec.too_many_sas",
+            "traps.ipsla",
+            "traps.isis",
+            "traps.l2tc",
+            "traps.l2tun.pseudowire_status",
+            "traps.l2tun.session",
+            "traps.lisp",
+            "traps.license",
+            "traps.local_auth",
+            "traps.mac_notification",
+            "traps.memory",
+            "traps.mpls.fast_reroute",
+            "traps.mpls.ldp",
+            "traps.mpls.rfc.ldp",
+            "traps.mpls.rfc.traffic_eng",
+            "traps.mpls.rfc.vpn",
+            "traps.mpls.traffic_eng",
+            "traps.mpls.vpn",
+            "traps.msdp",
+            "traps.mvpn",
+            "traps.nhrp.nhc",
+            "traps.nhrp.nhp",
+            "traps.nhrp.nhs",
+            "traps.nhrp.quota_exceeded",
             "traps.ospf.cisco_specific.error",
-            "traps.ospf.cisco_specific.retransmit",
             "traps.ospf.cisco_specific.lsa",
+            "traps.ospf.cisco_specific.retransmit",
             "traps.ospf.cisco_specific.state_change.nssa_trans_change",
             "traps.ospf.cisco_specific.state_change.shamlink.interface",
             "traps.ospf.cisco_specific.state_change.shamlink.neighbor",
             "traps.ospf.error",
-            "traps.ospf.retransmit",
             "traps.ospf.lsa",
+            "traps.ospf.retransmit",
             "traps.ospf.state_change",
-            "traps.l2tun.pseudowire_status",
-            "traps.l2tun.session",
-            "traps.cpu",
-            "traps.firewall",
+            "traps.ospfv3.errors",
+            "traps.ospfv3.rate_limit",
+            "traps.ospfv3.state_change",
             "traps.pim",
+            "traps.pki",
+            "traps.port_security",
+            "traps.power_ethernet",
+            "traps.pw_vc",
+            "traps.rep",
+            "traps.rsvp",
+            "traps.rf",
+            "traps.smart_license",
             "traps.snmp",
-            "traps.frame_relay",
-            "traps.frame_relay.subif",
-            "traps.cef",
-            "traps.dlsw",
-            "traps.ethernet.evc",
-            "traps.ethernet.cfm.alarm",
-            "traps.ethernet.cfm.cc",
-            "traps.ethernet.cfm.crosscheck",
+            "traps.stackwise",
+            "traps.stpx",
+            "traps.syslog",
+            "traps.transceiver_all",
+            "traps.trustsec",
+            "traps.trustsec_interface",
+            "traps.trustsec_policy",
+            "traps.trustsec_server",
+            "traps.trustsec_sxp",
+            "traps.tty",
+            "traps.udld",
+            "traps.vlan_membership",
+            "traps.vlancreate",
+            "traps.vlandelete",
+            "traps.vrfmib",
+            "traps.vrrp",
+            "traps.vswitch",
+            "traps.vtp",
         ]
 
     def execute_module(self):
@@ -162,6 +211,8 @@ class Snmp_server(ResourceModule):
         """
         wantd = self._snmp_list_to_dict(self.want)
         haved = self._snmp_list_to_dict(self.have)
+
+        wantd = self._handle_deprecates(want=wantd)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -265,7 +316,8 @@ class Snmp_server(ResourceModule):
                             tmp_data[k]["protocol"] = tmp
                 elif k == "groups":
                     tmp_data[k] = {
-                        str(i[p_key.get(k)] + i.get("version_option", "")): i for i in tmp_data[k]
+                        str(i[p_key.get(k)] + i.get("version_option", "") + i.get("context", "")): i
+                        for i in tmp_data[k]
                     }
                 elif k == "views":
                     tmp_data[k] = {
@@ -274,3 +326,23 @@ class Snmp_server(ResourceModule):
                 else:
                     tmp_data[k] = {str(i[p_key.get(k)]): i for i in tmp_data[k]}
         return tmp_data
+
+    def _handle_deprecates(self, want):
+        """Remove deprecated attributes and set the replacment"""
+
+        # Take in count the traps config mpls_vpn which is DEPRECATED and replaced by mpls.vpn
+        if "traps" in want:
+            if "mpls_vpn" in want["traps"]:
+                want["traps"] = dict_merge(
+                    want["traps"],
+                    {"mpls": {"vpn": {"enable": want["traps"]["mpls_vpn"]}}},
+                )
+                want["traps"].pop("mpls_vpn")
+            if "envmon" in want["traps"] and "fan" in want["traps"]["envmon"]:
+                want["traps"]["envmon"]["fan_enable"] = want["traps"]["envmon"]["fan"].get(
+                    "enable",
+                    False,
+                )
+                want["traps"]["envmon"].pop("fan")
+
+        return want
