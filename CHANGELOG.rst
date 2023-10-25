@@ -5,6 +5,48 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v5.1.0
+======
+
+Minor Changes
+-------------
+
+- Fix an issue with some files that doesn't pass the PEP8 sanity check because `type(<obj>) == <type>` is not allowed. We need to use `isinstance(<obj>,<type>)` function in place
+- ios_snmp_user - update the user part to compare correctly the auth and privacy parts.
+- ospfv2 - added more tests to improve coverage for the rm_template
+- ospfv2 - aliased passive_interface to passive_interfaces that supports a list of interfaces
+- ospfv2 - fix area ranges rendering
+- ospfv2 - fix passive interfaces rendering
+- ospfv2 - optimized all the regex to perform better
+- ospfv2 - optimized the config side code for quicker comparison and execution
+
+Deprecated Features
+-------------------
+
+- ospfv2 - removed passive_interface to passive_interfaces that supports a list of interfaces
+
+Bugfixes
+--------
+
+- The regex looking for errors in the terminal output was matching anything with '\S+ Error:'. Caused issues with 'show runnning-config' if this string appeared in the output. Updated the regex to require the % anchor.
+- bgp_address_family - fix deleted string with int concat issue in bgp_address_family.
+- ios_acls - Fix protocol_options rendering corrects processing of overridden/ replaced state.
+- ios_acls - Fix standard acls rendering.
+- ios_bgp_address_family - fix rendering of remote_as configuration with period.
+- ios_logging_global - fix configuration order to configure discriminator before buffer.
+- ios_prefix_lists - fix deleted state to remove exisiting prefix lists from configuration.
+- ios_service - Put condition to add `private_config_encryption` in default services
+
+Documentation Changes
+---------------------
+
+- Fix prefix_lists docs.
+- Update examples for ospf_interfaces
+- Update examples for ospfv2
+- Update examples for ospfv3
+- ios_acls - update examples and use YAML output in them for better readibility.
+- ios_command - Fix formatting of examples.
+
 v5.0.0
 ======
 
