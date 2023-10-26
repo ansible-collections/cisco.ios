@@ -42,11 +42,11 @@ class AclsFacts(object):
     def get_acl_data(self, connection):
         # Removed the show access-list
         # Removed the show running-config | include ip(v6)* access-list|remark
-        return connection.get("sh running-config | section access-list")
+        return connection.get("show running-config | section access-list")
 
     def get_acl_names(self, connection):
         # this information is required to scoop out the access lists which has no aces
-        return connection.get("sh access-lists | include access list")
+        return connection.get("show access-lists | include access list")
 
     def populate_empty_acls(self, raw_acls, raw_acls_name):
         # this would update empty acls to the full acls entry

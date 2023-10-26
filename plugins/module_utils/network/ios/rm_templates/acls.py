@@ -172,7 +172,8 @@ class AclsTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            "setval": "remark {{ remarks }}",
+            "setval": "{{ sequence if sequence is defined else '' }}"
+            "remark {{ remarks }}",
             "result": {
                 "acls": {
                     "{{ acl_name|d() }}": {
@@ -189,12 +190,12 @@ class AclsTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "remarks_ipv4_no_seq",
+            "name": "remarks_no_data",
             "getval": re.compile(
                 r"""(?P<order>^\d+)\s*remark\s(?P<remarks>.+)$""",
                 re.VERBOSE,
             ),
-            "setval": "remark {{ remarks }}",
+            "setval": "{{ sequence }} remark",
             "result": {
                 "acls": {
                     "{{ acl_name|d() }}": {
