@@ -183,17 +183,34 @@ class Acls(ResourceModule):
                             for k_hrems, hrems in rem_hentry.get("remarks").items():
                                 if k_hrems not in rem_wentry.get("remarks", {}).keys():
                                     if self.state in ["replaced", "overridden"]:
-                                        self.addcmd({"remarks": hrems, "sequence": hentry.get("sequence", "")}, "remarks_no_data", negate=True)
+                                        self.addcmd(
+                                            {
+                                                "remarks": hrems,
+                                                "sequence": hentry.get("sequence", ""),
+                                            },
+                                            "remarks_no_data",
+                                            negate=True,
+                                        )
                                         break
                                     else:
-                                        self.addcmd({"remarks": hrems, "sequence": hentry.get("sequence", "")}, "remarks", negate=True)
+                                        self.addcmd(
+                                            {
+                                                "remarks": hrems,
+                                                "sequence": hentry.get("sequence", ""),
+                                            },
+                                            "remarks",
+                                            negate=True,
+                                        )
                         # remove ace if not in want
                         if hentry != wentry:
                             self.addcmd(add_afi(hentry, afi), "aces", negate=True)
                 if rem_wentry.get("remarks"):  # add remark if not in have
                     for k_wrems, wrems in rem_wentry.get("remarks").items():
                         if k_wrems not in rem_hentry.get("remarks", {}).keys():
-                            self.addcmd({"remarks": wrems, "sequence": hentry.get("sequence", "")}, "remarks")
+                            self.addcmd(
+                                {"remarks": wrems, "sequence": hentry.get("sequence", "")},
+                                "remarks",
+                            )
                 # add ace if not in have
                 if hentry != wentry:
                     self.addcmd(add_afi(wentry, afi), "aces")
@@ -202,7 +219,11 @@ class Acls(ResourceModule):
         for hseq in have.values():
             if hseq.get("remarks"):  # remove remarks that are extra in have
                 for krems, rems in hseq.get("remarks").items():
-                    self.addcmd({"remarks": rems, "sequence": hseq.get("sequence", "")}, "remarks", negate=True)
+                    self.addcmd(
+                        {"remarks": rems, "sequence": hseq.get("sequence", "")},
+                        "remarks",
+                        negate=True,
+                    )
             else:  # remove extra aces
                 self.addcmd(add_afi(hseq, afi), "aces", negate=True)
 
