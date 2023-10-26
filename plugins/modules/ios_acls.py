@@ -690,7 +690,7 @@ EXAMPLES = """
                   address: 192.168.3.0
                   wildcard_bits: 255.255.255.0
                 destination:
-                  any: True
+                  any: true
                 grant: permit
               - grant: deny
                 protocol_options:

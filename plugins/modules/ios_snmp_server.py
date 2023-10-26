@@ -1848,7 +1848,7 @@ EXAMPLES = """
 # Before state:
 # -------------
 
-#router-ios#show running-config | section ^snmp-server
+# router-ios#show running-config | section ^snmp-server
 # snmp-server engineID remote 172.16.0.12 udp-port 25 AB0C5342FF0F
 # snmp-server user userPaul dev v1 access 24
 # snmp-server group mergedGroup v3 auth
@@ -2554,7 +2554,6 @@ EXAMPLES = """
 #         }
 #     ]
 # }
-
 """
 
 RETURN = """
