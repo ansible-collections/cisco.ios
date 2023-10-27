@@ -16,6 +16,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible.module_utils.six import iteritems
+from ansible.module_utils._text import to_text
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -317,7 +318,7 @@ class Acls(ResourceModule):
                                     temp_aces.update({ace.get("sequence"): ace})
                                 elif ace:
                                     count += 1
-                                    temp_aces.update({"_" + str(count): ace})
+                                    temp_aces.update({"_" + to_text(count): ace})
 
                             # if temp_rem:  # add remarks to the temp ace
                             #     temp_aces.update({en_name: {"remarks": temp_rem}})

@@ -27,7 +27,7 @@ def remarks_with_sequence(remarks_data):
     if remarks_data.get("remarks"):
         cmd += remarks_data.get("remarks")
     if remarks_data.get("sequence"):
-        cmd = remarks_data.get("sequence") + " " + cmd
+        cmd = to_text(remarks_data.get("sequence")) + " " + cmd
     return cmd
 
 
