@@ -15,19 +15,21 @@ facilitates both facts gathering and native command generation for
 the given network resource.
 """
 import re
-from ansible.module_utils._text import to_text
 
+from ansible.module_utils._text import to_text
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
+
 
 def remarks_with_sequence(remarks_data):
     cmd = "remark "
     if remarks_data.get("remarks"):
         cmd += remarks_data.get("remarks")
     if remarks_data.get("sequence"):
-        cmd = remarks_data.get("sequence") + ' ' + cmd
+        cmd = remarks_data.get("sequence") + " " + cmd
     return cmd
+
 
 def _tmplt_access_list_entries(aces):
     def source_destination_common_config(config_data, command, attr):
