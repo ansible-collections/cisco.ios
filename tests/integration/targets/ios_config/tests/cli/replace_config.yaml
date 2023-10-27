@@ -2,11 +2,11 @@
 - ansible.builtin.debug: msg="START cli/replace_block.yaml on connection={{ ansible_connection }}"
 
 - name: "setup"
-  cisco.nxos.nxos_config:
+  cisco.ios.ios_config:
     lines:
       - "no ip access-list extended test"
 
-- name: "Populate nxos acls configuration with replace block and lines options"
+- name: "Populate ios acls configuration with replace block and lines options"
   register: result1
   cisco.ios.ios_config:
     lines: "{{ lookup('template', 'basic/acl_config.j2')  }}"

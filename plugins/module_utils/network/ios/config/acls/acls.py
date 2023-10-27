@@ -155,6 +155,8 @@ class Acls(ResourceModule):
             """
             if r_entry.get("remarks"):
                 return r_entry.pop("remarks")
+            else:
+                return {}
 
         for wseq, wentry in iteritems(want):
             hentry = have.pop(wseq, {})
