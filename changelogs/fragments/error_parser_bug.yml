@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - "Fix invalid password length not being recognized by the error parser."
