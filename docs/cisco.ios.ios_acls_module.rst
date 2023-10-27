@@ -4065,7 +4065,6 @@ Examples
     #  - remark check ACL
     #  - ipv6 access-list R1_TRAFFIC
     #  - deny tcp any eq www any eq telnet ack dscp af11
-    #
     # after:
     #  - acls:
     #    - aces:
@@ -4447,7 +4446,6 @@ Examples
     #      acl_type: extended
     #      name: test
     #    afi: ipv4
-    #
     # commands:
     #  - ip access-list extended 110
     #  - no 10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
@@ -4455,7 +4453,6 @@ Examples
     #  - deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www syn dscp ef ttl eq 10
     #  - ip access-list extended 150
     #  - 20 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10
-    #
     # after:
     #  - acls:
     #    - aces:
@@ -4607,6 +4604,338 @@ Examples
     #    10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
     # ipv6 access-list R1_TRAFFIC
     #    sequence 10 deny tcp any eq www any eq telnet ack dscp af11
+
+    # Using replaced - example remarks specific
+
+    # Before state:
+    # -------------
+    #
+    # vios#show running-config | section access-list
+    # ip access-list extended TEST
+    #  10 remark FIRST REMARK BEFORE LINE 10
+    #  10 remark ============
+    #  10 remark ALLOW HOST FROM TEST 10
+    #  10 permit ip host 1.1.1.1 any
+    #  20 remark FIRST REMARK BEFORE LINE 20
+    #  20 remark ============
+    #  20 remark ALLOW HOST remarks AFTER LINE  20
+    #  20 permit ip host 2.2.2.2 any
+    #  30 remark FIRST REMARK BEFORE LINE 30
+    #  30 remark ============
+    #  30 remark ALLOW HOST remarks AFTER LINE  30
+    #  30 permit ip host 3.3.3.3 any
+
+    - name: Replace remarks of ace with sequence 10
+      # check_mode: true
+      cisco.ios.ios_acls:
+        state: replaced
+        config:
+          - acls:
+              - aces:
+                  - destination:
+                      any: true
+                    grant: permit
+                    protocol: ip
+                    remarks:
+                      - The new first remarks before 10
+                      - ============new
+                      - The new second remarks before 10
+                    sequence: 10
+                    source:
+                      host: 1.1.1.1
+                  - destination:
+                      any: true
+                    grant: permit
+                    protocol: ip
+                    remarks:
+                      - FIRST REMARK BEFORE LINE 20
+                      - ============
+                      - ALLOW HOST remarks AFTER LINE  20
+                    sequence: 20
+                    source:
+                      host: 2.2.2.2
+                  - destination:
+                      any: true
+                    grant: permit
+                    protocol: ip
+                    remarks:
+                      - FIRST REMARK BEFORE LINE 30
+                      - ============
+                      - ALLOW HOST remarks AFTER LINE  30
+                    sequence: 30
+                    source:
+                      host: 3.3.3.3
+                acl_type: extended
+                name: TEST
+            afi: ipv4
+
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - acls:
+    #   - aces:
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE LINE 10
+    #       - ===========1=
+    #       - ALLOW HOST FROM TEST 10
+    #       sequence: 10
+    #       source:
+    #         host: 1.1.1.1
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE LINE 20
+    #       - ============
+    #       - ALLOW HOST remarks AFTER LINE  20
+    #       sequence: 20
+    #       source:
+    #         host: 2.2.2.2
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE LINE 30
+    #       - ============
+    #       - ALLOW HOST remarks AFTER LINE  30
+    #       sequence: 30
+    #       source:
+    #         host: 3.3.3.3
+    #     acl_type: extended
+    #     name: TEST
+    #   afi: ipv4
+    # commands:
+    # - ip access-list extended TEST
+    # - no 10 remark
+    # - 10 remark The new first remarks before 10
+    # - 10 remark ============new
+    # - 10 remark The new second remarks before 10
+    # after:
+    # - acls:
+    #   - aces:
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - The new first remarks before 10
+    #       - ============new
+    #       - The new second remarks before 10
+    #       sequence: 10
+    #       source:
+    #         host: 1.1.1.1
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE LINE 20
+    #       - ============
+    #       - ALLOW HOST remarks AFTER LINE  20
+    #       sequence: 20
+    #       source:
+    #         host: 2.2.2.2
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE LINE 30
+    #       - ============
+    #       - ALLOW HOST remarks AFTER LINE  30
+    #       sequence: 30
+    #       source:
+    #         host: 3.3.3.3
+    #     acl_type: extended
+    #     name: TEST
+    #   afi: ipv4
+
+    # After state:
+    # -------------
+    #
+    # foo#show running-config | section access-list
+    # ip access-list extended TEST
+    #  10 remark The new first remarks before 10
+    #  10 remark ============new
+    #  10 remark The new second remarks before 10
+    #  10 permit ip host 1.1.1.1 any
+    #  20 remark FIRST REMARK BEFORE LINE 20
+    #  20 remark ============
+    #  20 remark ALLOW HOST remarks AFTER LINE  20
+    #  20 permit ip host 2.2.2.2 any
+    #  30 remark FIRST REMARK BEFORE LINE 30
+    #  30 remark ============
+    #  30 remark ALLOW HOST remarks AFTER LINE  30
+    #  30 permit ip host 3.3.3.3 any
+
+    # Using replaced - example remarks specific on targeted sequence
+
+    # Before state:
+    # -------------
+    #
+    # vios#show running-config | section access-list
+    # ip access-list extended TEST
+    #  10 permit ip host 1.1.1.1 any
+    #  20 remark FIRST REMARK BEFORE LINE 20
+    #  20 remark ============
+    #  20 remark ALLOW HOST remarks AFTER LINE  20
+    #  20 permit ip host 2.2.2.2 any
+    #  30 remark FIRST REMARK BEFORE LINE 30
+    #  30 remark ============
+    #  30 remark ALLOW HOST remarks AFTER LINE  30
+    #  30 permit ip host 3.3.3.3 any
+
+    - name: Replace remarks of ace with sequence 10
+      # check_mode: true
+      cisco.ios.ios_acls:
+        state: replaced
+        config:
+          - acls:
+              - aces:
+                  - destination:
+                      any: true
+                    grant: permit
+                    protocol: ip
+                    remarks:
+                      - The new first remarks before 10
+                      - ============new
+                      - The new second remarks before 10
+                    sequence: 10
+                    source:
+                      host: 1.1.1.1
+                  - destination:
+                      any: true
+                    grant: permit
+                    protocol: ip
+                    remarks:
+                      - FIRST REMARK BEFORE LINE 20
+                      - ============
+                      - ALLOW HOST remarks AFTER LINE  20
+                    sequence: 20
+                    source:
+                      host: 2.2.2.2
+                  - destination:
+                      any: true
+                    grant: permit
+                    protocol: ip
+                    remarks:
+                      - FIRST REMARK BEFORE LINE 30
+                      - ============
+                      - ALLOW HOST remarks AFTER LINE  30
+                    sequence: 30
+                    source:
+                      host: 3.3.3.3
+                acl_type: extended
+                name: TEST
+            afi: ipv4
+
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - acls:
+    #   - aces:
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       sequence: 10
+    #       source:
+    #         host: 1.1.1.1
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE LINE 20
+    #       - ============
+    #       - ALLOW HOST remarks AFTER LINE  20
+    #       sequence: 20
+    #       source:
+    #         host: 2.2.2.2
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE LINE 30
+    #       - ============
+    #       - ALLOW HOST remarks AFTER LINE  30
+    #       sequence: 30
+    #       source:
+    #         host: 3.3.3.3
+    #     acl_type: extended
+    #     name: TEST
+    #   afi: ipv4
+    # commands:
+    # - ip access-list extended TEST
+    # - 10 remark The new first remarks before 10
+    # - 10 remark ============new
+    # - 10 remark The new second remarks before 10
+    # after:
+    # - acls:
+    #   - aces:
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - The new first remarks before 10
+    #       - ============new
+    #       - The new second remarks before 10
+    #       sequence: 10
+    #       source:
+    #         host: 1.1.1.1
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE LINE 20
+    #       - ============
+    #       - ALLOW HOST remarks AFTER LINE  20
+    #       sequence: 20
+    #       source:
+    #         host: 2.2.2.2
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE LINE 30
+    #       - ============
+    #       - ALLOW HOST remarks AFTER LINE  30
+    #       sequence: 30
+    #       source:
+    #         host: 3.3.3.3
+    #     acl_type: extended
+    #     name: TEST
+    #   afi: ipv4
+
+    # After state:
+    # -------------
+    #
+    # foo#show running-config | section access-list
+    # ip access-list extended TEST
+    #  10 remark The new first remarks before 10
+    #  10 remark ============new
+    #  10 remark The new second remarks before 10
+    #  10 permit ip host 1.1.1.1 any
+    #  20 remark FIRST REMARK BEFORE LINE 20
+    #  20 remark ============
+    #  20 remark ALLOW HOST remarks AFTER LINE  20
+    #  20 permit ip host 2.2.2.2 any
+    #  30 remark FIRST REMARK BEFORE LINE 30
+    #  30 remark ============
+    #  30 remark ALLOW HOST remarks AFTER LINE  30
+    #  30 permit ip host 3.3.3.3 any
 
     # Using overridden
 
@@ -4798,7 +5127,6 @@ Examples
     #      acl_type: extended
     #      name: test
     #    afi: ipv4
-    #
     # commands:
     #  - ip access-list extended 110
     #  - no 20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
@@ -4810,7 +5138,6 @@ Examples
     #  - no ip access-list extended R1_TRAFFIC
     #  - no ip access-list standard std_acl
     #  - no ip access-list extended test
-    #
     # after:
     #  - acls:
     #    - aces:
@@ -5002,11 +5329,9 @@ Examples
     #      acl_type: extended
     #      name: extended_acl_1
     #    afi: ipv4
-    #
-    #  commands:
+    # commands:
     #  - no ip access-list extended 110
     #  - no ip access-list extended extended_acl_1
-    #
     # after:
     #  - acls:
     #    - aces:
@@ -5220,13 +5545,11 @@ Examples
     #            eq: www
     #      name: R1_TRAFFIC
     #    afi: ipv6
-    #
     # commands:
     #  - no ip access-list extended 110
     #  - no ip access-list extended 123
     #  - no ip access-list standard std_acl
     #  - no ip access-list extended test
-    #
     # after:
     #  - acls:
     #    - aces:
@@ -5404,14 +5727,12 @@ Examples
     #            eq: www
     #      name: R1_TRAFFIC
     #    afi: ipv6
-    #
     # commands:
     #  - no ip access-list extended test
     #  - no ip access-list extended 110
     #  - no ip access-list extended 123
     #  - no ip access-list extended test
     #  - no ipv6 access-list R1_TRAFFIC
-    #
     # after: []
 
     # After state:
@@ -5623,7 +5944,6 @@ Examples
     #  - 10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www syn dscp ef ttl eq 10
     #  - ip access-list extended 150
     #  - deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10
-    #
 
     # Using Parsed
 
