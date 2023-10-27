@@ -172,7 +172,8 @@ class AclsTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            "setval": "{{ (sequence|string + ' ') if sequence is defined else '' }}" "remark {{ remarks }}",
+            "setval": "{{ (sequence|string + ' ') if sequence is defined else '' }}"
+            "remark {{ remarks }}",
             "result": {
                 "acls": {
                     "{{ acl_name|d() }}": {
