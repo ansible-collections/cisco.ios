@@ -1,4 +1,0 @@
----
-minor_changes:
-  - "ios_acls - make remarks ordered and to be applied per ace basis."
-  - "ios_acls - remarks in replaced and overridden state to be negated once per ace."

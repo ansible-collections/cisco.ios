@@ -1000,3 +1000,26 @@ releases:
       - stderr_re_fix.yaml
       - update_ospf_docs.yaml
     release_date: "2023-10-04"
+  5.2.0:
+    changes:
+      bugfixes:
+        - Fix invalid password length not being recognized by the error parser.
+      deprecated_features:
+        - ios_snmp_server - deprecate traps.envmon.fan with traps.envmon.fan_enable
+        - ios_snmp_server - deprecate traps.mpls_vpn with traps.mpls
+      minor_changes:
+        - ios_acls - make remarks ordered and to be applied per ace basis.
+        - ios_acls - remarks in replaced and overridden state to be negated once per
+          ace.
+        - ios_config - Relax restrictions on I(src) parameter so it can be used more
+          like I(lines).
+        - ios_snmp_server - Fix an issue with cbgp2 to take in count correctly the bgp
+          traps
+        - ios_snmp_server - Update the module to manage correctly a lot of traps not
+          take in count
+    fragments:
+      - acl_remaks_fresh.yml
+      - error_parser_bug.yml
+      - fix_config.yaml
+      - ios_snmp_server_changes.yml
+    release_date: "2023-10-27"
