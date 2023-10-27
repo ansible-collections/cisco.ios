@@ -322,7 +322,6 @@ EXAMPLES = """
 #  permit ip host 192.0.2.2 any log
 #  permit ip host 192.0.2.3 any log
 #  permit ip host 192.0.2.4 any log
-
 """
 
 RETURN = """

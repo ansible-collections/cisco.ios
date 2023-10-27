@@ -576,7 +576,7 @@ Examples
     # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
 
     # Using Deleted without any config passed
-    #"(NOTE: This will delete all of configured vlans attributes)"
+    # "(NOTE: This will delete all of configured vlans attributes)"
 
     # Before state:
     # -------------
