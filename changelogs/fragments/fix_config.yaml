@@ -1,3 +1,0 @@
----
-minor_changes:
-  - "ios_config - Relax restrictions on I(src) parameter so it can be used more like I(lines)."
