@@ -5,13 +5,36 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v5.2.0
+======
+
+Minor Changes
+-------------
+
+- ios_acls - make remarks ordered and to be applied per ace basis.
+- ios_acls - remarks in replaced and overridden state to be negated once per ace.
+- ios_config - Relax restrictions on I(src) parameter so it can be used more like I(lines).
+- ios_snmp_server - Fix an issue with cbgp2 to take in count correctly the bgp traps
+- ios_snmp_server - Update the module to manage correctly a lot of traps not take in count
+
+Deprecated Features
+-------------------
+
+- ios_snmp_server - deprecate traps.envmon.fan with traps.envmon.fan_enable
+- ios_snmp_server - deprecate traps.mpls_vpn with traps.mpls
+
+Bugfixes
+--------
+
+- Fix invalid password length not being recognized by the error parser.
+
 v5.1.0
 ======
 
 Minor Changes
 -------------
 
-- Fix an issue with some files that doesn't pass the PEP8 sanity check because `type(<obj>) == <type>` is not allowed. We need to use `isinstance(<obj>,<type>)` function in place
+- Fixe an issue with some files that doesn't pass the PEP8 sanity check because `type(<obj>) == <type>` is not allowed. We need to use `isinstance(<obj>,<type>)` function in place
 - ios_snmp_user - update the user part to compare correctly the auth and privacy parts.
 - ospfv2 - added more tests to improve coverage for the rm_template
 - ospfv2 - aliased passive_interface to passive_interfaces that supports a list of interfaces

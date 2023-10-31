@@ -608,7 +608,7 @@ EXAMPLES = """
 # Before state:
 # -------------
 
-#router-ios#show running-config | section ^ntp
+# router-ios#show running-config | section ^ntp
 # ntp max-associations 34
 # ntp logging
 # ntp allow mode control 4

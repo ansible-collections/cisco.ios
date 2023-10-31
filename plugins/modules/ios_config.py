@@ -322,7 +322,6 @@ EXAMPLES = """
 #  permit ip host 192.0.2.2 any log
 #  permit ip host 192.0.2.3 any log
 #  permit ip host 192.0.2.4 any log
-
 """
 
 RETURN = """
@@ -450,9 +449,9 @@ def main():
     )
     mutually_exclusive = [("lines", "src"), ("parents", "src")]
     required_if = [
-        ("match", "strict", ["lines"]),
-        ("match", "exact", ["lines"]),
-        ("replace", "block", ["lines"]),
+        ("match", "strict", ["lines", "src"], True),
+        ("match", "exact", ["lines", "src"], True),
+        ("replace", "block", ["lines", "src"], True),
         ("diff_against", "intended", ["intended_config"]),
     ]
     module = AnsibleModule(
