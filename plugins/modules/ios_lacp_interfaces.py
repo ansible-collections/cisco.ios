@@ -451,7 +451,6 @@ EXAMPLES = """
 #             "name": "Port-channel10"
 #         }
 #     ]
-
 """
 
 RETURN = """
