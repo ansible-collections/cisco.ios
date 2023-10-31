@@ -930,7 +930,6 @@ EXAMPLES = """
 #         tag: 50
 #         track: 150
 #   vrf: blue
-
 """
 
 RETURN = """

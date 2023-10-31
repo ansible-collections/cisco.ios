@@ -440,7 +440,7 @@ Examples
     #  lldp reinit 5
 
     # Using Deleted without any config passed
-    #"(NOTE: This will delete all of configured LLDP module attributes)"
+    # "(NOTE: This will delete all of configured LLDP module attributes)"
 
     # Before state:
     # -------------

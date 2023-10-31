@@ -325,7 +325,7 @@ EXAMPLES = """
 #  ip access-group 123 out
 
 # Using DELETED without any config passed
-#"(NOTE: This will delete all of configured resource module attributes from each configured interface)"
+# "(NOTE: This will delete all of configured resource module attributes from each configured interface)"
 
 # Before state:
 # -------------
