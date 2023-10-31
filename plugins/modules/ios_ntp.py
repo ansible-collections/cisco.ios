@@ -116,8 +116,8 @@ EXAMPLES = """
     auth_key: 15435A030726242723273C21181319000A
     auth: true
     state: present
-
 """
+
 RETURN = """
 commands:
     description: command sent to the device
@@ -125,6 +125,7 @@ commands:
     type: list
     sample: ["no ntp server 10.0.255.10", "no ntp source Loopback0"]
 """
+
 import re
 
 from ansible.module_utils.basic import AnsibleModule

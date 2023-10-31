@@ -3143,6 +3143,8 @@ Parameters
                 </td>
                 <td>
                         <div>The remarks/description of the ACL.</div>
+                        <div>The remarks attribute used within an ace with or without a sequence number will produce remarks that are pushed before the ace entry.</div>
+                        <div>Remarks entry used as the only key in as the list option will produce non ace specific remarks, these remarks would be pushed at the end of all the aces for an acl.</div>
                 </td>
             </tr>
             <tr>
@@ -3880,7 +3882,7 @@ Parameters
                         <div>The states <em>rendered</em>, <em>gathered</em> and <em>parsed</em> does not perform any change on the device.</div>
                         <div>The state <em>rendered</em> will transform the configuration in <code>config</code> option to platform specific CLI commands which will be returned in the <em>rendered</em> key within the result. For state <em>rendered</em> active connection to remote host is not required.</div>
                         <div>The state <em>gathered</em> will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the <em>gathered</em> key within the result.</div>
-                        <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into JSON format as per the resource module parameters and the value is returned in the <em>parsed</em> key within the result. The value of <code>running_config</code> option should be the same format as the output of commands <em>show access-list</em> and <em>show running-config | include ip(v6</em>* access-list|remark) executed on device. Config data from both the commands should be kept together one after another for the parsers to pick the commands correctly. For state <em>parsed</em> active connection to remote host is not required.</div>
+                        <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into JSON format as per the resource module parameters and the value is returned in the <em>parsed</em> key within the result. The value of <code>running_config</code> option should be the same format as the output of commands <em>sh running-config | section access-list</em> for all acls related information and <em>sh access-lists | include access list</em> to obtain configuration specific of an empty acls, the following commands are executed on device. Config data from both the commands should be kept together one after another for the parsers to pick the commands correctly. For state <em>parsed</em> active connection to remote host is not required.</div>
                         <div>The state <em>overridden</em>, modify/add the ACLs defined, deleted all other ACLs.</div>
                         <div>The state <em>replaced</em>, modify/add only the ACEs of the ACLs defined only. It does not perform any other change on the device.</div>
                         <div>The state <em>deleted</em>, deletes only the specified ACLs, or all if not specified.</div>
@@ -3910,8 +3912,8 @@ Examples
     # Before state:
     # -------------
     #
-    # vios#show access-lists
-    # Extended IP access list 110
+    # vios#sh running-config | section access-list
+    # ip access-list extended 110
     #    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
 
     - name: Merge provided configuration with device configuration
@@ -3939,7 +3941,7 @@ Examples
                       address: 192.168.3.0
                       wildcard_bits: 255.255.255.0
                     destination:
-                      any: True
+                      any: true
                     grant: permit
                   - grant: deny
                     protocol_options:
@@ -4063,7 +4065,6 @@ Examples
     #  - remark check ACL
     #  - ipv6 access-list R1_TRAFFIC
     #  - deny tcp any eq www any eq telnet ack dscp af11
-    #
     # after:
     #  - acls:
     #    - aces:
@@ -4203,22 +4204,22 @@ Examples
     # After state:
     # ------------
     #
-    # vios#show access-lists
-    # Standard IP access list std_acl
+    # vios#sh running-config | section access-list
+    # ip access-list standard std_acl
     #    10 deny   192.168.1.200
-    #    20 deny   192.168.2.0, wildcard bits 0.0.0.255
-    # Extended IP access list 100
+    #    20 deny   192.168.2.0 0.0.0.255
+    # ip access-list extended 100
     #    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
-    # Extended IP access list 110
+    # ip access-list extended 110
     #    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
     #    20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
-    # Extended IP access list 123
+    # ip access-list extended 123
     #    10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     #    20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
-    # Extended IP access list test
+    # ip access-list extended test
     #    10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
-    # IPv6 access list R1_TRAFFIC
-    #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+    # ipv6 access-list R1_TRAFFIC
+    #    sequence 10 deny tcp any eq www any eq telnet ack dscp af11
 
     # vios#show running-config | include ip(v6)* access-list|remark
     # ip access-list standard std_acl
@@ -4234,8 +4235,8 @@ Examples
     # Before state:
     # -------------
     #
-    # vios#show access-lists
-    # Extended IP access list 100
+    # vios#sh running-config | section access-list
+    # ip access-list extended 100
     #    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
 
     - name: Merge provided configuration with device configuration
@@ -4263,19 +4264,19 @@ Examples
     # Before state:
     # -------------
     #
-    # vios#show access-lists
-    # Standard IP access list std_acl
+    # vios#sh running-config | section access-list
+    # ip access-list standard std_acl
     #     10 deny   192.168.1.200
-    #     20 deny   192.168.2.0, wildcard bits 0.0.0.255
-    # Extended IP access list 110
+    #     20 deny   192.168.2.0 0.0.0.255
+    # ip access-list extended 110
     #     10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
     #     20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
-    # Extended IP access list 123
+    # ip access-list extended 123
     #     10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     #     20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
-    # Extended IP access list R1_TRAFFIC
+    # ip access-list extended R1_TRAFFIC
     #     10 deny tcp any eq www any eq telnet ack dscp af11
-    # Extended IP access list test
+    # ip access-list extended test
     #     10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
 
     - name: Replaces device configuration of listed acls with provided configuration
@@ -4445,7 +4446,6 @@ Examples
     #      acl_type: extended
     #      name: test
     #    afi: ipv4
-    #
     # commands:
     #  - ip access-list extended 110
     #  - no 10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
@@ -4453,7 +4453,6 @@ Examples
     #  - deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www syn dscp ef ttl eq 10
     #  - ip access-list extended 150
     #  - 20 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10
-    #
     # after:
     #  - acls:
     #    - aces:
@@ -4591,20 +4590,352 @@ Examples
     # -------------
     #
     # vios#sh access-lists
-    # Standard IP access list std_acl
+    # ip access-list standard std_acl
     #    10 deny   192.168.1.200
-    #    20 deny   192.168.2.0, wildcard bits 0.0.0.255
-    # Extended IP access list 110
+    #    20 deny   192.168.2.0 0.0.0.255
+    # ip access-list extended 110
     #    10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www syn dscp ef ttl eq 10
-    # Extended IP access list 123
+    # ip access-list extended 123
     #    10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     #    20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
-    # Extended IP access list 150
+    # ip access-list extended 150
     #    20 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10
-    # Extended IP access list test
+    # ip access-list extended test
     #    10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
-    # IPv6 access list R1_TRAFFIC
-    #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+    # ipv6 access-list R1_TRAFFIC
+    #    sequence 10 deny tcp any eq www any eq telnet ack dscp af11
+
+    # Using replaced - example remarks specific
+
+    # Before state:
+    # -------------
+    #
+    # vios#show running-config | section access-list
+    # ip access-list extended TEST
+    #  10 remark FIRST REMARK BEFORE LINE 10
+    #  10 remark ============
+    #  10 remark ALLOW HOST FROM TEST 10
+    #  10 permit ip host 1.1.1.1 any
+    #  20 remark FIRST REMARK BEFORE LINE 20
+    #  20 remark ============
+    #  20 remark ALLOW HOST remarks AFTER LINE  20
+    #  20 permit ip host 2.2.2.2 any
+    #  30 remark FIRST REMARK BEFORE LINE 30
+    #  30 remark ============
+    #  30 remark ALLOW HOST remarks AFTER LINE  30
+    #  30 permit ip host 3.3.3.3 any
+
+    - name: Replace remarks of ace with sequence 10
+      # check_mode: true
+      cisco.ios.ios_acls:
+        state: replaced
+        config:
+          - acls:
+              - aces:
+                  - destination:
+                      any: true
+                    grant: permit
+                    protocol: ip
+                    remarks:
+                      - The new first remarks before 10
+                      - ============new
+                      - The new second remarks before 10
+                    sequence: 10
+                    source:
+                      host: 1.1.1.1
+                  - destination:
+                      any: true
+                    grant: permit
+                    protocol: ip
+                    remarks:
+                      - FIRST REMARK BEFORE LINE 20
+                      - ============
+                      - ALLOW HOST remarks AFTER LINE  20
+                    sequence: 20
+                    source:
+                      host: 2.2.2.2
+                  - destination:
+                      any: true
+                    grant: permit
+                    protocol: ip
+                    remarks:
+                      - FIRST REMARK BEFORE LINE 30
+                      - ============
+                      - ALLOW HOST remarks AFTER LINE  30
+                    sequence: 30
+                    source:
+                      host: 3.3.3.3
+                acl_type: extended
+                name: TEST
+            afi: ipv4
+
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - acls:
+    #   - aces:
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE LINE 10
+    #       - ===========1=
+    #       - ALLOW HOST FROM TEST 10
+    #       sequence: 10
+    #       source:
+    #         host: 1.1.1.1
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE LINE 20
+    #       - ============
+    #       - ALLOW HOST remarks AFTER LINE  20
+    #       sequence: 20
+    #       source:
+    #         host: 2.2.2.2
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE LINE 30
+    #       - ============
+    #       - ALLOW HOST remarks AFTER LINE  30
+    #       sequence: 30
+    #       source:
+    #         host: 3.3.3.3
+    #     acl_type: extended
+    #     name: TEST
+    #   afi: ipv4
+    # commands:
+    # - ip access-list extended TEST
+    # - no 10 remark
+    # - 10 remark The new first remarks before 10
+    # - 10 remark ============new
+    # - 10 remark The new second remarks before 10
+    # after:
+    # - acls:
+    #   - aces:
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - The new first remarks before 10
+    #       - ============new
+    #       - The new second remarks before 10
+    #       sequence: 10
+    #       source:
+    #         host: 1.1.1.1
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE LINE 20
+    #       - ============
+    #       - ALLOW HOST remarks AFTER LINE  20
+    #       sequence: 20
+    #       source:
+    #         host: 2.2.2.2
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE LINE 30
+    #       - ============
+    #       - ALLOW HOST remarks AFTER LINE  30
+    #       sequence: 30
+    #       source:
+    #         host: 3.3.3.3
+    #     acl_type: extended
+    #     name: TEST
+    #   afi: ipv4
+
+    # After state:
+    # -------------
+    #
+    # foo#show running-config | section access-list
+    # ip access-list extended TEST
+    #  10 remark The new first remarks before 10
+    #  10 remark ============new
+    #  10 remark The new second remarks before 10
+    #  10 permit ip host 1.1.1.1 any
+    #  20 remark FIRST REMARK BEFORE LINE 20
+    #  20 remark ============
+    #  20 remark ALLOW HOST remarks AFTER LINE  20
+    #  20 permit ip host 2.2.2.2 any
+    #  30 remark FIRST REMARK BEFORE LINE 30
+    #  30 remark ============
+    #  30 remark ALLOW HOST remarks AFTER LINE  30
+    #  30 permit ip host 3.3.3.3 any
+
+    # Using replaced - example remarks specific on targeted sequence
+
+    # Before state:
+    # -------------
+    #
+    # vios#show running-config | section access-list
+    # ip access-list extended TEST
+    #  10 permit ip host 1.1.1.1 any
+    #  20 remark FIRST REMARK BEFORE LINE 20
+    #  20 remark ============
+    #  20 remark ALLOW HOST remarks AFTER LINE  20
+    #  20 permit ip host 2.2.2.2 any
+    #  30 remark FIRST REMARK BEFORE LINE 30
+    #  30 remark ============
+    #  30 remark ALLOW HOST remarks AFTER LINE  30
+    #  30 permit ip host 3.3.3.3 any
+
+    - name: Replace remarks of ace with sequence 10
+      # check_mode: true
+      cisco.ios.ios_acls:
+        state: replaced
+        config:
+          - acls:
+              - aces:
+                  - destination:
+                      any: true
+                    grant: permit
+                    protocol: ip
+                    remarks:
+                      - The new first remarks before 10
+                      - ============new
+                      - The new second remarks before 10
+                    sequence: 10
+                    source:
+                      host: 1.1.1.1
+                  - destination:
+                      any: true
+                    grant: permit
+                    protocol: ip
+                    remarks:
+                      - FIRST REMARK BEFORE LINE 20
+                      - ============
+                      - ALLOW HOST remarks AFTER LINE  20
+                    sequence: 20
+                    source:
+                      host: 2.2.2.2
+                  - destination:
+                      any: true
+                    grant: permit
+                    protocol: ip
+                    remarks:
+                      - FIRST REMARK BEFORE LINE 30
+                      - ============
+                      - ALLOW HOST remarks AFTER LINE  30
+                    sequence: 30
+                    source:
+                      host: 3.3.3.3
+                acl_type: extended
+                name: TEST
+            afi: ipv4
+
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - acls:
+    #   - aces:
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       sequence: 10
+    #       source:
+    #         host: 1.1.1.1
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE LINE 20
+    #       - ============
+    #       - ALLOW HOST remarks AFTER LINE  20
+    #       sequence: 20
+    #       source:
+    #         host: 2.2.2.2
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE LINE 30
+    #       - ============
+    #       - ALLOW HOST remarks AFTER LINE  30
+    #       sequence: 30
+    #       source:
+    #         host: 3.3.3.3
+    #     acl_type: extended
+    #     name: TEST
+    #   afi: ipv4
+    # commands:
+    # - ip access-list extended TEST
+    # - 10 remark The new first remarks before 10
+    # - 10 remark ============new
+    # - 10 remark The new second remarks before 10
+    # after:
+    # - acls:
+    #   - aces:
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - The new first remarks before 10
+    #       - ============new
+    #       - The new second remarks before 10
+    #       sequence: 10
+    #       source:
+    #         host: 1.1.1.1
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE LINE 20
+    #       - ============
+    #       - ALLOW HOST remarks AFTER LINE  20
+    #       sequence: 20
+    #       source:
+    #         host: 2.2.2.2
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE LINE 30
+    #       - ============
+    #       - ALLOW HOST remarks AFTER LINE  30
+    #       sequence: 30
+    #       source:
+    #         host: 3.3.3.3
+    #     acl_type: extended
+    #     name: TEST
+    #   afi: ipv4
+
+    # After state:
+    # -------------
+    #
+    # foo#show running-config | section access-list
+    # ip access-list extended TEST
+    #  10 remark The new first remarks before 10
+    #  10 remark ============new
+    #  10 remark The new second remarks before 10
+    #  10 permit ip host 1.1.1.1 any
+    #  20 remark FIRST REMARK BEFORE LINE 20
+    #  20 remark ============
+    #  20 remark ALLOW HOST remarks AFTER LINE  20
+    #  20 permit ip host 2.2.2.2 any
+    #  30 remark FIRST REMARK BEFORE LINE 30
+    #  30 remark ============
+    #  30 remark ALLOW HOST remarks AFTER LINE  30
+    #  30 permit ip host 3.3.3.3 any
 
     # Using overridden
 
@@ -4612,18 +4943,18 @@ Examples
     # -------------
     #
     # vios#sh access-lists
-    # Standard IP access list std_acl
+    # ip access-list standard std_acl
     #     10 deny   192.168.1.200
-    #     20 deny   192.168.2.0, wildcard bits 0.0.0.255
-    # Extended IP access list 110
+    #     20 deny   192.168.2.0 0.0.0.255
+    # ip access-list extended 110
     #     10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
     #     20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
-    # Extended IP access list 123
+    # ip access-list extended 123
     #     10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     #     20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
-    # Extended IP access list R1_TRAFFIC
+    # ip access-list extended R1_TRAFFIC
     #     10 deny tcp any eq www any eq telnet ack dscp af11
-    # Extended IP access list test
+    # ip access-list extended test
     #     10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
 
     - name: Override device configuration of all acls with provided configuration
@@ -4796,7 +5127,6 @@ Examples
     #      acl_type: extended
     #      name: test
     #    afi: ipv4
-    #
     # commands:
     #  - ip access-list extended 110
     #  - no 20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
@@ -4808,7 +5138,6 @@ Examples
     #  - no ip access-list extended R1_TRAFFIC
     #  - no ip access-list standard std_acl
     #  - no ip access-list extended test
-    #
     # after:
     #  - acls:
     #    - aces:
@@ -4860,10 +5189,10 @@ Examples
     # After state:
     # -------------
     #
-    # vios#show access-lists
-    # Extended IP access list 110
+    # vios#sh running-config | section access-list
+    # ip access-list extended 110
     #     20 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq www ack dscp ef ttl eq 10
-    # Extended IP access list 150
+    # ip access-list extended 150
     #     10 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10
 
 
@@ -4873,16 +5202,16 @@ Examples
     # -------------
     #
     # vios#sh access-lists
-    # Standard IP access list std_acl
+    # ip access-list standard std_acl
     #     10 deny   192.168.1.200
-    #     20 deny   192.168.2.0, wildcard bits 0.0.0.255
-    # Extended IP access list 110
+    #     20 deny   192.168.2.0 0.0.0.255
+    # ip access-list extended 110
     #     10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
     #     20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
-    # Extended IP access list 123
+    # ip access-list extended 123
     #     10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     #     20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
-    # Extended IP access list extended_acl_1
+    # ip access-list extended extended_acl_1
     #     10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
 
     - name: "Delete ACLs (Note: This won't delete the all configured ACLs)"
@@ -5000,11 +5329,9 @@ Examples
     #      acl_type: extended
     #      name: extended_acl_1
     #    afi: ipv4
-    #
-    #  commands:
+    # commands:
     #  - no ip access-list extended 110
     #  - no ip access-list extended extended_acl_1
-    #
     # after:
     #  - acls:
     #    - aces:
@@ -5060,11 +5387,11 @@ Examples
     # After state:
     # -------------
     #
-    # vios#show access-lists
-    # Standard IP access list std_acl
+    # vios#sh running-config | section access-list
+    # ip access-list standard std_acl
     #    10 deny   192.168.1.200
-    #    20 deny   192.168.2.0, wildcard bits 0.0.0.255
-    # Extended IP access list 123
+    #    20 deny   192.168.2.0 0.0.0.255
+    # ip access-list extended 123
     #    10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     #    20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
 
@@ -5073,20 +5400,20 @@ Examples
     # Before state:
     # -------------
     #
-    # vios#show access-lists
-    # Standard IP access list std_acl
+    # vios#sh running-config | section access-list
+    # ip access-list standard std_acl
     #     10 deny   192.168.1.200
-    #     20 deny   192.168.2.0, wildcard bits 0.0.0.255
-    # Extended IP access list 110
+    #     20 deny   192.168.2.0 0.0.0.255
+    # ip access-list extended 110
     #     10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
     #     20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
-    # Extended IP access list 123
+    # ip access-list extended 123
     #     10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     #     20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
-    # Extended IP access list test
+    # ip access-list extended test
     #     10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
-    # IPv6 access list R1_TRAFFIC
-    #     deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+    # ipv6 access-list R1_TRAFFIC
+    #     sequence 10 deny tcp any eq www any eq telnet ack dscp af11
 
     - name: "Delete ACLs based on AFI (Note: This won't delete the all configured ACLs)"
       cisco.ios.ios_acls:
@@ -5218,13 +5545,11 @@ Examples
     #            eq: www
     #      name: R1_TRAFFIC
     #    afi: ipv6
-    #
     # commands:
     #  - no ip access-list extended 110
     #  - no ip access-list extended 123
     #  - no ip access-list standard std_acl
     #  - no ip access-list extended test
-    #
     # after:
     #  - acls:
     #    - aces:
@@ -5249,9 +5574,9 @@ Examples
     # After state:
     # -------------
     #
-    # vios#show access-lists
-    # IPv6 access list R1_TRAFFIC
-    #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+    # vios#sh running-config | section access-list
+    # ipv6 access-list R1_TRAFFIC
+    #    sequence 10 deny tcp any eq www any eq telnet ack dscp af11
 
 
     # Using deleted - delete all ACLs
@@ -5260,19 +5585,19 @@ Examples
     # -------------
     #
     # vios#sh access-lists
-    # Standard IP access list std_acl
+    # ip access-list standard std_acl
     #     10 deny   192.168.1.200
-    #     20 deny   192.168.2.0, wildcard bits 0.0.0.255
-    # Extended IP access list 110
+    #     20 deny   192.168.2.0 0.0.0.255
+    # ip access-list extended 110
     #     10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
     #     20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
-    # Extended IP access list 123
+    # ip access-list extended 123
     #     10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     #     20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
-    # Extended IP access list test
+    # ip access-list extended test
     #     10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
-    # IPv6 access list R1_TRAFFIC
-    #     deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+    # ipv6 access-list R1_TRAFFIC
+    #     sequence 10 deny tcp any eq www any eq telnet ack dscp af11
 
     - name: Delete ALL of configured ACLs
       cisco.ios.ios_acls:
@@ -5402,20 +5727,18 @@ Examples
     #            eq: www
     #      name: R1_TRAFFIC
     #    afi: ipv6
-    #
     # commands:
     #  - no ip access-list extended test
     #  - no ip access-list extended 110
     #  - no ip access-list extended 123
     #  - no ip access-list extended test
     #  - no ipv6 access-list R1_TRAFFIC
-    #
     # after: []
 
     # After state:
     # -------------
     #
-    # vios#show access-lists
+    # vios#sh running-config | section access-list
 
 
     # Using gathered
@@ -5424,19 +5747,19 @@ Examples
     # -------------
     #
     # vios#sh access-lists
-    # Standard IP access list std_acl
+    # ip access-list standard std_acl
     #    10 deny   192.168.1.200
-    #    20 deny   192.168.2.0, wildcard bits 0.0.0.255
-    # Extended IP access list 110
+    #    20 deny   192.168.2.0 0.0.0.255
+    # ip access-list extended 110
     #    10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 traceroute dscp ef ttl eq 10
     #    20 deny tcp host 198.51.100.0 host 198.51.110.0 eq telnet ack
-    # Extended IP access list 123
+    # ip access-list extended 123
     #    10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
     #    20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
-    # Extended IP access list test
+    # ip access-list extended test
     #    10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
-    # IPv6 access list R1_TRAFFIC
-    #    deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+    # ipv6 access-list R1_TRAFFIC
+    #    sequence 10 deny tcp any eq www any eq telnet ack dscp af11
 
     - name: Gather ACLs configuration from target device
       cisco.ios.ios_acls:
@@ -5621,7 +5944,6 @@ Examples
     #  - 10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www syn dscp ef ttl eq 10
     #  - ip access-list extended 150
     #  - deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10
-    #
 
     # Using Parsed
 

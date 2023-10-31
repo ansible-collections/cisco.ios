@@ -1,0 +1,28 @@
+---
+- ansible.builtin.debug: msg="START cli/replace_block.yaml on connection={{ ansible_connection }}"
+
+- name: "setup"
+  cisco.ios.ios_config:
+    lines:
+      - "no ip access-list extended test"
+
+- name: "Populate ios acls configuration with replace block and lines options"
+  register: result1
+  cisco.ios.ios_config:
+    lines: "{{ lookup('template', 'basic/acl_config.j2')  }}"
+    replace: block
+
+- ansible.builtin.assert:
+    that:
+      - result1.changed == true
+
+- name: "Populate acl configuration with replace block and src options"
+  register: result2
+  cisco.ios.ios_config:
+    src: basic/acl_config.j2
+    replace: block
+
+- ansible.builtin.assert:
+    that:
+      - result2.changed == true
+      - result1.commands == result2.commands

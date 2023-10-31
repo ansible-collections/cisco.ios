@@ -138,9 +138,8 @@ EXAMPLES = """
 - name: Create aggregate of linkagg definitions
   cisco.ios.ios_linkagg:
     aggregate:
-      - { group: 3, mode: on, members: [GigabitEthernet0/1] }
+      - { group: 3, mode: "on", members: [GigabitEthernet0/1] }
       - { group: 100, mode: passive, members: [GigabitEthernet0/2] }
-
 """
 
 RETURN = """

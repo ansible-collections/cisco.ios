@@ -1295,8 +1295,8 @@ Examples
     #   prompt: true
     #   slave_log: true
 
-    #·After·state:
-    #·------------
+    # After state:
+    # ------------
     #
     # router-ios#show running-config all | section ^service
     # service slave-log
