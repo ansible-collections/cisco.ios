@@ -458,8 +458,6 @@ Examples
           - afi: ipv4
         state: deleted
 
-
-
     # Task Output
     # -------------
     # before:

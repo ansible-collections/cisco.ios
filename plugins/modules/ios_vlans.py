@@ -557,7 +557,7 @@ EXAMPLES = """
 #  member vni 50901
 
 # Using Deleted without any config passed
-#"(NOTE: This will delete all of configured vlans attributes)"
+# "(NOTE: This will delete all of configured vlans attributes)"
 
 # Before state:
 # -------------

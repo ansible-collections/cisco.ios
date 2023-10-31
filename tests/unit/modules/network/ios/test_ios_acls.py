@@ -34,26 +34,37 @@ class TestIosAclsModule(TestIosModule):
             "AclsFacts.get_acl_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
+        self.mock_execute_show_command_name_specific = patch(
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls."
+            "AclsFacts.get_acl_names",
+        )
+        self.execute_show_command_name = self.mock_execute_show_command_name_specific.start()
 
     def tearDown(self):
         super(TestIosAclsModule, self).tearDown()
         self.mock_get_resource_connection_facts.stop()
         self.mock_execute_show_command.stop()
+        self.mock_execute_show_command_name_specific.stop()
 
     def test_ios_acls_merged(self):
         self.execute_show_command.return_value = dedent(
             """\
-            Standard IP access list test_acl
-            Extended IP access list 110
+            ip access-list extended 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
-            IPv6 access list R1_TRAFFIC
-                deny tcp any eq www any eq telnet ack dscp af11 sequence 10
-            Extended IP access list test_pre
+            ipv6 access-list R1_TRAFFIC
+                sequence 10 deny tcp any eq www any eq telnet ack dscp af11
+            ip access-list extended test_pre
                 10 permit ip any any precedence internet
             """,
         )
+        self.execute_show_command_name.return_value = dedent(
+            """\
+            Standard IP access list test_acl
+            """,
+        )
+
         set_module_args(
             dict(
                 config=[
@@ -153,18 +164,339 @@ class TestIosAclsModule(TestIosModule):
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
+    def test_ios_acls_merged_remarks_positional(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            """,
+        )
+        self.execute_show_command_name.return_value = dedent(
+            """\
+            Standard IP access list test_acl
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "acls": [
+                            {
+                                "aces": [
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "ip",
+                                        "sequence": 10,
+                                        "source": {
+                                            "address": "10.40.150.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                    },
+                                    {
+                                        "destination": {
+                                            "address": "10.40.150.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                        "grant": "permit",
+                                        "protocol": "ip",
+                                        "sequence": 20,
+                                        "source": {"any": True},
+                                    },
+                                ],
+                                "acl_type": "extended",
+                                "name": "199",
+                            },
+                            {
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "sequence": 10,
+                                        "source": {
+                                            "address": "10.182.250.0",
+                                            "wildcard_bits": "0.0.0.255",
+                                        },
+                                    },
+                                ],
+                                "acl_type": "standard",
+                                "name": "42",
+                            },
+                            {
+                                "aces": [
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 10,
+                                        "source": {
+                                            "address": "10.57.66.243",
+                                            "wildcard_bits": "0.0.0.7",
+                                        },
+                                    },
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 20,
+                                        "source": {"host": "10.160.114.111"},
+                                    },
+                                    {
+                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 30,
+                                        "source": {"host": "10.160.115.22"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "deny",
+                                        "log": {"set": True},
+                                        "protocol": "ip",
+                                        "sequence": 40,
+                                        "source": {"any": True},
+                                    },
+                                ],
+                                "acl_type": "extended",
+                                "name": "NET-MGMT-VTY",
+                            },
+                            {
+                                "aces": [
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "ip",
+                                        "remarks": [
+                                            "FIRST REMARK BEFORE LINE 10",
+                                            "============",
+                                            "ALLOW HOST FROM BUILDING 10",
+                                        ],
+                                        "sequence": 10,
+                                        "source": {"host": "1.1.1.1"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "ip",
+                                        "remarks": [
+                                            "FIRST REMARK BEFORE LINE 20",
+                                            "============",
+                                            "ALLOW HOST FROM BUILDING 20",
+                                        ],
+                                        "sequence": 20,
+                                        "source": {"host": "2.2.2.2"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "ip",
+                                        "remarks": [
+                                            "FIRST REMARK BEFORE LINE 30",
+                                            "============",
+                                            "ALLOW NEW HOST FROM BUILDING 10",
+                                        ],
+                                        "sequence": 30,
+                                        "source": {"host": "3.3.3.3"},
+                                    },
+                                    {
+                                        "remarks": [
+                                            "FIRST REMARK AT END OF ACL",
+                                            "SECOND REMARK AT END OF ACL",
+                                        ],
+                                    },
+                                ],
+                                "acl_type": "extended",
+                                "name": "TEST",
+                            },
+                            {
+                                "aces": [
+                                    {
+                                        "remarks": [
+                                            "empty remark 1",
+                                            "empty remark 2",
+                                            "empty remark never ends",
+                                        ],
+                                    },
+                                ],
+                                "acl_type": "extended",
+                                "name": "empty_ip_ex_acl",
+                            },
+                            {
+                                "aces": [
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "ip",
+                                        "remarks": [
+                                            "I am a test ace",
+                                            "I am right after the test ace",
+                                            "I third the test ace",
+                                        ],
+                                        "sequence": 100,
+                                        "source": {"host": "100.100.100.100"},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "ip",
+                                        "remarks": [
+                                            "I am the next test ace",
+                                            "I am the next ace to the next ace",
+                                        ],
+                                        "sequence": 110,
+                                        "source": {"host": "10.40.150.0"},
+                                    },
+                                    {"remarks": ["I am the peace ace", "Peace out"]},
+                                ],
+                                "acl_type": "extended",
+                                "name": "mytest",
+                            },
+                        ],
+                        "afi": "ipv4",
+                    },
+                    {
+                        "acls": [
+                            {
+                                "aces": [
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "ipv6",
+                                        "sequence": 10,
+                                        "source": {"address": "2001:ABAD:BEEF:1221::/64"},
+                                    },
+                                    {
+                                        "destination": {
+                                            "host": "2001:ABAD:BEEF:1212::1",
+                                            "port_protocol": {"eq": "www"},
+                                        },
+                                        "grant": "deny",
+                                        "protocol": "tcp",
+                                        "sequence": 20,
+                                        "source": {"host": "2001:ABAD:BEEF:2345::1"},
+                                    },
+                                ],
+                                "name": "R1_TRAFFIC",
+                            },
+                            {
+                                "aces": [
+                                    {"remarks": ["empty remark 1"], "sequence": 10},
+                                    {"remarks": ["empty remark 2"], "sequence": 20},
+                                    {"remarks": ["empty remark never ends"], "sequence": 30},
+                                ],
+                                "name": "empty_ipv6_acl",
+                            },
+                            {
+                                "aces": [
+                                    {"remarks": ["I am a ipv6 ace"], "sequence": 10},
+                                    {"remarks": ["I am test"], "sequence": 20},
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 30,
+                                        "source": {"any": True},
+                                    },
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "udp",
+                                        "sequence": 40,
+                                        "source": {"any": True},
+                                    },
+                                    {"remarks": ["I am new set of ipv6 ace"], "sequence": 50},
+                                    {
+                                        "destination": {"any": True},
+                                        "grant": "permit",
+                                        "protocol": "icmp",
+                                        "sequence": 60,
+                                        "source": {"any": True},
+                                    },
+                                ],
+                                "name": "ipv6_acl",
+                            },
+                        ],
+                        "afi": "ipv6",
+                    },
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = [
+            "ip access-list extended mytest",
+            "remark I am a test ace",
+            "remark I am right after the test ace",
+            "remark I third the test ace",
+            "100 permit ip host 100.100.100.100 any",
+            "remark I am the next test ace",
+            "remark I am the next ace to the next ace",
+            "110 permit ip host 10.40.150.0 any",
+            "remark I am the peace ace",
+            "remark Peace out",
+            "ip access-list extended 199",
+            "10 permit ip 10.40.150.0 0.0.0.255 any",
+            "20 permit ip any 10.40.150.0 0.0.0.255",
+            "ip access-list extended NET-MGMT-VTY",
+            "10 permit tcp 10.57.66.243 0.0.0.7 any eq 22",
+            "20 permit tcp host 10.160.114.111 any eq 22",
+            "30 permit tcp host 10.160.115.22 any eq 22",
+            "40 deny ip any any log",
+            "ip access-list extended empty_ip_ex_acl",
+            "remark empty remark 1",
+            "remark empty remark 2",
+            "remark empty remark never ends",
+            "ip access-list extended TEST",
+            "remark FIRST REMARK BEFORE LINE 10",
+            "remark ============",
+            "remark ALLOW HOST FROM BUILDING 10",
+            "10 permit ip host 1.1.1.1 any",
+            "remark FIRST REMARK BEFORE LINE 20",
+            "remark ============",
+            "remark ALLOW HOST FROM BUILDING 20",
+            "20 permit ip host 2.2.2.2 any",
+            "remark FIRST REMARK BEFORE LINE 30",
+            "remark ============",
+            "remark ALLOW NEW HOST FROM BUILDING 10",
+            "30 permit ip host 3.3.3.3 any",
+            "remark FIRST REMARK AT END OF ACL",
+            "remark SECOND REMARK AT END OF ACL",
+            "ip access-list standard 42",
+            "10 permit 10.182.250.0 0.0.0.255",
+            "ipv6 access-list R1_TRAFFIC",
+            "permit ipv6 2001:ABAD:BEEF:1221::/64 any sequence 10",
+            "deny tcp host 2001:ABAD:BEEF:2345::1 host 2001:ABAD:BEEF:1212::1 eq www sequence 20",
+            "ipv6 access-list empty_ipv6_acl",
+            "remark empty remark 1",
+            " sequence 10",
+            "remark empty remark 2",
+            " sequence 20",
+            "remark empty remark never ends",
+            " sequence 30",
+            "ipv6 access-list ipv6_acl",
+            "remark I am a ipv6 ace",
+            " sequence 10",
+            "remark I am test",
+            " sequence 20",
+            "permit tcp any any sequence 30",
+            "permit udp any any sequence 40",
+            "remark I am new set of ipv6 ace",
+            " sequence 50",
+            "permit icmp any any sequence 60",
+        ]
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
     def test_ios_acls_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
-            Standard IP access list test_acl
-            Extended IP access list 110
+            ip access-list standard test_acl
+            ip access-list extended 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
-            IPv6 access list R1_TRAFFIC
-                deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+            ipv6 access-list R1_TRAFFIC
+                sequence 10 deny tcp any eq www any eq telnet ack dscp af11
             """,
         )
+        self.execute_show_command_name.return_value = dedent("")
 
         set_module_args(
             dict(
@@ -209,19 +541,22 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_acls_replaced(self):
         self.execute_show_command.return_value = dedent(
             """\
-            Standard IP access list test_acl
-            Extended IP access list 110
+            ip access-list extended 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
-            IPv6 access list R1_TRAFFIC
-                deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+            ipv6 access-list R1_TRAFFIC
+                sequence 10 deny tcp any eq www any eq telnet ack dscp af11
             ip access-list standard test_acl
                 remark remark check 1
                 remark some random remark 2
             """,
         )
-
+        self.execute_show_command_name.return_value = dedent(
+            """\
+            Standard IP access list test_acl
+            """,
+        )
         set_module_args(
             dict(
                 config=[
@@ -264,29 +599,30 @@ class TestIosAclsModule(TestIosModule):
             "ip access-list extended replace_acl",
             "deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos min-monetary-cost",
             "ip access-list standard test_acl",
-            "remark Another remark here",
             "no remark remark check 1",
             "no remark some random remark 2",
+            "remark Another remark here",
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
-            Standard IP access list test_acl
-            Extended IP access list 110
+            ip access-list standard test_acl
+            ip access-list extended 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
-            IPv6 access list R1_TRAFFIC
-                deny tcp any eq www any eq telnet ack dscp af11 sequence 10
-            Extended IP access list test_pre
+            ipv6 access-list R1_TRAFFIC
+                sequence 10 deny tcp any eq www any eq telnet ack dscp af11
+            ip access-list extended test_pre
                 10 permit ip any any precedence internet
-            Extended IP access list test-idem
+            ip access-list extended test-idem
                 10 permit ip host 10.153.14.21 any
                 20 permit ip host 10.153.14.22 any
             """,
         )
+        self.execute_show_command_name.return_value = dedent("")
         set_module_args(
             dict(
                 config=[
@@ -404,15 +740,16 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_acls_overridden(self):
         self.execute_show_command.return_value = dedent(
             """\
-            Standard IP access list test_acl
-            Extended IP access list 110
+            ip access-list standard test_acl
+            ip access-list extended 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
-            IPv6 access list R1_TRAFFIC
-                deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+            ipv6 access-list R1_TRAFFIC
+                sequence 10 deny tcp any eq www any eq telnet ack dscp af11
             """,
         )
+        self.execute_show_command_name.return_value = dedent("")
         set_module_args(
             dict(
                 config=[
@@ -459,17 +796,21 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_acls_overridden_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
-            Standard IP access list test_acl
-            Extended IP access list 110
+            ip access-list extended 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
-            Reflexive IP access list MIRROR
+            ip access-list reflexive MIRROR
                 permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50200 (2 matches) (time left 123)
                 permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50201 (2 matches) (time left 345)
                 permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50202 (2 matches) (time left 678)
-            IPv6 access list R1_TRAFFIC
-                deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+            ipv6 access-list R1_TRAFFIC
+                sequence 10 deny tcp any eq www any eq telnet ack dscp af11
+            """,
+        )
+        self.execute_show_command_name.return_value = dedent(
+            """\
+            Standard IP access list test_acl
             """,
         )
         set_module_args(
@@ -556,15 +897,16 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_acls_deleted_afi_based(self):
         self.execute_show_command.return_value = dedent(
             """\
-            Standard IP access list test_acl
-            Extended IP access list 110
+            ip access-list standard test_acl
+            ip access-list extended 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
-            IPv6 access list R1_TRAFFIC
-                deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+            ipv6 access-list R1_TRAFFIC
+                sequence 10 deny tcp any eq www any eq telnet ack dscp af11
             """,
         )
+        self.execute_show_command_name.return_value = dedent("")
         set_module_args(dict(config=[dict(afi="ipv4")], state="deleted"))
         result = self.execute_module(changed=True)
         commands = ["no ip access-list extended 110", "no ip access-list standard test_acl"]
@@ -573,15 +915,16 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_acls_deleted_acl_based(self):
         self.execute_show_command.return_value = dedent(
             """\
-            Standard IP access list test_acl
-            Extended IP access list 110
+            ip access-list standard test_acl
+            ip access-list extended 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
-            IPv6 access list R1_TRAFFIC
-                deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+            ipv6 access-list R1_TRAFFIC
+                sequence 10 deny tcp any eq www any eq telnet ack dscp af11
             """,
         )
+        self.execute_show_command_name.return_value = dedent("")
         set_module_args(
             dict(
                 config=[
@@ -637,6 +980,7 @@ class TestIosAclsModule(TestIosModule):
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_rendered(self):
+        self.execute_show_command_name.return_value = dedent("")
         set_module_args(
             dict(
                 config=[
@@ -679,9 +1023,10 @@ class TestIosAclsModule(TestIosModule):
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
 
     def test_ios_acls_parsed(self):
+        self.execute_show_command_name.return_value = dedent("")
         set_module_args(
             dict(
-                running_config="""IPv6 access list R1_TRAFFIC\n deny tcp any eq www any range 10 20 ack dscp af11 sequence 10
+                running_config="""ipv6 access-list R1_TRAFFIC\n sequence 10 deny tcp any eq www any range 10 20 ack dscp af11
                 20 permit icmp host 192.0.2.1 host 192.0.2.2 echo\n 30 permit icmp host 192.0.2.3 host 192.0.2.4 echo-reply""",
                 state="parsed",
             ),
@@ -730,9 +1075,10 @@ class TestIosAclsModule(TestIosModule):
         self.assertEqual(parsed_list, result["parsed"])
 
     def test_ios_acls_parsed_matches(self):
+        self.execute_show_command_name.return_value = dedent("")
         set_module_args(
             dict(
-                running_config="""Standard IP access list R1_TRAFFIC\n10 permit 10.11.12.13 (2 matches)\n
+                running_config="""ip access-list standard R1_TRAFFIC\n10 permit 10.11.12.13 (2 matches)\n
                 40 permit 128.0.0.0, wildcard bits 63.255.255.255 (2 matches)\n60 permit 134.107.136.0, wildcard bits 0.0.0.255 (1 match)""",
                 state="parsed",
             ),
@@ -750,18 +1096,12 @@ class TestIosAclsModule(TestIosModule):
                             {
                                 "sequence": 40,
                                 "grant": "permit",
-                                "source": {
-                                    "address": "128.0.0.0",
-                                    "wildcard_bits": "63.255.255.255",
-                                },
+                                "protocol_options": {"protocol_number": 128},
                             },
                             {
-                                "grant": "permit",
                                 "sequence": 60,
-                                "source": {
-                                    "address": "134.107.136.0",
-                                    "wildcard_bits": "0.0.0.255",
-                                },
+                                "grant": "permit",
+                                "protocol_options": {"protocol_number": 134},
                             },
                         ],
                     },
@@ -773,15 +1113,16 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_acls_overridden_remark(self):
         self.execute_show_command.return_value = dedent(
             """\
-            Standard IP access list test_acl
-            Extended IP access list 110
+            ip access-list standard test_acl
+            ip access-list extended 110
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
-            access-list 110 remark test ab.
-            access-list 110 remark test again ab.
+                remark test ab.
+                remark test again ab.
             """,
         )
+        self.execute_show_command_name.return_value = dedent("")
         set_module_args(
             dict(
                 config=[
@@ -812,12 +1153,12 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_acls_overridden_option(self):
         self.execute_show_command.return_value = dedent(
             """\
-            Standard IP access list test_acl
             ip access-list standard test_acl
                 remark remark check 1
                 remark some random remark 2
             """,
         )
+        self.execute_show_command_name.return_value = dedent("")
 
         set_module_args(
             dict(
@@ -916,6 +1257,7 @@ class TestIosAclsModule(TestIosModule):
             """\
             """,
         )
+        self.execute_show_command_name.return_value = dedent("")
 
         set_module_args(
             dict(
@@ -981,12 +1323,13 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_delete_acl(self):
         self.execute_show_command.return_value = dedent(
             """\
-            Standard IP access list 2
+            ip access-list standard 2
                 30 permit 172.16.1.11
                 20 permit 172.16.1.10 log
                 10 permit 172.16.1.2
             """,
         )
+        self.execute_show_command_name.return_value = dedent("")
         set_module_args(
             dict(
                 config=[
@@ -1017,12 +1360,13 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_failed_extra_param_standard_acl(self):
         self.execute_show_command.return_value = dedent(
             """\
-            Standard IP access list test_acl
+            ip access-list standard test_acl
             ip access-list standard test_acl
                 remark remark check 1
                 remark some random remark 2
             """,
         )
+        self.execute_show_command_name.return_value = dedent("")
 
         set_module_args(
             dict(
@@ -1057,12 +1401,13 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_failed_update_with_merged(self):
         self.execute_show_command.return_value = dedent(
             """\
-            Standard IP access list test_acl
+            ip access-list standard test_acl
                 30 permit 172.16.1.11
                 20 permit 172.16.1.10 log
                 10 permit 172.16.1.2
             """,
         )
+        self.execute_show_command_name.return_value = dedent("")
         set_module_args(
             dict(
                 config=[
@@ -1096,15 +1441,16 @@ class TestIosAclsModule(TestIosModule):
         )
 
     def test_ios_acls_parsed_multioption(self):
+        self.execute_show_command_name.return_value = dedent("")
         set_module_args(
             dict(
                 running_config=dedent(
                     """\
-                    Standard IP access list 2
+                    ip access-list standard 2
                         30 permit 172.16.1.11
                         20 permit 172.16.1.10
                         10 permit 172.16.1.2
-                    Extended IP access list 101
+                    ip access-list extended 101
                         15 permit tcp any host 172.16.2.9
                         18 permit tcp any host 172.16.2.11
                         20 permit udp host 172.16.1.21 any
@@ -1113,17 +1459,13 @@ class TestIosAclsModule(TestIosModule):
                         50 permit ip any 10.1.1.0 0.0.0.255
                         60 permit tcp any host 10.1.1.1 eq telnet
                         70 permit tcp 10.1.1.0 0.0.0.255 172.16.1.0 0.0.0.255 eq telnet time-range EVERYOTHERDAY (active)
-                    Extended IP access list outboundfilters
+                    ip access-list extended outboundfilters
                         10 permit icmp 10.1.1.0 0.0.0.255 172.16.1.0 0.0.0.255
-                    Extended IP access list test
+                    ip access-list extended test
                         10 permit ip host 10.2.2.2 host 10.3.3.3
                         20 permit tcp host 10.1.1.1 host 10.5.5.5 eq www
                         30 permit icmp any any
                         40 permit udp host 10.6.6.6 10.10.10.0 0.0.0.255 eq domain
-                    Extended MAC access list system-cpp-bpdu-range
-                        permit any 0180.c200.0000 0000.0000.0003
-                    Extended MAC access list system-cpp-cdp
-                        permit any host 0100.0ccc.cccc
                     """,
                 ),
                 state="parsed",
@@ -1280,6 +1622,7 @@ class TestIosAclsModule(TestIosModule):
         self.assertEqual(parsed_list, result["parsed"])
 
     def test_ios_acls_rendered_muiltioption(self):
+        self.execute_show_command_name.return_value = dedent("")
         set_module_args(
             dict(
                 config=[
