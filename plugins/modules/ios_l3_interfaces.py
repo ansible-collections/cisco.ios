@@ -827,7 +827,6 @@ EXAMPLES = """
 #   ipv6:
 #   - address: 2001:db8:0:3::/64
 #   name: GigabitEthernet0/2
-
 """
 
 RETURN = """

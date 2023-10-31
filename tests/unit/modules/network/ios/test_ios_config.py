@@ -200,6 +200,15 @@ class TestIosConfigModule(TestIosModule):
         commands = parents + lines
         self.execute_module(changed=True, commands=commands)
 
+    def test_ios_config_replace_block_src(self):
+        src = load_fixture("ios_config_src.cfg")
+        set_module_args(dict(src=src, replace="block"))
+        self.conn.get_diff = MagicMock(
+            return_value=self.cliconf_obj.get_diff(src, self.running_config),
+        )
+        commands = ["hostname foo", "interface GigabitEthernet0/0", "no ip address"]
+        self.execute_module(changed=True, commands=commands)
+
     def test_ios_config_match_none(self):
         lines = ["hostname router"]
         set_module_args(dict(lines=lines, match="none"))

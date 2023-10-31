@@ -37,6 +37,17 @@
       ansible.builtin.assert:
         that:
           - results.failed
+
+    - name: Test long password fails
+      cisco.ios.ios_user:
+        name: auth_user
+        privilege: 15
+        role: network-operator
+        state: present
+        configured_password: "{{ 'a' * 128 }}"
+      register: result_fail
+      failed_when: "'Invalid Password length' not in result_fail.msg"
+
   always:
     - name: Reset connection with {{ ansible_user }}
       ansible.builtin.meta: reset_connection
