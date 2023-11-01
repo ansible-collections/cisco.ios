@@ -3,10 +3,9 @@ merged:
   before: {}
   commands:
     - l2vpn evpn
+    - ip local-learning disable
     - replication-type ingress
     - route-target auto vni
-    - router-id Loopback1
-    - ip local-learning disable
   after:
     replication_type: ingress
     route_target:
@@ -19,14 +18,13 @@ merged:
 
 replaced:
   before:
+    ip:
+      local_learning:
+        disable: true
     replication_type: ingress
     route_target:
       auto:
         vni: true
-    router_id: Loopback1
-    ip:
-      local_learning:
-        disable: true
   commands:
     - l2vpn evpn
     - default-gateway advertise
@@ -34,15 +32,14 @@ replaced:
     - no ip local-learning disable
     - replication-type static
     - no route-target auto vni
-    - router-id Loopback2
   after:
-    replication_type: static
-    router_id: Loopback2
+    default_gateway:
+      advertise: false
     flooding_suppression:
       address_resolution:
         disable: true
-    default_gateway:
-      advertise: false
+    replication_type: static
+    router_id: Loopback1
 
 deleted:
   before:
@@ -66,14 +63,14 @@ rendered:
 
 gathered:
   after:
+    ip:
+      local_learning:
+        disable: true
     replication_type: ingress
     route_target:
       auto:
         vni: true
     router_id: Loopback1
-    ip:
-      local_learning:
-        disable: true
 
 parsed:
   after:
