@@ -1,6 +1,6 @@
 ---
 merged:
-  before: 
+  before:
     - evi: 101
       encapsulation: vxlan
       replication_type: static
