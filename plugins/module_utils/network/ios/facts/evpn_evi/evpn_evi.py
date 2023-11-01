@@ -33,7 +33,7 @@ class Evpn_eviFacts(object):
         self.argument_spec = Evpn_eviArgs.argument_spec
 
     def get_evpn_evi_data(self, connection):
-        return connection.get("show running-config nve | section ^l2vpn evpn instance .+$")
+        return connection.get("show running-config | section ^l2vpn evpn instance .+$")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Evpn_evi network resource
