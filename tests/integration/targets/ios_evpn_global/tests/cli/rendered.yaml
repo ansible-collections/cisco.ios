@@ -16,5 +16,5 @@
     - name: Ios_evpn_global rendered - assert commands
       ansible.builtin.assert:
         that:
-          - "{{ rendered['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ rendered['commands'] | symmetric_difference(result['rendered']) | length == 0 }}"
           - result['changed'] == false
