@@ -20,12 +20,12 @@
     - name: Ios_evpn_global deleted - assert before
       ansible.builtin.assert:
         that:
-          - "{{ deleted['before'] | symmetric_difference(result['before']) | length == 0 }}"
+          - deleted['before'] == result['before']
 
     - name: Ios_evpn_global deleted - assert after
       ansible.builtin.assert:
         that:
-          - "{{ deleted['after'] | symmetric_difference(result['after']) | length == 0 }}"
+          - deleted['after'] == result['after']
 
     - name: Ios_evpn_global deleted - play (idempotent)
       register: result
