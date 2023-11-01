@@ -16,11 +16,9 @@ merged:
   commands:
     - l2vpn evpn instance 202 vlan-based
     - default-gateway advertise enable
-    - encapsulation vxlan
     - ip local-learning disable
     - replication-type static
     - l2vpn evpn instance 101 vlan-based
-    - encapsulation vxlan
     - ip local-learning enable
     - replication-type ingress
     - rd 1:1
