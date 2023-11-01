@@ -3,7 +3,7 @@ merged:
   before: {}
   commands:
     - interface nve1
-    - source-interface loopback1
+    - source-interface Loopback1
     - host-reachability protocol bgp
     - member vni 10101 ingress-replication
     - member vni 10102 ingress-replication
@@ -13,7 +13,7 @@ merged:
     - member vni 50902 vrf blue
   after:
     - interface: nve1
-      source_interface: loopback1
+      source_interface: Loopback1
       host_reachability_bgp: true
       member:
         vni:
@@ -44,7 +44,7 @@ merged:
 replaced:
   before:
     - interface: nve1
-      source_interface: loopback1
+      source_interface: Loopback1
       host_reachability_bgp: true
       member:
         vni:
@@ -84,7 +84,7 @@ replaced:
     - no member vni 50902 vrf blue
   after:
     - interface: nve1
-      source_interface: loopback1
+      source_interface: Loopback1
       host_reachability_bgp: true
       member:
         vni:
@@ -103,7 +103,7 @@ replaced:
 overridden:
   before:
     - interface: nve1
-      source_interface: loopback1
+      source_interface: Loopback1
       host_reachability_bgp: true
       member:
         vni:
@@ -144,7 +144,7 @@ overridden:
     - member vni 50901 vrf blue
   after:
     - interface: nve1
-      source_interface: loopback1
+      source_interface: Loopback1
       host_reachability_bgp: true
       member:
         vni:
@@ -166,7 +166,7 @@ overridden:
 deleted:
   before:
     - interface: nve1
-      source_interface: loopback1
+      source_interface: Loopback1
       host_reachability_bgp: true
       member:
         vni:
@@ -211,7 +211,7 @@ deleted:
 gathered:
   config:
     - interface: nve1
-      source_interface: loopback1
+      source_interface: Loopback1
       host_reachability_bgp: true
       member:
         vni:
@@ -243,7 +243,7 @@ gathered:
 parsed:
   config:
     - interface: nve1
-      source_interface: loopback1
+      source_interface: Loopback1
       host_reachability_bgp: true
       member:
         vni:
@@ -266,7 +266,7 @@ parsed:
 rendered:
   commands:
     - interface nve1
-    - source-interface loopback1
+    - source-interface Loopback1
     - host-reachability protocol bgp
     - member vni 10101 mcast-group FF0E:225::101
     - member vni 10201 mcast-group FF0E:225::102
