@@ -148,8 +148,10 @@ rendered:
   commands:
     - l2vpn evpn instance 101 vlan-based
     - default-gateway advertise enable
+    - encapsulation vxlan
     - replication-type ingress
     - l2vpn evpn instance 202 vlan-based
+    - encapsulation vxlan
     - replication-type ingress
 
 gathered:
