@@ -13,7 +13,7 @@
       ansible.builtin.assert:
         that:
           - result.changed == false
-          - "{{ parsed['after'] | symmetric_difference(result['parsed']) | length == 0 }}"
+          - parsed['after'] == result['parsed']
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
