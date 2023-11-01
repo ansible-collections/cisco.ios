@@ -1,6 +1,7 @@
 ---
 merged:
-  before: {}
+  before:
+    - interface: nve1
   commands:
     - interface nve1
     - source-interface Loopback1
@@ -207,6 +208,7 @@ deleted:
 
   after:
     - interface: nve1
+      host_reachability_bgp: true
 
 gathered:
   config:
@@ -267,7 +269,6 @@ rendered:
   commands:
     - interface nve1
     - source-interface Loopback1
-    - host-reachability protocol bgp
     - member vni 10101 mcast-group FF0E:225::101
     - member vni 10201 mcast-group FF0E:225::102
     - member vni 50901 vrf blue
