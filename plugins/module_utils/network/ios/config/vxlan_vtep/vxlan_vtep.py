@@ -130,12 +130,13 @@ class Vxlan_vtep(ResourceModule):
                     # remove exiting config of the member VNI
                     self.addcmd(undel_vnis.pop(wvni, {}), PARSER_DICT[vni_type], True)
                     if vni_type == "l3vni":
-                        self._remove_existing_vnis_vrfs(want["vrf"], undel_vnis)
+                        undel_vnis = self._remove_existing_vnis_vrfs(want["vrf"], undel_vnis)
                     self.addcmd(want, PARSER_DICT[vni_type])
 
             # remove remaining configs in have for replaced state
             for hvni, have in haved.items():
-                self.addcmd(have, PARSER_DICT[vni_type], True)
+                if hvni in undel_vnis:
+                    self.addcmd(have, PARSER_DICT[vni_type], True)
 
     def _interface_list_to_dict(self, want, have):
         """Convert all list of dicts to dicts of dicts"""
@@ -166,7 +167,8 @@ class Vxlan_vtep(ResourceModule):
         )
         if vrf_haved:
             self.addcmd(haved.pop(vrf_haved["vni"]), "vrf", True)
-
+        return haved
+        
     def _filtered_dict(self, want, have):
         """Remove other config from 'have' if 'member' key is present"""
 
