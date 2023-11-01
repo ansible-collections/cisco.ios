@@ -10,7 +10,7 @@
       cisco.ios.ios_vxlan_vtep: &id001
         config:
           - interface: nve1
-            source_interface: loopback1
+            source_interface: Loopback1
             host_reachability_bgp: true
             member:
               vni:
