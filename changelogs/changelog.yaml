@@ -1023,3 +1023,5 @@ releases:
       - fix_config.yaml
       - ios_snmp_server_changes.yml
     release_date: "2023-10-27"
+  5.2.1:
+    release_date: "2023-11-01"
