@@ -11,7 +11,7 @@
       cisco.ios.ios_evpn_global: &id001
         config:
           replication_type: static
-          router_id: Loopback2
+          router_id: Loopback1
           default_gateway:
             advertise: true
           flooding_suppression:
@@ -27,12 +27,12 @@
     - name: Ios_evpn_global replaced - assert before
       ansible.builtin.assert:
         that:
-          - "{{ replaced['before'] | symmetric_difference(result['before']) | length == 0 }}"
+          - replaced['before'] == result['before']
 
     - name: Ios_evpn_global replaced - assert after
       ansible.builtin.assert:
         that:
-          - "{{ replaced['after'] | symmetric_difference(result['after']) | length == 0 }}"
+          - replaced['after'] == result['after']
 
     - name: Ios_evpn_global replaced - play (idempotent)
       register: result
