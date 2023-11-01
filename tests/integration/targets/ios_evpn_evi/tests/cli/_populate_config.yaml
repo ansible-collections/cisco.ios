@@ -1,19 +1,13 @@
 ---
 - name: Populate configuration
-  vars:
-    lines: "
-      l2vpn evpn instance 101 vlan-based\n
-      encapsulation vxlan\n
-      replication-type static\n
-      l2vpn evpn instance 102 vlan-based\n
-      encapsulation vxlan\n
-      replication-type ingress\n
-      l2vpn evpn instance 201 vlan-based\n
-      encapsulation vxlan\n
-      replication-type static\n
-      l2vpn evpn instance 202 vlan-based\n
-      encapsulation vxlan\n
-      replication-type ingress\n
-      "
-  ansible.netcommon.cli_config:
-    config: "{{ lines }}"
+  cisco.ios.ios_evpn_evi:
+    config:
+      - evi: 101
+        replication_type: static
+      - evi: 102
+        replication_type: ingress
+      - evi: 201
+        replication_type: static
+      - evi: 202
+        replication_type: ingress
+    state: merged
