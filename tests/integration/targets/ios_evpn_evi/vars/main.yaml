@@ -41,7 +41,7 @@ merged:
       replication_type: static
       ip:
         local_learning:
-          enable: true
+          disable: true
       default_gateway:
         advertise:
           enable: true
