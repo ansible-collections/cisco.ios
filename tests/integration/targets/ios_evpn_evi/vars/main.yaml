@@ -29,6 +29,7 @@ merged:
       ip:
         local_learning:
           enable: true
+      route_distinguisher: "1:1"
     - evi: 102
       encapsulation: vxlan
       replication_type: ingress
