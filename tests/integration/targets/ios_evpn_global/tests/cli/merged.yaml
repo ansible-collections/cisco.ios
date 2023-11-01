@@ -31,12 +31,12 @@
     - name: Ios_evpn_global merged - assert before
       ansible.builtin.assert:
         that:
-          - "{{ merged['before'] | symmetric_difference(result['before']) | length == 0 }}"
+          - merged['before'] == result['before']
 
     - name: Ios_evpn_global merged - assert after
       ansible.builtin.assert:
         that:
-          - "{{ merged['after'] | symmetric_difference(result['after']) | length == 0 }}"
+          - merged['after'] == result['after']
 
     - name: Ios_evpn_global merged - play (idempotent)
       register: result
