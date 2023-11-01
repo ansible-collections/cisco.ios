@@ -168,7 +168,7 @@ class Vxlan_vtep(ResourceModule):
         if vrf_haved:
             self.addcmd(haved.pop(vrf_haved["vni"]), "vrf", True)
         return haved
-        
+
     def _filtered_dict(self, want, have):
         """Remove other config from 'have' if 'member' key is present"""
 
