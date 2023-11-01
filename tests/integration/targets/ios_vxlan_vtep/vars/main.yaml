@@ -51,16 +51,26 @@ replaced:
           l2vni:
             - vni: 10101
               replication:
-                type: static
-                mcast_group:
-                  ipv6: FF0E:225::101
+                type: ingress
+            - vni: 10102
+              replication:
+                type: ingress
             - vni: 10201
               replication:
                 type: static
                 mcast_group:
+                  ipv4: 225.0.0.101
+                  ipv6: FF0E:225::101
+            - vni: 10202
+              replication:
+                type: static
+                mcast_group:
+                  ipv4: 225.0.0.102
                   ipv6: FF0E:225::102
           l3vni:
             - vni: 50901
+              vrf: green
+            - vni: 50902
               vrf: blue
   commands:
     - interface nve1
@@ -69,10 +79,9 @@ replaced:
     - no member vni 10201 mcast-group 225.0.0.101 FF0E:225::101
     - member vni 10201 mcast-group FF0E:225::102
     - no member vni 10102 ingress-replication
-    - no member vni 10202 ingress-replication
+    - no member vni 10202 mcast-group 225.0.0.102 FF0E:225::102
     - no member vni 50901 vrf green
     - no member vni 50902 vrf blue
-    - no member vni 50901 vrf blue
   after:
     - interface: nve1
       source_interface: loopback1
@@ -90,9 +99,6 @@ replaced:
                 type: static
                 mcast_group:
                   ipv6: FF0E:225::102
-          l3vni:
-            - vni: 50901
-              vrf: blue
 
 overridden:
   before:
@@ -104,16 +110,26 @@ overridden:
           l2vni:
             - vni: 10101
               replication:
-                type: static
-                mcast_group:
-                  ipv6: FF0E:225::101
+                type: ingress
+            - vni: 10102
+              replication:
+                type: ingress
             - vni: 10201
               replication:
                 type: static
                 mcast_group:
+                  ipv4: 225.0.0.101
+                  ipv6: FF0E:225::101
+            - vni: 10202
+              replication:
+                type: static
+                mcast_group:
+                  ipv4: 225.0.0.102
                   ipv6: FF0E:225::102
           l3vni:
             - vni: 50901
+              vrf: green
+            - vni: 50902
               vrf: blue
   commands:
     - interface nve1
@@ -122,7 +138,7 @@ overridden:
     - no member vni 10201 mcast-group 225.0.0.101 FF0E:225::101
     - member vni 10201 mcast-group FF0E:225::102
     - no member vni 10102 ingress-replication
-    - no member vni 10202 ingress-replication
+    - no member vni 10202 mcast-group 225.0.0.102 FF0E:225::102
     - no member vni 50901 vrf green
     - no member vni 50902 vrf blue
     - member vni 50901 vrf blue
