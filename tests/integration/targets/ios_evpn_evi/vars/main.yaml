@@ -1,6 +1,18 @@
 ---
 merged:
-  before: {}
+  before: 
+    - evi: 101
+      encapsulation: vxlan
+      replication_type: static
+    - evi: 102
+      encapsulation: vxlan
+      replication_type: ingress
+    - evi: 201
+      encapsulation: vxlan
+      replication_type: static
+    - evi: 202
+      encapsulation: vxlan
+      replication_type: ingress
   commands:
     - l2vpn evpn instance 202 vlan-based
     - default-gateway advertise enable
