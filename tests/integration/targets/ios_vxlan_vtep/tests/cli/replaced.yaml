@@ -12,6 +12,7 @@
         config:
           - interface: nve1
             source_interface: Loopback1
+            host_reachability_bgp: true
             member:
               vni:
                 l2vni:
@@ -25,9 +26,6 @@
                       type: static
                       mcast_group:
                         ipv6: FF0E:225::102
-                l3vni:
-                  - vni: 50901
-                    vrf: blue
         state: replaced
 
     - name: Assert that correct set of commands were generated
