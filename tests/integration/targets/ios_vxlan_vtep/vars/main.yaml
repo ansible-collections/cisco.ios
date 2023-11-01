@@ -125,7 +125,7 @@ overridden:
     - no member vni 10202 ingress-replication
     - no member vni 50901 vrf green
     - no member vni 50902 vrf blue
-    - no member vni 50901 vrf blue
+    - member vni 50901 vrf blue
   after:
     - interface: nve1
       source_interface: loopback1
