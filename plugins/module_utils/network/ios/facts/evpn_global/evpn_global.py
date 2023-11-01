@@ -33,7 +33,7 @@ class Evpn_globalFacts(object):
         self.argument_spec = Evpn_globalArgs.argument_spec
 
     def get_evpn_global_data(self, connection):
-        return connection.get("show running-config nve | section ^l2vpn evpn$")
+        return connection.get("show running-config | section ^l2vpn evpn$")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Evpn_global network resource
