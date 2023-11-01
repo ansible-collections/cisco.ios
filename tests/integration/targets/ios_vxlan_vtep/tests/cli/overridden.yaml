@@ -12,6 +12,7 @@
         config:
           - interface: nve1
             source_interface: Loopback1
+            host_reachability_bgp: true
             member:
               vni:
                 l2vni:
