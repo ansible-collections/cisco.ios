@@ -1,12 +1,27 @@
 - name: Populate configuration
   cisco.ios.ios_vlans:
     config:
+      - vlan_id: 101
+        member:
+          vni: 10101
+          evi: 101
+      - vlan_id: 102
+        member:
+          vni: 10102
+          evi: 102
       - vlan_id: 201
         member:
-        vni: 10201
-        evi: 201
+          vni: 10201
+          evi: 201
+      - vlan_id: 202
+        member:
+          vni: 10202
+          evi: 202
+      - vlan_id: 901
+        member:
+          vni: 50901
       - vlan_id: 902
         member:
-        vni: 50902
+          vni: 50902
     configuration: True
     state: merged
