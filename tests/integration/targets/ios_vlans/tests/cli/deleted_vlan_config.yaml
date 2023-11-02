@@ -16,17 +16,17 @@
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ deleted_vlan_config['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - deleted['before'] == result['before']
+          - deleted_vlan_config['before'] == result['before']
 
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
-          - deleted['after'] == result['after']
+          - deleted_vlan_config['after'] == result['after']
 
     - name: Delete vlans attributes for all configured vlans (idempotent)
       register: result
