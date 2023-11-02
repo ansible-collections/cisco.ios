@@ -120,8 +120,9 @@ class Vlans(ConfigBase):
                   to the desired configuration
         """
         want = []
-        for cfg in self._module.params["config"]:
-            want.append(remove_empties(cfg))
+        if self._module.params.get("config"):
+            for cfg in self._module.params["config"]:
+                want.append(remove_empties(cfg))
         have = existing_vlans_facts
         resp = self.set_state(want, have)
         return to_list(resp)
