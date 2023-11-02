@@ -1,14 +1,6 @@
 ---
 - name: Remove configuration
-  vars:
-    lines: |
-      no vlan configuration 101
-      no vlan configuration 102
-      no vlan configuration 901
-      no vlan configuration 201
-      no vlan configuration 202
-      no vlan configuration 902
-
-  when: ansible_net_version != "15.6(2)T"
-  ansible.netcommon.cli_config:
-    config: "{{ lines }}"
+  cisco.ios.ios_vlans:
+    config:
+    configuration: true
+    state: deleted
