@@ -28,4 +28,4 @@
     - ansible.builtin.assert:
         that:
           - result.changed == false
-          - parsed_vlan_config['config']|symmetric_difference(result.parsed) == []
+          - parsed_vlan_config|symmetric_difference(result.parsed) == []
