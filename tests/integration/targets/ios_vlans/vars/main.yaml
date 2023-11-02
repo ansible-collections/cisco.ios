@@ -318,9 +318,6 @@ overridden:
 overridden_vlan_config:
   before:
     - vlan_id: 101
-      member:
-        evi: 101
-        vni: 10101
     - vlan_id: 102
       member:
         evi: 102
