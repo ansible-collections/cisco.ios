@@ -87,12 +87,12 @@
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ merged_vlan_config['before'] | symmetric_difference(result['before']) | length == 0 }}"
+          - merged_vlan_config['before'] == result['before']
 
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ merged_vlan_config['after'] | symmetric_difference(result['after']) | length == 0 }}"
+          - merged_vlan_config['after'] == result['after']
 
     - name: Merge provided configuration with device configuration (idempotent)
       register: result
