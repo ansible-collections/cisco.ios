@@ -49,7 +49,7 @@ class VlansFacts(object):
         facts gracefully. Does not fail module.
         """
         if configuration:
-            cmd = "show running-config nve | sec ^vlan configuration"
+            cmd = "show running-config | sec ^vlan configuration .+"
         else:
             cmd = "show vlan"
         check_os_type = connection.get_device_info()
