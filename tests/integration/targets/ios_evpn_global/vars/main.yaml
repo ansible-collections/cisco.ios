@@ -6,6 +6,7 @@ merged:
     - ip local-learning disable
     - replication-type ingress
     - route-target auto vni
+    - router-id Loopback1
   after:
     replication_type: ingress
     route_target:
@@ -18,6 +19,7 @@ merged:
 
 replaced:
   before:
+    router_id: Loopback1
     ip:
       local_learning:
         disable: true
@@ -34,7 +36,7 @@ replaced:
     - no route-target auto vni
   after:
     default_gateway:
-      advertise: false
+      advertise: true
     flooding_suppression:
       address_resolution:
         disable: true
