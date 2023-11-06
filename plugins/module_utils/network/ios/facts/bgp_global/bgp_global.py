@@ -55,10 +55,7 @@ class Bgp_globalFacts(object):
         objs = bgp_global_parser.parse()
         neighbor_list = objs.get("neighbors", {})
         if neighbor_list:
-            objs["neighbors"] = sorted(
-                list(neighbor_list.values()),
-                key=lambda k, pk="neighbor_address": k[pk],
-            )
+            objs["neighbors"] = list(neighbor_list.values())
 
         obj = utils.remove_empties(objs)
 
