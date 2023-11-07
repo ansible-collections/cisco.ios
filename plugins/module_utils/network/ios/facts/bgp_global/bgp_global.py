@@ -15,7 +15,9 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
+    utils,
+)
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_global.bgp_global import (
     Bgp_globalArgs,
@@ -51,17 +53,24 @@ class Bgp_globalFacts(object):
             data = self.get_bgp_global_data(connection)
 
         # parse native config using the Bgp_global template
-        bgp_global_parser = Bgp_globalTemplate(lines=data.splitlines(), module=self._module)
+        bgp_global_parser = Bgp_globalTemplate(
+            lines=data.splitlines(), module=self._module
+        )
         objs = bgp_global_parser.parse()
         neighbor_list = objs.get("neighbors", {})
         if neighbor_list:
-            objs["neighbors"] = list(neighbor_list.values())
+            objs["neighbors"] = sorted(
+                list(neighbor_list.values()),
+                key=lambda k, pk="neighbor_address": k[pk],
+            )
 
         obj = utils.remove_empties(objs)
 
         ansible_facts["ansible_network_resources"].pop("bgp_global", None)
         params = utils.remove_empties(
-            bgp_global_parser.validate_config(self.argument_spec, {"config": obj}, redact=True),
+            bgp_global_parser.validate_config(
+                self.argument_spec, {"config": obj}, redact=True
+            ),
         )
 
         facts["bgp_global"] = params.get("config", {})
