@@ -1,0 +1,3 @@
+---
+doc_changes:
+  - Updated the ios_ping doc to reflect that the size parameter is not supported.
