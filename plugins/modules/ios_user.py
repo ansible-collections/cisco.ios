@@ -369,11 +369,11 @@ def map_obj_to_commands(updates, module):
     def add_hashed_password(command, want, x):
         if x.get("type") == 9:
             command.append(
-                "username %s secret %s %s" % (want["name"], x.get("type"), x.get("value"))
+                "username %s secret %s %s" % (want["name"], x.get("type"), x.get("value")),
             )
         else:
             command.append(
-                "username %s password %s %s" % (want["name"], x.get("type"), x.get("value"))
+                "username %s password %s %s" % (want["name"], x.get("type"), x.get("value")),
             )
 
     def add_ssh(command, want, x=None):
