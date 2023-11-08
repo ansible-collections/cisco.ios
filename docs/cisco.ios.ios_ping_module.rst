@@ -241,6 +241,12 @@ Examples
         vrf: prod
         count: 20
 
+    - name: Test reachability to 198.51.100.249 using df-bit and size
+      cisco.ios.ios_ping:
+        dest: 198.51.100.249
+        df_bit: true
+        size: 1400
+
     - name: Test reachability to ipv6 address
       cisco.ios.ios_ping:
         dest: 2001:db8:ffff:ffff:ffff:ffff:ffff:ffff
