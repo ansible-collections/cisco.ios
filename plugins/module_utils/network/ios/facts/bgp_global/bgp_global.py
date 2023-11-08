@@ -51,7 +51,10 @@ class Bgp_globalFacts(object):
             data = self.get_bgp_global_data(connection)
 
         # parse native config using the Bgp_global template
-        bgp_global_parser = Bgp_globalTemplate(lines=data.splitlines(), module=self._module)
+        bgp_global_parser = Bgp_globalTemplate(
+            lines=data.splitlines(),
+            module=self._module,
+        )
         objs = bgp_global_parser.parse()
         neighbor_list = objs.get("neighbors", {})
         if neighbor_list:
@@ -64,7 +67,11 @@ class Bgp_globalFacts(object):
 
         ansible_facts["ansible_network_resources"].pop("bgp_global", None)
         params = utils.remove_empties(
-            bgp_global_parser.validate_config(self.argument_spec, {"config": obj}, redact=True),
+            bgp_global_parser.validate_config(
+                self.argument_spec,
+                {"config": obj},
+                redact=True,
+            ),
         )
 
         facts["bgp_global"] = params.get("config", {})
