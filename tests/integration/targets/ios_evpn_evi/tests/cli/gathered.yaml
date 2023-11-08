@@ -1,0 +1,22 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_evpn_evi gathered integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Ios_evpn_evi gather - play
+      register: result
+      cisco.ios.ios_evpn_evi:
+        config:
+        state: gathered
+
+    - name: Ios_evpn_evi gather - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - gathered['after'] == result['gathered']
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
