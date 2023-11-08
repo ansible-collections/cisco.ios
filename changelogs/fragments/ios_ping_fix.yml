@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Updated the ios_ping ping module to support size param.
