@@ -18,11 +18,6 @@
 #   ansible.netcommon.cli_config:
 #     config: "{{ lines }}"
 
-- name: Some test data remove later
-  register: result
-  cisco.ios.ios_command:
-    commands: show running-config | section ^router bgp
-
 - name: Remove BGP global configuration
   cisco.ios.ios_bgp_global:
     state: purged
