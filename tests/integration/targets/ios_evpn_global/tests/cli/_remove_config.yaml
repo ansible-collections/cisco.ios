@@ -5,5 +5,5 @@
     state: deleted
 
 - name: Remove Loopback1
-  ansible.netcommon.cli_command:
-    command: no interface Loopback1
+  ansible.netcommon.cli_config:
+    config: "no interface Loopback1"
