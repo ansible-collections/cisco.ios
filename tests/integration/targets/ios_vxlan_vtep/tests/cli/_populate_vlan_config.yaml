@@ -8,7 +8,7 @@
        name Access_VLAN_102
       vlan 201
        name Access_VLAN_201
-      vlan 202  
+      vlan 202
        name Access_VLAN_202
       vlan 901
        name Core_VLAN_VRF_green
@@ -26,4 +26,3 @@
        member vni 50901
       vlan configuration 902
        member vni 50902
-
