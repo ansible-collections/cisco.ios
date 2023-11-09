@@ -20,3 +20,4 @@ plugins/module_utils/network/ios/config/logging_global/logging_global.py import-
 plugins/module_utils/network/ios/config/prefix_lists/prefix_lists.py import-2.6!skip
 plugins/module_utils/network/ios/config/ntp_global/ntp_global.py import-2.6!skip
 plugins/module_utils/network/ios/config/vxlan_vtep/vxlan_vtep.py import-2.6!skip
+plugins/module_utils/network/ios/config/evpn_evi/evpn_evi.py import-2.6!skip

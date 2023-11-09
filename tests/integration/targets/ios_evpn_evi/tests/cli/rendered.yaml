@@ -1,0 +1,23 @@
+---
+- ansible.builtin.debug:
+    msg: START Rendered ios_evpn_evi state for integration tests on connection={{ ansible_connection }}
+
+- block:
+    - name: Ios_evpn_evi rendered - play
+      register: result
+      cisco.ios.ios_evpn_evi:
+        config:
+          - evi: 101
+            replication_type: ingress
+            default_gateway:
+              advertise:
+                enable: true
+          - evi: 202
+            replication_type: ingress
+        state: rendered
+
+    - name: Ios_evpn_evi rendered - assert commands
+      ansible.builtin.assert:
+        that:
+          - "{{ rendered['commands'] | symmetric_difference(result['rendered']) | length == 0 }}"
+          - result['changed'] == false

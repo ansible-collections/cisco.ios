@@ -1,0 +1,13 @@
+---
+- name: Populate configuration
+  cisco.ios.ios_evpn_evi:
+    config:
+      - evi: 101
+        replication_type: static
+      - evi: 102
+        replication_type: ingress
+      - evi: 201
+        replication_type: static
+      - evi: 202
+        replication_type: ingress
+    state: merged
