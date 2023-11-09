@@ -179,6 +179,7 @@ class TestIosVxlanVtepModule(TestIosModule):
                     {
                         "interface": "nve1",
                         "source_interface": "Loopback2",
+                        "host_reachability_bgp": True,
                         "member": {
                             "vni": {
                                 "l2vni": [
@@ -238,6 +239,7 @@ class TestIosVxlanVtepModule(TestIosModule):
                     {
                         "interface": "nve1",
                         "source_interface": "Loopback2",
+                        "host_reachability_bgp": True,
                         "member": {
                             "vni": {
                                 "l2vni": [
@@ -289,6 +291,7 @@ class TestIosVxlanVtepModule(TestIosModule):
                     {
                         "interface": "nve1",
                         "source_interface": "Loopback2",
+                        "host_reachability_bgp": True,
                         "member": {
                             "vni": {
                                 "l2vni": [
@@ -330,6 +333,55 @@ class TestIosVxlanVtepModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
+
+    def test_ios_vxlan_vtep_overridden_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+        interface nve1
+         no ip address
+         source-interface Loopback2
+         host-reachability protocol bgp
+         member vni 10101 mcast-group FF0E:225::101
+         member vni 10201 mcast-group FF0E:225::102
+        """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "interface": "nve1",
+                        "source_interface": "Loopback2",
+                        "host_reachability_bgp": True,
+                        "member": {
+                            "vni": {
+                                "l2vni": [
+                                    {
+                                        "vni": "10101",
+                                        "replication": {
+                                            "type": "static",
+                                            "mcast_group": {
+                                                "ipv6": "FF0E:225::101",
+                                            },
+                                        },
+                                    },
+                                    {
+                                        "vni": "10201",
+                                        "replication": {
+                                            "type": "static",
+                                            "mcast_group": {
+                                                "ipv6": "FF0E:225::102",
+                                            },
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                ],
+                state="overridden",
+            ),
+        )
+        self.execute_module(changed=False, commands=[])
 
     def test_ios_vxlan_vtep_deleted(self):
         self.execute_show_command.return_value = dedent(
