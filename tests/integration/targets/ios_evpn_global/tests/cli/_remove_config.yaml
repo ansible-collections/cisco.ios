@@ -6,4 +6,4 @@
 
 - name: Remove Loopback1
   ansible.netcommon.cli_config:
-    config: "no interface Loopback1"
+    config: no interface Loopback1
