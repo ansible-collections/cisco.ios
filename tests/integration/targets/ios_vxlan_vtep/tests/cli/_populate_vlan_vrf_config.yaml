@@ -1,3 +1,4 @@
+---
 - name: Configure VLANs and VRFs
   ansible.netcommon.cli_config:
     config: |
