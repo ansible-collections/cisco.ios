@@ -1,5 +1,9 @@
----
+---    
 - name: Remove all configuration evpn_global
   cisco.ios.ios_evpn_global:
     config:
     state: deleted
+
+- name: Remove Loopback1
+  ansible.netcommon.cli_command:
+    command: no interface Loopback1
