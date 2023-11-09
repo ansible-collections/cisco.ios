@@ -339,7 +339,6 @@ EXAMPLES = """
 # -------------
 # interface nve1
 #  no ip address
-
 """
 
 RETURN = """
