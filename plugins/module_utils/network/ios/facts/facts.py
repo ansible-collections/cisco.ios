@@ -32,6 +32,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_gl
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.evpn_global.evpn_global import (
     Evpn_globalFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.evpn_evi.evpn_evi import (
+    Evpn_eviFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.hostname.hostname import (
     HostnameFacts,
 )
@@ -126,6 +129,7 @@ FACT_RESOURCE_SUBSETS = dict(
     snmp_server=Snmp_serverFacts,
     hostname=HostnameFacts,
     evpn_global=Evpn_globalFacts,
+    evpn_evi=Evpn_eviFacts,
 )
 
 

@@ -1,0 +1,5 @@
+---
+- name: Remove all configuration evpn_evi
+  cisco.ios.ios_evpn_evi:
+    config:
+    state: deleted
