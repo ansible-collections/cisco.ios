@@ -43,7 +43,6 @@ options:
         description:
         - Host reachability using EVPN protocol
         type: bool
-        default: True
       member:
         description:
         - Configure VNI member
