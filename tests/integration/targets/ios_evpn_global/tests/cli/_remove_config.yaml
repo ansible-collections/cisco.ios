@@ -4,6 +4,8 @@
     config:
     state: deleted
 
-- name: Remove Loopback1
+- name: Configure Loopback1
+  vars:
+    lines: "no interface Loopback1\n"
   ansible.netcommon.cli_config:
-    config: no interface Loopback1
+    config: "{{ lines }}"
