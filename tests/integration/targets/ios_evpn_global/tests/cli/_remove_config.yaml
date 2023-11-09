@@ -3,4 +3,3 @@
   cisco.ios.ios_evpn_global:
     config:
     state: deleted
-
