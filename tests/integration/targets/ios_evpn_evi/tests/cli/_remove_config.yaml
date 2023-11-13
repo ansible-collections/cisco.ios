@@ -13,4 +13,3 @@
   cisco.ios.ios_evpn_evi:
     config:
     state: deleted
-
