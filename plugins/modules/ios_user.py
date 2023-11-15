@@ -338,10 +338,12 @@ def user_del_cmd(username):
         "newline": False,
     }
 
+
 def del_ssh(command, username):
     command.append("ip ssh pubkey-chain")
     command.append("no username %s" % username)
     command.append("exit")
+
 
 def sshkey_fingerprint(sshkey):
     # IOS will accept a MD5 fingerprint of the public key

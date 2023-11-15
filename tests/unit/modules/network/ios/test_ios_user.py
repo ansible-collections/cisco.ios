@@ -69,7 +69,7 @@ class TestIosUserModule(TestIosModule):
                 "prompt": "This operation will remove all username related configurations with same name",
             },
             "ip ssh pubkey-chain",
-            "no username ansible", 
+            "no username ansible",
             "exit",
         ]
 
@@ -98,13 +98,13 @@ class TestIosUserModule(TestIosModule):
         result = self.execute_module(changed=True)
         cmd = [
             {
-            "command": "no username ansible",
-            "answer": "y",
-            "newline": False,
-            "prompt": "This operation will remove all username related configurations with same name",
+                "command": "no username ansible",
+                "answer": "y",
+                "newline": False,
+                "prompt": "This operation will remove all username related configurations with same name",
             },
             "ip ssh pubkey-chain",
-            "no username ansible", 
+            "no username ansible",
             "exit",
         ]
 
