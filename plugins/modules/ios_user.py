@@ -338,6 +338,10 @@ def user_del_cmd(username):
         "newline": False,
     }
 
+def del_ssh(command, username):
+    command.append("ip ssh pubkey-chain")
+    command.append("no username %s" % username)
+    command.append("exit")
 
 def sshkey_fingerprint(sshkey):
     # IOS will accept a MD5 fingerprint of the public key
@@ -394,6 +398,7 @@ def map_obj_to_commands(updates, module):
                 add_ssh(commands, want)
             else:
                 commands.append(user_del_cmd(want["name"]))
+                del_ssh(commands, want["name"])
         if needs_update(want, have, "view"):
             add(commands, want, "view %s" % want["view"])
         if needs_update(want, have, "privilege"):
@@ -595,6 +600,7 @@ def main():
         for item in set(have_users).difference(want_users):
             if item != "admin":
                 commands.append(user_del_cmd(item))
+                del_ssh(commands, item)
     result["commands"] = commands
     if commands:
         if not module.check_mode:
