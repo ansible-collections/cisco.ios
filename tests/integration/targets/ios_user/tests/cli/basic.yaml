@@ -117,7 +117,7 @@
 - ansible.builtin.assert:
     that:
       - result.changed == true
-      - "'username ansibleuser6 secret' in result.commands[0]"
+      - "'username ansibleuser6 password' in result.commands[0]"
 
 - name: Teardown
   become: true
@@ -125,21 +125,17 @@
   cisco.ios.ios_user:
     aggregate:
       - name: ansibletest1
-
       - name: ansibletest2
-
       - name: ansibletest3
-
-      - name: ansibletest4
-
-      - name: ansibletest5
-
-      - name: ansibletest6
+      - name: ansibleuser4
+      - name: ansibleuser5
+      - name: ansibleuser6
+      - name: ssh_user
     state: absent
 
 - ansible.builtin.assert:
     that:
       - result.changed == true
       - '"no username ansibletest1" in result.commands[0]["command"]'
-      - '"no username ansibletest2" in result.commands[1]["command"]'
-      - '"no username ansibletest3" in result.commands[2]["command"]'
+      - '"no username ansibletest2" in result.commands[4]["command"]'
+      - '"no username ansibletest3" in result.commands[8]["command"]'
