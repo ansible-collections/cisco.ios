@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - Fixed an issue where the iOS user password was not being set correctly.
+  - Fixed an issue where the ssh users were not being removed correctly.

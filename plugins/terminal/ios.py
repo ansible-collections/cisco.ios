@@ -41,6 +41,7 @@ class TerminalModule(TerminalBase):
     terminal_stderr_re = [
         re.compile(rb"% ?Error"),
         # re.compile(rb"^% \w+", re.M),
+        re.compile(rb"Error", re.IGNORECASE),
         re.compile(rb"% ?Bad secret"),
         re.compile(rb"[\r\n%] Bad passwords"),
         re.compile(rb"invalid input", re.I),
