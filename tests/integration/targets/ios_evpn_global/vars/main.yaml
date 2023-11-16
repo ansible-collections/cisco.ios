@@ -1,0 +1,85 @@
+---
+merged:
+  before: {}
+  commands:
+    - l2vpn evpn
+    - ip local-learning disable
+    - replication-type ingress
+    - route-target auto vni
+    - router-id Loopback1
+  after:
+    replication_type: ingress
+    route_target:
+      auto:
+        vni: true
+    router_id: Loopback1
+    ip:
+      local_learning:
+        disable: true
+
+replaced:
+  before:
+    router_id: Loopback1
+    ip:
+      local_learning:
+        disable: true
+    replication_type: ingress
+    route_target:
+      auto:
+        vni: true
+  commands:
+    - l2vpn evpn
+    - default-gateway advertise
+    - flooding-suppression address-resolution disable
+    - no ip local-learning disable
+    - replication-type static
+    - no route-target auto vni
+  after:
+    default_gateway:
+      advertise: true
+    flooding_suppression:
+      address_resolution:
+        disable: true
+    replication_type: static
+    router_id: Loopback1
+
+deleted:
+  before:
+    replication_type: ingress
+    route_target:
+      auto:
+        vni: true
+    router_id: Loopback1
+    ip:
+      local_learning:
+        disable: true
+  commands:
+    - no l2vpn evpn
+  after: {}
+
+rendered:
+  commands:
+    - l2vpn evpn
+    - replication-type static
+    - route-target auto vni
+
+gathered:
+  after:
+    ip:
+      local_learning:
+        disable: true
+    replication_type: ingress
+    route_target:
+      auto:
+        vni: true
+    router_id: Loopback1
+
+parsed:
+  after:
+    replication_type: ingress
+    route_target:
+      auto:
+        vni: true
+    router_id: Loopback1
+    default_gateway:
+      advertise: true
