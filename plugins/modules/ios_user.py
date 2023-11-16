@@ -338,12 +338,16 @@ def user_del_cmd(username):
         "newline": False,
     }
 
-
-def del_ssh(command, username):
+def add_ssh(command, want, x=None):
     command.append("ip ssh pubkey-chain")
-    command.append("no username %s" % username)
+    if x:
+        command.append("username %s" % want["name"])
+        for item in x:
+            command.append("key-hash %s" % item)
+        command.append("exit")
+    else:
+        command.append("no username %s" % want["name"])
     command.append("exit")
-
 
 def sshkey_fingerprint(sshkey):
     # IOS will accept a MD5 fingerprint of the public key
@@ -382,17 +386,6 @@ def map_obj_to_commands(updates, module):
                 "username %s password %s %s" % (want["name"], x.get("type"), x.get("value")),
             )
 
-    def add_ssh(command, want, x=None):
-        command.append("ip ssh pubkey-chain")
-        if x:
-            command.append("username %s" % want["name"])
-            for item in x:
-                command.append("key-hash %s" % item)
-            command.append("exit")
-        else:
-            command.append("no username %s" % want["name"])
-        command.append("exit")
-
     for update in updates:
         want, have = update
         if want["state"] == "absent":
@@ -400,7 +393,6 @@ def map_obj_to_commands(updates, module):
                 add_ssh(commands, want)
             else:
                 commands.append(user_del_cmd(want["name"]))
-                del_ssh(commands, want["name"])
         if needs_update(want, have, "view"):
             add(commands, want, "view %s" % want["view"])
         if needs_update(want, have, "privilege"):
@@ -595,14 +587,18 @@ def main():
     result = {"changed": False, "warnings": warnings}
     want = map_params_to_obj(module)
     have = map_config_to_obj(module)
+    import q
     commands = map_obj_to_commands(update_objects(want, have), module)
     if module.params["purge"]:
-        want_users = [x["name"] for x in want]
-        have_users = [x["name"] for x in have]
-        for item in set(have_users).difference(want_users):
-            if item != "admin":
-                commands.append(user_del_cmd(item))
-                del_ssh(commands, item)
+        want_users = [{"name" : x["name"], "sshkey": x["sshkey"]} for x in want]
+        have_users = [{"name" : x["name"], "sshkey": x["sshkey"]} for x in have]
+        differenceset = [i for i in want_users if i not in have_users] + [j for j in have_users if j not in want_users]
+        for item in differenceset:
+            if item["name"] != "admin":
+                if item["sshkey"]:
+                    add_ssh(commands, item) 
+                else:
+                    commands.append(user_del_cmd(item["name"]))
     result["commands"] = commands
     if commands:
         if not module.check_mode:
