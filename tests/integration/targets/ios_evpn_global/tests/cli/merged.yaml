@@ -1,0 +1,50 @@
+---
+- ansible.builtin.debug:
+    msg: START Merged ios_evpn_global state for integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Ios_evpn_global merged - play
+      register: result
+      cisco.ios.ios_evpn_global: &id001
+        config:
+          router_id: Loopback1
+          replication_type: ingress
+          route_target:
+            auto:
+              vni: true
+          default_gateway:
+            advertise: false
+          ip:
+            local_learning:
+              disable: true
+          flooding_suppression:
+            address_resolution:
+              disable: false
+        state: merged
+
+    - name: Ios_evpn_global merged - assert commands
+      ansible.builtin.assert:
+        that:
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Ios_evpn_global merged - assert before
+      ansible.builtin.assert:
+        that:
+          - merged['before'] == result['before']
+
+    - name: Ios_evpn_global merged - assert after
+      ansible.builtin.assert:
+        that:
+          - merged['after'] == result['after']
+
+    - name: Ios_evpn_global merged - play (idempotent)
+      register: result
+      cisco.ios.ios_evpn_global: *id001
+    - name: Ios_evpn_global merged - assert above task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -1,0 +1,25 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_evpn_global empty_config.yaml integration tests on connection={{ ansible_connection }}
+
+- name: Merged with empty configuration should give appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.ios.ios_evpn_global:
+    config:
+    state: merged
+
+- ansible.builtin.assert:
+    that:
+      - result.msg == 'value of config parameter must not be empty for state merged'
+
+- name: Replaced with empty configuration should give appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.ios.ios_evpn_global:
+    config:
+    state: replaced
+
+- ansible.builtin.assert:
+    that:
+      - result.msg == 'value of config parameter must not be empty for state replaced'

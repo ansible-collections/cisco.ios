@@ -1,0 +1,5 @@
+---
+- name: Remove all configuration evpn_global
+  cisco.ios.ios_evpn_global:
+    config:
+    state: deleted
