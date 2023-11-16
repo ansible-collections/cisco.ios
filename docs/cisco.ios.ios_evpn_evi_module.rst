@@ -8,7 +8,7 @@ cisco.ios.ios_evpn_evi
 **Resource module to configure L2VPN EVPN EVI.**
 
 
-Version added: 5.0.0
+Version added: 5.3.0
 
 .. contents::
    :local:

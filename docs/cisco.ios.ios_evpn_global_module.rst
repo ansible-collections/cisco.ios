@@ -8,7 +8,7 @@ cisco.ios.ios_evpn_global
 **Resource module to configure L2VPN EVPN.**
 
 
-Version added: 5.0.0
+Version added: 5.3.0
 
 .. contents::
    :local:
@@ -367,18 +367,18 @@ Examples
     - name: Merge provided configuration with device configuration
       cisco.ios.ios_evpn_global:
         config:
-            replication_type: ingress
-            route_target:
-              auto:
-                vni: true
-            default_gateway:
-              advertise: false
-            ip:
-              local_learning:
-                disable: true
-            flooding_suppression:
-              address_resolution:
-                disable: false
+          replication_type: ingress
+          route_target:
+            auto:
+              vni: true
+          default_gateway:
+            advertise: false
+          ip:
+            local_learning:
+              disable: true
+          flooding_suppression:
+            address_resolution:
+              disable: false
         state: merged
 
     # Task Output
@@ -430,13 +430,13 @@ Examples
     - name: Replaces device configuration for EVPN global with provided configuration
       cisco.ios.ios_evpn_global:
         config:
-            replication_type: static
-            router_id: Loopback2
-            default_gateway:
-              advertise: true
-            flooding_suppression:
-              address_resolution:
-                disable: true
+          replication_type: static
+          router_id: Loopback2
+          default_gateway:
+            advertise: true
+          flooding_suppression:
+            address_resolution:
+              disable: true
         state: replaced
 
     # Task Output
@@ -549,10 +549,10 @@ Examples
     - name: Render the commands for provided configuration
       cisco.ios.ios_evpn_global:
         config:
-            replication_type: static
-            route_target:
-              auto:
-                vni: true
+          replication_type: static
+          route_target:
+            auto:
+              vni: true
         state: rendered
 
     # Task Output:
