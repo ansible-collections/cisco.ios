@@ -218,4 +218,4 @@ plugin_routing:
       redirect: cisco.ios.ios_vlans
     vrf:
       redirect: cisco.ios.ios_vrf
-requires_ansible: ">=2.9.10"
+requires_ansible: ">=2.14.0"
