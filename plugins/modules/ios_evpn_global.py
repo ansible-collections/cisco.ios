@@ -18,7 +18,7 @@ module: ios_evpn_global
 short_description: Resource module to configure L2VPN EVPN.
 description: This module provides declarative management of L2VPN EVPN on Cisco IOS network
   devices.
-version_added: 5.0.0
+version_added: 5.3.0
 author: Padmini Priyadarshini Sivaraj (@PadminiSivaraj)
 notes:
   - Tested against Cisco IOS device with Version 17.13.01 on Cat9k on CML.
@@ -120,18 +120,18 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration
   cisco.ios.ios_evpn_global:
     config:
-        replication_type: ingress
-        route_target:
-          auto:
-            vni: true
-        default_gateway:
-          advertise: false
-        ip:
-          local_learning:
-            disable: true
-        flooding_suppression:
-          address_resolution:
-            disable: false
+      replication_type: ingress
+      route_target:
+        auto:
+          vni: true
+      default_gateway:
+        advertise: false
+      ip:
+        local_learning:
+          disable: true
+      flooding_suppression:
+        address_resolution:
+          disable: false
     state: merged
 
 # Task Output
@@ -183,13 +183,13 @@ EXAMPLES = """
 - name: Replaces device configuration for EVPN global with provided configuration
   cisco.ios.ios_evpn_global:
     config:
-        replication_type: static
-        router_id: Loopback2
-        default_gateway:
-          advertise: true
-        flooding_suppression:
-          address_resolution:
-            disable: true
+      replication_type: static
+      router_id: Loopback2
+      default_gateway:
+        advertise: true
+      flooding_suppression:
+        address_resolution:
+          disable: true
     state: replaced
 
 # Task Output
@@ -302,10 +302,10 @@ EXAMPLES = """
 - name: Render the commands for provided configuration
   cisco.ios.ios_evpn_global:
     config:
-        replication_type: static
-        route_target:
-          auto:
-            vni: true
+      replication_type: static
+      route_target:
+        auto:
+          vni: true
     state: rendered
 
 # Task Output:
@@ -343,7 +343,6 @@ EXAMPLES = """
 #   router_id: Loopback1
 #   default_gateway:
 #     advertise: true
-
 """
 
 RETURN = """
