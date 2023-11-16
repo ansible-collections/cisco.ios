@@ -476,7 +476,6 @@ EXAMPLES = """
 #   - evi: 102
 #     encapsulation: vxlan
 #     replication_type: ingress
-
 """
 
 RETURN = """
