@@ -589,7 +589,6 @@ def main():
     result = {"changed": False, "warnings": warnings}
     want = map_params_to_obj(module)
     have = map_config_to_obj(module)
-    import q
 
     commands = map_obj_to_commands(update_objects(want, have), module)
     if module.params["purge"]:
