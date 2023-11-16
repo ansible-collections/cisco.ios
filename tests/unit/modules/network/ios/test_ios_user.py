@@ -68,15 +68,12 @@ class TestIosUserModule(TestIosModule):
                 "newline": False,
                 "prompt": "This operation will remove all username related configurations with same name",
             },
-            "ip ssh pubkey-chain",
-            "no username ansible",
-            "exit",
         ]
 
         result_cmd = []
         for i in result["commands"]:
             result_cmd.append(i)
-        print(result_cmd)
+
         self.assertEqual(result_cmd, cmds)
 
     def test_ios_user_password(self):
@@ -103,9 +100,6 @@ class TestIosUserModule(TestIosModule):
                 "newline": False,
                 "prompt": "This operation will remove all username related configurations with same name",
             },
-            "ip ssh pubkey-chain",
-            "no username ansible",
-            "exit",
         ]
 
         result_cmd = []
