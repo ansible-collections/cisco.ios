@@ -338,6 +338,7 @@ def user_del_cmd(username):
         "newline": False,
     }
 
+
 def add_ssh(command, want, x=None):
     command.append("ip ssh pubkey-chain")
     if x:
@@ -348,6 +349,7 @@ def add_ssh(command, want, x=None):
     else:
         command.append("no username %s" % want["name"])
     command.append("exit")
+
 
 def sshkey_fingerprint(sshkey):
     # IOS will accept a MD5 fingerprint of the public key
@@ -588,15 +590,18 @@ def main():
     want = map_params_to_obj(module)
     have = map_config_to_obj(module)
     import q
+
     commands = map_obj_to_commands(update_objects(want, have), module)
     if module.params["purge"]:
-        want_users = [{"name" : x["name"], "sshkey": x["sshkey"]} for x in want]
-        have_users = [{"name" : x["name"], "sshkey": x["sshkey"]} for x in have]
-        differenceset = [i for i in want_users if i not in have_users] + [j for j in have_users if j not in want_users]
+        want_users = [{"name": x["name"], "sshkey": x["sshkey"]} for x in want]
+        have_users = [{"name": x["name"], "sshkey": x["sshkey"]} for x in have]
+        differenceset = [i for i in want_users if i not in have_users] + [
+            j for j in have_users if j not in want_users
+        ]
         for item in differenceset:
             if item["name"] != "admin":
                 if item["sshkey"]:
-                    add_ssh(commands, item) 
+                    add_ssh(commands, item)
                 else:
                     commands.append(user_del_cmd(item["name"]))
     result["commands"] = commands
