@@ -1,0 +1,15 @@
+---
+- name: Remove VLAN config
+  ansible.netcommon.cli_config:
+    config: |
+      no vlan configuration 101
+      no vlan configuration 102
+      no vlan configuration 201
+      no vlan configuration 202
+      no vlan configuration 901
+      no vlan configuration 902
+
+- name: Remove all configuration evpn_evi
+  cisco.ios.ios_evpn_evi:
+    config:
+    state: deleted
