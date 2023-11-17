@@ -1,3 +1,4 @@
+---
 - name: Populate configuration
   cisco.ios.ios_vlans:
     config:
