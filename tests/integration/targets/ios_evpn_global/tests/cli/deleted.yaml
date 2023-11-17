@@ -1,0 +1,38 @@
+---
+- ansible.builtin.debug:
+    msg: Start Deleted integration state for ios_evpn_global ansible_connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Ios_evpn_global deleted - play
+      register: result
+      cisco.ios.ios_evpn_global: &id001
+        config:
+        state: deleted
+
+    - name: Ios_evpn_global deleted - assert commands
+      ansible.builtin.assert:
+        that:
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Ios_evpn_global deleted - assert before
+      ansible.builtin.assert:
+        that:
+          - deleted['before'] == result['before']
+
+    - name: Ios_evpn_global deleted - assert after
+      ansible.builtin.assert:
+        that:
+          - deleted['after'] == result['after']
+
+    - name: Ios_evpn_global deleted - play (idempotent)
+      register: result
+      cisco.ios.ios_evpn_global: *id001
+    - name: Ios_evpn_global deleted - assert above task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

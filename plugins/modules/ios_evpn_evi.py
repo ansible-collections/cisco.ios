@@ -18,7 +18,7 @@ module: ios_evpn_evi
 short_description: Resource module to configure L2VPN EVPN EVI.
 description: This module provides declarative management of L2VPN EVPN EVI on Cisco IOS network
   devices.
-version_added: 5.0.0
+version_added: 5.3.0
 author: Padmini Priyadarshini Sivaraj (@PadminiSivaraj)
 notes:
   - Tested against Cisco IOS device with Version 17.13.01 on Cat9k on CML.
@@ -476,7 +476,6 @@ EXAMPLES = """
 #   - evi: 102
 #     encapsulation: vxlan
 #     replication_type: ingress
-
 """
 
 RETURN = """
