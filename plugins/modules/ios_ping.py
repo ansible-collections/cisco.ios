@@ -51,6 +51,10 @@ options:
     description:
       - The source IP Address.
     type: str
+  size:
+    description:
+      - Size of the packet to send.
+    type: int
   egress:
     description:
       - Force egress interface bypassing routing.
