@@ -1,11 +1,11 @@
-.. _cisco.ios.ios_evpn_evi_module:
+.. _cisco.ios.ios_evpn_global_module:
 
 
-**********************
-cisco.ios.ios_evpn_evi
-**********************
+*************************
+cisco.ios.ios_evpn_global
+*************************
 
-**Resource module to configure L2VPN EVPN EVI.**
+**Resource module to configure L2VPN EVPN.**
 
 
 Version added: 5.3.0
@@ -17,7 +17,7 @@ Version added: 5.3.0
 
 Synopsis
 --------
-- This module provides declarative management of L2VPN EVPN EVI on Cisco IOS network devices.
+- This module provides declarative management of L2VPN EVPN on Cisco IOS network devices.
 
 
 
@@ -39,14 +39,13 @@ Parameters
                     <b>config</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=dictionary</span>
+                        <span style="color: purple">dictionary</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>A dictionary of L2VPN Ethernet Virtual Private Network (EVPN) EVI configuration</div>
+                        <div>A dictionary of L2VPN Ethernet Virtual Private Network (EVPN) configuration</div>
                 </td>
             </tr>
                                 <tr>
@@ -62,7 +61,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Default Gateway parameters</div>
+                        <div>Default gateway parameters</div>
                 </td>
             </tr>
                                 <tr>
@@ -73,13 +72,51 @@ Parameters
                     <b>advertise</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Advertise Default Gateway MAC/IP routes</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>flooding_suppression</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
                         <span style="color: purple">dictionary</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>Advertise Default Gateway MAC/IP routes</div>
+                        <div>Suppress flooding of broadcast, multicast, and/or unknown unicast packets</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>address_resolution</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Suppress flooding of Address Resolution and Neighbor Discovery Protocol packets</div>
                 </td>
             </tr>
                                 <tr>
@@ -101,69 +138,11 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Disable advertisement of Default Gateway MAC/IP routes</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>enable</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Enable advertisement of Default Gateway MAC/IP routes</div>
+                        <div>Disable flooding suppression</div>
                 </td>
             </tr>
 
 
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>encapsulation</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li><div style="color: blue"><b>vxlan</b>&nbsp;&larr;</div></li>
-                        </ul>
-                </td>
-                <td>
-                        <div>EVPN encapsulation type</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>evi</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                         / <span style="color: red">required</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>EVPN instance value</div>
-                </td>
-            </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
@@ -219,28 +198,6 @@ Parameters
                         <div>Disable IP local learning</div>
                 </td>
             </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>enable</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>Enable IP local learning</div>
-                </td>
-            </tr>
 
 
             <tr>
@@ -267,7 +224,64 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>route_distinguisher</b>
+                    <b>route_target</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Route Target VPN Extended Communities</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>auto</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Automatically set a route-target</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vni</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Set vni-based route-target</div>
+                </td>
+            </tr>
+
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>router_id</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -276,7 +290,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>EVPN Route Distinguisher</div>
+                        <div>EVPN router ID</div>
                 </td>
             </tr>
 
@@ -339,378 +353,243 @@ Examples
 
 .. code-block:: yaml
 
-    # Using state merged
+    # Using merged
 
     # Before state:
     # -------------
-    # l2vpn evpn instance 101 vlan-based
-    #  encapsulation vxlan
-    #  replication-type static
-    # !
-    # l2vpn evpn instance 102 vlan-based
-    #  encapsulation vxlan
-    #  replication-type ingress
-    # !
-    # l2vpn evpn instance 201 vlan-based
-    #  encapsulation vxlan
-    #  replication-type static
-    # !
-    # l2vpn evpn instance 202 vlan-based
-    #  encapsulation vxlan
-    #  replication-type ingress
-
-    # - name: Merge provided configuration with device configuration
-    #   cisco.ios.ios_evpn_evi:
-    #     config:
-    #       - evi: 101
-    #         replication_type: ingress
-    #         route_distinguisher: '1:1'
-    #         default_gateway:
-    #           advertise:
-    #             enable: False
-    #         ip:
-    #           local_learning:
-    #             enable: True
     #
-    #       - evi: 202
-    #         replication_type: static
-    #         default_gateway:
-    #           advertise:
-    #             enable: True
-    #         ip:
-    #           local_learning:
-    #             disable: True
-    #     state: merged
+    # Leaf-01#show running-config nve | section ^l2vpn evpn$
+    # l2vpn evpn
+    #  replication-type static
+    #  router-id Loopback1
+    #  default-gateway advertise
 
-    # Commands Fired:
-    # ---------------
-    # "commands": [
-    #     "l2vpn evpn instance 101 vlan-based",
-    #     "ip local-learning enable",
-    #     "replication-type ingress",
-    #     "rd 1:1",
-    #     "l2vpn evpn instance 202 vlan-based",
-    #     "default-gateway advertise enable",
-    #     "ip local-learning disable",
-    #     "replication-type static"
-    #     ],
+    - name: Merge provided configuration with device configuration
+      cisco.ios.ios_evpn_global:
+        config:
+          replication_type: ingress
+          route_target:
+            auto:
+              vni: true
+          default_gateway:
+            advertise: false
+          ip:
+            local_learning:
+              disable: true
+          flooding_suppression:
+            address_resolution:
+              disable: false
+        state: merged
+
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - replication_type: static
+    #   router_id: Loopback1
+    #   default_gateway:
+    #     advertise: true
+    # commands:
+    # - l2vpn evpn
+    #   no default-gateway advertise
+    #   replication-type ingress
+    #   route-target auto vni
+    #   ip local-learning disable
+    # after:
+    # - replication_type: ingress
+    #   router_id: Loopback1
+    #   route_target:
+    #     auto:
+    #       vni: true
+    #   ip:
+    #     local_learning:
+    #       disable: true
 
     # After state:
     # ------------
-    # l2vpn evpn instance 101 vlan-based
-    #  encapsulation vxlan
-    #  rd 1:1
+    #
+    # Leaf-01#show running-config nve | section ^l2vpn evpn$
+    # l2vpn evpn
     #  replication-type ingress
-    #  ip local-learning enable
-    # !
-    # l2vpn evpn instance 102 vlan-based
-    #  encapsulation vxlan
-    #  replication-type ingress
-    # !
-    # l2vpn evpn instance 201 vlan-based
-    #  encapsulation vxlan
-    #  replication-type static
-    # !
-    # l2vpn evpn instance 202 vlan-based
-    #  encapsulation vxlan
-    #  replication-type static
+    #  router-id Loopback1
     #  ip local-learning disable
-    #  default-gateway advertise enable
+    #  route-target auto vni
 
-
-    # Using state replaced
+    # Using replaced
 
     # Before state:
     # -------------
-    # l2vpn evpn instance 101 vlan-based
-    #  encapsulation vxlan
-    #  rd 1:1
+    #
+    # Leaf-01#show running-config nve | section ^l2vpn evpn$
+    # l2vpn evpn
     #  replication-type ingress
-    #  ip local-learning enable
-    # !
-    # l2vpn evpn instance 102 vlan-based
-    #  encapsulation vxlan
-    #  replication-type ingress
-    # !
-    # l2vpn evpn instance 201 vlan-based
-    #  encapsulation vxlan
-    #  replication-type static
-    # !
-    # l2vpn evpn instance 202 vlan-based
-    #  encapsulation vxlan
-    #  replication-type static
+    #  router-id Loopback1
     #  ip local-learning disable
-    #  default-gateway advertise enable
+    #  route-target auto vni
 
-    # - name: Replaces the device configuration with the provided configuration
-    #   cisco.ios.ios_evpn_evi:
-    #     config:
-    #       - evi: 101
-    #         replication_type: ingress
-    #         default_gateway:
-    #           advertise:
-    #             enable: True
-    #       - evi: 202
-    #         replication_type: ingress
-    #     state: replaced
+    - name: Replaces device configuration for EVPN global with provided configuration
+      cisco.ios.ios_evpn_global:
+        config:
+          replication_type: static
+          router_id: Loopback2
+          default_gateway:
+            advertise: true
+          flooding_suppression:
+            address_resolution:
+              disable: true
+        state: replaced
 
-    # Commands Fired:
-    # ---------------
-    # "commands": [
-    #     "l2vpn evpn instance 101 vlan-based",
-    #     "default-gateway advertise enable",
-    #     "no ip local-learning enable",
-    #     "no rd 1:1",
-    #     "l2vpn evpn instance 202 vlan-based",
-    #     "no default-gateway advertise enable",
-    #     "no ip local-learning disable",
-    #     "replication-type ingress"
-    #     ],
-
-    # After state:
-    # ------------
-    # l2vpn evpn instance 101 vlan-based
-    #  encapsulation vxlan
-    #  replication-type ingress
-    #  default-gateway advertise enable
-    # !
-    # l2vpn evpn instance 102 vlan-based
-    #  encapsulation vxlan
-    #  replication-type ingress
-    # !
-    # l2vpn evpn instance 201 vlan-based
-    #  encapsulation vxlan
-    #  replication-type static
-    # !
-    # l2vpn evpn instance 202 vlan-based
-    #  encapsulation vxlan
-    #  replication-type ingress
-
-    # Using state overridden
-
-    # Before state:
-    # -------------
-    # l2vpn evpn instance 101 vlan-based
-    #  encapsulation vxlan
-    #  replication-type ingress
-    #  default-gateway advertise enable
-    # !
-    # l2vpn evpn instance 102 vlan-based
-    #  encapsulation vxlan
-    #  replication-type ingress
-    # !
-    # l2vpn evpn instance 201 vlan-based
-    #  encapsulation vxlan
-    #  replication-type static
-    # !
-    # l2vpn evpn instance 202 vlan-based
-    #  encapsulation vxlan
-    #  replication-type ingress
-
-    # - name: Override the device configuration with provided configuration
-    #   cisco.ios.ios_evpn_evi:
-    #     config:
-    #       - evi: 101
-    #         replication_type: ingress
-    #         default_gateway:
-    #           advertise:
-    #             enable: True
-    #       - evi: 202
-    #         replication_type: static
-    #         default_gateway:
-    #           advertise:
-    #             enable: True
-    #     state: overridden
-
-    # Commands Fired:
-    # ---------------
-    # "commands": [
-    #     "no l2vpn evpn instance 102 vlan-based",
-    #     "no l2vpn evpn instance 201 vlan-based",
-    #     "l2vpn evpn instance 202 vlan-based",
-    #     "default-gateway advertise enable",
-    #     "replication-type static"
-    #     ],
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - replication_type: ingress
+    #   router_id: Loopback1
+    #   route_target:
+    #     auto:
+    #       vni: true
+    #   ip:
+    #     local_learning:
+    #       disable: true
+    # commands:
+    # - l2vpn evpn
+    # - default-gateway advertise
+    # - flooding-suppression address-resolution disable
+    # - no ip local-learning disable
+    # - replication-type static
+    # - no route-target auto vni
+    # - router-id Loopback2
+    # after:
+    # - replication_type: ingress
+    #   router_id: Loopback2
+    #   default_gateway:
+    #     advertise: true
+    #   flooding_suppression:
+    #     address_resolution:
+    #      disable: true
 
     # After state:
     # ------------
-    # l2vpn evpn instance 101 vlan-based
-    #  encapsulation vxlan
-    #  replication-type ingress
-    #  default-gateway advertise enable
-    # !
-    # l2vpn evpn instance 202 vlan-based
-    #  encapsulation vxlan
+    #
+    # Leaf-01#show running-config nve | section ^l2vpn evpn$
+    # l2vpn evpn
     #  replication-type static
-    #  default-gateway advertise enable
+    #  flooding-suppression address-resolution disable
+    #  router-id Loopback2
+    #  default-gateway advertise
 
-
-    # Using state Deleted
+    # Using Deleted
 
     # Before state:
     # -------------
-    # l2vpn evpn instance 101 vlan-based
-    #  encapsulation vxlan
-    #  replication-type ingress
-    #  default-gateway advertise enable
-    # l2vpn evpn instance 102 vlan-based
-    #  encapsulation vxlan
-    #  replication-type ingress
-    # l2vpn evpn instance 202 vlan-based
-    #  encapsulation vxlan
+    #
+    # Leaf-01#show running-config nve | section ^l2vpn evpn$
+    # l2vpn evpn
     #  replication-type static
-    #  default-gateway advertise enable
+    #  flooding-suppression address-resolution disable
+    #  router-id Loopback2
+    #  default-gateway advertise
 
-    # - name: "Delete the given EVI(s)"
-    #   cisco.ios.ios_evpn_evi:
-    #     config:
-    #       - evi: 101
-    #     state: deleted
+    - name: Delete EVPN global
+      cisco.ios.ios_evpn_global:
+        config:
+        state: deleted
 
-    # Commands Fired:
-    # ---------------
-    # "commands": [
-    #       "no l2vpn evpn instance 101 vlan-based"
-    #       ],
+    # before:
+    # - replication_type: ingress
+    #   router_id: Loopback2
+    #   default_gateway:
+    #     advertise: true
+    #   flooding_suppression:
+    #     address_resolution:
+    #      disable: true
+    # commands:
+    # - no l2vpn evpn
+    # after:
+    #
 
     # After state:
     # -------------
-    # l2vpn evpn instance 102 vlan-based
-    #  encapsulation vxlan
-    #  replication-type ingress
-    # l2vpn evpn instance 202 vlan-based
-    #  encapsulation vxlan
-    #  replication-type static
-    #  default-gateway advertise enable
-
-    # Using state Deleted without any config passed
-
-    # Before state:
-    # -------------
-    # l2vpn evpn instance 102 vlan-based
-    #  encapsulation vxlan
-    #  replication-type ingress
-    # l2vpn evpn instance 202 vlan-based
-    #  encapsulation vxlan
-    #  replication-type static
-    #  default-gateway advertise enable
-
-    # - name: "Delete ALL EVIs"
-    #   cisco.ios.ios_evpn_evi:
-    #     state: deleted
-
-    # Commands Fired:
-    # ---------------
-    # "commands": [
-    #     "no l2vpn evpn instance 102 vlan-based",
-    #     "no l2vpn evpn instance 202 vlan-based"
-    #     ],
-
-    # After state:
-    # -------------
-    # !
+    #
+    # Leaf-01#show running-config nve | section ^l2vpn evpn$
+    #
 
     # Using gathered
 
     # Before state:
     # -------------
     #
-    # l2vpn evpn instance 101 vlan-based
-    #  encapsulation vxlan
-    #  replication-type static
-    # !
-    # l2vpn evpn instance 102 vlan-based
-    #  encapsulation vxlan
+    # Leaf-01#show running-config nve | section ^l2vpn evpn$
+    # l2vpn evpn
     #  replication-type ingress
-    # !
-    # l2vpn evpn instance 201 vlan-based
-    #  encapsulation vxlan
-    #  replication-type static
-    # !
-    # l2vpn evpn instance 202 vlan-based
-    #  encapsulation vxlan
-    #  replication-type ingress
+    #  router-id Loopback1
+    #  ip local-learning disable
+    #  route-target auto vni
 
-    # - name: Gather facts for evpn_evi
-    #   cisco.ios.ios_evpn_evi:
-    #     config:
-    #     state: gathered
+    - name: Gather facts of l2vpn evpn
+      cisco.ios.ios_evpn_global:
+        config:
+        state: gathered
 
     # Task Output:
     # ------------
     #
     # gathered:
-    #   - evi: 101
-    #     encapsulation: vxlan
-    #     replication_type: static
-    #   - evi: 102
-    #     encapsulation: vxlan
-    #     replication_type: ingress
-    #   - evi: 201
-    #     encapsulation: vxlan
-    #     replication_type: static
-    #   - evi: 202
-    #     encapsulation: vxlan
-    #     replication_type: ingress
+    # - replication_type: ingress
+    #   route_target:
+    #     auto:
+    #       vni: true
+    #   router_id: Loopback1
+    #   ip:
+    #     local_learning:
+    #       disable: true
 
-    # Using Rendered
+    # Using rendered
 
-    # - name: Rendered the provided configuration with the existing running configuration
-    #   cisco.ios.ios_evpn_evi:
-    #     config:
-    #       - evi: 101
-    #         replication_type: ingress
-    #         default_gateway:
-    #           advertise:
-    #             enable: True
-    #       - evi: 202
-    #         replication_type: ingress
-    #     state: rendered
+    - name: Render the commands for provided configuration
+      cisco.ios.ios_evpn_global:
+        config:
+          replication_type: static
+          route_target:
+            auto:
+              vni: true
+        state: rendered
 
     # Task Output:
     # ------------
     #
     # rendered:
-    # - l2vpn evpn instance 101 vlan-based
-    # - default-gateway advertise enable
-    # - replication-type ingress
-    # - l2vpn evpn instance 202 vlan-based
-    # - replication-type ingress
-
+    # - l2vpn evpn
+    # - replication-type static
+    # - route-target auto vni
 
     # Using parsed
 
     # File: parsed.cfg
     # ----------------
     #
-    # l2vpn evpn instance 101 vlan-based
-    #  encapsulation vxlan
+    # l2vpn evpn
     #  replication-type ingress
-    #  default-gateway advertise enable
-    # !
-    # l2vpn evpn instance 102 vlan-based
-    #  encapsulation vxlan
-    #  replication-type ingress
-    # !
+    #  router-id Loopback1
+    #  default-gateway advertise
+    #  route-target auto vni
 
-    # - name: Parse the commands for provided configuration
-    #   cisco.ios.ios_evpn_evi:
-    #     running_config: "{{ lookup('file', 'parsed.cfg') }}"
-    #     state: parsed
+    - name: Parse the provided configuration
+      cisco.ios.ios_evpn_global:
+        running_config: "{{ lookup('file', 'parsed.cfg') }}"
+        state: parsed
 
     # Task Output:
     # ------------
     #
     # parsed:
-    #   - evi: 101
-    #     encapsulation: vxlan
-    #     replication_type: ingress
-    #     default_gateway:
-    #       advertise:
-    #         enable: true
-    #   - evi: 102
-    #     encapsulation: vxlan
-    #     replication_type: ingress
+    # - replication_type: ingress
+    #   route_target:
+    #     auto:
+    #       vni: true
+    #   router_id: Loopback1
+    #   default_gateway:
+    #     advertise: true
 
 
 
@@ -752,7 +631,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                       <span style="color: purple">dictionary</span>
                     </div>
                 </td>
-                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, or <code>deleted</code></td>
                 <td>
                             <div>The configuration prior to the module execution.</div>
                     <br/>
@@ -769,12 +648,63 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                       <span style="color: purple">list</span>
                     </div>
                 </td>
-                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, or <code>deleted</code></td>
                 <td>
                             <div>The set of commands pushed to the remote device.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;l2vpn evpn instance 101 vlan-based&#x27;, &#x27;encapsulation vxlan&#x27;, &#x27;replication-type ingress&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;l2vpn evpn&#x27;, &#x27;replication-type ingress&#x27;, &#x27;router_id Loopback1&#x27;]</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>gathered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>gathered</code></td>
+                <td>
+                            <div>Facts about the network resource gathered from the remote device as structured data.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>parsed</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>parsed</code></td>
+                <td>
+                            <div>The device native config provided in <em>running_config</em> option parsed into structured data as per module argspec.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>rendered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>rendered</code></td>
+                <td>
+                            <div>The provided configuration in the task rendered in device-native format (offline).</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;l2vpn evpn&#x27;, &#x27;replication-type static&#x27;, &#x27;route-target auto vni&#x27;]</div>
                 </td>
             </tr>
     </table>
