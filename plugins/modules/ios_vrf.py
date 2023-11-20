@@ -54,6 +54,11 @@ options:
         VRF definition value accepts alphanumeric characters used to provide additional
         information about the VRF.
     type: str
+  address_family:
+    description:
+      - The list of address families with MDT parameters to be configured on the remote IOS device.
+    type: list
+    elements: dict
   rd:
     description:
       - The router-distinguisher value uniquely identifies the VRF to routing processes
@@ -326,6 +331,39 @@ def add_command_to_vrf(name, cmd, commands):
     commands.append(cmd)
 
 
+KEY_TO_COMMAND_MAP = {
+    "auto_discovery": "mdt auto-discovery ",
+    "default": "mdt default vxlan ",
+    "data_mcast": "mdt data vxlan ",
+    "data_threshold": "mdt data threshold ",
+    "overlay": "mdt overlay ",
+}
+
+
+def add_mdt_commands(afi_dict, vrf_name, commands):
+    for key, value in afi_dict["mdt"].items():
+        cmd = KEY_TO_COMMAND_MAP[key]
+
+        if key in ["default", "data_mcast"]:
+            cmd = cmd + value["vxlan_mcast_group"]
+            add_command_to_vrf(vrf_name, cmd, commands)
+        elif key == "data_threshold":
+            cmd = cmd + str(value)
+            add_command_to_vrf(vrf_name, cmd, commands)
+        elif key == "auto_discovery":
+            if value["vxlan"]["enable"]:
+                cmd = cmd + "vxlan"
+            if value["vxlan"].get("inter_as"):
+                cmd = cmd + " " + "inter-as"
+            add_command_to_vrf(vrf_name, cmd, commands)
+        elif key == "overlay":
+            if value["use_bgp"]["enable"]:
+                cmd = cmd + "use-bgp"
+            if value["use_bgp"].get("spt_only"):
+                cmd = cmd + " " + "spt-only"
+            add_command_to_vrf(vrf_name, cmd, commands)
+
+
 def map_obj_to_commands(updates, module):
     commands = list()
     for update in updates:
@@ -415,6 +453,33 @@ def map_obj_to_commands(updates, module):
                 add_command_to_vrf(want["name"], cmd, commands)
             cmd = "exit-address-family"
             add_command_to_vrf(want["name"], cmd, commands)
+        if needs_update(want, have, "address_family"):
+            for want_mdt in want["address_family"]:
+                afi = want_mdt["afi"]
+                af_dict = {}
+                data_dict = want_mdt["mdt"].pop("data", {})
+                if data_dict:
+                    if "vxlan_mcast_group" in data_dict:
+                        want_mdt["mdt"]["data_mcast"] = {
+                            "vxlan_mcast_group": data_dict["vxlan_mcast_group"],
+                        }
+                    if "threshold" in data_dict:
+                        want_mdt["mdt"]["data_threshold"] = data_dict["threshold"]
+
+                for key_in, value_in in want_mdt["mdt"].items():
+                    have_mdt = next(
+                        (i for i in have.get("address_family", {}) if i["afi"] == afi),
+                        {},
+                    )
+
+                    if needs_update(want_mdt["mdt"], have_mdt.get("mdt", {}), key_in):
+                        af_dict.update({key_in: value_in})
+                if af_dict:
+                    cmd = "address-family" + " " + str(afi)
+                    add_command_to_vrf(want["name"], cmd, commands)
+                    add_mdt_commands({"mdt": af_dict}, want["name"], commands)
+                    add_command_to_vrf(want["name"], "exit-address-family", commands)
+
         if want["interfaces"] is not None:
             for intf in set(have.get("interfaces", [])).difference(want["interfaces"]):
                 commands.extend(["interface %s" % intf, "no vrf forwarding %s" % want["name"]])
@@ -544,6 +609,81 @@ def parse_export_ipv6(configobj, name):
         pass
 
 
+def parse_mdt(configobj, name):
+    cfg = configobj["vrf definition %s" % name]
+    mdt_list = []
+
+    for ip in ["ipv4", "ipv6"]:
+        ret_dict = {}
+        try:
+            subcfg = cfg["address-family " + ip]
+            subcfg = "\n".join(subcfg.children)
+        except KeyError:
+            subcfg = ""
+            pass
+
+        re1 = re.compile(r"^mdt +auto\-discovery +(?P<option>\S+)(\s+(?P<inter_as>inter\-as))?$")
+        re2 = re.compile(r"^mdt +default +vxlan +(?P<mcast_group>\S+)$")
+        re3 = re.compile(r"^mdt +data +vxlan +(?P<mcast_group>.+)$")
+        re4 = re.compile(r"^mdt +data +threshold +(?P<threshold_value>\d+)$")
+        re5 = re.compile(r"^mdt +overlay +(?P<use_bgp>use-bgp)(\s+(?P<spt_only>spt-only))?$")
+
+        for line in subcfg.splitlines():
+            line = line.strip()
+            m = re1.match(line)
+            if m:
+                group = m.groupdict()
+                ret_dict.setdefault("auto_discovery", {}).setdefault(
+                    group["option"],
+                    {},
+                ).setdefault("enable", True)
+                if group["inter_as"]:
+                    ret_dict.setdefault("auto_discovery", {}).setdefault(
+                        group["option"],
+                        {},
+                    ).setdefault("inter_as", True)
+                continue
+
+            m = re2.match(line)
+            if m:
+                group = m.groupdict()
+                ret_dict.setdefault("default", {}).setdefault(
+                    "vxlan_mcast_group",
+                    group["mcast_group"],
+                )
+                continue
+
+            m = re3.match(line)
+            if m:
+                group = m.groupdict()
+                ret_dict.setdefault("data_mcast", {}).setdefault(
+                    "vxlan_mcast_group",
+                    group["mcast_group"],
+                )
+                continue
+
+            m = re4.match(line)
+            if m:
+                group = m.groupdict()
+                ret_dict.setdefault("data_threshold", int(group["threshold_value"]))
+
+            m = re5.match(line)
+            if m:
+                group = m.groupdict()
+                ret_dict.setdefault("overlay", {}).setdefault(
+                    "use_bgp",
+                    {},
+                ).setdefault("enable", True)
+                if group["spt_only"]:
+                    ret_dict.setdefault("overlay", {}).setdefault(
+                        "use_bgp",
+                        {},
+                    ).setdefault("spt_only", True)
+
+        mdt_list.append({"afi": ip, "mdt": ret_dict})
+    return mdt_list
+
+
 def map_config_to_obj(module):
     config = get_config(module)
     configobj = NetworkConfig(indent=1, contents=config)
@@ -568,6 +708,7 @@ def map_config_to_obj(module):
             "route_import_ipv6": parse_import_ipv6(configobj, item),
             "route_export_ipv6": parse_export_ipv6(configobj, item),
             "route_both_ipv6": parse_both(configobj, item, address_family="ipv6"),
+            "address_family": parse_mdt(configobj, item),
         }
         instances.append(obj)
     return instances
@@ -623,6 +764,7 @@ def map_params_to_obj(module):
         item["route_import_ipv6"] = get_value("route_import_ipv6")
         item["route_export_ipv6"] = get_value("route_export_ipv6")
         item["route_both_ipv6"] = get_value("route_both_ipv6")
+        item["address_family"] = get_value("address_family")
         both_addresses_family = ["", "_ipv6", "_ipv4"]
         for address_family in both_addresses_family:
             if item["route_both%s" % address_family]:
@@ -650,16 +792,18 @@ def update_objects(want, have):
         else:
             for key, value in iteritems(entry):
                 if value:
-                    try:
-                        if isinstance(value, list):
+                    if isinstance(value, list):
+                        try:
                             if sorted(value) != sorted(item[key]):
                                 if (entry, item) not in updates:
                                     updates.append((entry, item))
-                        elif value != item[key]:
-                            if (entry, item) not in updates:
+                        except TypeError:
+                            if value != item[key]:
                                 updates.append((entry, item))
-                    except TypeError:
-                        pass
+                            pass
+                    elif value != item[key]:
+                        if (entry, item) not in updates:
+                            updates.append((entry, item))
     return updates
 
 
@@ -692,6 +836,7 @@ def main():
         vrfs=dict(type="list", elements="raw"),
         name=dict(),
         description=dict(),
+        address_family=dict(type="list", elements="dict"),
         rd=dict(),
         route_export=dict(type="list", elements="str"),
         route_import=dict(type="list", elements="str"),
@@ -719,6 +864,7 @@ def main():
     result["warnings"] = warnings
     want = map_params_to_obj(module)
     have = map_config_to_obj(module)
+
     commands = map_obj_to_commands(update_objects(want, have), module)
     if module.params["purge"]:
         want_vrfs = [x["name"] for x in want]

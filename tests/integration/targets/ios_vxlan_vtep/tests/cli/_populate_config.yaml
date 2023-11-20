@@ -1,0 +1,34 @@
+---
+- name: Populate VXLAN VTEP configuration
+  cisco.ios.ios_vxlan_vtep:
+    config:
+      - interface: nve1
+        source_interface: Loopback1
+        host_reachability_bgp: true
+        member:
+          vni:
+            l2vni:
+              - vni: 10101
+                replication:
+                  type: ingress
+              - vni: 10102
+                replication:
+                  type: ingress
+              - vni: 10201
+                replication:
+                  type: static
+                  mcast_group:
+                    ipv4: 225.0.0.101
+                    ipv6: FF0E:225::101
+              - vni: 10202
+                replication:
+                  type: static
+                  mcast_group:
+                    ipv4: 225.0.0.102
+                    ipv6: FF0E:225::102
+            l3vni:
+              - vni: 50901
+                vrf: green
+              - vni: 50902
+                vrf: blue
+    state: merged

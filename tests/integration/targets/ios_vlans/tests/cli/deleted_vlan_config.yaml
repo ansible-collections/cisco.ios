@@ -1,0 +1,39 @@
+---
+- ansible.builtin.debug:
+    msg: Start Deleted integration state for ios_vlans  ansible_connection={{ ansible_connection }}
+
+- block:
+    - ansible.builtin.include_tasks: _remove_config_vlan_config.yaml
+    - ansible.builtin.include_tasks: _populate_config_vlan_config.yaml
+
+- block:
+    - name: Delete vlans attributes for all configured vlans
+      register: result
+      cisco.ios.ios_vlans: &id001
+        configuration: true
+        state: deleted
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ deleted_vlan_config['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - deleted_vlan_config['before'] == result['before']
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - deleted_vlan_config['after'] == result['after']
+
+    - name: Delete vlans attributes for all configured vlans (idempotent)
+      register: result
+      cisco.ios.ios_vlans: *id001
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config_vlan_config.yaml

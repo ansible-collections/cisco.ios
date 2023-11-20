@@ -1,0 +1,23 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_vxlan_vtep gathered integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_vlan_vrf_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Ios_vxlan_vtep gather - play
+      register: result
+      cisco.ios.ios_vxlan_vtep:
+        config:
+        state: gathered
+
+    - name: Ios_vxlan_vtep gather - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - gathered['config'] == result['gathered']
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
