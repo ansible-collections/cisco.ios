@@ -742,7 +742,7 @@ Examples
       cisco.ios.ios_vlans:
         config:
           - vlan_id: 101
-        configuration: True
+        configuration: true
         state: deleted
 
     # After state:
@@ -814,7 +814,7 @@ Examples
     # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
 
     # Using Deleted without any config passed (configuration: True)
-    #"(NOTE: This will delete all of configured vlans attributes)"
+    # "(NOTE: This will delete all of configured vlans attributes)"
 
     # Before state:
     # -------------
@@ -833,7 +833,7 @@ Examples
 
     - name: Delete attributes of ALL VLANs
       cisco.ios.ios_vlans:
-        configuration: True
+        configuration: true
         state: deleted
 
     # After state:
@@ -867,7 +867,7 @@ Examples
     - name: Gather listed vlans with provided configurations
       cisco.ios.ios_vlans:
         config:
-        configuration: True
+        configuration: true
         state: gathered
 
     # Module Execution Result:
@@ -1091,7 +1091,7 @@ Examples
     - name: Parse the commands for provided configuration
       cisco.ios.ios_vlans:
         running_config: "{{ lookup('file', './parsed.cfg') }}"
-        configuration: True
+        configuration: true
         state: parsed
 
     # Module Execution Result:
