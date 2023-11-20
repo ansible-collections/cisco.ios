@@ -546,12 +546,14 @@ def update_objects(want, have):
                     updates.append((entry, item))
     return updates
 
+
 def find_set_difference(list1, list2, key):
     want_users = [x[key] for x in list1]
     have_users = [x[key] for x in list2]
     setdifference = set(have_users).difference(want_users)
     result = [item for item in list2 if item[key] in setdifference]
     return result
+
 
 def main():
     """main entry point for module execution"""
