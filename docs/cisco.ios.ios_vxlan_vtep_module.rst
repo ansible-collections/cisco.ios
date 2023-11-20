@@ -8,7 +8,7 @@ cisco.ios.ios_vxlan_vtep
 **Resource module to configure VXLAN VTEP interface.**
 
 
-Version added: 5.0.0
+Version added: 5.3.0
 
 .. contents::
    :local:
