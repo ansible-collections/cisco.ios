@@ -610,7 +610,7 @@ def main():
                     add_ssh(commands, item)
                 if item["is_only_normal_user"]:
                     commands.append(user_del_cmd(item["name"]))
-                if item["is_only_normal_user"] == False and item["is_only_ssh_user"] == False:
+                if item["is_only_normal_user"] is False and item["is_only_ssh_user"] is False:
                     add_ssh(commands, item)
                     commands.append(user_del_cmd(item["name"]))
     result["commands"] = commands
