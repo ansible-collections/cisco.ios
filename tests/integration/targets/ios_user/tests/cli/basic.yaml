@@ -4,15 +4,10 @@
   cisco.ios.ios_user:
     aggregate:
       - name: ansibletest1
-
       - name: ansibletest2
-
       - name: ansibletest3
-
       - name: ansibletest4
-
       - name: ansibletest5
-
       - name: ansibletest6
     state: absent
 
@@ -36,7 +31,6 @@
   cisco.ios.ios_user:
     aggregate:
       - name: ansibletest2
-
       - name: ansibletest3
     state: present
     view: network-admin
@@ -66,7 +60,6 @@
   cisco.ios.ios_user:
     aggregate:
       - name: ansibletest2
-
       - name: ansibletest3
     state: present
     view: network-admin
@@ -139,3 +132,49 @@
       - '"no username ansibletest1" in result.commands[0]["command"]'
       - '"no username ansibletest2" in result.commands[1]["command"]'
       - '"no username ansibletest3" in result.commands[2]["command"]'
+
+- name: Add user to check purge
+  become: true
+  register: result
+  cisco.ios.ios_user:
+    name: ansibletest1
+    privilege: 15
+    role: network-operator
+    state: present
+
+- name: Create user with hashed_password 9
+  become: true
+  register: result
+  cisco.ios.ios_user:
+    name: ansibleuser6
+    hashed_password:
+      type: 9
+      value: $9$B/6NVV7joWJ9w.$XueHQxIOZk0GhNC3lxUFioUeowJrtLmXxouXfTuoNpc
+    state: present
+
+- name: Ensure SSH key is not world readable
+  ansible.builtin.file:
+    path: "{{ role_path }}/files/test_rsa"
+    mode: 384
+
+- name: Create user with sshkey to check purge
+  cisco.ios.ios_user:
+    name: ssh_user
+    privilege: 15
+    state: present
+    sshkey: "{{ lookup('file', 'files/test_rsa.pub') }}"
+
+- name: Reset connection with {{ ansible_user }}
+  ansible.builtin.meta: reset_connection
+
+- name: check if purge removes ssh_user
+  become: true
+  register: result_purge
+  cisco.ios.ios_user:
+    aggregate:
+      - name: ciscoios
+    purge: true
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == true

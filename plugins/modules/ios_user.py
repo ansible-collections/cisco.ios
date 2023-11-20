@@ -459,6 +459,7 @@ def map_config_to_obj(module):
         regex = "username %s .+$" % user
         cfg = re.findall(regex, data, re.M)
         cfg = "\n".join(cfg)
+        ssh_key_list = parse_sshkey(data, user)
         obj = {
             "name": user,
             "state": "present",
@@ -466,7 +467,9 @@ def map_config_to_obj(module):
             "configured_password": None,
             "hashed_password": None,
             "password_type": parse_password_type(cfg),
-            "sshkey": parse_sshkey(data, user),
+            "sshkey": ssh_key_list,
+            "is_only_ssh_user": False if cfg.strip() and ssh_key_list else True,
+            "is_only_normal_user": True if cfg.strip() and ssh_key_list == [] else False,
             "privilege": parse_privilege(cfg),
             "view": parse_view(cfg),
         }
@@ -543,6 +546,12 @@ def update_objects(want, have):
                     updates.append((entry, item))
     return updates
 
+def find_set_difference(list1, list2, key):
+    want_users = [x[key] for x in list1]
+    have_users = [x[key] for x in list2]
+    setdifference = set(have_users).difference(want_users)
+    result = [item for item in list2 if item[key] in setdifference]
+    return result
 
 def main():
     """main entry point for module execution"""
@@ -592,16 +601,15 @@ def main():
 
     commands = map_obj_to_commands(update_objects(want, have), module)
     if module.params["purge"]:
-        want_users = [{"name": x["name"], "sshkey": x["sshkey"]} for x in want]
-        have_users = [{"name": x["name"], "sshkey": x["sshkey"]} for x in have]
-        differenceset = [i for i in want_users if i not in have_users] + [
-            j for j in have_users if j not in want_users
-        ]
-        for item in differenceset:
+        setdifference = find_set_difference(want, have, "name")
+        for item in setdifference:
             if item["name"] != "admin":
-                if item["sshkey"]:
+                if item["is_only_ssh_user"]:
                     add_ssh(commands, item)
-                else:
+                if item["is_only_normal_user"]:
+                    commands.append(user_del_cmd(item["name"]))
+                if item["is_only_normal_user"] == False and item["is_only_ssh_user"] == False:
+                    add_ssh(commands, item)
                     commands.append(user_del_cmd(item["name"]))
     result["commands"] = commands
     if commands:
