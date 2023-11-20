@@ -1,0 +1,17 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_vlans parsed integration tests on connection={{ ansible_connection }}
+
+- block:
+    - name: Parse the commands for provided configuration
+      become: true
+      register: result
+      cisco.ios.ios_vlans:
+        running_config: "{{ lookup('file', '_parsed_vlan_config.cfg') }}"
+        configuration: true
+        state: parsed
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed_vlan_config.config == result.parsed
