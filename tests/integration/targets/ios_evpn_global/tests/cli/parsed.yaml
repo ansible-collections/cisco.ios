@@ -1,0 +1,19 @@
+---
+- ansible.builtin.debug:
+    msg: START Parsed ios_evpn_global state for integration tests on connection={{ ansible_connection }}
+
+- block:
+    - name: Ios_evpn_global parsed - play
+      register: result
+      cisco.ios.ios_evpn_global:
+        running_config: "{{ lookup('file', '_parsed.cfg') }}"
+        state: parsed
+
+    - name: Ios_evpn_global parsed - assert config
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed['after'] == result['parsed']
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -47,6 +47,7 @@ class PingTemplate(NetworkTemplate):
             "{{ (' repeat ' + count|string ) if count is defined else '' }}"
             "{{ (' df-bit' ) if df_bit|d(False) else '' }}"
             "{{ (' timeout ' + timeout|string) if timeout is defined else '' }}"
+            "{{ (' size ' + size|string) if size is defined else '' }}"
             "{{ (' ingress ' + ingress) if ingress is defined else '' }}"
             "{{ (' egress ' + egress) if egress is defined else '' }}"
             "{{ (' source ' + source) if source is defined else '' }}",
