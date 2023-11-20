@@ -94,6 +94,9 @@ class TestIosUserModule(TestIosModule):
         set_module_args(dict(purge=True))
         result = self.execute_module(changed=True)
         cmd = [
+            "ip ssh pubkey-chain",
+            "no username ansible",
+            "exit",
             {
                 "command": "no username ansible",
                 "answer": "y",
