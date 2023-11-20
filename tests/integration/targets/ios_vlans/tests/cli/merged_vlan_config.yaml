@@ -1,0 +1,46 @@
+---
+- ansible.builtin.debug:
+    msg: START Merged ios_vlans state for integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config_vlan_config.yaml
+- ansible.builtin.include_tasks: _populate_config_vlan_config.yaml
+
+- block:
+    - name: Merge provided configuration with device configuration
+      register: result
+      cisco.ios.ios_vlans: &id001
+        config:
+          - vlan_id: 201
+            member:
+              vni: 10201
+              evi: 201
+          - vlan_id: 902
+            member:
+              vni: 50902
+        configuration: true
+        state: merged
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ merged_vlan_config['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - merged_vlan_config['before'] == result['before']
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - merged_vlan_config['after'] == result['after']
+
+    - name: Merge provided configuration with device configuration (idempotent)
+      register: result
+      cisco.ios.ios_vlans: *id001
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config_vlan_config.yaml

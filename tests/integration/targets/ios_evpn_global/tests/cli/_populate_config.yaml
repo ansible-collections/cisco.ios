@@ -1,0 +1,19 @@
+---
+- name: Configure Loopback1
+  vars:
+    lines: "interface Loopback 1\nip address 172.16.254.4 255.255.255.255\nip pim sparse-mode\n"
+  ansible.netcommon.cli_config:
+    config: "{{ lines }}"
+
+- name: Populate configuration evpn_global
+  cisco.ios.ios_evpn_global:
+    config:
+      replication_type: ingress
+      route_target:
+        auto:
+          vni: true
+      router_id: Loopback1
+      ip:
+        local_learning:
+          disable: true
+    state: merged

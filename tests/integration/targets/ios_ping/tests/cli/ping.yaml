@@ -25,6 +25,12 @@
   cisco.ios.ios_ping:
     dest: "{{ management_ip }}"
 
+- name: Expected successful ping with size
+  register: esp
+  cisco.ios.ios_ping:
+    dest: "{{ management_ip }}"
+    size: 500
+
 - name: Unexpected unsuccessful ping
   register: uup
   ignore_errors: true

@@ -1,0 +1,48 @@
+---
+- ansible.builtin.debug:
+    msg: START Overridden ios_vlans state for integration tests on connection={{ ansible_connection }}
+
+- block:
+    - ansible.builtin.include_tasks: _remove_config_vlan_config.yaml
+    - ansible.builtin.include_tasks: _populate_config_vlan_config.yaml
+
+- block:
+    - name: Override device configuration of all vlans with provided configuration
+      register: result
+      cisco.ios.ios_vlans: &id001
+        config:
+          - vlan_id: 101
+            member:
+              vni: 10102
+              evi: 102
+          - vlan_id: 102
+            member:
+              vni: 10101
+              evi: 101
+        configuration: true
+        state: overridden
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ overridden_vlan_config['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - overridden_vlan_config['before'] == result['before']
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - overridden_vlan_config['after'] == result['after']
+
+    - name: Override device configuration of all interfaces with provided configuration (idempotent)
+      register: result
+      cisco.ios.ios_vlans: *id001
+    - name: Assert that task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config_vlan_config.yaml

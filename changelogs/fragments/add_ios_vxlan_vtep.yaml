@@ -1,0 +1,2 @@
+minor_changes:
+  - Added ios_vxlan_vtep resource module.

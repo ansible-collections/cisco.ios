@@ -1,0 +1,28 @@
+---
+- ansible.builtin.debug:
+    msg: Start ios_vlans rendered integration tests ansible_connection={{ ansible_connection }}
+
+- block:
+    - name: Render the commands for provided  configuration
+      become: true
+      register: result
+      cisco.ios.ios_vlans:
+        config:
+          - vlan_id: 101
+            member:
+              vni: 10101
+              evi: 101
+          - vlan_id: 102
+            member:
+              vni: 10102
+              evi: 102
+          - vlan_id: 901
+            member:
+              vni: 50901
+        configuration: true
+        state: rendered
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.rendered|symmetric_difference(rendered_vlan_config.commands) == []

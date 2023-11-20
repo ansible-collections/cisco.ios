@@ -15,6 +15,10 @@ plugin_routing:
       redirect: cisco.ios.ios
     config:
       redirect: cisco.ios.ios
+    evpn_global:
+      redirect: cisco.ios.ios
+    evpn_evi:
+      redirect: cisco.ios.ios
     facts:
       redirect: cisco.ios.ios
     hostname:
@@ -34,6 +38,10 @@ plugin_routing:
     ios_command:
       redirect: cisco.ios.ios
     ios_config:
+      redirect: cisco.ios.ios
+    ios_evpn_global:
+      redirect: cisco.ios.ios
+    ios_evpn_evi:
       redirect: cisco.ios.ios
     ios_facts:
       redirect: cisco.ios.ios
@@ -62,6 +70,8 @@ plugin_routing:
     ios_static_routes:
       redirect: cisco.ios.ios
     ios_system:
+      redirect: cisco.ios.ios
+    ios_vxlan_vtep:
       redirect: cisco.ios.ios
     l2_interfaces:
       redirect: cisco.ios.ios
@@ -111,6 +121,8 @@ plugin_routing:
       redirect: cisco.ios.ios
     vrf:
       redirect: cisco.ios.ios
+    vxlan_vtep:
+      redirect: cisco.ios.ios
   modules:
     acl_interfaces:
       redirect: cisco.ios.ios_acl_interfaces
@@ -129,6 +141,10 @@ plugin_routing:
       redirect: cisco.ios.ios_command
     config:
       redirect: cisco.ios.ios_config
+    evpn_global:
+      redirect: cisco.ios.ios_evpn_global
+    evpn_evi:
+      redirect: cisco.ios.ios_evpn_evi
     facts:
       redirect: cisco.ios.ios_facts
     hostname:
@@ -206,4 +222,6 @@ plugin_routing:
       redirect: cisco.ios.ios_vlans
     vrf:
       redirect: cisco.ios.ios_vrf
+    vxlan_vtep:
+      redirect: cisco.ios.ios_vxlan_vtep
 requires_ansible: ">=2.9.10"
