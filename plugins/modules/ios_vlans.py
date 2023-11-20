@@ -542,7 +542,7 @@ EXAMPLES = """
   cisco.ios.ios_vlans:
     config:
       - vlan_id: 101
-    configuration: True
+    configuration: true
     state: deleted
 
 # After state:
@@ -614,7 +614,7 @@ EXAMPLES = """
 # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
 
 # Using Deleted without any config passed (configuration: True)
-#"(NOTE: This will delete all of configured vlans attributes)"
+# "(NOTE: This will delete all of configured vlans attributes)"
 
 # Before state:
 # -------------
@@ -633,7 +633,7 @@ EXAMPLES = """
 
 - name: Delete attributes of ALL VLANs
   cisco.ios.ios_vlans:
-    configuration: True
+    configuration: true
     state: deleted
 
 # After state:
@@ -667,7 +667,7 @@ EXAMPLES = """
 - name: Gather listed vlans with provided configurations
   cisco.ios.ios_vlans:
     config:
-    configuration: True
+    configuration: true
     state: gathered
 
 # Module Execution Result:
@@ -891,7 +891,7 @@ EXAMPLES = """
 - name: Parse the commands for provided configuration
   cisco.ios.ios_vlans:
     running_config: "{{ lookup('file', './parsed.cfg') }}"
-    configuration: True
+    configuration: true
     state: parsed
 
 # Module Execution Result:
@@ -947,8 +947,12 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlans.vlans import (
     VlansArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.vlans.vlans import Vlans
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import get_connection
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.vlans.vlans import (
+    Vlans,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
+    get_connection,
+)
 
 
 def _is_l2_device(module):

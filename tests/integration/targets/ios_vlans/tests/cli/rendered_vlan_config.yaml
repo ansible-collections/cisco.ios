@@ -19,7 +19,7 @@
           - vlan_id: 901
             member:
               vni: 50901
-        configuration: True
+        configuration: true
         state: rendered
 
     - ansible.builtin.assert:
