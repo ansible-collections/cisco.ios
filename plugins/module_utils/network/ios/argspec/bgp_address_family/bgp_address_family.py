@@ -813,6 +813,19 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                             "type": "dict",
                             "options": {"name": {"type": "str"}, "filter": {"type": "bool"}},
                         },
+                        "advertise": {
+                            "type": "dict",
+                            "options": {
+                                "afi": {
+                                    "type": "str",
+                                    "choices": ["l2vpn"],
+                                },
+                                "safi": {
+                                    "type": "str",
+                                    "choices": ["evpn"],
+                                },
+                            },
+                        },
                     },
                 },
             },
