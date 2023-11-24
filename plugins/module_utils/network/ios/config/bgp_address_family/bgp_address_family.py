@@ -39,6 +39,7 @@ class Bgp_address_family(ResourceModule):
     """
 
     parsers = [
+        "advertise",
         "as_number",  # generic
         "aggregate_addresses",
         "auto_summary",

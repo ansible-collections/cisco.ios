@@ -1,0 +1,58 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_vxlan_vtep empty_config.yaml integration tests on connection={{ ansible_connection }}
+
+- name: Merged with empty configuration should give appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.ios.ios_vxlan_vtep:
+    config:
+    state: merged
+
+- ansible.builtin.assert:
+    that:
+      - result.msg == 'value of config parameter must not be empty for state merged'
+
+- name: Replaced with empty configuration should give appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.ios.ios_vxlan_vtep:
+    config:
+    state: replaced
+
+- ansible.builtin.assert:
+    that:
+      - result.msg == 'value of config parameter must not be empty for state replaced'
+
+- name: Overridden with empty configuration should give appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.ios.ios_vxlan_vtep:
+    config:
+    state: overridden
+
+- ansible.builtin.assert:
+    that:
+      - result.msg == 'value of config parameter must not be empty for state overridden'
+
+- name: Rendered with empty configuration should give appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.ios.ios_vxlan_vtep:
+    config:
+    state: rendered
+
+- ansible.builtin.assert:
+    that:
+      - result.msg == 'value of config parameter must not be empty for state rendered'
+
+- name: Parsed with empty configuration should give appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.ios.ios_vxlan_vtep:
+    running_config:
+    state: parsed
+
+- ansible.builtin.assert:
+    that:
+      - result.msg == 'value of running_config parameter must not be empty for state parsed'
