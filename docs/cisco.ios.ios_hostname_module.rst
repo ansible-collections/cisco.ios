@@ -249,7 +249,7 @@ Examples
     # Before state:
     # -------------
 
-    #router-ios#show running-config | section ^hostname
+    # router-ios#show running-config | section ^hostname
     # hostname RouterTest
 
     # Gathered play:

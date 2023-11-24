@@ -1,0 +1,6 @@
+---
+- name: Remove VXLAN VTEP configuration
+  cisco.ios.ios_vxlan_vtep:
+    config:
+      - interface: nve1
+    state: deleted

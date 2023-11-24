@@ -37,6 +37,7 @@ class PingArgs(object):  # pylint: disable=R0903
         "dest": {"required": True, "type": "str"},
         "df_bit": {"default": False, "type": "bool"},
         "source": {"type": "str"},
+        "size": {"type": "int"},
         "ingress": {"type": "str"},
         "egress": {"type": "str"},
         "timeout": {"type": "int"},

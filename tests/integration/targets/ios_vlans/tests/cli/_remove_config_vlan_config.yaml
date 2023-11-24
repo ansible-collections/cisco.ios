@@ -1,0 +1,12 @@
+---
+- name: Remove configuration
+  cisco.ios.ios_vlans:
+    config:
+      - vlan_id: 101
+      - vlan_id: 102
+      - vlan_id: 201
+      - vlan_id: 202
+      - vlan_id: 901
+      - vlan_id: 902
+    configuration: true
+    state: deleted

@@ -1,0 +1,2 @@
+minor_changes:
+  - Fixed ios_evpn_evi resource module integration test failure - code to remove VLAN config.

@@ -1,0 +1,274 @@
+---
+merged:
+  before:
+    - interface: nve1
+  commands:
+    - interface nve1
+    - source-interface Loopback1
+    - host-reachability protocol bgp
+    - member vni 10101 ingress-replication
+    - member vni 10102 ingress-replication
+    - member vni 10201 mcast-group 225.0.0.101 FF0E:225::101
+    - member vni 10202 mcast-group 225.0.0.102 FF0E:225::102
+    - member vni 50901 vrf green
+    - member vni 50902 vrf blue
+  after:
+    - interface: nve1
+      source_interface: Loopback1
+      host_reachability_bgp: true
+      member:
+        vni:
+          l2vni:
+            - vni: 10101
+              replication:
+                type: ingress
+            - vni: 10102
+              replication:
+                type: ingress
+            - vni: 10201
+              replication:
+                type: static
+                mcast_group:
+                  ipv4: 225.0.0.101
+                  ipv6: FF0E:225::101
+            - vni: 10202
+              replication:
+                type: static
+                mcast_group:
+                  ipv4: 225.0.0.102
+                  ipv6: FF0E:225::102
+          l3vni:
+            - vni: 50901
+              vrf: green
+            - vni: 50902
+              vrf: blue
+replaced:
+  before:
+    - interface: nve1
+      source_interface: Loopback1
+      host_reachability_bgp: true
+      member:
+        vni:
+          l2vni:
+            - vni: 10101
+              replication:
+                type: ingress
+            - vni: 10102
+              replication:
+                type: ingress
+            - vni: 10201
+              replication:
+                type: static
+                mcast_group:
+                  ipv4: 225.0.0.101
+                  ipv6: FF0E:225::101
+            - vni: 10202
+              replication:
+                type: static
+                mcast_group:
+                  ipv4: 225.0.0.102
+                  ipv6: FF0E:225::102
+          l3vni:
+            - vni: 50901
+              vrf: green
+            - vni: 50902
+              vrf: blue
+  commands:
+    - interface nve1
+    - no member vni 10101 ingress-replication
+    - member vni 10101 mcast-group FF0E:225::101
+    - no member vni 10201 mcast-group 225.0.0.101 FF0E:225::101
+    - member vni 10201 mcast-group FF0E:225::102
+    - no member vni 10102 ingress-replication
+    - no member vni 10202 mcast-group 225.0.0.102 FF0E:225::102
+    - no member vni 50901 vrf green
+    - no member vni 50902 vrf blue
+  after:
+    - interface: nve1
+      source_interface: Loopback1
+      host_reachability_bgp: true
+      member:
+        vni:
+          l2vni:
+            - vni: 10101
+              replication:
+                type: static
+                mcast_group:
+                  ipv6: FF0E:225::101
+            - vni: 10201
+              replication:
+                type: static
+                mcast_group:
+                  ipv6: FF0E:225::102
+
+overridden:
+  before:
+    - interface: nve1
+      source_interface: Loopback1
+      host_reachability_bgp: true
+      member:
+        vni:
+          l2vni:
+            - vni: 10101
+              replication:
+                type: ingress
+            - vni: 10102
+              replication:
+                type: ingress
+            - vni: 10201
+              replication:
+                type: static
+                mcast_group:
+                  ipv4: 225.0.0.101
+                  ipv6: FF0E:225::101
+            - vni: 10202
+              replication:
+                type: static
+                mcast_group:
+                  ipv4: 225.0.0.102
+                  ipv6: FF0E:225::102
+          l3vni:
+            - vni: 50901
+              vrf: green
+            - vni: 50902
+              vrf: blue
+  commands:
+    - interface nve1
+    - no member vni 10101 ingress-replication
+    - member vni 10101 mcast-group FF0E:225::101
+    - no member vni 10201 mcast-group 225.0.0.101 FF0E:225::101
+    - member vni 10201 mcast-group FF0E:225::102
+    - no member vni 10102 ingress-replication
+    - no member vni 10202 mcast-group 225.0.0.102 FF0E:225::102
+    - no member vni 50901 vrf green
+    - no member vni 50902 vrf blue
+    - member vni 50901 vrf blue
+  after:
+    - interface: nve1
+      source_interface: Loopback1
+      host_reachability_bgp: true
+      member:
+        vni:
+          l2vni:
+            - vni: 10101
+              replication:
+                type: static
+                mcast_group:
+                  ipv6: FF0E:225::101
+            - vni: 10201
+              replication:
+                type: static
+                mcast_group:
+                  ipv6: FF0E:225::102
+          l3vni:
+            - vni: 50901
+              vrf: blue
+
+deleted:
+  before:
+    - interface: nve1
+      source_interface: Loopback1
+      host_reachability_bgp: true
+      member:
+        vni:
+          l2vni:
+            - vni: 10101
+              replication:
+                type: ingress
+            - vni: 10102
+              replication:
+                type: ingress
+            - vni: 10201
+              replication:
+                type: static
+                mcast_group:
+                  ipv4: 225.0.0.101
+                  ipv6: FF0E:225::101
+            - vni: 10202
+              replication:
+                type: static
+                mcast_group:
+                  ipv4: 225.0.0.102
+                  ipv6: FF0E:225::102
+          l3vni:
+            - vni: 50901
+              vrf: green
+            - vni: 50902
+              vrf: blue
+  commands:
+    - interface nve1
+    - no source-interface Loopback1
+    - no host-reachability protocol bgp
+    - no member vni 10101 ingress-replication
+    - no member vni 10102 ingress-replication
+    - no member vni 10201 mcast-group 225.0.0.101 FF0E:225::101
+    - no member vni 10202 mcast-group 225.0.0.102 FF0E:225::102
+    - no member vni 50901 vrf green
+    - no member vni 50902 vrf blue
+
+  after:
+    - interface: nve1
+      host_reachability_bgp: true
+
+gathered:
+  config:
+    - interface: nve1
+      source_interface: Loopback1
+      host_reachability_bgp: true
+      member:
+        vni:
+          l2vni:
+            - vni: 10101
+              replication:
+                type: ingress
+            - vni: 10102
+              replication:
+                type: ingress
+            - vni: 10201
+              replication:
+                type: static
+                mcast_group:
+                  ipv4: 225.0.0.101
+                  ipv6: FF0E:225::101
+            - vni: 10202
+              replication:
+                type: static
+                mcast_group:
+                  ipv4: 225.0.0.102
+                  ipv6: FF0E:225::102
+          l3vni:
+            - vni: 50901
+              vrf: green
+            - vni: 50902
+              vrf: blue
+
+parsed:
+  config:
+    - interface: nve1
+      source_interface: Loopback1
+      host_reachability_bgp: true
+      member:
+        vni:
+          l2vni:
+            - vni: 10101
+              replication:
+                type: ingress
+            - vni: 10201
+              replication:
+                type: static
+                mcast_group:
+                  ipv4: 225.0.0.101
+                  ipv6: FF0E:225::101
+          l3vni:
+            - vni: 50901
+              vrf: green
+            - vni: 50902
+              vrf: blue
+
+rendered:
+  commands:
+    - interface nve1
+    - source-interface Loopback1
+    - member vni 10101 mcast-group FF0E:225::101
+    - member vni 10201 mcast-group FF0E:225::102
+    - member vni 50901 vrf blue
