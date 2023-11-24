@@ -5,6 +5,35 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v5.3.0
+======
+
+Minor Changes
+-------------
+
+- Added ios_evpn_evi resource module.
+- Added ios_evpn_global resource module.
+- Added ios_vxlan_vtep resource module.
+- Fixed ios_evpn_evi resource module integration test failure - code to remove VLAN config.
+- ios_bgp_address_family - Fixed an issue with inherit peer-policy CLI
+- ios_bgp_address_family - added 'advertise' key
+- ios_vlans - added vlan config CLI feature.
+- ios_vrf - added MDT related keys
+
+Bugfixes
+--------
+
+- Updated the ios_ping ping module to support size param.
+- ios_bgp_global - Explicitly add neighbor address to every parser.
+- ios_bgp_global - remote_as not mendatory for neighbors.
+
+New Modules
+-----------
+
+- ios_evpn_evi - Resource module to configure L2VPN EVPN EVI.
+- ios_evpn_global - Resource module to configure L2VPN EVPN.
+- ios_vxlan_vtep - Resource module to configure VXLAN VTEP interface.
+
 v5.2.0
 ======
 
