@@ -636,7 +636,7 @@ class TestIosSnmpServerModule(TestIosModule):
             },
         }
         merged = [
-            "snmp ifmib ifindex persist",
+            "snmp-server ifindex persist",
             "snmp-server accounting commands default",
             "snmp-server chassis-id this is a chassis id string",
             "snmp-server contact this is contact string",
