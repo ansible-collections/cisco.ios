@@ -1,0 +1,38 @@
+---
+# push workflow is shared and expected to perform actions after a merge happens
+# on a maintenance branch (default or release). For example updating the
+# draft release-notes.
+# based on great work from
+# https://github.com/T-Systems-MMS/ansible-collection-icinga-director
+name: push
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:  # yamllint disable-line rule:truthy
+  # # auto generate changelog and add PR by ansibuddy
+  # push:
+  #   # branches to consider in the event; optional, defaults to all
+  #   branches:
+  #     - main
+  #     - 'releases/**'
+  #     - 'stable/**'
+  #   # Prevent a 2nd run after the changelog is updated
+  #   paths-ignore:
+  #     - CHANGELOG.rst
+  #     - changelogs/changelog.yaml
+  workflow_dispatch:
+
+env:
+  NAMESPACE: cisco
+  COLLECTION_NAME: ios
+  ANSIBLE_COLLECTIONS_PATHS: ./
+
+jobs:
+  update_release_draft:
+    uses: ansible/devtools/.github/workflows/push_network.yml@main
+    with:
+      repo: ansible-collections/cisco.ios
+    secrets:
+      BOT_PAT: ${{ secrets.BOT_PAT }}

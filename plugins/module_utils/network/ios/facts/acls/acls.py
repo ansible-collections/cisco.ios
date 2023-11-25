@@ -17,6 +17,7 @@ __metaclass__ = type
 
 import re
 
+from ansible.module_utils._text import to_text
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
@@ -34,28 +35,49 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 class AclsFacts(object):
     """The ios_acls fact class"""
 
-    def __init__(self, module, subspec="config", options="options"):
+    def __init__(self, module):
         self._module = module
         self.argument_spec = AclsArgs.argument_spec
 
     def get_acl_data(self, connection):
-        # Get the access-lists from the ios router
-        # Get the remarks on access-lists from the ios router
-        # alternate command 'sh run partition access-list' but has a lot of ordering issues
-        # and incomplete ACLs are not viewed correctly
-        _acl_data = connection.get("show access-list")
-        _remarks_data = connection.get("show running-config | include ip(v6)* access-list|remark")
-        if _remarks_data:
-            _acl_data += "\n" + _remarks_data
-        return _acl_data
+        # Removed the show access-list
+        # Removed the show running-config | include ip(v6)* access-list|remark
+        return connection.get("show running-config | section access-list")
+
+    def get_acl_names(self, connection):
+        # this information is required to scoop out the access lists which has no aces
+        return connection.get("show access-lists | include access list")
+
+    def populate_empty_acls(self, raw_acls, raw_acls_name):
+        # this would update empty acls to the full acls entry
+        if raw_acls and raw_acls_name:
+            for aclnames, acldata in raw_acls_name.get("acls").items():
+                if aclnames not in raw_acls.get("acls").keys():
+                    if not raw_acls.get("acls"):
+                        raw_acls["acls"] = {}
+                    raw_acls["acls"][aclnames] = acldata
+        elif raw_acls_name and not raw_acls:
+            for aclnames, acldata in raw_acls_name.get("acls").items():
+                if not raw_acls.get("acls"):
+                    raw_acls["acls"] = {}
+                raw_acls["acls"][aclnames] = acldata
+        return raw_acls
 
     def sanitize_data(self, data):
         """removes matches or extra config info that is added on acl match"""
         re_data = ""
+        remarks_idx = 0
         for da in data.split("\n"):
             if "match" in da:
                 mod_da = re.sub(r"\([^()]*\)", "", da)
                 re_data += mod_da[:-1] + "\n"
+            elif re.match(r"\s*\d+\sremark.+", da, re.IGNORECASE) or re.match(
+                r"\s*remark.+",
+                da,
+                re.IGNORECASE,
+            ):
+                remarks_idx += 1
+                re_data += to_text(remarks_idx) + " " + da + "\n"
             else:
                 re_data += da + "\n"
         return re_data
@@ -68,21 +90,30 @@ class AclsFacts(object):
         :rtype: dictionary
         :returns: facts
         """
+        namedata = ""
 
         if not data:
             data = self.get_acl_data(connection)
+            namedata = self.get_acl_names(connection)
 
         if data:
             data = self.sanitize_data(data)
 
-        rmmod = NetworkTemplate(lines=data.splitlines(), tmplt=AclsTemplate())
-        current = rmmod.parse()
+        # parse main information
+        templateObjMain = NetworkTemplate(lines=data.splitlines(), tmplt=AclsTemplate())
+        raw_acls = templateObjMain.parse()
+
+        if namedata:
+            # parse just names to update empty acls
+            templateObjName = NetworkTemplate(lines=namedata.splitlines(), tmplt=AclsTemplate())
+            raw_acl_names = templateObjName.parse()
+            raw_acls = self.populate_empty_acls(raw_acls, raw_acl_names)
 
         temp_v4 = []
         temp_v6 = []
 
-        if current.get("acls"):
-            for k, v in iteritems(current.get("acls")):
+        if raw_acls.get("acls"):
+            for k, v in iteritems(raw_acls.get("acls")):
                 if v.get("afi") == "ipv4" and v.get("acl_type") in ["standard", "extended"]:
                     del v["afi"]
                     temp_v4.append(v)
@@ -99,6 +130,14 @@ class AclsFacts(object):
                     _temp_addr = temp.get("address", "")
                     ace[typ]["address"] = _temp_addr.split(" ")[0]
                     ace[typ]["wildcard_bits"] = _temp_addr.split(" ")[1]
+                if temp.get("ipv6_address"):
+                    _temp_addr = temp.get("ipv6_address", "")
+                    if len(_temp_addr.split(" ")) == 2:
+                        ipv6_add = ace[typ].pop("ipv6_address")
+                        ace[typ]["address"] = ipv6_add.split(" ")[0]
+                        ace[typ]["wildcard_bits"] = ipv6_add.split(" ")[1]
+                    else:
+                        ace[typ]["address"] = ace[typ].pop("ipv6_address")
 
             def process_protocol_options(each):
                 for each_ace in each.get("aces"):
@@ -131,14 +170,25 @@ class AclsFacts(object):
             def collect_remarks(aces):
                 """makes remarks list per ace"""
                 ace_entry = []
-                rem = []
+                ace_rem = []
+                rem = {}
                 for i in aces:
-                    if i.get("remarks"):
-                        rem.append(i.pop("remarks"))
+                    if i.get("is_remark_for"):
+                        if not rem.get(i.get("is_remark_for")):
+                            rem[i.get("is_remark_for")] = {"remarks": []}
+                            rem[i.get("is_remark_for")]["remarks"].append(i.get("the_remark"))
+                        else:
+                            rem[i.get("is_remark_for")]["remarks"].append(i.get("the_remark"))
                     else:
+                        if rem:
+                            if rem.get(i.get("sequence")):
+                                ace_rem = rem.pop(i.get("sequence"))
+                                i["remarks"] = ace_rem.get("remarks")
                         ace_entry.append(i)
-                if rem:
-                    ace_entry.append({"remarks": rem})
+
+                if rem:  # pending remarks
+                    pending_rem = rem.get("remark")
+                    ace_entry.append({"remarks": pending_rem.get("remarks")})
                 return ace_entry
 
             for each in temp_v4:
@@ -148,7 +198,7 @@ class AclsFacts(object):
 
             for each in temp_v6:
                 if each.get("aces"):
-                    each["aces"] = collect_remarks(each.get("aces"))
+                    # each["aces"] = collect_remarks(each.get("aces"))
                     process_protocol_options(each)
 
         objs = []

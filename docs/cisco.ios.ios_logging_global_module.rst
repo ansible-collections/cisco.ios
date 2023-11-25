@@ -2258,7 +2258,6 @@ Examples
     #       "logging host 172.16.1.11 xml"
     #     ],
 
-
     # After state:
     # ------------
 
@@ -2491,7 +2490,7 @@ Examples
     # Before state:
     # -------------
 
-    #router-ios#show running-config | section logging
+    # router-ios#show running-config | section logging
     # logging exception 4099
     # logging message-counter log
     # logging userinfo
@@ -2632,7 +2631,7 @@ Examples
           trap: errors
           userinfo: true
           policy_firewall:
-              rate_limit: 10
+            rate_limit: 10
           logging_on: enable
           exception: 10
           dmvpn:

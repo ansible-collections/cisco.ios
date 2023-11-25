@@ -29,6 +29,12 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_ad
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_global.bgp_global import (
     Bgp_globalFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.evpn_evi.evpn_evi import (
+    Evpn_eviFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.evpn_global.evpn_global import (
+    Evpn_globalFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.hostname.hostname import (
     HostnameFacts,
 )
@@ -67,7 +73,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ntp_gl
     Ntp_globalFacts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ospf_interfaces.ospf_interfaces import (
-    Ospf_InterfacesFacts,
+    Ospf_interfacesFacts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ospfv2.ospfv2 import (
     Ospfv2Facts,
@@ -93,6 +99,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.vlans import (
     VlansFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vxlan_vtep.vxlan_vtep import (
+    Vxlan_vtepFacts,
+)
 
 
 FACT_LEGACY_SUBSETS = dict(default=Default, hardware=Hardware, interfaces=Interfaces, config=Config)
@@ -112,7 +121,7 @@ FACT_RESOURCE_SUBSETS = dict(
     acls=AclsFacts,
     ospfv2=Ospfv2Facts,
     ospfv3=Ospfv3Facts,
-    ospf_interfaces=Ospf_InterfacesFacts,
+    ospf_interfaces=Ospf_interfacesFacts,
     bgp_global=Bgp_globalFacts,
     bgp_address_family=Bgp_address_familyFacts,
     logging_global=Logging_globalFacts,
@@ -122,6 +131,9 @@ FACT_RESOURCE_SUBSETS = dict(
     service=ServiceFacts,
     snmp_server=Snmp_serverFacts,
     hostname=HostnameFacts,
+    vxlan_vtep=Vxlan_vtepFacts,
+    evpn_global=Evpn_globalFacts,
+    evpn_evi=Evpn_eviFacts,
 )
 
 

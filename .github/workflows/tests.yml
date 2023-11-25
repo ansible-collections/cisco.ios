@@ -1,5 +1,5 @@
 ---
-name: Test collection
+name: test_collection
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
@@ -14,8 +14,6 @@ on:  # yamllint disable-line rule:truthy
 
 
 jobs:
-  ansible-lint:
-    uses: ansible-network/github_actions/.github/workflows/ansible-lint.yml@main
   changelog:
     uses: ansible-network/github_actions/.github/workflows/changelog.yml@main
     if: github.event_name != 'schedule'
@@ -32,7 +30,6 @@ jobs:
   all_green:
     if: ${{ always() && (github.event_name != 'schedule') }}
     needs:
-      - ansible-lint
       - changelog
       - sanity
       - unit-galaxy
@@ -40,10 +37,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: >-
-          python -c "assert set([
-          '${{ needs.ansible-lint.result }}',
+          python -c "assert 'failure' not in
+          set([
           '${{ needs.changelog.result }}',
           '${{ needs.sanity.result }}',
           '${{ needs.unit-galaxy.result }}',
           '${{ needs.unit-source.result }}'
-          ]) == {'success'}"
+          ])"

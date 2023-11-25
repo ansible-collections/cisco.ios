@@ -1,0 +1,183 @@
+---
+merged:
+  before:
+    - evi: 101
+      encapsulation: vxlan
+      replication_type: static
+    - evi: 102
+      encapsulation: vxlan
+      replication_type: ingress
+    - evi: 201
+      encapsulation: vxlan
+      replication_type: static
+    - evi: 202
+      encapsulation: vxlan
+      replication_type: ingress
+  commands:
+    - l2vpn evpn instance 202 vlan-based
+    - default-gateway advertise enable
+    - ip local-learning disable
+    - replication-type static
+    - l2vpn evpn instance 101 vlan-based
+    - ip local-learning enable
+    - replication-type ingress
+    - rd 1:1
+  after:
+    - evi: 101
+      encapsulation: vxlan
+      replication_type: ingress
+      ip:
+        local_learning:
+          enable: true
+      route_distinguisher: "1:1"
+    - evi: 102
+      encapsulation: vxlan
+      replication_type: ingress
+    - evi: 201
+      encapsulation: vxlan
+      replication_type: static
+    - evi: 202
+      encapsulation: vxlan
+      replication_type: static
+      ip:
+        local_learning:
+          disable: true
+      default_gateway:
+        advertise:
+          enable: true
+
+replaced:
+  before:
+    - evi: 101
+      encapsulation: vxlan
+      replication_type: static
+    - evi: 102
+      encapsulation: vxlan
+      replication_type: ingress
+    - evi: 201
+      encapsulation: vxlan
+      replication_type: static
+    - evi: 202
+      encapsulation: vxlan
+      replication_type: ingress
+  commands:
+    - l2vpn evpn instance 101 vlan-based
+    - replication-type ingress
+    - default-gateway advertise enable
+  after:
+    - evi: 101
+      default_gateway:
+        advertise:
+          enable: true
+      encapsulation: vxlan
+      replication_type: ingress
+    - evi: 102
+      encapsulation: vxlan
+      replication_type: ingress
+    - evi: 201
+      encapsulation: vxlan
+      replication_type: static
+    - evi: 202
+      encapsulation: vxlan
+      replication_type: ingress
+
+overridden:
+  before:
+    - evi: 101
+      encapsulation: vxlan
+      replication_type: static
+    - evi: 102
+      encapsulation: vxlan
+      replication_type: ingress
+    - evi: 201
+      encapsulation: vxlan
+      replication_type: static
+    - evi: 202
+      encapsulation: vxlan
+      replication_type: ingress
+  commands:
+    - no l2vpn evpn instance 102 vlan-based
+    - no l2vpn evpn instance 201 vlan-based
+    - l2vpn evpn instance 101 vlan-based
+    - default-gateway advertise enable
+    - replication-type ingress
+    - l2vpn evpn instance 202 vlan-based
+    - default-gateway advertise enable
+    - replication-type static
+  after:
+    - evi: 101
+      encapsulation: vxlan
+      replication_type: ingress
+      default_gateway:
+        advertise:
+          enable: true
+    - evi: 202
+      encapsulation: vxlan
+      replication_type: static
+      default_gateway:
+        advertise:
+          enable: true
+
+deleted:
+  before:
+    - evi: 101
+      encapsulation: vxlan
+      replication_type: static
+    - evi: 102
+      encapsulation: vxlan
+      replication_type: ingress
+    - evi: 201
+      encapsulation: vxlan
+      replication_type: static
+    - evi: 202
+      encapsulation: vxlan
+      replication_type: ingress
+  commands:
+    - no l2vpn evpn instance 101 vlan-based
+  after:
+    - evi: 102
+      encapsulation: vxlan
+      replication_type: ingress
+    - evi: 201
+      encapsulation: vxlan
+      replication_type: static
+    - evi: 202
+      encapsulation: vxlan
+      replication_type: ingress
+
+rendered:
+  commands:
+    - l2vpn evpn instance 101 vlan-based
+    - default-gateway advertise enable
+    - encapsulation vxlan
+    - replication-type ingress
+    - l2vpn evpn instance 202 vlan-based
+    - encapsulation vxlan
+    - replication-type ingress
+
+gathered:
+  after:
+    - evi: 101
+      encapsulation: vxlan
+      replication_type: static
+    - evi: 102
+      encapsulation: vxlan
+      replication_type: ingress
+    - evi: 201
+      encapsulation: vxlan
+      replication_type: static
+    - evi: 202
+      encapsulation: vxlan
+      replication_type: ingress
+
+parsed:
+  after:
+    - evi: 101
+      encapsulation: vxlan
+      replication_type: ingress
+      default_gateway:
+        advertise:
+          enable: true
+    - evi: 102
+      encapsulation: vxlan
+      replication_type: ingress

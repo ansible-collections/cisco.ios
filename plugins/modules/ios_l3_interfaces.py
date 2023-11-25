@@ -17,11 +17,11 @@ DOCUMENTATION = """
 module: ios_l3_interfaces
 short_description: Resource module to configure L3 interfaces.
 description:
-- This module provides declarative management of Layer-3 interface on Cisco IOS devices.
+  - This module provides declarative management of Layer-3 interface on Cisco IOS devices.
 version_added: 1.0.0
 author:
-- Sagar Paul (@KB-perByte)
-- Sumit Jaiswal (@justjais)
+  - Sagar Paul (@KB-perByte)
+  - Sumit Jaiswal (@justjais)
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - Using deleted state without config will delete all l3 attributes from all the interfaces.
@@ -37,39 +37,39 @@ options:
     suboptions:
       name:
         description:
-        - Full name of the interface excluding any logical unit number, i.e. GigabitEthernet0/1.
+          - Full name of the interface excluding any logical unit number, i.e. GigabitEthernet0/1.
         type: str
         required: true
       ipv4:
         description:
-        - IPv4 address to be set for the Layer-3 interface mentioned in I(name) option.
-          The address format is <ipv4 address>/<mask>, the mask is number in range
-          0-32 eg. 192.168.0.1/24.
+          - IPv4 address to be set for the Layer-3 interface mentioned in I(name) option.
+            The address format is <ipv4 address>/<mask>, the mask is number in range
+            0-32 eg. 192.168.0.1/24.
         type: list
         elements: dict
         suboptions:
           address:
             description:
-            - Configures the IPv4 address for Interface.
+              - Configures the IPv4 address for Interface.
             type: str
           secondary:
             description:
-            - Configures the IP address as a secondary address.
+              - Configures the IP address as a secondary address.
             type: bool
           dhcp_client:
             description:
-            - Configures and specifies client-id to use over DHCP ip. Note, This option
-              shall work only when dhcp is configured as IP.
-            - GigabitEthernet interface number
-            - This option is DEPRECATED and is replaced with dhcp which
-              accepts dict as input this attribute will be removed after 2023-08-01.
+              - Configures and specifies client-id to use over DHCP ip. Note, This option
+                shall work only when dhcp is configured as IP.
+              - GigabitEthernet interface number
+              - This option is DEPRECATED and is replaced with dhcp which
+                accepts dict as input this attribute will be removed after 2023-08-01.
             type: str
           dhcp_hostname:
             description:
-            - Configures and specifies value for hostname option over DHCP ip. Note,
-              This option shall work only when dhcp is configured as IP.
-            - This option is DEPRECATED and is replaced with dhcp which
-              accepts dict as input this attribute will be removed after 2023-08-01.
+              - Configures and specifies value for hostname option over DHCP ip. Note,
+                This option shall work only when dhcp is configured as IP.
+              - This option is DEPRECATED and is replaced with dhcp which
+                accepts dict as input this attribute will be removed after 2023-08-01.
             type: str
           dhcp:
             description: IP Address negotiated via DHCP.
@@ -89,15 +89,15 @@ options:
             type: str
       ipv6:
         description:
-        - IPv6 address to be set for the Layer-3 interface mentioned in I(name) option.
-        - The address format is <ipv6 address>/<mask>, the mask is number in range
-          0-128 eg. fd5d:12c9:2201:1::1/64
+          - IPv6 address to be set for the Layer-3 interface mentioned in I(name) option.
+          - The address format is <ipv6 address>/<mask>, the mask is number in range
+            0-128 eg. fd5d:12c9:2201:1::1/64
         type: list
         elements: dict
         suboptions:
           address:
             description:
-            - Configures the IPv6 address for Interface.
+              - Configures the IPv6 address for Interface.
             type: str
           autoconfig:
             description: Obtain address using auto-configuration.
@@ -155,13 +155,13 @@ options:
     type: str
   state:
     choices:
-    - merged
-    - replaced
-    - overridden
-    - deleted
-    - rendered
-    - gathered
-    - parsed
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - rendered
+      - gathered
+      - parsed
     default: merged
     description:
       - The state the configuration should be left in
@@ -216,19 +216,19 @@ EXAMPLES = """
 - name: Merge provided configuration with device configuration
   cisco.ios.ios_l3_interfaces:
     config:
-    - name: GigabitEthernet0/1
-      ipv4:
-      - address: 192.168.0.1/24
-        secondary: true
-    - name: GigabitEthernet2
-      ipv4:
-      - address: 192.168.0.2/24
-    - name: GigabitEthernet3
-      ipv6:
-      - address: fd5d:12c9:2201:1::1/64
-    - name: GigabitEthernet3.100
-      ipv4:
-      - address: 192.168.0.3/24
+      - name: GigabitEthernet0/1
+        ipv4:
+          - address: 192.168.0.1/24
+            secondary: true
+      - name: GigabitEthernet2
+        ipv4:
+          - address: 192.168.0.2/24
+      - name: GigabitEthernet3
+        ipv6:
+          - address: fd5d:12c9:2201:1::1/64
+      - name: GigabitEthernet3.100
+        ipv4:
+          - address: 192.168.0.3/24
     state: merged
 
 # Task Output
@@ -334,14 +334,14 @@ EXAMPLES = """
 - name: Replaces device configuration of listed interfaces with provided configuration
   cisco.ios.ios_l3_interfaces:
     config:
-    - name: GigabitEthernet2
-      ipv4:
-      - address: 192.168.2.0/24
-    - name: GigabitEthernet3
-      ipv4:
-      - dhcp:
-          client_id: GigabitEthernet2
-          hostname: test.com
+      - name: GigabitEthernet2
+        ipv4:
+          - address: 192.168.2.0/24
+      - name: GigabitEthernet3
+        ipv4:
+          - dhcp:
+              client_id: GigabitEthernet2
+              hostname: test.com
     state: replaced
 
 # Task Output
@@ -447,14 +447,14 @@ EXAMPLES = """
 - name: Override device configuration of all interfaces with provided configuration
   cisco.ios.ios_l3_interfaces:
     config:
-    - ipv4:
-      - dhcp:
-          enable: true
-      name: GigabitEthernet1
-    - name: GigabitEthernet2
-      ipv4:
-      - address: 192.168.0.1/24
-    - name: GigabitEthernet3
+      - ipv4:
+          - dhcp:
+              enable: true
+        name: GigabitEthernet1
+      - name: GigabitEthernet2
+        ipv4:
+          - address: 192.168.0.1/24
+      - name: GigabitEthernet3
     state: overridden
 
 # Task Output
@@ -556,8 +556,8 @@ EXAMPLES = """
 - name: "Delete attributes of given interfaces (NOTE: This won't delete the interfaces)"
   cisco.ios.ios_l3_interfaces:
     config:
-    - name: GigabitEthernet2
-    - name: GigabitEthernet3.100
+      - name: GigabitEthernet2
+      - name: GigabitEthernet3.100
     state: deleted
 
 # Task Output
@@ -769,18 +769,18 @@ EXAMPLES = """
 - name: Render the commands for provided configuration
   cisco.ios.ios_l3_interfaces:
     config:
-    - name: GigabitEthernet1
-      ipv4:
-      - dhcp:
-          client_id: GigabitEthernet0/0
-          hostname: test.com
-    - name: GigabitEthernet2
-      ipv4:
-      - address: 198.51.100.1/24
-        secondary: true
-      - address: 198.51.100.2/24
-      ipv6:
-      - address: 2001:db8:0:3::/64
+      - name: GigabitEthernet1
+        ipv4:
+          - dhcp:
+              client_id: GigabitEthernet0/0
+              hostname: test.com
+      - name: GigabitEthernet2
+        ipv4:
+          - address: 198.51.100.1/24
+            secondary: true
+          - address: 198.51.100.2/24
+        ipv6:
+          - address: 2001:db8:0:3::/64
     state: rendered
 
 # Task Output

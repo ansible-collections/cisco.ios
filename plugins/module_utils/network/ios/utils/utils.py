@@ -77,7 +77,7 @@ def new_dict_to_set(input_dict, temp_list, test_set, count=0):
                 temp_list.append(k)
                 for each in v:
                     if isinstance(each, dict):
-                        if [True for i in each.values() if type(i) == list]:
+                        if [True for i in each.values() if isinstance(i, list)]:
                             new_dict_to_set(each, temp_list, test_set, count)
                         else:
                             new_dict_to_set(each, temp_list, test_set, 0)
@@ -105,9 +105,12 @@ def new_dict_to_set(input_dict, temp_list, test_set, count=0):
                     expand_dict(new_dict)
                     if tuple(iteritems(temp_dict)) not in test_set:
                         test_set.add(tuple(iteritems(temp_dict)))
+    return test_dict
 
 
-def dict_to_set(sample_dict):
+def dict_to_set(sample_dict, sort_dictionary=False):
+    if sort_dictionary:
+        sample_dict = sort_dict(sample_dict)
     # Generate a set with passed dictionary for comparison
     test_dict = dict()
     if isinstance(sample_dict, dict):
@@ -421,3 +424,13 @@ def vlan_range_to_list(vlans):
                 result.append(a)
         return numerical_sort(result)
     return result
+
+
+def sort_dict(dictionary):
+    sorted_dict = dict()
+    for key, value in sorted(dictionary.items()):
+        if isinstance(value, dict):
+            sorted_dict[key] = sort_dict(value)
+        else:
+            sorted_dict[key] = value
+    return sorted_dict

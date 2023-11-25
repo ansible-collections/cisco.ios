@@ -36,6 +36,22 @@ Parameters
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>address_family</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>The list of address families with MDT parameters to be configured on the remote IOS device.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>associated_interfaces</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -344,104 +360,111 @@ Examples
 
 .. code-block:: yaml
 
-    - name: configure a vrf named management
+    - name: Configure a vrf named management
       cisco.ios.ios_vrf:
         name: management
         description: oob mgmt vrf
         interfaces:
-        - Management1
+          - Management1
 
-    - name: remove a vrf named test
+    - name: Remove a vrf named test
       cisco.ios.ios_vrf:
         name: test
         state: absent
 
-    - name: configure set of VRFs and purge any others
+    - name: Configure set of VRFs and purge any others
       cisco.ios.ios_vrf:
         vrfs:
-        - red
-        - blue
-        - green
-        purge: yes
+          - red
+          - blue
+          - green
+        purge: true
 
     - name: Creates a list of import RTs for the VRF with the same parameters
       cisco.ios.ios_vrf:
         name: test_import
         rd: 1:100
         route_import:
-        - 1:100
-        - 3:100
+          - 1:100
+          - 3:100
 
-    - name: Creates a list of import RTs in address-family configuration submode for the
+    - name:
+        Creates a list of import RTs in address-family configuration submode for the
         VRF with the same parameters
       cisco.ios.ios_vrf:
         name: test_import_ipv4
         rd: 1:100
         route_import_ipv4:
-        - 1:100
-        - 3:100
+          - 1:100
+          - 3:100
 
-    - name: Creates a list of import RTs in address-family configuration submode for the
+    - name:
+        Creates a list of import RTs in address-family configuration submode for the
         VRF with the same parameters
       cisco.ios.ios_vrf:
         name: test_import_ipv6
         rd: 1:100
         route_import_ipv6:
-        - 1:100
-        - 3:100
+          - 1:100
+          - 3:100
 
     - name: Creates a list of export RTs for the VRF with the same parameters
       cisco.ios.ios_vrf:
         name: test_export
         rd: 1:100
         route_export:
-        - 1:100
-        - 3:100
+          - 1:100
+          - 3:100
 
-    - name: Creates a list of export RTs in address-family configuration submode for the
+    - name:
+        Creates a list of export RTs in address-family configuration submode for the
         VRF with the same parameters
       cisco.ios.ios_vrf:
         name: test_export_ipv4
         rd: 1:100
         route_export_ipv4:
-        - 1:100
-        - 3:100
+          - 1:100
+          - 3:100
 
-    - name: Creates a list of export RTs in address-family configuration submode for the
+    - name:
+        Creates a list of export RTs in address-family configuration submode for the
         VRF with the same parameters
       cisco.ios.ios_vrf:
         name: test_export_ipv6
         rd: 1:100
         route_export_ipv6:
-        - 1:100
-        - 3:100
+          - 1:100
+          - 3:100
 
-    - name: Creates a list of import and export route targets for the VRF with the same
+    - name:
+        Creates a list of import and export route targets for the VRF with the same
         parameters
       cisco.ios.ios_vrf:
         name: test_both
         rd: 1:100
         route_both:
-        - 1:100
-        - 3:100
+          - 1:100
+          - 3:100
 
-    - name: Creates a list of import and export route targets in address-family configuration
+    - name:
+        Creates a list of import and export route targets in address-family configuration
         submode for the VRF with the same parameters
       cisco.ios.ios_vrf:
         name: test_both_ipv4
         rd: 1:100
         route_both_ipv4:
-        - 1:100
-        - 3:100
+          - 1:100
+          - 3:100
 
-    - name: Creates a list of import and export route targets in address-family configuration
+    - name:
+        Creates a list of import and export route targets in address-family configuration
         submode for the VRF with the same parameters
       cisco.ios.ios_vrf:
         name: test_both_ipv6
         rd: 1:100
         route_both_ipv6:
-        - 1:100
-        - 3:100
+          - 1:100
+          - 3:100
 
 
 

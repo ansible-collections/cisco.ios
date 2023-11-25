@@ -14,7 +14,6 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
----
 author:
   - Sagar Paul (@KB-perByte)
 description:
@@ -121,6 +120,12 @@ options:
         suboptions:
           context:
             description: Specify a context to associate with the group
+            type: str
+          match:
+            choices:
+              - exact
+              - prefix
+            description: Specify a context name match criteria
             type: str
           version_option:
             choices:
@@ -275,6 +280,9 @@ options:
       traps:
         description: Enable SNMP Traps
         suboptions:
+          aaa_server:
+            description: Enable SNMP AAA Server traps
+            type: bool
           auth_framework:
             description: Enable SNMP CISCO-AUTH-FRAMEWORK-MIB traps
             suboptions:
@@ -344,6 +352,32 @@ options:
                 description: Enable SNMP STP Bridge MIB topologychange traps
                 type: bool
             type: dict
+          bulkstat:
+            description: Allow Data-Collection-MIB Collection notifications
+            suboptions:
+              enable:
+                description: Enable Data-Collection-MIB Collection and Transfert notifications
+                type: bool
+              collection:
+                description: Enable Data-Collection-MIB Collection notifications
+                type: bool
+              transfer:
+                description: Enable Data-Collection-MIB Transfer notifications
+                type: bool
+            type: dict
+          call_home:
+            description: SNMP CISCO-CALLHOME-MIB traps
+            suboptions:
+              enable:
+                description: Enable SNMP CISCO-CALLHOME-MIB traps
+                type: bool
+              message_send_fail:
+                description: Enable SNMP ccmSmtpMsgSendFailNotif notification
+                type: bool
+              server_fail:
+                description: Enable SNMP ccmSmtpServerFailNotif notification
+                type: bool
+            type: dict
           casa:
             description: Enable SNMP config casa traps
             type: bool
@@ -410,20 +444,58 @@ options:
           entity:
             description: Enable SNMP entity traps
             type: bool
+          entity_diag:
+            description: Allow SNMP CISCO-ENTITY-DIAG-MIB traps
+            suboptions:
+              boot_up_fail:
+                description: Enable SNMP ceDiagBootUpFailedNotif traps
+                type: bool
+              enable:
+                description: Enable SNMP CISCO-ENTITY-DIAG-MIB traps
+                type: bool
+              hm_test_recover:
+                description: Enable SNMP ceDiagHMTestRecoverNotif traps
+                type: bool
+              hm_thresh_reached:
+                description: Enable SNMP ceDiagHMThresholdReachedNotif traps
+                type: bool
+              scheduled_test_fail:
+                description: Enable SNMP ceDiagScheduledTestFailedNotif traps
+                type: bool
+            type: dict
+          entity_perf:
+            description: Allow SNMP CISCO-ENTITY-PERFORMANCE-MIB traps
+            suboptions:
+              enable:
+                description: Enable SNMP CISCO-ENTITY-PERFORMANCE-MIB traps
+                type: bool
+              throughput_notif:
+                description: Enable ENTITY PERFORMANCE MIB throughput traps
+                type: bool
+            type: dict
+          entity_state:
+            description: Enable SNMP ENTITY-STATE-MIB traps
+            type: bool
           energywise:
             description: Enable SNMP energywise traps
             type: bool
           envmon:
-            description: Allow envmon related traps
+            description: Enable SNMP environmental monitor traps
             suboptions:
+              enable:
+                description: Enable/disable envmon traps
+                type: bool
               fan:
-                description: Enable SNMP envmon fan traps
+                description:
+                  - Enable SNMP envmon fan traps
+                  - This option is DEPRECATED and is replaced with fan_enable which accepts bool as input
+                  - This attribute will be removed after 2024-09-01
                 suboptions:
-                  shutdown:
-                    description: Enable SNMP environmental monitor shutdown traps
-                    type: bool
                   enable:
                     description: Enable/disable fan traps
+                    type: bool
+                  shutdown:
+                    description: Enable SNMP environmental monitor shutdown traps
                     type: bool
                   status:
                     description: Enable SNMP environmental status change traps
@@ -435,6 +507,9 @@ options:
                     description: Enable SNMP environmental monitor temperature traps
                     type: bool
                 type: dict
+              fan_enable:
+                description: Enable SNMP envmon fan traps
+                type: bool
               shutdown:
                 description: Enable SNMP environmental monitor shutdown traps
                 type: bool
@@ -448,6 +523,9 @@ options:
                 description: Enable SNMP environmental monitor temperature traps
                 type: bool
             type: dict
+          errdisable:
+            description: Enable SNMP errdisable notifications
+            type: bool
           ethernet:
             description: Allow ethernet traps
             suboptions:
@@ -456,7 +534,7 @@ options:
                 suboptions:
                   alarm:
                     description: Enable SNMP Ethernet CFM fault alarm trap
-                    type: bool
+                    type:  bool
                   cc:
                     description: Enable SNMP Ethernet CC trap
                     type: dict
@@ -504,12 +582,38 @@ options:
                     type: bool
                 type: dict
             type: dict
+          ether_oam:
+            description: Enable SNMP ethernet oam traps
+            type: bool
           event_manager:
             description: Enable SNMP event-manager traps
             type: bool
-          flowmon:
-            description: Enable SNMP flowmon traps
-            type: bool
+          flash:
+            description: SNMP FLASH notifications
+            suboptions:
+              enable:
+                description: Enable SNMP FLASH notifications
+                type: bool
+              insertion:
+                description: Enable SNMP Flash Insertion notifications
+                type: bool
+              lowspace:
+                description: Enable SNMP Flash Low Space notifications
+                type: bool
+              removal:
+                description: Enable SNMP Flash Removal notifications
+                type: bool
+            type: dict
+          flex_links:
+            description: SNMP FLEX Links traps
+            suboptions:
+              enable:
+                description: Enable SNMP FLEX Links traps
+                type: bool
+              status:
+                description: Enable SNMP FLEX Links status change traps
+                type: bool
+            type: dict
           firewall:
             description: Enable SNMP firewall traps
             suboptions:
@@ -520,6 +624,9 @@ options:
                 description: Enable firewall server status change trap
                 type: bool
             type: dict
+          flowmon:
+            description: Enable SNMP flowmon traps
+            type: bool
           frame_relay:
             description: Allow frame-relay traps
             suboptions:
@@ -609,6 +716,22 @@ options:
           ipsla:
             description: Enable SNMP ipsla traps
             type: bool
+          isis:
+            description: Enable SNMP isis traps
+            type: bool
+          l2tc:
+            description: Allow SNMP L2 Tunnel Config traps
+            suboptions:
+              enable:
+                description: Enable SNMP L2 Tunnel Config traps
+                type: bool
+              sys_threshold:
+                description: Enable SNMP L2TC System threshold traps
+                type: bool
+              threshold:
+                description: Enable SNMP L2 Tunnel Config threshold traps
+                type: bool
+            type: dict
           l2tun:
             description: Allow SNMP l2tun traps
             suboptions:
@@ -619,15 +742,243 @@ options:
                 description: Enable BFD session traps
                 type: bool
             type: dict
+          license:
+            description: Enable license traps
+            type: bool
+          lisp:
+            description: Enable SNMP LISP MIB traps
+            type: bool
+          local_auth:
+            description: Enable SNMP local auth traps
+            type: bool
+          mac_notification:
+            description: Allow SNMP MAC Notification traps
+            suboptions:
+              enable:
+                description: Enable SNMP MAC Notification traps
+                type: bool
+              change:
+                description: Enable SNMP MAC Change traps
+                type: bool
+              move:
+                description: Enable SNMP MAC Move traps
+                type: bool
+              threshold:
+                description: Enable SNMP MAC Threshold traps
+                type: bool
+            type: dict
+          memory:
+            description: Allow MEMORY traps
+            suboptions:
+              enable:
+                description: Enable MEMORY traps
+                type: bool
+              bufferpeak:
+                description: Enable SNMP Memory Bufferpeak traps
+                type: bool
+            type: dict
+          mpls:
+            description: Enable SNMP mpls traps
+            suboptions:
+              fast_reroute:
+                description: Allow SNMP MPLS fast reroute traps
+                suboptions:
+                  enable:
+                    description: Enable SNMP MPLS fast reroute traps
+                    type: bool
+                  protected:
+                    description: Enable MPLS fast reroute protection traps
+                    type: bool
+                type: dict
+              ldp:
+                description: Allow SNMP MPLS label distribution protocol traps
+                suboptions:
+                  enable:
+                    description: Enable SNMP MPLS label distribution protocol traps
+                    type: bool
+                  pv_limit:
+                    description: Enable MPLS LDP path vector limit mismatch traps
+                    type: bool
+                  session_down:
+                    description: Enable MPLS LDP session down traps
+                    type: bool
+                  session_up:
+                    description: Enable MPLS LDP session up traps
+                    type: bool
+                  threshold:
+                    description: Enable MPLS LDP threshold exceeded traps
+                    type: bool
+                type: dict
+              rfc:
+                description: Enable SNMP MPLS RFC traps
+                suboptions:
+                  ldp:
+                    description: Allow SNMP MPLS label distribution protocol RFC traps
+                    suboptions:
+                      enable:
+                        description: Enable SNMP MPLS label distribution protocol RFC traps
+                        type: bool
+                      pv_limit:
+                        description: Enable MPLS LDP path vector limit mismatch RFC traps
+                        type: bool
+                      session_down:
+                        description: Enable MPLS LDP session down RFC traps
+                        type: bool
+                      session_up:
+                        description: Enable MPLS LDP session up RFC traps
+                        type: bool
+                      threshold:
+                        description: Enable MPLS LDP threshold exceeded RFC traps
+                        type: bool
+                    type: dict
+                  traffic_eng:
+                    description: Allow SNMP MPLS traffic engineering RFC traps
+                    suboptions:
+                      enable:
+                        description: Enable SNMP MPLS traffic engineering RFC traps
+                        type: bool
+                      down:
+                        description: Enable MPLS TE tunnel down RFC traps
+                        type: bool
+                      reoptimized:
+                        description: Enable MPLS TE tunnel reoptimized RFC traps
+                        type: bool
+                      reroute:
+                        description: Enable MPLS TE tunnel reroute RFC traps
+                        type: bool
+                      up:
+                        description: Enable MPLS TE tunnel up RFC traps
+                        type: bool
+                    type: dict
+                  vpn:
+                    description: Allow SNMP MPLS Virtual Private Network RFC traps
+                    suboptions:
+                      enable:
+                        description: Enable SNMP MPLS Virtual Private Network RFC traps
+                        type: bool
+                      illegal_label:
+                        description: Enable MPLS VPN illegal label threshold exceeded RFC traps
+                        type: bool
+                      max_thresh_cleared:
+                        description: Enable MPLS VPN maximum threshold cleared RFC traps
+                        type: bool
+                      max_threshold:
+                        description: Enable MPLS VPN maximum threshold exceeded RFC traps
+                        type: bool
+                      mid_threshold:
+                        description: Enable MPLS VPN middle threshold exceeded RFC traps
+                        type: bool
+                      vrf_down:
+                        description: Enable MPLS VPN vrf down RFC traps
+                        type: bool
+                      vrf_up:
+                        description: Enable MPLS VPN vrf up RFC traps
+                        type: bool
+                    type: dict
+                type: dict
+              traffic_eng:
+                description: Allow SNMP MPLS traffic engineering traps
+                suboptions:
+                  enable:
+                    description: Enable SNMP MPLS traffic engineering traps
+                    type: bool
+                  down:
+                    description: Enable MPLS TE tunnel down traps
+                    type: bool
+                  reroute:
+                    description: Enable MPLS TE tunnel reroute traps
+                    type: bool
+                  up:
+                    description: Enable MPLS TE tunnel up traps
+                    type: bool
+                type: dict
+              vpn:
+                description: Allow SNMP MPLS Virtual Private Network traps
+                suboptions:
+                  enable:
+                    description: Enable SNMP MPLS Virtual Private Network traps
+                    type: bool
+                  illegal_label:
+                    description: Enable MPLS VPN illegal label threshold exceeded traps
+                    type: bool
+                  max_thresh_cleared:
+                    description: Enable MPLS VPN maximum threshold cleared traps
+                    type: bool
+                  max_threshold:
+                    description: Enable MPLS VPN maximum threshold exceeded traps
+                    type: bool
+                  mid_threshold:
+                    description: Enable MPLS VPN middle threshold exceeded traps
+                    type: bool
+                  vrf_down:
+                    description: Enable MPLS VPN vrf down traps
+                    type: bool
+                  vrf_up:
+                    description: Enable MPLS VPN vrf up traps
+                    type: bool
+                type: dict
+            type: dict
+          mpls_vpn:
+            description:
+              - Enable SNMP mpls traps
+              - This option is DEPRECATED and is replaced with mpls which accepts dict as input
+              - This attribute will be removed after 2024-09-01
+            type: bool
           msdp:
             description: Enable SNMP msdp traps
             type: bool
           mvpn:
             description: Enable SNMP mvpn traps
             type: bool
-          mpls_vpn:
-            description: Enable SNMP mpls traps
-            type: bool
+          nhrp:
+            description: Allow SNMP NHRP traps
+            suboptions:
+              enable:
+                description: Enable SNMP NHRP traps
+                type: bool
+              nhc:
+                description: Allow Next Hop Client traps
+                suboptions:
+                  enable:
+                    description: Enable Next Hop Client traps
+                    type: bool
+                  down:
+                    description: Enable Next Hop Client down trap
+                    type: bool
+                  up:
+                    description: Enable Next Hop Client up trap
+                    type: bool
+                type: dict
+              nhp:
+                description: Allow Next Hop Peer traps
+                suboptions:
+                  enable:
+                    description: Enable Next Hop Peer traps
+                    type: bool
+                  down:
+                    description: Enable Next Hop Peer down trap
+                    type: bool
+                  up:
+                    description: Enable Next Hop Peer up trap
+                    type: bool
+                type: dict
+              nhs:
+                description: Allow Next Hop Server traps
+                suboptions:
+                  enable:
+                    description: Enable Next Hop Server traps
+                    type: bool
+                  down:
+                    description: Enable Next Hop Server down trap
+                    type: bool
+                  up:
+                    description: Enable Next Hop Server up trap
+                    type: bool
+                type: dict
+              quota_exceeded:
+                description: Enable quota-exceeded trap
+                type: bool
+            type: dict
           ospf:
             description: Allow ospf related traps
             suboptions:
@@ -674,6 +1025,65 @@ options:
                 description: Enable/disable state change traps
                 type: bool
             type: dict
+          ospfv3:
+            description: Allow OSPFv3 related traps
+            suboptions:
+              errors:
+                description: Error traps
+                suboptions:
+                  enable:
+                    description: Enable Error traps
+                    type: bool
+                  bad_packet:
+                    description: Packet parse failure on non-virtual interfaces
+                    type: bool
+                  config_error:
+                    description: Config mismatch errors on non-virtual interfaces
+                    type: bool
+                  virt_bad_packet:
+                    description: Packet parse failure on virtual interfaces
+                    type: bool
+                  virt_config_error:
+                    description: Config mismatch errors on virtual interfaces
+                    type: bool
+                type: dict
+              rate_limit:
+                description:
+                  - Trap rate limit values
+                  - Rate limit window size in seconds (between 2 and 60)
+                type: int
+              state_change:
+                description: State change traps
+                suboptions:
+                  enable:
+                    description: Enable State change traps
+                    type: bool
+                  if_state_change:
+                    description: Non_virtual interface state changes
+                    type: bool
+                  neighbor_restart_helper_status_change:
+                    description: Neighbor graceful restart helper status changes
+                    type: bool
+                  neighbor_state_change:
+                    description: Non_virtual neighbor state changes
+                    type: bool
+                  nssa_translator_status_change:
+                    description: NSSA translator status changes
+                    type: bool
+                  restart_status_change:
+                    description: Graceful restart status changes
+                    type: bool
+                  virtif_state_change:
+                    description: Virtual interface state changes
+                    type: bool
+                  vn_restart_helper_status_change:
+                    description: Virtual neighbor graceful restart helper status changes
+                    type: bool
+                  vn_state_change:
+                    description: Virtual neighbor state changes
+                    type: bool
+                type: dict
+            type: dict
           pim:
             description: Allow PIM traps
             suboptions:
@@ -690,34 +1100,58 @@ options:
                 description: Enable/disable PIM traps
                 type: bool
             type: dict
-          vrfmib:
-            description: Allow vrfmib traps
-            suboptions:
-              vrf_up:
-                description: Enable vrf-up trap
-                type: bool
-              vrf_down:
-                description: Enable vrf-down trap
-                type: bool
-              vnet_trunk_up:
-                description: Enable vnet-trunk-up trap
-                type: bool
-              vnet_trunk_down:
-                description: Enable vnet-trunk-down traps
-                type: bool
-            type: dict
           pki:
             description: Enable SNMP pki traps
+            type: bool
+          port_security:
+            description: Enable SNMP port security traps
+            type: bool
+          power_ethernet:
+            description: Allow SNMP power ethernet traps
+            suboptions:
+              enable:
+                description: Enable SNMP power ethernet traps
+                type: bool
+              group:
+                description: Enable SNMP inline power group based traps.
+                suboptions:
+                  slot_id:
+                    description: An integer between 1 and 20 (physical slot number)
+                    type: int
+                  threshold:
+                    description: Threshold level for this slot
+                    type: int
+                elements: dict
+                type: list
+              police:
+                description: Enable Policing Trap
+                type: bool
+            type: dict
+          pw_vc:
+            description: Enable SNMP pw vc traps
+            type: bool
+          rep:
+            description: Enable SNMP Resilient Ethernet Protocol Traps
             type: bool
           rsvp:
             description: Enable SNMP RSVP traps
             type: bool
-          isis:
-            description: Enable SNMP isis traps
+          rf:
+            description: Enable all SNMP traps defined in CISCO-RF-MIB
             type: bool
-          pw_vc:
-            description: Enable SNMP pw vc traps
-            type: bool
+          smart_license:
+            description: Allow smart license traps
+            suboptions:
+              enable:
+                description: Enable smart license traps
+                type: bool
+              entitlement:
+                description: Enable Entitlement Notification trap
+                type: bool
+              global:
+                description: Enable Global Notification traps
+                type: bool
+            type: dict
           snmp:
             description: Enable SNMP traps
             suboptions:
@@ -737,17 +1171,197 @@ options:
                 description: Enable warmStart trap
                 type: bool
             type: dict
+          stackwise:
+            description: Enable SNMP stackwise traps
+            type: bool
+          stpx:
+            description: Allow SNMP STPX MIB traps
+            suboptions:
+              enable:
+                description: Enable SNMP STPX MIB traps
+                type: bool
+              inconsistency:
+                description: Enable SNMP STPX MIB InconsistencyUpdate traps
+                type: bool
+              loop_inconsistency:
+                description: Enable SNMP STPX MIB LoopInconsistencyUpdate traps
+                type: bool
+              root_inconsistency:
+                description: Enable SNMP STPX MIB RootInconsistencyUpdate traps
+                type: bool
+            type: dict
           syslog:
             description: Enable SNMP syslog traps
             type: bool
           transceiver_all:
             description: Enable SNMP transceiver traps
             type: bool
+          trustsec:
+            description: Allow SNMP CISCO-TRUSTSEC-MIB traps
+            suboptions:
+              authz_file_error:
+                description: Enable ctsAuthzCacheFileErrNotif notifications
+                type: bool
+              cache_file_error:
+                description: Enable ctsCacheFileAccessErrNotif notifications
+                type: bool
+              enable:
+                description: Enable SNMP CISCO-TRUSTSEC-MIB traps
+                type: bool
+              keystore_file_error:
+                description: Enable ctsSwKeystoreFileErrNotif notifications
+                type: bool
+              keystore_sync_fail:
+                description: Enable ctsSwKeystoreSyncFailNotif notifications
+                type: bool
+              random_number_fail:
+                description: Enable ctsSapRandonNumberFailNotif notifications
+                type: bool
+              src_entropy_fail:
+                description: Enable ctsSrcEntropyFailNotif notifications
+                type: bool
+            type: dict
+          trustsec_interface:
+            description: Allow SNMP CISCO-TRUSTSEC-INTERFACE-MIB traps
+            suboptions:
+              enable:
+                description: Enable SNMP CISCO-TRUSTSEC-INTERFACE-MIB traps
+                type: bool
+              authc_fail:
+                description: Enable ctsiIfAuthenticationFailNotif trap
+                type: bool
+              authz_fail:
+                description: Enable ctsiAuthorizationFailNotif trap
+                type: bool
+              sap_fail:
+                description: Enable ctsiIfSapNegotiationFailNotif trap
+                type: bool
+              supplicant_fail:
+                description: Enable ctsiIfAddSupplicantFailNotif trap
+                type: bool
+              unauthorized:
+                description: Enable ctsiIfUnauthorizedNotifEnable trap
+                type: bool
+            type: dict
+          trustsec_policy:
+            description: Allow SNMP CISCO-TRUSTSEC-POLICY-MIB traps
+            suboptions:
+              enable:
+                description: Enable SNMP CISCO-TRUSTSEC-POLICY-MIB traps
+                type: bool
+              authz_sgacl_fail:
+                description: Enable ctspAuthorizationSgaclFailNotif notifications
+                type: bool
+              peer_policy_updated:
+                description: Enable ctspPeerPolicyUpdatedNotif notifications
+                type: bool
+            type: dict
+          trustsec_server:
+            description: Allow SNMP CISCO-TRUSTSEC-SERVER-MIB traps
+            suboptions:
+              enable:
+                description: Enable SNMP CISCO-TRUSTSEC-SERVER-MIB traps
+                type: bool
+              provision_secret:
+                description: Enable ctsvNoProvisionSecretNotif notification
+                type: bool
+              radius_server:
+                description: Enable ctsvNoRadiusServerNotif notification
+                type: bool
+            type: dict
+          trustsec_sxp:
+            description: Allow SNMP CISCO-TRUSTSEC-SXP-MIB traps
+            suboptions:
+              enable:
+                description: Enable SNMP CISCO-TRUSTSEC-SXP-MIB traps
+                type: bool
+              binding_conflict:
+                description: Enable ctsxSxpBindingConflictNotif notifications
+                type: bool
+              binding_err:
+                description: Enable ctsxSxpBindingErrNotif notifications
+                type: bool
+              binding_expn_fail:
+                description: Enable ctsxSxpBindingExpnFailNotif notifications
+                type: bool
+              conn_config_err:
+                description: Enable ctsxSxpConnConfigErrNotif notifications
+                type: bool
+              conn_down:
+                description: Enable ctsxSxpConnDownNotif notifications
+                type: bool
+              conn_srcaddr_err:
+                description: Enable ctsxSxpConnSourceAddrErrNotif notifications
+                type: bool
+              conn_up:
+                description: Enable ctsxSxpConnUpNotif notifications
+                type: bool
+              msg_parse_err:
+                description: Enable ctsxSxpMsgParseErrNotif notifications
+                type: bool
+              oper_nodeid_change:
+                description: Enable ctsxSxpOperNodeIdChangeNotif notifications
+                type: bool
+            type: dict
           tty:
             description: Enable SNMP tty TCP connection traps
             type: bool
+          udld:
+            description: Allow SNMP CISCO-UDLDP-MIB traps
+            suboptions:
+              enable:
+                description: Enable SNMP CISCO-UDLDP-MIB traps
+                type: bool
+              link_fail_rpt:
+                description: Enable SNMP cudldpFastHelloLinkFailRptNotification traps
+                type: bool
+              status_change:
+                description: Enable SNMP cudldpFastHelloStatusChangeNotification traps
+                type: bool
+            type: dict
+          vlan_membership:
+            description: Enable SNMP VLAN membership traps
+            type: bool
+          vlancreate:
+            description: Enable SNMP VLAN created traps
+            type: bool
+          vlandelete:
+            description: Enable SNMP VLAN deleted traps
+            type: bool
+          vrfmib:
+            description: Allow vrfmib traps
+            suboptions:
+              vrf_up:
+                description: Enable vrf-up trap
+                type: bool
+              vrf_down:
+                description: Enable vrf-down trap
+                type: bool
+              vnet_trunk_up:
+                description: Enable vnet-trunk-up trap
+                type: bool
+              vnet_trunk_down:
+                description: Enable vnet-trunk-down traps
+                type: bool
+            type: dict
           vrrp:
             description: Enable SNMP vrrp traps
+            type: bool
+          vswitch:
+            description: Allow SNMP Virtual Switch notifications
+            suboptions:
+              dual_active:
+                description: Enable SNMP Virtual Switch (Dual Active) notification
+                type: bool
+              enable:
+                description: Enable SNMP Virtual Switch notifications
+                type: bool
+              vsl:
+                description: Enable SNMP Virtual Switch Link (VSL) notification
+                type: bool
+            type: dict
+          vtp:
+            description: Enable SNMP VTP traps
             type: bool
         type: dict
       users:
@@ -884,51 +1498,51 @@ EXAMPLES = """
   cisco.ios.ios_snmp_server:
     config:
       communities:
-      -   acl_v4: testACL
+        - acl_v4: testACL
           name: mergedComm
           rw: true
       contact: contact updated using merged
       engine_id:
-      -   id: AB0C5342FF0F
+        - id: AB0C5342FF0F
           remote:
-              host: 172.16.0.12
-              udp_port: 25
+            host: 172.16.0.12
+            udp_port: 25
       groups:
-      -   group: mergedGroup
+        - group: mergedGroup
           version: v3
           version_option: auth
       file_transfer:
-              access_group: test
-              protocol:
-              - ftp
+        access_group: test
+        protocol:
+          - ftp
       hosts:
-      -   community_string: mergedComm
+        - community_string: mergedComm
           host: 172.16.2.9
           informs: true
           traps:
-          - msdp
-          - stun
-          - pki
+            - msdp
+            - stun
+            - pki
           version: 2c
-      -   community_string: mergedComm
+        - community_string: mergedComm
           host: 172.16.2.9
           traps:
-          - slb
-          - pki
+            - slb
+            - pki
       password_policy:
-      -   change: 3
+        - change: 3
           digits: 23
           lower_case: 12
           max_len: 24
           policy_name: MergedPolicy
           special_char: 32
           upper_case: 12
-      -   change: 43
+        - change: 43
           min_len: 12
           policy_name: MergedPolicy2
           special_char: 22
           upper_case: 12
-      -   change: 11
+        - change: 11
           digits: 23
           max_len: 12
           min_len: 12
@@ -936,31 +1550,31 @@ EXAMPLES = """
           special_char: 22
           upper_case: 12
       traps:
-          cef:
-              enable: true
-              inconsistency: true
-              peer_fib_state_change: true
-              peer_state_change: true
-              resource_failure: true
-          msdp: true
-          ospf:
-              cisco_specific:
-                  error: true
-                  lsa: true
-                  retransmit: true
-                  state_change:
-                      nssa_trans_change: true
-                      shamlink:
-                          interface: true
-                          neighbor: true
-              error: true
-              lsa: true
-              retransmit: true
-              state_change: true
-          syslog: true
-          tty: true
+        cef:
+          enable: true
+          inconsistency: true
+          peer_fib_state_change: true
+          peer_state_change: true
+          resource_failure: true
+        msdp: true
+        ospf:
+          cisco_specific:
+            error: true
+            lsa: true
+            retransmit: true
+            state_change:
+              nssa_trans_change: true
+              shamlink:
+                interface: true
+                neighbor: true
+          error: true
+          lsa: true
+          retransmit: true
+          state_change: true
+        syslog: true
+        tty: true
       users:
-      -   acl_v4: '24'
+        - acl_v4: "24"
           group: dev
           username: userPaul
           version: v1
@@ -996,7 +1610,6 @@ EXAMPLES = """
 #         "snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11",
 #         "snmp-server user userPaul dev v1 access 24"
 # ],
-
 
 # After state:
 # ------------
@@ -1142,14 +1755,13 @@ EXAMPLES = """
 - name: Override commands with provided configuration
   cisco.ios.ios_snmp_server:
     config:
-      location: 'location entry for snmp'
+      location: "location entry for snmp"
       packet_size: 500
       communities:
         - acl_v4: acl_uq
           name: communityOverriden
           rw: true
     state: overridden
-
 
 # Commands Fired:
 # ---------------
@@ -1208,7 +1820,7 @@ EXAMPLES = """
 - name: Replace commands with provided configuration
   cisco.ios.ios_snmp_server:
     config:
-      location: 'updated location entry'
+      location: "updated location entry"
       packet_size: 500
       communities:
         - acl_v4: acl_uq
@@ -1236,7 +1848,7 @@ EXAMPLES = """
 # Before state:
 # -------------
 
-#router-ios#show running-config | section ^snmp-server
+# router-ios#show running-config | section ^snmp-server
 # snmp-server engineID remote 172.16.0.12 udp-port 25 AB0C5342FF0F
 # snmp-server user userPaul dev v1 access 24
 # snmp-server group mergedGroup v3 auth
@@ -1411,125 +2023,125 @@ EXAMPLES = """
   cisco.ios.ios_snmp_server:
     config:
       accounting:
-          command: default
+        command: default
       cache: 2
       chassis_id: entry for chassis id
       communities:
-      -   acl_v6: te
+        - acl_v6: te
           name: test
           ro: true
           view: terst1
-      -   acl_v4: '1322'
+        - acl_v4: "1322"
           name: wete
           ro: true
-      -   acl_v4: paul
+        - acl_v4: paul
           name: weteww
           rw: true
       contact: details contact
       context:
-      - contextA
-      - contextB
+        - contextA
+        - contextB
       engine_id:
-      -   id: AB0C5342FA0A
+        - id: AB0C5342FA0A
           local: true
-      -   id: AB0C5342FAAB
+        - id: AB0C5342FAAB
           remote:
-              host: 172.16.0.2
-              udp_port: 23
-      -   id: AB0C5342FAAA
+            host: 172.16.0.2
+            udp_port: 23
+        - id: AB0C5342FAAA
           remote:
-              host: 172.16.0.1
-              udp_port: 22
+            host: 172.16.0.1
+            udp_port: 22
       file_transfer:
-          access_group: testAcl
-          protocol:
+        access_group: testAcl
+        protocol:
           - ftp
           - rcp
       groups:
-      -   group: grpFamily
+        - group: grpFamily
           version: v3
           version_option: auth
-      -   context: mycontext
+        - context: mycontext
           group: grpFamily
           version: v1
-      -   acl_v4: '2'
+        - acl_v4: "2"
           group: grp1
           notify: me
           version: v1
-      -   group: newtera
+        - group: newtera
           version: v3
           version_option: priv
-      -   group: relaplacing
+        - group: relaplacing
           version: v3
           version_option: noauth
       hosts:
-      -   community_string: check
+        - community_string: check
           host: 172.16.2.99
           informs: true
           traps:
-          - msdp
-          - stun
+            - msdp
+            - stun
           version: 2c
-      -   community_string: check
+        - community_string: check
           host: 172.16.2.99
           traps:
-          - slb
-          - pki
-      -   community_string: checktrap
+            - slb
+            - pki
+        - community_string: checktrap
           host: 172.16.2.99
           traps:
-          - isis
-          - hsrp
-      -   community_string: newtera
+            - isis
+            - hsrp
+        - community_string: newtera
           host: 172.16.2.1
           traps:
-          - rsrb
-          - pim
-          - rsvp
-          - slb
-          - pki
-          version: '3'
+            - rsrb
+            - pim
+            - rsvp
+            - slb
+            - pki
+          version: "3"
           version_option: priv
-      -   community_string: relaplacing
+        - community_string: relaplacing
           host: 172.16.2.1
           traps:
-          - slb
-          - pki
-          version: '3'
+            - slb
+            - pki
+          version: "3"
           version_option: noauth
-      -   community_string: trapsac
+        - community_string: trapsac
           host: 172.16.2.1
           traps:
-          - tty
-          - bgp
+            - tty
+            - bgp
           version: 2c
-      -   community_string: www
+        - community_string: www
           host: 172.16.1.1
           traps:
-          - tty
-          - bgp
-          version: '3'
+            - tty
+            - bgp
+          version: "3"
           version_option: auth
       inform:
-          pending: 2
+        pending: 2
       ip:
-          dscp: 2
-      location: 'entry for snmp location'
+        dscp: 2
+      location: "entry for snmp location"
       packet_size: 500
       password_policy:
-      -   change: 3
+        - change: 3
           digits: 23
           lower_case: 12
           max_len: 24
           policy_name: policy1
           special_char: 32
           upper_case: 12
-      -   change: 9
+        - change: 9
           min_len: 12
           policy_name: policy2
           special_char: 22
           upper_case: 12
-      -   change: 11
+        - change: 11
           digits: 23
           max_len: 12
           min_len: 12
@@ -1542,103 +2154,103 @@ EXAMPLES = """
       trap_source: GigabitEthernet0/0
       trap_timeout: 2
       traps:
-          auth_framework:
-              enable: true
-          bgp:
-              cbgp2: true
-              enable: true
-          bfd:
-              enable: true
-              session_down: true
-              session_up: true
-          bridge:
-              enable: true
-              newroot: true
-              topologychange: true
-          casa: true
-          cef:
-              enable: true
-              inconsistency: true
-              peer_fib_state_change: true
-              peer_state_change: true
-              resource_failure: true
-          dlsw:
-              enable: true
-          eigrp: true
-          ethernet:
-              cfm:
-                  alarm: true
-              evc:
-                  status: true
-          event_manager: true
-          flowmon: true
-          frame_relay:
-              enable: true
-              subif:
-                  enable: true
-          hsrp: true
-          ike:
-              policy:
-                  add: true
-                  delete: true
-              tunnel:
-                  start: true
-                  stop: true
-          ipmulticast: true
-          ipsec:
-              cryptomap:
-                  add: true
-                  attach: true
-                  delete: true
-                  detach: true
-              too_many_sas: true
-              tunnel:
-                  start: true
-                  stop: true
-          ipsla: true
-          l2tun:
-              pseudowire_status: true
-              session: true
-          msdp: true
-          ospf:
-              cisco_specific:
-                  error: true
-                  lsa: true
-                  retransmit: true
-                  state_change:
-                      nssa_trans_change: true
-                      shamlink:
-                          interface: true
-                          neighbor: true
-              error: true
-              lsa: true
-              retransmit: true
-              state_change: true
-          pim:
-              enable: true
-              invalid_pim_message: true
-              neighbor_change: true
-              rp_mapping_change: true
-          pki: true
-          rsvp: true
-          snmp:
-              authentication: true
-              coldstart: true
-              linkdown: true
-              linkup: true
-              warmstart: true
-          syslog: true
-          tty: true
+        auth_framework:
+          enable: true
+        bgp:
+          cbgp2: true
+          enable: true
+        bfd:
+          enable: true
+          session_down: true
+          session_up: true
+        bridge:
+          enable: true
+          newroot: true
+          topologychange: true
+        casa: true
+        cef:
+          enable: true
+          inconsistency: true
+          peer_fib_state_change: true
+          peer_state_change: true
+          resource_failure: true
+        dlsw:
+          enable: true
+        eigrp: true
+        ethernet:
+          cfm:
+            alarm: true
+          evc:
+            status: true
+        event_manager: true
+        flowmon: true
+        frame_relay:
+          enable: true
+          subif:
+            enable: true
+        hsrp: true
+        ike:
+          policy:
+            add: true
+            delete: true
+          tunnel:
+            start: true
+            stop: true
+        ipmulticast: true
+        ipsec:
+          cryptomap:
+            add: true
+            attach: true
+            delete: true
+            detach: true
+          too_many_sas: true
+          tunnel:
+            start: true
+            stop: true
+        ipsla: true
+        l2tun:
+          pseudowire_status: true
+          session: true
+        msdp: true
+        ospf:
+          cisco_specific:
+            error: true
+            lsa: true
+            retransmit: true
+            state_change:
+              nssa_trans_change: true
+              shamlink:
+                interface: true
+                neighbor: true
+          error: true
+          lsa: true
+          retransmit: true
+          state_change: true
+        pim:
+          enable: true
+          invalid_pim_message: true
+          neighbor_change: true
+          rp_mapping_change: true
+        pki: true
+        rsvp: true
+        snmp:
+          authentication: true
+          coldstart: true
+          linkdown: true
+          linkup: true
+          warmstart: true
+        syslog: true
+        tty: true
       users:
-      -   acl_v4: '24'
+        - acl_v4: "24"
           group: groupFamily
           username: paul
           version: v1
-      -   acl_v4: ipv6
+        - acl_v4: ipv6
           group: groupFamily
           username: domnic
           version: v3
-      -   group: relaplacing
+        - group: relaplacing
           username: relaplacing
           version: v3
     state: rendered
@@ -1780,7 +2392,7 @@ EXAMPLES = """
 
 # Module Execution Result:
 # ------------------------
-
+#
 #  "parsed": {
 #     "accounting": {
 #         "command": "default"

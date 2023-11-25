@@ -50,12 +50,14 @@ class TerminalModule(TerminalBase):
         re.compile(rb"'[^']' +returned error code: ?\d+"),
         re.compile(rb"Bad mask", re.I),
         re.compile(rb"% ?(\S+) ?overlaps with ?(\S+)", re.I),
-        re.compile(rb"[%\S] ?Error: ?[\s]+", re.I),
-        re.compile(rb"[%\S] ?Informational: ?[\s]+", re.I),
+        re.compile(rb"% ?(\S+) ?Error: ?[\s]+", re.I),
+        re.compile(rb"% ?(\S+) ?Informational: ?[\s]+", re.I),
         re.compile(rb"Command authorization failed"),
         re.compile(rb"Command Rejected: ?[\s]+", re.I),
         re.compile(rb"% General session commands not allowed under the address family", re.I),
         re.compile(rb"% BGP: Error initializing topology", re.I),
+        re.compile(rb"%SNMP agent not enabled", re.I),
+        re.compile(rb"% Invalid", re.I),
     ]
 
     terminal_config_prompt = re.compile(r"^.+\(config(-.*)?\)#$")

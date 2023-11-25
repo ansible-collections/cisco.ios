@@ -37,9 +37,9 @@ options:
         type: str
       aggregate_address:
         description:
-        - Configure BGP aggregate entry
-        - This option is DEPRECATED and is replaced with aggregate_addresses which
-          accepts list of dict as input, this attribute will be removed after 2024-06-01.
+          - Configure BGP aggregate entry
+          - This option is DEPRECATED and is replaced with aggregate_addresses which
+            accepts list of dict as input, this attribute will be removed after 2024-06-01.
         type: dict
         suboptions:
           address:
@@ -149,9 +149,9 @@ options:
             type: bool
           bestpath:
             description:
-            - Change the default bestpath selection
-            - This option is DEPRECATED and replaced with bestpath_options of type dict,
-              this attribute will be removed after 2024-06-01.
+              - Change the default bestpath selection
+              - This option is DEPRECATED and replaced with bestpath_options of type dict,
+                this attribute will be removed after 2024-06-01.
             type: list
             elements: dict
             suboptions:
@@ -183,7 +183,7 @@ options:
                     type: bool
           bestpath_options:
             description:
-            - Change the default bestpath selection
+              - Change the default bestpath selection
             type: dict
             suboptions:
               aigp:
@@ -376,9 +376,9 @@ options:
                 type: int
           inject_map:
             description:
-            - Routemap which specifies prefixes to inject
-            - This option is DEPRECATED and is updated with inject_maps which is a
-              list of dict, this attribute will be removed after 2024-06-01.
+              - Routemap which specifies prefixes to inject
+              - This option is DEPRECATED and is updated with inject_maps which is a
+                list of dict, this attribute will be removed after 2024-06-01.
             type: dict
             suboptions:
               name:
@@ -419,20 +419,20 @@ options:
                 suboptions:
                   ipv4_with_subnet:
                     description:
-                    - IPv4 subnet range(A.B.C.D/nn)
-                    - This option is DEPRECATED and is updated with host_with_subnet which is a
-                      common attribute for address, this attribute will be removed after 2024-06-01.
+                      - IPv4 subnet range(A.B.C.D/nn)
+                      - This option is DEPRECATED and is updated with host_with_subnet which is a
+                        common attribute for address, this attribute will be removed after 2024-06-01.
                     type: str
                   ipv6_with_subnet:
                     description:
-                    - IPv6 subnet range(X:X:X:X::X/<0-128>)
-                    - This option is DEPRECATED and is updated with host_with_subnet which is a
-                      common attribute for address attribute will be removed after 2024-06-01.
+                      - IPv6 subnet range(X:X:X:X::X/<0-128>)
+                      - This option is DEPRECATED and is updated with host_with_subnet which is a
+                        common attribute for address attribute will be removed after 2024-06-01.
                     type: str
                   host_with_subnet:
                     description:
-                    - IPv4 subnet range(A.B.C.D/nn)
-                    - IPv6 subnet range(X:X:X:X::X/<0-128>)
+                      - IPv4 subnet range(A.B.C.D/nn)
+                      - IPv6 subnet range(X:X:X:X::X/<0-128>)
                     type: str
                   peer_group:
                     description: Member of the peer-group
@@ -476,10 +476,10 @@ options:
                     type: bool
           nopeerup_delay:
             description:
-            - Set how long BGP will wait for the first peer to come up before beginning the update delay or
-              graceful restart timers (in seconds)
-            - This option is DEPRECATED and is replaced with nopeerup_delay_options which is of type dict,
-              this attribute will be removed after 2024-06-01.
+              - Set how long BGP will wait for the first peer to come up before beginning the update delay or
+                graceful restart timers (in seconds)
+              - This option is DEPRECATED and is replaced with nopeerup_delay_options which is of type dict,
+                this attribute will be removed after 2024-06-01.
             type: list
             elements: dict
             suboptions:
@@ -505,7 +505,8 @@ options:
                   - Please refer vendor documentation for valid values
                 type: int
           nopeerup_delay_options:
-            description: Set how long BGP will wait for the first peer to come up before beginning the update delay or
+            description:
+              Set how long BGP will wait for the first peer to come up before beginning the update delay or
               graceful restart timers (in seconds)
             type: dict
             suboptions:
@@ -790,9 +791,9 @@ options:
             type: str
       distribute_list:
         description:
-        - Filter networks in routing updates
-        - This option is DEPRECATED and is replaced with distributes which is of type list of dict,
-          this attribute will be removed after 2024-06-01.
+          - Filter networks in routing updates
+          - This option is DEPRECATED and is replaced with distributes which is of type list of dict,
+            this attribute will be removed after 2024-06-01.
         type: dict
         suboptions:
           acl:
@@ -842,27 +843,27 @@ options:
         suboptions:
           neighbor_address:
             description:
-            - Neighbor address (A.B.C.D)
-            - Neighbor tag
-            - Neighbor ipv6 address (X:X:X:X::X)
+              - Neighbor address (A.B.C.D)
+              - Neighbor tag
+              - Neighbor ipv6 address (X:X:X:X::X)
             type: str
           address:
             description:
-            - Neighbor address (A.B.C.D)
-            - This option is DEPRECATED and replaced with neighbor_address,
-              this attribute will be removed after 2024-06-01.
+              - Neighbor address (A.B.C.D)
+              - This option is DEPRECATED and replaced with neighbor_address,
+                this attribute will be removed after 2024-06-01.
             type: str
           tag:
             description:
-            - Neighbor tag
-            - This option is DEPRECATED and replaced with neighbor_address,
-              this attribute will be removed after 2024-06-01.
+              - Neighbor tag
+              - This option is DEPRECATED and replaced with neighbor_address,
+                this attribute will be removed after 2024-06-01.
             type: str
           ipv6_adddress:
             description:
-            - Neighbor ipv6 address (X:X:X:X::X)
-            - This option is DEPRECATED and replaced with neighbor_address,
-              this attribute will be removed after 2024-06-01.
+              - Neighbor ipv6 address (X:X:X:X::X)
+              - This option is DEPRECATED and replaced with neighbor_address,
+                this attribute will be removed after 2024-06-01.
             type: str
           activate:
             description: Enable the Address Family for this Neighbor
@@ -955,7 +956,7 @@ options:
                         type: dict
                         suboptions:
                           igp_cost:
-                            description:  Point of Insertion After IGP
+                            description: Point of Insertion After IGP
                             type: bool
                           pre_bestpath:
                             description: Point of Insertion At Beginning
@@ -1179,9 +1180,9 @@ options:
                 type: bool
           password:
             description:
-            - Set a password
-            - This option is DEPRECATED and is replaced with password_options which
-              accepts dict as input, this attribute will be removed after 2024-06-01.
+              - Set a password
+              - This option is DEPRECATED and is replaced with password_options which
+                accepts dict as input, this attribute will be removed after 2024-06-01.
             type: str
           password_options:
             description: Set a password with encryption type
@@ -1272,9 +1273,9 @@ options:
                 type: bool
           route_map:
             description:
-            - Apply route map to neighbor
-            - This option is DEPRECATED and is replaced with route_maps which
-              accepts list of dict as input, this attribute will be removed after 2024-06-01.
+              - Apply route map to neighbor
+              - This option is DEPRECATED and is replaced with route_maps which
+                accepts list of dict as input, this attribute will be removed after 2024-06-01.
             type: dict
             suboptions:
               name:
@@ -1483,7 +1484,7 @@ options:
             description: Set default weight for routes from this neighbor
             type: int
       networks:
-        description:  Specify a network to announce via BGP
+        description: Specify a network to announce via BGP
         type: list
         elements: dict
         suboptions:
@@ -1497,7 +1498,7 @@ options:
             description: Route-map to modify the attributes
             type: str
           backdoor:
-            description:  Specify a BGP backdoor route
+            description: Specify a BGP backdoor route
             type: bool
       redistribute:
         description: Redistribute information from another routing protocol
@@ -1735,9 +1736,9 @@ options:
                 type: bool
       route_server_context:
         description:
-        - Enter route server context command mode
-        - This option is DEPRECATED as it is out of scope of the module,
-          this attribute will be removed after 2024-06-01.
+          - Enter route server context command mode
+          - This option is DEPRECATED as it is out of scope of the module,
+            this attribute will be removed after 2024-06-01.
         type: dict
         suboptions:
           name:
@@ -1750,11 +1751,11 @@ options:
               afi:
                 description: Address family
                 type: str
-                choices: ['ipv4', 'ipv6']
+                choices: ["ipv4", "ipv6"]
               modifier:
                 description: Address Family modifier
                 type: str
-                choices: ['multicast', 'unicast']
+                choices: ["multicast", "unicast"]
               import_map:
                 description:
                   - Import matching routes using a route map
@@ -1765,9 +1766,9 @@ options:
             type: str
       scope:
         description:
-        - Enter scope command mode
-        - This option is DEPRECATED as is not valid within the scope of module,
-          this attribute will be removed after 2024-06-01.
+          - Enter scope command mode
+          - This option is DEPRECATED as is not valid within the scope of module,
+            this attribute will be removed after 2024-06-01.
         type: dict
         suboptions:
           global:
@@ -1793,9 +1794,9 @@ options:
             type: bool
       template:
         description:
-        - Enter template command mode
-        - This option is DEPRECATED as is not valid within the scope of module,
-          this attribute will be removed after 2024-06-01.
+          - Enter template command mode
+          - This option is DEPRECATED as is not valid within the scope of module,
+            this attribute will be removed after 2024-06-01.
         type: dict
         suboptions:
           peer_policy:
@@ -1833,6 +1834,7 @@ options:
     choices:
       - merged
       - replaced
+      - overridden
       - deleted
       - purged
       - gathered
@@ -1841,6 +1843,7 @@ options:
     default: merged
     description:
       - The state the configuration should be left in
+      - The module have declaratively similar behavior for replaced and overridden state.
       - The states I(rendered), I(gathered) and I(parsed) does not perform any change
         on the device.
       - The state I(rendered) will transform the configuration in C(config) option to
@@ -1854,11 +1857,10 @@ options:
         transforms it into JSON format as per the resource module parameters and the
         value is returned in the I(parsed) key within the result. The value of C(running_config)
         option should be the same format as the output of command I(show running-config
-        | include ip route|ipv6 route) executed on device. For state I(parsed) active
+        | section ^router bgp) executed on device. For state I(parsed) active
         connection to remote host is not required.
     type: str
 """
-
 
 EXAMPLES = """
 # Using merged
@@ -2036,7 +2038,7 @@ EXAMPLES = """
         - address: 192.0.2.4
       neighbor:
         - address: 192.0.2.5
-          description:  replace neighbor
+          description: replace neighbor
           remote_as: 100
           slow_peer:
             detection:
@@ -2082,6 +2084,7 @@ EXAMPLES = """
 #   networks:
 #   - address: 192.0.2.2
 #   - address: 192.0.2.3
+#
 # commands:
 # - router bgp 65000
 # - no bgp bestpath compare-routerid
@@ -2300,8 +2303,9 @@ EXAMPLES = """
 #  neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
 #  neighbor 192.0.2.1 route-map test-route out
 
-- name: 'Delete the configured global BGP (Note: This WILL delete the the configured
-    global BGP)'
+- name:
+    "Delete the configured global BGP (Note: This WILL delete the the configured
+    global BGP)"
   cisco.ios.ios_bgp_global:
     state: purged
 
@@ -2429,17 +2433,17 @@ EXAMPLES = """
   cisco.ios.ios_bgp_global:
     config:
       aggregate_addresses:
-      - address: 192.0.2.1
-        attribute_map: testMap1
-        netmask: 255.255.255.0
-        summary_only: true
-      - address: 192.0.2.2
-        as_set: true
-        netmask: 255.255.255.0
-      - address: 192.0.2.3
-        as_set: true
-        netmask: 255.255.255.0
-      as_number: '65000'
+        - address: 192.0.2.1
+          attribute_map: testMap1
+          netmask: 255.255.255.0
+          summary_only: true
+        - address: 192.0.2.2
+          as_set: true
+          netmask: 255.255.255.0
+        - address: 192.0.2.3
+          as_set: true
+          netmask: 255.255.255.0
+      as_number: "65000"
       auto_summary: true
       bgp:
         additional_paths:
@@ -2455,7 +2459,7 @@ EXAMPLES = """
             confed: true
             missing_as_worst: true
         confederation:
-          identifier: '22'
+          identifier: "22"
         consistency_checker:
           error_message:
             interval: 10
@@ -2467,17 +2471,17 @@ EXAMPLES = """
           restart_time: 2
           stalepath_time: 22
         graceful_shutdown:
-          community: '77'
+          community: "77"
           local_preference: 230
           vrfs:
             time: 31
         inject_maps:
-        - copy_attributes: true
-          exist_map_name: Testmap3
-          name: map2
-        - copy_attributes: true
-          exist_map_name: Testmap2
-          name: map1
+          - copy_attributes: true
+            exist_map_name: Testmap3
+            name: map2
+          - copy_attributes: true
+            exist_map_name: Testmap2
+            name: map1
         listen:
           limit: 200
           range:
@@ -2527,13 +2531,13 @@ EXAMPLES = """
           routes_internal: 3
           routes_local: 5
       distributes:
-      - in: true
-        prefix: prefixTest
-      - gateway: gatewayTest
-        out: true
-      - acl: '300'
-        interface: Loopback0
-        out: true
+        - in: true
+          prefix: prefixTest
+        - gateway: gatewayTest
+          out: true
+        - acl: "300"
+          interface: Loopback0
+          out: true
       maximum_paths:
         ibgp: 2
         paths: 2
@@ -2541,72 +2545,72 @@ EXAMPLES = """
         ibgp: 22
         paths: 22
       neighbors:
-      - neighbor_address: 192.0.2.10
-        remote_as: '64500'
-        update_source: Loopback1
-      - activate: true
-        neighbor_address: 192.0.2.11
-        remote_as: '45000'
-        send_community:
-          extended: true
-      - activate: true
-        neighbor_address: 192.0.2.12
-        remote_as: '45000'
-      - neighbor_address: 192.0.2.13
-        remote_as: '6553601'
-      - advertise:
-          diverse_path:
-            backup: true
-        neighbor_address: 192.0.2.8
-        route_reflector_client: true
-      - neighbor_address: 192.0.2.9
-        remote_as: '64500'
-        route_maps:
-        - in: true
-          name: rmp1
-        - in: true
-          name: rmp2
-        update_source: Loopback0
-      - activate: true
-        advertise:
-          additional_paths:
-            group_best: true
-        neighbor_address: 2001:DB8::1037
-      - neighbor_address: testNebTag
-        peer_group: '5'
-        soft_reconfiguration: true
-        version: 4
+        - neighbor_address: 192.0.2.10
+          remote_as: "64500"
+          update_source: Loopback1
+        - activate: true
+          neighbor_address: 192.0.2.11
+          remote_as: "45000"
+          send_community:
+            extended: true
+        - activate: true
+          neighbor_address: 192.0.2.12
+          remote_as: "45000"
+        - neighbor_address: 192.0.2.13
+          remote_as: "6553601"
+        - advertise:
+            diverse_path:
+              backup: true
+          neighbor_address: 192.0.2.8
+          route_reflector_client: true
+        - neighbor_address: 192.0.2.9
+          remote_as: "64500"
+          route_maps:
+            - in: true
+              name: rmp1
+            - in: true
+              name: rmp2
+          update_source: Loopback0
+        - activate: true
+          advertise:
+            additional_paths:
+              group_best: true
+          neighbor_address: 2001:DB8::1037
+        - neighbor_address: testNebTag
+          peer_group: "5"
+          soft_reconfiguration: true
+          version: 4
       networks:
-      - address: 192.0.2.15
-        backdoor: true
-        netmask: 55.255.255.0
-        route_map: mp1
-      - address: 192.0.2.16
-        backdoor: true
-        netmask: 255.255.255.0
-        route_map: mp2
-      - address: 192.0.2.17
-        backdoor: true
-        netmask: 255.255.255.0
-        route_map: mp2
-      redistribute:
-      - static:
-          metric: 33
-          route_map: rmp1
-          set: true
-      - application:
-          metric: 22
-          name: app1
-      - application:
-          metric: 33
-          name: app2
+        - address: 192.0.2.15
+          backdoor: true
+          netmask: 55.255.255.0
           route_map: mp1
-      - connected:
-          metric: 22
-          set: true
-      - mobile:
-          metric: 211
-          set: true
+        - address: 192.0.2.16
+          backdoor: true
+          netmask: 255.255.255.0
+          route_map: mp2
+        - address: 192.0.2.17
+          backdoor: true
+          netmask: 255.255.255.0
+          route_map: mp2
+      redistribute:
+        - static:
+            metric: 33
+            route_map: rmp1
+            set: true
+        - application:
+            metric: 22
+            name: app1
+        - application:
+            metric: 33
+            name: app2
+            route_map: mp1
+        - connected:
+            metric: 22
+            set: true
+        - mobile:
+            metric: 211
+            set: true
     state: rendered
 
 # Task Output:
@@ -3048,6 +3052,7 @@ def main():
         required_if=[
             ["state", "merged", ["config"]],
             ["state", "replaced", ["config"]],
+            ["state", "overridden", ["config"]],
             ["state", "rendered", ["config"]],
             ["state", "parsed", ["running_config"]],
         ],

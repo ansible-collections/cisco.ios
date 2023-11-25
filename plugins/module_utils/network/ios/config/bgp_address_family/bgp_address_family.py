@@ -39,6 +39,7 @@ class Bgp_address_family(ResourceModule):
     """
 
     parsers = [
+        "advertise",
         "as_number",  # generic
         "aggregate_addresses",
         "auto_summary",
@@ -336,9 +337,6 @@ class Bgp_address_family(ResourceModule):
                             neib["neighbor_address"] = neib.pop("ipv6_address")
                         if neib.get("ipv6_adddress"):
                             neib["neighbor_address"] = neib.pop("ipv6_adddress")
-                        # next_hop_self deprecated added nexthop_self
-                        if neib.get("next_hop_self"):
-                            neib["nexthop_self"] = {"set": neib.pop("next_hop_self")}
                         # prefix_list and prefix_lists
                         if neib.get("prefix_list"):  # deprecated made list
                             neib["prefix_lists"] = [neib.pop("prefix_list")]
@@ -356,6 +354,12 @@ class Bgp_address_family(ResourceModule):
                         # slow_peer to slow_peer_options
                         if neib.get("slow_peer"):  # only one slow_peer is allowed
                             neib["slow_peer_options"] = neib.pop("slow_peer")[0]
+                        # we can skip deprecating these by handling the int to str conversion here
+                        # int to float is not considered considering the size of as numbers
+                        if neib.get("remote_as"):
+                            neib["remote_as"] = str(neib.get("remote_as"))
+                        if neib.get("local_as") and neib.get("local_as", {}).get("number"):
+                            neib["local_as"]["number"] = str(neib["local_as"]["number"])
                         # make dict neighbors dict
                         tmp[neib[p_key[k]]] = neib
                     _af["neighbors"] = tmp

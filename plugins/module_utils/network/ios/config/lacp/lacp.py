@@ -126,7 +126,7 @@ class Lacp(ConfigBase):
         :returns: the commands necessary to migrate the current configuration
                   to the desired configuration
         """
-        if self.state in ("merged", "replaced", "rendered") and not want:
+        if self.state in ("merged", "replaced", "overridden", "rendered") and not want:
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(self.state),
             )
@@ -135,7 +135,7 @@ class Lacp(ConfigBase):
             commands = self._state_deleted(want, have)
         elif self.state in ("merged", "rendered"):
             commands = self._state_merged(want, have)
-        elif self.state == "replaced":
+        elif self.state in ["replaced", "overridden"]:
             commands = self._state_replaced(want, have)
 
         return commands

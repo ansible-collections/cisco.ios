@@ -24,12 +24,12 @@ module: ios_vrf
 author: Peter Sprygada (@privateip)
 short_description: Module to configure VRF definitions.
 description:
-- This module provides declarative management of VRF definitions on Cisco IOS devices.  It
-  allows playbooks to manage individual or the entire VRF collection.  It also supports
-  purging VRF definitions from the configuration that are not explicitly defined.
+  - This module provides declarative management of VRF definitions on Cisco IOS devices.  It
+    allows playbooks to manage individual or the entire VRF collection.  It also supports
+    purging VRF definitions from the configuration that are not explicitly defined.
 version_added: 1.0.0
 extends_documentation_fragment:
-- cisco.ios.ios
+  - cisco.ios.ios
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - This module works with connection C(network_cli).
@@ -37,218 +37,232 @@ notes:
 options:
   vrfs:
     description:
-    - The set of VRF definition objects to be configured on the remote IOS device.  Ths
-      list entries can either be the VRF name or a hash of VRF definitions and attributes.  This
-      argument is mutually exclusive with the C(name) argument.
+      - The set of VRF definition objects to be configured on the remote IOS device.  Ths
+        list entries can either be the VRF name or a hash of VRF definitions and attributes.  This
+        argument is mutually exclusive with the C(name) argument.
     type: list
     elements: raw
   name:
     description:
-    - The name of the VRF definition to be managed on the remote IOS device.  The
-      VRF definition name is an ASCII string name used to uniquely identify the VRF.  This
-      argument is mutually exclusive with the C(vrfs) argument
+      - The name of the VRF definition to be managed on the remote IOS device.  The
+        VRF definition name is an ASCII string name used to uniquely identify the VRF.  This
+        argument is mutually exclusive with the C(vrfs) argument
     type: str
   description:
     description:
-    - Provides a short description of the VRF definition in the current active configuration.  The
-      VRF definition value accepts alphanumeric characters used to provide additional
-      information about the VRF.
+      - Provides a short description of the VRF definition in the current active configuration.  The
+        VRF definition value accepts alphanumeric characters used to provide additional
+        information about the VRF.
     type: str
+  address_family:
+    description:
+      - The list of address families with MDT parameters to be configured on the remote IOS device.
+    type: list
+    elements: dict
   rd:
     description:
-    - The router-distinguisher value uniquely identifies the VRF to routing processes
-      on the remote IOS system.  The RD value takes the form of C(A:B) where C(A)
-      and C(B) are both numeric values.
+      - The router-distinguisher value uniquely identifies the VRF to routing processes
+        on the remote IOS system.  The RD value takes the form of C(A:B) where C(A)
+        and C(B) are both numeric values.
     type: str
   interfaces:
     description:
-    - Identifies the set of interfaces that should be configured in the VRF.  Interfaces
-      must be routed interfaces in order to be placed into a VRF.
+      - Identifies the set of interfaces that should be configured in the VRF.  Interfaces
+        must be routed interfaces in order to be placed into a VRF.
     type: list
     elements: str
   associated_interfaces:
     description:
-    - This is a intent option and checks the operational state of the for given vrf
-      C(name) for associated interfaces. If the value in the C(associated_interfaces)
-      does not match with the operational state of vrf interfaces on device it will
-      result in failure.
+      - This is a intent option and checks the operational state of the for given vrf
+        C(name) for associated interfaces. If the value in the C(associated_interfaces)
+        does not match with the operational state of vrf interfaces on device it will
+        result in failure.
     type: list
     elements: str
   delay:
     description:
-    - Time in seconds to wait before checking for the operational state on remote
-      device.
+      - Time in seconds to wait before checking for the operational state on remote
+        device.
     default: 10
     type: int
   purge:
     description:
-    - Instructs the module to consider the VRF definition absolute.  It will remove
-      any previously configured VRFs on the device.
+      - Instructs the module to consider the VRF definition absolute.  It will remove
+        any previously configured VRFs on the device.
     default: false
     type: bool
   state:
     description:
-    - Configures the state of the VRF definition as it relates to the device operational
-      configuration.  When set to I(present), the VRF should be configured in the
-      device active configuration and when set to I(absent) the VRF should not be
-      in the device active configuration
+      - Configures the state of the VRF definition as it relates to the device operational
+        configuration.  When set to I(present), the VRF should be configured in the
+        device active configuration and when set to I(absent) the VRF should not be
+        in the device active configuration
     default: present
     choices:
-    - present
-    - absent
+      - present
+      - absent
     type: str
   route_both:
     description:
-    - Adds an export and import list of extended route target communities to the VRF.
+      - Adds an export and import list of extended route target communities to the VRF.
     type: list
     elements: str
   route_export:
     description:
-    - Adds an export list of extended route target communities to the VRF.
+      - Adds an export list of extended route target communities to the VRF.
     type: list
     elements: str
   route_import:
     description:
-    - Adds an import list of extended route target communities to the VRF.
+      - Adds an import list of extended route target communities to the VRF.
     type: list
     elements: str
   route_both_ipv4:
     description:
-    - Adds an export and import list of extended route target communities in address-family
-      configuration submode to the VRF.
+      - Adds an export and import list of extended route target communities in address-family
+        configuration submode to the VRF.
     type: list
     elements: str
   route_export_ipv4:
     description:
-    - Adds an export list of extended route target communities in address-family configuration
-      submode to the VRF.
+      - Adds an export list of extended route target communities in address-family configuration
+        submode to the VRF.
     type: list
     elements: str
   route_import_ipv4:
     description:
-    - Adds an import list of extended route target communities in address-family configuration
-      submode to the VRF.
+      - Adds an import list of extended route target communities in address-family configuration
+        submode to the VRF.
     type: list
     elements: str
   route_both_ipv6:
     description:
-    - Adds an export and import list of extended route target communities in address-family
-      configuration submode to the VRF.
+      - Adds an export and import list of extended route target communities in address-family
+        configuration submode to the VRF.
     type: list
     elements: str
   route_export_ipv6:
     description:
-    - Adds an export list of extended route target communities in address-family configuration
-      submode to the VRF.
+      - Adds an export list of extended route target communities in address-family configuration
+        submode to the VRF.
     type: list
     elements: str
   route_import_ipv6:
     description:
-    - Adds an import list of extended route target communities in address-family configuration
-      submode to the VRF.
+      - Adds an import list of extended route target communities in address-family configuration
+        submode to the VRF.
     type: list
     elements: str
 """
+
 EXAMPLES = """
-- name: configure a vrf named management
+- name: Configure a vrf named management
   cisco.ios.ios_vrf:
     name: management
     description: oob mgmt vrf
     interfaces:
-    - Management1
+      - Management1
 
-- name: remove a vrf named test
+- name: Remove a vrf named test
   cisco.ios.ios_vrf:
     name: test
     state: absent
 
-- name: configure set of VRFs and purge any others
+- name: Configure set of VRFs and purge any others
   cisco.ios.ios_vrf:
     vrfs:
-    - red
-    - blue
-    - green
-    purge: yes
+      - red
+      - blue
+      - green
+    purge: true
 
 - name: Creates a list of import RTs for the VRF with the same parameters
   cisco.ios.ios_vrf:
     name: test_import
     rd: 1:100
     route_import:
-    - 1:100
-    - 3:100
+      - 1:100
+      - 3:100
 
-- name: Creates a list of import RTs in address-family configuration submode for the
+- name:
+    Creates a list of import RTs in address-family configuration submode for the
     VRF with the same parameters
   cisco.ios.ios_vrf:
     name: test_import_ipv4
     rd: 1:100
     route_import_ipv4:
-    - 1:100
-    - 3:100
+      - 1:100
+      - 3:100
 
-- name: Creates a list of import RTs in address-family configuration submode for the
+- name:
+    Creates a list of import RTs in address-family configuration submode for the
     VRF with the same parameters
   cisco.ios.ios_vrf:
     name: test_import_ipv6
     rd: 1:100
     route_import_ipv6:
-    - 1:100
-    - 3:100
+      - 1:100
+      - 3:100
 
 - name: Creates a list of export RTs for the VRF with the same parameters
   cisco.ios.ios_vrf:
     name: test_export
     rd: 1:100
     route_export:
-    - 1:100
-    - 3:100
+      - 1:100
+      - 3:100
 
-- name: Creates a list of export RTs in address-family configuration submode for the
+- name:
+    Creates a list of export RTs in address-family configuration submode for the
     VRF with the same parameters
   cisco.ios.ios_vrf:
     name: test_export_ipv4
     rd: 1:100
     route_export_ipv4:
-    - 1:100
-    - 3:100
+      - 1:100
+      - 3:100
 
-- name: Creates a list of export RTs in address-family configuration submode for the
+- name:
+    Creates a list of export RTs in address-family configuration submode for the
     VRF with the same parameters
   cisco.ios.ios_vrf:
     name: test_export_ipv6
     rd: 1:100
     route_export_ipv6:
-    - 1:100
-    - 3:100
+      - 1:100
+      - 3:100
 
-- name: Creates a list of import and export route targets for the VRF with the same
+- name:
+    Creates a list of import and export route targets for the VRF with the same
     parameters
   cisco.ios.ios_vrf:
     name: test_both
     rd: 1:100
     route_both:
-    - 1:100
-    - 3:100
+      - 1:100
+      - 3:100
 
-- name: Creates a list of import and export route targets in address-family configuration
+- name:
+    Creates a list of import and export route targets in address-family configuration
     submode for the VRF with the same parameters
   cisco.ios.ios_vrf:
     name: test_both_ipv4
     rd: 1:100
     route_both_ipv4:
-    - 1:100
-    - 3:100
+      - 1:100
+      - 3:100
 
-- name: Creates a list of import and export route targets in address-family configuration
+- name:
+    Creates a list of import and export route targets in address-family configuration
     submode for the VRF with the same parameters
   cisco.ios.ios_vrf:
     name: test_both_ipv6
     rd: 1:100
     route_both_ipv6:
-    - 1:100
-    - 3:100
+      - 1:100
+      - 3:100
 """
+
 RETURN = """
 commands:
   description: The list of configuration mode commands to send to the device
@@ -315,6 +329,39 @@ def add_command_to_vrf(name, cmd, commands):
     if "vrf definition %s" % name not in commands:
         commands.extend(["vrf definition %s" % name])
     commands.append(cmd)
+
+
+KEY_TO_COMMAND_MAP = {
+    "auto_discovery": "mdt auto-discovery ",
+    "default": "mdt default vxlan ",
+    "data_mcast": "mdt data vxlan ",
+    "data_threshold": "mdt data threshold ",
+    "overlay": "mdt overlay ",
+}
+
+
+def add_mdt_commands(afi_dict, vrf_name, commands):
+    for key, value in afi_dict["mdt"].items():
+        cmd = KEY_TO_COMMAND_MAP[key]
+
+        if key in ["default", "data_mcast"]:
+            cmd = cmd + value["vxlan_mcast_group"]
+            add_command_to_vrf(vrf_name, cmd, commands)
+        elif key == "data_threshold":
+            cmd = cmd + str(value)
+            add_command_to_vrf(vrf_name, cmd, commands)
+        elif key == "auto_discovery":
+            if value["vxlan"]["enable"]:
+                cmd = cmd + "vxlan"
+            if value["vxlan"].get("inter_as"):
+                cmd = cmd + " " + "inter-as"
+            add_command_to_vrf(vrf_name, cmd, commands)
+        elif key == "overlay":
+            if value["use_bgp"]["enable"]:
+                cmd = cmd + "use-bgp"
+            if value["use_bgp"].get("spt_only"):
+                cmd = cmd + " " + "spt-only"
+            add_command_to_vrf(vrf_name, cmd, commands)
 
 
 def map_obj_to_commands(updates, module):
@@ -406,6 +453,33 @@ def map_obj_to_commands(updates, module):
                 add_command_to_vrf(want["name"], cmd, commands)
             cmd = "exit-address-family"
             add_command_to_vrf(want["name"], cmd, commands)
+        if needs_update(want, have, "address_family"):
+            for want_mdt in want["address_family"]:
+                afi = want_mdt["afi"]
+                af_dict = {}
+                data_dict = want_mdt["mdt"].pop("data", {})
+                if data_dict:
+                    if "vxlan_mcast_group" in data_dict:
+                        want_mdt["mdt"]["data_mcast"] = {
+                            "vxlan_mcast_group": data_dict["vxlan_mcast_group"],
+                        }
+                    if "threshold" in data_dict:
+                        want_mdt["mdt"]["data_threshold"] = data_dict["threshold"]
+
+                for key_in, value_in in want_mdt["mdt"].items():
+                    have_mdt = next(
+                        (i for i in have.get("address_family", {}) if i["afi"] == afi),
+                        {},
+                    )
+
+                    if needs_update(want_mdt["mdt"], have_mdt.get("mdt", {}), key_in):
+                        af_dict.update({key_in: value_in})
+                if af_dict:
+                    cmd = "address-family" + " " + str(afi)
+                    add_command_to_vrf(want["name"], cmd, commands)
+                    add_mdt_commands({"mdt": af_dict}, want["name"], commands)
+                    add_command_to_vrf(want["name"], "exit-address-family", commands)
+
         if want["interfaces"] is not None:
             for intf in set(have.get("interfaces", [])).difference(want["interfaces"]):
                 commands.extend(["interface %s" % intf, "no vrf forwarding %s" % want["name"]])
@@ -535,6 +609,81 @@ def parse_export_ipv6(configobj, name):
         pass
 
 
+def parse_mdt(configobj, name):
+    cfg = configobj["vrf definition %s" % name]
+    mdt_list = []
+
+    for ip in ["ipv4", "ipv6"]:
+        ret_dict = {}
+        try:
+            subcfg = cfg["address-family " + ip]
+            subcfg = "\n".join(subcfg.children)
+        except KeyError:
+            subcfg = ""
+            pass
+
+        re1 = re.compile(r"^mdt +auto\-discovery +(?P<option>\S+)(\s+(?P<inter_as>inter\-as))?$")
+        re2 = re.compile(r"^mdt +default +vxlan +(?P<mcast_group>\S+)$")
+        re3 = re.compile(r"^mdt +data +vxlan +(?P<mcast_group>.+)$")
+        re4 = re.compile(r"^mdt +data +threshold +(?P<threshold_value>\d+)$")
+        re5 = re.compile(r"^mdt +overlay +(?P<use_bgp>use-bgp)(\s+(?P<spt_only>spt-only))?$")
+
+        for line in subcfg.splitlines():
+            line = line.strip()
+            m = re1.match(line)
+            if m:
+                group = m.groupdict()
+                ret_dict.setdefault("auto_discovery", {}).setdefault(
+                    group["option"],
+                    {},
+                ).setdefault("enable", True)
+                if group["inter_as"]:
+                    ret_dict.setdefault("auto_discovery", {}).setdefault(
+                        group["option"],
+                        {},
+                    ).setdefault("inter_as", True)
+                continue
+
+            m = re2.match(line)
+            if m:
+                group = m.groupdict()
+                ret_dict.setdefault("default", {}).setdefault(
+                    "vxlan_mcast_group",
+                    group["mcast_group"],
+                )
+                continue
+
+            m = re3.match(line)
+            if m:
+                group = m.groupdict()
+                ret_dict.setdefault("data_mcast", {}).setdefault(
+                    "vxlan_mcast_group",
+                    group["mcast_group"],
+                )
+                continue
+
+            m = re4.match(line)
+            if m:
+                group = m.groupdict()
+                ret_dict.setdefault("data_threshold", int(group["threshold_value"]))
+
+            m = re5.match(line)
+            if m:
+                group = m.groupdict()
+                ret_dict.setdefault("overlay", {}).setdefault(
+                    "use_bgp",
+                    {},
+                ).setdefault("enable", True)
+                if group["spt_only"]:
+                    ret_dict.setdefault("overlay", {}).setdefault(
+                        "use_bgp",
+                        {},
+                    ).setdefault("spt_only", True)
+
+        mdt_list.append({"afi": ip, "mdt": ret_dict})
+    return mdt_list
+
+
 def map_config_to_obj(module):
     config = get_config(module)
     configobj = NetworkConfig(indent=1, contents=config)
@@ -559,6 +708,7 @@ def map_config_to_obj(module):
             "route_import_ipv6": parse_import_ipv6(configobj, item),
             "route_export_ipv6": parse_export_ipv6(configobj, item),
             "route_both_ipv6": parse_both(configobj, item, address_family="ipv6"),
+            "address_family": parse_mdt(configobj, item),
         }
         instances.append(obj)
     return instances
@@ -614,6 +764,7 @@ def map_params_to_obj(module):
         item["route_import_ipv6"] = get_value("route_import_ipv6")
         item["route_export_ipv6"] = get_value("route_export_ipv6")
         item["route_both_ipv6"] = get_value("route_both_ipv6")
+        item["address_family"] = get_value("address_family")
         both_addresses_family = ["", "_ipv6", "_ipv4"]
         for address_family in both_addresses_family:
             if item["route_both%s" % address_family]:
@@ -641,16 +792,18 @@ def update_objects(want, have):
         else:
             for key, value in iteritems(entry):
                 if value:
-                    try:
-                        if isinstance(value, list):
+                    if isinstance(value, list):
+                        try:
                             if sorted(value) != sorted(item[key]):
                                 if (entry, item) not in updates:
                                     updates.append((entry, item))
-                        elif value != item[key]:
-                            if (entry, item) not in updates:
+                        except TypeError:
+                            if value != item[key]:
                                 updates.append((entry, item))
-                    except TypeError:
-                        pass
+                            pass
+                    elif value != item[key]:
+                        if (entry, item) not in updates:
+                            updates.append((entry, item))
     return updates
 
 
@@ -683,6 +836,7 @@ def main():
         vrfs=dict(type="list", elements="raw"),
         name=dict(),
         description=dict(),
+        address_family=dict(type="list", elements="dict"),
         rd=dict(),
         route_export=dict(type="list", elements="str"),
         route_import=dict(type="list", elements="str"),
@@ -710,6 +864,7 @@ def main():
     result["warnings"] = warnings
     want = map_params_to_obj(module)
     have = map_config_to_obj(module)
+
     commands = map_obj_to_commands(update_objects(want, have), module)
     if module.params["purge"]:
         want_vrfs = [x["name"] for x in want]

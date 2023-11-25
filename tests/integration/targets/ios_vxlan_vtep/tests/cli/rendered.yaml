@@ -1,0 +1,34 @@
+---
+- ansible.builtin.debug:
+    msg: START Rendered ios_vxlan_vtep state for integration tests on connection={{ ansible_connection }}
+
+- block:
+    - name: Ios_vxlan_vtep rendered - play
+      register: result
+      cisco.ios.ios_vxlan_vtep: &id001
+        config:
+          - interface: nve1
+            source_interface: Loopback1
+            member:
+              vni:
+                l2vni:
+                  - vni: 10101
+                    replication:
+                      type: static
+                      mcast_group:
+                        ipv6: FF0E:225::101
+                  - vni: 10201
+                    replication:
+                      type: static
+                      mcast_group:
+                        ipv6: FF0E:225::102
+                l3vni:
+                  - vni: 50901
+                    vrf: blue
+        state: rendered
+
+    - name: Ios_vxlan_vtep rendered - assert commands
+      ansible.builtin.assert:
+        that:
+          - "{{ rendered['commands'] | symmetric_difference(result['rendered']) | length == 0 }}"
+          - result['changed'] == false

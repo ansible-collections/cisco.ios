@@ -229,20 +229,20 @@ Examples
     - name: Merge provided configuration with device configuration
       cisco.ios.ios_lag_interfaces:
         config:
-        - name: Port-channel10
-          members:
-          - member: GigabitEthernet0/1
-            mode: auto
-          - member: GigabitEthernet0/2
-            mode: auto
-        - name: Port-channel20
-          members:
-          - member: GigabitEthernet0/3
-            mode: on
-        - name: Port-channel30
-          members:
-          - member: GigabitEthernet0/4
-            mode: active
+          - name: Port-channel10
+            members:
+              - member: GigabitEthernet0/1
+                mode: auto
+              - member: GigabitEthernet0/2
+                mode: auto
+          - name: Port-channel20
+            members:
+              - member: GigabitEthernet0/3
+                mode: "on"
+          - name: Port-channel30
+            members:
+              - member: GigabitEthernet0/4
+                mode: active
         state: merged
 
     # Task Output:
@@ -303,12 +303,12 @@ Examples
     - name: Override device configuration of all interfaces with provided configuration
       cisco.ios.ios_lag_interfaces:
         config:
-        - name: Port-channel20
-          members:
-          - member: GigabitEthernet0/2
-            mode: auto
-          - member: GigabitEthernet0/3
-            mode: auto
+          - name: Port-channel20
+            members:
+              - member: GigabitEthernet0/2
+                mode: auto
+              - member: GigabitEthernet0/3
+                mode: auto
         state: overridden
 
     # Task Output:
@@ -369,10 +369,10 @@ Examples
     - name: Replaces device configuration of listed interfaces with provided configuration
       cisco.ios.ios_lag_interfaces:
         config:
-        - name: Port-channel30
-          members:
-          - member: GigabitEthernet0/3
-            mode: auto
+          - name: Port-channel30
+            members:
+              - member: GigabitEthernet0/3
+                mode: auto
         state: replaced
 
     # Task Output:
@@ -428,8 +428,8 @@ Examples
     - name: "Delete LAG attributes of given interfaces (Note: This won't delete the interface itself)"
       cisco.ios.ios_lag_interfaces:
         config:
-        - name: Port-channel10
-        - name: Port-channel20
+          - name: Port-channel10
+          - name: Port-channel20
         state: deleted
 
     # Task Output:
@@ -461,7 +461,7 @@ Examples
     #  channel-group 30 mode active
 
     # Using Deleted without any config passed
-    #"(NOTE: This will delete all of configured LLDP module attributes)"
+    # "(NOTE: This will delete all of configured LLDP module attributes)"
 
     #
     # Before state:

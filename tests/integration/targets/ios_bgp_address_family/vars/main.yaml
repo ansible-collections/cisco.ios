@@ -4,6 +4,13 @@ merged:
 
   commands:
     - router bgp 65000
+    - address-family l2vpn evpn
+    - neighbor 198.51.100.1 activate
+    - neighbor 198.51.100.1 inherit peer-policy LEAF-EVPN-PEER-POLICY
+    - address-family ipv4 vrf green
+    - advertise l2vpn evpn
+    - redistribute connected
+    - redistribute static
     - address-family ipv4 multicast
     - default-metric 12
     - distance bgp 10 10 100
@@ -24,6 +31,22 @@ merged:
 
   after:
     address_family:
+      - afi: l2vpn
+        safi: evpn
+        neighbor:
+          - address: 198.51.100.1
+            activate: true
+            inherit: LEAF-EVPN-PEER-POLICY
+      - afi: ipv4
+        vrf: green
+        advertise:
+          afi: l2vpn
+          safi: evpn
+        redistribute:
+          - static:
+              set: true
+          - connected:
+              set: true
       - afi: ipv4
         redistribute:
           - connected:

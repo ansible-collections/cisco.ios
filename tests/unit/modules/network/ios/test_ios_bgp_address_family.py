@@ -23,32 +23,11 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
     def setUp(self):
         super(TestIosBgpAddressFamilyModule, self).setUp()
 
-        self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
-        )
-        self.get_config = self.mock_get_config.start()
-
-        self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
-        )
-        self.load_config = self.mock_load_config.start()
-
-        self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection",
-        )
-        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
-
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
-
-        self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
-        )
-        self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_address_family.bgp_address_family."
@@ -58,11 +37,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
 
     def tearDown(self):
         super(TestIosBgpAddressFamilyModule, self).tearDown()
-        self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
-        self.mock_edit_config.stop()
-        self.mock_get_config.stop()
-        self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
 
     def test_ios_bgp_address_family_merged(self):
@@ -143,7 +118,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             neighbors=[
                                 dict(
                                     neighbor_address="198.51.100.1",
-                                    remote_as=65100,
+                                    remote_as="65.11",
                                     route_maps=[dict(name="test-route-out", out="true")],
                                     prefix_lists=[dict(name="AS65100-PREFIX-OUT", out="true")],
                                 ),
@@ -169,7 +144,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "bgp aggregate-timer 20",
             "bgp dmzlink-bw",
             "bgp scan-time 10",
-            "neighbor 198.51.100.1 remote-as 65100",
+            "neighbor 198.51.100.1 remote-as 65.11",
             "neighbor 198.51.100.1 route-map test-route-out out",
             "network 192.0.1.1 route-map test_route",
             "default-metric 10",
@@ -253,7 +228,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               network 198.51.110.10 mask 255.255.255.255 backdoor
               aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
               neighbor 198.51.100.1 remote-as 10
-              neighbor 198.51.100.1 local-as 20
+              neighbor 198.51.100.1 local-as 10.64760
               neighbor 198.51.100.1 activate
               neighbor 198.51.100.1 next-hop-self all
               neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
@@ -346,7 +321,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                             },
                                         },
                                     },
-                                    "local_as": {"number": 20, "set": True},
+                                    "local_as": {"number": "10.64760", "set": True},
                                     "neighbor_address": "198.51.100.1",
                                     "nexthop_self": {"all": True},
                                     "prefix_lists": [{"name": "AS65100-PREFIX-OUT", "out": True}],
@@ -796,7 +771,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             ),
         )
 
-        result = self.execute_module(changed=False, commands=[])
+        self.execute_module(changed=False, commands=[])
 
     def test_ios_bgp_address_family_deleted(self):
         self.execute_show_command.return_value = dedent(
@@ -1188,8 +1163,8 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                     ],
                     "neighbors": [
                         {
-                            "remote_as": 10,
-                            "local_as": {"set": True, "number": 20},
+                            "remote_as": "10",
+                            "local_as": {"set": True, "number": "20"},
                             "activate": True,
                             "neighbor_address": "198.51.100.1",
                             "nexthop_self": {"all": True},

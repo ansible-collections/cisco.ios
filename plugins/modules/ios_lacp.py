@@ -27,7 +27,8 @@ __metaclass__ = type
 DOCUMENTATION = """
 module: ios_lacp
 short_description: Resource module to configure LACP.
-description: This module provides declarative management of Global LACP on Cisco IOS
+description:
+  This module provides declarative management of Global LACP on Cisco IOS
   network devices.
 version_added: 1.0.0
 author: Sumit Jaiswal (@justjais)
@@ -46,8 +47,8 @@ options:
         suboptions:
           priority:
             description:
-            - LACP priority for the system.
-            - Refer to vendor documentation for valid values.
+              - LACP priority for the system.
+              - Refer to vendor documentation for valid values.
             type: int
             required: true
   running_config:
@@ -62,6 +63,7 @@ options:
   state:
     description:
       - The state the configuration should be left in
+      - The module have declaratively similar behavior for replaced and overridden state.
       - The states I(rendered), I(gathered) and I(parsed) does not perform any change
         on the device.
       - The state I(rendered) will transform the configuration in C(config) option to
@@ -79,12 +81,13 @@ options:
         connection to remote host is not required.
     type: str
     choices:
-    - merged
-    - replaced
-    - deleted
-    - rendered
-    - parsed
-    - gathered
+      - merged
+      - replaced
+      - overridden
+      - deleted
+      - rendered
+      - parsed
+      - gathered
     default: merged
 """
 
@@ -213,7 +216,6 @@ EXAMPLES = """
 #             "priority": 123
 #         }
 #     }
-
 """
 
 RETURN = """
@@ -255,6 +257,7 @@ def main():
     required_if = [
         ("state", "merged", ("config",)),
         ("state", "replaced", ("config",)),
+        ("state", "overridden", ("config",)),
         ("state", "rendered", ("config",)),
         ("state", "parsed", ("running_config",)),
     ]

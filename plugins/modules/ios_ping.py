@@ -13,75 +13,79 @@ DOCUMENTATION = """
 module: ios_ping
 short_description: Tests reachability using ping from IOS switch.
 description:
-- Tests reachability using ping from switch to a remote destination.
-- For a general purpose network module, see the L(net_ping,https://docs.ansible.com/ansible/latest/collections/ansible/netcommon/net_ping_module.html)
-  module.
-- For Windows targets, use the L(win_ping,https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_ping_module.html)
-  module instead.
-- For targets running Python, use the L(ping,https://docs.ansible.com/ansible/latest/collections/ansible/builtin/ping_module.html)
-  module instead.
+  - Tests reachability using ping from switch to a remote destination.
+  - For a general purpose network module, see the L(net_ping,https://docs.ansible.com/ansible/latest/collections/ansible/netcommon/net_ping_module.html)
+    module.
+  - For Windows targets, use the L(win_ping,https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_ping_module.html)
+    module instead.
+  - For targets running Python, use the L(ping,https://docs.ansible.com/ansible/latest/collections/ansible/builtin/ping_module.html)
+    module instead.
 version_added: 1.0.0
 author:
-- Jacob McGill (@jmcgill298)
-- Sagar Paul (@KB-perByte)
+  - Jacob McGill (@jmcgill298)
+  - Sagar Paul (@KB-perByte)
 options:
   count:
     description:
-    - Number of packets to send.
+      - Number of packets to send.
     type: int
   afi:
     description:
-    - Define echo type ip or ipv6.
+      - Define echo type ip or ipv6.
     choices:
-    - ip
-    - ipv6
+      - ip
+      - ipv6
     default: ip
     type: str
   dest:
     description:
-    - The IP Address or hostname (resolvable by switch) of the remote node.
+      - The IP Address or hostname (resolvable by switch) of the remote node.
     required: true
     type: str
   df_bit:
     description:
-    - Set the DF bit.
+      - Set the DF bit.
     default: false
     type: bool
   source:
     description:
-    - The source IP Address.
+      - The source IP Address.
     type: str
+  size:
+    description:
+      - Size of the packet to send.
+    type: int
   egress:
     description:
-    - Force egress interface bypassing routing.
+      - Force egress interface bypassing routing.
     type: str
   ingress:
     description:
-    - LAN source interface for Ingress.
+      - LAN source interface for Ingress.
     type: str
   timeout:
     description:
-    - specify timeout interval.
+      - specify timeout interval.
     type: int
   state:
     description:
-    - Determines if the expected result is success or fail.
+      - Determines if the expected result is success or fail.
     choices:
-    - absent
-    - present
+      - absent
+      - present
     default: present
     type: str
   vrf:
     description:
-    - The VRF to use for forwarding.
+      - The VRF to use for forwarding.
     type: str
 notes:
-- Tested against Cisco IOSXE Version 17.3 on CML.
-- For a general purpose network module, see the L(net_ping,https://docs.ansible.com/ansible/latest/collections/ansible/netcommon/net_ping_module.html)
-  module.
-- For Windows targets, use the L(win_ping,https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_ping_module.html)
-  module instead.
-- For targets running Python, use the L(ping,https://docs.ansible.com/ansible/latest/collections/ansible/builtin/ping_module.html) module instead.
+  - Tested against Cisco IOSXE Version 17.3 on CML.
+  - For a general purpose network module, see the L(net_ping,https://docs.ansible.com/ansible/latest/collections/ansible/netcommon/net_ping_module.html)
+    module.
+  - For Windows targets, use the L(win_ping,https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_ping_module.html)
+    module instead.
+  - For targets running Python, use the L(ping,https://docs.ansible.com/ansible/latest/collections/ansible/builtin/ping_module.html) module instead.
 """
 
 EXAMPLES = """

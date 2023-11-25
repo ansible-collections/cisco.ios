@@ -19,85 +19,94 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
+
 DOCUMENTATION = """
 module: ios_ntp
 extends_documentation_fragment:
-- cisco.ios.ios
+  - cisco.ios.ios
 short_description: (deprecated, removed after 2024-01-01) Manages core NTP configuration.
 description:
-- Manages core NTP configuration.
+  - Manages core NTP configuration.
 version_added: 1.0.0
 deprecated:
   alternative: ios_ntp_global
   why: Updated module released with more functionality.
-  removed_at_date: '2024-01-01'
+  removed_at_date: "2024-01-01"
 author:
-- Federico Olivieri (@Federico87)
-- Joanie Sylvain (@JoanieAda)
+  - Federico Olivieri (@Federico87)
+  - Joanie Sylvain (@JoanieAda)
 options:
   server:
     description:
-    - Network address of NTP server.
+      - Network address of NTP server.
     type: str
   source_int:
     description:
-    - Source interface for NTP packets.
+      - Source interface for NTP packets.
     type: str
   acl:
     description:
-    - ACL for peer/server access restricition.
+      - ACL for peer/server access restricition.
     type: str
   logging:
     description:
-    - Enable NTP logs. Data type boolean.
+      - Enable NTP logs. Data type boolean.
     type: bool
     default: false
   auth:
     description:
-    - Enable NTP authentication. Data type boolean.
+      - Enable NTP authentication. Data type boolean.
     type: bool
     default: false
   auth_key:
     description:
-    - md5 NTP authentication key of tye 7.
+      - md5 NTP authentication key of tye 7.
     type: str
   key_id:
     description:
-    - auth_key id. Data type string
+      - auth_key id. Data type string
     type: str
   state:
     description:
-    - Manage the state of the resource.
+      - Manage the state of the resource.
     default: present
     choices:
-    - present
-    - absent
+      - present
+      - absent
     type: str
   vrf:
     description:
-    - VRF configuration for NTP servers
+      - VRF configuration for NTP servers
     type: str
 """
+
 EXAMPLES = """
 # Set new NTP server and source interface
-- cisco.ios.ios_ntp:
+- name: Example ntp play
+  cisco.ios.ios_ntp:
     server: 10.0.255.10
     source_int: Loopback0
     logging: false
     state: present
+
 # Remove NTP ACL and logging
-- cisco.ios.ios_ntp:
+- name: Example ntp play absent
+  cisco.ios.ios_ntp:
     acl: NTP_ACL
     logging: true
     state: absent
+
 # Set NTP authentication
-- cisco.ios.ios_ntp:
+- name: Example ntp play auth
+  cisco.ios.ios_ntp:
     key_id: 10
     auth_key: 15435A030726242723273C21181319000A
     auth: true
     state: present
+
 # Set new NTP configuration
-- cisco.ios.ios_ntp:
+- name: Example ntp play auth
+  cisco.ios.ios_ntp:
     server: 10.0.255.10
     source_int: Loopback0
     acl: NTP_ACL
@@ -108,6 +117,7 @@ EXAMPLES = """
     auth: true
     state: present
 """
+
 RETURN = """
 commands:
     description: command sent to the device
@@ -115,6 +125,7 @@ commands:
     type: list
     sample: ["no ntp server 10.0.255.10", "no ntp source Loopback0"]
 """
+
 import re
 
 from ansible.module_utils.basic import AnsibleModule

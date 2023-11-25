@@ -358,6 +358,7 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li><div style="color: blue"><b>merged</b>&nbsp;&larr;</div></li>
                                     <li>replaced</li>
+                                    <li>overridden</li>
                                     <li>deleted</li>
                                     <li>rendered</li>
                                     <li>gathered</li>
@@ -366,6 +367,7 @@ Parameters
                 </td>
                 <td>
                         <div>The state the configuration should be left in</div>
+                        <div>The module have declaratively similar behavior for replaced and overridden state.</div>
                         <div>The states <em>rendered</em>, <em>gathered</em> and <em>parsed</em> does not perform any change on the device.</div>
                         <div>The state <em>rendered</em> will transform the configuration in <code>config</code> option to platform specific CLI commands which will be returned in the <em>rendered</em> key within the result. For state <em>rendered</em> active connection to remote host is not required.</div>
                         <div>The state <em>gathered</em> will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the <em>gathered</em> key within the result.</div>
@@ -397,7 +399,6 @@ Examples
     # vios#sh running-config | section ^lldp
     # vios1#
 
-
     - name: Merge provided configuration with device configuration
       cisco.ios.ios_lldp_global:
         config:
@@ -415,7 +416,6 @@ Examples
     #  lldp reinit 3
     #  lldp run
 
-
     # Using replaced
 
     # Before state:
@@ -425,7 +425,6 @@ Examples
     #  lldp holdtime 10
     #  lldp reinit 3
     #  lldp run
-
 
     - name: Replaces LLDP device configuration with provided configuration
       cisco.ios.ios_lldp_global:
@@ -440,9 +439,8 @@ Examples
     #  lldp holdtime 20
     #  lldp reinit 5
 
-
     # Using Deleted without any config passed
-    #"(NOTE: This will delete all of configured LLDP module attributes)"
+    # "(NOTE: This will delete all of configured LLDP module attributes)"
 
     # Before state:
     # -------------
@@ -451,7 +449,6 @@ Examples
     #  lldp holdtime 10
     #  lldp reinit 3
     #  lldp run
-
 
     - name: Delete LLDP attributes
       cisco.ios.ios_lldp_global:

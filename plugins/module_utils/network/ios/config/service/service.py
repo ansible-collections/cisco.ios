@@ -103,8 +103,10 @@ class Service(ResourceModule):
             "prompt": True,
             "slave_log": True,
             "password_recovery": True,
-            "private_config_encryption": True,
         }
+
+        if "private_config_encryption" in haved:
+            service_default["private_config_encryption"] = True
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -115,7 +117,7 @@ class Service(ResourceModule):
             wantd = self._service_list_to_dict(service_default)
 
         # if state is replaced
-        elif self.state == "replaced":
+        elif self.state in ["replaced", "overridden"]:
             wantd = dict_merge(self._service_list_to_dict(service_default), wantd)
 
         self._compare(want=wantd, have=haved)

@@ -23,32 +23,11 @@ class TestIosServiceModule(TestIosModule):
     def setUp(self):
         super(TestIosServiceModule, self).setUp()
 
-        self.mock_get_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.get_config",
-        )
-        self.get_config = self.mock_get_config.start()
-
-        self.mock_load_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.network.Config.load_config",
-        )
-        self.load_config = self.mock_load_config.start()
-
-        self.mock_get_resource_connection_config = patch(
-            "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base."
-            "get_resource_connection",
-        )
-        self.get_resource_connection_config = self.mock_get_resource_connection_config.start()
-
         self.mock_get_resource_connection_facts = patch(
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
-
-        self.mock_edit_config = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.providers.providers.CliProvider.edit_config",
-        )
-        self.edit_config = self.mock_edit_config.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.service.service."
@@ -58,11 +37,7 @@ class TestIosServiceModule(TestIosModule):
 
     def tearDown(self):
         super(TestIosServiceModule, self).tearDown()
-        self.mock_get_resource_connection_config.stop()
         self.mock_get_resource_connection_facts.stop()
-        self.mock_edit_config.stop()
-        self.mock_get_config.stop()
-        self.mock_load_config.stop()
         self.mock_execute_show_command.stop()
 
     def test_ios_service_merged_idempotent(self):
@@ -197,6 +172,62 @@ class TestIosServiceModule(TestIosModule):
 
         self.assertEqual(sorted(result["commands"]), sorted(deleted))
 
+    def test_ios_service_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            service call-home
+            service config
+            service counters max age 0
+            service dhcp
+            service pad
+            service password-recovery
+            service private-config-encryption
+            service prompt config
+            service slave-log
+            service timestamps log datetime msec
+            """,
+        )
+        playbook = {
+            "config": {
+                "timestamps": [
+                    {
+                        "msg": "log",
+                        "timestamp": "datetime",
+                        "datetime_options": {
+                            "localtime": True,
+                            "msec": True,
+                            "show_timezone": True,
+                            "year": True,
+                        },
+                    },
+                    {
+                        "msg": "debug",
+                        "timestamp": "datetime",
+                    },
+                ],
+                "tcp_keepalives_in": True,
+                "tcp_keepalives_out": True,
+                "password_encryption": True,
+                "counters": 5,
+            },
+        }
+        overridden = [
+            "no service call-home",
+            "no service config",
+            "no service pad",
+            "service counters max age 5",
+            "service password-encryption",
+            "service tcp-keepalives-in",
+            "service tcp-keepalives-out",
+            "service timestamps debug datetime",
+            "service timestamps log datetime msec localtime show-timezone year",
+        ]
+        playbook["state"] = "overridden"
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+
+        self.assertEqual(sorted(result["commands"]), sorted(overridden))
+
     def test_ios_service_replaced(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -270,7 +301,48 @@ class TestIosServiceModule(TestIosModule):
         playbook = {
             "config": {
                 "call_home": True,
-                "private_config_encryption": True,
+                "timestamps": [
+                    {
+                        "msg": "debug",
+                        "timestamp": "datetime",
+                        "datetime_options": {
+                            "msec": True,
+                        },
+                    },
+                    {
+                        "msg": "log",
+                        "timestamp": "datetime",
+                        "datetime_options": {
+                            "msec": True,
+                        },
+                    },
+                ],
+            },
+        }
+        replaced = []
+        playbook["state"] = "replaced"
+        set_module_args(playbook)
+        result = self.execute_module(changed=False)
+        self.maxDiff = None
+
+        self.assertEqual(sorted(result["commands"]), sorted(replaced))
+
+    def test_ios_service_replaced_idempotent_old(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            service slave-log
+            service timestamps debug datetime msec
+            service timestamps log datetime msec
+            service prompt config
+            service counters max age 0
+            service dhcp
+            service call-home
+            service password-recovery
+            """,
+        )
+        playbook = {
+            "config": {
+                "call_home": True,
                 "timestamps": [
                     {
                         "msg": "debug",
