@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_bgp_global - remote_as not mendatory for neighbors.
