@@ -423,9 +423,11 @@ class Vlans(ConfigBase):
                     vlan_dict.pop("member")
             if vlan_dict["vlan_id"] != vlan:
                 delete_member = False
-                if vlan_dict.get("member", {}).get("vni") == want_dict["member"].get("vni"):
+                have_vni = vlan_dict.get("member", {}).get("vni")
+                have_evi = vlan_dict.get("member", {}).get("evi")
+                if have_vni and (have_vni == want_dict["member"].get("vni")):
                     delete_member = True
-                if vlan_dict.get("member", {}).get("evi") == want_dict["member"].get("evi"):
+                if have_evi and (have_evi == want_dict["member"].get("evi")):
                     delete_member = True
                 if delete_member:
                     commands.extend(
