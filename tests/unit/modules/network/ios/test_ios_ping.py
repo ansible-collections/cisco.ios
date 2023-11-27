@@ -87,6 +87,7 @@ class TestIosPingModule(TestIosModule):
                 "afi": "ip",
                 "count": 4,
                 "dest": "8.8.8.8",
+                "size": 800,
                 "df_bit": True,
                 "source": "Loopback88",
                 "state": "present",
@@ -95,7 +96,7 @@ class TestIosPingModule(TestIosModule):
         )
         result = self.execute_module()
         mock_res = {
-            "commands": "ping vrf DummyVrf ip 8.8.8.8 repeat 4 df-bit source Loopback88",
+            "commands": "ping vrf DummyVrf ip 8.8.8.8 repeat 4 df-bit size 800 source Loopback88",
             "packet_loss": "0%",
             "packets_rx": 2,
             "packets_tx": 2,

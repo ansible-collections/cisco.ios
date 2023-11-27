@@ -43,6 +43,8 @@ Name | Description
 [cisco.ios.ios_bgp_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_bgp_global_module.rst)|Resource module to configure BGP.
 [cisco.ios.ios_command](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_command_module.rst)|Module to run commands on remote devices.
 [cisco.ios.ios_config](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_config_module.rst)|Module to manage configuration sections.
+[cisco.ios.ios_evpn_evi](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_evpn_evi_module.rst)|Resource module to configure L2VPN EVPN EVI.
+[cisco.ios.ios_evpn_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_evpn_global_module.rst)|Resource module to configure L2VPN EVPN.
 [cisco.ios.ios_facts](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_facts_module.rst)|Module to collect facts from remote devices.
 [cisco.ios.ios_hostname](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_hostname_module.rst)|Resource module to configure hostname.
 [cisco.ios.ios_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_interfaces_module.rst)|Resource module to configure interfaces.
@@ -72,6 +74,7 @@ Name | Description
 [cisco.ios.ios_users](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_users_module.rst)|Resource module to configure user and enable
 [cisco.ios.ios_vlans](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vlans_module.rst)|Resource module to configure VLANs.
 [cisco.ios.ios_vrf](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vrf_module.rst)|Module to configure VRF definitions.
+[cisco.ios.ios_vxlan_vtep](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vxlan_vtep_module.rst)|Resource module to configure VXLAN VTEP interface.
 
 <!--end collection content-->
 

@@ -135,7 +135,7 @@ EXAMPLES = """
       - name: Port-channel20
         members:
           - member: GigabitEthernet0/3
-            mode: on
+            mode: "on"
       - name: Port-channel30
         members:
           - member: GigabitEthernet0/4
@@ -358,7 +358,7 @@ EXAMPLES = """
 #  channel-group 30 mode active
 
 # Using Deleted without any config passed
-#"(NOTE: This will delete all of configured LLDP module attributes)"
+# "(NOTE: This will delete all of configured LLDP module attributes)"
 
 #
 # Before state:

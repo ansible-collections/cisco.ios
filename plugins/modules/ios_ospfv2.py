@@ -1010,7 +1010,7 @@ EXAMPLES = """
           passive_interfaces:
             default: true
             interface:
-              set_interface: False
+              set_interface: false
               name:
                 - GigabitEthernet0/1
                 - GigabitEthernet0/2

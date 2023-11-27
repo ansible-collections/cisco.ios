@@ -70,6 +70,66 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="6">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>advertise</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Configure path advertise/export to other address-family</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>afi</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>l2vpn</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Address family for VRF advertise/export</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>safi</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>evpn</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Advertise/export prefixes to address family</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="6">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>afi</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -3101,7 +3161,7 @@ Parameters
                     <b>number</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
@@ -4026,7 +4086,7 @@ Parameters
                     <b>remote_as</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>

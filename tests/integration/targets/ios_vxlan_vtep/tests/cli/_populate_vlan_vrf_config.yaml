@@ -1,0 +1,61 @@
+---
+- name: Configure VLANs and VRFs
+  ansible.netcommon.cli_config:
+    config: |
+      vlan 101
+       name Access_VLAN_101
+      vlan 102
+       name Access_VLAN_102
+      vlan 201
+       name Access_VLAN_201
+      vlan 202
+       name Access_VLAN_202
+      vlan 901
+       name Core_VLAN_VRF_green
+      vlan 902
+       name Core_VLAN_VRF_blue
+      vlan configuration 101
+       member evpn-instance 101 vni 10101
+      vlan configuration 102
+       member evpn-instance 102 vni 10102
+      vlan configuration 201
+       member evpn-instance 201 vni 10201
+      vlan configuration 202
+       member evpn-instance 202 vni 10202
+      vlan configuration 901
+       member vni 50901
+      vlan configuration 902
+       member vni 50902
+      vrf definition blue
+       description blue VRF defn
+       rd 2:2
+       !
+       address-family ipv4
+        route-target export 2:2
+        route-target import 2:2
+        route-target export 2:2 stitching
+        route-target import 2:2 stitching
+       exit-address-family
+       !
+       address-family ipv6
+        route-target export 2:2
+        route-target import 2:2
+        route-target import 2:2 stitching
+       exit-address-family
+      vrf definition green
+       description green VRF defn
+       rd 1:1
+       !
+       address-family ipv4
+        route-target export 1:1
+        route-target import 1:1
+        route-target export 1:1 stitching
+        route-target import 1:1 stitching
+       exit-address-family
+       !
+       address-family ipv6
+        route-target export 1:1
+        route-target import 1:1
+        route-target export 1:1 stitching
+        route-target import 1:1 stitching
+       exit-address-family

@@ -340,7 +340,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                     "type": "dict",
                                     "options": {
                                         "set": {"type": "bool"},
-                                        "number": {"type": "int"},
+                                        "number": {"type": "str"},
                                         "dual_as": {"type": "bool"},
                                         "no_prepend": {
                                             "type": "dict",
@@ -439,7 +439,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                         "out": {"type": "bool"},
                                     },
                                 },
-                                "remote_as": {"type": "int"},
+                                "remote_as": {"type": "str"},
                                 "remove_private_as": {
                                     "type": "dict",
                                     "options": {
@@ -812,6 +812,19 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                         "table_map": {
                             "type": "dict",
                             "options": {"name": {"type": "str"}, "filter": {"type": "bool"}},
+                        },
+                        "advertise": {
+                            "type": "dict",
+                            "options": {
+                                "afi": {
+                                    "type": "str",
+                                    "choices": ["l2vpn"],
+                                },
+                                "safi": {
+                                    "type": "str",
+                                    "choices": ["evpn"],
+                                },
+                            },
                         },
                     },
                 },

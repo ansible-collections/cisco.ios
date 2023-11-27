@@ -1,0 +1,23 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_vlans gathered integration tests on connection={{ ansible_connection }}
+
+- block:
+    - ansible.builtin.include_tasks: _remove_config_vlan_config.yaml
+    - ansible.builtin.include_tasks: _populate_config_vlan_config.yaml
+
+- block:
+    - name: Gather the provided configuration with the existing running configuration
+      register: result
+      cisco.ios.ios_vlans:
+        config:
+        configuration: true
+        state: gathered
+
+    - name: Assert
+      ansible.builtin.assert:
+        that:
+          - gathered_vlan_config.config == result.gathered
+          - result['changed'] == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config_vlan_config.yaml
