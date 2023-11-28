@@ -65,90 +65,88 @@ class TestIosAclsModule(TestIosModule):
             """,
         )
 
-        set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                aces=[
-                                    dict(
-                                        destination=dict(any=True),
-                                        grant="permit",
-                                        precedence="immediate",
-                                        protocol="ip",
-                                        sequence=20,
-                                        source=dict(any=True),
-                                    ),
-                                ],
-                                acl_type="extended",
-                                name="test_pre",
-                            ),
-                            dict(
-                                name="std_acl",
-                                acl_type="standard",
-                                aces=[
-                                    dict(
-                                        grant="deny",
-                                        source=dict(address="192.0.2.0", wildcard_bits="0.0.0.255"),
-                                    ),
-                                ],
-                            ),
-                            dict(
-                                name="in_to_out",
-                                acl_type="extended",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        protocol="tcp",
-                                        source=dict(host="10.1.1.2"),
-                                        destination=dict(
-                                            host="172.16.1.1",
-                                            port_protocol=dict(eq="telnet"),
-                                        ),
-                                    ),
-                                    dict(
-                                        grant="deny",
-                                        log_input=dict(user_cookie="test_logInput"),
-                                        protocol="ip",
-                                        source=dict(any=True),
-                                        destination=dict(any=True),
-                                    ),
-                                ],
-                            ),
-                            dict(
-                                name="test_acl_merge",
-                                acl_type="extended",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        destination=dict(
-                                            address="192.0.2.0",
-                                            wildcard_bits="0.0.0.255",
-                                            port_protocol=dict(eq="80"),
-                                        ),
-                                        protocol="tcp",
-                                        sequence=100,
-                                        source=dict(host="192.0.2.1"),
-                                    ),
-                                    dict(
-                                        grant="deny",
-                                        protocol_options=dict(tcp=dict(ack="True")),
-                                        sequence="200",
-                                        source=dict(object_group="test_network_og"),
-                                        destination=dict(object_group="test_network_og"),
-                                        dscp="ef",
-                                        ttl=dict(eq=10),
-                                    ),
-                                ],
-                            ),
-                        ],
-                    ),
-                ],
-                state="merged",
-            ),
-        )
+        set_module_args({
+            "config": [
+                {
+                    "afi": "ipv4",
+                    "acls": [
+                        {
+                            "name": "test_pre",
+                            "acl_type": "extended",
+                            "aces": [
+                                {
+                                    "destination": {"any": True},
+                                    "grant": "permit",
+                                    "precedence": "immediate",
+                                    "protocol": "ip",
+                                    "sequence": 20,
+                                    "source": {"any": True},
+                                },
+                            ],
+                        },
+                        {
+                            "name": "std_acl",
+                            "acl_type": "standard",
+                            "aces": [
+                                {
+                                    "grant": "deny",
+                                    "source": {"address": "192.0.2.0", "wildcard_bits": "0.0.0.255"},
+                                },
+                            ],
+                        },
+                        {
+                            "name": "in_to_out",
+                            "acl_type": "extended",
+                            "aces": [
+                                {
+                                    "grant": "permit",
+                                    "protocol": "tcp",
+                                    "source": {"host": "10.1.1.2"},
+                                    "destination": {
+                                        "host": "172.16.1.1",
+                                        "port_protocol": {"eq": "telnet"}
+                                    },
+                                },
+                                {
+                                    "grant": "deny",
+                                    "log_input": {"user_cookie": "test_logInput"},
+                                    "protocol": "ip",
+                                    "source": {"any": True},
+                                    "destination": {"any": True},
+                                },
+                            ],
+                        },
+                        {
+                            "name": "test_acl_merge",
+                            "acl_type": "extended",
+                            "aces": [
+                                {
+                                    "grant": "permit",
+                                    "destination": {
+                                        "address": "192.0.2.0",
+                                        "wildcard_bits": "0.0.0.255",
+                                        "port_protocol": {"eq": "80"},
+                                    },
+                                    "protocol": "tcp",
+                                    "sequence": 100,
+                                    "source": {"host": "192.0.2.1"},
+                                },
+                                {
+                                    "grant": "deny",
+                                    "protocol_options": {"tcp": {"ack": True}},
+                                    "sequence": 200,
+                                    "source": {"object_group": "test_network_og"},
+                                    "destination": {"object_group": "test_network_og"},
+                                    "dscp": "ef",
+                                    "ttl": {"eq": 10},
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+            "state": "merged",
+        })
         result = self.execute_module(changed=True)
         commands = [
             "ip access-list standard std_acl",
@@ -542,7 +540,7 @@ class TestIosAclsModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             ip access-list extended 110
-                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
+                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
             ipv6 access-list R1_TRAFFIC
@@ -550,6 +548,10 @@ class TestIosAclsModule(TestIosModule):
             ip access-list standard test_acl
                 remark remark check 1
                 remark some random remark 2
+            ip access-list standard acl-mgmt-networks
+                10 permit 10.0.0.0 0.0.1.255
+                20 permit 172.16.0.0 0.0.1.255
+                30 permit 192.168.0.0 0.0.7.255
             """,
         )
         self.execute_show_command_name.return_value = dedent(
@@ -557,43 +559,83 @@ class TestIosAclsModule(TestIosModule):
             Standard IP access list test_acl
             """,
         )
-        set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="replace_acl",
-                                acl_type="extended",
-                                aces=[
-                                    dict(
-                                        grant="deny",
-                                        protocol_options=dict(tcp=dict(ack="True")),
-                                        source=dict(
-                                            address="198.51.100.0",
-                                            wildcard_bits="0.0.0.255",
-                                        ),
-                                        destination=dict(
-                                            address="198.51.101.0",
-                                            wildcard_bits="0.0.0.255",
-                                            port_protocol=dict(eq="telnet"),
-                                        ),
-                                        tos=dict(min_monetary_cost=True),
-                                    ),
-                                ],
-                            ),
-                            dict(
-                                name="test_acl",
-                                acl_type="standard",
-                                aces=[dict(remarks=["Another remark here"])],
-                            ),
-                        ],
-                    ),
-                ],
-                state="replaced",
-            ),
-        )
+        set_module_args({
+            "config": [
+                {
+                    "afi": "ipv4",
+                    "acls": [
+                        {
+                            "name": "replace_acl",
+                            "acl_type": "extended",
+                            "aces": [
+                                {
+                                    "grant": "deny",
+                                    "protocol_options": {
+                                        "tcp": {"ack": True},
+                                    },
+                                    "source": {
+                                        "address": "198.51.100.0",
+                                        "wildcard_bits": "0.0.0.255",
+                                    },
+                                    "destination": {
+                                        "address": "198.51.101.0",
+                                        "wildcard_bits": "0.0.0.255",
+                                        "port_protocol": {
+                                            "eq": "telnet",
+                                        },
+                                    },
+                                    "tos": {
+                                        "min_monetary_cost": True,
+                                    },
+                                },
+                            ],
+                        },
+                        {
+                            "name": "test_acl",
+                            "acl_type": "standard",
+                            "aces": [
+                                {
+                                    "remarks": [
+                                        "Another remark here",
+                                    ],
+                                },
+                            ],
+                        },
+                        {
+                            "name": "acl-mgmt-networks",
+                            "acl_type": "standard",
+                            "aces": [
+                                {
+                                    "sequence": "10",
+                                    "grant": "permit",
+                                    "source": {
+                                        "address": "10.0.0.0",
+                                        "wildcard_bits": "0.0.1.255",
+                                    },
+                                },
+                                {
+                                    "sequence": "20",
+                                    "grant": "permit",
+                                    "source": {
+                                        "address": "172.16.0.0",
+                                        "wildcard_bits": "0.0.1.255",
+                                    },
+                                },
+                                {
+                                    "sequence": "30",
+                                    "grant": "permit",
+                                    "source": {
+                                        "address": "192.168.0.0",
+                                        "wildcard_bits": "0.0.7.255",
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+            "state": "replaced",
+        })
         result = self.execute_module(changed=True)
         commands = [
             "ip access-list extended replace_acl",
@@ -608,132 +650,161 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_acls_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
+            ip access-list standard acl-mgmt-networks
+             permit 10.0.0.0 0.0.1.255
+             permit 172.16.0.0 0.0.1.255
+             permit 192.168.0.0 0.0.7.255
             ip access-list standard test_acl
             ip access-list extended 110
-                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
-                20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
-                30 deny icmp object-group test_network_og any dscp ef ttl eq 10
+             10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
+             20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
+             30 deny icmp object-group test_network_og any dscp ef ttl eq 10
             ipv6 access-list R1_TRAFFIC
-                sequence 10 deny tcp any eq www any eq telnet ack dscp af11
+             sequence 10 deny tcp any eq www any eq telnet ack dscp af11
             ip access-list extended test_pre
-                10 permit ip any any precedence internet
+             10 permit ip any any precedence internet
             ip access-list extended test-idem
-                10 permit ip host 10.153.14.21 any
-                20 permit ip host 10.153.14.22 any
+             10 permit ip host 10.153.14.21 any
+             20 permit ip host 10.153.14.22 any
             """,
         )
         self.execute_show_command_name.return_value = dedent("")
-        set_module_args(
-            dict(
-                config=[
-                    {
-                        "afi": "ipv4",
-                        "acls": [
-                            {
-                                "name": "110",
-                                "acl_type": "extended",
-                                "aces": [
-                                    {
-                                        "sequence": 10,
-                                        "grant": "permit",
-                                        "protocol": "tcp",
-                                        "source": {
-                                            "address": "198.51.100.0",
-                                            "wildcard_bits": "0.0.0.255",
-                                        },
-                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
-                                        "log": {"set": True, "user_cookie": "testLog"},
+        set_module_args({
+            "config": [
+                {
+                    "afi": "ipv4",
+                    "acls": [
+                        {
+                            "name": "110",
+                            "acl_type": "extended",
+                            "aces": [
+                                {
+                                    "sequence": 10,
+                                    "grant": "permit",
+                                    "protocol": "tcp",
+                                    "source": {
+                                        "address": "198.51.100.0",
+                                        "wildcard_bits": "0.0.0.255",
                                     },
-                                    {
-                                        "sequence": 20,
-                                        "grant": "deny",
-                                        "protocol": "icmp",
-                                        "source": {
-                                            "address": "192.0.2.0",
-                                            "wildcard_bits": "0.0.0.255",
-                                        },
-                                        "destination": {
-                                            "address": "192.0.3.0",
-                                            "wildcard_bits": "0.0.0.255",
-                                        },
-                                        "dscp": "ef",
-                                        "ttl": {"eq": 10},
-                                        "protocol_options": {"icmp": {"echo": True}},
+                                    "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                    "log": {"set": True, "user_cookie": "testLog"},
+                                },
+                                {
+                                    "sequence": 20,
+                                    "grant": "deny",
+                                    "protocol": "icmp",
+                                    "source": {
+                                        "address": "192.0.2.0",
+                                        "wildcard_bits": "0.0.0.255",
                                     },
-                                    {
-                                        "sequence": 30,
-                                        "grant": "deny",
-                                        "protocol": "icmp",
-                                        "source": {"object_group": "test_network_og"},
-                                        "destination": {"any": True},
-                                        "dscp": "ef",
-                                        "ttl": {"eq": 10},
+                                    "destination": {
+                                        "address": "192.0.3.0",
+                                        "wildcard_bits": "0.0.0.255",
                                     },
-                                ],
-                            },
-                            {"name": "test_acl", "acl_type": "standard"},
-                            {
-                                "aces": [
-                                    {
-                                        "destination": {"any": True},
-                                        "grant": "permit",
-                                        "protocol_options": {"ip": True},
-                                        "sequence": 10,
-                                        "source": {"host": "10.153.14.21"},
+                                    "dscp": "ef",
+                                    "ttl": {"eq": 10},
+                                    "protocol_options": {"icmp": {"echo": True}},
+                                },
+                                {
+                                    "sequence": 30,
+                                    "grant": "deny",
+                                    "protocol": "icmp",
+                                    "source": {"object_group": "test_network_og"},
+                                    "destination": {"any": True},
+                                    "dscp": "ef",
+                                    "ttl": {"eq": 10},
+                                },
+                            ],
+                        },
+                        {
+                            "name": "acl-mgmt-networks",
+                            "acl_type": "standard",
+                            "aces": [
+                                {
+                                    "grant": "permit",
+                                    "source": {
+                                        "address": "10.0.0.0",
+                                        "wildcard_bits": "0.0.1.255",
                                     },
-                                    {
-                                        "destination": {"any": True},
-                                        "grant": "permit",
-                                        "protocol_options": {"ip": True},
-                                        "sequence": 20,
-                                        "source": {"host": "10.153.14.22"},
+                                },
+                                {
+                                    "grant": "permit",
+                                    "source": {
+                                        "address": "172.16.0.0",
+                                        "wildcard_bits": "0.0.1.255",
                                     },
-                                ],
-                                "acl_type": "extended",
-                                "name": "test-idem",
-                            },
-                            {
-                                "name": "test_pre",
-                                "acl_type": "extended",
-                                "aces": [
-                                    {
-                                        "sequence": 10,
-                                        "grant": "permit",
-                                        "protocol": "ip",
-                                        "source": {"any": True},
-                                        "destination": {"any": True},
-                                        "precedence": "internet",
+                                },
+                                {
+                                    "grant": "permit",
+                                    "source": {
+                                        "address": "192.168.0.0",
+                                        "wildcard_bits": "0.0.7.255",
                                     },
-                                ],
-                            },
-                        ],
-                    },
-                    {
-                        "afi": "ipv6",
-                        "acls": [
-                            {
-                                "name": "R1_TRAFFIC",
-                                "aces": [
-                                    {
-                                        "sequence": 10,
-                                        "grant": "deny",
-                                        "protocol": "tcp",
-                                        "source": {"any": True, "port_protocol": {"eq": "www"}},
-                                        "destination": {
-                                            "any": True,
-                                            "port_protocol": {"eq": "telnet"},
-                                        },
-                                        "dscp": "af11",
-                                        "protocol_options": {"tcp": {"ack": True}},
+                                },
+                            ],
+                        },
+                        {"name": "test_acl", "acl_type": "standard"},
+                        {
+                            "aces": [
+                                {
+                                    "destination": {"any": True},
+                                    "grant": "permit",
+                                    "protocol_options": {"ip": True},
+                                    "sequence": 10,
+                                    "source": {"host": "10.153.14.21"},
+                                },
+                                {
+                                    "destination": {"any": True},
+                                    "grant": "permit",
+                                    "protocol_options": {"ip": True},
+                                    "sequence": 20,
+                                    "source": {"host": "10.153.14.22"},
+                                },
+                            ],
+                            "acl_type": "extended",
+                            "name": "test-idem",
+                        },
+                        {
+                            "name": "test_pre",
+                            "acl_type": "extended",
+                            "aces": [
+                                {
+                                    "sequence": 10,
+                                    "grant": "permit",
+                                    "protocol": "ip",
+                                    "source": {"any": True},
+                                    "destination": {"any": True},
+                                    "precedence": "internet",
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    "afi": "ipv6",
+                    "acls": [
+                        {
+                            "name": "R1_TRAFFIC",
+                            "aces": [
+                                {
+                                    "sequence": 10,
+                                    "grant": "deny",
+                                    "protocol": "tcp",
+                                    "source": {"any": True, "port_protocol": {"eq": "www"}},
+                                    "destination": {
+                                        "any": True,
+                                        "port_protocol": {"eq": "telnet"},
                                     },
-                                ],
-                            },
-                        ],
-                    },
-                ],
-                state="replaced",
-            ),
-        )
+                                    "dscp": "af11",
+                                    "protocol_options": {"tcp": {"ack": True}},
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+            "state": "replaced",
+        })
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["commands"]), [])
 
@@ -800,10 +871,7 @@ class TestIosAclsModule(TestIosModule):
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
-            ip access-list reflexive MIRROR
-                permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50200 (2 matches) (time left 123)
-                permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50201 (2 matches) (time left 345)
-                permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50202 (2 matches) (time left 678)
+            ip access-list standard test_acl
             ipv6 access-list R1_TRAFFIC
                 sequence 10 deny tcp any eq www any eq telnet ack dscp af11
             """,
@@ -813,83 +881,84 @@ class TestIosAclsModule(TestIosModule):
             Standard IP access list test_acl
             """,
         )
-        set_module_args(
-            dict(
-                config=[
-                    {
-                        "afi": "ipv4",
-                        "acls": [
-                            {
-                                "name": "110",
-                                "acl_type": "extended",
-                                "aces": [
-                                    {
-                                        "sequence": 10,
-                                        "grant": "permit",
-                                        "protocol": "tcp",
-                                        "source": {
-                                            "address": "198.51.100.0",
-                                            "wildcard_bits": "0.0.0.255",
-                                        },
-                                        "destination": {"any": True, "port_protocol": {"eq": "22"}},
-                                        "log": {"set": True, "user_cookie": "testLog"},
+        set_module_args({
+            "config": [
+                {
+                    "afi": "ipv4",
+                    "acls": [
+                        {
+                            "name": "110",
+                            "acl_type": "extended",
+                            "aces": [
+                                {
+                                    "sequence": "10",
+                                    "grant": "permit",
+                                    "protocol": "tcp",
+                                    "source": {
+                                        "address": "198.51.100.0",
+                                        "wildcard_bits": "0.0.0.255",
                                     },
-                                    {
-                                        "sequence": 20,
-                                        "grant": "deny",
-                                        "protocol": "icmp",
-                                        "source": {
-                                            "address": "192.0.2.0",
-                                            "wildcard_bits": "0.0.0.255",
-                                        },
-                                        "destination": {
-                                            "address": "192.0.3.0",
-                                            "wildcard_bits": "0.0.0.255",
-                                        },
-                                        "dscp": "ef",
-                                        "ttl": {"eq": 10},
-                                        "protocol_options": {"icmp": {"echo": True}},
+                                    "destination": {"any": True, "port_protocol": {"eq": "22"}},
+                                    "log": {"set": True, "user_cookie": "testLog"},
+                                },
+                                {
+                                    "sequence": 20,
+                                    "grant": "deny",
+                                    "protocol": "icmp",
+                                    "source": {
+                                        "address": "192.0.2.0",
+                                        "wildcard_bits": "0.0.0.255",
                                     },
-                                    {
-                                        "sequence": 30,
-                                        "grant": "deny",
-                                        "protocol": "icmp",
-                                        "source": {"object_group": "test_network_og"},
-                                        "destination": {"any": True},
-                                        "dscp": "ef",
-                                        "ttl": {"eq": 10},
+                                    "destination": {
+                                        "address": "192.0.3.0",
+                                        "wildcard_bits": "0.0.0.255",
                                     },
-                                ],
-                            },
-                            {"name": "test_acl", "acl_type": "standard"},
-                        ],
-                    },
-                    {
-                        "afi": "ipv6",
-                        "acls": [
-                            {
-                                "name": "R1_TRAFFIC",
-                                "aces": [
-                                    {
-                                        "sequence": 10,
-                                        "grant": "deny",
-                                        "protocol": "tcp",
-                                        "source": {"any": True, "port_protocol": {"eq": "www"}},
-                                        "destination": {
-                                            "any": True,
-                                            "port_protocol": {"eq": "telnet"},
-                                        },
-                                        "dscp": "af11",
-                                        "protocol_options": {"tcp": {"ack": True}},
+                                    "dscp": "ef",
+                                    "ttl": {"eq": 10},
+                                    "protocol_options": {"icmp": {"echo": True}},
+                                },
+                                {
+                                    "sequence": 30,
+                                    "grant": "deny",
+                                    "protocol": "icmp",
+                                    "source": {"object_group": "test_network_og"},
+                                    "destination": {"any": True},
+                                    "dscp": "ef",
+                                    "ttl": {"eq": 10},
+                                },
+                            ],
+                        },
+                        {
+                            "name": "test_acl",
+                            "acl_type": "standard"
+                        },
+                    ],
+                },
+                {
+                    "afi": "ipv6",
+                    "acls": [
+                        {
+                            "name": "R1_TRAFFIC",
+                            "aces": [
+                                {
+                                    "sequence": 10,
+                                    "grant": "deny",
+                                    "protocol": "tcp",
+                                    "source": {"any": True, "port_protocol": {"eq": "www"}},
+                                    "destination": {
+                                        "any": True,
+                                        "port_protocol": {"eq": "telnet"},
                                     },
-                                ],
-                            },
-                        ],
-                    },
-                ],
-                state="overridden",
-            ),
-        )
+                                    "dscp": "af11",
+                                    "protocol_options": {"tcp": {"ack": True}},
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+            "state": "overridden",
+        })
         result = self.execute_module(changed=False)
         command = []
         self.assertEqual(sorted(result["commands"]), sorted(command))
@@ -1078,8 +1147,10 @@ class TestIosAclsModule(TestIosModule):
         self.execute_show_command_name.return_value = dedent("")
         set_module_args(
             dict(
-                running_config="""ip access-list standard R1_TRAFFIC\n10 permit 10.11.12.13 (2 matches)\n
-                40 permit 128.0.0.0, wildcard bits 63.255.255.255 (2 matches)\n60 permit 134.107.136.0, wildcard bits 0.0.0.255 (1 match)""",
+                running_config="""ip access-list standard R1_TRAFFIC
+                 permit 10.11.12.13
+                 permit 128.0.0.0 63.255.255.255
+                 permit 134.107.136.0 0.0.0.255""",
                 state="parsed",
             ),
         )
@@ -1092,16 +1163,17 @@ class TestIosAclsModule(TestIosModule):
                         "name": "R1_TRAFFIC",
                         "acl_type": "standard",
                         "aces": [
-                            {"sequence": 10, "grant": "permit", "source": {"host": "10.11.12.13"}},
                             {
-                                "sequence": 40,
                                 "grant": "permit",
-                                "protocol_options": {"protocol_number": 128},
+                                "source": {"address": "10.11.12.13"}
                             },
                             {
-                                "sequence": 60,
                                 "grant": "permit",
-                                "protocol_options": {"protocol_number": 134},
+                                "source": {"address": "128.0.0.0", "wildcard_bits": "63.255.255.255"},
+                            },
+                            {
+                                "grant": "permit",
+                                "source": {"address": "134.107.136.0", "wildcard_bits": "0.0.0.255"},
                             },
                         ],
                     },
@@ -1324,34 +1396,31 @@ class TestIosAclsModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             ip access-list standard 2
-                30 permit 172.16.1.11
-                20 permit 172.16.1.10 log
-                10 permit 172.16.1.2
+                permit 172.16.1.11
+                permit 172.16.1.10 log
+                permit 172.16.1.2
             """,
         )
         self.execute_show_command_name.return_value = dedent("")
-        set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="2",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        source=dict(host="192.0.2.1"),
-                                        sequence=10,
-                                    ),
-                                ],
-                            ),
-                        ],
-                    ),
-                ],
-                state="deleted",
-            ),
-        )
+        set_module_args({
+            "config": [
+                {
+                    "afi": "ipv4",
+                    "acls": [
+                        {
+                            "name": "2",
+                            "aces": [
+                                {
+                                    "grant": "permit",
+                                    "source": {"host": "192.0.2.1"},
+                                },
+                            ],
+                        },
+                    ],
+                }
+            ],
+            "state": "deleted",
+        })
 
         result = self.execute_module(changed=True)
         commands = ["no ip access-list standard 2"]
@@ -1402,40 +1471,37 @@ class TestIosAclsModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             ip access-list standard test_acl
-                30 permit 172.16.1.11
-                20 permit 172.16.1.10 log
-                10 permit 172.16.1.2
+                permit 172.16.1.11
+                permit 172.16.1.10 log
+                permit 172.16.1.2
             """,
         )
         self.execute_show_command_name.return_value = dedent("")
-        set_module_args(
-            dict(
-                config=[
-                    dict(
-                        afi="ipv4",
-                        acls=[
-                            dict(
-                                name="test_acl",
-                                aces=[
-                                    dict(
-                                        grant="permit",
-                                        source=dict(host="192.0.2.1"),
-                                        sequence=10,
-                                    ),
-                                ],
-                            ),
-                        ],
-                    ),
-                ],
-                state="merged",
-            ),
-        )
+        set_module_args({
+            "config": [
+                {
+                    "afi": "ipv4",
+                    "acls": [
+                        {
+                            "name": "test_acl",
+                            "aces": [
+                                {
+                                    "grant": "permit",
+                                    "source": {"host": "192.0.2.1"},
+                                },
+                            ],
+                        }
+                    ],
+                },
+            ],
+            "state": "merged",
+        })
 
         result = self.execute_module(failed=True)
         self.assertEqual(
             result,
             {
-                "msg": "Cannot update existing sequence 10 of ACLs test_acl with state merged. Please use state replaced or overridden.",
+                "msg": "Cannot update existing sequence - of ACLs test_acl with state merged. Please use state replaced or overridden.",
                 "failed": True,
             },
         )
@@ -1447,9 +1513,9 @@ class TestIosAclsModule(TestIosModule):
                 running_config=dedent(
                     """\
                     ip access-list standard 2
-                        30 permit 172.16.1.11
-                        20 permit 172.16.1.10
-                        10 permit 172.16.1.2
+                        permit 172.16.1.11
+                        permit 172.16.1.10
+                        permit 172.16.1.2
                     ip access-list extended 101
                         15 permit tcp any host 172.16.2.9
                         18 permit tcp any host 172.16.2.11
@@ -1458,7 +1524,7 @@ class TestIosAclsModule(TestIosModule):
                         40 deny icmp any 10.1.1.0 0.0.0.255 echo
                         50 permit ip any 10.1.1.0 0.0.0.255
                         60 permit tcp any host 10.1.1.1 eq telnet
-                        70 permit tcp 10.1.1.0 0.0.0.255 172.16.1.0 0.0.0.255 eq telnet time-range EVERYOTHERDAY (active)
+                        70 permit tcp 10.1.1.0 0.0.0.255 172.16.1.0 0.0.0.255 eq telnet time-range EVERYOTHERDAY
                     ip access-list extended outboundfilters
                         10 permit icmp 10.1.1.0 0.0.0.255 172.16.1.0 0.0.0.255
                     ip access-list extended test
@@ -1557,9 +1623,9 @@ class TestIosAclsModule(TestIosModule):
                         "name": "2",
                         "acl_type": "standard",
                         "aces": [
-                            {"sequence": 30, "grant": "permit", "source": {"host": "172.16.1.11"}},
-                            {"sequence": 20, "grant": "permit", "source": {"host": "172.16.1.10"}},
-                            {"sequence": 10, "grant": "permit", "source": {"host": "172.16.1.2"}},
+                            {"grant": "permit", "source": {"address": "172.16.1.11"}},
+                            {"grant": "permit", "source": {"address": "172.16.1.10"}},
+                            {"grant": "permit", "source": {"address": "172.16.1.2"}},
                         ],
                     },
                     {

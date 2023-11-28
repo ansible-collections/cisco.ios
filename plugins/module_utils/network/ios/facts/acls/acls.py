@@ -129,7 +129,7 @@ class AclsFacts(object):
                 if temp.get("address"):
                     _temp_addr = temp.get("address", "")
                     ace[typ]["address"] = _temp_addr.split(" ")[0]
-                    ace[typ]["wildcard_bits"] = _temp_addr.split(" ")[1]
+                    ace[typ]["wildcard_bits"] = (_temp_addr.split(" ")[1:] or [None])[0]
                 if temp.get("ipv6_address"):
                     _temp_addr = temp.get("ipv6_address", "")
                     if len(_temp_addr.split(" ")) == 2:
@@ -141,21 +141,6 @@ class AclsFacts(object):
 
             def process_protocol_options(each):
                 for each_ace in each.get("aces"):
-                    if each.get("acl_type") == "standard":
-                        if len(each_ace.get("source", {})) == 1 and each_ace.get("source", {}).get(
-                            "address",
-                        ):
-                            each_ace["source"]["host"] = each_ace["source"].pop("address")
-                        if each_ace.get("source", {}).get("address"):
-                            addr = each_ace.get("source", {}).get("address")
-                            if addr[-1] == ",":
-                                each_ace["source"]["address"] = addr[:-1]
-                    else:  # for extended acl
-                        if each_ace.get("source", {}):
-                            factor_source_dest(each_ace, "source")
-                        if each_ace.get("destination", {}):
-                            factor_source_dest(each_ace, "destination")
-
                     if each_ace.get("icmp_igmp_tcp_protocol"):
                         each_ace["protocol_options"] = {
                             each_ace["protocol"]: {

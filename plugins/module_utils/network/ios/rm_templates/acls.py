@@ -22,6 +22,30 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
+ipv4seg_addr = r'(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])'
+ipv4addr = r'(?:(?:{0}\.){{3,3}}{0})'.format(ipv4seg_addr)
+ipv4seg_mask = r'(?:0|128|192|224|240|248|252|254|255)'
+ipv4mask = r'(?:{0}.0.0.0|255.{0}.0.0|255.255.{0}.0|255.255.255.{0})'.format(ipv4seg_mask)
+ipv4seg_wild = r'(?:0|1|3|7|15|31|63|127|255)'
+ipv4wild = r'(?:0.0.0.{0}|0.0.{0}.255|0.{0}.255.255|{0}.255.255.255)'.format(ipv4seg_wild)
+ipv6seg_addr = r'(?:(?:[0-9a-fA-F]){1,4})'
+ipv6grp = (
+    r'(?:{0}:){{7,7}}{0}'.format(ipv6seg_addr),
+    r'(?:{0}:){{1,7}}:'.format(ipv6seg_addr),
+    r'(?:{0}:){{1,6}}:{0}'.format(ipv6seg_addr),
+    r'(?:{0}:){{1,5}}(?::{0}){{1,2}}'.format(ipv6seg_addr),
+    r'(?:{0}:){{1,4}}(?::{0}){{1,3}}'.format(ipv6seg_addr),
+    r'(?:{0}:){{1,3}}(?::{0}){{1,4}}'.format(ipv6seg_addr),
+    r'(?:{0}:){{1,2}}(?::{0}){{1,5}}'.format(ipv6seg_addr),
+    r'{0}:(?:(?::{0}){{1,6}})'.format(ipv6seg_addr),
+    r':(?:(?::{0}){{1,7}}|:)'.format(ipv6seg_addr),
+    r'fe80:(?::{0}){{0,4}}%[0-9a-zA-Z]{{1,}}'.format(ipv6seg_addr),
+    r'::(?:ffff(?::0{{1,4}}){{0,1}}:){{0,1}}[^\s:]{0}'.format(ipv4addr),
+    r'(?:{0}:){{1,6}}:[^\s:]{1}'.format(ipv6seg_addr, ipv4addr),
+)
+ipv6addr = '|'.join(['(?:{})'.format(g) for g in ipv6grp[::-1]])
+
+
 def remarks_with_sequence(remarks_data):
     cmd = "remark "
     if remarks_data.get("remarks"):
@@ -246,13 +270,13 @@ class AclsTemplate(NetworkTemplate):
         {
             "name": "aces_ipv4_standard",
             "getval": re.compile(
-                r"""(\s*(?P<sequence>\d+))
-                        (\s(?P<grant>deny|permit))
-                        (\s+(?P<address>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)))?
-                        (\s(?P<wildcard>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)))?
-                        (\s*(?P<any>any))?
-                        (\s(?P<log>log))?
-                    $""",
+                r"""(\s*(?P<sequence>\d+))?
+                    (\s(?P<grant>deny|permit))
+                    (\s+(?P<address>{0}))?
+                    (\s(?P<wildcard>{1}))?
+                    (\s*(?P<any>any))?
+                    (\s(?P<log>log))?
+                    $""".format(ipv4addr, ipv4wild),
                 re.VERBOSE,
             ),
             "compval": "aces",
@@ -283,23 +307,23 @@ class AclsTemplate(NetworkTemplate):
                         (\s*sequence\s(?P<sequence_ipv6>\d+))?
                         (\s*(?P<grant>deny|permit))
                         (\sevaluate\s(?P<evaluate>\S+))?
-                        (\s(?P<protocol_num>\d+))?
+                        (\s(?P<protocol_num>\d+)\s)?
                         (\s*(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipinip|ipv6|ip|nos|ospf|pcp|pim|sctp|tcp|ip|udp))?
                         ((\s(?P<source_any>any))|
                         (\sobject-group\s(?P<source_obj_grp>\S+))|
                         (\shost\s(?P<source_host>\S+))|
-                        (\s(?P<ipv6_source_address>\S+/\d+))|
-                        (\s(?P<source_address>(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})\s\S+)))?
+                        (\s(?P<ipv6_source_address>{2}/\d+))|
+                        (\s(?P<source_address>{0})\s*(?P<source_wildcard>{1})?))?
                         (\seq\s(?P<seq>(\S+|\d+)))?
                         (\sgt\s(?P<sgt>(\S+|\d+)))?
                         (\slt\s(?P<slt>(\S+|\d+)))?
                         (\sneq\s(?P<sneq>(\S+|\d+)))?
                         (\srange\s(?P<srange_start>\d+)\s(?P<srange_end>\d+))?
-                        (\s(?P<dest_any>any))?
-                        (\sobject-group\s(?P<dest_obj_grp>\S+))?
-                        (\shost\s(?P<dest_host>\S+))?
-                        (\s(?P<ipv6_dest_address>\S+/\d+))?
-                        (\s(?P<dest_address>(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})\s\S+))?
+                        ((\s(?P<dest_any>any))|
+                        (\sobject-group\s(?P<dest_obj_grp>\S+))|
+                        (\shost\s(?P<dest_host>\S+))|
+                        (\s(?P<ipv6_dest_address>{2}/\d+))|
+                        (\s(?P<dest_address>{0})\s*(?P<dest_wildcard>{1})?))?
                         (\seq\s(?P<deq>(\S+|\d+)))?
                         (\sgt\s(?P<dgt>(\S+|\d+)))?
                         (\slt\s(?P<dlt>(\S+|\d+)))?
@@ -320,7 +344,7 @@ class AclsTemplate(NetworkTemplate):
                         (\sttl\sgt\s(?P<ttl_gt>\d+))?
                         (\sttl\slt\s(?P<ttl_lt>\d+))?
                         (\sttl\sneg\s(?P<ttl_neg>\d+))?
-                    """,
+                    """.format(ipv4addr, ipv4wild, ipv6addr),
                 re.VERBOSE,
             ),
             "setval": _tmplt_access_list_entries,
@@ -340,6 +364,7 @@ class AclsTemplate(NetworkTemplate):
                                 "icmp_igmp_tcp_protocol": "{{ icmp_igmp_tcp_protocol }}",
                                 "source": {
                                     "address": "{{ source_address }}",
+                                    "wildcard_bits": "{{ source_wildcard }}",
                                     "ipv6_address": "{{ ipv6_source_address }}",
                                     "any": "{{ not not source_any }}",
                                     "host": "{{ source_host }}",
@@ -357,6 +382,7 @@ class AclsTemplate(NetworkTemplate):
                                 },
                                 "destination": {
                                     "address": "{{ dest_address }}",
+                                    "wildcard_bits": "{{ dest_wildcard }}",
                                     "ipv6_address": "{{ ipv6_dest_address }}",
                                     "any": "{{ not not dest_any }}",
                                     "host": "{{ dest_host }}",

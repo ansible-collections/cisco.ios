@@ -15,7 +15,6 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible.module_utils._text import to_text
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
@@ -166,18 +165,29 @@ class Acls(ResourceModule):
             if hentry:
                 hentry = self.sanitize_protocol_options(wentry, hentry)
 
+            wentry_sequence_modified, hentry_sequence_modified = False, False
+            if not wentry.get("sequence") and not wentry.get("remarks"):
+                wentry_sequence_modified = True
+                wentry["sequence"] = wseq
+            if not hentry.get("sequence") and not hentry.get("remarks"):
+                hentry_sequence_modified = True
+                hentry["sequence"] = wseq
+
             if hentry != wentry:  # will let in if ace is same but remarks is not same
                 if hentry:
                     rem_hentry["remarks"] = pop_remark(hentry, afi)
                 if wentry:
                     rem_wentry["remarks"] = pop_remark(wentry, afi)
 
+                if hentry_sequence_modified:
+                    hentry.pop("sequence")
+
                 if hentry:
                     if self.state == "merged":
                         self._module.fail_json(
                             msg="Cannot update existing sequence {0} of ACLs {1} with state merged."
                             " Please use state replaced or overridden.".format(
-                                hentry.get("sequence", ""),
+                                hentry.get("sequence", "-"),
                                 name,
                             ),
                         )
@@ -207,6 +217,17 @@ class Acls(ResourceModule):
                         # remove ace if not in want
                         if hentry != wentry:
                             self.addcmd(add_afi(hentry, afi), "aces", negate=True)
+                if rem_hentry.get("remarks"):  # del remark if not in want
+                    for k_hrems, hrems in rem_hentry.get("remarks").items():
+                        if k_hrems not in rem_wentry.get("remarks", {}).keys():
+                            self.addcmd(
+                                {
+                                    "remarks": hrems,
+                                    "sequence": hentry.get("sequence", ""),
+                                },
+                                "remarks",
+                                negate=True,
+                            )
                 if rem_wentry.get("remarks"):  # add remark if not in have
                     for k_wrems, wrems in rem_wentry.get("remarks").items():
                         if k_wrems not in rem_hentry.get("remarks", {}).keys():
@@ -216,6 +237,8 @@ class Acls(ResourceModule):
                             )
                 # add ace if not in have
                 if hentry != wentry:
+                    if wentry_sequence_modified:
+                        wentry.pop("sequence")
                     self.addcmd(add_afi(wentry, afi), "aces")
 
         # remove remaining entries from have aces list
@@ -262,7 +285,7 @@ class Acls(ResourceModule):
     def list_to_dict(self, param):
         """converts list attributes to dict"""
 
-        temp, count = dict(), 0
+        temp = dict()
         if param:
             for each in param:  # ipv4 and ipv6 acl
                 temp_acls = {}
@@ -271,7 +294,7 @@ class Acls(ResourceModule):
                         temp_aces = {}
                         if acl.get("aces"):
                             rem_idx = 0  # remarks if defined in an ace
-                            for ace in acl.get("aces"):  # each ace turned to dict
+                            for count, ace in enumerate(acl.get("aces")):  # each ace turned to dict
                                 if (
                                     ace.get("destination")
                                     and ace.get("destination", {}).get(
@@ -311,14 +334,15 @@ class Acls(ResourceModule):
                                     # temp_rem.extend(ace.pop("remarks"))
                                     for remks in ace.get("remarks"):
                                         rem_ace[remks.replace(" ", "_")] = remks
-                                        rem_idx += 1
                                     ace["remarks"] = rem_ace
 
                                 if ace.get("sequence"):
                                     temp_aces.update({ace.get("sequence"): ace})
+                                elif ace.get("remarks"):
+                                    temp_aces.update({"__{0}".format(rem_idx): ace})
+                                    rem_idx += 1
                                 elif ace:
-                                    count += 1
-                                    temp_aces.update({"_" + to_text(count): ace})
+                                    temp_aces.update({(count + 1) * 10: ace})
 
                             # if temp_rem:  # add remarks to the temp ace
                             #     temp_aces.update({en_name: {"remarks": temp_rem}})

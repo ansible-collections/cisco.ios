@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_acls - After the commit 43658026568ea4d97b54b696ba99125dc680a64b, the ACL module has significatively changed and so, the parsing of standard ACL is not correct any more. Fixed throught the change of the rm_template for standatf ACE and change of the tests unit to follow this change
