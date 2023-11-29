@@ -24,6 +24,7 @@ Bugfixes
 --------
 
 - Updated the ios_ping ping module to support size param.
+- ios_acls - make sequence optional for rendering of standard acls.
 - ios_bgp_global - Explicitly add neighbor address to every parser.
 - ios_bgp_global - remote_as not mendatory for neighbors.
 - ios_vrf - added MDT related keys

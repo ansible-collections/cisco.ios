@@ -1027,6 +1027,7 @@ releases:
     changes:
       bugfixes:
         - Updated the ios_ping ping module to support size param.
+        - ios_acls - make sequence optional for rendering of standard acls.
         - ios_bgp_global - Explicitly add neighbor address to every parser.
         - ios_bgp_global - remote_as not mendatory for neighbors.
         - ios_vrf - added MDT related keys
@@ -1046,6 +1047,7 @@ releases:
       - add_ios_vxlan_vtep.yaml
       - bgp_global_evpn_fix.yml
       - bgp_global_evpn_fix_2.yml
+      - fix_acls_old.yml
       - fix_ios_bgp_address_family.yaml
       - fix_ios_evpn_evi.yaml
       - fix_ios_vlan_config.yaml
@@ -1062,4 +1064,4 @@ releases:
       - description: Resource module to configure VXLAN VTEP interface.
         name: ios_vxlan_vtep
         namespace: ""
-    release_date: "2023-11-28"
+    release_date: "2023-11-29"
