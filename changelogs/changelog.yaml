@@ -1064,4 +1064,4 @@ releases:
       - description: Resource module to configure VXLAN VTEP interface.
         name: ios_vxlan_vtep
         namespace: ""
-    release_date: "2023-11-28"
+    release_date: "2023-11-29"
