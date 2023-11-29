@@ -1,0 +1,84 @@
+---
+- ansible.builtin.debug:
+    msg: START Merged ios_line state for integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Merge initial configuration with device configuration
+      cisco.ios.ios_line:
+        config:
+          line:
+            - name: "con 0"
+              escape_character:
+                value: "3"
+              stopbits: 1
+              session:
+                timeout: 5
+            - name: "vty 0 4"
+              escape_character:
+                value: "3"
+              stopbits: 1
+              session:
+                timeout: 5
+
+    - name: Merge new configuration with existing device configuration
+      register: result
+      cisco.ios.ios_line: &id001
+        config:
+          line:
+            - name: "con 0"
+              session:
+                timeout: "5"
+              exec:
+                timeout: "60"
+              authorization:
+                exec: "console"
+            - name: "vty 0 4"
+              escape_character:
+                value: "3"
+              stopbits: 1
+              session:
+                timeout: "15"
+              exec:
+                timeout: "60"
+              transport:
+                - name: preferred
+                  none: true
+                - name: input
+                  ssh: true
+                - name: output
+                  ssh: true
+            - name: "vty 5 15"
+              escape_character:
+                value: "3"
+              stopbits: 1
+              session:
+                timeout: "15"
+              exec:
+                timeout: "60"
+              transport:
+                - name: preferred
+                  none: true
+                - name: input
+                  ssh: true
+                - name: output
+                  ssh: true
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - result.commands|length == 17
+          - result.changed == true
+          - result.commands|symmetric_difference(merged.commands) == []
+
+    - name: Merge provided configuration with device configuration (idempotent)
+      register: result
+      cisco.ios.ios_line: *id001
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result.commands|length == 0
+          - result['changed'] == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -1,0 +1,5 @@
+---
+- name: Remove all configuration line
+  cisco.ios.ios_line:
+    config:
+    state: deleted
