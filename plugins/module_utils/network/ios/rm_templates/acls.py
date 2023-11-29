@@ -74,7 +74,7 @@ def _tmplt_access_list_entries(aces):
             else:
                 command += " {0}".format(list(aces["protocol_options"])[0])
                 proto_option = aces["protocol_options"].get(
-                    list(aces["protocol_options"])[0]
+                    list(aces["protocol_options"])[0],
                 )
         elif aces.get("protocol"):
             command += " {protocol}".format(**aces)
