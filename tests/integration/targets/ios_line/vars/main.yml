@@ -1,0 +1,201 @@
+---
+deleted:
+  commands:
+    - "line con 0"
+    - " no session-timeout 15"
+    - " no exec-timeout 60 0"
+    - " no authorization commands 1 console"
+    - " no authorization commands 15 console"
+    - " no authorization exec console"
+    - " no login authentication console"
+    - " no escape-character 3"
+    - "no line vty 5 15"
+deleted_line:
+  commands:
+    - "line vty 0 4"
+    - " no session-timeout 15"
+    - " no exec-timeout 60 0"
+    - " no logging synchronous"
+    - " no transport preferred none"
+    - " no transport input ssh"
+    - " no transport output ssh"
+    - " no escape-character 3"
+deleted_all:
+  commands:
+    - "line con 0"
+    - " no session-timeout 15"
+    - " no exec-timeout 60 0"
+    - " no authorization commands 1 console"
+    - " no authorization commands 15 console"
+    - " no authorization exec console"
+    - " no login authentication console"
+    - " no escape-character 3"
+    - "no line vty 5 15"
+    - "line vty 0 4"
+    - " no session-timeout 15"
+    - " no exec-timeout 60 0"
+    - " no logging synchronous"
+    - " no transport preferred none"
+    - " no transport input ssh"
+    - " no transport output ssh"
+    - " no escape-character 3"
+
+gathered:
+  config:
+    line:
+      - name: "con 0"
+        authorization:
+          exec: "console"
+          commands:
+            - level: 1
+              command: console
+            - level: 15
+              command: console
+        login: "console"
+        session:
+          timeout: "15"
+        exec:
+          timeout: "60"
+        escape_character:
+          value: "3"
+        stopbits: 1
+      - name: "vty 0 4"
+        authorization:
+          exec: "default"
+        login: "default"
+        session:
+          timeout: "15"
+        exec:
+          timeout: "60"
+        escape_character:
+          value: "3"
+        transport:
+          - name: preferred
+            none: true
+          - name: input
+            ssh: true
+          - name: output
+            ssh: true
+      - name: "vty 5 15"
+        authorization:
+          exec: "default"
+        login: "default"
+        session:
+          timeout: "15"
+        exec:
+          timeout: "60"
+        escape_character:
+          value: "3"
+        transport:
+          - name: preferred
+            none: true
+          - name: input
+            ssh: true
+          - name: output
+            ssh: true
+
+merged:
+  commands:
+    - "line con 0"
+    - " exec-timeout 60 0"
+    - " authorization exec console"
+    - "line vty 0 4"
+    - " session timeout 15"
+    - " exec-timeout 60 0"
+    - " transport preferred none"
+    - " transport input ssh"
+    - " transport output ssh"
+    - "line vty 5 15"
+    - " escape-character 3"
+    - " stopbits 1"
+    - " session timeout 15"
+    - " exec-timeout 60 0"
+    - " transport preferred none"
+    - " transport input ssh"
+    - " transport output ssh"
+
+overridden:
+  commands:
+    - "line con 0"
+    - " exec-timeout 60 0"
+    - " authorization commands 1 console"
+    - " authorization commands 15 console"
+    - " authorization exec console"
+    - " login authentication console"
+    - "line vty 0 4"
+    - " escape-character 3"
+    - " login authentication default"
+    - " transport preferred none"
+    - " transport input ssh"
+    - " transport output ssh"
+    - " no password 7 02050D480809"
+    - "line vty 5 15"
+    - " session-timeout 15"
+    - " exec-timeout 60 0"
+    - " escape-character 3"
+    - " transport preferred none"
+    - " transport input ssh"
+    - " transport output ssh"
+
+parsed:
+  config:
+    line:
+      - name: "con 0"
+        authorization:
+          exec: "console"
+          commands:
+            - level: 1
+              command: console
+            - level: 15
+              command: console
+        login: "console"
+        session:
+          timeout: "15"
+        exec:
+          timeout: "60"
+        escape_character:
+          value: "3"
+        stopbits: 1
+      - name: "vty 0 4"
+        authorization:
+          exec: "default"
+        login: "default"
+        length: 0
+        session:
+          timeout: "15"
+        exec:
+          timeout: "60"
+        escape_character:
+          value: "3"
+        transport:
+          - name: preferred
+            none: true
+          - name: input
+            ssh: true
+          - name: output
+            ssh: true
+      - name: "vty 5 15"
+        authorization:
+          exec: "default"
+        login: "default"
+        session:
+          timeout: "15"
+        exec:
+          timeout: "60"
+        escape_character:
+          value: "3"
+        transport:
+          - name: preferred
+            none: true
+          - name: input
+            ssh: true
+          - name: output
+            ssh: true
+
+rendered:
+  commands:
+    - "line con 0"
+    - " escape-character 3"
+    - " stopbits 1"
+    - "line aux 0"
+    - " stopbits 1"
