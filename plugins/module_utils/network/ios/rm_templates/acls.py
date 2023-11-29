@@ -279,7 +279,8 @@ class AclsTemplate(NetworkTemplate):
                         (\s*(?P<any>any))?
                         (\s(?P<log>log))?
                     $""".format(
-                    ipv4addr, ipv4wild
+                    ipv4addr,
+                    ipv4wild,
                 ),
                 re.VERBOSE,
             ),
@@ -349,7 +350,9 @@ class AclsTemplate(NetworkTemplate):
                         (\sttl\slt\s(?P<ttl_lt>\d+))?
                         (\sttl\sneg\s(?P<ttl_neg>\d+))?
                     """.format(
-                    ipv4addr, ipv4wild, ipv6addr
+                    ipv4addr,
+                    ipv4wild,
+                    ipv6addr,
                 ),
                 re.VERBOSE,
             ),

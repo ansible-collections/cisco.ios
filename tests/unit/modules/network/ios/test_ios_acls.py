@@ -150,7 +150,7 @@ class TestIosAclsModule(TestIosModule):
                     },
                 ],
                 "state": "merged",
-            }
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -641,7 +641,7 @@ class TestIosAclsModule(TestIosModule):
                     },
                 ],
                 "state": "replaced",
-            }
+            },
         )
         result = self.execute_module(changed=True)
         commands = [
@@ -812,7 +812,7 @@ class TestIosAclsModule(TestIosModule):
                     },
                 ],
                 "state": "replaced",
-            }
+            },
         )
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["commands"]), [])
@@ -968,7 +968,7 @@ class TestIosAclsModule(TestIosModule):
                     },
                 ],
                 "state": "overridden",
-            }
+            },
         )
         result = self.execute_module(changed=False)
         command = []
@@ -1438,7 +1438,7 @@ class TestIosAclsModule(TestIosModule):
                     },
                 ],
                 "state": "deleted",
-            }
+            },
         )
 
         result = self.execute_module(changed=True)
@@ -1515,7 +1515,7 @@ class TestIosAclsModule(TestIosModule):
                     },
                 ],
                 "state": "merged",
-            }
+            },
         )
 
         result = self.execute_module(failed=True)
