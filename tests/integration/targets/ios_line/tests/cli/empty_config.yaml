@@ -45,4 +45,3 @@
 - ansible.builtin.assert:
     that:
       - result.msg == 'value of config parameter must not be empty for state parsed'
-

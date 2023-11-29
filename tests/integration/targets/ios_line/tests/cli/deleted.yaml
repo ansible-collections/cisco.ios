@@ -1,4 +1,3 @@
-
 ---
 - ansible.builtin.debug:
     msg: Start Deleted integration state for ios_line ansible_connection={{ ansible_connection }}
