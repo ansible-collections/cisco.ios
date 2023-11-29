@@ -22,28 +22,28 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
-ipv4seg_addr = r'(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])'
-ipv4addr = r'(?:(?:{0}\.){{3,3}}{0})'.format(ipv4seg_addr)
-ipv4seg_mask = r'(?:0|128|192|224|240|248|252|254|255)'
-ipv4mask = r'(?:{0}.0.0.0|255.{0}.0.0|255.255.{0}.0|255.255.255.{0})'.format(ipv4seg_mask)
-ipv4seg_wild = r'(?:0|1|3|7|15|31|63|127|255)'
-ipv4wild = r'(?:0.0.0.{0}|0.0.{0}.255|0.{0}.255.255|{0}.255.255.255)'.format(ipv4seg_wild)
-ipv6seg_addr = r'(?:(?:[0-9a-fA-F]){1,4})'
+ipv4seg_addr = r"(?:25[0-5]|(?:2[0-4]|1{0,1}[0-9]){0,1}[0-9])"
+ipv4addr = r"(?:(?:{0}\.){{3,3}}{0})".format(ipv4seg_addr)
+ipv4seg_mask = r"(?:0|128|192|224|240|248|252|254|255)"
+ipv4mask = r"(?:{0}.0.0.0|255.{0}.0.0|255.255.{0}.0|255.255.255.{0})".format(ipv4seg_mask)
+ipv4seg_wild = r"(?:0|1|3|7|15|31|63|127|255)"
+ipv4wild = r"(?:0.0.0.{0}|0.0.{0}.255|0.{0}.255.255|{0}.255.255.255)".format(ipv4seg_wild)
+ipv6seg_addr = r"(?:(?:[0-9a-fA-F]){1,4})"
 ipv6grp = (
-    r'(?:{0}:){{7,7}}{0}'.format(ipv6seg_addr),
-    r'(?:{0}:){{1,7}}:'.format(ipv6seg_addr),
-    r'(?:{0}:){{1,6}}:{0}'.format(ipv6seg_addr),
-    r'(?:{0}:){{1,5}}(?::{0}){{1,2}}'.format(ipv6seg_addr),
-    r'(?:{0}:){{1,4}}(?::{0}){{1,3}}'.format(ipv6seg_addr),
-    r'(?:{0}:){{1,3}}(?::{0}){{1,4}}'.format(ipv6seg_addr),
-    r'(?:{0}:){{1,2}}(?::{0}){{1,5}}'.format(ipv6seg_addr),
-    r'{0}:(?:(?::{0}){{1,6}})'.format(ipv6seg_addr),
-    r':(?:(?::{0}){{1,7}}|:)'.format(ipv6seg_addr),
-    r'fe80:(?::{0}){{0,4}}%[0-9a-zA-Z]{{1,}}'.format(ipv6seg_addr),
-    r'::(?:ffff(?::0{{1,4}}){{0,1}}:){{0,1}}[^\s:]{0}'.format(ipv4addr),
-    r'(?:{0}:){{1,6}}:[^\s:]{1}'.format(ipv6seg_addr, ipv4addr),
+    r"(?:{0}:){{7,7}}{0}".format(ipv6seg_addr),
+    r"(?:{0}:){{1,7}}:".format(ipv6seg_addr),
+    r"(?:{0}:){{1,6}}:{0}".format(ipv6seg_addr),
+    r"(?:{0}:){{1,5}}(?::{0}){{1,2}}".format(ipv6seg_addr),
+    r"(?:{0}:){{1,4}}(?::{0}){{1,3}}".format(ipv6seg_addr),
+    r"(?:{0}:){{1,3}}(?::{0}){{1,4}}".format(ipv6seg_addr),
+    r"(?:{0}:){{1,2}}(?::{0}){{1,5}}".format(ipv6seg_addr),
+    r"{0}:(?:(?::{0}){{1,6}})".format(ipv6seg_addr),
+    r":(?:(?::{0}){{1,7}}|:)".format(ipv6seg_addr),
+    r"fe80:(?::{0}){{0,4}}%[0-9a-zA-Z]{{1,}}".format(ipv6seg_addr),
+    r"::(?:ffff(?::0{{1,4}}){{0,1}}:){{0,1}}[^\s:]{0}".format(ipv4addr),
+    r"(?:{0}:){{1,6}}:[^\s:]{1}".format(ipv6seg_addr, ipv4addr),
 )
-ipv6addr = '|'.join(['(?:{})'.format(g) for g in ipv6grp[::-1]])
+ipv6addr = "|".join(["(?:{})".format(g) for g in ipv6grp[::-1]])
 
 
 def remarks_with_sequence(remarks_data):
@@ -278,7 +278,9 @@ class AclsTemplate(NetworkTemplate):
                         (\s(?P<wildcard>{1}))?
                         (\s*(?P<any>any))?
                         (\s(?P<log>log))?
-                    $""".format(ipv4addr, ipv4wild),
+                    $""".format(
+                    ipv4addr, ipv4wild
+                ),
                 re.VERBOSE,
             ),
             "compval": "aces",
@@ -346,7 +348,9 @@ class AclsTemplate(NetworkTemplate):
                         (\sttl\sgt\s(?P<ttl_gt>\d+))?
                         (\sttl\slt\s(?P<ttl_lt>\d+))?
                         (\sttl\sneg\s(?P<ttl_neg>\d+))?
-                    """.format(ipv4addr, ipv4wild, ipv6addr),
+                    """.format(
+                    ipv4addr, ipv4wild, ipv6addr
+                ),
                 re.VERBOSE,
             ),
             "setval": _tmplt_access_list_entries,
