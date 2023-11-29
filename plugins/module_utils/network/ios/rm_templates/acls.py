@@ -43,7 +43,7 @@ ipv6grp = (
     r"::(?:ffff(?::0{{1,4}}){{0,1}}:){{0,1}}[^\s:]{0}".format(ipv4addr),
     r"(?:{0}:){{1,6}}:[^\s:]{1}".format(ipv6seg_addr, ipv4addr),
 )
-ipv6addr = "|".join(["(?:{})".format(g) for g in ipv6grp[::-1]])
+ipv6addr = "|".join(["(?:{0})".format(g) for g in ipv6grp[::-1]])
 
 
 def remarks_with_sequence(remarks_data):
