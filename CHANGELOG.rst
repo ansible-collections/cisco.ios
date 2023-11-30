@@ -11,7 +11,7 @@ v6.0.0
 Release Summary
 ---------------
 
-Starting from this release, the minimum `ansible-core` version this collection requires is `2.14.0`. That last known version compatible with ansible-core<2.14 is `v5.3.0`.
+Starting from this release, the minimum `ansible-core` version this collection requires is `2.14.0`. The last known version compatible with ansible-core<2.14 is `v5.3.0`.
 
 Major Changes
 -------------
