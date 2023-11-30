@@ -5,6 +5,24 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v6.0.0
+======
+
+Release Summary
+---------------
+
+Starting from this release, the minimum `ansible-core` version this collection requires is `2.14.0`. The last known version compatible with ansible-core<2.14 is `v5.3.0`.
+
+Major Changes
+-------------
+
+- Bumping `requires_ansible` to `>=2.14.0`, since previous ansible-core versions are EoL now.
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- Removed previously deprecated ios_bgp module in favor of ios_bgp_global and ios_bgp_address_family.
+
 v5.3.0
 ======
 
