@@ -18,6 +18,11 @@ Major Changes
 
 - Bumping `requires_ansible` to `>=2.14.0`, since previous ansible-core versions are EoL now.
 
+Removed Features (previously deprecated)
+----------------------------------------
+
+- Deprecated ios_bgp module in favor of ios_bgp_global and ios_bgp_address_family.
+
 v5.3.0
 ======
 

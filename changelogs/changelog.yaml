@@ -1074,6 +1074,9 @@ releases:
         Starting from this release, the minimum `ansible-core` version
         this collection requires is `2.14.0`. That last known version compatible with
         ansible-core<2.14 is `v5.3.0`.
+      removed_features:
+        - Deprecated ios_bgp module in favor of ios_bgp_global and ios_bgp_address_family.
     fragments:
+      - bgp_dep_rem.yml
       - major_600.yml
     release_date: "2023-11-30"
