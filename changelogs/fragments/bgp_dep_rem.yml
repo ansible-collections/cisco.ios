@@ -1,0 +1,3 @@
+---
+removed_features:
+  - Deprecated ios_bgp module in favor of ios_bgp_global and ios_bgp_address_family.
