@@ -21,7 +21,7 @@ Major Changes
 Removed Features (previously deprecated)
 ----------------------------------------
 
-- Deprecated ios_bgp module in favor of ios_bgp_global and ios_bgp_address_family.
+- Removed previously deprecated ios_bgp module in favor of ios_bgp_global and ios_bgp_address_family.
 
 v5.3.0
 ======
