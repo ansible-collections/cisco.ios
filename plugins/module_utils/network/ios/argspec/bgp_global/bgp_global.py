@@ -163,6 +163,20 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                 "route_map": {"type": "str"},
                             },
                         },
+                        "default": {
+                            "type": "dict",
+                            "apply_defaults": {"ipv4_unicast": True, "route_target": {"filter": True}},
+                            "options": {
+                                "ipv4_unicast": {"type": "bool", "default": True},
+                                "route_target": {
+                                    "type": "dict",
+                                    "default": {"filter": True},
+                                    "options": {
+                                        "filter": {"type": "bool", "default": True},
+                                    },
+                                },
+                            },
+                        },
                         "deterministic_med": {"type": "bool"},
                         "dmzlink_bw": {"type": "bool"},
                         "enforce_first_as": {"type": "bool"},

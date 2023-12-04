@@ -21,7 +21,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
-
 class Bgp_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Bgp_globalTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -743,6 +742,18 @@ class Bgp_globalTemplate(NetworkTemplate):
                     },
                 },
             },
+        },
+        {
+            "name": "bgp.default.ipv4_unicast",
+            "getval": re.compile(r"""\sno\sbgp\sdefault\sipv4\-unicast""", re.VERBOSE),
+            "setval": "bgp default ipv4-unicast",
+            "result": {"bgp": {"default": {"ipv4_unicast": False}}},
+        },
+        {
+            "name": "bgp.default.route_target.filter",
+            "getval": re.compile(r"""\sno\sbgp\sdefault\sroute\-target\sfilter""", re.VERBOSE),
+            "setval": "bgp default route-target filter",
+            "result": {"bgp": {"default": {"route_target": {"filter": False}}}},
         },
         {
             "name": "bgp.deterministic_med",
