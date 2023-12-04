@@ -21,6 +21,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
+
 class Bgp_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Bgp_globalTemplate, self).__init__(lines=lines, tmplt=self, module=module)

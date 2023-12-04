@@ -1900,7 +1900,7 @@ EXAMPLES = """
         default:
           ipv4_unicast: false
           route_target:
-            filter: true 
+            filter: true
         graceful_shutdown:
           neighbors:
             time: 50
@@ -1970,7 +1970,7 @@ EXAMPLES = """
 #     default:
 #       ipv4_unicast: false
 #       route_target:
-#         filter: true 
+#         filter: true
 #     graceful_shutdown:
 #       community: '100'
 #       local_preference: 100
@@ -2086,7 +2086,7 @@ EXAMPLES = """
 #     default:
 #       ipv4_unicast: true
 #       route_target:
-#         filter: true 
+#         filter: true
 #     graceful_shutdown:
 #       community: '100'
 #       local_preference: 100
@@ -2137,7 +2137,7 @@ EXAMPLES = """
 #     default:
 #       ipv4_unicast: true
 #       route_target:
-#         filter: true 
+#         filter: true
 #     log_neighbor_changes: true
 #     nopeerup_delay_options:
 #       cold_boot: 20
@@ -2207,7 +2207,7 @@ EXAMPLES = """
 #     default:
 #       ipv4_unicast: true
 #       route_target:
-#         filter: true 
+#         filter: true
 #     graceful_shutdown:
 #       community: '100'
 #       local_preference: 100
@@ -2286,7 +2286,7 @@ EXAMPLES = """
 #     default:
 #       ipv4_unicast: true
 #       route_target:
-#         filter: true 
+#         filter: true
 #     graceful_shutdown:
 #       community: '100'
 #       local_preference: 100
@@ -2361,7 +2361,7 @@ EXAMPLES = """
 #     default:
 #       ipv4_unicast: true
 #       route_target:
-#         filter: true 
+#         filter: true
 #     dampening:
 #       max_suppress: 1
 #       penalty_half_time: 1
@@ -2441,7 +2441,7 @@ EXAMPLES = """
 #     default:
 #       ipv4_unicast: true
 #       route_target:
-#         filter: true 
+#         filter: true
 #     graceful_shutdown:
 #       community: '100'
 #       local_preference: 100

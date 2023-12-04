@@ -38,10 +38,12 @@ class Bgp_globalFacts(object):
     def _set_defaults(self, objs):
         """makes data as per the facts after data obtained from parsers"""
 
-        if objs.get('as_number'):
-            objs.setdefault("bgp",{}).setdefault("default", {}).setdefault("ipv4_unicast", True)
-            objs.setdefault("bgp",{}).setdefault("default", {}).setdefault(
-                "route_target", {}).setdefault("filter", True)
+        if objs.get("as_number"):
+            objs.setdefault("bgp", {}).setdefault("default", {}).setdefault("ipv4_unicast", True)
+            objs.setdefault("bgp", {}).setdefault("default", {}).setdefault(
+                "route_target",
+                {},
+            ).setdefault("filter", True)
         return objs
 
     def populate_facts(self, connection, ansible_facts, data=None):
