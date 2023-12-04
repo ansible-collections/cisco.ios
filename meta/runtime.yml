@@ -7,8 +7,6 @@ plugin_routing:
       redirect: cisco.ios.ios
     banner:
       redirect: cisco.ios.ios
-    bgp:
-      redirect: cisco.ios.ios
     bgp_global:
       redirect: cisco.ios.ios
     command:
@@ -30,8 +28,6 @@ plugin_routing:
     ios_acls:
       redirect: cisco.ios.ios
     ios_banner:
-      redirect: cisco.ios.ios
-    ios_bgp:
       redirect: cisco.ios.ios
     ios_bgp_global:
       redirect: cisco.ios.ios
@@ -134,11 +130,6 @@ plugin_routing:
       redirect: cisco.ios.ios_acls
     banner:
       redirect: cisco.ios.ios_banner
-    bgp:
-      deprecation:
-        removal_date: "2023-08-24"
-        warning_text: See the plugin documentation for more details
-      redirect: cisco.ios.ios_bgp
     bgp_global:
       redirect: cisco.ios.ios_bgp_global
     command:
@@ -155,10 +146,6 @@ plugin_routing:
       redirect: cisco.ios.ios_hostname
     interfaces:
       redirect: cisco.ios.ios_interfaces
-    ios_bgp:
-      deprecation:
-        removal_date: "2023-08-24"
-        warning_text: See the plugin documentation for more details
     ios_linkagg:
       deprecation:
         removal_date: "2024-06-01"
@@ -237,4 +224,4 @@ plugin_routing:
       redirect: cisco.ios.ios_vrf
     vxlan_vtep:
       redirect: cisco.ios.ios_vxlan_vtep
-requires_ansible: ">=2.9.10"
+requires_ansible: ">=2.14.0"

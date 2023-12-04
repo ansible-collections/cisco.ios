@@ -1,4 +1,0 @@
----
-minor_changes:
-  - ios_bgp_address_family - added 'advertise' key
-  - ios_bgp_address_family - Fixed an issue with inherit peer-policy CLI
