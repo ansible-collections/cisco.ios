@@ -354,7 +354,422 @@ options:
 """
 
 EXAMPLES = """
+# Using merged
 
+# Before state:
+# -------------
+#
+# sh run | sec ^line
+# line con 0
+#  session-timeout 15
+#  stopbits 1
+# line aux 0
+# line vty 0 4
+#  transport input ssh
+
+- name: Merge provided configuration with device configuration
+  cisco.ios.ios_line:
+    config:
+      line:
+        - name: "con 0"
+          escape_character:
+            value: "3"
+          login: "console"
+          exec:
+            timeout: "60"
+        - name: "vty 0 4"
+          escape_character:
+            value: "3"
+          login: "default"
+          transport:
+            - name: preferred
+              none: true
+            - name: input
+              ssh: true
+            - name: output
+              ssh: true
+    state: "merged"
+
+# Task Output
+# -----------
+#
+#   before:
+#     lines:
+#       - login: default
+#         motd: true
+#         name: con 0
+#         session:
+#           timeout: 15
+#         stopbits: '1'
+#       - login: default
+#         motd: true
+#         name: vty 0 4
+#         transport:
+#           - name: input
+#             ssh: true
+#   commands:
+#     - line con 0
+#     - ' exec-timeout 60 0'
+#     - ' escape-character 3'
+#     - ' login authentication console'
+#     - line vty 0 4
+#     - ' escape-character 3'
+#     - ' transport preferred none'
+#     - ' transport output ssh'
+#   after:
+#     lines:
+#       - escape_character:
+#           value: '3'
+#         exec:
+#           timeout: 60
+#         login: console
+#         motd: true
+#         name: con 0
+#         session:
+#           timeout: 15
+#         stopbits: '1'
+#       - escape_character:
+#           value: '3'
+#         login: default
+#         motd: true
+#         name: vty 0 4
+#         transport:
+#           - name: preferred
+#             none: true
+#           - name: input
+#             ssh: true
+#           - name: output
+#             ssh: true
+
+# After state:
+# ------------
+#
+# router-ios#sh run | sec ^line
+# line con 0
+#  session-timeout 15
+#  exec-timeout 60 0
+#  login authentication console
+#  escape-character 3
+#  stopbits 1
+# line aux 0
+# line vty 0 4
+#  transport preferred none
+#  transport input ssh
+#  transport output ssh
+#  escape-character 3
+
+# Using overriden
+
+# router-ios#sh run | sec ^line
+# line con 0
+#  session-timeout 15
+#  stopbits 1
+# line aux 0
+# line vty 0 4
+#  transport input ssh
+
+- name: Merge provided configuration with device configuration
+  cisco.ios.ios_line:
+    config:
+      line:
+        - name: "con 0"
+          escape_character:
+            value: "3"
+          login: "console"
+          exec:
+            timeout: "60"
+        - name: "vty 0 4"
+          escape_character:
+            value: "3"
+          login: "default"
+          transport:
+            - name: preferred
+              none: true
+            - name: input
+              ssh: true
+            - name: output
+              ssh: true
+    state: "overridden"
+
+# Task Output
+# -----------
+#
+#  before:
+#    lines:
+#      - login: default
+#        motd: true
+#        name: con 0
+#        session:
+#          timeout: 15
+#        stopbits: '1'
+#      - login: default
+#        motd: true
+#        name: vty 0 4
+#        transport:
+#          - name: input
+#            ssh: true
+#  commands:
+#    - line con 0
+#    - ' exec-timeout 60 0'
+#    - ' escape-character 3'
+#    - ' login authentication console'
+#    - ' no stopbits 1'
+#    - ' no session-timeout 15'
+#    - line vty 0 4
+#    - ' escape-character 3'
+#    - ' transport preferred none'
+#    - ' transport output ssh'
+#  after:
+#    lines:
+#      - escape_character:
+#          value: '3'
+#        exec:
+#          timeout: 60
+#        login: console
+#        motd: true
+#        name: con 0
+#      - escape_character:
+#          value: '3'
+#        login: default
+#        motd: true
+#        name: vty 0 4
+#        transport:
+#          - name: preferred
+#            none: true
+#          - name: input
+#            ssh: true
+#          - name: output
+#            ssh: true
+
+# After state:
+# ------------
+#
+# router-ios#sh run | sec ^line
+# line con 0
+#  exec-timeout 60 0
+#  login authentication console
+#  escape-character 3
+# line aux 0
+# line vty 0 4
+#  transport preferred none
+#  transport input ssh
+#  transport output ssh
+#  escape-character 3
+
+# Using deleted
+
+# Before state:
+# -------------
+#
+# router-ios#sh run | sec ^line
+# line con 0
+#  exec-timeout 60 0
+#  login authentication console
+#  escape-character 3
+# line aux 0
+# line vty 0 4
+#  transport preferred none
+#  transport input ssh
+#  transport output ssh
+#  escape-character 3
+
+- name: Merge provided configuration with device configuration
+  cisco.ios.ios_line:
+    config:
+    state: deleted
+
+# Task Output
+# -----------
+#
+#   before:
+#     lines:
+#       - escape_character:
+#           value: '3'
+#         exec:
+#           timeout: 60
+#         login: console
+#         motd: true
+#         name: con 0
+#         session:
+#           timeout: 15
+#         stopbits: '1'
+#       - escape_character:
+#           value: '3'
+#         login: default
+#         motd: true
+#         name: vty 0 4
+#         transport:
+#           - name: preferred
+#             none: true
+#           - name: input
+#             ssh: true
+#           - name: output
+#             ssh: true
+#   commands:
+#     - line con 0
+#     - exec-timeout 10 0
+#     - escape-character DEFAULT
+#     - login authentication default
+#     - no session-timeout 15
+#     - no stopbits 1
+#     - line vty 0 4
+#     - escape-character DEFAULT
+#     - no transport preferred
+#     - no transport input
+#     - no transport output
+#   after:
+#     lines:
+#       - login: default
+#         motd: true
+#         name: con 0
+#       - login: default
+#         motd: true
+#         name: vty 0 4
+#         transport:
+#           - name: preferred
+#             none: true
+#           - name: input
+#             ssh: true
+#           - name: output
+#             none: true
+
+# After state:
+# ------------
+#
+# line con 0
+# line aux 0
+# line vty 0 4
+#  transport preferred none
+#  transport input ssh
+#  transport output none
+
+# Using gathered
+
+# router-ios#sh run | sec  ^line
+# line con 0
+#  exec-timeout 60 0
+#  login authentication console
+#  escape-character 3
+# line aux 0
+# line vty 0 4
+#  transport preferred none
+#  transport input ssh
+#  transport output ssh
+#  escape-character 3
+
+- name: Gather ACLs configuration from target device
+  cisco.ios.ios_line:
+    state: gathered
+
+# Module Execution Result:
+# ------------------------
+#
+# before:
+#   lines:
+#     - escape_character:
+#         value: '3'
+#       exec:
+#         timeout: 60
+#       login: console
+#       motd: true
+#       name: con 0
+#     - escape_character:
+#         value: '3'
+#       login: default
+#       motd: true
+#       name: vty 0 4
+#       transport:
+#         - name: preferred
+#           none: true
+#         - name: input
+#           ssh: true
+#         - name: output
+#           ssh: true
+
+# Using rendered
+
+- name: Render the provided configuration into platform specific configuration lines
+  cisco.ios.ios_line:
+    config:
+      lines:
+        - name: "con 0"
+          escape_character:
+            value: "3"
+          login: "console"
+          exec:
+            timeout: "60"
+        - name: "vty 0 4"
+          escape_character:
+            value: "3"
+          login: "default"
+          transport:
+            - name: preferred
+              none: true
+            - name: input
+              ssh: true
+            - name: output
+              ssh: true
+    state: rendered
+
+# Module Execution Result:
+# ------------------------
+#
+# rendered:
+#   - line con 0
+#   - exec-timeout 60 0
+#   - escape-character 3
+#   - login authentication console
+#   - line vty 0 4
+#   - escape-character 3
+#   - transport preferred none
+#   - transport input ssh
+#   - transport output ssh
+
+# Using Parsed
+
+# File: parsed.cfg
+# ----------------
+#
+# line con 0
+#  exec-timeout 60 0
+#  login authentication console
+#  escape-character 3
+# line aux 0
+# line vty 0 4
+#  transport preferred none
+#  transport input ssh
+#  transport output ssh
+#  escape-character 3
+
+- name: Parse the commands for provided configuration
+  cisco.ios.ios_line:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Module Execution Result:
+# ------------------------
+#
+# parsed:
+#   lines:
+#     - escape_character:
+#         value: '3'
+#       exec:
+#         timeout: 60
+#       login: console
+#       motd: true
+#       name: con 0
+#     - escape_character:
+#         value: '3'
+#       login: default
+#       motd: true
+#       name: vty 0 4
+#       transport:
+#         - name: preferred
+#           none: true
+#         - name: input
+#           ssh: true
+#         - name: output
+#           ssh: true
 """
 
 RETURN = """
