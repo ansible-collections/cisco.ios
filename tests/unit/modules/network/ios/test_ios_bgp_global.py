@@ -755,6 +755,7 @@ class TestIosBgpGlobalModule(TestIosModule):
             "bgp": {
                 "nopeerup_delay_options": {"post_boot": 10},
                 "bestpath_options": {"compare_routerid": True},
+                "default": {"ipv4_unicast": True, "route_target": {"filter": True}},
                 "advertise_best_external": True,
             },
             "timers": {"keepalive": 100, "holdtime": 200, "min_holdtime": 150},
