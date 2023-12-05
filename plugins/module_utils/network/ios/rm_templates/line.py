@@ -52,7 +52,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+access-class\s+(?P<access_classes_in>\S+)\s+in
                 """, re.VERBOSE,
             ),
-            "setval": " access-class {{ access_classes_in }} in",
+            "setval": "access-class {{ access_classes_in }} in",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -68,7 +68,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+access-class\s+(?P<access_classes_in>\S+)\s+out
                 """, re.VERBOSE,
             ),
-            "setval": " access-class {{ access_classes_out }} out",
+            "setval": "access-class {{ access_classes_out }} out",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -84,7 +84,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+accounting\s+arap\s+(?P<arap>\S+)
                 """, re.VERBOSE,
             ),
-            "setval": " accounting arap {{ accounting.arap }}",
+            "setval": "accounting arap {{ accounting.arap }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -103,7 +103,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+accounting\s+commands\s+(?P<level>\d+)\s+(?P<command>\S+)
                 """, re.VERBOSE,
             ),
-            "setval": " accounting commands {{ commands.level }} {{ commands.command }}",
+            "setval": "accounting commands {{ commands.level }} {{ commands.command }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -126,7 +126,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+accounting\s+connection\s+(?P<connection>\S+)
                 """, re.VERBOSE,
             ),
-            "setval": " accounting connection {{ accounting.connection }}",
+            "setval": "accounting connection {{ accounting.connection }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -144,7 +144,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+accounting\s+exec\s+(?P<exec>\S+)
                 """, re.VERBOSE,
             ),
-            "setval": " accounting exec {{ accounting.exec }}",
+            "setval": "accounting exec {{ accounting.exec }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -162,7 +162,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+accounting\s+resource\s+(?P<resource>\S+)
                 """, re.VERBOSE,
             ),
-            "setval": " accounting resource {{ accounting.resource }}",
+            "setval": "accounting resource {{ accounting.resource }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -180,7 +180,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+authorization\s+arap\s+(?P<arap>\S+)
                 """, re.VERBOSE,
             ),
-            "setval": " authorization arap {{ authorization.arap }}",
+            "setval": "authorization arap {{ authorization.arap }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -199,7 +199,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+authorization\s+commands\s+(?P<level>\d+)\s+(?P<command>\S+)
                 """, re.VERBOSE,
             ),
-            "setval": " authorization commands {{ commands.level }} {{ commands.command }}",
+            "setval": "authorization commands {{ commands.level }} {{ commands.command }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -222,7 +222,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+authorization\s+exec\s+(?P<exec>\S+)
                 """, re.VERBOSE,
             ),
-            "setval": " authorization exec {{ authorization.exec }}",
+            "setval": "authorization exec {{ authorization.exec }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -240,7 +240,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+authorization\s+reverse-access\s+(?P<reverse_access>\S+)
                 """, re.VERBOSE,
             ),
-            "setval": " authorization reverse-access {{ authorization.reverse_access }}",
+            "setval": "authorization reverse-access {{ authorization.reverse_access }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -260,7 +260,7 @@ class LineTemplate(NetworkTemplate):
                 \s+(?P<value>\S+)
                 """, re.VERBOSE,
             ),
-            "setval": " escape-character"
+            "setval": "escape-character"
                       "{{ ' soft' if escape_character.soft|d(False) else '' }}"
                       "{{ ' ' + escape_character.value }}",
             "result": {
@@ -281,7 +281,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+exec-banner
                 """, re.VERBOSE,
             ),
-            "setval": " exec-banner",
+            "setval": "exec-banner",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -299,7 +299,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+exec-character-bits\s+(?P<character_bits>7|8)
                 """, re.VERBOSE,
             ),
-            "setval": " exec-character-bits {{ exec.character_bits }}",
+            "setval": "exec-character-bits {{ exec.character_bits }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -357,7 +357,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+exec-timeout\s+(?P<timeout>\d+)
                 """, re.VERBOSE,
             ),
-            "setval": " exec-timeout {{ exec.timeout }} 0",
+            "setval": "exec-timeout {{ exec.timeout }} 0",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -375,7 +375,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+length\s(?P<length>\d+)
                 """, re.VERBOSE,
             ),
-            "setval": " length {{ length|string }}",
+            "setval": "length {{ length|string }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -391,7 +391,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+location\s+(?P<location>.+)$
                 """, re.VERBOSE,
             ),
-            "setval": " location {{ location }}",
+            "setval": "location {{ location }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -409,7 +409,7 @@ class LineTemplate(NetworkTemplate):
                 (\s+(?P<limit>\d+))?
                 """, re.VERBOSE,
             ),
-            "setval": " logging synchronous"
+            "setval": "logging synchronous"
                       "{{ ' level ' + logging.level if logging.level is defined else '' }}"
                       "{{ ' limit ' + logging.limit if logging.limit is defined else '' }}",
             "result": {
@@ -431,7 +431,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+login\s+authentication\s+(?P<login>\S+)
                 """, re.VERBOSE,
             ),
-            "setval": " login authentication {{ login }}",
+            "setval": "login authentication {{ login }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -447,7 +447,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+logout-warning\s+(?P<logout_warning>\d+)
                 """, re.VERBOSE,
             ),
-            "setval": " logout-warning {{ logout_warning }}",
+            "setval": "logout-warning {{ logout_warning }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -463,7 +463,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+motd-banner
                 """, re.VERBOSE,
             ),
-            "setval": " motd-banner",
+            "setval": "motd-banner",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -479,7 +479,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+notify
                 """, re.VERBOSE,
             ),
-            "setval": " notify",
+            "setval": "notify",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -495,7 +495,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+padding\s+(?P<padding>\S+)
                 """, re.VERBOSE,
             ),
-            "setval": " padding {{ padding }}",
+            "setval": "padding {{ padding }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -511,7 +511,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+parity\s+(?P<parity>even|mark|none|odd|space)
                 """, re.VERBOSE,
             ),
-            "setval": " parity {{ parity }}",
+            "setval": "parity {{ parity }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -530,7 +530,7 @@ class LineTemplate(NetworkTemplate):
                 """, re.VERBOSE,
             ),
             "setval": "{% if 'value' in password and password.value is defined %}"
-                      " password"
+                      "password"
                       "{{ ' ' + password.hash|string if password.hash is defined else '' }}"
                       "{{ ' ' + password.value }}"
                       "{% endif %}",
@@ -552,7 +552,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+privilege\s+level\s+(?P<privilege>\d+)
                 """, re.VERBOSE,
             ),
-            "setval": " privilege level {{ privilege }}",
+            "setval": "privilege level {{ privilege }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -568,7 +568,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+session-disconnect-warning\s+(?P<disconnect_warning>\d+)
                 """, re.VERBOSE,
             ),
-            "setval": " session-disconnect-warning {{ session.disconnect_warning }}",
+            "setval": "session-disconnect-warning {{ session.disconnect_warning }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -586,7 +586,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+session-limit\s+(?P<limit>\d+)
                 """, re.VERBOSE,
             ),
-            "setval": " session-limit {{ session.limit }}",
+            "setval": "session-limit {{ session.limit }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -604,7 +604,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+session-timeout\s+(?P<timeout>\d+)
                 """, re.VERBOSE,
             ),
-            "setval": " session-timeout {{ session.timeout }}",
+            "setval": "session-timeout {{ session.timeout }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -622,7 +622,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+speed\s+(?P<speed>\d+)
                 """, re.VERBOSE,
             ),
-            "setval": " speed {{ speed }}",
+            "setval": "speed {{ speed }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -638,7 +638,7 @@ class LineTemplate(NetworkTemplate):
                 ^\s+stopbits\s+(?P<stopbits>1|1.5|2)
                 """, re.VERBOSE,
             ),
-            "setval": " stopbits {{ stopbits }}",
+            "setval": "stopbits {{ stopbits }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
@@ -660,7 +660,7 @@ class LineTemplate(NetworkTemplate):
                 (\s+(?P<t_ssh>ssh))?
                 """, re.VERBOSE,
             ),
-            "setval": " transport {{ transport.name }}"
+            "setval": "transport {{ transport.name }}"
                       "{% if transport.all|d(False) %}"
                       " all"
                       "{% elif transport.none|d(False) %}"
@@ -671,6 +671,7 @@ class LineTemplate(NetworkTemplate):
                       "{{ ' rlogin' if transport.rlogin|d(False) }}"
                       "{{ ' ssh' if transport.ssh|d(False) }}"
                       "{% endif %}",
+            "remval": "transport {{ transport.name }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {

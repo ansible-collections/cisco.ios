@@ -25,7 +25,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
-    to_list,
 )
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
@@ -275,16 +274,6 @@ class Line(ResourceModule):
                     )
             else:
                 self.compare(parsers=self.parsers[key], want={}, have={key: h_entry})
-
-    def addcmd(self, data, tmplt, negate=False):
-        command = self._tmplt.render(data, tmplt, False)
-        if negate:
-            if isinstance(command, list):
-                command = [(" no" + each) for each in command]
-            else:
-                command = " no" + command
-        if command:
-            self.commands.extend(to_list(command))
 
     def _convert_list_to_dict(self, data, key="name"):
         return {_k.get(key, ""): _k for _k in data} if data else {}
