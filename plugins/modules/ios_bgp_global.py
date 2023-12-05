@@ -277,21 +277,21 @@ options:
           default:
             description: Configure BGP defaults
             type: dict
-            apply_defaults: true
+            apply_defaults: True
             suboptions:
               ipv4_unicast:
                 description: Activate ipv4-unicast for a peer by default
                 type: bool
-                default: true
+                default: True
               route_target:
                 description: Control behavior based on Route-Target attributes
                 type: dict
-                apply_defaults: true
+                apply_defaults: True
                 suboptions:
                   filter:
                     description: Control automatic VPN Route-Target filtering
                     type: bool
-                    default: true
+                    default: True
           dampening:
             description: Enable route-flap dampening
             type: dict
@@ -1904,7 +1904,7 @@ EXAMPLES = """
         default:
           ipv4_unicast: false
           route_target:
-            filter: true 
+            filter: true
         graceful_shutdown:
           neighbors:
             time: 50
@@ -1974,7 +1974,7 @@ EXAMPLES = """
 #     default:
 #       ipv4_unicast: false
 #       route_target:
-#         filter: true 
+#         filter: true
 #     graceful_shutdown:
 #       community: '100'
 #       local_preference: 100
@@ -2090,7 +2090,7 @@ EXAMPLES = """
 #     default:
 #       ipv4_unicast: true
 #       route_target:
-#         filter: true 
+#         filter: true
 #     graceful_shutdown:
 #       community: '100'
 #       local_preference: 100
@@ -2141,7 +2141,7 @@ EXAMPLES = """
 #     default:
 #       ipv4_unicast: true
 #       route_target:
-#         filter: true 
+#         filter: true
 #     log_neighbor_changes: true
 #     nopeerup_delay_options:
 #       cold_boot: 20
@@ -2211,7 +2211,7 @@ EXAMPLES = """
 #     default:
 #       ipv4_unicast: true
 #       route_target:
-#         filter: true 
+#         filter: true
 #     graceful_shutdown:
 #       community: '100'
 #       local_preference: 100
@@ -2290,7 +2290,7 @@ EXAMPLES = """
 #     default:
 #       ipv4_unicast: true
 #       route_target:
-#         filter: true 
+#         filter: true
 #     graceful_shutdown:
 #       community: '100'
 #       local_preference: 100
@@ -2365,7 +2365,7 @@ EXAMPLES = """
 #     default:
 #       ipv4_unicast: true
 #       route_target:
-#         filter: true 
+#         filter: true
 #     dampening:
 #       max_suppress: 1
 #       penalty_half_time: 1
@@ -2445,7 +2445,7 @@ EXAMPLES = """
 #     default:
 #       ipv4_unicast: true
 #       route_target:
-#         filter: true 
+#         filter: true
 #     graceful_shutdown:
 #       community: '100'
 #       local_preference: 100

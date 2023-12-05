@@ -200,9 +200,9 @@ class Bgp_global(ResourceModule):
             self.generic_list_parsers.insert(0, "inject_maps")
 
         cmd_len = len(self.commands)  # holds command length to add as_number
-        
+
         # for clean bgp global setup
-        if not have.get('bgp',{}).get('default'):
+        if not have.get("bgp", {}).get("default"):
             self._set_bgp_defaults(have)
 
         # for dict type attributes
@@ -230,16 +230,18 @@ class Bgp_global(ResourceModule):
             self.commands.insert(0, self._tmplt.render(want or have, "as_number", False))
 
     def _set_bgp_defaults(self, bgp_dict):
-        bgp_dict.setdefault("bgp",{}).setdefault("default", {}).setdefault("ipv4_unicast", True)
-        bgp_dict.setdefault("bgp",{}).setdefault("default", {}).setdefault(
-            "route_target", {}).setdefault("filter", True)
-        
+        bgp_dict.setdefault("bgp", {}).setdefault("default", {}).setdefault("ipv4_unicast", True)
+        bgp_dict.setdefault("bgp", {}).setdefault("default", {}).setdefault(
+            "route_target",
+            {},
+        ).setdefault("filter", True)
+
     def _has_bgp_inject_maps(self, want):
         if want.get("bgp", {}).get("inject_maps", {}):
             return True
         else:
             return False
-        
+
     def _compare_redistribute_lists(self, want, have):
         """Compare redistribute list of dict"""
         redist_parses = [
