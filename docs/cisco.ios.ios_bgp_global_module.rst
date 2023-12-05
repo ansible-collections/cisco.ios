@@ -1514,7 +1514,6 @@ Parameters
                     </div>
                 </td>
                 <td>
-                        <b>Default:</b><br/><div style="color: blue">{"filter": true}</div>
                 </td>
                 <td>
                         <div>Control behavior based on Route-Target attributes</div>
