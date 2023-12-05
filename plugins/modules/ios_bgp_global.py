@@ -277,17 +277,21 @@ options:
           default:
             description: Configure BGP defaults
             type: dict
+            apply_defaults: {'ipv4_unicast': True, 'route_target': {'filter': True}}
             suboptions:
               ipv4_unicast:
                 description: Activate ipv4-unicast for a peer by default
                 type: bool
+                default: True
               route_target:
                 description: Control behavior based on Route-Target attributes
                 type: dict
+                default: {'filter': True}
                 suboptions:
                   filter:
                     description: Control automatic VPN Route-Target filtering
                     type: bool
+                    default: True
           dampening:
             description: Enable route-flap dampening
             type: dict
