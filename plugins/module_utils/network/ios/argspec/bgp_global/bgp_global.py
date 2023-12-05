@@ -165,12 +165,12 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         },
                         "default": {
                             "type": "dict",
-                            "apply_defaults": {"ipv4_unicast": True, "route_target": {"filter": True}},
+                            "apply_defaults": True,
                             "options": {
                                 "ipv4_unicast": {"type": "bool", "default": True},
                                 "route_target": {
                                     "type": "dict",
-                                    "default": {"filter": True},
+                                    "apply_defaults": True,
                                     "options": {
                                         "filter": {"type": "bool", "default": True},
                                     },
