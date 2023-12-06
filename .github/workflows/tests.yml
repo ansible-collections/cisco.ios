@@ -32,7 +32,6 @@ jobs:
     if: ${{ always() }}
     needs:
       - changelog
-      - integration
       - sanity
       - unit-galaxy
       - ansible-lint
@@ -42,8 +41,8 @@ jobs:
           python -c "assert 'failure' not in
           set([
           '${{ needs.changelog.result }}',
-          '${{ needs.integration.result }}',
           '${{ needs.sanity.result }}',
           '${{ needs.unit-galaxy.result }}'
+          '${{ needs.unit-source.result }}'
           '${{ needs.ansible-lint.result }}'
           ])"
