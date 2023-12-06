@@ -1,5 +1,5 @@
 ---
-name: CI
+name: "CI"
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
@@ -12,17 +12,18 @@ on:  # yamllint disable-line rule:truthy
   schedule:
     - cron: '0 0 * * *'
 
-
 jobs:
   changelog:
-    uses: ansible-network/github_actions/.github/workflows/changelog.yml@main
-    if: github.event_name != 'schedule'
+    uses: ansible/ansible-github-actions/.github/workflows/changelog.yaml@main
+    if: github.event_name == 'pull_request'
+  ansible-lint:
+    uses: ansible/ansible-github-actions/.github/workflows/lint.yaml@main
   sanity:
-    uses: ansible-network/github_actions/.github/workflows/sanity.yml@main
+    uses: ansible/ansible-github-actions/.github/workflows/sanity.yaml@main
   unit-galaxy:
-    uses: ansible-network/github_actions/.github/workflows/unit_galaxy.yml@main
+    uses: ansible/ansible-github-actions/.github/workflows/unit.yaml@main
   unit-source:
-    uses: ansible-network/github_actions/.github/workflows/unit_source.yml@main
+    uses: ansible/ansible-github-actions/.github/workflows/unit.yaml@main
     with:
       collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git
@@ -31,16 +32,18 @@ jobs:
     if: ${{ always() }}
     needs:
       - changelog
+      - integration
       - sanity
       - unit-galaxy
-      - unit-source
+      - ansible-lint
     runs-on: ubuntu-latest
     steps:
       - run: >-
           python -c "assert 'failure' not in
           set([
           '${{ needs.changelog.result }}',
+          '${{ needs.integration.result }}',
           '${{ needs.sanity.result }}',
-          '${{ needs.unit-galaxy.result }}',
-          '${{ needs.unit-source.result }}'
+          '${{ needs.unit-galaxy.result }}'
+          '${{ needs.ansible-lint.result }}'
           ])"
