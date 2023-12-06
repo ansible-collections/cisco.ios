@@ -10,11 +10,11 @@ __metaclass__ = type
 
 from textwrap import dedent
 
+from ansible.utils.plugins.plugin_utils.from_xml import test_remove
+
 from ansible_collections.cisco.ios.plugins.modules import ios_acls
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
-from ansible.utils.plugins.plugin_utils.from_xml import test_remove
-
 
 from .ios_module import TestIosModule
 
@@ -29,9 +29,7 @@ class TestIosAclsModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls."
@@ -42,9 +40,7 @@ class TestIosAclsModule(TestIosModule):
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls."
             "AclsFacts.get_acl_names",
         )
-        self.execute_show_command_name = (
-            self.mock_execute_show_command_name_specific.start()
-        )
+        self.execute_show_command_name = self.mock_execute_show_command_name_specific.start()
 
     def tearDown(self):
         super(TestIosAclsModule, self).tearDown()
@@ -147,7 +143,7 @@ class TestIosAclsModule(TestIosModule):
                                         sequence="200",
                                         source=dict(object_group="test_network_og"),
                                         destination=dict(
-                                            object_group="test_network_og"
+                                            object_group="test_network_og",
                                         ),
                                         dscp="ef",
                                         ttl=dict(eq=10),
@@ -384,7 +380,7 @@ class TestIosAclsModule(TestIosModule):
                                         "protocol": "ipv6",
                                         "sequence": 10,
                                         "source": {
-                                            "address": "2001:ABAD:BEEF:1221::/64"
+                                            "address": "2001:ABAD:BEEF:1221::/64",
                                         },
                                     },
                                     {
@@ -1012,7 +1008,8 @@ class TestIosAclsModule(TestIosModule):
                                         protocol_options=dict(tcp=dict(ack="True")),
                                         sequence="10",
                                         source=dict(
-                                            any="True", port_protocol=dict(eq="www")
+                                            any="True",
+                                            port_protocol=dict(eq="www"),
                                         ),
                                         destination=dict(
                                             any="True",
@@ -1106,7 +1103,7 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "any": True,
                                     "port_protocol": {
-                                        "range": {"start": 10, "end": 20}
+                                        "range": {"start": 10, "end": 20},
                                     },
                                 },
                                 "dscp": "af11",
