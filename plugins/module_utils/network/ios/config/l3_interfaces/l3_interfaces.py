@@ -58,7 +58,7 @@ class L3_interfaces(ResourceModule):
             "ipv6.enable",
         ]
         self.gen_parsers = [
-            "autostate"
+            "autostate",
         ]
 
     def execute_module(self):

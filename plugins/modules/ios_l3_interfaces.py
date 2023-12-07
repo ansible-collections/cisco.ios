@@ -95,7 +95,7 @@ options:
             description: Enable IP processing without an explicit address
             type: dict
             suboptions:
-              name: 
+              name:
                 description: Interface name
                 type: str
               poll:
@@ -301,11 +301,11 @@ EXAMPLES = """
 # - name: GigabitEthernet4
 # - name: Loopback999
 #   ipv4:
-#   - source_interface: 
+#   - source_interface:
 #       name: Loopback1
 #   ipv6:
 #   - enable: true
-#   autostate: false 
+#   autostate: false
 # - name: Vlan901
 
 # After state:
