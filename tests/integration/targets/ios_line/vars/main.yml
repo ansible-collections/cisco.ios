@@ -16,9 +16,9 @@ deleted_line:
     - "no session-timeout 15"
     - "no exec-timeout 60 0"
     - "no logging synchronous"
-    - "no transport preferred none"
-    - "no transport input ssh"
-    - "no transport output ssh"
+    - "default transport preferred"
+    - "default transport input"
+    - "default transport output"
     - "no escape-character 3"
 deleted_all:
   commands:
@@ -35,9 +35,9 @@ deleted_all:
     - "no session-timeout 15"
     - "no exec-timeout 60 0"
     - "no logging synchronous"
-    - "no transport preferred none"
-    - "no transport input ssh"
-    - "no transport output ssh"
+    - "default transport preferred"
+    - "default transport input"
+    - "default transport output"
     - "no escape-character 3"
 
 gathered:
@@ -136,6 +136,22 @@ overridden:
     - "transport preferred none"
     - "transport input ssh"
     - "transport output ssh"
+
+replaced:
+  commands:
+    - "line con 0"
+    - "exec-timeout 60 0"
+    - "authorization commands 1 console"
+    - "authorization commands 15 console"
+    - "authorization exec console"
+    - "login authentication console"
+    - "line vty 0 4"
+    - "escape-character 3"
+    - "login authentication default"
+    - "transport preferred none"
+    - "transport input ssh"
+    - "transport output ssh"
+    - "no password 7 02050D480809"
 
 parsed:
   config:

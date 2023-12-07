@@ -645,6 +645,198 @@ class TestIosLineModule(TestIosModule):
 
         self.assertEqual(sorted(result["commands"]), sorted(overridden))
 
+    def test_ios_line_replaced(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            line con 0
+             session-timeout 5
+             exec-timeout 60 0
+             authorization commands 15 CON
+             password 7 02050D480809
+             length 0
+             stopbits 1
+            line aux 0
+             no exec
+             transport input none
+             stopbits 1
+            line vty 0 4
+             access-class filter in
+             password 7 02050D480809
+             transport input telnet
+            line vty 5 15
+             password 7 02050D480809
+             length 0
+             transport input telnet
+            """,
+        )
+        playbook = {
+            "config": {
+                "lines": [
+                    {
+                        "name": "con 0",
+                        "authorization": {
+                            "exec": "CON",
+                        },
+                        "escape_character": {
+                            "value": "3",
+                        },
+                        "exec": {
+                            "timeout": 60,
+                        },
+                        "login": "CON",
+                        "session": {
+                            "timeout": 5,
+                        },
+                        "stopbits": "1",
+                    },
+                    {
+                        "name": "vty 0 4",
+                        "escape_character": {
+                            "value": "3",
+                        },
+                        "exec": {
+                            "timeout": 60,
+                        },
+                        "logging": {
+                            "enable": True,
+                        },
+                        "login": "default",
+                        "session": {
+                            "timeout": 5,
+                        },
+                        "transport": [
+                            {
+                                "name": "preferred",
+                                "none": True,
+                            },
+                            {
+                                "name": "input",
+                                "telnet": True,
+                                "ssh": True,
+                            },
+                            {
+                                "name": "output",
+                                "ssh": True,
+                            },
+                        ],
+                    },
+                ],
+            },
+        }
+        replaced = [
+            "line con 0",
+            "authorization exec CON",
+            "login authentication CON",
+            "escape-character 3",
+            "no authorization commands 15 CON",
+            "no length 0",
+            "no password 7 02050D480809",
+            "line vty 0 4",
+            "exec-timeout 60 0",
+            "logging synchronous",
+            "transport preferred none",
+            "transport input telnet ssh",
+            "transport output ssh",
+            "escape-character 3",
+            "session-timeout 5",
+            "no access-class filter in",
+            "no password 7 02050D480809",
+        ]
+        playbook["state"] = "replaced"
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+
+        self.assertEqual(sorted(result["commands"]), sorted(replaced))
+
+    def test_ios_line_replaced_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            line con 0
+             session-timeout 5
+             exec-timeout 60 0
+             authorization exec CON
+             login authentication CON
+             escape-character 3
+             stopbits 1
+            line aux 0
+             no exec
+             transport input none
+             stopbits 1
+            line vty 0 4
+             session-timeout 5
+             exec prompt expand
+             exec-timeout 60 0
+             logging synchronous
+             transport preferred none
+             transport input telnet ssh
+             transport output ssh
+             escape-character 3
+            """,
+        )
+        playbook = {
+            "config": {
+                "lines": [
+                    {
+                        "name": "con 0",
+                        "authorization": {
+                            "exec": "CON",
+                        },
+                        "escape_character": {
+                            "value": "3",
+                        },
+                        "exec": {
+                            "timeout": 60,
+                        },
+                        "login": "CON",
+                        "session": {
+                            "timeout": 5,
+                        },
+                        "stopbits": "1",
+                    },
+                    {
+                        "name": "vty 0 4",
+                        "escape_character": {
+                            "value": "3",
+                        },
+                        "exec": {
+                            "prompt": {
+                                "expand": True,
+                            },
+                            "timeout": 60,
+                        },
+                        "logging": {
+                            "enable": True,
+                        },
+                        "login": "default",
+                        "session": {
+                            "timeout": 5,
+                        },
+                        "transport": [
+                            {
+                                "name": "preferred",
+                                "none": True,
+                            },
+                            {
+                                "name": "input",
+                                "telnet": True,
+                                "ssh": True,
+                            },
+                            {
+                                "name": "output",
+                                "ssh": True,
+                            },
+                        ],
+                    },
+                ],
+            },
+        }
+        replaced = []
+        playbook["state"] = "replaced"
+        set_module_args(playbook)
+        result = self.execute_module(changed=False)
+
+        self.assertEqual(sorted(result["commands"]), sorted(replaced))
+
     def test_ios_line_deleted(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -687,9 +879,9 @@ class TestIosLineModule(TestIosModule):
             "no session-timeout 5",
             "exec-timeout 10 0",
             "no logging synchronous",
-            "no transport preferred",
-            "no transport input",
-            "no transport output",
+            "default transport preferred",
+            "default transport input",
+            "default transport output",
             "escape-character DEFAULT",
             "no line vty 5 15",
         ]

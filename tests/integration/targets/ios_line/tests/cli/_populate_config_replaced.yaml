@@ -1,0 +1,24 @@
+---
+- name: Populate configuration
+  vars:
+    lines: |
+      line con 0
+      session-timeout 15
+      login authentication limited
+      escape-character 3
+      stopbits 1
+      line aux 0
+      stopbits 1
+      line aux 0
+      no exec
+      transport input ssh
+      stopbits 1
+      line vty 0 4
+      session-timeout 15
+      exec-timeout 60 0
+      password 7 02050D480809
+      login authentication remote
+      logging synchronous
+      transport input ssh telnet
+  ansible.netcommon.cli_config:
+    config: "{{ lines }}"
