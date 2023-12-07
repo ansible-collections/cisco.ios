@@ -51,9 +51,14 @@ class L3_interfaces(ResourceModule):
             "ipv4.address",
             "ipv4.pool",
             "ipv4.dhcp",
+            "ipv4.source_interface",
             "ipv6.address",
             "ipv6.autoconfig",
             "ipv6.dhcp",
+            "ipv6.enable",
+        ]
+        self.gen_parsers = [
+            "autostate"
         ]
 
     def execute_module(self):
@@ -101,10 +106,15 @@ class L3_interfaces(ResourceModule):
                     self._compare(want={}, have=have)
 
         for k, want in wantd.items():
-            self._compare(want=want, have=haved.pop(k, {}))
+            have = haved.pop(k, {})
+            # New interface (doesn't use fact file)
+            if k[:4] == "Vlan" and "autostate" not in have:
+                have.update({"autostate": True})
+            self._compare(want=want, have=have)
 
     def _compare(self, want, have):
         begin = len(self.commands)
+        self.compare(parsers=self.gen_parsers, want=want, have=have)
         self._compare_lists(want=want, have=have)
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))

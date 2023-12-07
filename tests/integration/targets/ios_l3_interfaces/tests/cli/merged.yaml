@@ -23,6 +23,17 @@
               - address: 198.51.100.2/24
             ipv6:
               - address: 2001:db8:0:3::/64
+          - name: Vlan901
+            autostate: false
+            ipv4:
+              - source_interface:
+                  name: Loopback1
+            ipv6:
+              - enable: true
+          - name: Vlan902
+            autostate: true
+            ipv6:
+              - enable: true
         state: merged
 
     - name: L3_interface merged - assert that correct set of commands were generated

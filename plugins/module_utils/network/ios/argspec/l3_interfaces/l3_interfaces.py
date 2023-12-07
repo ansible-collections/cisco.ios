@@ -36,6 +36,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
             "type": "list",
             "elements": "dict",
             "options": {
+                "autostate": {"type": "bool"},
                 "name": {"type": "str", "required": True},
                 "ipv4": {
                     "type": "list",
@@ -54,6 +55,14 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                             },
                         },
                         "pool": {"type": "str"},
+                        "source_interface": {
+                            "type": "dict",
+                            "options": {
+                                "name": {"type": "str"},
+                                "poll": {"type": "bool"},
+                                "point_to_point": {"type": "bool"},
+                            },
+                        },
                     },
                 },
                 "ipv6": {
@@ -72,6 +81,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                 "rapid_commit": {"type": "bool"},
                             },
                         },
+                        "enable": {"type": "bool"},
                         "anycast": {"type": "bool"},
                         "cga": {"type": "bool"},
                         "eui": {"type": "bool"},
