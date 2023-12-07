@@ -22,12 +22,6 @@ jobs:
     uses: ansible/ansible-github-actions/.github/workflows/sanity.yaml@main
   unit-galaxy:
     uses: ansible/ansible-github-actions/.github/workflows/unit_galaxy.yaml@main
-  unit-source:
-    uses: ansible/ansible-github-actions/.github/workflows/unit.yaml@main
-    with:
-      collection_pre_install: >-
-        git+https://github.com/KB-perByte/ansible.utils.git
-        git+https://github.com/ansible-collections/ansible.netcommon.git
   all_green:
     if: ${{ always() }}
     needs:
@@ -43,6 +37,5 @@ jobs:
           '${{ needs.changelog.result }}',
           '${{ needs.sanity.result }}',
           '${{ needs.unit-galaxy.result }}'
-          '${{ needs.unit-source.result }}'
           '${{ needs.ansible-lint.result }}'
           ])"

@@ -10,8 +10,6 @@ __metaclass__ = type
 
 from textwrap import dedent
 
-from ansible.utils.plugins.plugin_utils.from_xml import test_remove
-
 from ansible_collections.cisco.ios.plugins.modules import ios_acls
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
@@ -29,7 +27,9 @@ class TestIosAclsModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+        self.get_resource_connection_facts = (
+            self.mock_get_resource_connection_facts.start()
+        )
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls."
@@ -40,7 +40,9 @@ class TestIosAclsModule(TestIosModule):
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls."
             "AclsFacts.get_acl_names",
         )
-        self.execute_show_command_name = self.mock_execute_show_command_name_specific.start()
+        self.execute_show_command_name = (
+            self.mock_execute_show_command_name_specific.start()
+        )
 
     def tearDown(self):
         super(TestIosAclsModule, self).tearDown()
@@ -169,9 +171,7 @@ class TestIosAclsModule(TestIosModule):
             "ip access-list extended test_pre",
             "20 permit ip any any precedence immediate",
         ]
-        self.assertEqual("test", test_remove("test"))
         self.assertEqual(sorted(result["commands"]), sorted(commands))
-        self.assertEqual("test", test_remove("test"))
 
     def test_ios_acls_merged_remarks_positional(self):
         self.execute_show_command.return_value = dedent(
