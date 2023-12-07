@@ -485,7 +485,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "template peer-policy"
-            "{{ (' ' + template.peer_policy) if peer_policy is defined else '' }}",
+            "{{ (' ' + template.peer_policy) if template.peer_policy is defined else '' }}",
             "result": {
                 "template": {"peer_policy": "{{ peer_policy }}"},
             },
@@ -500,7 +500,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "template peer-session"
-            "{{ (' ' + template.peer_session) if peer_session is defined else '' }}",
+            "{{ (' ' + template.peer_session) if template.peer_session is defined else '' }}",
             "result": {
                 "template": {"peer_session": "{{ peer_session }}"},
             },
