@@ -26,13 +26,24 @@ class LineTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(LineTemplate, self).__init__(lines=lines, tmplt=self, module=module)
 
+    def render(self, data, parser_name, negate=False):
+        """render"""
+        if negate:
+            tmplt = (
+                self.get_parser(parser_name).get("remval") or self.get_parser(parser_name)["setval"]
+            )
+        else:
+            tmplt = self.get_parser(parser_name)["setval"]
+        command = self._render(tmplt, data, negate and not tmplt.startswith("default"))
+        return command
+
     # fmt: off
     PARSERS = [
         {
             "name": "line",
             "getval": re.compile(
                 r"""
-                ^line\s+(?P<name>con\s+[0-9]+|vty\s+[0-9]+\s+[0-9]*)
+                ^line\s+(?P<name>con\s+[0-9]+|aux\s+[0-9]+|vty\s+[0-9]+\s+[0-9]*)
                 """, re.VERBOSE,
             ),
             "setval": "line {{ name }}",
@@ -671,7 +682,7 @@ class LineTemplate(NetworkTemplate):
                       "{{ ' rlogin' if transport.rlogin|d(False) }}"
                       "{{ ' ssh' if transport.ssh|d(False) }}"
                       "{% endif %}",
-            "remval": "transport {{ transport.name }}",
+            "remval": "default transport {{ transport.name }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {

@@ -19,7 +19,7 @@ module: ios_line
 short_description: Resource module to configure line
 description:
   - This module provides declarative management of the lines I(console), I(vty)
-version_added: 5.0.0
+version_added: 6.0.0
 author:
   - Ambroise Rosset (@earendilfr)
 notes:
@@ -333,6 +333,7 @@ options:
         platform specific CLI commands which will be returned in the I(rendered) key
         within the result. For state I(rendered) active connection to remote host is
         not required.
+      - The state I(replaced) will only override the configuration part of the defined lines.
       - The state I(gathered) will fetch the running configuration from device and transform
         it into structured data in the format as per the resource module argspec and
         the value is returned in the I(gathered) key within the result.
@@ -346,6 +347,7 @@ options:
     choices:
       - merged
       - overridden
+      - replaced
       - deleted
       - rendered
       - parsed

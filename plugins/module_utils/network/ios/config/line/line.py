@@ -126,6 +126,10 @@ class Line(ResourceModule):
             for k, have in haved["lines"].items():
                 if k not in wantd["lines"]:
                     self._compare(want={}, have=have)
+        elif self.state in ["replaced"]:
+            only_have_line_k = [k for k in haved["lines"].keys() if k not in wantd["lines"].keys()]
+            for k in only_have_line_k:
+                haved["lines"].pop(k)
 
         for k, want in wantd["lines"].items():
             self._compare(want=want, have=haved["lines"].pop(k, {}))

@@ -211,6 +211,7 @@ class LineArgs(object):  # pylint: disable=R0903
             "choices": [
                 "merged",
                 "overridden",
+                "replaced",
                 "deleted",
                 "rendered",
                 "parsed",
