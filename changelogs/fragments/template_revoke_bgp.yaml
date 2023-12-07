@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_bgp_global - fix template attribute to generate configuration commands.
