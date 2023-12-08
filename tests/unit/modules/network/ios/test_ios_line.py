@@ -553,6 +553,7 @@ class TestIosLineModule(TestIosModule):
             "no access-class filter in",
             "no password 7 02050D480809",
             "no line vty 5 15",
+            "do terminal length 0",
         ]
         playbook["state"] = "overridden"
         set_module_args(playbook)
@@ -741,6 +742,7 @@ class TestIosLineModule(TestIosModule):
             "session-timeout 5",
             "no access-class filter in",
             "no password 7 02050D480809",
+            "do terminal length 0",
         ]
         playbook["state"] = "replaced"
         set_module_args(playbook)
