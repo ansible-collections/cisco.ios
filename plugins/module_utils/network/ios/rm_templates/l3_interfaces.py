@@ -274,4 +274,3 @@ class L3_interfacesTemplate(NetworkTemplate):
         },
     ]
     # fmt: on
-    
