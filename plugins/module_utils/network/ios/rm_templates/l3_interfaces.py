@@ -166,7 +166,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "{{ ' point-to-point' if ipv4.source_interface.point_to_point|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
-                    "ipv4":  [
+                    "ipv4": [
                         {
                             "source_interface": {
                                 "name": "{{ True if name is defined }}",
@@ -262,7 +262,7 @@ class L3_interfacesTemplate(NetworkTemplate):
         },
         {
             "name": "ipv6.enable",
-            "getval": re.compile(r"""\s+ipv6\s+enable$""",re.VERBOSE),
+            "getval": re.compile(r"""\s+ipv6\s+enable$""", re.VERBOSE),
             "setval": "ipv6 enable",
             "result": {
                 "{{ name }}": {
@@ -274,3 +274,4 @@ class L3_interfacesTemplate(NetworkTemplate):
         },
     ]
     # fmt: on
+    
