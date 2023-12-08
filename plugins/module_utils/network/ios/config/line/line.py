@@ -24,6 +24,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     ResourceModule,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    to_list,
     dict_merge,
 )
 
@@ -133,6 +134,11 @@ class Line(ResourceModule):
 
         for k, want in wantd["lines"].items():
             self._compare(want=want, have=haved["lines"].pop(k, {}))
+
+        # Workaround: if we change the length command, we need to 
+        # force to reset the length for the terminal
+        if any(cmd for cmd in self.commands if "length" in cmd):
+            self.commands.extend(to_list("do terminal length 0"))
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
