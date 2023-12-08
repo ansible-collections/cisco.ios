@@ -108,8 +108,9 @@ class L3_interfaces(ResourceModule):
         for k, want in wantd.items():
             have = haved.pop(k, {})
             # New interface (doesn't use fact file)
-            if k[:4] == "Vlan" and "autostate" not in have:
-                have.update({"autostate": True})
+            if k[:4] == "Vlan":
+                have.setdefault("autostate", True)
+                want.setdefault("autostate", True)
             self._compare(want=want, have=have)
 
     def _compare(self, want, have):
