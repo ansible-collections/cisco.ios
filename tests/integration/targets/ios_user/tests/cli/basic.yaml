@@ -123,6 +123,7 @@
       - name: ansibleuser4
       - name: ansibleuser5
       - name: ansibleuser6
+      - name: ansibleuser7
       - name: ssh_user
     state: absent
 
@@ -151,6 +152,11 @@
       type: 9
       value: $9$B/6NVV7joWJ9w.$XueHQxIOZk0GhNC3lxUFioUeowJrtLmXxouXfTuoNpc
     state: present
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == true
+      - "'username ansibleuser6 secret' in result.commands[0]"
 
 - name: Ensure SSH key is not world readable
   ansible.builtin.file:
