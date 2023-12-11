@@ -1,0 +1,3 @@
+---
+minor_changes:
+  - ios_bgp_global - added 'bgp.default.ipv4_unicast' and 'bgp.default.route_target.filter' key

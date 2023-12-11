@@ -477,6 +477,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                     bgp=dict(
                         advertise_best_external=True,
                         bestpath_options=dict(compare_routerid=True),
+                        default=dict(ipv4_unicast=False, route_target=dict(filter=True)),
                         log_neighbor_changes=True,
                         nopeerup_delay_options=dict(cold_boot=20, post_boot=10),
                     ),
@@ -494,6 +495,7 @@ class TestIosBgpGlobalModule(TestIosModule):
         )
         commands = [
             "router bgp 65000",
+            "no bgp default ipv4-unicast",
             "no timers bgp 100 200 150",
             "bgp log-neighbor-changes",
             "bgp nopeerup-delay cold-boot 20",
@@ -550,6 +552,7 @@ class TestIosBgpGlobalModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             router bgp 65000
+             no bgp default ipv4-unicast
              bgp nopeerup-delay post-boot 10
              bgp bestpath compare-routerid
              bgp advertise-best-external
@@ -565,6 +568,7 @@ class TestIosBgpGlobalModule(TestIosModule):
         set_module_args(dict(config=dict(as_number=65000), state="deleted"))
         commands = [
             "router bgp 65000",
+            "bgp default ipv4-unicast",
             "no timers bgp 100 200 150",
             "no bgp advertise-best-external",
             "no bgp bestpath compare-routerid",
@@ -845,6 +849,7 @@ class TestIosBgpGlobalModule(TestIosModule):
             "bgp": {
                 "nopeerup_delay_options": {"post_boot": 10},
                 "bestpath_options": {"compare_routerid": True},
+                "default": {"ipv4_unicast": True, "route_target": {"filter": True}},
                 "advertise_best_external": True,
             },
             "timers": {"keepalive": 100, "holdtime": 200, "min_holdtime": 150},
