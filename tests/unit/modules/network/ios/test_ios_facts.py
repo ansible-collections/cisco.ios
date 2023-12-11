@@ -95,8 +95,12 @@ class TestIosFactsModule(TestIosModule):
         set_module_args(dict(gather_subset="interfaces"))
         result = self.execute_module()
         self.assertEqual(
-            result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet0/0"]["macaddress"],
+            result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet0/0/0.1012"]["macaddress"],
             "5e00.0003.0000",
+        )
+        self.assertEqual(
+            result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet0/0"]["macaddress"],
+            "5e00.0008.0000",
         )
         self.assertEqual(
             result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet1"]["macaddress"],
