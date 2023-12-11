@@ -61,6 +61,8 @@ class Bgp_global(ResourceModule):
         "route_server_context.description",
         "synchronization",
         "table_map",
+        "template.peer_policy",
+        "template.peer_session",
         "timers",
         "bgp.additional_paths",
         "bgp.advertise_best_external",
@@ -206,17 +208,30 @@ class Bgp_global(ResourceModule):
                     _parse,
                 )
             else:
-                self._compare_generic_lists(want.get(_parse, {}), have.get(_parse, {}), _parse)
+                self._compare_generic_lists(
+                    want.get(_parse, {}),
+                    have.get(_parse, {}),
+                    _parse,
+                )
 
         # for neighbors
-        self._compare_neighbor_lists(want.get("neighbors", {}), have.get("neighbors", {}))
+        self._compare_neighbor_lists(
+            want.get("neighbors", {}),
+            have.get("neighbors", {}),
+        )
 
         # for redistribute
-        self._compare_redistribute_lists(want.get("redistribute", {}), have.get("redistribute", {}))
+        self._compare_redistribute_lists(
+            want.get("redistribute", {}),
+            have.get("redistribute", {}),
+        )
 
         # add as_number in the begining fo command set if commands generated
         if len(self.commands) != cmd_len or (not have and want):
-            self.commands.insert(0, self._tmplt.render(want or have, "as_number", False))
+            self.commands.insert(
+                0,
+                self._tmplt.render(want or have, "as_number", False),
+            )
 
     def _has_bgp_inject_maps(self, want):
         if want.get("bgp", {}).get("inject_maps", {}):

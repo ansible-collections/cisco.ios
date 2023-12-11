@@ -67,8 +67,16 @@ class TestIosBgpGlobalModule(TestIosModule):
                             "netmask": "255.255.0.0",
                             "summary_only": True,
                         },
-                        {"address": "192.0.2.4", "as_set": True, "netmask": "255.255.255.0"},
-                        {"address": "192.0.2.5", "as_set": True, "netmask": "255.255.255.0"},
+                        {
+                            "address": "192.0.2.4",
+                            "as_set": True,
+                            "netmask": "255.255.255.0",
+                        },
+                        {
+                            "address": "192.0.2.5",
+                            "as_set": True,
+                            "netmask": "255.255.255.0",
+                        },
                     ],
                     "as_number": "65000",
                     "auto_summary": True,
@@ -83,7 +91,9 @@ class TestIosBgpGlobalModule(TestIosModule):
                             "med": {"confed": True, "missing_as_worst": True},
                         },
                         "confederation": {"identifier": "22"},
-                        "consistency_checker": {"error_message": {"interval": 10, "set": True}},
+                        "consistency_checker": {
+                            "error_message": {"interval": 10, "set": True},
+                        },
                         "dampening": {
                             "max_suppress": 44,
                             "penalty_half_time": 22,
@@ -98,12 +108,23 @@ class TestIosBgpGlobalModule(TestIosModule):
                             "neighbors": {"time": 31},
                         },
                         "inject_maps": [
-                            {"copy_attributes": True, "exist_map_name": "mp2", "name": "map1"},
-                            {"copy_attributes": True, "exist_map_name": "mp3", "name": "map2"},
+                            {
+                                "copy_attributes": True,
+                                "exist_map_name": "mp2",
+                                "name": "map1",
+                            },
+                            {
+                                "copy_attributes": True,
+                                "exist_map_name": "mp3",
+                                "name": "map2",
+                            },
                         ],
                         "listen": {
                             "limit": 200,
-                            "range": {"host_with_subnet": "192.0.2.9/24", "peer_group": "mygrp"},
+                            "range": {
+                                "host_with_subnet": "192.0.2.9/24",
+                                "peer_group": "mygrp",
+                            },
                         },
                         "log_neighbor_changes": True,
                         "maxas_limit": 2,
@@ -132,8 +153,16 @@ class TestIosBgpGlobalModule(TestIosModule):
                     },
                     "bmp": {"buffer_size": 22},
                     "distance": {
-                        "bgp": {"routes_external": 2, "routes_internal": 3, "routes_local": 4},
-                        "mbgp": {"routes_external": 2, "routes_internal": 3, "routes_local": 5},
+                        "bgp": {
+                            "routes_external": 2,
+                            "routes_internal": 3,
+                            "routes_local": 4,
+                        },
+                        "mbgp": {
+                            "routes_external": 2,
+                            "routes_internal": 3,
+                            "routes_local": 5,
+                        },
                     },
                     "distributes": [
                         {"out": True, "prefix": "workcheck"},
@@ -141,6 +170,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                     ],
                     "maximum_paths": {"ibgp": 22},
                     "maximum_secondary_paths": {"ibgp": 22, "paths": 12},
+                    "template": {"peer_policy": "Test1"},
                     "neighbors": [
                         {
                             "neighbor_address": "192.0.2.3",
@@ -165,7 +195,13 @@ class TestIosBgpGlobalModule(TestIosModule):
                     ],
                     "redistribute": [
                         {"application": {"metric": 22, "name": "ap1"}},
-                        {"application": {"metric": 33, "name": "ap112", "route_map": "mp1"}},
+                        {
+                            "application": {
+                                "metric": 33,
+                                "name": "ap112",
+                                "route_map": "mp1",
+                            },
+                        },
                         {"connected": {"metric": 22}},
                         {"static": {"metric": 33, "route_map": "mp1"}},
                         {"mobile": {"metric": 211}},
@@ -232,6 +268,7 @@ class TestIosBgpGlobalModule(TestIosModule):
             "neighbor 192.0.2.3 remote-as 300",
             "neighbor 192.0.2.3 timers 10 20",
             "redistribute connected metric 22",
+            "template peer-policy Test1",
             "redistribute mobile metric 211",
             "redistribute application ap1 metric 22",
             "redistribute static metric 33 route-map mp1",
@@ -347,11 +384,23 @@ class TestIosBgpGlobalModule(TestIosModule):
                 config=dict(
                     as_number="65000",
                     aggregate_address=dict(
-                        dict(address="192.168.0.11", attribute_map="map1", netmask="255.255.0.0"),
+                        dict(
+                            address="192.168.0.11",
+                            attribute_map="map1",
+                            netmask="255.255.0.0",
+                        ),
                     ),
                     aggregate_addresses=[
-                        dict(address="192.168.0.1", attribute_map="map", netmask="255.255.0.0"),
-                        dict(address="192.168.0.2", attribute_map="map2", netmask="255.255.0.0"),
+                        dict(
+                            address="192.168.0.1",
+                            attribute_map="map",
+                            netmask="255.255.0.0",
+                        ),
+                        dict(
+                            address="192.168.0.2",
+                            attribute_map="map2",
+                            netmask="255.255.0.0",
+                        ),
                     ],
                     bgp=dict(
                         advertise_best_external=True,
@@ -361,7 +410,11 @@ class TestIosBgpGlobalModule(TestIosModule):
                     ),
                     redistribute=[dict(connected=dict(set=True, metric=10))],
                     neighbors=[
-                        dict(address="192.0.2.1", remote_as=200, description="replace neighbor"),
+                        dict(
+                            address="192.0.2.1",
+                            remote_as=200,
+                            description="replace neighbor",
+                        ),
                     ],
                 ),
                 state="overridden",
@@ -403,11 +456,23 @@ class TestIosBgpGlobalModule(TestIosModule):
                 config=dict(
                     as_number="65000",
                     aggregate_address=dict(
-                        dict(address="192.168.0.11", attribute_map="map1", netmask="255.255.0.0"),
+                        dict(
+                            address="192.168.0.11",
+                            attribute_map="map1",
+                            netmask="255.255.0.0",
+                        ),
                     ),
                     aggregate_addresses=[
-                        dict(address="192.168.0.1", attribute_map="map", netmask="255.255.0.0"),
-                        dict(address="192.168.0.2", attribute_map="map2", netmask="255.255.0.0"),
+                        dict(
+                            address="192.168.0.1",
+                            attribute_map="map",
+                            netmask="255.255.0.0",
+                        ),
+                        dict(
+                            address="192.168.0.2",
+                            attribute_map="map2",
+                            netmask="255.255.0.0",
+                        ),
                     ],
                     bgp=dict(
                         advertise_best_external=True,
@@ -417,7 +482,11 @@ class TestIosBgpGlobalModule(TestIosModule):
                     ),
                     redistribute=[dict(connected=dict(set=True, metric=10))],
                     neighbors=[
-                        dict(address="192.0.2.1", remote_as=200, description="replace neighbor"),
+                        dict(
+                            address="192.0.2.1",
+                            remote_as=200,
+                            description="replace neighbor",
+                        ),
                     ],
                 ),
                 state="replaced",
@@ -561,7 +630,10 @@ class TestIosBgpGlobalModule(TestIosModule):
                         },
                         "listen": {
                             "limit": 200,
-                            "range": {"ipv4_with_subnet": "192.0.2.9/24", "peer_group": "mygrp"},
+                            "range": {
+                                "ipv4_with_subnet": "192.0.2.9/24",
+                                "peer_group": "mygrp",
+                            },
                         },
                         "log_neighbor_changes": True,
                         "nopeerup_delay": [
@@ -575,10 +647,22 @@ class TestIosBgpGlobalModule(TestIosModule):
                     },
                     "bmp": {"buffer_size": 22, "server": 2},
                     "distance": {
-                        "bgp": {"routes_external": 2, "routes_internal": 3, "routes_local": 4},
-                        "mbgp": {"routes_external": 2, "routes_internal": 3, "routes_local": 5},
+                        "bgp": {
+                            "routes_external": 2,
+                            "routes_internal": 3,
+                            "routes_local": 4,
+                        },
+                        "mbgp": {
+                            "routes_external": 2,
+                            "routes_internal": 3,
+                            "routes_local": 5,
+                        },
                     },
-                    "distribute_list": {"out": True, "acl": "5000", "interface": "Loopback0"},
+                    "distribute_list": {
+                        "out": True,
+                        "acl": "5000",
+                        "interface": "Loopback0",
+                    },
                     "maximum_paths": {"ibgp": 2, "paths": 2},
                     "maximum_secondary_paths": {"ibgp": 22, "paths": 22},
                     "neighbors": [
@@ -613,7 +697,11 @@ class TestIosBgpGlobalModule(TestIosModule):
                             "send_community": {"extended": True},
                             "password": "new password",
                         },
-                        {"activate": True, "neighbor_address": "172.21.1.2", "remote_as": 45000},
+                        {
+                            "activate": True,
+                            "neighbor_address": "172.21.1.2",
+                            "remote_as": 45000,
+                        },
                         {"neighbor_address": "192.0.2.3", "remote_as": 300},
                         {
                             "neighbor_address": "192.0.2.4",
@@ -655,7 +743,13 @@ class TestIosBgpGlobalModule(TestIosModule):
                     "redistribute": [
                         {"static": {"metric": 33, "route_map": "mp1"}},
                         {"application": {"metric": 22, "name": "ap1"}},
-                        {"application": {"metric": 33, "name": "ap112", "route_map": "mp1"}},
+                        {
+                            "application": {
+                                "metric": 33,
+                                "name": "ap112",
+                                "route_map": "mp1",
+                            },
+                        },
                         {"connected": {"metric": 22}},
                         {"mobile": {"metric": 211}},
                     ],

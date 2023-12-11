@@ -1795,8 +1795,6 @@ options:
       template:
         description:
           - Enter template command mode
-          - This option is DEPRECATED as is not valid within the scope of module,
-            this attribute will be removed after 2024-06-01.
         type: dict
         suboptions:
           peer_policy:
