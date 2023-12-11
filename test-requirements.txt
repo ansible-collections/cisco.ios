@@ -7,3 +7,4 @@ yamllint
 pytest-ansible ; python_version >= '3.9'
 git+https://github.com/ansible-community/pytest-ansible-units.git ; python_version < '3.9'
 pytest-xdist
+pytest-cov

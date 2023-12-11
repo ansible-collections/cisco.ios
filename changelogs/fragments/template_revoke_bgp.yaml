@@ -1,0 +1,5 @@
+---
+bugfixes:
+  - ios_bgp_global - fix template attribute to generate configuration commands.
+trivial:
+  - Remove unreachable provider code, cleanup dependencies.
