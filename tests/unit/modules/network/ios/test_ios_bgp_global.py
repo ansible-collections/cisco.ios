@@ -12,10 +12,7 @@ from textwrap import dedent
 
 from ansible_collections.cisco.ios.plugins.modules import ios_bgp_global
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
-from ansible_collections.cisco.ios.tests.unit.modules.utils import (
-    AnsibleFailJson,
-    set_module_args,
-)
+from ansible_collections.cisco.ios.tests.unit.modules.utils import AnsibleFailJson, set_module_args
 
 from .ios_module import TestIosModule
 
@@ -30,9 +27,7 @@ class TestIosBgpGlobalModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_global.bgp_global."
@@ -97,7 +92,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                         },
                         "confederation": {"identifier": "22"},
                         "consistency_checker": {
-                            "error_message": {"interval": 10, "set": True}
+                            "error_message": {"interval": 10, "set": True},
                         },
                         "dampening": {
                             "max_suppress": 44,
@@ -205,7 +200,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                                 "metric": 33,
                                 "name": "ap112",
                                 "route_map": "mp1",
-                            }
+                            },
                         },
                         {"connected": {"metric": 22}},
                         {"static": {"metric": 33, "route_map": "mp1"}},
@@ -753,7 +748,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                                 "metric": 33,
                                 "name": "ap112",
                                 "route_map": "mp1",
-                            }
+                            },
                         },
                         {"connected": {"metric": 22}},
                         {"mobile": {"metric": 211}},
