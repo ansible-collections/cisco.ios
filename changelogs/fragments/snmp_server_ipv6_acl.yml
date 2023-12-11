@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - io_snmp_server - fix group IPv6 ACL command.
+  - io_snmp_server - fix user IPv6 ACL command.
