@@ -25,12 +25,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     to_list,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    dict_to_set,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import dict_to_set
 
 
 class Vlans(ConfigBase):
@@ -144,7 +140,7 @@ class Vlans(ConfigBase):
         if self.state in ("overridden", "merged", "replaced", "rendered") and not want:
             self._module.fail_json(
                 msg="value of config parameter must not be empty for state {0}".format(
-                    self.state
+                    self.state,
                 ),
             )
 
@@ -290,12 +286,16 @@ class Vlans(ConfigBase):
             name = dict(have_diff).get("name")
             if name and not dict(want_diff).get("name"):
                 self.remove_command_from_config_list(
-                    vlan, "name {0}".format(name), commands
+                    vlan,
+                    "name {0}".format(name),
+                    commands,
                 )
             state = dict(have_diff).get("state")
             if state and not dict(want_diff).get("state"):
                 self.remove_command_from_config_list(
-                    vlan, "state {0}".format(state), commands
+                    vlan,
+                    "state {0}".format(state),
+                    commands,
                 )
             shutdown = dict(have_diff).get("shutdown")
             if shutdown and not dict(want_diff).get("shutdown"):
@@ -303,7 +303,9 @@ class Vlans(ConfigBase):
             mtu = dict(have_diff).get("mtu")
             if mtu and not dict(want_diff).get("mtu"):
                 self.remove_command_from_config_list(
-                    vlan, "mtu {0}".format(mtu), commands
+                    vlan,
+                    "mtu {0}".format(mtu),
+                    commands,
                 )
             remote_span = dict(have_diff).get("remote_span")
             if remote_span and not dict(want_diff).get("remote_span"):
@@ -317,10 +319,12 @@ class Vlans(ConfigBase):
                     commands,
                 )
                 if private_vlan_type == "primary" and dict(private_vlan).get(
-                    "associated"
+                    "associated",
                 ):
                     self.remove_command_from_config_list(
-                        vlan, "private-vlan association", commands
+                        vlan,
+                        "private-vlan association",
+                        commands,
                     )
 
         # Get the diff b/w want n have
@@ -344,15 +348,21 @@ class Vlans(ConfigBase):
 
                 if name:
                     self.add_command_to_config_list(
-                        vlan, "name {0}".format(name), commands
+                        vlan,
+                        "name {0}".format(name),
+                        commands,
                     )
                 if state:
                     self.add_command_to_config_list(
-                        vlan, "state {0}".format(state), commands
+                        vlan,
+                        "state {0}".format(state),
+                        commands,
                     )
                 if mtu:
                     self.add_command_to_config_list(
-                        vlan, "mtu {0}".format(mtu), commands
+                        vlan,
+                        "mtu {0}".format(mtu),
+                        commands,
                     )
                 if remote_span:
                     self.add_command_to_config_list(vlan, "remote-span", commands)
@@ -419,11 +429,11 @@ class Vlans(ConfigBase):
                 if have.get("mtu") != want.get("mtu"):
                     self.remove_command_from_config_list(vlan, "mtu", commands)
                 if have.get("remote_span") != want.get("remote_span") and want.get(
-                    "remote_span"
+                    "remote_span",
                 ):
                     self.remove_command_from_config_list(vlan, "remote-span", commands)
                 if have.get("shutdown") != want.get("shutdown") and want.get(
-                    "shutdown"
+                    "shutdown",
                 ):
                     self.remove_command_from_config_list(vlan, "shutdown", commands)
                 if have.get("state") != want.get("state") and want.get("state"):
@@ -477,7 +487,8 @@ class Vlans(ConfigBase):
 
         if member_evi:
             cmd = prefix + "member evpn-instance {0} vni {1}".format(
-                member_evi, member_vni
+                member_evi,
+                member_vni,
             )
         elif member_vni:
             cmd = prefix + "member vni {0}".format(member_vni)
