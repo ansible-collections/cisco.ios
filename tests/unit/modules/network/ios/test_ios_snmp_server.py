@@ -174,7 +174,13 @@ class TestIosSnmpServerModule(TestIosModule):
                 "file_transfer": {"access_group": "testAcl", "protocol": ["ftp", "rcp"]},
                 "groups": [
                     {"group": "group0", "version": "v3", "version_option": "auth"},
-                    {"acl_v4": "2", "acl_v6": "ipv6acl", "group": "group1", "notify": "me", "version": "v1"},
+                    {
+                        "acl_v4": "2",
+                        "acl_v6": "ipv6acl",
+                        "group": "group1",
+                        "notify": "me",
+                        "version": "v1",
+                    },
                     {"group": "group2", "version": "v3", "version_option": "priv"},
                     {"group": "replaceUser", "version": "v3", "version_option": "noauth"},
                     {"acl_v6": "ipv6acl", "group": "group3", "version": "v1"},
@@ -440,7 +446,13 @@ class TestIosSnmpServerModule(TestIosModule):
                 "file_transfer": {"access_group": "testAcl", "protocol": ["ftp", "rcp"]},
                 "groups": [
                     {"group": "group0", "version": "v3", "version_option": "auth"},
-                    {"acl_v4": "2", "acl_v6": "ipv6acl", "group": "group1", "notify": "me", "version": "v1"},
+                    {
+                        "acl_v4": "2",
+                        "acl_v6": "ipv6acl",
+                        "group": "group1",
+                        "notify": "me",
+                        "version": "v1",
+                    },
                     {"group": "group2", "version": "v3", "version_option": "priv"},
                     {"group": "replaceUser", "version": "v3", "version_option": "noauth"},
                     {"acl_v6": "ipv6acl", "group": "group3", "version": "v1"},
@@ -1116,7 +1128,13 @@ class TestIosSnmpServerModule(TestIosModule):
                 "file_transfer": {"access_group": "testAcl", "protocol": ["ftp", "rcp"]},
                 "groups": [
                     {"group": "group0", "version": "v3", "version_option": "auth"},
-                    {"acl_v4": "2", "acl_v6": "ipv6acl", "group": "group1", "notify": "me", "version": "v1"},
+                    {
+                        "acl_v4": "2",
+                        "acl_v6": "ipv6acl",
+                        "group": "group1",
+                        "notify": "me",
+                        "version": "v1",
+                    },
                     {"group": "group2", "version": "v3", "version_option": "priv"},
                     {"group": "replaceUser", "version": "v3", "version_option": "noauth"},
                 ],
