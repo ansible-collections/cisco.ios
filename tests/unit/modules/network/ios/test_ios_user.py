@@ -93,18 +93,23 @@ class TestIosUserModule(TestIosModule):
     def test_ios_user_purge(self):
         set_module_args(dict(purge=True))
         result = self.execute_module(changed=True)
-        cmd = {
-            "command": "no username ansible",
-            "answer": "y",
-            "newline": False,
-            "prompt": "This operation will remove all username related configurations with same name",
-        }
+        cmd = [
+            "ip ssh pubkey-chain",
+            "no username ansible",
+            "exit",
+            {
+                "command": "no username ansible",
+                "answer": "y",
+                "newline": False,
+                "prompt": "This operation will remove all username related configurations with same name",
+            },
+        ]
 
         result_cmd = []
         for i in result["commands"]:
             result_cmd.append(i)
 
-        self.assertEqual(result_cmd, [cmd])
+        self.assertEqual(result_cmd, cmd)
 
     def test_ios_user_view(self):
         set_module_args(dict(name="ansible", view="test"))
