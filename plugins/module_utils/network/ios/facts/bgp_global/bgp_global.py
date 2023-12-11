@@ -35,6 +35,17 @@ class Bgp_globalFacts(object):
     def get_bgp_global_data(self, connection):
         return connection.get("show running-config | section ^router bgp")
 
+    def _set_defaults(self, objs):
+        """makes data as per the facts after data obtained from parsers"""
+
+        if objs.get("as_number"):
+            objs.setdefault("bgp", {}).setdefault("default", {}).setdefault("ipv4_unicast", True)
+            objs.setdefault("bgp", {}).setdefault("default", {}).setdefault(
+                "route_target",
+                {},
+            ).setdefault("filter", True)
+        return objs
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Bgp_global network resource
 
@@ -56,6 +67,9 @@ class Bgp_globalFacts(object):
             module=self._module,
         )
         objs = bgp_global_parser.parse()
+        if objs:
+            objs = self._set_defaults(objs)
+
         neighbor_list = objs.get("neighbors", {})
         if neighbor_list:
             objs["neighbors"] = sorted(

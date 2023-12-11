@@ -1467,6 +1467,88 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>default</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Configure BGP defaults</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>ipv4_unicast</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li><div style="color: blue"><b>yes</b>&nbsp;&larr;</div></li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Activate ipv4-unicast for a peer by default</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>route_target</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Control behavior based on Route-Target attributes</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>filter</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li><div style="color: blue"><b>yes</b>&nbsp;&larr;</div></li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Control automatic VPN Route-Target filtering</div>
+                </td>
+            </tr>
+
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>deterministic_med</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -9462,6 +9544,10 @@ Examples
               reuse_route_val: 1
               suppress_route_val: 1
               max_suppress: 1
+            default:
+              ipv4_unicast: false
+              route_target:
+                filter: true
             graceful_shutdown:
               neighbors:
                 time: 50
@@ -9505,6 +9591,7 @@ Examples
     # - timers bgp 100 200 150
     # - bgp advertise-best-external
     # - bgp bestpath compare-routerid
+    # - no bgp default ipv4-unicast
     # - bgp dampening 1 1 1 1
     # - bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
     # - bgp log-neighbor-changes
@@ -9527,6 +9614,10 @@ Examples
     #       penalty_half_time: 1
     #       reuse_route_val: 1
     #       suppress_route_val: 1
+    #     default:
+    #       ipv4_unicast: false
+    #       route_target:
+    #         filter: true
     #     graceful_shutdown:
     #       community: '100'
     #       local_preference: 100
@@ -9566,6 +9657,7 @@ Examples
     #
     # vios#sh running-config | section ^router bgp
     # router bgp 65000
+    #  no bgp default ipv4-unicast
     #  bgp log-neighbor-changes
     #  bgp nopeerup-delay post-boot 10
     #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
@@ -9638,6 +9730,10 @@ Examples
     #       penalty_half_time: 1
     #       reuse_route_val: 1
     #       suppress_route_val: 1
+    #     default:
+    #       ipv4_unicast: true
+    #       route_target:
+    #         filter: true
     #     graceful_shutdown:
     #       community: '100'
     #       local_preference: 100
@@ -9685,6 +9781,10 @@ Examples
     #     bestpath_options:
     #       med:
     #         confed: true
+    #     default:
+    #       ipv4_unicast: true
+    #       route_target:
+    #         filter: true
     #     log_neighbor_changes: true
     #     nopeerup_delay_options:
     #       cold_boot: 20
@@ -9751,6 +9851,10 @@ Examples
     #       penalty_half_time: 1
     #       reuse_route_val: 1
     #       suppress_route_val: 1
+    #     default:
+    #       ipv4_unicast: true
+    #       route_target:
+    #         filter: true
     #     graceful_shutdown:
     #       community: '100'
     #       local_preference: 100
@@ -9826,6 +9930,10 @@ Examples
     #       penalty_half_time: 1
     #       reuse_route_val: 1
     #       suppress_route_val: 1
+    #     default:
+    #       ipv4_unicast: true
+    #       route_target:
+    #         filter: true
     #     graceful_shutdown:
     #       community: '100'
     #       local_preference: 100
@@ -9897,6 +10005,10 @@ Examples
     #     advertise_best_external: true
     #     bestpath_options:
     #       compare_routerid: true
+    #     default:
+    #       ipv4_unicast: true
+    #       route_target:
+    #         filter: true
     #     dampening:
     #       max_suppress: 1
     #       penalty_half_time: 1
@@ -9973,6 +10085,10 @@ Examples
     #       penalty_half_time: 1
     #       reuse_route_val: 1
     #       suppress_route_val: 1
+    #     default:
+    #       ipv4_unicast: true
+    #       route_target:
+    #         filter: true
     #     graceful_shutdown:
     #       community: '100'
     #       local_preference: 100

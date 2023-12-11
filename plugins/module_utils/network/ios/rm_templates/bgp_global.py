@@ -775,6 +775,18 @@ class Bgp_globalTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "bgp.default.ipv4_unicast",
+            "getval": re.compile(r"""\sno\sbgp\sdefault\sipv4\-unicast""", re.VERBOSE),
+            "setval": "bgp default ipv4-unicast",
+            "result": {"bgp": {"default": {"ipv4_unicast": False}}},
+        },
+        {
+            "name": "bgp.default.route_target.filter",
+            "getval": re.compile(r"""\sno\sbgp\sdefault\sroute\-target\sfilter""", re.VERBOSE),
+            "setval": "bgp default route-target filter",
+            "result": {"bgp": {"default": {"route_target": {"filter": False}}}},
+        },
+        {
             "name": "bgp.deterministic_med",
             "getval": re.compile(r"""\s(bgp\sdeterministic-med)""", re.VERBOSE),
             "setval": "bgp deterministic-med",
