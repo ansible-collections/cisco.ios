@@ -283,7 +283,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\sread\s(?P<read>\S+))?
                 (\swrite\s(?P<write>\S+))?
                 (\snotify\s(?P<notify>\S+))?
-                (\saccess(\sipv6\s(?P<acl_v6>\S+))?(\s(?P<acl_v4>\S+|\d+))?)?
+                (\saccess(\sipv6\s(?P<acl_v6>\S+))?
+                (\s(?P<acl_v4>\S+|\d+))?)?
                 """, re.VERBOSE,
             ),
             "setval": "snmp-server group "
@@ -398,7 +399,8 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\sudp-port\s(?P<udp_port>\d+))?
                 (\s(?P<version>v1|v3|v2c))?
                 (\s(?P<version_option>encrypted))?
-                (\saccess(\sipv6\s(?P<acl_v6>\S+))?(\s(?P<acl_v4>\S+|\d+))?)?
+                (\saccess(\sipv6\s(?P<acl_v6>\S+))?
+                (\s(?P<acl_v4>\S+|\d+))?)?
                 (\svrf\s(?P<vrf>\S+))?
                 """, re.VERBOSE,
             ),

@@ -1,4 +1,3 @@
 ---
 bugfixes:
-  - ios_snmp_server - fix group IPv6 ACL command.
-  - ios_snmp_server - fix user IPv6 ACL command.
+  - ios_snmp_server - fix group and user IPv6 ACL commands.
