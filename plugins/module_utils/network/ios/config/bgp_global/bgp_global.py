@@ -61,6 +61,8 @@ class Bgp_global(ResourceModule):
         "route_server_context.description",
         "synchronization",
         "table_map",
+        "template.peer_policy",
+        "template.peer_session",
         "timers",
         "bgp.additional_paths",
         "bgp.advertise_best_external",
@@ -217,17 +219,30 @@ class Bgp_global(ResourceModule):
                     _parse,
                 )
             else:
-                self._compare_generic_lists(want.get(_parse, {}), have.get(_parse, {}), _parse)
+                self._compare_generic_lists(
+                    want.get(_parse, {}),
+                    have.get(_parse, {}),
+                    _parse,
+                )
 
         # for neighbors
-        self._compare_neighbor_lists(want.get("neighbors", {}), have.get("neighbors", {}))
+        self._compare_neighbor_lists(
+            want.get("neighbors", {}),
+            have.get("neighbors", {}),
+        )
 
         # for redistribute
-        self._compare_redistribute_lists(want.get("redistribute", {}), have.get("redistribute", {}))
+        self._compare_redistribute_lists(
+            want.get("redistribute", {}),
+            have.get("redistribute", {}),
+        )
 
         # add as_number in the begining of commands set if commands generated
         if len(self.commands) != cmd_len or (not have and want):
-            self.commands.insert(0, self._tmplt.render(want or have, "as_number", False))
+            self.commands.insert(
+                0,
+                self._tmplt.render(want or have, "as_number", False),
+            )
 
     def _set_bgp_defaults(self, bgp_dict):
         bgp_dict.setdefault("bgp", {}).setdefault("default", {}).setdefault("ipv4_unicast", True)

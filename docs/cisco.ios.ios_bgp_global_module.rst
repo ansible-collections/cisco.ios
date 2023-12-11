@@ -9351,7 +9351,6 @@ Parameters
                 </td>
                 <td>
                         <div>Enter template command mode</div>
-                        <div>This option is DEPRECATED as is not valid within the scope of module, this attribute will be removed after 2024-06-01.</div>
                 </td>
             </tr>
                                 <tr>

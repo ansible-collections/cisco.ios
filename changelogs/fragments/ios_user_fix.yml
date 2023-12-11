@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - ios_user - fix configuration of user with hashed password.
+  - ios_user - fixed configuration removal of ssh users using purge.
