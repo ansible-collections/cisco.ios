@@ -61,6 +61,8 @@ class Bgp_global(ResourceModule):
         "route_server_context.description",
         "synchronization",
         "table_map",
+        "template.peer_policy",
+        "template.peer_session",
         "timers",
         "bgp.additional_paths",
         "bgp.advertise_best_external",
@@ -79,6 +81,8 @@ class Bgp_global(ResourceModule):
         "bgp.consistency_checker.auto_repair",
         "bgp.consistency_checker.error_message",
         "bgp.dampening",
+        "bgp.default.ipv4_unicast",
+        "bgp.default.route_target.filter",
         "bgp.deterministic_med",
         "bgp.dmzlink_bw",
         "bgp.enforce_first_as",
@@ -168,7 +172,10 @@ class Bgp_global(ResourceModule):
         if self.state == "deleted":
             # deleted, clean up global params
             if not self.want or (self.have.get("as_number") == self.want.get("as_number")):
-                self._compare(want={}, have=self.have)
+                if "as_number" not in self.want:
+                    self.want["as_number"] = self.have.get("as_number")
+                self._set_bgp_defaults(self.want)
+                self._compare(self.want, have=self.have)
 
         elif self.state == "purged":
             # delete as_number takes down whole bgp config
@@ -190,10 +197,16 @@ class Bgp_global(ResourceModule):
         for the Bgp_global network resource.
         """
         self.generic_list_parsers = ["distributes", "aggregate_addresses", "networks"]
+
         if self._has_bgp_inject_maps(want):
             self.generic_list_parsers.insert(0, "inject_maps")
 
         cmd_len = len(self.commands)  # holds command length to add as_number
+
+        # for clean bgp global setup
+        if not have.get("bgp", {}).get("default"):
+            self._set_bgp_defaults(have)
+
         # for dict type attributes
         self.compare(parsers=self.parsers, want=want, have=have)
 
@@ -206,17 +219,37 @@ class Bgp_global(ResourceModule):
                     _parse,
                 )
             else:
-                self._compare_generic_lists(want.get(_parse, {}), have.get(_parse, {}), _parse)
+                self._compare_generic_lists(
+                    want.get(_parse, {}),
+                    have.get(_parse, {}),
+                    _parse,
+                )
 
         # for neighbors
-        self._compare_neighbor_lists(want.get("neighbors", {}), have.get("neighbors", {}))
+        self._compare_neighbor_lists(
+            want.get("neighbors", {}),
+            have.get("neighbors", {}),
+        )
 
         # for redistribute
-        self._compare_redistribute_lists(want.get("redistribute", {}), have.get("redistribute", {}))
+        self._compare_redistribute_lists(
+            want.get("redistribute", {}),
+            have.get("redistribute", {}),
+        )
 
-        # add as_number in the begining fo command set if commands generated
+        # add as_number in the begining of commands set if commands generated
         if len(self.commands) != cmd_len or (not have and want):
-            self.commands.insert(0, self._tmplt.render(want or have, "as_number", False))
+            self.commands.insert(
+                0,
+                self._tmplt.render(want or have, "as_number", False),
+            )
+
+    def _set_bgp_defaults(self, bgp_dict):
+        bgp_dict.setdefault("bgp", {}).setdefault("default", {}).setdefault("ipv4_unicast", True)
+        bgp_dict.setdefault("bgp", {}).setdefault("default", {}).setdefault(
+            "route_target",
+            {},
+        ).setdefault("filter", True)
 
     def _has_bgp_inject_maps(self, want):
         if want.get("bgp", {}).get("inject_maps", {}):
