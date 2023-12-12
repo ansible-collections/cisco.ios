@@ -1,0 +1,3 @@
+---
+trivial:
+  - ios_facts - Add tests to verify sub-interface index greater than 999
