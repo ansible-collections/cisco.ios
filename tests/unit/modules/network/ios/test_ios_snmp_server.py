@@ -54,11 +54,13 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server engineID remote 172.16.0.2 udp-port 23 AB0C5342FAAB
             snmp-server engineID remote 172.16.0.1 udp-port 22 AB0C5342FAAA
             snmp-server user newuser newfamily v1 access 24
-            snmp-server user paul familypaul v3 access ipv6 ipv6acl
+            snmp-server user paul familypaul v3 access ipv6 ipv6acl ipv4acl
             snmp-server user replaceUser replaceUser v3
             snmp-server group group0 v3 auth
-            snmp-server group group1 v1 notify me access 2
+            snmp-server group group1 v1 notify me access ipv6 ipv6acl 2
             snmp-server group group2 v3 priv
+            snmp-server group group3 v1 access ipv6 ipv6acl
+            snmp-server group group4 v1 access 2
             snmp-server group replaceUser v3 noauth
             snmp-server community commu1 view view1 RO ipv6 te
             snmp-server community commu2 RO 1322
@@ -172,9 +174,17 @@ class TestIosSnmpServerModule(TestIosModule):
                 "file_transfer": {"access_group": "testAcl", "protocol": ["ftp", "rcp"]},
                 "groups": [
                     {"group": "group0", "version": "v3", "version_option": "auth"},
-                    {"acl_v4": "2", "group": "group1", "notify": "me", "version": "v1"},
+                    {
+                        "acl_v4": "2",
+                        "acl_v6": "ipv6acl",
+                        "group": "group1",
+                        "notify": "me",
+                        "version": "v1",
+                    },
                     {"group": "group2", "version": "v3", "version_option": "priv"},
                     {"group": "replaceUser", "version": "v3", "version_option": "noauth"},
+                    {"acl_v6": "ipv6acl", "group": "group3", "version": "v1"},
+                    {"acl_v4": "2", "group": "group4", "version": "v1"},
                 ],
                 "hosts": [
                     {
@@ -349,6 +359,7 @@ class TestIosSnmpServerModule(TestIosModule):
                 "users": [
                     {"acl_v4": "24", "group": "newfamily", "username": "newuser", "version": "v1"},
                     {
+                        "acl_v4": "ipv4acl",
                         "acl_v6": "ipv6acl",
                         "group": "familypaul",
                         "username": "paul",
@@ -435,9 +446,17 @@ class TestIosSnmpServerModule(TestIosModule):
                 "file_transfer": {"access_group": "testAcl", "protocol": ["ftp", "rcp"]},
                 "groups": [
                     {"group": "group0", "version": "v3", "version_option": "auth"},
-                    {"acl_v4": "2", "group": "group1", "notify": "me", "version": "v1"},
+                    {
+                        "acl_v4": "2",
+                        "acl_v6": "ipv6acl",
+                        "group": "group1",
+                        "notify": "me",
+                        "version": "v1",
+                    },
                     {"group": "group2", "version": "v3", "version_option": "priv"},
                     {"group": "replaceUser", "version": "v3", "version_option": "noauth"},
+                    {"acl_v6": "ipv6acl", "group": "group3", "version": "v1"},
+                    {"acl_v4": "2", "group": "group4", "version": "v1"},
                 ],
                 "hosts": [
                     {
@@ -692,8 +711,10 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server host 172.16.2.99 check slb",
             "snmp-server host 172.16.2.99 checktrap isis",
             "snmp-server group group0 v3 auth",
-            "snmp-server group group1 v1 notify me access 2",
+            "snmp-server group group1 v1 notify me access ipv6 ipv6acl 2",
             "snmp-server group group2 v3 priv",
+            "snmp-server group group3 v1 access ipv6 ipv6acl",
+            "snmp-server group group4 v1 access 2",
             "snmp-server group replaceUser v3 noauth",
             "snmp-server engineID remote 172.16.0.1 udp-port 22 vrf mgmt AB0C5342FAAA",
             "snmp-server community commu1 view view1 ro ipv6 te",
@@ -723,8 +744,10 @@ class TestIosSnmpServerModule(TestIosModule):
             snmp-server user replaceUser replaceUser v3
             snmp-server user flow mfamily v3 access 27
             snmp-server group group0 v3 auth
-            snmp-server group group1 v1 notify me access 2
+            snmp-server group group1 v1 notify me access ipv6 ipv6acl 2
             snmp-server group group2 v3 priv
+            snmp-server group group3 v1 access ipv6 ipv6acl
+            snmp-server group group4 v1 access 2
             snmp-server group replaceUser v3 noauth
             snmp-server community commu1 view view1 RO ipv6 te
             snmp-server community commu2 RO 1322
@@ -985,8 +1008,10 @@ class TestIosSnmpServerModule(TestIosModule):
             "no snmp-server host 172.16.2.99 check slb",
             "no snmp-server host 172.16.2.99 checktrap isis",
             "no snmp-server group group0 v3 auth",
-            "no snmp-server group group1 v1 notify me access 2",
+            "no snmp-server group group1 v1 notify me access ipv6 ipv6acl 2",
             "no snmp-server group group2 v3 priv",
+            "no snmp-server group group3 v1 access ipv6 ipv6acl",
+            "no snmp-server group group4 v1 access 2",
             "no snmp-server group replaceUser v3 noauth",
             "no snmp-server engineID local AB0C5342FA0A",
             "no snmp-server engineID remote 172.16.0.1 udp-port 22 AB0C5342FAAA",
@@ -1103,7 +1128,13 @@ class TestIosSnmpServerModule(TestIosModule):
                 "file_transfer": {"access_group": "testAcl", "protocol": ["ftp", "rcp"]},
                 "groups": [
                     {"group": "group0", "version": "v3", "version_option": "auth"},
-                    {"acl_v4": "2", "group": "group1", "notify": "me", "version": "v1"},
+                    {
+                        "acl_v4": "2",
+                        "acl_v6": "ipv6acl",
+                        "group": "group1",
+                        "notify": "me",
+                        "version": "v1",
+                    },
                     {"group": "group2", "version": "v3", "version_option": "priv"},
                     {"group": "replaceUser", "version": "v3", "version_option": "noauth"},
                 ],
@@ -1318,7 +1349,7 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server host 172.16.2.1 version 2c trapsac tty",
             "snmp-server host 172.16.2.99 checktrap isis",
             "snmp-server group group0 v3 auth",
-            "snmp-server group group1 v1 notify me access 2",
+            "snmp-server group group1 v1 notify me access ipv6 ipv6acl 2",
             "snmp-server engineID local AB0C5342FA0A",
             "snmp-server engineID remote 172.16.0.1 udp-port 22 AB0C5342FAAA",
             "snmp-server community commu1 view view1 ro ipv6 te",
