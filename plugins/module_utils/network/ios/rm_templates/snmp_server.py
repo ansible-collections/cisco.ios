@@ -283,8 +283,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\sread\s(?P<read>\S+))?
                 (\swrite\s(?P<write>\S+))?
                 (\snotify\s(?P<notify>\S+))?
-                (\saccess\s(?P<acl_v4>\S+))?
-                (\saccess\sipv6\s(?P<acl_v6>\S+))?
+                (\saccess(\sipv6\s(?P<acl_v6>\S+))?(\s(?P<acl_v4>\S+|\d+))?)?
                 """, re.VERBOSE,
             ),
             "setval": "snmp-server group "
@@ -296,8 +295,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                       "{{ (' read ' + read) if read is defined else '' }}"
                       "{{ (' write ' + write) if write is defined else '' }}"
                       "{{ (' notify ' + notify) if notify is defined else '' }}"
-                      "{{ (' access ' + acl_v4) if acl_v4 is defined else '' }}"
-                      "{{ (' access ipv6 ' + acl_v6) if acl_v6 is defined else '' }}",
+                      "{{ (' access') if acl_v6 is defined or acl_v4 is defined else '' }}"
+                      "{{ (' ipv6 ' + acl_v6) if acl_v6 is defined else '' }}"
+                      "{{ (' ' + acl_v4|string) if acl_v4 is defined else '' }}",
             "result": {
                 "groups": [
                     {
@@ -398,8 +398,7 @@ class Snmp_serverTemplate(NetworkTemplate):
                 (\sudp-port\s(?P<udp_port>\d+))?
                 (\s(?P<version>v1|v3|v2c))?
                 (\s(?P<version_option>encrypted))?
-                (\saccess\sipv6\s(?P<acl_v6>\S+))?
-                (\saccess\s(?P<acl_v4>\S+|\d+))?
+                (\saccess(\sipv6\s(?P<acl_v6>\S+))?(\s(?P<acl_v4>\S+|\d+))?)?
                 (\svrf\s(?P<vrf>\S+))?
                 """, re.VERBOSE,
             ),
