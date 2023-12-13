@@ -211,7 +211,7 @@ class Line(ResourceModule):
                         key="level",
                     )
                     for c_key, c_w_entry in l1_w_entry.items():
-                        c_h_entry = l1_h_entry.pop(c_key, {})
+                        c_h_entry = l1_h_entry.pop(c_key, {"level": c_w_entry["level"], "command": "default"})
                         self.compare(
                             parsers=self.parsers[l1],
                             want={l1_key: c_w_entry},
