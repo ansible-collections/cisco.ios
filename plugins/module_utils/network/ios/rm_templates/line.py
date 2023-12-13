@@ -61,13 +61,21 @@ class LineTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^\s+access-class\s+(?P<access_classes_in>\S+)\s+in
+                (\svrfname(?P<vrfname>\S+))?
+                (\s(?P<vrf_also>vrf-also))?
                 """, re.VERBOSE,
             ),
-            "setval": "access-class {{ access_classes_in }} in",
+            "setval": "access-class {{ access_classes_in.name }} in"
+                      "{{ ' vrfname' + access_classes_in.vrfname if 'vrfname' in access_classes_in }}"
+                      "{{ ' vrf-also' if 'vrf_also' in access_classes_in and access_classes_in.vrf_also }}",
             "result": {
                 "lines": {
                     "{{ name|d() }}": {
-                        "access_classes_in": "{{ access_classes_in }}",
+                        "access_classes_in": {
+                            "name": "{{ access_classes_in }}",
+                            "vrfname": "{{ vrfname }}",
+                            "vrf_also": "{{ not not vrf_also }}",
+                        },
                     },
                 },
             },

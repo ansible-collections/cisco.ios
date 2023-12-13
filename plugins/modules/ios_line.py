@@ -10,7 +10,6 @@ The module file for ios_line
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -19,7 +18,7 @@ module: ios_line
 short_description: Resource module to configure line
 description:
   - This module provides declarative management of the lines I(console), I(vty)
-version_added: 6.0.0
+version_added: 4.7.0
 author:
   - Ambroise Rosset (@earendilfr)
 notes:
@@ -36,8 +35,18 @@ options:
         elements: dict
         suboptions:
           access_classes_in:
-            description: ID of the access-list used to filter inbound connections
-            type: str
+            description: Access-list used to filter inbound connections
+            type: dict
+            suboptions:
+              name:
+                description: Name or ID of the ACL to use
+                type: str
+              vrf_also:
+                description: Enable also this filtring on VRF traffic
+                type: bool
+              vrfname:
+                description: Apply this ACL only for this VRF
+                type: str
           access_classes_out:
             description: ID of the access-list used to filter outbound connections
             type: str
@@ -46,7 +55,7 @@ options:
             type: dict
             suboptions:
               arap:
-                description:
+                description: 
                   - For Appletalk Remote Access Protocol
                   - Use an accounting list with this name
                   - I(default) is the default name
@@ -59,7 +68,7 @@ options:
                 elements: dict
                 suboptions:
                   level:
-                    description:
+                    description: 
                       - Enable level
                     type: int
                   command:
@@ -107,7 +116,7 @@ options:
                 elements: dict
                 suboptions:
                   level:
-                    description:
+                    description: 
                       - Enable level
                     type: int
                   command:
@@ -138,7 +147,7 @@ options:
                 description: Set the soft escape character for this line
                 type: bool
               value:
-                description:
+                description: 
                   - Escape character configured
                   - I(BREAK) - Cause escape on BREAK
                   - I(DEFAULT) - Use default escape character
@@ -193,11 +202,11 @@ options:
                 type: str
                 choices: [ '0', '1', '2', '3', '4', '5', '6', '7', 'all']
               limit:
-                description:
+                description: 
                   - Messages queue size (Value between C(<0-2147483647>))
                 type: int
           login:
-            description:
+            description: 
               - Enable password checking for authentication
               - Use an authentication list with this name
               - I(default) is the default name
@@ -247,8 +256,10 @@ options:
               value:
                 description: The actual hashed password to be configured
                 type: str
+                no_log: true
+            no_log: false
           privilege:
-            description:
+            description: 
               - Change privilege level for line
               - The I(privilege) valu should be between C(0) and C(15)
             type: int
@@ -264,7 +275,7 @@ options:
                 description: Set maximum number of sessions (Between C(<0-4294967295>))
                 type: int
               timeout:
-                description:
+                description: 
                   - Set interval for closing connection when there is no input traffic
                   - (Between C(<0-35791>))
                 type: int
@@ -272,7 +283,7 @@ options:
             description: Set the transmit and receive speeds (Between C(<0-4294967295>))
             type: int
           stopbits:
-            description:
+            description: 
               - Set async line stop bits
               - I(1) - One stop bit
               - I(1.5) - One and one-half stop bits
@@ -285,12 +296,12 @@ options:
             elements: dict
             suboptions:
               all:
-                description:
+                description: 
                   - All protocols are allowed
                   - Not used if I(name) is configured at I(preferred)
                 type: bool
               name:
-                description:
+                description: 
                   - Type of transport to configure
                   - I(input) - Configure incomming connections
                   - I(output) - Configure outgoing connections
@@ -340,8 +351,8 @@ options:
       - The state I(parsed) reads the configuration from C(running_config) option and
         transforms it into JSON format as per the resource module parameters and the
         value is returned in the I(parsed) key within the result. The value of C(running_config)
-        option should be the same format as the output of command I(show running-config
-        | sec ^line) executed on device. For state I(parsed) active connection to
+        option should be the same format as the output of command I(show running-config 
+        | sec ^line) executed on device. For state I(parsed) active connection to 
         remote host is not required.
     type: str
     choices:
@@ -822,11 +833,12 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.line.line import (
     LineArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.line.line import Line
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.line.line import (
+    Line,
+)
 
 
 def main():

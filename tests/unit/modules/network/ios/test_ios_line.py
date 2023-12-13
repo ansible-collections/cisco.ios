@@ -409,6 +409,10 @@ class TestIosLineModule(TestIosModule):
                     },
                     {
                         "name": "vty 0 4",
+                        "access_classes_in": {
+                            "name": "mgmt",
+                            "vrf_also": True,
+                        },
                         "escape_character": {
                             "value": "3",
                         },
@@ -448,6 +452,7 @@ class TestIosLineModule(TestIosModule):
             "login authentication CON",
             "escape-character 3",
             "line vty 0 4",
+            "access-class mgmt in vrf-also",
             "logging synchronous",
             "transport preferred none",
             "transport input telnet ssh",
