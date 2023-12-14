@@ -476,6 +476,36 @@ class Bgp_globalTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "template.peer_policy",
+            "getval": re.compile(
+                r"""
+                \stemplate\speer-policy
+                (\s(?P<peer_policy>\S+))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "template peer-policy"
+            "{{ (' ' + template.peer_policy) if template.peer_policy is defined else '' }}",
+            "result": {
+                "template": {"peer_policy": "{{ peer_policy }}"},
+            },
+        },
+        {
+            "name": "template.peer_session",
+            "getval": re.compile(
+                r"""
+                \stemplate\speer-session
+                (\s(?P<peer_session>\S+))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "template peer-session"
+            "{{ (' ' + template.peer_session) if template.peer_session is defined else '' }}",
+            "result": {
+                "template": {"peer_session": "{{ peer_session }}"},
+            },
+        },
+        {
             "name": "timers",
             "getval": re.compile(
                 r"""
@@ -743,6 +773,18 @@ class Bgp_globalTemplate(NetworkTemplate):
                     },
                 },
             },
+        },
+        {
+            "name": "bgp.default.ipv4_unicast",
+            "getval": re.compile(r"""\sno\sbgp\sdefault\sipv4\-unicast""", re.VERBOSE),
+            "setval": "bgp default ipv4-unicast",
+            "result": {"bgp": {"default": {"ipv4_unicast": False}}},
+        },
+        {
+            "name": "bgp.default.route_target.filter",
+            "getval": re.compile(r"""\sno\sbgp\sdefault\sroute\-target\sfilter""", re.VERBOSE),
+            "setval": "bgp default route-target filter",
+            "result": {"bgp": {"default": {"route_target": {"filter": False}}}},
         },
         {
             "name": "bgp.deterministic_med",
@@ -1064,7 +1106,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "bgp nopeerup-delay nsf-switchover {{ bgp.nopeerup_delay_options.nsf_switchover|string }}",
             "result": {
                 "bgp": {
-                    "nopeerup_delay_options": {"nsf_switchover": "{{ nsf_switchover }}"},
+                    "nopeerup_delay_options": {
+                        "nsf_switchover": "{{ nsf_switchover }}",
+                    },
                 },
             },
         },
@@ -1080,7 +1124,9 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "bgp nopeerup-delay user-initiated {{ bgp.nopeerup_delay_options.user_initiated|string }}",
             "result": {
                 "bgp": {
-                    "nopeerup_delay_options": {"user_initiated": "{{ user_initiated }}"},
+                    "nopeerup_delay_options": {
+                        "user_initiated": "{{ user_initiated }}",
+                    },
                 },
             },
         },

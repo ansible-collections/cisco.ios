@@ -73,7 +73,9 @@ def _tmplt_access_list_entries(aces):
                 command += " {protocol_number}".format(**aces["protocol_options"])
             else:
                 command += " {0}".format(list(aces["protocol_options"])[0])
-                proto_option = aces["protocol_options"].get(list(aces["protocol_options"])[0])
+                proto_option = aces["protocol_options"].get(
+                    list(aces["protocol_options"])[0],
+                )
         elif aces.get("protocol"):
             command += " {protocol}".format(**aces)
         if aces.get("source"):
@@ -182,9 +184,6 @@ class AclsTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            # "setval": "{{ sequence|string if sequence is defined else '' }}"
-            # "{{ (' ') if sequence is defined else '' }}"
-            # "remark {{ remarks }}",
             "setval": remarks_with_sequence,
             "result": {
                 "acls": {
@@ -237,7 +236,10 @@ class AclsTemplate(NetworkTemplate):
                     "{{ acl_name|d() }}": {
                         "name": "{{ acl_name }}",
                         "aces": [
-                            {"sequence": "{{ sequence }}", "remarks": ["{{ remarks }}"]},
+                            {
+                                "sequence": "{{ sequence }}",
+                                "remarks": ["{{ remarks }}"],
+                            },
                         ],
                     },
                 },
@@ -246,7 +248,7 @@ class AclsTemplate(NetworkTemplate):
         {
             "name": "aces_ipv4_standard",
             "getval": re.compile(
-                r"""(\s*(?P<sequence>\d+))
+                r"""(\s*(?P<sequence>\d+))?
                         (\s(?P<grant>deny|permit))
                         (\s+(?P<address>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)))?
                         (\s(?P<wildcard>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)))?
