@@ -23,7 +23,7 @@ repos:
       - id: add-trailing-comma
 
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: "v4.0.0-alpha.3"
+    rev: "v4.0.0-alpha.4"
     hooks:
       - id: prettier
         entry: env CI=1 bash -c "prettier --list-different . || ec=$? && prettier --loglevel=error --write . && exit $ec"
@@ -34,7 +34,7 @@ repos:
           - prettier-plugin-toml
 
   - repo: https://github.com/PyCQA/isort
-    rev: 5.12.0
+    rev: 5.13.0
     hooks:
       - id: isort
         name: Sort import statements using isort
