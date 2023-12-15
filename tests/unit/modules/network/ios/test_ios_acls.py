@@ -658,7 +658,7 @@ class TestIosAclsModule(TestIosModule):
             Extended IP access list test-idem
             Extended IP access list test_pre
             IPv6 access list R1_TRAFFIC
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -765,7 +765,7 @@ class TestIosAclsModule(TestIosModule):
                                         },
                                     },
                                 ],
-                            }
+                            },
                         ],
                     },
                     {
