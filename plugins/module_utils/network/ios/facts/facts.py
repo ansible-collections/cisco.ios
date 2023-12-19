@@ -29,6 +29,12 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_ad
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_global.bgp_global import (
     Bgp_globalFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.evpn_evi.evpn_evi import (
+    Evpn_eviFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.evpn_global.evpn_global import (
+    Evpn_globalFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.hostname.hostname import (
     HostnameFacts,
 )
@@ -87,14 +93,14 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.servic
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.snmp_server.snmp_server import (
     Snmp_serverFacts,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.spanning_tree.spanning_tree import (
-    Spanning_treeFacts,
-)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static_routes.static_routes import (
     Static_routesFacts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.vlans import (
     VlansFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vxlan_vtep.vxlan_vtep import (
+    Vxlan_vtepFacts,
 )
 
 
@@ -125,7 +131,9 @@ FACT_RESOURCE_SUBSETS = dict(
     service=ServiceFacts,
     snmp_server=Snmp_serverFacts,
     hostname=HostnameFacts,
-    spanning_tree=Spanning_treeFacts,
+    vxlan_vtep=Vxlan_vtepFacts,
+    evpn_global=Evpn_globalFacts,
+    evpn_evi=Evpn_eviFacts,
 )
 
 
