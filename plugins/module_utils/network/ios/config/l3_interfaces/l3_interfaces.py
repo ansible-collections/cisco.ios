@@ -48,6 +48,7 @@ class L3_interfaces(ResourceModule):
             tmplt=L3_interfacesTemplate(),
         )
         self.parsers = [
+            "mac_address",
             "ipv4.address",
             "ipv4.pool",
             "ipv4.dhcp",
