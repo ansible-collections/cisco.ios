@@ -44,6 +44,10 @@ options:
         description:
           - Enable autostate determination for VLAN.
         type: bool
+      mac_address:
+        description:
+          - Manually set interface MAC address.
+        type: str
       ipv4:
         description:
           - IPv4 address to be set for the Layer-3 interface mentioned in I(name) option.
