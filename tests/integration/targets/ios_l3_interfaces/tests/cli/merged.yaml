@@ -23,6 +23,10 @@
               - address: 198.51.100.2/24
             ipv6:
               - address: 2001:db8:0:3::/64
+          - name: Vlan101
+            ipv4:
+              - address: 198.51.100.2/24
+            mac_address: dead:beef:abcd
           - name: Vlan901
             autostate: false
             ipv4:
