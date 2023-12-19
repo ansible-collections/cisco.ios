@@ -93,6 +93,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.servic
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.snmp_server.snmp_server import (
     Snmp_serverFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.spanning_tree.spanning_tree import (
+    Spanning_treeFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static_routes.static_routes import (
     Static_routesFacts,
 )
@@ -134,6 +137,7 @@ FACT_RESOURCE_SUBSETS = dict(
     vxlan_vtep=Vxlan_vtepFacts,
     evpn_global=Evpn_globalFacts,
     evpn_evi=Evpn_eviFacts,
+    spanning_tree=Spanning_treeFacts,
 )
 
 
