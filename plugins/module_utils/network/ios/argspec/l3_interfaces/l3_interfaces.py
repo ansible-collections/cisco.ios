@@ -37,6 +37,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
             "elements": "dict",
             "options": {
                 "autostate": {"type": "bool"},
+                "mac_address": {"type": "str"},
                 "name": {"type": "str", "required": True},
                 "ipv4": {
                     "type": "list",
