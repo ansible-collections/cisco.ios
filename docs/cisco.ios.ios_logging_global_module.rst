@@ -2490,7 +2490,7 @@ Examples
     # Before state:
     # -------------
 
-    #router-ios#show running-config | section logging
+    # router-ios#show running-config | section logging
     # logging exception 4099
     # logging message-counter log
     # logging userinfo

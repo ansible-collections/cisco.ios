@@ -7,13 +7,15 @@ plugin_routing:
       redirect: cisco.ios.ios
     banner:
       redirect: cisco.ios.ios
-    bgp:
-      redirect: cisco.ios.ios
     bgp_global:
       redirect: cisco.ios.ios
     command:
       redirect: cisco.ios.ios
     config:
+      redirect: cisco.ios.ios
+    evpn_global:
+      redirect: cisco.ios.ios
+    evpn_evi:
       redirect: cisco.ios.ios
     facts:
       redirect: cisco.ios.ios
@@ -27,13 +29,15 @@ plugin_routing:
       redirect: cisco.ios.ios
     ios_banner:
       redirect: cisco.ios.ios
-    ios_bgp:
-      redirect: cisco.ios.ios
     ios_bgp_global:
       redirect: cisco.ios.ios
     ios_command:
       redirect: cisco.ios.ios
     ios_config:
+      redirect: cisco.ios.ios
+    ios_evpn_global:
+      redirect: cisco.ios.ios
+    ios_evpn_evi:
       redirect: cisco.ios.ios
     ios_facts:
       redirect: cisco.ios.ios
@@ -62,6 +66,8 @@ plugin_routing:
     ios_static_routes:
       redirect: cisco.ios.ios
     ios_system:
+      redirect: cisco.ios.ios
+    ios_vxlan_vtep:
       redirect: cisco.ios.ios
     l2_interfaces:
       redirect: cisco.ios.ios
@@ -111,6 +117,8 @@ plugin_routing:
       redirect: cisco.ios.ios
     vrf:
       redirect: cisco.ios.ios
+    vxlan_vtep:
+      redirect: cisco.ios.ios
   modules:
     acl_interfaces:
       redirect: cisco.ios.ios_acl_interfaces
@@ -118,27 +126,22 @@ plugin_routing:
       redirect: cisco.ios.ios_acls
     banner:
       redirect: cisco.ios.ios_banner
-    bgp:
-      deprecation:
-        removal_date: "2023-08-24"
-        warning_text: See the plugin documentation for more details
-      redirect: cisco.ios.ios_bgp
     bgp_global:
       redirect: cisco.ios.ios_bgp_global
     command:
       redirect: cisco.ios.ios_command
     config:
       redirect: cisco.ios.ios_config
+    evpn_global:
+      redirect: cisco.ios.ios_evpn_global
+    evpn_evi:
+      redirect: cisco.ios.ios_evpn_evi
     facts:
       redirect: cisco.ios.ios_facts
     hostname:
       redirect: cisco.ios.ios_hostname
     interfaces:
       redirect: cisco.ios.ios_interfaces
-    ios_bgp:
-      deprecation:
-        removal_date: "2023-08-24"
-        warning_text: See the plugin documentation for more details
     ios_linkagg:
       deprecation:
         removal_date: "2024-06-01"
@@ -208,4 +211,6 @@ plugin_routing:
       redirect: cisco.ios.ios_vlans
     vrf:
       redirect: cisco.ios.ios_vrf
-requires_ansible: ">=2.9.10"
+    vxlan_vtep:
+      redirect: cisco.ios.ios_vxlan_vtep
+requires_ansible: ">=2.14.0"

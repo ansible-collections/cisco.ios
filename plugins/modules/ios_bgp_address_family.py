@@ -52,6 +52,18 @@ options:
           vrf:
             description: Specify parameters for a VPN Routing/Forwarding instance
             type: str
+          advertise:
+            description: Configure path advertise/export to other address-family
+            type: dict
+            suboptions:
+              afi:
+                description: Address family for VRF advertise/export
+                type: str
+                choices: ["l2vpn"]
+              safi:
+                description: Advertise/export prefixes to address family
+                type: str
+                choices: ["evpn"]
           aggregate_addresses:
             description: Configure BGP aggregate entries
             type: list
@@ -591,7 +603,7 @@ options:
                     description:
                       - AS number used as local AS
                       - Please refer vendor documentation for valid values
-                    type: int
+                    type: str
                   dual_as:
                     description: Accept either real AS or local AS from the ebgp peer
                     type: bool
@@ -769,7 +781,7 @@ options:
                 description:
                   - Specify a BGP neighbor
                   - AS of remote neighbor
-                type: int
+                type: str
               remove_private_as:
                 description: Remove private AS number from outbound updates
                 type: dict

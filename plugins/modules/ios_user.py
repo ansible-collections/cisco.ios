@@ -339,6 +339,18 @@ def user_del_cmd(username):
     }
 
 
+def add_ssh(command, want, x=None):
+    command.append("ip ssh pubkey-chain")
+    if x:
+        command.append("username %s" % want["name"])
+        for item in x:
+            command.append("key-hash %s" % item)
+        command.append("exit")
+    else:
+        command.append("no username %s" % want["name"])
+    command.append("exit")
+
+
 def sshkey_fingerprint(sshkey):
     # IOS will accept a MD5 fingerprint of the public key
     # and is easier to configure in a single line
@@ -367,18 +379,14 @@ def map_obj_to_commands(updates, module):
         command.append("username %s %s" % (want["name"], x))
 
     def add_hashed_password(command, want, x):
-        command.append("username %s secret %s %s" % (want["name"], x.get("type"), x.get("value")))
-
-    def add_ssh(command, want, x=None):
-        command.append("ip ssh pubkey-chain")
-        if x:
-            command.append("username %s" % want["name"])
-            for item in x:
-                command.append("key-hash %s" % item)
-            command.append("exit")
+        if x.get("type") == 9:
+            command.append(
+                "username %s secret %s %s" % (want["name"], x.get("type"), x.get("value")),
+            )
         else:
-            command.append("no username %s" % want["name"])
-        command.append("exit")
+            command.append(
+                "username %s password %s %s" % (want["name"], x.get("type"), x.get("value")),
+            )
 
     for update in updates:
         want, have = update
@@ -451,6 +459,7 @@ def map_config_to_obj(module):
         regex = "username %s .+$" % user
         cfg = re.findall(regex, data, re.M)
         cfg = "\n".join(cfg)
+        ssh_key_list = parse_sshkey(data, user)
         obj = {
             "name": user,
             "state": "present",
@@ -458,7 +467,9 @@ def map_config_to_obj(module):
             "configured_password": None,
             "hashed_password": None,
             "password_type": parse_password_type(cfg),
-            "sshkey": parse_sshkey(data, user),
+            "sshkey": ssh_key_list,
+            "is_only_ssh_user": False if cfg.strip() and ssh_key_list else True,
+            "is_only_normal_user": True if cfg.strip() and ssh_key_list == [] else False,
             "privilege": parse_privilege(cfg),
             "view": parse_view(cfg),
         }
@@ -536,6 +547,14 @@ def update_objects(want, have):
     return updates
 
 
+def find_set_difference(list1, list2, key):
+    want_users = [x[key] for x in list1]
+    have_users = [x[key] for x in list2]
+    setdifference = set(have_users).difference(want_users)
+    result = [item for item in list2 if item[key] in setdifference]
+    return result
+
+
 def main():
     """main entry point for module execution"""
     hashed_password_spec = dict(
@@ -581,13 +600,19 @@ def main():
     result = {"changed": False, "warnings": warnings}
     want = map_params_to_obj(module)
     have = map_config_to_obj(module)
+
     commands = map_obj_to_commands(update_objects(want, have), module)
     if module.params["purge"]:
-        want_users = [x["name"] for x in want]
-        have_users = [x["name"] for x in have]
-        for item in set(have_users).difference(want_users):
-            if item != "admin":
-                commands.append(user_del_cmd(item))
+        setdifference = find_set_difference(want, have, "name")
+        for item in setdifference:
+            if item["name"] != "admin":
+                if item["is_only_ssh_user"]:
+                    add_ssh(commands, item)
+                if item["is_only_normal_user"]:
+                    commands.append(user_del_cmd(item["name"]))
+                if item["is_only_normal_user"] is False and item["is_only_ssh_user"] is False:
+                    add_ssh(commands, item)
+                    commands.append(user_del_cmd(item["name"]))
     result["commands"] = commands
     if commands:
         if not module.check_mode:

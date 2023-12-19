@@ -274,6 +274,22 @@ options:
                       - Set the bgp consistency checker
                       - Please refer vendor documentation for valid values
                     type: int
+          default:
+            description: Configure BGP defaults
+            type: dict
+            suboptions:
+              ipv4_unicast:
+                description: Activate ipv4-unicast for a peer by default
+                type: bool
+                default: true
+              route_target:
+                description: Control behavior based on Route-Target attributes
+                type: dict
+                suboptions:
+                  filter:
+                    description: Control automatic VPN Route-Target filtering
+                    type: bool
+                    default: true
           dampening:
             description: Enable route-flap dampening
             type: dict
@@ -1795,8 +1811,6 @@ options:
       template:
         description:
           - Enter template command mode
-          - This option is DEPRECATED as is not valid within the scope of module,
-            this attribute will be removed after 2024-06-01.
         type: dict
         suboptions:
           peer_policy:
@@ -1883,6 +1897,10 @@ EXAMPLES = """
           reuse_route_val: 1
           suppress_route_val: 1
           max_suppress: 1
+        default:
+          ipv4_unicast: false
+          route_target:
+            filter: true
         graceful_shutdown:
           neighbors:
             time: 50
@@ -1926,6 +1944,7 @@ EXAMPLES = """
 # - timers bgp 100 200 150
 # - bgp advertise-best-external
 # - bgp bestpath compare-routerid
+# - no bgp default ipv4-unicast
 # - bgp dampening 1 1 1 1
 # - bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
 # - bgp log-neighbor-changes
@@ -1948,6 +1967,10 @@ EXAMPLES = """
 #       penalty_half_time: 1
 #       reuse_route_val: 1
 #       suppress_route_val: 1
+#     default:
+#       ipv4_unicast: false
+#       route_target:
+#         filter: true
 #     graceful_shutdown:
 #       community: '100'
 #       local_preference: 100
@@ -1987,6 +2010,7 @@ EXAMPLES = """
 #
 # vios#sh running-config | section ^router bgp
 # router bgp 65000
+#  no bgp default ipv4-unicast
 #  bgp log-neighbor-changes
 #  bgp nopeerup-delay post-boot 10
 #  bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
@@ -2059,6 +2083,10 @@ EXAMPLES = """
 #       penalty_half_time: 1
 #       reuse_route_val: 1
 #       suppress_route_val: 1
+#     default:
+#       ipv4_unicast: true
+#       route_target:
+#         filter: true
 #     graceful_shutdown:
 #       community: '100'
 #       local_preference: 100
@@ -2106,6 +2134,10 @@ EXAMPLES = """
 #     bestpath_options:
 #       med:
 #         confed: true
+#     default:
+#       ipv4_unicast: true
+#       route_target:
+#         filter: true
 #     log_neighbor_changes: true
 #     nopeerup_delay_options:
 #       cold_boot: 20
@@ -2172,6 +2204,10 @@ EXAMPLES = """
 #       penalty_half_time: 1
 #       reuse_route_val: 1
 #       suppress_route_val: 1
+#     default:
+#       ipv4_unicast: true
+#       route_target:
+#         filter: true
 #     graceful_shutdown:
 #       community: '100'
 #       local_preference: 100
@@ -2247,6 +2283,10 @@ EXAMPLES = """
 #       penalty_half_time: 1
 #       reuse_route_val: 1
 #       suppress_route_val: 1
+#     default:
+#       ipv4_unicast: true
+#       route_target:
+#         filter: true
 #     graceful_shutdown:
 #       community: '100'
 #       local_preference: 100
@@ -2318,6 +2358,10 @@ EXAMPLES = """
 #     advertise_best_external: true
 #     bestpath_options:
 #       compare_routerid: true
+#     default:
+#       ipv4_unicast: true
+#       route_target:
+#         filter: true
 #     dampening:
 #       max_suppress: 1
 #       penalty_half_time: 1
@@ -2394,6 +2438,10 @@ EXAMPLES = """
 #       penalty_half_time: 1
 #       reuse_route_val: 1
 #       suppress_route_val: 1
+#     default:
+#       ipv4_unicast: true
+#       route_target:
+#         filter: true
 #     graceful_shutdown:
 #       community: '100'
 #       local_preference: 100

@@ -8,6 +8,9 @@ merged:
     - bgp advertise-best-external
     - bgp bestpath compare-routerid
     - bgp dampening 1 1 1 1
+    - no bgp default ipv4-unicast
+    - no bgp default route-target filter
+    - bgp advertise-best-external
     - bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
     - bgp log-neighbor-changes
     - bgp nopeerup-delay post-boot 10
@@ -28,6 +31,10 @@ merged:
         penalty_half_time: 1
         reuse_route_val: 1
         suppress_route_val: 1
+      default:
+        ipv4_unicast: false
+        route_target:
+          filter: false
       graceful_shutdown:
         community: "100"
         local_preference: 100

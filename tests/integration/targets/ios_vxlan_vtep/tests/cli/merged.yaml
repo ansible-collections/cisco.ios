@@ -1,0 +1,67 @@
+---
+- ansible.builtin.debug:
+    msg: START Merged ios_vxlan_vtep state for integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_vlan_vrf_config.yaml
+
+- block:
+    - name: Merge provided configuration with device configuration
+      register: result
+      cisco.ios.ios_vxlan_vtep: &id001
+        config:
+          - interface: nve1
+            source_interface: Loopback1
+            host_reachability_bgp: true
+            member:
+              vni:
+                l2vni:
+                  - vni: 10101
+                    replication:
+                      type: ingress
+                  - vni: 10102
+                    replication:
+                      type: ingress
+                  - vni: 10201
+                    replication:
+                      type: static
+                      mcast_group:
+                        ipv4: 225.0.0.101
+                        ipv6: FF0E:225::101
+                  - vni: 10202
+                    replication:
+                      type: static
+                      mcast_group:
+                        ipv4: 225.0.0.102
+                        ipv6: FF0E:225::102
+                l3vni:
+                  - vni: 50901
+                    vrf: green
+                  - vni: 50902
+                    vrf: blue
+        state: merged
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - merged['before'] == result['before']
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - merged['after'] == result['after']
+
+    - name: Merge provided configuration with device configuration (idempotent)
+      register: result
+      cisco.ios.ios_vxlan_vtep: *id001
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
