@@ -46,6 +46,10 @@ merged:
         - address: 2001:DB8:0:3::/64
       name: GigabitEthernet3
     - name: GigabitEthernet4
+    - name: Vlan101
+      ipv4:
+        - address: 198.51.100.2/24
+      mac_address: dead:beef:abcd
     - name: Vlan901
       ipv4:
         - source_interface:
