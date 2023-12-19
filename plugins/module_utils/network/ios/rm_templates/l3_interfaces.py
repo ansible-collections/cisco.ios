@@ -72,6 +72,17 @@ class L3_interfacesTemplate(NetworkTemplate):
             "result": {"{{ name }}": {"autostate": False}},
         },
         {
+            "name": "mac_address",
+            "getval": re.compile(
+                r"""^mac-address
+                    (\s(?P<mac_address>\S+))
+                    $""",
+                re.VERBOSE,
+            ),
+            "setval": "mac-address {{ mac_address }}",
+            "result": {"{{ name }}": {"mac_address": "{{ mac_address }}"}},
+        },
+        {
             "name": "name",
             "getval": re.compile(
                 r"""^interface
