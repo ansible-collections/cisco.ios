@@ -69,22 +69,6 @@ Parameters
                         <div>Enable autostate determination for VLAN.</div>
                 </td>
             </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>mac_adress</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Manually set interface MAC address.</div>
-                </td>
-            </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
