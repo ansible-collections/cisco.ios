@@ -1,5 +1,5 @@
 ---
-- name: Main task for acls
+- name: Main task for lines
   ansible.builtin.include_tasks: cli.yaml
   tags:
     - network_cli

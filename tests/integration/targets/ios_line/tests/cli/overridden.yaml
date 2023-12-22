@@ -11,7 +11,7 @@
       register: result
       cisco.ios.ios_line: &id001
         config:
-          line:
+          lines:
             - name: "con 0"
               exec:
                 timeout: "60"
@@ -66,13 +66,13 @@
 
     - ansible.builtin.assert:
         that:
-          - result.commands|length == 20
+          - result.commands|length == 21
           - result.changed == true
           - result.commands|symmetric_difference(overridden.commands) == []
 
     - name: Override device configuration of all interfaces with provided configuration (idempotent)
       register: result
-      cisco.ios.ios_acls: *id001
+      cisco.ios.ios_line: *id001
     - name: Assert that task was idempotent
       ansible.builtin.assert:
         that:

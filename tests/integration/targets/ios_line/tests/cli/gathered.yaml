@@ -15,7 +15,7 @@
 
     - ansible.builtin.assert:
         that:
-          - gathered['config'] | symmetric_difference(result.gathered) == []
+          - gathered['config'] == result.gathered
           - result['changed'] == false
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

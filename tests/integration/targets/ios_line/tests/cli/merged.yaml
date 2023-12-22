@@ -8,7 +8,7 @@
     - name: Merge initial configuration with device configuration
       cisco.ios.ios_line:
         config:
-          line:
+          lines:
             - name: "con 0"
               escape_character:
                 value: "3"
@@ -26,7 +26,7 @@
       register: result
       cisco.ios.ios_line: &id001
         config:
-          line:
+          lines:
             - name: "con 0"
               session:
                 timeout: "5"
@@ -68,7 +68,7 @@
 
     - ansible.builtin.assert:
         that:
-          - result.commands|length == 17
+          - result.commands|length == 16
           - result.changed == true
           - result.commands|symmetric_difference(merged.commands) == []
 

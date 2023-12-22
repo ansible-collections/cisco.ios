@@ -7,12 +7,13 @@
       register: result
       cisco.ios.ios_line:
         config:
-          line:
+          lines:
             - name: "con 0"
-              stopbits: 1
-              escape_character: 3
+              stopbits: "1"
+              escape_character:
+                value: "3"
             - name: "aux 0"
-              stopbits: 1
+              stopbits: "1"
         state: rendered
 
     - ansible.builtin.assert:

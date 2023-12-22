@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -29,8 +30,7 @@ The arg spec for the ios_line module
 
 
 class LineArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_line module
-    """
+    """The arg spec for the ios_line module"""
 
     argument_spec = {
         "config": {
@@ -209,7 +209,7 @@ class LineArgs(object):  # pylint: disable=R0903
                             },
                         },
                     },
-                }
+                },
             },
         },
         "running_config": {"type": "str"},

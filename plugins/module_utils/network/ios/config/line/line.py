@@ -109,28 +109,28 @@ class Line(ResourceModule):
         want, have and desired state.
         """
         wantd = deepcopy(self.want)
-        wantd["lines"] = self._convert_list_to_dict(data=wantd.get("lines", []))
+        wantd["lines"] = self._list_to_dict(data=wantd.get("lines", []))
         haved = deepcopy(self.have)
-        haved["lines"] = self._convert_list_to_dict(data=haved.get("lines", []))
+        haved["lines"] = self._list_to_dict(data=haved.get("lines", []))
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
         # if state is deleted, empty out wantd and set haved to wantd
-        if self.state == "deleted":
-            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
-            wantd = {"lines": {"con 0": {"name": "con 0"}, "vty 0 4": {"name": "vty 0 4"}}}
+        if self.state == "deleted" and wantd["lines"] != {}:
+            haved["lines"] = {k: v for k, v in haved["lines"].items() if k in wantd["lines"]}
 
         # remove superfluous config
         if self.state in ["overridden", "deleted"]:
             for k, have in haved["lines"].items():
                 if k not in wantd["lines"]:
-                    self._compare(want={}, have=have)
+                    if k == "con 0" or k == "vty 0 4" or k.startswith("aux"):
+                        self._compare(want={"name": k}, have=have)
+                    else:
+                        self._compare(want={}, have=have)
         elif self.state in ["replaced"]:
-            only_have_line_k = [k for k in haved["lines"].keys() if k not in wantd["lines"].keys()]
-            for k in only_have_line_k:
-                haved["lines"].pop(k)
+            haved["lines"] = {k: v for k, v in haved["lines"].items() if k in wantd["lines"]}
 
         for k, want in wantd["lines"].items():
             self._compare(want=want, have=haved["lines"].pop(k, {}))
@@ -171,10 +171,20 @@ class Line(ResourceModule):
             "motd": True,
             "privilege": 1,
         }
+        config_default_transport = {
+            "transport": {
+                "input": {
+                    "name": "input",
+                    "ssh": True,
+                },
+            },
+        }
         begin = len(self.commands)
         if want != {}:
             want = dict_merge(config_default, want)
             have = dict_merge(config_default, have)
+            if "vty 0" in want["name"] or want["name"].startswith("aux"):
+                want = dict_merge(config_default_transport, want)
             self._compare_lists(want=want, have=have)
             if len(self.commands) != begin:
                 self.commands.insert(begin, self._tmplt.render(want or have, "line", False))
@@ -205,13 +215,11 @@ class Line(ResourceModule):
                     for p_key, p_h_entry in l1_h_entry.items():
                         self.addcmd(data={p_key: p_h_entry}, tmplt=self.parsers[l1], negate=True)
                 elif l1_key == "commands":
-                    l1_w_entry = self._convert_list_to_dict(data=l1_w_entry, key="level")
-                    l1_h_entry = self._convert_list_to_dict(
-                        data=l1_have.pop(l1_key, []),
-                        key="level",
-                    )
+                    l1_h_entry = l1_have.pop(l1_key, {})
                     for c_key, c_w_entry in l1_w_entry.items():
-                        c_h_entry = l1_h_entry.pop(c_key, {"level": c_w_entry["level"], "command": "default"})
+                        c_h_entry = l1_h_entry.pop(
+                            c_key, {"level": c_w_entry["level"], "command": "default"}
+                        )
                         self.compare(
                             parsers=self.parsers[l1],
                             want={l1_key: c_w_entry},
@@ -239,7 +247,6 @@ class Line(ResourceModule):
                             negate=True,
                         )
                 elif l1_key == "commands":
-                    l1_h_entry = self._convert_list_to_dict(data=l1_h_entry, key="level")
                     for c_key, c_h_entry in l1_h_entry.items():
                         self.compare(
                             parsers=self.parsers[l1],
@@ -258,9 +265,7 @@ class Line(ResourceModule):
             if key == "name":
                 continue
             if key == "transport":
-                h_entry = have.pop(key, [])
-                w_entry = self._convert_list_to_dict(data=w_entry)
-                h_entry = self._convert_list_to_dict(data=h_entry)
+                h_entry = have.get(key, {})
                 for t_key, t_w_entry in w_entry.items():
                     t_h_entry = h_entry.pop(t_key, {})
                     self.compare(
@@ -275,7 +280,6 @@ class Line(ResourceModule):
             if key == "name":
                 continue
             if key == "transport":
-                h_entry = self._convert_list_to_dict(data=h_entry)
                 for t_key, t_h_entry in h_entry.items():
                     self.compare(
                         parsers=self.parsers[key],
@@ -287,3 +291,18 @@ class Line(ResourceModule):
 
     def _convert_list_to_dict(self, data, key="name"):
         return {_k.get(key, ""): _k for _k in data} if data else {}
+
+    def _list_to_dict(self, data):
+        l_result = self._convert_list_to_dict(data=data)
+
+        for _name, _line in l_result.items():
+            for k, v in _line.items():
+                if k == "transport":
+                    l_result[_name][k] = self._convert_list_to_dict(data=v)
+                elif k in ["accounting", "authorization", "exec"]:
+                    for _sk, _sv in v.items():
+                        if _sk == "commands":
+                            l_result[_name][k][_sk] = self._convert_list_to_dict(
+                                data=_sv, key="level"
+                            )
+        return l_result
