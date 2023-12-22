@@ -39,9 +39,9 @@
   register: result
   ignore_errors: true
   cisco.ios.ios_line:
-    config:
+    running_config:
     state: parsed
 
 - ansible.builtin.assert:
     that:
-      - result.msg == 'value of config parameter must not be empty for state parsed'
+      - result.msg == 'value of running_config parameter must not be empty for state parsed'

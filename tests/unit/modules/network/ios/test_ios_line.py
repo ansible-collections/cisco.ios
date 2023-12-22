@@ -854,6 +854,9 @@ class TestIosLineModule(TestIosModule):
              login authentication CON
              escape-character 3
              stopbits 1
+            line aux 0
+             no exec
+             transport input ssh
             line vty 0 4
              session-timeout 5
              exec-timeout 60 0
@@ -887,7 +890,7 @@ class TestIosLineModule(TestIosModule):
             "exec-timeout 10 0",
             "no logging synchronous",
             "default transport preferred",
-            "default transport input",
+            "transport input ssh",
             "default transport output",
             "escape-character DEFAULT",
             "no line vty 5 15",

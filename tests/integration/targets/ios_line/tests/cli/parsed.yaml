@@ -9,7 +9,12 @@
     running_config: "{{ lookup('file', '_parsed.cfg') }}"
     state: parsed
 
+- ansible.builtin.debug:
+    var: parsed['config']
+- ansible.builtin.debug:
+    var: result.parsed
+
 - ansible.builtin.assert:
     that:
       - result.changed == false
-      - parsed['config']|symmetric_difference(result.parsed) == []
+      - parsed['config'] == result.parsed
