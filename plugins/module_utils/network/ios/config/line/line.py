@@ -218,7 +218,8 @@ class Line(ResourceModule):
                     l1_h_entry = l1_have.pop(l1_key, {})
                     for c_key, c_w_entry in l1_w_entry.items():
                         c_h_entry = l1_h_entry.pop(
-                            c_key, {"level": c_w_entry["level"], "command": "default"}
+                            c_key,
+                            {"level": c_w_entry["level"], "command": "default"},
                         )
                         self.compare(
                             parsers=self.parsers[l1],
@@ -303,6 +304,7 @@ class Line(ResourceModule):
                     for _sk, _sv in v.items():
                         if _sk == "commands":
                             l_result[_name][k][_sk] = self._convert_list_to_dict(
-                                data=_sv, key="level"
+                                data=_sv,
+                                key="level",
                             )
         return l_result
