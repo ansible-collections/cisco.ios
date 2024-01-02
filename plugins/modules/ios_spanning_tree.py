@@ -27,15 +27,16 @@ DOCUMENTATION = """
 module: ios_spanning_tree
 short_description: Resource module to configure Spanning Tree.
 description:
-  - This module provides declarative management of Spanning tree on Cisco IOS
-  - network devices.
+  - This module provides declarative management of Spanning tree on Cisco IOS network devices.
 version_added: 1.0.0
 author: Timur Nizharadze (@tnizharadze)
 notes:
-  - Tested against Cisco IOS Version 15.2 on CML.
+  - Tested against Cisco IOS Version 17.3 on CML.
+  - This module works with connection C(network_cli).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   config:
-    description: The provided configuration.
+    description: A dictionary of spanning tree options.
     type: dict
     suboptions:
       backbonefast:
@@ -130,7 +131,6 @@ options:
         description: Sets the STP forward delay time.
         type: list
         elements: dict
-        required_together: [["vlan_list", "value"]]
         suboptions:
           vlan_list:
             description: List of VLAN identification numbers. The range is from 1 to 4094.
@@ -144,7 +144,6 @@ options:
           - by the root switch.
         type: list
         elements: dict
-        required_together: [["vlan_list", "value"]]
         suboptions:
           vlan_list:
             description: List of VLAN identification numbers. The range is from 1 to 4094.
@@ -158,7 +157,6 @@ options:
           - is valid.
         type: list
         elements: dict
-        required_together: [["vlan_list", "value"]]
         suboptions:
           vlan_list:
             description: List of VLAN identification numbers. The range is from 1 to 4094.
@@ -171,7 +169,6 @@ options:
           - Sets the STP bridge priority.
         type: list
         elements: dict
-        required_together: [["vlan_list", "value"]]
         suboptions:
           vlan_list:
             description: List of VLAN identification numbers. The range is from 1 to 4094.
@@ -215,7 +212,6 @@ options:
               - Sets the MST instance priority.
             type: list
             elements: dict
-            required_together: [["instance", "value"]]
             suboptions:
               instance:
                 description: List of MST instances.
@@ -238,7 +234,6 @@ options:
                 description: List of configured instances.
                 type: list
                 elements: dict
-                required_together: [["instance", "vlan_list"]]
                 suboptions:
                   instance:
                     description: MST instance number.
@@ -489,58 +484,58 @@ EXAMPLES = """
   cisco.ios.ios_spanning_tree:
     state: rendered
     config:
-        backbonefast: true
-        bridge_assurance: false
-        etherchannel_guard_misconfig: false
-        forward_time:
-        -   value: 20
-            vlan_list: 1,7-20
-        hello_time:
-        -   value: 4
-            vlan_list: 1,3,9
-        -   value: 5
-            vlan_list: 4,6-8
-        -   value: 6
-            vlan_list: '5'
-        logging: true
-        loopguard_default: true
-        max_age:
-        -   value: 38
-            vlan_list: 1-2,4-5
-        mode: mst
-        mst:
-            configuration:
-                instances:
-                -   instance: 1
-                    vlan_list: 40-50
-                -   instance: 2
-                    vlan_list: 10-20
-                name: NAME
-                revision: 34
-            forward_time: 25
-            hello_time: 4
-            max_age: 33
-            max_hops: 33
-            priority:
-            -   instance: '0'
-                value: 12288
-            -   instance: '1'
-                value: 4096
-            -   instance: 5,7-9
-                value: 57344
-            simulate_pvst_global: false
-        pathcost_method: long
-        portfast:
-            edge_bpdufilter_default: true
-            edge_bpduguard_default: true
-            edge_default: true
+      backbonefast: true
+      bridge_assurance: false
+      etherchannel_guard_misconfig: false
+      forward_time:
+        - value: 20
+          vlan_list: '1,7-20'
+      hello_time:
+        - value: 4
+          vlan_list: '1,3,9'
+        - value: 5
+          vlan_list: '4,6-8'
+        - value: 6
+          vlan_list: '5'
+      logging: true
+      loopguard_default: true
+      max_age:
+        - value: 38
+          vlan_list: '1-2,4-5'
+      mode: mst
+      mst:
+        configuration:
+          instances:
+            - instance: 1
+              vlan_list: 40-50
+            - instance: 2
+              vlan_list: 10-20
+          name: NAME
+          revision: 34
+        forward_time: 25
+        hello_time: 4
+        max_age: 33
+        max_hops: 33
         priority:
-        -   value: 24576
-            vlan_list: 1,3-5,7,9-11
-        transmit_hold_count: 5
-        uplinkfast:
-            enabled: true
-            max_update_rate: 32
+          - instance: '0'
+            value: 12288
+          - instance: '1'
+            value: 4096
+          - instance: '5,7-9'
+            value: 57344
+        simulate_pvst_global: false
+      pathcost_method: long
+      portfast:
+        edge_bpdufilter_default: true
+        edge_bpduguard_default: true
+        edge_default: true
+      priority:
+        - value: 24576
+          vlan_list: '1,3-5,7,9-11'
+      transmit_hold_count: 5
+      uplinkfast:
+        enabled: true
+        max_update_rate: 32
 
 # Task Output:
 # ------------
@@ -594,11 +589,11 @@ EXAMPLES = """
   cisco.ios.ios_spanning_tree:
     state: merged
     config:
-        mst:
-            forward_time: 25
-            hello_time: 4
-            max_age: 33
-            max_hops: 33
+      mst:
+        forward_time: 25
+        hello_time: 4
+        max_age: 33
+        max_hops: 33
 
 # No commands will be sent out because STP mode is not mst (neither want nor have)
 
@@ -623,12 +618,12 @@ EXAMPLES = """
   cisco.ios.ios_spanning_tree:
     state: merged
     config:
-        mode: mst
-        mst:
-            forward_time: 25
-            hello_time: 4
-            max_age: 33
-            max_hops: 33
+      mode: mst
+      mst:
+        forward_time: 25
+        hello_time: 4
+        max_age: 33
+        max_hops: 33
 
 # Task Output:
 # ------------
@@ -672,18 +667,18 @@ EXAMPLES = """
   cisco.ios.ios_spanning_tree:
     state: merged
     config:
-        mst:
-            priority:
+      mst:
+        priority:
+          - instance: 1
+            value: 4096
+          - instance: '5-7,9'
+            value: 57344
+        configuration:
+          instances:
             - instance: 1
-              value: 4096
-            - instance: 5-7,9
-              value: 57344
-            configuration:
-                instances:
-                - instance: 1
-                  vlan_list: 40-50
-                - instance: 2
-                  vlan_list: 20-30
+              vlan_list: 40-50
+            - instance: 2
+              vlan_list: 20-30
 
 # Task Output:
 # ------------
@@ -750,15 +745,15 @@ EXAMPLES = """
   cisco.ios.ios_spanning_tree:
     state: replaced
     config:
-        mode: rapid-pvst
-        logging: true
+      mode: rapid-pvst
+      logging: true
+      priority:
+        - value: 24576
+          vlan_list: '1,3-5'
+      mst:
         priority:
-            - value: 24576
-              vlan_list: 1,3-5
-        mst:
-            priority:
-            - instance: 7-9
-              value: 57344
+          - instance: 7-9
+            value: 57344
 
 # provided mst configuration will be ignored since stp mode changed to rapid-pvst
 
@@ -816,13 +811,13 @@ EXAMPLES = """
   cisco.ios.ios_spanning_tree:
     state: deleted
     config:
-        mst:
-            configuration:
-                name: "NAME"
-                revision: 34
-                instances:
-                    - instance: 1
-                      vlan_list: 40-50
+      mst:
+        configuration:
+          name: NAME
+          revision: 34
+          instances:
+            - instance: 1
+              vlan_list: 40-50
 
 # Task Output:
 # ------------
@@ -862,15 +857,15 @@ EXAMPLES = """
   cisco.ios.ios_spanning_tree:
     state: deleted
     config:
-        mst:
-            configuration:
-                name: "NAME"
-                revision: 34
-                instances:
-                    - instance: 1
-                      vlan_list: 40-50
-                    - instance: 2
-                      vlan_list: 10-20
+      mst:
+        configuration:
+          name: NAME
+          revision: 34
+          instances:
+            - instance: 1
+              vlan_list: 40-50
+            - instance: 2
+              vlan_list: 10-20
 
 # Task Output:
 # ------------
@@ -902,10 +897,10 @@ EXAMPLES = """
   cisco.ios.ios_spanning_tree:
     state: deleted
     config:
-        bridge_assurance: false
-        etherchannel_guard_misconfig: false
-        mst:
-            simulate_pvst_global: false
+      bridge_assurance: false
+      etherchannel_guard_misconfig: false
+      mst:
+        simulate_pvst_global: false
 
 # Task Output:
 # ------------
