@@ -85,7 +85,6 @@ options:
       portfast:
         description: Portfast configurations.
         type: dict
-        mutually_exclusive: [[ "network_default", "edge_default" ]]
         suboptions:
           default:
             description:
