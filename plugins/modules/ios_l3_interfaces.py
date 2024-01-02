@@ -40,6 +40,14 @@ options:
           - Full name of the interface excluding any logical unit number, i.e. GigabitEthernet0/1.
         type: str
         required: true
+      autostate:
+        description:
+          - Enable autostate determination for VLAN.
+        type: bool
+      mac_address:
+        description:
+          - Manually set interface MAC address.
+        type: str
       ipv4:
         description:
           - IPv4 address to be set for the Layer-3 interface mentioned in I(name) option.
@@ -87,6 +95,19 @@ options:
           pool:
             description: IP Address auto-configured from a local DHCP pool.
             type: str
+          source_interface:
+            description: Enable IP processing without an explicit address
+            type: dict
+            suboptions:
+              name:
+                description: Interface name
+                type: str
+              poll:
+                description: Enable IP connected host polling
+                type: bool
+              point_to_point:
+                description: Enable point-to-point connection
+                type: bool
       ipv6:
         description:
           - IPv6 address to be set for the Layer-3 interface mentioned in I(name) option.
@@ -119,6 +140,9 @@ options:
               rapid_commit:
                 description: Enable Rapid-Commit.
                 type: bool
+          enable:
+            description: Enable IPv6 on interface
+            type: bool
           anycast:
             description: Configure as an anycast
             type: bool
@@ -229,6 +253,13 @@ EXAMPLES = """
       - name: GigabitEthernet3.100
         ipv4:
           - address: 192.168.0.3/24
+      - name: Vlan901
+        autostate: false
+        ipv4:
+          - source_interface:
+              name: Loopback1
+        ipv6:
+          - enable: true
     state: merged
 
 # Task Output
@@ -253,6 +284,10 @@ EXAMPLES = """
 # - ipv6 address fd5d:12c9:2201:1::1/64
 # - interface GigabitEthernet3.100
 # - ip address 192.168.0.3 255.255.255.0
+# - interface Vlan901
+# - ip unnumbered Loopback1
+# - ipv6 enable
+# - no autostate
 # after:
 # - ipv4:
 #   - dhcp:
@@ -269,6 +304,13 @@ EXAMPLES = """
 #   - address: 192.168.0.3/24
 # - name: GigabitEthernet4
 # - name: Loopback999
+#   ipv4:
+#   - source_interface:
+#       name: Loopback1
+#   ipv6:
+#   - enable: true
+#   autostate: false
+# - name: Vlan901
 
 # After state:
 # ------------
@@ -299,6 +341,11 @@ EXAMPLES = """
 #  no ip address
 #  shutdown
 #  negotiation auto
+# interface Vlan901
+#  ip unnumbered Loopback1
+#  ipv6 enable
+#  no autostate
+
 
 # Using replaced
 

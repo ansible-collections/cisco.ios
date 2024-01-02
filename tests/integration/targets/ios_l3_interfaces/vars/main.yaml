@@ -19,6 +19,12 @@ merged:
     - ip address 198.51.100.1 255.255.255.0 secondary
     - ip address 198.51.100.2 255.255.255.0
     - ipv6 address 2001:db8:0:3::/64
+    - interface Vlan901
+    - no autostate
+    - ip unnumbered Loopback1
+    - ipv6 enable
+    - interface Vlan902
+    - ipv6 enable
   after:
     - name: Loopback888
     - ipv4:
@@ -40,6 +46,21 @@ merged:
         - address: 2001:DB8:0:3::/64
       name: GigabitEthernet3
     - name: GigabitEthernet4
+    - name: Vlan101
+      ipv4:
+        - address: 198.51.100.2/24
+      mac_address: dead:beef:abcd
+    - name: Vlan901
+      ipv4:
+        - source_interface:
+            name: Loopback1
+      ipv6:
+        - enable: true
+      autostate: false
+    - name: Vlan902
+      ipv6:
+        - enable: true
+      autostate: true
 
 replaced:
   before:
