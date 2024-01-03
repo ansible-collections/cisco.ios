@@ -1,0 +1,4 @@
+---
+collections:
+  - git+https://github.com/ansible-collections/ansible.utils.git
+  - git+https://github.com/ansible-collections/ansible.netcommon.git
