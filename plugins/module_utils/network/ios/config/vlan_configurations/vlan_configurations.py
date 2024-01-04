@@ -95,5 +95,6 @@ class Vlan_configurations(ResourceModule):
         self.compare(parsers=self.parsers, want=want, have=have)
         if len(self.commands) != begin:
             self.commands.insert(
-                begin, self._tmplt.render(want or have, "vlan_id", False)
+                begin,
+                self._tmplt.render(want or have, "vlan_id", False),
             )

@@ -22,9 +22,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.f
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acl_interfaces.acl_interfaces import (
     Acl_interfacesFacts,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls import (
-    AclsFacts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls import AclsFacts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_address_family.bgp_address_family import (
     Bgp_address_familyFacts,
 )
@@ -49,9 +47,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.l2_int
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.l3_interfaces.l3_interfaces import (
     L3_InterfacesFacts,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lacp.lacp import (
-    LacpFacts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lacp.lacp import LacpFacts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lacp_interfaces.lacp_interfaces import (
     Lacp_InterfacesFacts,
 )
@@ -100,11 +96,11 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.snmp_s
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static_routes.static_routes import (
     Static_routesFacts,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.vlans import (
-    VlansFacts,
-)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlan_configurations.vlan_configurations import (
     Vlan_configurationsFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.vlans import (
+    VlansFacts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vxlan_vtep.vxlan_vtep import (
     Vxlan_vtepFacts,
@@ -112,7 +108,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vxlan_
 
 
 FACT_LEGACY_SUBSETS = dict(
-    default=Default, hardware=Hardware, interfaces=Interfaces, config=Config
+    default=Default,
+    hardware=Hardware,
+    interfaces=Interfaces,
+    config=Config,
 )
 
 FACT_RESOURCE_SUBSETS = dict(
@@ -166,7 +165,9 @@ class Facts(FactsBase):
         """
         if self.VALID_RESOURCE_SUBSETS:
             self.get_network_resources_facts(
-                FACT_RESOURCE_SUBSETS, resource_facts_type, data
+                FACT_RESOURCE_SUBSETS,
+                resource_facts_type,
+                data,
             )
 
         if self.VALID_LEGACY_GATHER_SUBSETS:

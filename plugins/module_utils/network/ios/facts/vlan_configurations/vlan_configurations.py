@@ -26,12 +26,17 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlan
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.vlan_configurations import (
     Vlan_configurationsTemplate,
 )
+
+
 <<<<<<< Updated upstream:plugins/module_utils/network/ios/facts/vlan_configuration/vlan_configuration.py
 =======
+from textwrap import dedent
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlan_configurations.vlan_configurations import (
     Vlan_configurationsArgs,
 )
-from textwrap import dedent
+
+
 >>>>>>> Stashed changes:plugins/module_utils/network/ios/facts/vlan_configurations/vlan_configurations.py
 
 
