@@ -23,13 +23,14 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
+    Facts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.l3_interfaces import (
     L3_interfacesTemplate,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     normalize_interface,
-    validate_ipv6,
     validate_n_expand_ipv4,
 )
 
@@ -153,7 +154,11 @@ class L3_interfaces(ResourceModule):
                     # hacl is set as primary, if wacls has no other primary entry we must keep
                     # this entry as primary (so we'll compare entry to hacl and not
                     # generate commands)
-                    if list(filter(lambda w: w.get("secondary", False) is False, wacls.values())):
+                    if list(
+                        filter(
+                            lambda w: w.get("secondary", False) is False, wacls.values()
+                        )
+                    ):
                         # another primary is in wacls
                         hacl = {}
                 self.validate_ips(afi, want=entry, have=hacl)
@@ -177,20 +182,22 @@ class L3_interfaces(ResourceModule):
 
     def validate_ips(self, afi, want=None, have=None):
         if afi == "ipv4" and want:
-            v4_addr = validate_n_expand_ipv4(self._module, want) if want.get("address") else {}
+            v4_addr = (
+                validate_n_expand_ipv4(self._module, want)
+                if want.get("address")
+                else {}
+            )
             if v4_addr:
                 want["address"] = v4_addr
-        elif afi == "ipv6" and want:
-            if want.get("address"):
-                validate_ipv6(want["address"], self._module)
 
         if afi == "ipv4" and have:
-            v4_addr_h = validate_n_expand_ipv4(self._module, have) if have.get("address") else {}
+            v4_addr_h = (
+                validate_n_expand_ipv4(self._module, have)
+                if have.get("address")
+                else {}
+            )
             if v4_addr_h:
                 have["address"] = v4_addr_h
-        elif afi == "ipv6" and have:
-            if have.get("address"):
-                validate_ipv6(have["address"], self._module)
 
     def list_to_dict(self, param):
         if param:
