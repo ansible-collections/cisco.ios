@@ -10,6 +10,7 @@ The module file for ios_vlan_configuration
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -166,6 +167,7 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlan_configurations.vlan_configurations import (
     Vlan_configurationsArgs,
 )

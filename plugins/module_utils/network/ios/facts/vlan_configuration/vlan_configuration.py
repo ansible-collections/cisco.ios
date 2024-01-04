@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -17,14 +18,13 @@ based on the configuration.
 from copy import deepcopy
 
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlan_configurations.vlan_configurations import (
+    Vlan_configurationsArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.vlan_configurations import (
     Vlan_configurationsTemplate,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlan_configurations.vlan_configurations import (
-    Vlan_configurationsArgs,
 )
 
 
@@ -56,7 +56,8 @@ class Vlan_configurationsFacts(object):
 
         # parse native config using the Vlan_configurations template
         vlan_configurations_parser = Vlan_configurationsTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         objs = list(vlan_configurations_parser.parse().values())
 
@@ -64,8 +65,10 @@ class Vlan_configurationsFacts(object):
 
         params = utils.remove_empties(
             vlan_configurations_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
-            )
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
+            ),
         )
 
         facts["vlan_configurations"] = params["config"]
