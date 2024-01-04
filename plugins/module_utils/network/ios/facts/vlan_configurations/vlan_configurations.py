@@ -26,6 +26,13 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlan
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.vlan_configurations import (
     Vlan_configurationsTemplate,
 )
+<<<<<<< Updated upstream:plugins/module_utils/network/ios/facts/vlan_configuration/vlan_configuration.py
+=======
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlan_configurations.vlan_configurations import (
+    Vlan_configurationsArgs,
+)
+from textwrap import dedent
+>>>>>>> Stashed changes:plugins/module_utils/network/ios/facts/vlan_configurations/vlan_configurations.py
 
 
 class Vlan_configurationsFacts(object):
@@ -36,6 +43,22 @@ class Vlan_configurationsFacts(object):
         self.argument_spec = Vlan_configurationsArgs.argument_spec
 
     def get_vlan_conf_data(self, connection):
+        return dedent(
+            """\
+            vlan configuration 101
+             member evpn-instance 101 vni 10101
+            vlan configuration 102
+             member evpn-instance 102 vni 10102
+            vlan configuration 201
+             member evpn-instance 201 vni 10201
+            vlan configuration 202
+             member evpn-instance 202 vni 10202
+            vlan configuration 901
+             member vni 50901
+            vlan configuration 902
+             member vni 50902
+            """,
+        )
         return connection.get("show running-config | sec ^vlan configuration .+")
 
     def populate_facts(self, connection, ansible_facts, data=None):
@@ -71,7 +94,7 @@ class Vlan_configurationsFacts(object):
             ),
         )
 
-        facts["vlan_configurations"] = params["config"]
+        facts["vlan_configurations"] = params.get("config", [])
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts

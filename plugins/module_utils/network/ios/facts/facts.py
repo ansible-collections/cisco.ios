@@ -22,7 +22,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.f
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acl_interfaces.acl_interfaces import (
     Acl_interfacesFacts,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls import AclsFacts
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls import (
+    AclsFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_address_family.bgp_address_family import (
     Bgp_address_familyFacts,
 )
@@ -47,7 +49,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.l2_int
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.l3_interfaces.l3_interfaces import (
     L3_InterfacesFacts,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lacp.lacp import LacpFacts
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lacp.lacp import (
+    LacpFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lacp_interfaces.lacp_interfaces import (
     Lacp_InterfacesFacts,
 )
@@ -99,12 +103,17 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.vlans import (
     VlansFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlan_configurations.vlan_configurations import (
+    Vlan_configurationsFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vxlan_vtep.vxlan_vtep import (
     Vxlan_vtepFacts,
 )
 
 
-FACT_LEGACY_SUBSETS = dict(default=Default, hardware=Hardware, interfaces=Interfaces, config=Config)
+FACT_LEGACY_SUBSETS = dict(
+    default=Default, hardware=Hardware, interfaces=Interfaces, config=Config
+)
 
 FACT_RESOURCE_SUBSETS = dict(
     interfaces=InterfacesFacts,
@@ -132,6 +141,7 @@ FACT_RESOURCE_SUBSETS = dict(
     snmp_server=Snmp_serverFacts,
     hostname=HostnameFacts,
     vxlan_vtep=Vxlan_vtepFacts,
+    vlan_configurations=Vlan_configurationsFacts,
     evpn_global=Evpn_globalFacts,
     evpn_evi=Evpn_eviFacts,
 )
@@ -155,7 +165,9 @@ class Facts(FactsBase):
         :return: the facts gathered
         """
         if self.VALID_RESOURCE_SUBSETS:
-            self.get_network_resources_facts(FACT_RESOURCE_SUBSETS, resource_facts_type, data)
+            self.get_network_resources_facts(
+                FACT_RESOURCE_SUBSETS, resource_facts_type, data
+            )
 
         if self.VALID_LEGACY_GATHER_SUBSETS:
             self.get_network_legacy_facts(FACT_LEGACY_SUBSETS, legacy_facts_type)

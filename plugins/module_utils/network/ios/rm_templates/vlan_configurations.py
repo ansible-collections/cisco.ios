@@ -37,9 +37,14 @@ class Vlan_configurationsTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^vlan\sconfiguration\s(?P<vlan_id>\d+)
+<<<<<<< Updated upstream:plugins/module_utils/network/ios/rm_templates/vlan_configuration.py
                 $""", re.VERBOSE,
             ),
             "setval": "",
+=======
+                $""", re.VERBOSE),
+            "setval": "vlan configuration {{ vlan_id|string }}",
+>>>>>>> Stashed changes:plugins/module_utils/network/ios/rm_templates/vlan_configurations.py
             "result": {
                 "{{ vlan_id }}": {
                     "vlan_id": "{{ vlan_id }}",
@@ -54,9 +59,16 @@ class Vlan_configurationsTemplate(NetworkTemplate):
                 \s+member
                 (\sevpn-instance\s(?P<inst_vlan_id>\d+))?
                 (\svni\s(?P<vni>\d+))?
+<<<<<<< Updated upstream:plugins/module_utils/network/ios/rm_templates/vlan_configuration.py
                 $""", re.VERBOSE,
             ),
             "setval": "",
+=======
+                $""", re.VERBOSE),
+            "setval": "member"
+            "{{ (' evpn-instance ' + member.evi|string) if member.evi is defined else '' }}"
+            "{{ (' vni ' + member.vni|string) if member.vni is defined else '' }}",
+>>>>>>> Stashed changes:plugins/module_utils/network/ios/rm_templates/vlan_configurations.py
             "result": {
                 "{{ vlan_id }}": {
                     "member": {

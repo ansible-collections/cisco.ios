@@ -93,7 +93,7 @@ EXAMPLES = """
 #  member vni 50902
 
 - name: Merge provided configuration with device configuration
-  cisco.ios.ios_vlans:
+  cisco.ios.ios_vlan_configurations:
     config:
       - vlan_id: 102
         member:
@@ -102,7 +102,6 @@ EXAMPLES = """
       - vlan_id: 901
         member:
           vni: 50901
-    configuration: true
     state: merged
 
 # After state:
@@ -174,6 +173,11 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlan
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.vlan_configurations.vlan_configurations import (
     Vlan_configurations,
 )
+
+import debugpy
+
+debugpy.listen(3000)
+debugpy.wait_for_client()
 
 
 def main():

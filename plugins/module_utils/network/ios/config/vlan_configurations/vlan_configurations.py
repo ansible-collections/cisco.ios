@@ -47,7 +47,7 @@ class Vlan_configurations(ResourceModule):
             resource="vlan_configurations",
             tmplt=Vlan_configurationsTemplate(),
         )
-        self.parsers = []
+        self.parsers = ["member"]
 
     def execute_module(self):
         """Execute the module
@@ -64,8 +64,8 @@ class Vlan_configurations(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
-        wantd = {entry["name"]: entry for entry in self.want}
-        haved = {entry["name"]: entry for entry in self.have}
+        wantd = {entry["vlan_id"]: entry for entry in self.want}
+        haved = {entry["vlan_id"]: entry for entry in self.have}
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -91,4 +91,9 @@ class Vlan_configurations(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Vlan_configurations network resource.
         """
+        begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
+        if len(self.commands) != begin:
+            self.commands.insert(
+                begin, self._tmplt.render(want or have, "vlan_id", False)
+            )
