@@ -85,10 +85,7 @@ def new_dict_to_set(input_dict, temp_list, test_set, count=0):
                 if v is not None:
                     test_dict.update({k: v})
                 try:
-                    if (
-                        tuple(iteritems(test_dict)) not in test_set
-                        and count == input_dict_len
-                    ):
+                    if tuple(iteritems(test_dict)) not in test_set and count == input_dict_len:
                         test_set.add(tuple(iteritems(test_dict)))
                         count = 0
                 except TypeError:
@@ -223,14 +220,14 @@ def validate_ipv4(value, module):
         if len(address) != 2:
             module.fail_json(
                 msg="address format is <ipv4 address>/<mask>, got invalid format {0}".format(
-                    value
+                    value,
                 ),
             )
 
         if not is_masklen(address[1]):
             module.fail_json(
                 msg="invalid value for mask: {0}, mask should be in range 0-32".format(
-                    address[1]
+                    address[1],
                 ),
             )
 

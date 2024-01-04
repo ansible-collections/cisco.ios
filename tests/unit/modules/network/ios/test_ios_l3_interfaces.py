@@ -27,9 +27,7 @@ class TestIosL3InterfacesModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.l3_interfaces.l3_interfaces."
@@ -74,7 +72,7 @@ class TestIosL3InterfacesModule(TestIosModule):
                             dict(
                                 address="fe80:0:3a2:84::3",
                                 link_local=True,
-                            )
+                            ),
                         ],
                     ),
                 ],
@@ -113,7 +111,8 @@ class TestIosL3InterfacesModule(TestIosModule):
                         ipv4=[dict(address="192.168.0.1/24", secondary=True)],
                     ),
                     dict(
-                        name="GigabitEthernet0/2", ipv4=[dict(address="192.168.0.2/24")]
+                        name="GigabitEthernet0/2",
+                        ipv4=[dict(address="192.168.0.2/24")],
                     ),
                     dict(name="Serial1/0", ipv4=[dict(address="192.168.0.3/24")]),
                 ],
@@ -233,7 +232,7 @@ class TestIosL3InterfacesModule(TestIosModule):
         )
         result = self.execute_module(changed=False)
         parsed_list = [
-            {"name": "GigabitEthernet0/3.100", "ipv4": [{"address": "192.168.0.3/24"}]}
+            {"name": "GigabitEthernet0/3.100", "ipv4": [{"address": "192.168.0.3/24"}]},
         ]
         self.assertEqual(parsed_list, result["parsed"])
 
@@ -319,9 +318,10 @@ class TestIosL3InterfacesModule(TestIosModule):
                         ipv4=[
                             dict(
                                 dhcp=dict(
-                                    client_id="GigabitEthernet0/2", hostname="test.com"
-                                )
-                            )
+                                    client_id="GigabitEthernet0/2",
+                                    hostname="test.com",
+                                ),
+                            ),
                         ],
                     ),
                     dict(name="GigabitEthernet0/2", ipv4=[dict(pool="PoolName1")]),
@@ -444,9 +444,10 @@ class TestIosL3InterfacesModule(TestIosModule):
                         ipv4=[
                             dict(
                                 dhcp=dict(
-                                    client_id="GigabitEthernet0/2", hostname="test.com"
-                                )
-                            )
+                                    client_id="GigabitEthernet0/2",
+                                    hostname="test.com",
+                                ),
+                            ),
                         ],
                     ),
                     dict(
