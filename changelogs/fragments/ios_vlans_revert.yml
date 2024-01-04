@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_vlans - Revert changes added to ios_vlans to separate vlan configuration attributes.
