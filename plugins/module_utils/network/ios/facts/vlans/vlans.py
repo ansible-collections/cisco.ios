@@ -51,7 +51,7 @@ class VlansFacts(object):
         facts gracefully. Does not fail module.
         """
         check_os_type = connection.get_device_info()
-        return ""
+        # return ""
         return dedent(
             """\
             VLAN Name                             Status    Ports
@@ -98,7 +98,7 @@ class VlansFacts(object):
         return connection.get("show vlan")
 
     def get_vlan_conf_data(self, connection):
-        return ""
+        # return ""
         return dedent(
             """\
             vlan configuration 101

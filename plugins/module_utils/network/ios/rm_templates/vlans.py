@@ -49,10 +49,7 @@ class VlansTemplate(NetworkTemplate):
         },
         {
             "name": "vlans",
-            "getval": re.compile(
-                r"""
-                $""", re.VERBOSE,
-            ),
+            "getval": "",
             "setval": "vlan {{ vlan_id|string }}",
             "result": {},
         },
@@ -79,47 +76,38 @@ class VlansTemplate(NetworkTemplate):
         },
         {
             "name": "name",
-            "getval": re.compile(
-                r"""
-                """, re.VERBOSE,
-            ),
+            "getval": "",
             "setval": "name {{ name|string }}",
             "result": {},
         },
         {
             "name": "state",
-            "getval": re.compile(
-                r"""
-                """, re.VERBOSE,
-            ),
+            "getval": "",
             "setval": "state {{ state }}",
             "result": {},
         },
         {
             "name": "mtu",
-            "getval": re.compile(
-                r"""
-                """, re.VERBOSE,
-            ),
+            "getval": "",
             "setval": "mtu {{ mtu|string }}",
             "result": {},
         },
         {
             "name": "remote_span",
-            "getval": re.compile(
-                r"""
-                """, re.VERBOSE,
-            ),
+            "getval": "",
             "setval": "remote-span",
             "result": {},
         },
         {
+            "name": "private_vlan.",
+            "getval": "",
+            "setval": "{{ ('shutdown') if shutdown == 'enabled' else 'no shutdown'}}",
+            "result": {},
+        },
+        {
             "name": "shutdown",
-            "getval": re.compile(
-                r"""
-                $""", re.VERBOSE,
-            ),
-            "setval": "{{ ('shutdown') if shutdown == 'enabled' }}",
+            "getval": "",
+            "setval": "{{ ('shutdown') if shutdown == 'enabled' else 'no shutdown'}}",
             "result": {},
         },
     ]
