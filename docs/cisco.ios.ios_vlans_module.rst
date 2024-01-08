@@ -304,6 +304,7 @@ Parameters
                                     <li>deleted</li>
                                     <li>rendered</li>
                                     <li>gathered</li>
+                                    <li>purged</li>
                                     <li>parsed</li>
                         </ul>
                 </td>

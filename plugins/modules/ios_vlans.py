@@ -966,12 +966,8 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlans.vlans import (
     VlansArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.vlans.vlans import (
-    Vlans,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
-    get_connection,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.vlans.vlans import Vlans
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import get_connection
 
 
 def _is_l2_device(module):
