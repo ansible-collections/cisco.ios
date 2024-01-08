@@ -37,7 +37,8 @@ class VlansTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^vlan\sconfiguration\s(?P<vlan_id>\d+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "vlan configuration {{ vlan_id|string }}",
             "result": {
                 "{{ vlan_id }}": {
@@ -50,7 +51,8 @@ class VlansTemplate(NetworkTemplate):
             "name": "vlans",
             "getval": re.compile(
                 r"""
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "vlan {{ vlan_id|string }}",
             "result": {},
         },
@@ -61,7 +63,8 @@ class VlansTemplate(NetworkTemplate):
                 \s+member
                 (\sevpn-instance\s(?P<inst_vlan_id>\d+))?
                 (\svni\s(?P<vni>\d+))?
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "member"
             "{{ (' evpn-instance ' + member.evi|string) if member.evi is defined else '' }}"
             "{{ (' vni ' + member.vni|string) if member.vni is defined else '' }}",
@@ -78,7 +81,8 @@ class VlansTemplate(NetworkTemplate):
             "name": "name",
             "getval": re.compile(
                 r"""
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "name {{ name|string }}",
             "result": {},
         },
@@ -86,7 +90,8 @@ class VlansTemplate(NetworkTemplate):
             "name": "state",
             "getval": re.compile(
                 r"""
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "state {{ state }}",
             "result": {},
         },
@@ -94,7 +99,8 @@ class VlansTemplate(NetworkTemplate):
             "name": "mtu",
             "getval": re.compile(
                 r"""
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "mtu {{ mtu|string }}",
             "result": {},
         },
@@ -102,7 +108,8 @@ class VlansTemplate(NetworkTemplate):
             "name": "remote_span",
             "getval": re.compile(
                 r"""
-                """, re.VERBOSE),
+                """, re.VERBOSE,
+            ),
             "setval": "remote-span",
             "result": {},
         },
@@ -110,7 +117,8 @@ class VlansTemplate(NetworkTemplate):
             "name": "shutdown",
             "getval": re.compile(
                 r"""
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "{{ ('shutdown') if shutdown == 'enabled' }}",
             "result": {},
         },

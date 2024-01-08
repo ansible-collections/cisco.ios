@@ -28,9 +28,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.vlans import (
     VlansTemplate,
 )
@@ -79,7 +77,7 @@ class Vlans(ResourceModule):
                     {
                         "vlan_id": vlan_data.get("vlan_id"),
                         "member": vlan_data.pop("member"),
-                    }
+                    },
                 )
         for vlan_data in self.have:
             if vlan_data.get("member"):
@@ -87,13 +85,15 @@ class Vlans(ResourceModule):
                     {
                         "vlan_id": vlan_data.get("vlan_id"),
                         "member": vlan_data.pop("member"),
-                    }
+                    },
                 )
         if self.want or self.have:
             self.generate_commands(self.want, self.have, "vlans")
         if self.want_vlan_config or self.have_vlan_config:
             self.generate_commands(
-                self.want_vlan_config, self.have_vlan_config, "vlan_configuration"
+                self.want_vlan_config,
+                self.have_vlan_config,
+                "vlan_configuration",
             )
 
     def generate_commands(self, conf_want, conf_have, resource=None):
