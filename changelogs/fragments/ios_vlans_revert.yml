@@ -1,3 +1,6 @@
 ---
 bugfixes:
-  - ios_vlans - Revert changes added to ios_vlans to separate vlan configuration attributes.
+  - ios_vlans - Revert changes added to ios_vlans regarding configuration attributes.
+  - ios_vlans - Make behaviour of the action states consistent.
+minor_changes:
+  - ios_vlans - Add purged state to deal with toplevel vlan and vlan configuration config.
