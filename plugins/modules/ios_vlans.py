@@ -33,8 +33,9 @@ version_added: 1.0.0
 author:
   - Sumit Jaiswal (@justjais)
   - Sagar Paul (@KB-perByte)
+  - Padmini Priyadarshini Sivaraj (@PadminiSivaraj)
 notes:
-  - Tested against Cisco IOSl2 device with Version 15.2 on VIRL.
+  - Tested against Cisco IOS device with Version 17.13.01 on Cat9k on CML.
   - Starting from v2.5.0, this module will fail when run against Cisco IOS devices that do
     not support VLANs. The offline states (C(rendered) and C(parsed)) will work as expected.
   - This module works with connection C(network_cli).
@@ -914,32 +915,62 @@ EXAMPLES = """
 
 RETURN = """
 before:
-  description: The configuration as structured data prior to module invocation.
-  returned: always
-  type: list
+  description: The configuration prior to the module execution.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: dict
   sample: >
-    The configuration returned will always be in the same format
-     of the parameters above.
+    This output will always be in the same format as the
+    module argspec.
 after:
-  description: The configuration as structured data after module completion.
+  description: The resulting configuration after module execution.
   returned: when changed
-  type: list
+  type: dict
   sample: >
-    The configuration returned will always be in the same format
-     of the parameters above.
+    This output will always be in the same format as the
+    module argspec.
 commands:
   description: The set of commands pushed to the remote device.
-  returned: always
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
-  sample: ['vlan 20', 'name vlan_20', 'mtu 600', 'remote-span']
+  sample:
+    - vlan configuration 202
+    - state active
+    - remote-span
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - vlan configuration 202
+    - member evpn-instance 202 vni 10202
+    - vlan 200
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
+
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlans.vlans import (
     VlansArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.vlans.vlans import Vlans
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import get_connection
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.vlans.vlans import (
+    Vlans,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
+    get_connection,
+)
 
 
 def _is_l2_device(module):
