@@ -279,6 +279,8 @@ class TestIosL3InterfacesModule(TestIosModule):
              ip address 192.168.0.3 255.255.255.0
             interface Serial1/0
              description Configured by PAUL
+            interface Vlan901
+             ip unnumbered Loopback2
             """,
         )
         set_module_args(
@@ -320,6 +322,20 @@ class TestIosL3InterfacesModule(TestIosModule):
                             ),
                         ],
                     ),
+                    dict(
+                        autostate=False,
+                        name="Vlan901",
+                        ipv6=[
+                            dict(
+                                enable=True,
+                            ),
+                        ],
+                        ipv4=[
+                            dict(
+                                source_interface=dict(name="Loopback1"),
+                            ),
+                        ],
+                    ),
                 ],
                 state="merged",
             ),
@@ -347,6 +363,10 @@ class TestIosL3InterfacesModule(TestIosModule):
             "ipv6 address fd5d:12c9:2201:3::1/64 eui",
             "interface Vlan51",
             "ip address 192.168.0.4 255.255.255.254",
+            "interface Vlan901",
+            "ip unnumbered Loopback1",
+            "ipv6 enable",
+            "no autostate",
         ]
 
         result = self.execute_module(changed=True)
