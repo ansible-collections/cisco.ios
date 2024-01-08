@@ -77,6 +77,7 @@ class VlansArgs(object):
                 "deleted",
                 "rendered",
                 "parsed",
+                "purged",
                 "gathered",
             ],
             "default": "merged",
