@@ -53,6 +53,58 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>member</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Members of VLAN</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>evi</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Ethernet Virtual Private Network (EVPN)</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vni</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>VXLAN vni</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>mtu</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -353,6 +405,43 @@ Examples
     # ------------------------------------------------------------------------------
     # 10
 
+    # Using merged
+
+    # Before state:
+    # -------------
+    #
+    # Leaf-01#show run nve | sec ^vlan configuration
+    # vlan configuration 101
+    #  member evpn-instance 101 vni 10101
+    # vlan configuration 201
+    #  member evpn-instance 201 vni 10201
+
+
+    - name: Merge provided configuration with device configuration
+      cisco.ios.ios_vlans:
+        config:
+          - vlan_id: 102
+            member:
+              vni: 10102
+              evi: 102
+          - vlan_id: 901
+            member:
+              vni: 50901
+        state: merged
+
+    # After state:
+    # ------------
+    #
+    # Leaf-01#show run nve | sec ^vlan configuration
+    # vlan configuration 101
+    #  member evpn-instance 101 vni 10101
+    # vlan configuration 102
+    #  member evpn-instance 102 vni 10102
+    # vlan configuration 201
+    #  member evpn-instance 201 vni 10201
+    # vlan configuration 901
+    #  member vni 50901
+
     # Using overridden
 
     # Before state:
@@ -414,6 +503,44 @@ Examples
     # 1003 tr    101003     1500  -      -      -        -    -        0      0
     # 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
     # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
+
+
+    # Using overridden
+
+    # Before state:
+    # -------------
+    #
+    # Leaf-01#show run nve | sec ^vlan configuration
+    # vlan configuration 101
+    #  member evpn-instance 101 vni 10101
+    # vlan configuration 102
+    #  member evpn-instance 102 vni 10102
+    # vlan configuration 201
+    #  member evpn-instance 201 vni 10201
+    # vlan configuration 901
+    #  member vni 50901
+
+    - name: Override device configuration of all VLANs with provided configuration
+      cisco.ios.ios_vlans:
+        config:
+          - vlan_id: 101
+            member:
+              vni: 10102
+              evi: 102
+          - vlan_id: 102
+            member:
+              vni: 10101
+              evi: 101
+        state: overridden
+
+    # After state:
+    # ------------
+    #
+    # Leaf-01#show run nve | sec ^vlan configuration
+    # vlan configuration 101
+    #  member evpn-instance 102 vni 10102
+    # vlan configuration 102
+    #  member evpn-instance 101 vni 10101
 
     # Using replaced
 
@@ -575,6 +702,38 @@ Examples
     # 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
     # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
 
+    # Using deleted
+
+    # Before state:
+    # -------------
+    #
+    # Leaf-01#show run nve | sec ^vlan configuration
+    # vlan configuration 101
+    #  member evpn-instance 101 vni 10101
+    # vlan configuration 102
+    #  member evpn-instance 102 vni 10102
+    # vlan configuration 201
+    #  member evpn-instance 201 vni 10201
+    # vlan configuration 901
+    #  member vni 50901
+
+    - name: Delete attributes of given VLANs
+      cisco.ios.ios_vlans:
+        config:
+          - vlan_id: 101
+        state: deleted
+
+    # After state:
+    # -------------
+    #
+    # Leaf-01#show run nve | sec ^vlan configuration
+    # vlan configuration 102
+    #  member evpn-instance 102 vni 10102
+    # vlan configuration 201
+    #  member evpn-instance 201 vni 10201
+    # vlan configuration 901
+    #  member vni 50901
+
     # Using Deleted without any config passed
     # "(NOTE: This will delete all of configured vlans attributes)"
 
@@ -632,134 +791,105 @@ Examples
     # 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
     # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
 
-    # Using Gathered
+    # Using Deleted without any config passed
+    # "(NOTE: This will delete all of configured vlans attributes)"
 
     # Before state:
     # -------------
     #
-    # vios_l2#show vlan
-    # VLAN Name                             Status    Ports
-    # ---- -------------------------------- --------- -------------------------------
-    # 1    default                          active    Gi0/1, Gi0/2
-    # 10   vlan_10                          active
-    # 20   vlan_20                          act/lshut
-    # 30   vlan_30                          sus/lshut
-    # 1002 fddi-default                     act/unsup
-    # 1003 token-ring-default               act/unsup
-    # 1004 fddinet-default                  act/unsup
-    # 1005 trnet-default                    act/unsup
+    # Leaf-01#show run nve | sec ^vlan configuration
+    # vlan configuration 101
+    #  member evpn-instance 101 vni 10101
+    # vlan configuration 102
+    #  member evpn-instance 102 vni 10102
+    # vlan configuration 201
+    #  member evpn-instance 201 vni 10201
+    # vlan configuration 202
+    #  member evpn-instance 202 vni 10202
+    # vlan configuration 901
+    #  member vni 50901
+
+    - name: Delete attributes of ALL VLANs
+      cisco.ios.ios_vlans:
+        state: deleted
+
+    # After state:
+    # -------------
     #
-    # VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
-    # ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
-    # 1    enet  100001     1500  -      -      -        -    -        0      0
-    # 10   enet  100010     1500  -      -      -        -    -        0      0
-    # 20   enet  100020     610   -      -      -        -    -        0      0
-    # 30   enet  100030     1500  -      -      -        -    -        0      0
-    # 1002 fddi  101002     1500  -      -      -        -    -        0      0
-    # 1003 tr    101003     1500  -      -      -        -    -        0      0
-    # 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
-    # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
+    # Leaf-01#show run nve | sec ^vlan configuration
+    # no vlan configuration 101
+    # no vlan configuration 102
+    # no vlan configuration 201
+    # no vlan configuration 202
+    # no vlan configuration 901
+    # no vlan configuration 902
+
+    # Using gathered, vlan configuration only
+
+    # Before state:
+    # -------------
     #
-    # Remote SPAN VLANs
-    # ------------------------------------------------------------------------------
-    # 10
+    # Leaf-01#show run nve | sec ^vlan configuration
+    # vlan configuration 101
+    #  member evpn-instance 101 vni 10101
+    # vlan configuration 102
+    #  member evpn-instance 102 vni 10102
+    # vlan configuration 201
+    #  member evpn-instance 201 vni 10201
+    # vlan configuration 202
+    #  member evpn-instance 202 vni 10202
+    # vlan configuration 901
+    #  member vni 50901
 
     - name: Gather listed vlans with provided configurations
       cisco.ios.ios_vlans:
-        config:
         state: gathered
 
     # Module Execution Result:
     # ------------------------
     #
-    # "gathered": [
-    #         {
-    #             "mtu": 1500,
-    #             "name": "default",
-    #             "shutdown": "disabled",
-    #             "state": "active",
-    #             "vlan_id": 1
+    # gathered = [
+    #     {
+    #         "member": {
+    #             "evi": 101,
+    #             "vni": 10101
     #         },
-    #         {
-    #             "mtu": 1500,
-    #             "name": "VLAN0010",
-    #             "shutdown": "disabled",
-    #             "state": "active",
-    #             "vlan_id": 10
+    #         "vlan_id": 101
+    #     },
+    #     {
+    #         "member": {
+    #             "evi": 102,
+    #             "vni": 10102
     #         },
-    #         {
-    #             "mtu": 1500,
-    #             "name": "VLAN0020",
-    #             "shutdown": "disabled",
-    #             "state": "active",
-    #             "vlan_id": 20
+    #         "vlan_id": 102
+    #     },
+    #     {
+    #         "member": {
+    #             "evi": 201,
+    #             "vni": 10201
     #         },
-    #         {
-    #             "mtu": 1500,
-    #             "name": "VLAN0030",
-    #             "shutdown": "disabled",
-    #             "state": "active",
-    #             "vlan_id": 30
+    #         "vlan_id": 201
+    #     },
+    #     {
+    #         "member": {
+    #             "evi": 202,
+    #             "vni": 10202
     #         },
-    #         {
-    #             "mtu": 1500,
-    #             "name": "fddi-default",
-    #             "shutdown": "enabled",
-    #             "state": "active",
-    #             "vlan_id": 1002
+    #         "vlan_id": 202
+    #     },
+    #     {
+    #         "member": {
+    #             "vni": 50901
     #         },
-    #         {
-    #             "mtu": 1500,
-    #             "name": "token-ring-default",
-    #             "shutdown": "enabled",
-    #             "state": "active",
-    #             "vlan_id": 1003
+    #         "vlan_id": 901
+    #     },
+    #     {
+    #         "member": {
+    #             "vni": 50902
     #         },
-    #         {
-    #             "mtu": 1500,
-    #             "name": "fddinet-default",
-    #             "shutdown": "enabled",
-    #             "state": "active",
-    #             "vlan_id": 1004
-    #         },
-    #         {
-    #             "mtu": 1500,
-    #             "name": "trnet-default",
-    #             "shutdown": "enabled",
-    #             "state": "active",
-    #             "vlan_id": 1005
-    #         }
-    #     ]
-
-    # After state:
-    # ------------
-    #
-    # vios_l2#show vlan
-    # VLAN Name                             Status    Ports
-    # ---- -------------------------------- --------- -------------------------------
-    # 1    default                          active    Gi0/1, Gi0/2
-    # 10   vlan_10                          active
-    # 20   vlan_20                          act/lshut
-    # 30   vlan_30                          sus/lshut
-    # 1002 fddi-default                     act/unsup
-    # 1003 token-ring-default               act/unsup
-    # 1004 fddinet-default                  act/unsup
-    # 1005 trnet-default                    act/unsup
-    #
-    # VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
-    # ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
-    # 1    enet  100001     1500  -      -      -        -    -        0      0
-    # 10   enet  100010     1500  -      -      -        -    -        0      0
-    # 20   enet  100020     610   -      -      -        -    -        0      0
-    # 30   enet  100030     1500  -      -      -        -    -        0      0
-    # 1002 fddi  101002     1500  -      -      -        -    -        0      0
-    # 1003 tr    101003     1500  -      -      -        -    -        0      0
-    # 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
-    # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
-    #
-    # Remote SPAN VLANs
-    # ------------------------------------------------------------------------------
-    # 10
+    #         "vlan_id": 902
+    #     }
+    # ]
 
     # Using Rendered
 
@@ -801,6 +931,31 @@ Examples
     #         "state suspend",
     #         "shutdown"
     #     ]
+
+    # Using Rendered
+
+    - name: Render the commands for provided configuration
+      cisco.ios.ios_vlans:
+        config:
+          - vlan_id: 101
+            member:
+              vni: 10101
+              evi: 101
+          - vlan_id: 102
+            member:
+              vni: 10102
+              evi: 102
+        state: rendered
+
+    # Module Execution Result:
+    # ------------------------
+    #
+    # "rendered": [
+    #     "vlan configuration 101",
+    #     "member evpn-instance 101 vni 10101",
+    #     "vlan configuration 102",
+    #     "member evpn-instance 102 vni 10102"
+    # ]
 
     # Using Parsed
 
@@ -896,6 +1051,49 @@ Examples
     #         }
     #     ]
 
+    # Using Parsed Vlan configuration only
+
+    # File: parsed.cfg
+    # ----------------
+    #
+    # vlan configuration 101
+    #  member evpn-instance 101 vni 10101
+    # vlan configuration 102
+    #  member evpn-instance 102 vni 10102
+    # vlan configuration 901
+    #  member vni 50901
+
+    - name: Parse the commands for provided configuration
+      cisco.ios.ios_vlans:
+        running_config: "{{ lookup('file', './parsed.cfg') }}"
+        state: parsed
+
+    # Module Execution Result:
+    # ------------------------
+    #
+    # "parsed": [
+    #     {
+    #         "member": {
+    #             "evi": 101,
+    #             "vni": 10101
+    #         },
+    #         "vlan_id": 101
+    #     },
+    #     {
+    #         "member": {
+    #             "evi": 102,
+    #             "vni": 10102
+    #         },
+    #         "vlan_id": 102
+    #     },
+    #     {
+    #         "member": {
+    #             "vni": 50901
+    #         },
+    #         "vlan_id": 901
+    #     }
+    # ]
+
 
 
 Return Values
@@ -975,3 +1173,4 @@ Authors
 ~~~~~~~
 
 - Sumit Jaiswal (@justjais)
+- Sagar Paul (@KB-perByte)
