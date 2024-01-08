@@ -136,8 +136,8 @@ options:
       - The state I(parsed) reads the configuration from C(running_config) option and
         transforms it into JSON format as per the resource module parameters and the
         value is returned in the I(parsed) key within the result. The value of C(running_config)
-        option should be the same format as the output of command I(show running-config
-        | include ip route|ipv6 route) executed on device. For state I(parsed) active
+        option should be the same format as the output of commands I(show vlan) and I(show
+        running-config | sec ^vlan configuration .+) executed on device. For state I(parsed) active
         connection to remote host is not required.
     type: str
     choices:
@@ -965,8 +965,12 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlans.vlans import (
     VlansArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.vlans.vlans import Vlans
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import get_connection
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.vlans.vlans import (
+    Vlans,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
+    get_connection,
+)
 
 
 def _is_l2_device(module):
