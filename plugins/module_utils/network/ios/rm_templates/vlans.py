@@ -22,6 +22,17 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
+def vlan_associated_config(config):
+    cmd = ""
+    if len(config.get("private_vlan", {}).get("associated")) > 1:
+        for vlan in config.get("private_vlan", {}).get("associated"):
+            cmd += str(vlan) + ","
+        cmd = cmd[:-1]
+    else:
+        cmd = config.get("private_vlan", {}).get("associated")[0]
+    return "private-vlan association " + cmd
+
+
 class VlansTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(VlansTemplate, self).__init__(
@@ -99,9 +110,15 @@ class VlansTemplate(NetworkTemplate):
             "result": {},
         },
         {
-            "name": "private_vlan.",
+            "name": "private_vlan.type",
             "getval": "",
-            "setval": "{{ ('shutdown') if shutdown == 'enabled' else 'no shutdown'}}",
+            "setval": "private-vlan {{ private_vlan.type if private_vlan.type is defined }}",
+            "result": {},
+        },
+        {
+            "name": "private_vlan.associated",
+            "getval": "",
+            "setval": vlan_associated_config,
             "result": {},
         },
         {

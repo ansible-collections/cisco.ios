@@ -19,7 +19,9 @@ __metaclass__ = type
 from copy import deepcopy
 from textwrap import dedent
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
+    utils,
+)
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlans.vlans import (
     VlansArgs,
@@ -51,70 +53,11 @@ class VlansFacts(object):
         facts gracefully. Does not fail module.
         """
         check_os_type = connection.get_device_info()
-        # return ""
-        return dedent(
-            """\
-            VLAN Name                             Status    Ports
-            ---- -------------------------------- --------- -------------------------------
-            1    default                          active    Gi0/0, Gi0/1, Gi0/2, Gi0/3
-            101  Vlan_101                         active
-            20   Test_VLAN20                      active
-            50   pvlan-isolated                   active
-            60   pvlan-community                  active
-            70   pvlan-primary                    active
-            1002 fddi-default                     act/unsup
-            1003 token-ring-default               act/unsup
-            1004 fddinet-default                  act/unsup
-            902  trnet-default                    act/unsup
-
-            VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
-            ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
-            1    enet  100001     1500  -      -      -        -    -        0      0
-            101  enet  100010     1000  -      -      -        -    -        0      0
-            20   enet  100020     700   -      -      -        -    -        0      0
-            50   enet  100050     1500  -      -      -        -    -        0      0
-            60   enet  100051     1500  -      -      -        -    -        0      0
-            70   enet  100059     1500  -      -      -        -    -        0      0
-            1002 fddi  101002     1500  -      -      -        -    -        0      0
-            1003 tr    101003     1500  -      -      -        -    -        0      0
-            902  fdnet 101004     1500  -      -      -        ieee -        0      0
-
-            VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
-            ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
-            902  trnet 101005     1500  -      -      -        ibm  -        0      0
-
-            Remote SPAN VLANs
-            ------------------------------------------------------------------------------
-
-
-            Primary Secondary Type              Ports
-            ------- --------- ----------------- ------------------------------------------
-            70      50        isolated
-            70      60        community
-            """,
-        )
         if check_os_type.get("network_os_type") == "L3":
             return ""
         return connection.get("show vlan")
 
     def get_vlan_conf_data(self, connection):
-        # return ""
-        return dedent(
-            """\
-            vlan configuration 101
-             member evpn-instance 101 vni 10101
-            vlan configuration 102
-             member evpn-instance 102 vni 10102
-            vlan configuration 201
-             member evpn-instance 201 vni 10201
-            vlan configuration 202
-             member evpn-instance 202 vni 10202
-            vlan configuration 901
-             member vni 50901
-            vlan configuration 902
-             member vni 50902
-            """,
-        )
         return connection.get("show running-config | sec ^vlan configuration .+")
 
     def populate_vlans_config_facts(self, connection, data=None):
@@ -188,7 +131,11 @@ class VlansFacts(object):
             if temp:
                 conf = temp
                 temp = ""
-            if conf and " " not in filter(None, conf.split("-")) and not conf.split(" ")[0] == "":
+            if (
+                conf
+                and " " not in filter(None, conf.split("-"))
+                and not conf.split(" ")[0] == ""
+            ):
                 obj = self.render_config(self.generated_spec, conf, vlan_info)
                 if "mtu" in obj:
                     mtu_objs.append(obj)
@@ -236,7 +183,9 @@ class VlansFacts(object):
                             pvlan_final[privlan] = {
                                 "private_vlan": {"type": "primary", "associated": []},
                             }
-                        if secvlan and (isinstance(secvlan, int) or secvlan.isnumeric()):
+                        if secvlan and (
+                            isinstance(secvlan, int) or secvlan.isnumeric()
+                        ):
                             pvlan_final[privlan]["private_vlan"]["associated"].append(
                                 int(secvlan),
                             )
