@@ -27,7 +27,9 @@ class TestIosVlansModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+        self.get_resource_connection_facts = (
+            self.mock_get_resource_connection_facts.start()
+        )
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.vlans."
@@ -1095,3 +1097,250 @@ class TestIosVlansModule(TestIosModule):
 
         self.maxDiff = None
         self.assertEqual(result["gathered"], gathered)
+
+    def test_ios_vlans_config_merged(self):
+        self.mock_l2_device_command.side_effect = True
+        self.mock_execute_show_command_conf.side_effect = ""
+        self.execute_show_command.return_value = dedent(
+            """\
+            vlan configuration 102
+             member evpn-instance 102 vni 10102
+            vlan configuration 201
+             member evpn-instance 201 vni 10201
+            vlan configuration 202
+             member evpn-instance 202 vni 10202
+            vlan configuration 901
+             member vni 50901
+            vlan configuration 902
+             member vni 50902
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        vlan_id=101,
+                        member=dict(
+                            evi=101,
+                            vni=10101,
+                        ),
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = [
+            "vlan configuration 101",
+            "member evpn-instance 101 vni 10101",
+        ]
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_vlans_config_merged_idempotent(self):
+        self.mock_l2_device_command.side_effect = True
+        self.mock_execute_show_command_conf.side_effect = dedent(
+            """\
+            vlan configuration 101
+              member evpn-instance 101 vni 10101
+            vlan configuration 102
+              member evpn-instance 102 vni 10102
+            vlan configuration 201
+              member evpn-instance 201 vni 10201
+            vlan configuration 202
+              member evpn-instance 202 vni 10202
+            vlan configuration 901
+              member vni 50901
+            vlan configuration 902
+              member vni 50902
+            """,
+        )
+        self.execute_show_command.return_value = dedent(
+            """\
+            vlan configuration 101
+              member evpn-instance 101 vni 10101
+            vlan configuration 102
+              member evpn-instance 102 vni 10102
+            vlan configuration 201
+              member evpn-instance 201 vni 10201
+            vlan configuration 202
+              member evpn-instance 202 vni 10202
+            vlan configuration 901
+              member vni 50901
+            vlan configuration 902
+              member vni 50902
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        vlan_id=101,
+                        member=dict(
+                            evi=101,
+                            vni=10101,
+                        ),
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        self.execute_module(changed=False, commands=[], sort=True)
+
+    def test_ios_vlans_config_overridden(self):
+        self.mock_l2_device_command.side_effect = True
+        self.mock_execute_show_command_conf.side_effect = ""
+        self.execute_show_command.return_value = dedent(
+            """\
+            vlan configuration 101
+              member evpn-instance 101 vni 10101
+            vlan configuration 102
+              member evpn-instance 102 vni 10102
+            vlan configuration 201
+              member evpn-instance 201 vni 10201
+            vlan configuration 202
+              member evpn-instance 202 vni 10202
+            vlan configuration 901
+              member vni 50901
+            vlan configuration 902
+              member vni 50902
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        vlan_id=101,
+                        member=dict(
+                            evi=102,
+                            vni=10102,
+                        ),
+                    ),
+                    dict(
+                        vlan_id=102,
+                        member=dict(
+                            evi=101,
+                            vni=10101,
+                        ),
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = [
+            "vlan configuration 201",
+            "no member evpn-instance 201 vni 10201",
+            "vlan configuration 202",
+            "no member evpn-instance 202 vni 10202",
+            "vlan configuration 901",
+            "no member vni 50901",
+            "vlan configuration 902",
+            "no member vni 50902",
+            "vlan configuration 101",
+            "member evpn-instance 102 vni 10102",
+            "vlan configuration 102",
+            "member evpn-instance 101 vni 10101",
+        ]
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_delete_vlans_config(self):
+        self.mock_l2_device_command.side_effect = True
+        self.mock_execute_show_command_conf.side_effect = ""
+        self.execute_show_command.return_value = dedent(
+            """\
+            vlan configuration 101
+             member evpn-instance 101 vni 10101
+            vlan configuration 102
+             member evpn-instance 102 vni 10102
+            vlan configuration 201
+             member evpn-instance 201 vni 10201
+            vlan configuration 202
+             member evpn-instance 202 vni 10202
+            vlan configuration 901
+             member vni 50901
+            vlan configuration 902
+             member vni 50902
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    {"vlan_id": 101},
+                ],
+                state="deleted",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = ["vlan configuration 101", "no member evpn-instance 101 vni 10101"]
+        self.assertEqual(result["commands"], commands)
+
+    def test_vlans_config_rendered(self):
+        self.mock_l2_device_command.side_effect = True
+        self.mock_execute_show_command_conf.side_effect = ""
+        self.execute_show_command.return_value = dedent(
+            """\
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        vlan_id=101,
+                        member=dict(
+                            evi=101,
+                            vni=10101,
+                        ),
+                    ),
+                ],
+                state="rendered",
+            ),
+        )
+        commands = [
+            "vlan configuration 101",
+            "member evpn-instance 101 vni 10101",
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["rendered"], commands)
+
+    def test_vlans_config_parsed(self):
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    vlan configuration 101
+                     member evpn-instance 101 vni 10101
+                    vlan configuration 102
+                     member evpn-instance 102 vni 10102
+                    vlan configuration 901
+                     member vni 50901
+                    """,
+                ),
+                state="parsed",
+            ),
+        )
+        parsed = [
+            {
+                "member": {
+                    "evi": 101,
+                    "vni": 10101,
+                },
+                "vlan_id": 101,
+            },
+            {
+                "member": {
+                    "evi": 102,
+                    "vni": 10102,
+                },
+                "vlan_id": 102,
+            },
+            {
+                "member": {
+                    "vni": 50901,
+                },
+                "vlan_id": 901,
+            },
+        ]
+
+        result = self.execute_module(changed=False)
+        self.maxDiff = None
+        self.assertEqual(result["parsed"], parsed)

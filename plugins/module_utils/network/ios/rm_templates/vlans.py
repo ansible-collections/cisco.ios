@@ -59,16 +59,10 @@ class VlansTemplate(NetworkTemplate):
             "shared": True,
         },
         {
-            "name": "vlans",
-            "getval": "",
-            "setval": "vlan {{ vlan_id|string }}",
-            "result": {},
-        },
-        {
             "name": "member",
             "getval": re.compile(
                 r"""
-                \s+member
+                \s*member
                 (\sevpn-instance\s(?P<inst_vlan_id>\d+))?
                 (\svni\s(?P<vni>\d+))?
                 $""", re.VERBOSE,
@@ -84,6 +78,12 @@ class VlansTemplate(NetworkTemplate):
                     },
                 },
             },
+        },
+        {
+            "name": "vlans",
+            "getval": "",
+            "setval": "vlan {{ vlan_id|string }}",
+            "result": {},
         },
         {
             "name": "name",
