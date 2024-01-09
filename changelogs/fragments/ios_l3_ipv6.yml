@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_l3_interfaces - remove validation from ipv6 address parameter.
