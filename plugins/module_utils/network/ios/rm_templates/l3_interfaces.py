@@ -66,6 +66,23 @@ class L3_interfacesTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
+            "name": "autostate",
+            "getval": re.compile(r"""\s+no\s+autostate$""", re.VERBOSE),
+            "setval": "autostate",
+            "result": {"{{ name }}": {"autostate": False}},
+        },
+        {
+            "name": "mac_address",
+            "getval": re.compile(
+                r"""^mac-address
+                    (\s(?P<mac_address>\S+))
+                    $""",
+                re.VERBOSE,
+            ),
+            "setval": "mac-address {{ mac_address }}",
+            "result": {"{{ name }}": {"mac_address": "{{ mac_address }}"}},
+        },
+        {
             "name": "name",
             "getval": re.compile(
                 r"""^interface
@@ -139,6 +156,33 @@ class L3_interfacesTemplate(NetworkTemplate):
                                 "enable": "{{ True if dhcp is defined }}",
                                 "client_id": "{{ client_id }}",
                                 "hostname": "{{ hostname }}",
+                            },
+                        },
+                    ],
+                },
+            },
+        },
+        {
+            "name": "ipv4.source_interface",
+            "getval": re.compile(
+                r"""\s+ip\sunnumbered
+                    (\s(?P<name>\S+))
+                    (\s(?P<poll>poll))?
+                    (\s(?P<point_to_point>point-to-point))?
+                    $""",
+                re.VERBOSE,
+            ),
+            "setval": "ip unnumbered {{ ipv4.source_interface.name }}"
+            "{{ ' poll' if ipv4.source_interface.poll|d(False) else ''}}"
+            "{{ ' point-to-point' if ipv4.source_interface.point_to_point|d(False) else ''}}",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": [
+                        {
+                            "source_interface": {
+                                "name": "{{ True if name is defined }}",
+                                "poll": "{{ True if poll is defined }}",
+                                "point_to_point": "{{ True if point_to_point is defined }}",
                             },
                         },
                     ],
@@ -223,6 +267,18 @@ class L3_interfacesTemplate(NetworkTemplate):
                                 "rapid_commit": "{{ True if rapid_commit is defined }}",
                             },
                         },
+                    ],
+                },
+            },
+        },
+        {
+            "name": "ipv6.enable",
+            "getval": re.compile(r"""\s+ipv6\s+enable$""", re.VERBOSE),
+            "setval": "ipv6 enable",
+            "result": {
+                "{{ name }}": {
+                    "ipv6": [
+                        {"enable": True},
                     ],
                 },
             },

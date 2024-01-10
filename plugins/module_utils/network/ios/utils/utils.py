@@ -219,29 +219,17 @@ def validate_ipv4(value, module):
         address = value.split("/")
         if len(address) != 2:
             module.fail_json(
-                msg="address format is <ipv4 address>/<mask>, got invalid format {0}".format(value),
+                msg="address format is <ipv4 address>/<mask>, got invalid format {0}".format(
+                    value,
+                ),
             )
 
         if not is_masklen(address[1]):
             module.fail_json(
-                msg="invalid value for mask: {0}, mask should be in range 0-32".format(address[1]),
+                msg="invalid value for mask: {0}, mask should be in range 0-32".format(
+                    address[1],
+                ),
             )
-
-
-def validate_ipv6(value, module):
-    if value:
-        address = value.split("/")
-        if len(address) != 2:
-            module.fail_json(
-                msg="address format is <ipv6 address>/<mask>, got invalid format {0}".format(value),
-            )
-        else:
-            if not 0 <= int(address[1]) <= 128:
-                module.fail_json(
-                    msg="invalid value for mask: {0}, mask should be in range 0-128".format(
-                        address[1],
-                    ),
-                )
 
 
 def validate_n_expand_ipv4(module, want):
