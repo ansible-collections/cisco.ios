@@ -35,7 +35,7 @@ author:
   - Sagar Paul (@KB-perByte)
   - Padmini Priyadarshini Sivaraj (@PadminiSivaraj)
 notes:
-  - Tested against Cisco IOS device with Version 17.13.01 on Cat9k on CML.
+  - Tested against Cisco IOS-XE device with Version 17.13.01 on Cat9k on CML.
   - Starting from v2.5.0, this module will fail when run against Cisco IOS devices that do
     not support VLANs. The offline states (C(rendered) and C(parsed)) will work as expected.
   - This module works with connection C(network_cli).
@@ -967,8 +967,12 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlans.vlans import (
     VlansArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.vlans.vlans import Vlans
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import get_connection
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.vlans.vlans import (
+    Vlans,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
+    get_connection,
+)
 
 
 def _is_l2_device(module):
