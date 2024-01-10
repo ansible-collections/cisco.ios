@@ -1096,7 +1096,7 @@ Examples
     #     }
     # ]
 
-    # Using Parsed Vlan configuration only
+    # Using Parsed, Vlan and vlan configuration
 
     # File: parsed.cfg
     # ----------------
