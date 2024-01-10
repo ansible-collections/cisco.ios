@@ -40,6 +40,14 @@ class L3_InterfacesFacts(object):
     def get_l3_interfaces_data(self, connection):
         return connection.get("show running-config | section ^interface")
 
+    def _set_defaults(self, objs):
+        """Set default parameters"""
+
+        for intf in objs:
+            if intf.get("name") and intf["name"][:4] == "Vlan":
+                intf.setdefault("autostate", True)
+        return objs
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for l3 interfaces
         :param connection: the device connection
@@ -71,6 +79,10 @@ class L3_InterfacesFacts(object):
         temp = sorted(temp, key=lambda k, sk="name": k[sk])
 
         objs = temp
+
+        if objs:
+            objs = self._set_defaults(objs)
+
         facts = {}
         if objs:
             facts["l3_interfaces"] = []

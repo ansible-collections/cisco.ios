@@ -29,7 +29,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     normalize_interface,
-    validate_ipv6,
     validate_n_expand_ipv4,
 )
 
@@ -48,12 +47,18 @@ class L3_interfaces(ResourceModule):
             tmplt=L3_interfacesTemplate(),
         )
         self.parsers = [
+            "mac_address",
             "ipv4.address",
             "ipv4.pool",
             "ipv4.dhcp",
+            "ipv4.source_interface",
             "ipv6.address",
             "ipv6.autoconfig",
             "ipv6.dhcp",
+            "ipv6.enable",
+        ]
+        self.gen_parsers = [
+            "autostate",
         ]
 
     def execute_module(self):
@@ -101,10 +106,16 @@ class L3_interfaces(ResourceModule):
                     self._compare(want={}, have=have)
 
         for k, want in wantd.items():
-            self._compare(want=want, have=haved.pop(k, {}))
+            have = haved.pop(k, {})
+            # New interface (doesn't use fact file)
+            if k[:4] == "Vlan":
+                have.setdefault("autostate", True)
+                want.setdefault("autostate", True)
+            self._compare(want=want, have=have)
 
     def _compare(self, want, have):
         begin = len(self.commands)
+        self.compare(parsers=self.gen_parsers, want=want, have=have)
         self._compare_lists(want=want, have=have)
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
@@ -141,7 +152,12 @@ class L3_interfaces(ResourceModule):
                     # hacl is set as primary, if wacls has no other primary entry we must keep
                     # this entry as primary (so we'll compare entry to hacl and not
                     # generate commands)
-                    if list(filter(lambda w: w.get("secondary", False) is False, wacls.values())):
+                    if list(
+                        filter(
+                            lambda w: w.get("secondary", False) is False,
+                            wacls.values(),
+                        ),
+                    ):
                         # another primary is in wacls
                         hacl = {}
                 self.validate_ips(afi, want=entry, have=hacl)
@@ -168,17 +184,11 @@ class L3_interfaces(ResourceModule):
             v4_addr = validate_n_expand_ipv4(self._module, want) if want.get("address") else {}
             if v4_addr:
                 want["address"] = v4_addr
-        elif afi == "ipv6" and want:
-            if want.get("address"):
-                validate_ipv6(want["address"], self._module)
 
         if afi == "ipv4" and have:
             v4_addr_h = validate_n_expand_ipv4(self._module, have) if have.get("address") else {}
             if v4_addr_h:
                 have["address"] = v4_addr_h
-        elif afi == "ipv6" and have:
-            if have.get("address"):
-                validate_ipv6(have["address"], self._module)
 
     def list_to_dict(self, param):
         if param:
