@@ -324,7 +324,7 @@ Notes
 -----
 
 .. note::
-   - Tested against Cisco IOS device with Version 17.13.01 on Cat9k on CML.
+   - Tested against Cisco IOS-XE device with Version 17.13.01 on Cat9k on CML.
    - Starting from v2.5.0, this module will fail when run against Cisco IOS devices that do not support VLANs. The offline states (``rendered`` and ``parsed``) will work as expected.
    - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
 
