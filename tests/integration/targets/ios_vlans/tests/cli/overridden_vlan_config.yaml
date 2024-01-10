@@ -19,7 +19,6 @@
             member:
               vni: 10101
               evi: 101
-        configuration: true
         state: overridden
 
     - name: Assert that correct set of commands were generated
