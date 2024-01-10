@@ -122,10 +122,11 @@ class Acls(ResourceModule):
             # If ACLs type is different between existing and wanted ACL, we need first remove it
             if acl_type != hentry.get("acl_type", acl_type):
                 self.commands.append(
-                    "no " + self.acl_name_cmd(wname, afi, hentry.get("acl_type", ""))
+                    "no " + self.acl_name_cmd(wname, afi, hentry.get("acl_type", "")),
                 )
                 hentry.pop(
-                    "aces", {}
+                    "aces",
+                    {},
                 )  # We remove ACEs because we have previously add a command to suppress completely the ACL
 
             begin = len(self.commands)  # to determine the index for acl command
