@@ -1081,3 +1081,31 @@ releases:
       - bgp_dep_rem.yml
       - major_600.yml
     release_date: "2023-11-30"
+  6.1.0:
+    changes:
+      bugfixes:
+        - ios_bgp_global - fix template attribute to generate configuration commands.
+        - ios_l3_interfaces - remove validation from ipv6 address parameter.
+        - ios_snmp_server - fix group and user IPv6 ACL commands.
+        - ios_user - fix configuration of user with hashed password.
+        - ios_user - fixed configuration removal of ssh users using purge.
+        - ios_vlans - Make behaviour of the action states consistent.
+        - ios_vlans - Top level configuration attribute is not required, the module
+          works with vlan and vlan configuration both.
+      minor_changes:
+        - ios_bgp_global - added 'bgp.default.ipv4_unicast' and 'bgp.default.route_target.filter'
+          key
+        - ios_l3_interfaces - added 'autostate', 'mac_address', 'ipv4.source_interface',
+          and 'ipv6.enable' key
+        - ios_vlans - Add purged state to deal with toplevel vlan and vlan configuration
+          config.
+    fragments:
+      - fix_ios_bgp_global_20231204173037.yaml
+      - fix_ios_l3_interfacel_20231207172506.yaml
+      - ios_facts_tests.yml
+      - ios_l3_ipv6.yml
+      - ios_user_fix.yml
+      - ios_vlans_revert.yml
+      - snmp_server_ipv6_acl.yml
+      - template_revoke_bgp.yaml
+    release_date: "2024-01-11"

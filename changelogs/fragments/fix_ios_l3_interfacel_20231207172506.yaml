@@ -1,3 +1,0 @@
----
-minor_changes:
-  - ios_l3_interfaces - added 'autostate', 'mac_address', 'ipv4.source_interface', and 'ipv6.enable' key
