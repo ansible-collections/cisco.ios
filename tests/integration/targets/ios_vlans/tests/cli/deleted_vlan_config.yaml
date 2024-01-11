@@ -10,7 +10,6 @@
     - name: Delete vlans attributes for all configured vlans
       register: result
       cisco.ios.ios_vlans: &id001
-        configuration: true
         state: deleted
 
     - name: Assert that correct set of commands were generated

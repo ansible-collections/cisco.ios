@@ -391,7 +391,7 @@ Notes
 -----
 
 .. note::
-   - Tested against Cisco IOS device with Version 17.13.01 on Cat9k on CML.
+   - Tested against Cisco IOS-XE device with Version 17.13.01 on Cat9k on CML.
    - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
 
 

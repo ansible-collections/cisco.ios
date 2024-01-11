@@ -17,7 +17,6 @@
           - vlan_id: 902
             member:
               vni: 50902
-        configuration: true
         state: merged
 
     - name: Assert that correct set of commands were generated
