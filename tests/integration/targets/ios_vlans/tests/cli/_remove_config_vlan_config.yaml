@@ -8,5 +8,4 @@
       - vlan_id: 202
       - vlan_id: 901
       - vlan_id: 902
-    configuration: true
     state: deleted

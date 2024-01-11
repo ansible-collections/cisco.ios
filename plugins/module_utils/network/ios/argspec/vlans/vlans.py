@@ -51,7 +51,10 @@ class VlansArgs(object):
                 "private_vlan": {
                     "type": "dict",
                     "options": {
-                        "type": {"type": "str", "choices": ["primary", "community", "isolated"]},
+                        "type": {
+                            "type": "str",
+                            "choices": ["primary", "community", "isolated"],
+                        },
                         "associated": {"type": "list", "elements": "int"},
                     },
                 },
@@ -65,7 +68,6 @@ class VlansArgs(object):
             },
             "type": "list",
         },
-        "configuration": {"type": "bool"},
         "running_config": {"type": "str"},
         "state": {
             "choices": [
@@ -75,6 +77,7 @@ class VlansArgs(object):
                 "deleted",
                 "rendered",
                 "parsed",
+                "purged",
                 "gathered",
             ],
             "default": "merged",

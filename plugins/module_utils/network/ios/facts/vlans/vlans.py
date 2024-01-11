@@ -16,14 +16,15 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-import re
-
 from copy import deepcopy
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlans.vlans import (
     VlansArgs,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.vlans import (
+    VlansTemplate,
 )
 
 
@@ -44,18 +45,38 @@ class VlansFacts(object):
 
         self.generated_spec = utils.generate_dict(facts_argument_spec)
 
-    def get_vlans_data(self, connection, configuration):
+    def get_vlans_data(self, connection):
         """Checks device is L2/L3 and returns
         facts gracefully. Does not fail module.
         """
-        if configuration:
-            cmd = "show running-config | sec ^vlan configuration .+"
-        else:
-            cmd = "show vlan"
         check_os_type = connection.get_device_info()
         if check_os_type.get("network_os_type") == "L3":
             return ""
-        return connection.get(cmd)
+        return connection.get("show vlan")
+
+    def get_vlan_conf_data(self, connection):
+        return connection.get("show running-config | section ^vlan configuration .+")
+
+    def populate_vlans_config_facts(self, connection, data=None):
+        """Process config for Vlans Configurations
+
+        :param connection: the device connection
+        :param ansible_facts: Facts dictionary
+        :param data: previously collected conf
+
+        :rtype: dictionary
+        :returns: facts
+        """
+
+        if not data:
+            data = self.get_vlan_conf_data(connection)
+
+        # parse native config using the Vlan_configurations template
+        vlan_configurations_parser = VlansTemplate(
+            lines=data.splitlines(),
+            module=self._module,
+        )
+        return vlan_configurations_parser.parse()
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for vlans
@@ -65,17 +86,120 @@ class VlansFacts(object):
         :rtype: dictionary
         :returns: facts
         """
-        configuration = self._module.params["configuration"]
+
         objs = []
+        mtu_objs = []
+        remote_objs = []
+        final_objs = []
+        pvlan_objs = []
+        conf_data = {}
 
         if not data:
-            data = self.get_vlans_data(connection, configuration)
-        if not configuration:
-            objs = self.parse_vlan(data)
-        else:
-            objs = self.parse_vlan_config(data)
+            data = self.get_vlans_data(connection)
+
+        # deals with vlan configuration config only
+        conf_data = self.populate_vlans_config_facts(connection, data)
+
+        # operate on a collection of resource x
+        config = data.split("\n")
+        # Get individual vlan configs separately
+        vlan_info = ""
+        temp = ""
+        vlan_name = True
+
+        for conf in config:
+            if len(list(filter(None, conf.split(" ")))) <= 2 and vlan_name:
+                temp = temp + conf
+                if len(list(filter(None, temp.split(" ")))) <= 2:
+                    continue
+            if "VLAN Name" in conf:
+                vlan_info = "Name"
+            elif "VLAN Type" in conf:
+                vlan_info = "Type"
+                vlan_name = False
+            elif "Remote SPAN" in conf:
+                vlan_info = "Remote"
+                vlan_name = False
+            elif "VLAN AREHops" in conf or "STEHops" in conf:
+                vlan_info = "Hops"
+                vlan_name = False
+            elif "Primary Secondary" in conf:
+                vlan_info = "Private"
+                vlan_name = False
+            if temp:
+                conf = temp
+                temp = ""
+            if conf and " " not in filter(None, conf.split("-")) and not conf.split(" ")[0] == "":
+                obj = self.render_config(self.generated_spec, conf, vlan_info)
+                if "mtu" in obj:
+                    mtu_objs.append(obj)
+                elif "remote_span" in obj:
+                    remote_objs = obj
+                elif "tmp_pvlans" in obj:
+                    pvlan_objs.append(obj)
+                elif obj:
+                    objs.append(obj)
+
+        # Appending MTU value to the retrieved dictionary
+        for o, m in zip(objs, mtu_objs):
+            o.update(m)
+            final_objs.append(o)
+
+        # Appending Remote Span value to related VLAN
+        if remote_objs:
+            if remote_objs.get("remote_span"):
+                for each in remote_objs.get("remote_span"):
+                    for every in final_objs:
+                        if each == every.get("vlan_id"):
+                            every.update({"remote_span": True})
+                            break
+
+        # Appending private vlan information to related VLAN
+        if pvlan_objs:
+            pvlan_final = {}
+            if len(pvlan_objs) > 0:
+                # Sanitize and structure everything
+                for data in pvlan_objs:
+                    pvdata = data.get("tmp_pvlans")
+                    privlan = pvdata.get("primary")
+                    secvlan = pvdata.get("secondary")
+                    sectype = pvdata.get("sec_type")
+
+                    # Define the secondary VLAN's type
+                    if secvlan and (isinstance(secvlan, int) or secvlan.isnumeric()):
+                        secvlan = int(secvlan)
+                        pvlan_final[secvlan] = {"private_vlan": {"type": sectype}}
+
+                    # Assemble and merge data for primary private VLANs
+                    if privlan and (isinstance(privlan, int) or privlan.isnumeric()):
+                        privlan = int(privlan)
+                        if privlan not in pvlan_final.keys():
+                            pvlan_final[privlan] = {
+                                "private_vlan": {"type": "primary", "associated": []},
+                            }
+                        if secvlan and (isinstance(secvlan, int) or secvlan.isnumeric()):
+                            pvlan_final[privlan]["private_vlan"]["associated"].append(
+                                int(secvlan),
+                            )
+
+                # Associate with the proper VLAN in final_objs
+                for vlan_id, data in pvlan_final.items():
+                    for every in final_objs:
+                        if vlan_id == every.get("vlan_id"):
+                            every.update(data)
 
         facts = {}
+
+        if conf_data:
+            for vlan in objs:
+                if conf_data.get(vlan.get("vlan_id")):
+                    member_data = conf_data.pop(vlan.get("vlan_id"))
+                    vlan.update(member_data)
+
+            if conf_data:  # if any vlan configuration data is pending add it to facts
+                for vlanid, conf in conf_data.items():
+                    objs.append(conf)
+
         if objs:
             facts["vlans"] = []
             params = utils.validate_config(self.argument_spec, {"config": objs})
@@ -83,6 +207,7 @@ class VlansFacts(object):
             for cfg in params["config"]:
                 facts["vlans"].append(utils.remove_empties(cfg))
         ansible_facts["ansible_network_resources"].update(facts)
+
         return ansible_facts
 
     def render_config(self, spec, conf, vlan_info):
@@ -140,7 +265,10 @@ class VlansFacts(object):
                 for each in remote_span_vlan:
                     split_sp_list = each.split("-")
                     if len(split_sp_list) > 1:  # break range
-                        for r_sp in range(int(split_sp_list[0]), int(split_sp_list[1]) + 1):
+                        for r_sp in range(
+                            int(split_sp_list[0]),
+                            int(split_sp_list[1]) + 1,
+                        ):
                             remote_span.append(r_sp)
                     else:
                         remote_span.append(int(each))
@@ -158,127 +286,5 @@ class VlansFacts(object):
                 "secondary": conf[sec_idx],
                 "sec_type": conf[priv_type_idx],
             }
+
         return utils.remove_empties(config)
-
-    def parse_vlan_config(self, vlan_conf):
-        vlan_list = list()
-
-        re1 = re.compile(r"^vlan configuration +(?P<vlan>\d+)$")
-        re2 = re.compile(r"^member +(evpn\-instance +(?P<evi>\d+) )?vni (?P<vni>[\d\-]+)$")
-
-        for line in vlan_conf.splitlines():
-            line = line.strip()
-
-            m = re1.match(line)
-            if m:
-                vlan = m.groupdict()["vlan"]
-                vlan_dict = {"vlan_id": vlan}
-                continue
-
-            m = re2.match(line)
-            if m:
-                group = m.groupdict()
-                vlan_dict.update({"member": {}})
-                vlan_dict["member"].update({"vni": group["vni"]})
-                if group["evi"]:
-                    vlan_dict["member"].update({"evi": group["evi"]})
-                vlan_list.append(vlan_dict)
-
-        return vlan_list
-
-    def parse_vlan(self, data):
-        objs = []
-        mtu_objs = []
-        remote_objs = []
-        final_objs = []
-        pvlan_objs = []
-
-        # operate on a collection of resource x
-        config = data.split("\n")
-        # Get individual vlan configs separately
-        vlan_info = ""
-        temp = ""
-        vlan_name = True
-        for conf in config:
-            if len(list(filter(None, conf.split(" ")))) <= 2 and vlan_name:
-                temp = temp + conf
-                if len(list(filter(None, temp.split(" ")))) <= 2:
-                    continue
-            if "VLAN Name" in conf:
-                vlan_info = "Name"
-            elif "VLAN Type" in conf:
-                vlan_info = "Type"
-                vlan_name = False
-            elif "Remote SPAN" in conf:
-                vlan_info = "Remote"
-                vlan_name = False
-            elif "VLAN AREHops" in conf or "STEHops" in conf:
-                vlan_info = "Hops"
-                vlan_name = False
-            elif "Primary Secondary" in conf:
-                vlan_info = "Private"
-                vlan_name = False
-            if temp:
-                conf = temp
-                temp = ""
-            if conf and " " not in filter(None, conf.split("-")) and not conf.split(" ")[0] == "":
-                obj = self.render_config(self.generated_spec, conf, vlan_info)
-                if "mtu" in obj:
-                    mtu_objs.append(obj)
-                elif "remote_span" in obj:
-                    remote_objs = obj
-                elif "tmp_pvlans" in obj:
-                    pvlan_objs.append(obj)
-                elif obj:
-                    objs.append(obj)
-        # Appending MTU value to the retrieved dictionary
-        for o, m in zip(objs, mtu_objs):
-            o.update(m)
-            final_objs.append(o)
-
-        # Appending Remote Span value to related VLAN
-        if remote_objs:
-            if remote_objs.get("remote_span"):
-                for each in remote_objs.get("remote_span"):
-                    for every in final_objs:
-                        if each == every.get("vlan_id"):
-                            every.update({"remote_span": True})
-                            break
-
-        # Appending private vlan information to related VLAN
-        if pvlan_objs:
-            pvlan_final = {}
-            if len(pvlan_objs) > 0:
-                # Sanitize and structure everything
-
-                for data in pvlan_objs:
-                    pvdata = data.get("tmp_pvlans")
-                    privlan = pvdata.get("primary")
-                    secvlan = pvdata.get("secondary")
-                    sectype = pvdata.get("sec_type")
-
-                    # Define the secondary VLAN's type
-                    if secvlan and (isinstance(secvlan, int) or secvlan.isnumeric()):
-                        secvlan = int(secvlan)
-                        pvlan_final[secvlan] = {"private_vlan": {"type": sectype}}
-
-                    # Assemble and merge data for primary private VLANs
-                    if privlan and (isinstance(privlan, int) or privlan.isnumeric()):
-                        privlan = int(privlan)
-                        if privlan not in pvlan_final.keys():
-                            pvlan_final[privlan] = {
-                                "private_vlan": {"type": "primary", "associated": []},
-                            }
-                        if secvlan and (isinstance(secvlan, int) or secvlan.isnumeric()):
-                            pvlan_final[privlan]["private_vlan"]["associated"].append(int(secvlan))
-
-                # Associate with the proper VLAN in final_objs
-                for vlan_id, data in pvlan_final.items():
-                    for every in final_objs:
-                        if vlan_id == every.get("vlan_id"):
-                            every.update(data)
-
-        if final_objs:
-            return objs
-        else:
-            return {}
