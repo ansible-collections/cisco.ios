@@ -1,6 +1,0 @@
----
-bugfixes:
-  - ios_vlans - Top level configuration attribute is not required, the module works with vlan and vlan configuration both.
-  - ios_vlans - Make behaviour of the action states consistent.
-minor_changes:
-  - ios_vlans - Add purged state to deal with toplevel vlan and vlan configuration config.

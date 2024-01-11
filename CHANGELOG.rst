@@ -5,6 +5,27 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v6.1.0
+======
+
+Minor Changes
+-------------
+
+- ios_bgp_global - added 'bgp.default.ipv4_unicast' and 'bgp.default.route_target.filter' key
+- ios_l3_interfaces - added 'autostate', 'mac_address', 'ipv4.source_interface', and 'ipv6.enable' key
+- ios_vlans - Add purged state to deal with toplevel vlan and vlan configuration config.
+
+Bugfixes
+--------
+
+- ios_bgp_global - fix template attribute to generate configuration commands.
+- ios_l3_interfaces - remove validation from ipv6 address parameter.
+- ios_snmp_server - fix group and user IPv6 ACL commands.
+- ios_user - fix configuration of user with hashed password.
+- ios_user - fixed configuration removal of ssh users using purge.
+- ios_vlans - Make behaviour of the action states consistent.
+- ios_vlans - Top level configuration attribute is not required, the module works with vlan and vlan configuration both.
+
 v6.0.0
 ======
 
