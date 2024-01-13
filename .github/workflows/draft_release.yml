@@ -11,7 +11,7 @@ env:
   ANSIBLE_COLLECTIONS_PATHS: ./
 jobs:
   update_release_draft:
-    uses: ansible/ansible-github-actions/.github/workflows/draft_release.yaml@main
+    uses: ansible/ansible-content-actions/.github/workflows/draft_release.yaml@main
     with:
       repo: ${{ github.event.pull_request.head.repo.full_name }}
     secrets:

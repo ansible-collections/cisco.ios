@@ -8,4 +8,4 @@ on:  # yamllint disable-line rule:truthy
     types: [opened, labeled, unlabeled, synchronize]
 jobs:
   check_label:
-    uses: ansible/ansible-github-actions/.github/workflows/check_label.yaml@main
+    uses: ansible/ansible-content-actions/.github/workflows/check_label.yaml@main
