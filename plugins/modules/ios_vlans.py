@@ -30,9 +30,12 @@ description:
   This module provides declarative management of VLANs on Cisco IOS network
   devices.
 version_added: 1.0.0
-author: Sumit Jaiswal (@justjais)
+author:
+  - Sumit Jaiswal (@justjais)
+  - Sagar Paul (@KB-perByte)
+  - Padmini Priyadarshini Sivaraj (@PadminiSivaraj)
 notes:
-  - Tested against Cisco IOSl2 device with Version 15.2 on VIRL.
+  - Tested against Cisco IOS-XE device with Version 17.13.01 on Cat9k on CML.
   - Starting from v2.5.0, this module will fail when run against Cisco IOS devices that do
     not support VLANs. The offline states (C(rendered) and C(parsed)) will work as expected.
   - This module works with connection C(network_cli).
@@ -118,10 +121,6 @@ options:
         transforms it into Ansible structured data as per the resource module's argspec
         and the value is then returned in the I(parsed) key within the result.
     type: str
-  configuration:
-    description:
-      When set to true, deals with vlan configuration CLIs
-    type: bool
   state:
     description:
       - The state the configuration should be left in
@@ -137,8 +136,8 @@ options:
       - The state I(parsed) reads the configuration from C(running_config) option and
         transforms it into JSON format as per the resource module parameters and the
         value is returned in the I(parsed) key within the result. The value of C(running_config)
-        option should be the same format as the output of command I(show running-config
-        | include ip route|ipv6 route) executed on device. For state I(parsed) active
+        option should be the same format as the output of commands I(show vlan) and I(show
+        running-config | sec ^vlan configuration .+) executed on device. For state I(parsed) active
         connection to remote host is not required.
     type: str
     choices:
@@ -148,6 +147,7 @@ options:
       - deleted
       - rendered
       - gathered
+      - purged
       - parsed
     default: merged
 """
@@ -224,7 +224,7 @@ EXAMPLES = """
 # ------------------------------------------------------------------------------
 # 10
 
-# Using merged (configuration: True)
+# Using merged
 
 # Before state:
 # -------------
@@ -246,7 +246,6 @@ EXAMPLES = """
       - vlan_id: 901
         member:
           vni: 50901
-    configuration: true
     state: merged
 
 # After state:
@@ -325,7 +324,7 @@ EXAMPLES = """
 # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
 
 
-# Using overridden (configuration: True)
+# Using overridden
 
 # Before state:
 # -------------
@@ -351,7 +350,6 @@ EXAMPLES = """
         member:
           vni: 10101
           evi: 101
-    configuration: true
     state: overridden
 
 # After state:
@@ -523,7 +521,7 @@ EXAMPLES = """
 # 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
 # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
 
-# Using deleted (configuration: True)
+# Using deleted
 
 # Before state:
 # -------------
@@ -542,13 +540,13 @@ EXAMPLES = """
   cisco.ios.ios_vlans:
     config:
       - vlan_id: 101
-    configuration: true
     state: deleted
 
 # After state:
 # -------------
 #
 # Leaf-01#show run nve | sec ^vlan configuration
+# vlan configuration 101
 # vlan configuration 102
 #  member evpn-instance 102 vni 10102
 # vlan configuration 201
@@ -613,7 +611,7 @@ EXAMPLES = """
 # 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
 # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
 
-# Using Deleted without any config passed (configuration: True)
+# Using Deleted without any config passed
 # "(NOTE: This will delete all of configured vlans attributes)"
 
 # Before state:
@@ -633,7 +631,6 @@ EXAMPLES = """
 
 - name: Delete attributes of ALL VLANs
   cisco.ios.ios_vlans:
-    configuration: true
     state: deleted
 
 # After state:
@@ -647,7 +644,7 @@ EXAMPLES = """
 # no vlan configuration 901
 # no vlan configuration 902
 
-# Using Gathered (configuration: True)
+# Using gathered, vlan configuration only
 
 # Before state:
 # -------------
@@ -666,8 +663,6 @@ EXAMPLES = """
 
 - name: Gather listed vlans with provided configurations
   cisco.ios.ios_vlans:
-    config:
-    configuration: true
     state: gathered
 
 # Module Execution Result:
@@ -757,9 +752,9 @@ EXAMPLES = """
 #         "shutdown"
 #     ]
 
-# Using Rendered (configuration: True)
+# Using Rendered
 
-- name: Render the commands for provided  configuration
+- name: Render the commands for provided configuration
   cisco.ios.ios_vlans:
     config:
       - vlan_id: 101
@@ -876,7 +871,7 @@ EXAMPLES = """
 #         }
 #     ]
 
-# Using Parsed (configuration: True)
+# Using Parsed Vlan configuration only
 
 # File: parsed.cfg
 # ----------------
@@ -891,7 +886,6 @@ EXAMPLES = """
 - name: Parse the commands for provided configuration
   cisco.ios.ios_vlans:
     running_config: "{{ lookup('file', './parsed.cfg') }}"
-    configuration: true
     state: parsed
 
 # Module Execution Result:
@@ -919,29 +913,177 @@ EXAMPLES = """
 #         "vlan_id": 901
 #     }
 # ]
+
+# Using Parsed, Vlan and vlan configuration
+
+# File: parsed.cfg
+# ----------------
+#
+# VLAN Name                             Status    Ports
+# ---- -------------------------------- --------- -------------------------------
+# 1    default                          active    Gi0/1, Gi0/2
+# 101  RemoteIsInMyName                 act/unsup Fa0/1, Fa0/4, Fa0/5, Fa0/6, Fa0/7, Fa0/8, Fa0/9, Fa0/10, Fa0/11, Fa0/12
+#                                                 Fa0/13, Fa0/14, Fa0/15, Fa0/16, Fa0/17, Fa0/18, Fa0/19, Fa0/20, Fa0/21
+#                                                 Fa0/22, Fa0/23, Fa0/24, Fa0/25, Fa0/26, Fa0/27, Fa0/28, Fa0/29, Fa0/30
+#                                                 Fa0/31, Fa0/32, Fa0/33, Fa0/34, Fa0/35, Fa0/36, Fa0/37, Fa0/38, Fa0/39
+#                                                 Fa0/40, Fa0/41, Fa0/42, Fa0/43, Fa0/44, Fa0/45, Fa0/46, Fa0/47, Fa0/48
+# 150  VLAN0150                         active
+# 888  a_very_long_vlan_name_a_very_long_vlan_name
+#                                     active
+# 1002 fddi-default                     act/unsup
+# 1003 trcrf-default                    act/unsup
+# 1004 fddinet-default                  act/unsup
+# 1005 trbrf-default                    act/unsup
+#
+# VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+# ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+# 1    enet  100001     1500  -      -      -        -    -        0      0
+# 101  enet  100101     610   -      -      -        -    -        0      0
+# 150  enet  100150     1500  -      -      -        -    -        0      0
+# 888  enet  100888     1500  -      -      -        -    -        0      0
+# 1002 fddi  101002     1500  -      -      -        -    -        0      0
+# 1003 trcrf 101003     4472  1005   3276   -        -    srb      0      0
+# 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
+# 1005 trbrf 101005     4472  -      -      15       ibm  -        0      0
+#
+#
+# VLAN AREHops STEHops Backup CRF
+# ---- ------- ------- ----------
+# 1003 7       7       off
+#
+# Remote SPAN VLANs
+# ------------------------------------------------------------------------------
+# 150
+#
+# Primary Secondary Type              Ports
+# ------- --------- ----------------- ------------------------------------------
+#
+# vlan configuration 101
+#   member evpn-instance 101 vni 10101
+# vlan configuration 102
+#   member evpn-instance 102 vni 10102
+# vlan configuration 901
+#   member vni 50901
+
+- name: Parse the commands for provided configuration
+  cisco.ios.ios_vlans:
+    running_config: "{{ lookup('file', './parsed.cfg') }}"
+    state: parsed
+
+# Module Execution Result:
+# ------------------------
+#
+# "parsed": [
+#     {
+#         "name": "default",
+#         "vlan_id": 1,
+#         "state": "active",
+#         "shutdown": "disabled",
+#         "mtu": 1500,
+#     },
+#     {
+#         "name": "RemoteIsInMyName",
+#         "vlan_id": 101,
+#         "state": "active",
+#         "shutdown": "enabled",
+#         "mtu": 610,
+#         "member": {"evi": 101, "vni": 10101},
+#     },
+#     {
+#         "name": "VLAN0150",
+#         "vlan_id": 150,
+#         "state": "active",
+#         "shutdown": "disabled",
+#         "mtu": 1500,
+#         "remote_span": True,
+#     },
+#     {
+#         "name": "a_very_long_vlan_name_a_very_long_vlan_name",
+#         "vlan_id": 888,
+#         "state": "active",
+#         "shutdown": "disabled",
+#         "mtu": 1500,
+#     },
+#     {
+#         "name": "fddi-default",
+#         "vlan_id": 1002,
+#         "state": "active",
+#         "shutdown": "enabled",
+#         "mtu": 1500,
+#     },
+#     {
+#         "name": "trcrf-default",
+#         "vlan_id": 1003,
+#         "state": "active",
+#         "shutdown": "enabled",
+#         "mtu": 4472,
+#     },
+#     {
+#         "name": "fddinet-default",
+#         "vlan_id": 1004,
+#         "state": "active",
+#         "shutdown": "enabled",
+#         "mtu": 1500,
+#     },
+#     {
+#         "name": "trbrf-default",
+#         "vlan_id": 1005,
+#         "state": "active",
+#         "shutdown": "enabled",
+#         "mtu": 4472,
+#     },
+#     {"vlan_id": 102, "member": {"evi": 102, "vni": 10102}},
+#     {"vlan_id": 901, "member": {"vni": 50901}},
+# ]
 """
 
 RETURN = """
 before:
-  description: The configuration as structured data prior to module invocation.
-  returned: always
-  type: list
+  description: The configuration prior to the module execution.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: dict
   sample: >
-    The configuration returned will always be in the same format
-     of the parameters above.
+    This output will always be in the same format as the
+    module argspec.
 after:
-  description: The configuration as structured data after module completion.
+  description: The resulting configuration after module execution.
   returned: when changed
-  type: list
+  type: dict
   sample: >
-    The configuration returned will always be in the same format
-     of the parameters above.
+    This output will always be in the same format as the
+    module argspec.
 commands:
   description: The set of commands pushed to the remote device.
-  returned: always
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
-  sample: ['vlan 20', 'name vlan_20', 'mtu 600', 'remote-span']
+  sample:
+    - vlan configuration 202
+    - state active
+    - remote-span
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - vlan configuration 202
+    - member evpn-instance 202 vni 10202
+    - vlan 200
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
+
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlans.vlans import (
@@ -966,19 +1108,17 @@ def main():
 
     :returns: the result form module invocation
     """
-    required_if = [
-        ("state", "merged", ("config",)),
-        ("state", "replaced", ("config",)),
-        ("state", "overridden", ("config",)),
-        ("state", "rendered", ("config",)),
-        ("state", "parsed", ("running_config",)),
-    ]
-    mutually_exclusive = [("config", "running_config")]
-
     module = AnsibleModule(
         argument_spec=VlansArgs.argument_spec,
-        required_if=required_if,
-        mutually_exclusive=mutually_exclusive,
+        mutually_exclusive=[["config", "running_config"]],
+        required_if=[
+            ["state", "merged", ["config"]],
+            ["state", "replaced", ["config"]],
+            ["state", "overridden", ["config"]],
+            ["state", "rendered", ["config"]],
+            ["state", "purged", ["config"]],
+            ["state", "parsed", ["running_config"]],
+        ],
         supports_check_mode=True,
     )
 
