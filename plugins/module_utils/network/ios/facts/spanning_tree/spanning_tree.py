@@ -73,7 +73,7 @@ class Spanning_treeFacts(object):
             spanning_tree_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
-        facts["spanning_tree"] = params["config"]
+        facts["spanning_tree"] = params.get("config", {})
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
