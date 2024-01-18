@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_snmp_server - fixed facts not rendering user authentication password information in snmp_server.
