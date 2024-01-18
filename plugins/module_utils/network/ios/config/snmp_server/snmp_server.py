@@ -236,7 +236,6 @@ class Snmp_server(ResourceModule):
 
     def _compare_lists_attrs(self, want, have):
         """Compare list of dict"""
-        import q
         for _parser in self.list_parsers:
             i_want = want.get(_parser, {})
             i_have = have.get(_parser, {})
