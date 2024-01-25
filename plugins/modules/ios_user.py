@@ -379,7 +379,7 @@ def map_obj_to_commands(updates, module):
         command.append("username %s %s" % (want["name"], x))
 
     def add_hashed_password(command, want, x):
-        if x.get("type") == 9:
+        if x.get("type") in [8, 9]:
             command.append(
                 "username %s secret %s %s" % (want["name"], x.get("type"), x.get("value")),
             )

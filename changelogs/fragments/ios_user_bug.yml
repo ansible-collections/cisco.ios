@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_user - Fix ios_user module not setting user with type 8 hashed secret.
