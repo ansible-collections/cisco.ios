@@ -1109,3 +1109,13 @@ releases:
       - snmp_server_ipv6_acl.yml
       - template_revoke_bgp.yaml
     release_date: "2024-01-11"
+  6.1.1:
+    changes:
+      bugfixes:
+        - Prevents module_defaults from were being incorrectly applied to the platform
+          action, instead of the concerned module.
+        - ios_vlans - fixes behaviour of shutdown attribute with action states.
+    fragments:
+      - module_defaults.yaml
+      - vlan_shutdown_fix.yaml
+    release_date: "2024-01-30"

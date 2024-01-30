@@ -124,7 +124,7 @@ class VlansTemplate(NetworkTemplate):
         {
             "name": "shutdown",
             "getval": "",
-            "setval": "{{ ('shutdown') if shutdown == 'enabled' else 'no shutdown'}}",
+            "setval": "shutdown",
             "result": {},
         },
     ]

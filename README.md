@@ -22,7 +22,7 @@ PEP440 is the schema used to describe the versions of Ansible.
 
 ### Supported connections
 
-The Cisco IOS collection supports `network_cli` connections.
+The Cisco IOS collection supports `network_cli` connections. A detailed platform guide can be found [here](https://github.com/ansible-collections/cisco.ios/blob/main/platform_guide.rst).
 
 ## Included content
 
