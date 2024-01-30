@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_vlans - fixes behaviour of shutdown attribute with action states.
