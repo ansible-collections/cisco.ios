@@ -27,7 +27,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
+    Facts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.vlans import (
     VlansTemplate,
 )
@@ -53,7 +55,6 @@ class Vlans(ResourceModule):
             "remote_span",
             "private_vlan.type",
             "private_vlan.associated",
-            "shutdown",
             "member",
         ]
 
@@ -146,6 +147,16 @@ class Vlans(ResourceModule):
         """
         begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
+        if want.get("shutdown") != have.get("shutdown"):
+            if want.get("shutdown"):
+                self.addcmd(want, "shutdown", True)
+            else:
+                if want:
+                    self.addcmd(want, "shutdown", False)
+                elif have.get("shutdown"):
+                    # handles deleted as want be blank and only
+                    # negates if no shutdown
+                    self.addcmd(have, "shutdown", False)
         if len(self.commands) != begin:
             self.commands.insert(
                 begin,

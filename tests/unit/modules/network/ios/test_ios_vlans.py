@@ -27,7 +27,9 @@ class TestIosVlansModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+        self.get_resource_connection_facts = (
+            self.mock_get_resource_connection_facts.start()
+        )
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.vlans."
@@ -321,7 +323,7 @@ class TestIosVlansModule(TestIosModule):
             "no state active",
             "no mtu 610",
             "remote-span",
-            "no shutdown",
+            "shutdown",
             "vlan 10",
             "name pvlan-primary",
             "private-vlan primary",
@@ -516,38 +518,38 @@ class TestIosVlansModule(TestIosModule):
             "no name default",
             "no state active",
             "no mtu 1500",
-            "no no shutdown",
+            "shutdown",
             "vlan 150",
             "no name VLAN0150",
             "no state active",
             "no mtu 1500",
             "no remote-span",
-            "no no shutdown",
+            "shutdown",
             "vlan 888",
             "no name a_very_long_vlan_name_a_very_long_vlan_name",
             "no state active",
             "no mtu 1500",
-            "no no shutdown",
+            "shutdown",
             "vlan 1002",
             "no name fddi-default",
             "no state active",
             "no mtu 1500",
-            "no shutdown",
+            "shutdown",
             "vlan 1003",
             "no name trcrf-default",
             "no state active",
             "no mtu 4472",
-            "no shutdown",
+            "shutdown",
             "vlan 1004",
             "no name fddinet-default",
             "no state active",
             "no mtu 1500",
-            "no shutdown",
+            "shutdown",
             "vlan 1005",
             "no name trbrf-default",
             "no state active",
             "no mtu 4472",
-            "no shutdown",
+            "shutdown",
             "vlan 200",
             "name test_vlan_200",
             "state active",
@@ -558,7 +560,7 @@ class TestIosVlansModule(TestIosModule):
             "no state active",
             "no mtu 610",
             "remote-span",
-            "no shutdown",
+            "shutdown",
         ]
 
         self.assertEqual(result["commands"], commands)
