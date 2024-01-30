@@ -28,14 +28,11 @@ Connections available
 
     Connection Settings   ``ansible_connection: ansible.netcommon.network_cli``
 
-    |enable_mode|         supported: use ``ansible_become: true`` with
+    Enable_mode           supported: use ``ansible_become: true`` with
                           ``ansible_become_method: enable`` and ``ansible_become_password:``
 
     Returned Data Format  ``stdout[0].``
     ====================  ==========================================
-
-.. |enable_mode| replace:: Enable Mode |br| (Privilege Escalation)
-
 
 The ``ansible_connection: local`` has been deprecated. Please use ``ansible_connection: ansible.netcommon.network_cli`` instead.
 
