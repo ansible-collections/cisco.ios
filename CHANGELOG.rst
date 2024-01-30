@@ -5,6 +5,15 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v6.1.1
+======
+
+Bugfixes
+--------
+
+- Prevents module_defaults from were being incorrectly applied to the platform action, instead of the concerned module.
+- ios_vlans - fixes behaviour of shutdown attribute with action states.
+
 v6.1.0
 ======
 

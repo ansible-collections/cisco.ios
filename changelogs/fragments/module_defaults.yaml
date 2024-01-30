@@ -1,3 +1,0 @@
----
-bugfixes:
-  - Prevents module_defaults from were being incorrectly applied to the platform action, instead of the concerned module.
