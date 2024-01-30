@@ -76,6 +76,22 @@ Warning
 --------
 Never store passwords in plain text. We recommend using SSH keys to authenticate SSH connections. Ansible supports ssh-agent to manage your SSH keys. If you must use passwords to authenticate SSH connections, we recommend encrypting them with Ansible Vault.
 
-.. seealso::
+Cisco IOS-XE platform support matrix
+===================================
 
-       :ref:`timeout_options`
+The following platforms and software versions have been certified by Cisco to work with this version of Ansible.
+
+.. table:: Platform / Software Minimum Requirements
+     :align: center
+
+     ===================  =====================
+     Supported Platforms  Minimum NX-OS Version
+     ===================  =====================
+     Cisco IOS-XE 9000    17.03.2 and later
+     Cisco IOS-XE 8000    17.03.6 and later
+     ===================  =====================
+
+Notes
+-----
+
+`Setting Timeout Option <https://docs.ansible.com/ansible/latest/network/getting_started/network_connection_options.html#timeout-options>`_
