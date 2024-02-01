@@ -378,15 +378,10 @@ def map_obj_to_commands(updates, module):
     def add(command, want, x):
         command.append("username %s %s" % (want["name"], x))
 
-    def add_hashed_password(command, want, x):
-        if x.get("type") in [8, 9]:
-            command.append(
-                "username %s secret %s %s" % (want["name"], x.get("type"), x.get("value")),
-            )
-        else:
-            command.append(
-                "username %s password %s %s" % (want["name"], x.get("type"), x.get("value")),
-            )
+    def add_hashed_password(command, want, x, password_type):
+        command.append(
+            "username %s %s %s %s" % (want["name"], password_type, x.get("type"), x.get("value")),
+        )
 
     for update in updates:
         want, have = update
@@ -410,7 +405,7 @@ def map_obj_to_commands(updates, module):
                     )
                 add(commands, want, "%s %s" % (password_type, want["configured_password"]))
         if needs_update(want, have, "hashed_password"):
-            add_hashed_password(commands, want, want["hashed_password"])
+            add_hashed_password(commands, want, want["hashed_password"], password_type)
         if needs_update(want, have, "nopassword"):
             if want["nopassword"]:
                 add(commands, want, "nopassword")
