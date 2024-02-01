@@ -183,4 +183,4 @@ class TestIosUserModule(TestIosModule):
             ),
         )
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], [f"username ansible password 0 test"])
+        self.assertEqual(result["commands"], ["username ansible password 0 test"])
