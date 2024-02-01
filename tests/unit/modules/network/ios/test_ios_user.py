@@ -159,17 +159,28 @@ class TestIosUserModule(TestIosModule):
 
     def test_add_hashed_password(self):
         hashed_password_val = "$9$.h8H2hF/PKwM2E$Sqx1m7o.sEEZbOPelcBFU2tCxc00j3Ukl3Yz9FMK7SE"
-        set_module_args(dict(name="ansible", hashed_password={
-            "type": 9,
-            "value": hashed_password_val,
-        }))
+        set_module_args(
+            dict(
+                name="ansible",
+                hashed_password={
+                    "type": 9,
+                    "value": hashed_password_val,
+                },
+            ),
+        )
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], [f"username ansible secret 9 {hashed_password_val}"])
 
     def test_add_hpassword_with_type(self):
-        set_module_args(dict(name="ansible", hashed_password={
-            "type": 0,
-            "value": "test",
-        }, password_type="password"))
+        set_module_args(
+            dict(
+                name="ansible",
+                hashed_password={
+                    "type": 0,
+                    "value": "test",
+                },
+                password_type="password",
+            ),
+        )
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], [f"username ansible password 0 test"])
