@@ -158,7 +158,7 @@ class TestIosUserModule(TestIosModule):
         self.assertEqual(result["commands"], commands)
 
     def test_add_hashed_password(self):
-        hashed_password_val = "$9$.h8H2hF/PKwM2E$Sqx1m7o.sEEZbOPelcBFU2tCxc00j3Ukl3Yz9FMK7SE"
+        hashed_password_val = "replacementforhashwhichissupposedtogohereonlyfortestingpurposes"
         set_module_args(
             dict(
                 name="ansible",

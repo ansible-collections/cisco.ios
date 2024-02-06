@@ -238,17 +238,16 @@ EXAMPLES = """
     sshkey: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
     state: present
 
-# Commands Fired:
-# ---------------
+# Task Output
+# -----------
 
-# "commands": [
-#     "ip ssh pubkey-chain",
-#     "username ansible",
-#     "key-hash ssh-rsa 2ABB27BBC33ED53EF7D5503795038175 test@fedora",
-#     "exit",
-#     "exit",
-#     "username ansible nopassword"
-# ],
+# commands:
+# - ip ssh pubkey-chain
+# - username ansible
+# - key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
+# - exit
+# - exit
+# - username ansible nopassword
 
 # After state:
 # ------------
@@ -257,7 +256,7 @@ EXAMPLES = """
 # username testuser privilege 15 password 0 password
 # username ansible nopassword
 #   username ansible
-#    key-hash ssh-rsa 2ABB27BBC33ED53EF7D5503795038175 test@fedora
+#    key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
 
 # Using state: present
 
@@ -278,17 +277,16 @@ EXAMPLES = """
       - "{{ lookup('file', '~/path/to/public_key') }}"
     state: present
 
-# Commands Fired:
-# ---------------
+# Task Output
+# -----------
 
-# "commands": [
-#     "ip ssh pubkey-chain",
-#     "username ansible",
-#     "key-hash ssh-rsa 2ABB27BBC33ED53EF7D5503795038175 test@fedora",
-#     "key-hash ssh-rsa 1985673DCF7FA9A0F374BB97DCF75F76 test@fedora",
-#     "exit",
-#     "exit"
-# ],
+# commands:
+# - ip ssh pubkey-chain
+# - username ansible
+# - key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
+# - key-hash ssh-rsa 1985673DCF7FA9A0F374BB97DC2ABB27 test@fedora
+# - exit
+# - exit
 
 # After state:
 # ------------
@@ -296,8 +294,8 @@ EXAMPLES = """
 # router-ios#show running-config | section username
 # username testuser privilege 15 password 0 password
 #   username ansible
-#    key-hash ssh-rsa 2ABB27BBC33ED53EF7D5503795038175 test@fedora
-#    key-hash ssh-rsa 1985673DCF7FA9A0F374BB97DCF75F76 test@fedora
+#    key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
+#    key-hash ssh-rsa 1985673DCF7FA9A0F374BB97DC2ABB27 test@fedora
 
 # Using Purge: true
 
@@ -309,7 +307,7 @@ EXAMPLES = """
 # username testuser privilege 15 password 0 password
 # username ansible nopassword
 #   username ansible
-#    key-hash ssh-rsa 2ABB27BBC33ED53EF7D5503795038175 test@fedora
+#    key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
 
 # Purge all users except admin play:
 # ----------------------------------
@@ -318,16 +316,15 @@ EXAMPLES = """
   cisco.ios.ios_user:
     purge: true
 
-# Commands Fired:
-# ---------------
+# Task Output
+# -----------
 
-# "commands": [
-#     "no username testuser",
-#     "no username ansible",
-#     "ip ssh pubkey-chain",
-#     "no username ansible",
-#     "exit"
-# ],
+# commands:
+# - no username testuser
+# - no username ansible
+# - ip ssh pubkey-chain
+# - no username ansible
+# - exit
 
 # After state:
 # ------------
@@ -356,12 +353,11 @@ EXAMPLES = """
       - name: testuser1
     purge: true
 
-# Commands Fired:
-# ---------------
+# Task Output
+# -----------
 
-# "commands": [
-#     "no username ansible"
-# ],
+# commands:
+# - no username ansible
 
 # After state:
 # ------------
@@ -392,13 +388,12 @@ EXAMPLES = """
     privilege: 15
     state: present
 
-# Commands Fired:
-# ---------------
+# Task Output
+# -----------
 
-# "commands": [
-#     "username netop privilege 15",
-#     "username netend privilege 15"
-# ],
+# commands:
+# - username netop privilege 15
+# - username netend privilege 15
 
 # After state:
 # ------------
@@ -428,12 +423,11 @@ EXAMPLES = """
     update_password: always
     state: present
 
-# Commands Fired:
-# ---------------
+# Task Output
+# -----------
 
-# "commands": [
-#     "username netop password newpassword"
-# ],
+# commands:
+# - username netop password newpassword
 
 # After state:
 # ------------
@@ -463,13 +457,12 @@ EXAMPLES = """
     view: network-admin
     state: present
 
-# Commands Fired:
-# ---------------
+# Task Output
+# -----------
 
-# "commands": [
-#     "username netop view network-admin",
-#     "username netend view network-admin"
-# ],
+# commands:
+# - username netop view network-admin
+# - username netend view network-admin
 
 # After state:
 # ------------
@@ -495,22 +488,21 @@ EXAMPLES = """
     name: ansibletest5
     hashed_password:
       type: 9
-      value: "$9$yuUxFM0JeIpU1U$mptJ5lbTLKWdEzohzY2SalIXlYbC1/gCiVHoLQax6NU"
+      value: "thiswillbereplacedwithhashedpassword"
     state: present
 
-# Commands Fired:
-# ---------------
+# Task Output
+# -----------
 
-# "commands": [
-#     "username ansibletest5 secret 9 $9$yuUxFM0JeIpU1U$mptJ5lbTLKWdEzohzY2SalIXlYbC1/gCiVHoLQax6NU"
-# ],
+# commands:
+# - username ansibletest5 secret 9 thiswillbereplacedwithhashedpassword
 
 # After state:
 # ------------
 
 # router-ios#show running-config | section username
 # username admin privilege 15 password 0 password
-# username ansibletest5 secret 9 $9$yuUxFM0JeIpU1U$mptJ5lbTLKWdEzohzY2SalIXlYbC1/gCiVHoLQax6NU
+# username ansibletest5 secret 9 thiswillbereplacedwithhashedpassword
 
 # Using state: absent
 
@@ -520,8 +512,8 @@ EXAMPLES = """
 # router-ios#show running-config | section ^username
 # username admin privilege 15 password 0 password
 # username ansibletest1 password 0 password
-# username ansibletest2 secret 9 $9$yuUxFM0JeIpU1U$mptJ5lbTLKWdEzohzY2SalIXlYbC1/gCiVHoLQax6NU
-# username ansibletest3 password 5 $3$8JcDilcYgFZi.yz4ApaqkHG2.8/
+# username ansibletest2 secret 9 thiswillbereplacedwithhashedpassword
+# username ansibletest3 password 5 thistoowillbereplacedwithhashedpassword
 
 # Absent state remove multiple users play:
 # ----------------------------------------
@@ -534,14 +526,13 @@ EXAMPLES = """
       - name: ansibletest3
     state: absent
 
-# Commands Fired:
-# ---------------
+# Task Output
+# -----------
 
-# "commands": [
-#     "no username ansibletest1",
-#     "no username ansibletest2",
-#     "no username ansibletest3"
-# ],
+# commands:
+# - no username ansibletest1
+# - no username ansibletest2
+# - no username ansibletest3
 
 # After state:
 # ------------
