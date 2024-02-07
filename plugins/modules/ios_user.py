@@ -220,12 +220,54 @@ extends_documentation_fragment:
 """
 
 EXAMPLES = """
+# Using state: present
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section ^username
+# username testuser privilege 15 password 0 password
+
+# Present state create a new user play:
+# -------------------------------------
+
 - name: Create a new user
   cisco.ios.ios_user:
     name: ansible
     nopassword: true
     sshkey: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
     state: present
+
+# Task Output
+# -----------
+
+# commands:
+# - ip ssh pubkey-chain
+# - username ansible
+# - key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
+# - exit
+# - exit
+# - username ansible nopassword
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section username
+# username testuser privilege 15 password 0 password
+# username ansible nopassword
+#   username ansible
+#    key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
+
+# Using state: present
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section ^username
+# username testuser privilege 15 password 0 password
+
+# Present state create a new user with multiple keys play:
+# --------------------------------------------------------
 
 - name: Create a new user with multiple keys
   cisco.ios.ios_user:
@@ -235,17 +277,108 @@ EXAMPLES = """
       - "{{ lookup('file', '~/path/to/public_key') }}"
     state: present
 
+# Task Output
+# -----------
+
+# commands:
+# - ip ssh pubkey-chain
+# - username ansible
+# - key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
+# - key-hash ssh-rsa 1985673DCF7FA9A0F374BB97DC2ABB27 test@fedora
+# - exit
+# - exit
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section username
+# username testuser privilege 15 password 0 password
+#   username ansible
+#    key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
+#    key-hash ssh-rsa 1985673DCF7FA9A0F374BB97DC2ABB27 test@fedora
+
+# Using Purge: true
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section ^username
+# username admin privilege 15 password 0 password
+# username testuser privilege 15 password 0 password
+# username ansible nopassword
+#   username ansible
+#    key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
+
+# Purge all users except admin play:
+# ----------------------------------
+
 - name: Remove all users except admin
   cisco.ios.ios_user:
     purge: true
 
+# Task Output
+# -----------
+
+# commands:
+# - no username testuser
+# - no username ansible
+# - ip ssh pubkey-chain
+# - no username ansible
+# - exit
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section username
+# username admin privilege 15 password 0 password
+
+# Using Purge: true
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section ^username
+# username admin privilege 15 password 0 password
+# username testuser privilege 15 password 0 password1
+# username testuser1 privilege 15 password 0 password2
+# username ansible nopassword
+
+# Purge all users except admin and these listed users play:
+# ---------------------------------------------------------
+
 - name: Remove all users except admin and these listed users
   cisco.ios.ios_user:
     aggregate:
+      - name: testuser
       - name: testuser1
-      - name: testuser2
-      - name: testuser3
     purge: true
+
+# Task Output
+# -----------
+
+# commands:
+# - no username ansible
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section username
+# username admin privilege 15 password 0 password
+# username testuser privilege 15 password 0 password1
+# username testuser1 privilege 15 password 0 password2
+
+# Using state: present
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section ^username
+# username admin privilege 15 password 0 password
+# username netop password 0 password1
+# username netend password 0 password2
+
+# Present state set multiple users to privilege level 15 play:
+# ------------------------------------------------------------
 
 - name: Set multiple users to privilege level 15
   cisco.ios.ios_user:
@@ -255,38 +388,135 @@ EXAMPLES = """
     privilege: 15
     state: present
 
-- name: Set user view/role
-  cisco.ios.ios_user:
-    name: netop
-    view: network-operator
-    state: present
+# Task Output
+# -----------
+
+# commands:
+# - username netop privilege 15
+# - username netend privilege 15
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section username
+# username admin privilege 15 password 0 password
+# username netop privilege 15 password 0 password1
+# username netend privilege 15 password 0 password2
+
+# Using state: present
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section ^username
+# username admin privilege 15 password 0 password
+# username netop privilege 15 password 0 oldpassword
+
+# Present state Change Password for User netop play:
+# --------------------------------------------
 
 - name: Change Password for User netop
   cisco.ios.ios_user:
     name: netop
-    configured_password: "{{ new_password }}"
+    configured_password: "newpassword"
+    password_type: password
     update_password: always
     state: present
 
-- name: Aggregate of users
+# Task Output
+# -----------
+
+# commands:
+# - username netop password newpassword
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section username
+# username admin privilege 15 password 0 password
+# username netop privilege 15 password 0 newpassword
+
+# Using state: present
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section ^username
+# username admin privilege 15 password 0 password
+# username netop privilege 15 password 0 password
+# username netend privilege 15 password 0 password
+
+# Present state set user view/role for users play:
+# --------------------------------------------
+
+- name: Set user view/role for users
   cisco.ios.ios_user:
     aggregate:
-      - name: ansibletest2
-      - name: ansibletest3
+      - name: netop
+      - name: netend
     view: network-admin
+    state: present
 
-- name: Add a user specifying password type
-  cisco.ios.ios_user:
-    name: ansibletest4
-    configured_password: "{{ new_password }}"
-    password_type: password
+# Task Output
+# -----------
 
-- name: Add a user with MD5 hashed password
+# commands:
+# - username netop view network-admin
+# - username netend view network-admin
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section username
+# username admin privilege 15 password 0 password
+# username netop privilege 15 view network-admin password 0 password
+# username netend privilege 15 view network-admin password 0 password
+
+# Using state: present
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section ^username
+# username admin privilege 15 password 0 password
+
+# Present state create a new user with hashed password play:
+# --------------------------------------------------------------
+
+- name: Create a new user with hashed password
   cisco.ios.ios_user:
     name: ansibletest5
     hashed_password:
-      type: 5
-      value: $3$8JcDilcYgFZi.yz4ApaqkHG2.8/
+      type: 9
+      value: "thiswillbereplacedwithhashedpassword"
+    state: present
+
+# Task Output
+# -----------
+
+# commands:
+# - username ansibletest5 secret 9 thiswillbereplacedwithhashedpassword
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section username
+# username admin privilege 15 password 0 password
+# username ansibletest5 secret 9 thiswillbereplacedwithhashedpassword
+
+# Using state: absent
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section ^username
+# username admin privilege 15 password 0 password
+# username ansibletest1 password 0 password
+# username ansibletest2 secret 9 thiswillbereplacedwithhashedpassword
+# username ansibletest3 password 5 thistoowillbereplacedwithhashedpassword
+
+# Absent state remove multiple users play:
+# ----------------------------------------
 
 - name: Delete users with aggregate
   cisco.ios.ios_user:
@@ -295,6 +525,20 @@ EXAMPLES = """
       - name: ansibletest2
       - name: ansibletest3
     state: absent
+
+# Task Output
+# -----------
+
+# commands:
+# - no username ansibletest1
+# - no username ansibletest2
+# - no username ansibletest3
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section username
+# username admin privilege 15 password 0 password
 """
 
 RETURN = """
@@ -378,15 +622,10 @@ def map_obj_to_commands(updates, module):
     def add(command, want, x):
         command.append("username %s %s" % (want["name"], x))
 
-    def add_hashed_password(command, want, x):
-        if x.get("type") == 9:
-            command.append(
-                "username %s secret %s %s" % (want["name"], x.get("type"), x.get("value")),
-            )
-        else:
-            command.append(
-                "username %s password %s %s" % (want["name"], x.get("type"), x.get("value")),
-            )
+    def add_hashed_password(command, want, x, password_type):
+        command.append(
+            "username %s %s %s %s" % (want["name"], password_type, x.get("type"), x.get("value")),
+        )
 
     for update in updates:
         want, have = update
@@ -410,7 +649,7 @@ def map_obj_to_commands(updates, module):
                     )
                 add(commands, want, "%s %s" % (password_type, want["configured_password"]))
         if needs_update(want, have, "hashed_password"):
-            add_hashed_password(commands, want, want["hashed_password"])
+            add_hashed_password(commands, want, want["hashed_password"], password_type)
         if needs_update(want, have, "nopassword"):
             if want["nopassword"]:
                 add(commands, want, "nopassword")
