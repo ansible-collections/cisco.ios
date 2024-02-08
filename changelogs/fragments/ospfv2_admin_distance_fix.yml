@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ospfv2 - Fixed rendering of admin_distance.
