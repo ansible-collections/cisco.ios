@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_ospfv2 - Fix improper rendering of admin_distance attribute.
