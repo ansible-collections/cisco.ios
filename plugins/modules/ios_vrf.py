@@ -58,6 +58,61 @@ options:
     description:
       - The list of address families with MDT parameters to be configured on the remote IOS device.
     type: list
+    suboptions:
+      afi:
+        description: Address family identifier.
+        type: str
+        choices:
+          ["ipv4", "ipv6"]
+      mdt:
+        description: MDT parameters.
+        type: dict
+        suboptions:
+          auto_discovery:
+            description: Auto-discovery parameters.
+            type: dict
+            suboptions:
+              vxlan:
+                description: Vxlan parameters.
+                type: dict
+                suboptions:
+                  enable:
+                    description: Enable VXLAN.
+                    type: bool
+                  inter_as:
+                    description: Enable inter-as.
+                    type: bool
+          default:
+            description: Parameters for default option.
+            type: dict
+            suboptions:
+              vxlan_mcast_group:
+                description: VXLAN multicast group value.
+                type: str
+          data:
+            description: Parameters for data option.
+            type: dict
+            suboptions:
+              vxlan_mcast_group:
+                description: VXLAN multicast group value.
+                type: str
+              threshold:
+                description: Threshold value.
+                type: int
+          overlay:
+            description: Parameters for overlay option.
+            type: dict
+            suboptions:
+              use_bgp:
+                description: parameters for BGP option.
+                type: dict
+                suboptions:
+                  enable:
+                    description: Enable use BGP.
+                    type: bool
+                  spt_only:
+                    description: Enable SPT only.
+                    type: bool
     elements: dict
   rd:
     description:
