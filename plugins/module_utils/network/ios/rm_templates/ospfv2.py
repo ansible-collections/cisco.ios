@@ -721,9 +721,9 @@ class Ospfv2Template(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "distance {{ admin_distance.distance }} "
-            "{{ ( admin_distance.address + ' ' + admin_distance.wildcard_bits ) if admin_distance.address is defined else '' }}"
-            "{{ ' ' + admin_distance.acl if admin_distance.acl is defined else '' }}",
+            "setval": "distance {{ distance.admin_distance.distance }} "
+            "{{ ( distance.admin_distance.address + ' ' + distance.admin_distance.wildcard_bits ) if distance.admin_distance.address is defined else '' }}"
+            "{{ ' ' + distance.admin_distance.acl if distance.admin_distance.acl is defined else '' }}",
             "result": {
                 "processes": {
                     "{{ pid }}": {

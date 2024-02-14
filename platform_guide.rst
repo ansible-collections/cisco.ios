@@ -82,7 +82,7 @@ The following platforms and software versions have been certified by Cisco to wo
      :align: center
 
      ===================  =====================
-     Supported Platforms  Minimum NX-OS Version
+     Supported Platforms  Minimum IOS-XE Version
      ===================  =====================
      Cisco IOS-XE 9000    17.03.2 and later
      Cisco IOS-XE 8000    17.03.6 and later
