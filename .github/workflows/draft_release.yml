@@ -1,0 +1,18 @@
+---
+name: "Draft release"
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+on:  # yamllint disable-line rule:truthy
+  workflow_dispatch:
+env:
+  NAMESPACE: ${{ github.repository_owner }}
+  COLLECTION_NAME: ios
+  ANSIBLE_COLLECTIONS_PATHS: ./
+jobs:
+  update_release_draft:
+    uses: ansible/ansible-content-actions/.github/workflows/draft_release.yaml@main
+    with:
+      repo: ${{ github.event.pull_request.head.repo.full_name }}
+    secrets:
+      BOT_PAT: ${{ secrets.BOT_PAT }}
