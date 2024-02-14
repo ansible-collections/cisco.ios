@@ -645,9 +645,21 @@ class TestIosAclsModule(TestIosModule):
             ip access-list extended test-idem
                 10 permit ip host 10.153.14.21 any
                 20 permit ip host 10.153.14.22 any
+            ip access-list standard test-acl-no-seq
+                permit 10.0.0.0 0.255.255.255
+                permit 172.31.16.0 0.0.7.255
             """,
         )
-        self.execute_show_command_name.return_value = dedent("")
+        self.execute_show_command_name.return_value = dedent(
+            """\
+            Standard IP access list test_acl
+            Standard IP access list test-acl-no-seq
+            Extended IP access list 110
+            Extended IP access list test-idem
+            Extended IP access list test_pre
+            IPv6 access list R1_TRAFFIC
+            """,
+        )
         set_module_args(
             dict(
                 config=[
@@ -734,6 +746,26 @@ class TestIosAclsModule(TestIosModule):
                                     },
                                 ],
                             },
+                            {
+                                "name": "test-acl-no-seq",
+                                "acl_type": "standard",
+                                "aces": [
+                                    {
+                                        "grant": "permit",
+                                        "source": {
+                                            "address": "10.0.0.0",
+                                            "wildcard_bits": "0.255.255.255",
+                                        },
+                                    },
+                                    {
+                                        "grant": "permit",
+                                        "source": {
+                                            "address": "172.31.16.0",
+                                            "wildcard_bits": "0.0.7.255",
+                                        },
+                                    },
+                                ],
+                            },
                         ],
                     },
                     {
@@ -767,6 +799,65 @@ class TestIosAclsModule(TestIosModule):
         )
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["commands"]), [])
+
+    def test_ios_acls_replaced_changetype(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            ip access-list extended 110
+                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
+                20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
+                30 deny icmp object-group test_network_og any dscp ef ttl eq 10
+            ip access-list standard test_acl
+                remark remark check 1
+                remark some random remark 2
+            """,
+        )
+        self.execute_show_command_name.return_value = dedent(
+            """\
+            Standard IP access list test_acl
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        afi="ipv4",
+                        acls=[
+                            dict(
+                                name="110",
+                                acl_type="standard",
+                                aces=[
+                                    dict(
+                                        grant="deny",
+                                        source=dict(
+                                            address="198.51.100.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                    ),
+                                ],
+                            ),
+                            dict(
+                                name="test_acl",
+                                acl_type="standard",
+                                aces=[dict(remarks=["Another remark here"])],
+                            ),
+                        ],
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = [
+            "no ip access-list extended 110",
+            "ip access-list standard 110",
+            "deny 198.51.100.0 0.0.0.255",
+            "ip access-list standard test_acl",
+            "no remark remark check 1",
+            "no remark some random remark 2",
+            "remark Another remark here",
+        ]
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_overridden(self):
         self.execute_show_command.return_value = dedent(
@@ -1131,11 +1222,13 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_acls_parsed_matches(self):
         self.execute_show_command_name.return_value = dedent("")
         set_module_args(
-            dict(
-                running_config="""ip access-list standard R1_TRAFFIC\n10 permit 10.11.12.13 (2 matches)\n
-                40 permit 128.0.0.0, wildcard bits 63.255.255.255 (2 matches)\n60 permit 134.107.136.0, wildcard bits 0.0.0.255 (1 match)""",
-                state="parsed",
-            ),
+            {
+                "running_config": """ip access-list standard R1_TRAFFIC
+                 10 permit 10.11.12.13
+                 40 permit 128.0.0.0 63.255.255.255
+                 60 permit 134.107.136.0 0.0.0.255""",
+                "state": "parsed",
+            },
         )
         result = self.execute_module(changed=False)
         parsed_list = [
@@ -1154,12 +1247,18 @@ class TestIosAclsModule(TestIosModule):
                             {
                                 "sequence": 40,
                                 "grant": "permit",
-                                "protocol_options": {"protocol_number": 128},
+                                "source": {
+                                    "address": "128.0.0.0",
+                                    "wildcard_bits": "63.255.255.255",
+                                },
                             },
                             {
                                 "sequence": 60,
                                 "grant": "permit",
-                                "protocol_options": {"protocol_number": 134},
+                                "source": {
+                                    "address": "134.107.136.0",
+                                    "wildcard_bits": "0.0.0.255",
+                                },
                             },
                         ],
                     },
