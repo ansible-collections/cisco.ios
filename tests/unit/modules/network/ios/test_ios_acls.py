@@ -27,7 +27,9 @@ class TestIosAclsModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+        self.get_resource_connection_facts = (
+            self.mock_get_resource_connection_facts.start()
+        )
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls."
@@ -38,7 +40,9 @@ class TestIosAclsModule(TestIosModule):
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls."
             "AclsFacts.get_acl_names",
         )
-        self.execute_show_command_name = self.mock_execute_show_command_name_specific.start()
+        self.execute_show_command_name = (
+            self.mock_execute_show_command_name_specific.start()
+        )
 
     def tearDown(self):
         super(TestIosAclsModule, self).tearDown()
@@ -663,7 +667,6 @@ class TestIosAclsModule(TestIosModule):
             "no 50 remark Remarks for 50",
             "no 50 permit 198.51.100.0 0.0.0.255",
         ]
-        print(result["commands"])
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_replaced_idempotent(self):
