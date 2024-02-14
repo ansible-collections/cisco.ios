@@ -24,7 +24,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
+    Facts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.acls import (
     AclsTemplate,
 )
@@ -83,7 +85,9 @@ class Acls(ResourceModule):
                     wplists = wvalue.get("acls", {})
                     hplists = hvalue.get("acls", {})
                     hvalue["acls"] = {
-                        k: v for k, v in iteritems(hplists) if k in wplists or not wplists
+                        k: v
+                        for k, v in iteritems(hplists)
+                        if k in wplists or not wplists
                     }
 
         # remove superfluous config for overridden and deleted
@@ -118,7 +122,9 @@ class Acls(ResourceModule):
         hplists = have.get("acls", {})
         for wname, wentry in iteritems(wplists):
             hentry = hplists.pop(wname, {})
-            acl_type = wentry["acl_type"] if wentry.get("acl_type") else hentry.get("acl_type")
+            acl_type = (
+                wentry["acl_type"] if wentry.get("acl_type") else hentry.get("acl_type")
+            )
             # If ACLs type is different between existing and wanted ACL, we need first remove it
             if acl_type != hentry.get("acl_type", acl_type):
                 self.commands.append(
@@ -221,7 +227,10 @@ class Acls(ResourceModule):
                     for k_wrems, wrems in rem_wentry.get("remarks").items():
                         if k_wrems not in rem_hentry.get("remarks", {}).keys():
                             self.addcmd(
-                                {"remarks": wrems, "sequence": hentry.get("sequence", "")},
+                                {
+                                    "remarks": wrems,
+                                    "sequence": hentry.get("sequence", ""),
+                                },
                                 "remarks",
                             )
                         else:
@@ -247,8 +256,10 @@ class Acls(ResourceModule):
                         "remarks",
                         negate=True,
                     )
-            else:  # remove extra aces
-                self.addcmd(add_afi(hseq, afi), "aces", negate=True)
+                hseq.pop("remarks")
+            self.addcmd(add_afi(hseq, afi), "aces", negate=True)
+            # else:  # remove extra aces
+            #     self.addcmd(add_afi(hseq, afi), "aces", negate=True)
 
     def sanitize_protocol_options(self, wace, hace):
         """handles protocol and protocol options as optional attribute"""
@@ -291,7 +302,9 @@ class Acls(ResourceModule):
                         temp_aces = {}
                         if acl.get("aces"):
                             rem_idx = 0  # remarks if defined in an ace
-                            for count, ace in enumerate(acl.get("aces")):  # each ace turned to dict
+                            for count, ace in enumerate(
+                                acl.get("aces")
+                            ):  # each ace turned to dict
                                 if (
                                     ace.get("destination")
                                     and ace.get("destination", {}).get(
@@ -303,20 +316,25 @@ class Acls(ResourceModule):
                                     .get("range")
                                 ):
                                     for k, v in (
-                                        ace.get("destination", {}).get("port_protocol", {}).items()
+                                        ace.get("destination", {})
+                                        .get("port_protocol", {})
+                                        .items()
                                     ):
                                         ace["destination"]["port_protocol"][
                                             k
                                         ] = self.port_protocl_no_to_protocol(v)
                                 if acl.get("acl_type") == "standard":
                                     for ks in list(ace.keys()):
-                                        if ks not in [
-                                            "sequence",
-                                            "grant",
-                                            "source",
-                                            "remarks",
-                                            "log",
-                                        ]:  # failing for mutually exclusive standard acl key
+                                        if (
+                                            ks
+                                            not in [
+                                                "sequence",
+                                                "grant",
+                                                "source",
+                                                "remarks",
+                                                "log",
+                                            ]
+                                        ):  # failing for mutually exclusive standard acl key
                                             self._module.fail_json(
                                                 "Unsupported attribute for standard ACL - {0}.".format(
                                                     ks,
@@ -346,7 +364,12 @@ class Acls(ResourceModule):
 
                         if acl.get("acl_type"):  # update acl dict with req info
                             temp_acls.update(
-                                {acl.get("name"): {"aces": temp_aces, "acl_type": acl["acl_type"]}},
+                                {
+                                    acl.get("name"): {
+                                        "aces": temp_aces,
+                                        "acl_type": acl["acl_type"],
+                                    }
+                                },
                             )
                         else:  # if no acl type then here eg: ipv6
                             temp_acls.update({acl.get("name"): {"aces": temp_aces}})
