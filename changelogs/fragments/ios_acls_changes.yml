@@ -1,4 +1,0 @@
----
-bugfixes:
-  - ios_acls - take correctly in case where we want to push an ACL from a different type
-  - ios_acls - correctly match the different line for ACL without sequence number
