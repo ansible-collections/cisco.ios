@@ -221,7 +221,10 @@ class Acls(ResourceModule):
                     for k_wrems, wrems in rem_wentry.get("remarks").items():
                         if k_wrems not in rem_hentry.get("remarks", {}).keys():
                             self.addcmd(
-                                {"remarks": wrems, "sequence": hentry.get("sequence", "")},
+                                {
+                                    "remarks": wrems,
+                                    "sequence": hentry.get("sequence", ""),
+                                },
                                 "remarks",
                             )
                         else:
@@ -247,8 +250,12 @@ class Acls(ResourceModule):
                         "remarks",
                         negate=True,
                     )
-            else:  # remove extra aces
-                self.addcmd(add_afi(hseq, afi), "aces", negate=True)
+                hseq.pop("remarks")
+            self.addcmd(
+                add_afi(hseq, afi),
+                "aces",
+                negate=True,
+            )  # deal with the rest of ace entry
 
     def sanitize_protocol_options(self, wace, hace):
         """handles protocol and protocol options as optional attribute"""
@@ -291,7 +298,9 @@ class Acls(ResourceModule):
                         temp_aces = {}
                         if acl.get("aces"):
                             rem_idx = 0  # remarks if defined in an ace
-                            for count, ace in enumerate(acl.get("aces")):  # each ace turned to dict
+                            for count, ace in enumerate(
+                                acl.get("aces"),
+                            ):  # each ace turned to dict
                                 if (
                                     ace.get("destination")
                                     and ace.get("destination", {}).get(
@@ -346,7 +355,12 @@ class Acls(ResourceModule):
 
                         if acl.get("acl_type"):  # update acl dict with req info
                             temp_acls.update(
-                                {acl.get("name"): {"aces": temp_aces, "acl_type": acl["acl_type"]}},
+                                {
+                                    acl.get("name"): {
+                                        "aces": temp_aces,
+                                        "acl_type": acl["acl_type"],
+                                    },
+                                },
                             )
                         else:  # if no acl type then here eg: ipv6
                             temp_acls.update({acl.get("name"): {"aces": temp_aces}})

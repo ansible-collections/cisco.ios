@@ -561,7 +561,6 @@ class TestIosAclsModule(TestIosModule):
         )
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["commands"]), [])
-        # self.execute_module(changed=False, commands=[], sort=True)
 
     def test_ios_acls_replaced(self):
         self.execute_show_command.return_value = dedent(
@@ -575,11 +574,23 @@ class TestIosAclsModule(TestIosModule):
             ip access-list standard test_acl
                 remark remark check 1
                 remark some random remark 2
+            ip access-list standard testRobustReplace
+                10 remark Remarks for 10
+                10 permit 192.168.1.0 0.0.0.255
+                20 remark Remarks for 20
+                20 permit 0.0.0.0 255.0.0.0
+                30 remark Remarks for 30
+                30 permit 172.16.0.0 0.15.255.255
+                40 remark Remarks for 40
+                40 permit 192.0.2.0 0.0.0.255
+                50 remark Remarks for 50
+                50 permit 198.51.100.0 0.0.0.255
             """,
         )
         self.execute_show_command_name.return_value = dedent(
             """\
             Standard IP access list test_acl
+            Standard IP access list testRobustReplace
             """,
         )
         set_module_args(
@@ -613,6 +624,21 @@ class TestIosAclsModule(TestIosModule):
                                 acl_type="standard",
                                 aces=[dict(remarks=["Another remark here"])],
                             ),
+                            dict(
+                                name="testRobustReplace",
+                                acl_type="standard",
+                                aces=[
+                                    dict(
+                                        sequence=10,
+                                        grant="permit",
+                                        remarks=["Remarks for 10"],
+                                        source=dict(
+                                            address="192.168.1.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                    ),
+                                ],
+                            ),
                         ],
                     ),
                 ],
@@ -627,6 +653,15 @@ class TestIosAclsModule(TestIosModule):
             "no remark remark check 1",
             "no remark some random remark 2",
             "remark Another remark here",
+            "ip access-list standard testRobustReplace",
+            "no 20 remark Remarks for 20",
+            "no 20 permit 0.0.0.0 255.0.0.0",
+            "no 30 remark Remarks for 30",
+            "no 30 permit 172.16.0.0 0.15.255.255",
+            "no 40 remark Remarks for 40",
+            "no 40 permit 192.0.2.0 0.0.0.255",
+            "no 50 remark Remarks for 50",
+            "no 50 permit 198.51.100.0 0.0.0.255",
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
