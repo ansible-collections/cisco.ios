@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_acls - Fix replaced state to consider remarks and ace entries while comparing configuration.
