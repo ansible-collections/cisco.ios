@@ -20,8 +20,10 @@
       - result.ansible_facts.ansible_net_memtotal_mb > 1
 
 - ansible.builtin.assert:
-    that: "{{ item.value.spacetotal_kb }} > {{ item.value.spacefree_kb }}"
+    that: "{{ my_var.value.spacetotal_kb }} > {{ my_var.value.spacefree_kb }}"
   loop: "{{ lookup('dict', result.ansible_facts.ansible_net_filesystems_info, wantlist=True) }}"
+  loop_control:
+    loop_var: my_var
 
 - ansible.builtin.set_fact:
     supported_network_resources:
@@ -34,6 +36,9 @@
       - lldp_global
       - lldp_interfaces
       - l3_interfaces
+      - evpn_global
+      - evpn_evi
+      - vxlan_vtep
       - logging_global
       - acl_interfaces
       - static_routes
