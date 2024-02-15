@@ -1,3 +1,0 @@
----
-minor_changes:
-  - Fix ios_user module integration test failure - change the type 5 secret hash.
