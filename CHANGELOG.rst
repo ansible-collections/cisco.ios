@@ -5,6 +5,19 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v6.1.2
+======
+
+Bugfixes
+--------
+
+- ios_acls - Fix replaced state to consider remarks and ace entries while comparing configuration.
+- ios_acls - correctly match the different line for ACL without sequence number
+- ios_acls - take correctly in case where we want to push an ACL from a different type
+- ios_ospfv2 - Fix improper rendering of admin_distance attribute.
+- ios_snmp_server - fixed config issue with snmp user password update being idempotent on consecutive runs.
+- ios_user - Fix configuration of hashed passwords and secrets.
+
 v6.1.1
 ======
 
