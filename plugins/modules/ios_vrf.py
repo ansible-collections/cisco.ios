@@ -889,27 +889,48 @@ def main():
     """main entry point for module execution"""
     address_family_spec = dict(
         afi=dict(type="str"),
-        mdt=dict(type="dict", options=dict(
-            overlay=dict(type="dict", options=dict(
-                use_bgp=dict(type="dict", options=dict(
-                    enable=dict(type="bool"),
-                    spt_only=dict(type="bool"),
-                )),
-            )),
-            auto_discovery=dict(type="dict", options=dict(
-                vxlan=dict(type="dict", options=dict(
-                    enable=dict(type="bool"),
-                    inter_as=dict(type="bool"),
-                )),
-            )),
-            default=dict(type="dict", options=dict(
-                vxlan_mcast_group=dict(type="str"),
-            )),
-            data=dict(type="dict", options=dict(
-                vxlan_mcast_group=dict(type="str"),
-                threshold=dict(type="str"),
-            )),
-        )),
+        mdt=dict(
+            type="dict",
+            options=dict(
+                overlay=dict(
+                    type="dict",
+                    options=dict(
+                        use_bgp=dict(
+                            type="dict",
+                            options=dict(
+                                enable=dict(type="bool"),
+                                spt_only=dict(type="bool"),
+                            ),
+                        ),
+                    ),
+                ),
+                auto_discovery=dict(
+                    type="dict",
+                    options=dict(
+                        vxlan=dict(
+                            type="dict",
+                            options=dict(
+                                enable=dict(type="bool"),
+                                inter_as=dict(type="bool"),
+                            ),
+                        ),
+                    ),
+                ),
+                default=dict(
+                    type="dict",
+                    options=dict(
+                        vxlan_mcast_group=dict(type="str"),
+                    ),
+                ),
+                data=dict(
+                    type="dict",
+                    options=dict(
+                        vxlan_mcast_group=dict(type="str"),
+                        threshold=dict(type="str"),
+                    ),
+                ),
+            ),
+        ),
     )
 
     argument_spec = dict(
