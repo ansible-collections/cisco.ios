@@ -888,7 +888,7 @@ def check_declarative_intent_params(want, module, result):
 def main():
     """main entry point for module execution"""
     address_family_spec = dict(
-        afi=dict(type="str"),
+        afi=dict(type="str", choices=["ipv4", "ipv6"]),
         mdt=dict(
             type="dict",
             options=dict(
