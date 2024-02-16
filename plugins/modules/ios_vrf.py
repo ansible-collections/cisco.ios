@@ -926,7 +926,7 @@ def main():
                     type="dict",
                     options=dict(
                         vxlan_mcast_group=dict(type="str"),
-                        threshold=dict(type="str"),
+                        threshold=dict(type="int"),
                     ),
                 ),
             ),
