@@ -887,12 +887,37 @@ def check_declarative_intent_params(want, module, result):
 
 def main():
     """main entry point for module execution"""
+    address_family_spec = dict(
+        afi=dict(type="str"),
+        mdt=dict(type="dict", options=dict(
+            overlay=dict(type="dict", options=dict(
+                use_bgp=dict(type="dict", options=dict(
+                    enable=dict(type="bool"),
+                    spt_only=dict(type="bool"),
+                )),
+            )),
+            auto_discovery=dict(type="dict", options=dict(
+                vxlan=dict(type="dict", options=dict(
+                    enable=dict(type="bool"),
+                    inter_as=dict(type="bool"),
+                )),
+            )),
+            default=dict(type="dict", options=dict(
+                vxlan_mcast_group=dict(type="str"),
+            )),
+            data=dict(type="dict", options=dict(
+                vxlan_mcast_group=dict(type="str"),
+                threshold=dict(type="str"),
+            )),
+        )),
+    )
+
     argument_spec = dict(
         vrfs=dict(type="list", elements="raw"),
-        name=dict(),
-        description=dict(),
-        address_family=dict(type="list", elements="dict"),
-        rd=dict(),
+        name=dict(type="str"),
+        description=dict(type="str"),
+        address_family=dict(type="list", elements="dict", options=address_family_spec),
+        rd=dict(type="str"),
         route_export=dict(type="list", elements="str"),
         route_import=dict(type="list", elements="str"),
         route_both=dict(type="list", elements="str"),
