@@ -178,7 +178,6 @@
   register: result_purge
   cisco.ios.ios_user:
     aggregate:
-      - name: ciscoios
       - name: cisco
     purge: true
 
