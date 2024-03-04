@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_snmp_server - fixed config issue with snmp user password update being idempotent on consecutive runs.

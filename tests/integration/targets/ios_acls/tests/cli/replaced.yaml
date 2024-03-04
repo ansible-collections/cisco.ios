@@ -87,5 +87,40 @@
         that:
           - result.commands|length == 0
           - result['changed'] == false
+
+    - ansible.builtin.include_tasks: _remove_config.yaml
+
+    - ansible.builtin.include_tasks: _populate_config.yaml
+
+    - name: Replaces device configuration of ACL with provided configuration
+      register: result
+      cisco.ios.ios_acls: &id002
+        config:
+          - afi: ipv4
+            acls:
+              - name: test_acl
+                acl_type: standard
+                aces:
+                  - grant: deny
+                    sequence: 10
+                    source:
+                      address: 198.51.100.0
+                      wildcard_bits: 0.0.0.255
+        state: replaced
+
+    - ansible.builtin.assert:
+        that:
+          - result.commands|length == 3
+          - result.changed == true
+          - result.commands|symmetric_difference(replaced_changetype.commands) == []
+
+    - name: Replaces device configuration of ACL with provided configuration (idempotent)
+      register: result
+      cisco.ios.ios_acls: *id002
+    - name: Assert that task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result.commands|length == 0
+          - result['changed'] == false
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

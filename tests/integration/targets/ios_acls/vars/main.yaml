@@ -36,6 +36,11 @@ replaced:
     - ip access-list extended 150
     - 20 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet
       syn dscp ef ttl eq 10
+replaced_changetype:
+  commands:
+    - no ip access-list extended test_acl
+    - ip access-list standard test_acl
+    - 10 deny 198.51.100.0 0.0.0.255
 overridden:
   commands:
     - no ipv6 access-list R1_TRAFFIC

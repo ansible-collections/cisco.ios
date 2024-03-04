@@ -119,6 +119,16 @@ class Acls(ResourceModule):
         for wname, wentry in iteritems(wplists):
             hentry = hplists.pop(wname, {})
             acl_type = wentry["acl_type"] if wentry.get("acl_type") else hentry.get("acl_type")
+            # If ACLs type is different between existing and wanted ACL, we need first remove it
+            if acl_type != hentry.get("acl_type", acl_type):
+                self.commands.append(
+                    "no " + self.acl_name_cmd(wname, afi, hentry.get("acl_type", "")),
+                )
+                hentry.pop(
+                    "aces",
+                    {},
+                )  # We remove ACEs because we have previously add a command to suppress completely the ACL
+
             begin = len(self.commands)  # to determine the index for acl command
             self._compare_aces(
                 wentry.pop("aces", {}),
@@ -211,9 +221,22 @@ class Acls(ResourceModule):
                     for k_wrems, wrems in rem_wentry.get("remarks").items():
                         if k_wrems not in rem_hentry.get("remarks", {}).keys():
                             self.addcmd(
-                                {"remarks": wrems, "sequence": hentry.get("sequence", "")},
+                                {
+                                    "remarks": wrems,
+                                    "sequence": hentry.get("sequence", ""),
+                                },
                                 "remarks",
                             )
+                        else:
+                            rem_hentry.get("remarks", {}).pop(k_wrems)
+                    # We remove remarks that are not in the wentry for this ACE
+                    for k_hrems, hrems in rem_hentry.get("remarks", {}).items():
+                        self.addcmd(
+                            {"remarks": hrems, "sequence": hentry.get("sequence", "")},
+                            "remarks",
+                            negate=True,
+                        )
+
                 # add ace if not in have
                 if hentry != wentry:
                     self.addcmd(add_afi(wentry, afi), "aces")
@@ -227,8 +250,12 @@ class Acls(ResourceModule):
                         "remarks",
                         negate=True,
                     )
-            else:  # remove extra aces
-                self.addcmd(add_afi(hseq, afi), "aces", negate=True)
+                hseq.pop("remarks")
+            self.addcmd(
+                add_afi(hseq, afi),
+                "aces",
+                negate=True,
+            )  # deal with the rest of ace entry
 
     def sanitize_protocol_options(self, wace, hace):
         """handles protocol and protocol options as optional attribute"""
@@ -262,7 +289,7 @@ class Acls(ResourceModule):
     def list_to_dict(self, param):
         """converts list attributes to dict"""
 
-        temp, count = dict(), 0
+        temp = dict()
         if param:
             for each in param:  # ipv4 and ipv6 acl
                 temp_acls = {}
@@ -271,7 +298,9 @@ class Acls(ResourceModule):
                         temp_aces = {}
                         if acl.get("aces"):
                             rem_idx = 0  # remarks if defined in an ace
-                            for ace in acl.get("aces"):  # each ace turned to dict
+                            for count, ace in enumerate(
+                                acl.get("aces"),
+                            ):  # each ace turned to dict
                                 if (
                                     ace.get("destination")
                                     and ace.get("destination", {}).get(
@@ -311,13 +340,14 @@ class Acls(ResourceModule):
                                     # temp_rem.extend(ace.pop("remarks"))
                                     for remks in ace.get("remarks"):
                                         rem_ace[remks.replace(" ", "_")] = remks
-                                        rem_idx += 1
                                     ace["remarks"] = rem_ace
 
                                 if ace.get("sequence"):
                                     temp_aces.update({ace.get("sequence"): ace})
+                                elif ace.get("remarks"):
+                                    temp_aces.update({"__{0}".format(rem_idx): ace})
+                                    rem_idx += 1
                                 elif ace:
-                                    count += 1
                                     temp_aces.update({"_" + to_text(count): ace})
 
                             # if temp_rem:  # add remarks to the temp ace
@@ -325,7 +355,12 @@ class Acls(ResourceModule):
 
                         if acl.get("acl_type"):  # update acl dict with req info
                             temp_acls.update(
-                                {acl.get("name"): {"aces": temp_aces, "acl_type": acl["acl_type"]}},
+                                {
+                                    acl.get("name"): {
+                                        "aces": temp_aces,
+                                        "acl_type": acl["acl_type"],
+                                    },
+                                },
                             )
                         else:  # if no acl type then here eg: ipv6
                             temp_acls.update({acl.get("name"): {"aces": temp_aces}})
