@@ -148,7 +148,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     NetworkConfig,
     dumps,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    to_list,
+)
 from ansible_collections.ansible.netcommon.plugins.plugin_utils.cliconf_base import (
     CliconfBase,
     enable_mode,
@@ -183,14 +185,14 @@ class Cliconf(CliconfBase):
         return self.send_command(cmd)
 
     @enable_mode
-    def restore(self, force=None, filename=None):
+    def restore(self, force=None, filename=None, path="flash://"):
         if not filename:
             raise ValueError("'file_name' value is required for restore")
 
         if force:
-            cmd = f"configure replace flash://{filename} force"
+            cmd = f"configure replace {path}{filename} force"
         else:
-            cmd = f"configure replace flash://{filename}"
+            cmd = f"configure replace {path}{filename}"
 
         return self.send_command(cmd)
 
@@ -279,7 +281,9 @@ class Cliconf(CliconfBase):
             configdiffobjs = candidate_obj.items
             have_banners = {}
 
-        diff["config_diff"] = dumps(configdiffobjs, "commands") if configdiffobjs else ""
+        diff["config_diff"] = (
+            dumps(configdiffobjs, "commands") if configdiffobjs else ""
+        )
         banners = self._diff_banners(want_banners, have_banners)
         diff["banner_diff"] = banners if banners else {}
         return diff
