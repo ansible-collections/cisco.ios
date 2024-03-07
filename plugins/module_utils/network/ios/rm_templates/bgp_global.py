@@ -782,7 +782,9 @@ class Bgp_globalTemplate(NetworkTemplate):
         },
         {
             "name": "bgp.default.route_target.filter",
-            "getval": re.compile(r"""\sno\sbgp\sdefault\sroute\-target\sfilter""", re.VERBOSE),
+            "getval": re.compile(
+                r"""\sno\sbgp\sdefault\sroute\-target\sfilter""", re.VERBOSE
+            ),
             "setval": "bgp default route-target filter",
             "result": {"bgp": {"default": {"route_target": {"filter": False}}}},
         },

@@ -11,14 +11,8 @@
         config:
           as_number: 65000
           bgp:
-            advertise_best_external: true
             bestpath:
               - compare_routerid: true
-            dampening:
-              penalty_half_time: 1
-              reuse_route_val: 1
-              suppress_route_val: 1
-              max_suppress: 1
             default:
               ipv4_unicast: false
               route_target:
@@ -37,20 +31,6 @@
               remote_as: 100
               shutdown:
                 set: false
-              aigp:
-                send:
-                  cost_community:
-                    id: 100
-                    poi:
-                      igp_cost: true
-                      transitive: true
-              route_map:
-                name: test-route
-                out: true
-          redistribute:
-            - connected:
-                metric: 10
-                set: true
           timers:
             keepalive: 100
             holdtime: 200

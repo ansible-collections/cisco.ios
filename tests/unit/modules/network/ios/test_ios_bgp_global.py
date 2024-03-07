@@ -12,7 +12,10 @@ from textwrap import dedent
 
 from ansible_collections.cisco.ios.plugins.modules import ios_bgp_global
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
-from ansible_collections.cisco.ios.tests.unit.modules.utils import AnsibleFailJson, set_module_args
+from ansible_collections.cisco.ios.tests.unit.modules.utils import (
+    AnsibleFailJson,
+    set_module_args,
+)
 
 from .ios_module import TestIosModule
 
@@ -27,7 +30,9 @@ class TestIosBgpGlobalModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+        self.get_resource_connection_facts = (
+            self.mock_get_resource_connection_facts.start()
+        )
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_global.bgp_global."
@@ -477,7 +482,9 @@ class TestIosBgpGlobalModule(TestIosModule):
                     bgp=dict(
                         advertise_best_external=True,
                         bestpath_options=dict(compare_routerid=True),
-                        default=dict(ipv4_unicast=False, route_target=dict(filter=True)),
+                        default=dict(
+                            ipv4_unicast=False, route_target=dict(filter=True)
+                        ),
                         log_neighbor_changes=True,
                         nopeerup_delay_options=dict(cold_boot=20, post_boot=10),
                     ),
@@ -863,3 +870,128 @@ class TestIosBgpGlobalModule(TestIosModule):
             ],
         }
         self.assertEqual(parsed_list, result["parsed"])
+
+    def test_ios_bgp_global_action_states_specific_default(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 6500
+             bgp log-neighbor-changes
+             no bgp default ipv4-unicast
+             no bgp default route-target filter
+             neighbor 192.0.2.1 remote-as 100
+             neighbor 192.0.2.1 description Test description
+             neighbor 192.0.2.2 remote-as 200
+             neighbor 192.0.2.2 description Test description 2
+             neighbor 192.0.2.2 shutdown
+             !
+             address-family ipv4
+             exit-address-family
+            """,
+        )
+        for stt in ["merged", "replaced", "overridden"]:
+            set_module_args(
+                {
+                    "config": {
+                        "as_number": "6500",
+                        "bgp": {
+                            "default": {
+                                "ipv4_unicast": False,
+                                "route_target": {
+                                    "filter": False,
+                                },
+                            },
+                            "log_neighbor_changes": True,
+                        },
+                        "neighbors": [
+                            {
+                                "neighbor_address": "192.0.2.1",
+                                "remote_as": "100",
+                                "description": "Test description",
+                                "shutdown": {  #  Not have adding
+                                    "set": True,
+                                },
+                            },
+                            {
+                                "neighbor_address": "192.0.2.2",
+                                "remote_as": "200",
+                                "description": "Test description 2",
+                                "shutdown": {  #  Have negating with false
+                                    "set": False,
+                                },
+                            },
+                        ],
+                    },
+                    "state": stt,
+                },
+            )
+            commands = [
+                "router bgp 6500",
+                "neighbor 192.0.2.1 shutdown",
+                "no neighbor 192.0.2.2 shutdown",
+            ]
+            result = self.execute_module(changed=True)
+            print(result["commands"])
+            self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_bgp_global_action_states_no_default(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 6500
+             bgp log-neighbor-changes
+             no bgp default ipv4-unicast
+             no bgp default route-target filter
+             neighbor 192.0.2.1 remote-as 100
+             neighbor 192.0.2.1 description Test description
+             neighbor 192.0.2.1 shutdown
+             neighbor 192.0.2.2 remote-as 200
+             neighbor 192.0.2.2 description Test description 2
+             neighbor 192.0.2.2 shutdown
+             neighbor 192.0.2.3 remote-as 300
+             neighbor 192.0.2.3 description Test description 3
+             !
+             address-family ipv4
+             exit-address-family
+            """,
+        )
+        for stt in ["replaced", "overridden"]:
+            set_module_args(
+                {
+                    "config": {
+                        "as_number": "6500",
+                        "bgp": {
+                            "default": {
+                                "ipv4_unicast": False,
+                                "route_target": {
+                                    "filter": False,
+                                },
+                            },
+                            "log_neighbor_changes": True,
+                        },
+                        "neighbors": [
+                            {
+                                "neighbor_address": "192.0.2.1",
+                                "remote_as": "100",
+                                "description": "Test description",
+                                "shutdown": {  #  Have not adding
+                                    "set": True,
+                                },
+                            },
+                            {
+                                "neighbor_address": "192.0.2.2",
+                                "remote_as": "200",
+                                "description": "Test description 2",  #  Have but don't want
+                            },
+                            {
+                                "neighbor_address": "192.0.2.3",
+                                "remote_as": "300",
+                                "description": "Test description 3",  #  Don't have don't want
+                            },
+                        ],
+                    },
+                    "state": stt,
+                },
+            )
+            commands = ["router bgp 6500", "no neighbor 192.0.2.2 shutdown"]
+            result = self.execute_module(changed=True)
+            print(result["commands"])
+            self.assertEqual(sorted(result["commands"]), sorted(commands))
