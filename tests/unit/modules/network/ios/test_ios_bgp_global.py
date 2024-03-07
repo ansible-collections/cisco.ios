@@ -903,7 +903,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                                 "neighbor_address": "192.0.2.1",
                                 "remote_as": "100",
                                 "description": "Test description",
-                                "shutdown": {  #  Not have adding
+                                "shutdown": {  # Not have adding
                                     "set": True,
                                 },
                             },
@@ -911,7 +911,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                                 "neighbor_address": "192.0.2.2",
                                 "remote_as": "200",
                                 "description": "Test description 2",
-                                "shutdown": {  #  Have negating with false
+                                "shutdown": {  # Have negating with false
                                     "set": False,
                                 },
                             },
@@ -968,19 +968,19 @@ class TestIosBgpGlobalModule(TestIosModule):
                                 "neighbor_address": "192.0.2.1",
                                 "remote_as": "100",
                                 "description": "Test description",
-                                "shutdown": {  #  Have not adding
+                                "shutdown": {  # Have not adding
                                     "set": True,
                                 },
                             },
                             {
                                 "neighbor_address": "192.0.2.2",
                                 "remote_as": "200",
-                                "description": "Test description 2",  #  Have but don't want
+                                "description": "Test description 2",  # Have but don't want
                             },
                             {
                                 "neighbor_address": "192.0.2.3",
                                 "remote_as": "300",
-                                "description": "Test description 3",  #  Don't have don't want
+                                "description": "Test description 3",  # Don't have don't want
                             },
                         ],
                     },
