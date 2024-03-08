@@ -24,9 +24,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
-    Facts,
-)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.acls import (
     AclsTemplate,
 )
@@ -85,9 +83,7 @@ class Acls(ResourceModule):
                     wplists = wvalue.get("acls", {})
                     hplists = hvalue.get("acls", {})
                     hvalue["acls"] = {
-                        k: v
-                        for k, v in iteritems(hplists)
-                        if k in wplists or not wplists
+                        k: v for k, v in iteritems(hplists) if k in wplists or not wplists
                     }
 
         # remove superfluous config for overridden and deleted
@@ -122,9 +118,7 @@ class Acls(ResourceModule):
         hplists = have.get("acls", {})
         for wname, wentry in iteritems(wplists):
             hentry = hplists.pop(wname, {})
-            acl_type = (
-                wentry["acl_type"] if wentry.get("acl_type") else hentry.get("acl_type")
-            )
+            acl_type = wentry["acl_type"] if wentry.get("acl_type") else hentry.get("acl_type")
             # If ACLs type is different between existing and wanted ACL, we need first remove it
             if acl_type != hentry.get("acl_type", acl_type):
                 self.commands.append(
@@ -326,25 +320,20 @@ class Acls(ResourceModule):
                                     .get("range")
                                 ):
                                     for k, v in (
-                                        ace.get("destination", {})
-                                        .get("port_protocol", {})
-                                        .items()
+                                        ace.get("destination", {}).get("port_protocol", {}).items()
                                     ):
-                                        ace["destination"]["port_protocol"][k] = (
-                                            self.port_protocl_no_to_protocol(v)
-                                        )
+                                        ace["destination"]["port_protocol"][
+                                            k
+                                        ] = self.port_protocl_no_to_protocol(v)
                                 if acl.get("acl_type") == "standard":
                                     for ks in list(ace.keys()):
-                                        if (
-                                            ks
-                                            not in [
-                                                "sequence",
-                                                "grant",
-                                                "source",
-                                                "remarks",
-                                                "log",
-                                            ]
-                                        ):  # failing for mutually exclusive standard acl key
+                                        if ks not in [
+                                            "sequence",
+                                            "grant",
+                                            "source",
+                                            "remarks",
+                                            "log",
+                                        ]:  # failing for mutually exclusive standard acl key
                                             self._module.fail_json(
                                                 "Unsupported attribute for standard ACL - {0}.".format(
                                                     ks,
