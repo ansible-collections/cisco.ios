@@ -27,7 +27,9 @@ class TestIosAclsModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+        self.get_resource_connection_facts = (
+            self.mock_get_resource_connection_facts.start()
+        )
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls."
@@ -38,7 +40,9 @@ class TestIosAclsModule(TestIosModule):
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls."
             "AclsFacts.get_acl_names",
         )
-        self.execute_show_command_name = self.mock_execute_show_command_name_specific.start()
+        self.execute_show_command_name = (
+            self.mock_execute_show_command_name_specific.start()
+        )
 
     def tearDown(self):
         super(TestIosAclsModule, self).tearDown()
@@ -2033,3 +2037,60 @@ class TestIosAclsModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
+
+    def test_ios_acls_overridden_sticky_remarks(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            ip access-list standard test123
+             10 remark TEST
+             10 permit 8.8.8.8
+             20 remark TEST
+             20 permit 8.8.4.4
+            """,
+        )
+        self.execute_show_command_name.return_value = dedent("")
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        afi="ipv4",
+                        acls=[
+                            dict(
+                                name="test123",
+                                acl_type="standard",
+                                aces=[
+                                    dict(
+                                        grant="permit",
+                                        source=dict(
+                                            address="8.8.128.0",
+                                            wildcard_bits="0.0.0.63",
+                                        ),
+                                        remarks=["TEST", "TEST 2"],
+                                        sequence=10,
+                                    ),
+                                    dict(
+                                        grant="permit",
+                                        source=dict(
+                                            host="8.8.4.4",
+                                        ),
+                                        remarks=["TEST"],
+                                        sequence=20,
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = [
+            "ip access-list standard test123",
+            "no 10 permit host 8.8.8.8",
+            "10 remark TEST",
+            "10 remark TEST 2",
+            "10 permit 8.8.128.0 0.0.0.63",
+        ]
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
