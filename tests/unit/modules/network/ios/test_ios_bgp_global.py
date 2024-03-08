@@ -12,7 +12,10 @@ from textwrap import dedent
 
 from ansible_collections.cisco.ios.plugins.modules import ios_bgp_global
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
-from ansible_collections.cisco.ios.tests.unit.modules.utils import AnsibleFailJson, set_module_args
+from ansible_collections.cisco.ios.tests.unit.modules.utils import (
+    AnsibleFailJson,
+    set_module_args,
+)
 
 from .ios_module import TestIosModule
 
@@ -27,7 +30,9 @@ class TestIosBgpGlobalModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+        self.get_resource_connection_facts = (
+            self.mock_get_resource_connection_facts.start()
+        )
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_global.bgp_global."
@@ -903,7 +908,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                                 "neighbor_address": "192.0.2.1",
                                 "remote_as": "100",
                                 "description": "Test description",
-                                "shutdown": {  # Not have adding
+                                "shutdown": {  # Don't have in config, adding
                                     "set": True,
                                 },
                             },
@@ -911,7 +916,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                                 "neighbor_address": "192.0.2.2",
                                 "remote_as": "200",
                                 "description": "Test description 2",
-                                "shutdown": {  # Have negating with false
+                                "shutdown": {  # Have in config negating with false
                                     "set": False,
                                 },
                             },
@@ -970,25 +975,25 @@ class TestIosBgpGlobalModule(TestIosModule):
                                 "neighbor_address": "192.0.2.1",
                                 "remote_as": "100",
                                 "description": "Test description",
-                                "shutdown": {  # Have not adding
+                                "shutdown": {  # Have in config not adding again (idempotent)
                                     "set": True,
                                 },
                             },
                             {
                                 "neighbor_address": "192.0.2.2",
                                 "remote_as": "200",
-                                "description": "Test description 2",  # Have but don't want
+                                "description": "Test description 2",  # Have in config but don't want (to be removed)
                             },
                             {
                                 "neighbor_address": "192.0.2.3",
                                 "remote_as": "300",
-                                "description": "Test description 3",  # Don't have don't want
+                                "description": "Test description 3",  # Don't have in config don't want
                             },
                             {
                                 "neighbor_address": "192.0.2.4",
                                 "remote_as": "400",
                                 "description": "Test description 4",
-                                "shutdown": {  # Don't have explicitly don't want
+                                "shutdown": {  # Don't have in config, explicitly don't want
                                     "set": False,
                                 },
                             },
