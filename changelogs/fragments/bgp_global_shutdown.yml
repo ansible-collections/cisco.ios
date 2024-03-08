@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_bgp_global - Shutdown attributes generates negate command on set as false.
