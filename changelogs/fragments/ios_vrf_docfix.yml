@@ -1,5 +1,0 @@
----
-bugfixes:
-  - ios_vrf - Update and add missing argspec keys that define the attributes.
-doc_changes:
-  - ios_vrf - Update and add missing documentation for ios_vrf module.

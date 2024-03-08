@@ -5,6 +5,21 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v6.1.3
+======
+
+Bugfixes
+--------
+
+- ios_acls - Adds back existing remarks for an ace entry when updated with replaced or overridden state, as all remarks for a specific sequence gets removed when ace entry is updated.
+- ios_bgp_global - Shutdown attributes generates negate command on set as false.
+- ios_vrf - Update and add missing argspec keys that define the attributes.
+
+Documentation Changes
+---------------------
+
+- ios_vrf - Update and add missing documentation for ios_vrf module.
+
 v6.1.2
 ======
 
