@@ -215,8 +215,16 @@ class Acls(ResourceModule):
                                             negate=True,
                                         )
                         # remove ace if not in want
+                        # we might think why not update it directly,
+                        # if we try to update without negating the entry appliance
+                        # reports % Duplicate sequence number
                         if hentry != wentry:
                             self.addcmd(add_afi(hentry, afi), "aces", negate=True)
+                            # once an ace is negated intentionally emptying out have so that
+                            # the remarks are repopulated, as the remarks and ace behavior is sticky
+                            # if an ace is taken out all the remarks is removed automatically.
+                            rem_hentry["remarks"] = {}
+
                 if rem_wentry.get("remarks"):  # add remark if not in have
                     for k_wrems, wrems in rem_wentry.get("remarks").items():
                         if k_wrems not in rem_hentry.get("remarks", {}).keys():
