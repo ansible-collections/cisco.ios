@@ -12,10 +12,7 @@ from textwrap import dedent
 
 from ansible_collections.cisco.ios.plugins.modules import ios_bgp_global
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
-from ansible_collections.cisco.ios.tests.unit.modules.utils import (
-    AnsibleFailJson,
-    set_module_args,
-)
+from ansible_collections.cisco.ios.tests.unit.modules.utils import AnsibleFailJson, set_module_args
 
 from .ios_module import TestIosModule
 
@@ -30,9 +27,7 @@ class TestIosBgpGlobalModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_global.bgp_global."
