@@ -12,7 +12,10 @@ from textwrap import dedent
 
 from ansible_collections.cisco.ios.plugins.modules import ios_bgp_global
 from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
-from ansible_collections.cisco.ios.tests.unit.modules.utils import AnsibleFailJson, set_module_args
+from ansible_collections.cisco.ios.tests.unit.modules.utils import (
+    AnsibleFailJson,
+    set_module_args,
+)
 
 from .ios_module import TestIosModule
 
@@ -27,7 +30,9 @@ class TestIosBgpGlobalModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+        self.get_resource_connection_facts = (
+            self.mock_get_resource_connection_facts.start()
+        )
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_global.bgp_global."
@@ -926,7 +931,6 @@ class TestIosBgpGlobalModule(TestIosModule):
                 "no neighbor 192.0.2.2 shutdown",
             ]
             result = self.execute_module(changed=True)
-            print(result["commands"])
             self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_bgp_global_action_states_no_default(self):
@@ -999,5 +1003,4 @@ class TestIosBgpGlobalModule(TestIosModule):
             )
             commands = ["router bgp 6500", "no neighbor 192.0.2.2 shutdown"]
             result = self.execute_module(changed=True)
-            print(result["commands"])
             self.assertEqual(sorted(result["commands"]), sorted(commands))
