@@ -1,0 +1,4 @@
+---
+major_changes:
+  - ios_ntp - Remove deprecated ntp legacy module
+  - ios_acls - Remove deprecated fragments attribute in ios_acls module
