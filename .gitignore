@@ -114,5 +114,6 @@ venv.bak/
 *.code-workspace
 .vscode/
 .DS_Store
+*.swp
 
 changelogs/.plugin-cache.yaml
