@@ -248,7 +248,7 @@ class AclsTemplate(NetworkTemplate):
         {
             "name": "aces_ipv4_standard",
             "getval": re.compile(
-                r"""(\s*(?P<sequence>\d+))?
+                r"""^\s*((?P<sequence>\d+))?
                         (\s(?P<grant>deny|permit))
                         (\s+(?P<address>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)))?
                         (\s(?P<wildcard>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)))?
@@ -281,17 +281,17 @@ class AclsTemplate(NetworkTemplate):
         {
             "name": "aces",
             "getval": re.compile(
-                r"""(\s*(?P<sequence>\d+))?
-                        (\s*sequence\s(?P<sequence_ipv6>\d+))?
-                        (\s*(?P<grant>deny|permit))
+                r"""^\s*((?P<sequence>\d+))?
+                        (\ssequence\s(?P<sequence_ipv6>\d+))?
+                        (\s(?P<grant>deny|permit))
                         (\sevaluate\s(?P<evaluate>\S+))?
-                        (\s(?P<protocol_num>\d+))?
+                        (\s(?P<protocol_num>\d+)\s)?
                         (\s*(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipinip|ipv6|ip|nos|ospf|pcp|pim|sctp|tcp|ip|udp))?
-                        ((\s(?P<source_any>any))|
-                        (\sobject-group\s(?P<source_obj_grp>\S+))|
-                        (\shost\s(?P<source_host>\S+))|
-                        (\s(?P<ipv6_source_address>\S+/\d+))|
-                        (\s(?P<source_address>(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})\s\S+)))?
+                        ((\s*(?P<source_any>any))|
+                        (\s*object-group\s(?P<source_obj_grp>\S+))|
+                        (\s*host\s(?P<source_host>\S+))|
+                        (\s*(?P<ipv6_source_address>\S+/\d+))|
+                        (\s*(?P<source_address>(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})\s\S+)))?
                         (\seq\s(?P<seq>(\S+|\d+)))?
                         (\sgt\s(?P<sgt>(\S+|\d+)))?
                         (\slt\s(?P<slt>(\S+|\d+)))?

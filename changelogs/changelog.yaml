@@ -1119,3 +1119,37 @@ releases:
       - module_defaults.yaml
       - vlan_shutdown_fix.yaml
     release_date: "2024-01-30"
+  6.1.2:
+    changes:
+      bugfixes:
+        - ios_acls - Fix replaced state to consider remarks and ace entries while comparing
+          configuration.
+        - ios_acls - correctly match the different line for ACL without sequence number
+        - ios_acls - take correctly in case where we want to push an ACL from a different
+          type
+        - ios_ospfv2 - Fix improper rendering of admin_distance attribute.
+        - ios_snmp_server - fixed config issue with snmp user password update being
+          idempotent on consecutive runs.
+        - ios_user - Fix configuration of hashed passwords and secrets.
+    fragments:
+      - ios_acls_changes.yml
+      - ios_acls_replaced_state.yml
+      - ios_user_bug.yml
+      - ospfv2_admin_distance_fix.yml
+      - snmp_idempotancy_fix.yml
+    release_date: "2024-02-14"
+  6.1.3:
+    changes:
+      bugfixes:
+        - ios_acls - Adds back existing remarks for an ace entry when updated with replaced
+          or overridden state, as all remarks for a specific sequence gets removed when
+          ace entry is updated.
+        - ios_bgp_global - Shutdown attributes generates negate command on set as false.
+        - ios_vrf - Update and add missing argspec keys that define the attributes.
+      doc_changes:
+        - ios_vrf - Update and add missing documentation for ios_vrf module.
+    fragments:
+      - bgp_global_shutdown.yml
+      - ios_acls_sticky.yml
+      - ios_vrf_docfix.yml
+    release_date: "2024-03-08"
