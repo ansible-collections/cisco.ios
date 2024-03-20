@@ -139,10 +139,10 @@ FACT_RESOURCE_SUBSETS = dict(
     service=ServiceFacts,
     snmp_server=Snmp_serverFacts,
     hostname=HostnameFacts,
+    users=UsersFacts,
     vxlan_vtep=Vxlan_vtepFacts,
     evpn_global=Evpn_globalFacts,
     evpn_evi=Evpn_eviFacts,
-    user_global=User_globalFacts,
 )
 
 
