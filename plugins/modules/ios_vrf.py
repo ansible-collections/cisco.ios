@@ -58,6 +58,61 @@ options:
     description:
       - The list of address families with MDT parameters to be configured on the remote IOS device.
     type: list
+    suboptions:
+      afi:
+        description: Address family identifier.
+        type: str
+        choices:
+          ["ipv4", "ipv6"]
+      mdt:
+        description: MDT parameters.
+        type: dict
+        suboptions:
+          auto_discovery:
+            description: Auto-discovery parameters.
+            type: dict
+            suboptions:
+              vxlan:
+                description: Vxlan parameters.
+                type: dict
+                suboptions:
+                  enable:
+                    description: Enable VXLAN.
+                    type: bool
+                  inter_as:
+                    description: Enable inter-as.
+                    type: bool
+          default:
+            description: Parameters for default option.
+            type: dict
+            suboptions:
+              vxlan_mcast_group:
+                description: VXLAN multicast group value.
+                type: str
+          data:
+            description: Parameters for data option.
+            type: dict
+            suboptions:
+              vxlan_mcast_group:
+                description: VXLAN multicast group value.
+                type: str
+              threshold:
+                description: Threshold value.
+                type: int
+          overlay:
+            description: Parameters for overlay option.
+            type: dict
+            suboptions:
+              use_bgp:
+                description: parameters for BGP option.
+                type: dict
+                suboptions:
+                  enable:
+                    description: Enable use BGP.
+                    type: bool
+                  spt_only:
+                    description: Enable SPT only.
+                    type: bool
     elements: dict
   rd:
     description:
@@ -832,12 +887,58 @@ def check_declarative_intent_params(want, module, result):
 
 def main():
     """main entry point for module execution"""
+    address_family_spec = dict(
+        afi=dict(type="str", choices=["ipv4", "ipv6"]),
+        mdt=dict(
+            type="dict",
+            options=dict(
+                overlay=dict(
+                    type="dict",
+                    options=dict(
+                        use_bgp=dict(
+                            type="dict",
+                            options=dict(
+                                enable=dict(type="bool"),
+                                spt_only=dict(type="bool"),
+                            ),
+                        ),
+                    ),
+                ),
+                auto_discovery=dict(
+                    type="dict",
+                    options=dict(
+                        vxlan=dict(
+                            type="dict",
+                            options=dict(
+                                enable=dict(type="bool"),
+                                inter_as=dict(type="bool"),
+                            ),
+                        ),
+                    ),
+                ),
+                default=dict(
+                    type="dict",
+                    options=dict(
+                        vxlan_mcast_group=dict(type="str"),
+                    ),
+                ),
+                data=dict(
+                    type="dict",
+                    options=dict(
+                        vxlan_mcast_group=dict(type="str"),
+                        threshold=dict(type="int"),
+                    ),
+                ),
+            ),
+        ),
+    )
+
     argument_spec = dict(
         vrfs=dict(type="list", elements="raw"),
-        name=dict(),
-        description=dict(),
-        address_family=dict(type="list", elements="dict"),
-        rd=dict(),
+        name=dict(type="str"),
+        description=dict(type="str"),
+        address_family=dict(type="list", elements="dict", options=address_family_spec),
+        rd=dict(type="str"),
         route_export=dict(type="list", elements="str"),
         route_import=dict(type="list", elements="str"),
         route_both=dict(type="list", elements="str"),

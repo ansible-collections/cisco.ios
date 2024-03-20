@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_user - Fix configuration of hashed passwords and secrets.
