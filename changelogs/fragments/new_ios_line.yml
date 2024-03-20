@@ -1,0 +1,3 @@
+---
+minor_changes:
+  - ios_line - Add a new module to manage the line console and line vty on Cisco IOS

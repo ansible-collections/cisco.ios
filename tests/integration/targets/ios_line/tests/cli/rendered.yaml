@@ -1,0 +1,22 @@
+---
+- ansible.builtin.debug:
+    msg: Start ios_line rendered integration tests ansible_connection={{ ansible_connection }}
+
+- block:
+    - name: Rendered the provided configuration with the existing running configuration
+      register: result
+      cisco.ios.ios_line:
+        config:
+          lines:
+            - name: "con 0"
+              stopbits: "1"
+              escape_character:
+                value: "3"
+            - name: "aux 0"
+              stopbits: "1"
+        state: rendered
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.rendered|symmetric_difference(rendered.commands) == []

@@ -1,0 +1,21 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_line gathered integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Gather the provided configuration with the existing running configuration
+      register: result
+      cisco.ios.ios_line:
+        config:
+        state: gathered
+
+    - ansible.builtin.assert:
+        that:
+          - gathered['config'] == result.gathered
+          - result['changed'] == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
