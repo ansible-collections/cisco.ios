@@ -1,5 +1,5 @@
 # For ansible-tox-linters
-black==23.3.0
+black==24.3.0
 flake8
 yamllint
 
