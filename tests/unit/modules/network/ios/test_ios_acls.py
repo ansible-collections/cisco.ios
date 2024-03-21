@@ -27,7 +27,9 @@ class TestIosAclsModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+        self.get_resource_connection_facts = (
+            self.mock_get_resource_connection_facts.start()
+        )
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls."
@@ -38,7 +40,9 @@ class TestIosAclsModule(TestIosModule):
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls."
             "AclsFacts.get_acl_names",
         )
-        self.execute_show_command_name = self.mock_execute_show_command_name_specific.start()
+        self.execute_show_command_name = (
+            self.mock_execute_show_command_name_specific.start()
+        )
 
     def tearDown(self):
         super(TestIosAclsModule, self).tearDown()
@@ -1638,6 +1642,11 @@ class TestIosAclsModule(TestIosModule):
             dict(
                 running_config=dedent(
                     """\
+                    ip access-list standard 99
+                        10 remark standalone remarks
+                        20 permit 192.15.0.1
+                        30 permit 192.15.0.2
+                        40 permit 192.15.0.3
                     ip access-list standard 2
                         30 permit 172.16.1.11
                         20 permit 172.16.1.10
@@ -1770,6 +1779,28 @@ class TestIosAclsModule(TestIosModule):
                         ],
                     },
                     {
+                        "name": "99",
+                        "acl_type": "standard",
+                        "aces": [
+                            {
+                                "sequence": 20,
+                                "grant": "permit",
+                                "source": {"host": "192.15.0.1"},
+                            },
+                            {
+                                "sequence": 30,
+                                "grant": "permit",
+                                "source": {"host": "192.15.0.2"},
+                            },
+                            {
+                                "sequence": 40,
+                                "grant": "permit",
+                                "source": {"host": "192.15.0.3"},
+                            },
+                            {"sequence": 10, "remarks": ["standalone remarks"]},
+                        ],
+                    },
+                    {
                         "name": "outboundfilters",
                         "acl_type": "extended",
                         "aces": [
@@ -1785,7 +1816,7 @@ class TestIosAclsModule(TestIosModule):
                                     "address": "172.16.1.0",
                                     "wildcard_bits": "0.0.0.255",
                                 },
-                            },
+                            }
                         ],
                     },
                     {
@@ -1830,7 +1861,7 @@ class TestIosAclsModule(TestIosModule):
                         ],
                     },
                 ],
-            },
+            }
         ]
         self.assertEqual(parsed_list, result["parsed"])
 
@@ -1920,6 +1951,28 @@ class TestIosAclsModule(TestIosModule):
                                         },
                                         "time_range": "EVERYOTHERDAY",
                                     },
+                                ],
+                            },
+                            {
+                                "name": "99",
+                                "acl_type": "standard",
+                                "aces": [
+                                    {
+                                        "sequence": 20,
+                                        "grant": "permit",
+                                        "source": {"host": "192.15.0.1"},
+                                    },
+                                    {
+                                        "sequence": 30,
+                                        "grant": "permit",
+                                        "source": {"host": "192.15.0.2"},
+                                    },
+                                    {
+                                        "sequence": 40,
+                                        "grant": "permit",
+                                        "source": {"host": "192.15.0.3"},
+                                    },
+                                    {"sequence": 10, "remarks": ["standalone remarks"]},
                                 ],
                             },
                             {
@@ -2019,6 +2072,12 @@ class TestIosAclsModule(TestIosModule):
             "50 permit ip any 10.1.1.0 0.0.0.255",
             "60 permit tcp any host 10.1.1.1 eq telnet",
             "70 permit tcp 10.1.1.0 0.0.0.255 172.16.1.0 0.0.0.255 eq telnet time-range EVERYOTHERDAY",
+            "ip access-list standard 99",
+            "20 permit host 192.15.0.1",
+            "30 permit host 192.15.0.2",
+            "40 permit host 192.15.0.3",
+            "remark standalone remarks",
+            "10",  # needs fix
             "ip access-list standard 2",
             "30 permit host 172.16.1.11",
             "20 permit host 172.16.1.10",
