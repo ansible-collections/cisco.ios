@@ -19,9 +19,7 @@ import re
 
 from ansible.module_utils._text import to_text
 from ansible.module_utils.six import iteritems
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
@@ -108,7 +106,8 @@ class AclsFacts(object):
         if namedata:
             # parse just names to update empty acls
             templateObjName = NetworkTemplate(
-                lines=namedata.splitlines(), tmplt=AclsTemplate()
+                lines=namedata.splitlines(),
+                tmplt=AclsTemplate(),
             )
             raw_acl_names = templateObjName.parse()
             raw_acls = self.populate_empty_acls(raw_acls, raw_acl_names)
@@ -150,12 +149,13 @@ class AclsFacts(object):
                 for each_ace in each.get("aces"):
                     if each.get("acl_type") == "standard":
                         if len(each_ace.get("source", {})) == 1 and each_ace.get(
-                            "source", {}
+                            "source",
+                            {},
                         ).get(
                             "address",
                         ):
                             each_ace["source"]["host"] = each_ace["source"].pop(
-                                "address"
+                                "address",
                             )
                         if each_ace.get("source", {}).get("address"):
                             addr = each_ace.get("source", {}).get("address")
@@ -171,7 +171,8 @@ class AclsFacts(object):
                         each_ace["protocol_options"] = {
                             each_ace["protocol"]: {
                                 each_ace.pop("icmp_igmp_tcp_protocol").replace(
-                                    "-", "_"
+                                    "-",
+                                    "_",
                                 ): True,
                             },
                         }
@@ -194,11 +195,11 @@ class AclsFacts(object):
                         if not rem.get(i.get("is_remark_for")):
                             rem[i.get("is_remark_for")] = {"remarks": []}
                             rem[i.get("is_remark_for")]["remarks"].append(
-                                i.get("the_remark")
+                                i.get("the_remark"),
                             )
                         else:
                             rem[i.get("is_remark_for")]["remarks"].append(
-                                i.get("the_remark")
+                                i.get("the_remark"),
                             )
                     else:
                         if rem:
@@ -217,7 +218,7 @@ class AclsFacts(object):
                                 {
                                     "sequence": pending_rem_seq,
                                     "remarks": pending_rem_val.get("remarks"),
-                                }
+                                },
                             )
                         else:
                             # this handles the classic set of remarks at the end, which is not tied to
