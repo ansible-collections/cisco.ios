@@ -44,24 +44,6 @@ class AclsFacts(object):
     def get_acl_data(self, connection):
         # Removed the show access-list
         # Removed the show running-config | include ip(v6)* access-list|remark
-        # from textwrap import dedent
-
-        # return dedent(
-        #     """\
-        #     ip access-list standard testRobustReplace
-        #         10 remark Remarks for 10
-        #         20 remark Remarks for 20
-        #         20 permit 0.0.0.0 255.0.0.0
-        #         30 remark Remarks for 30
-        #         30 permit 172.16.0.0 0.15.255.255
-        #         40 remark Remarks for 40
-        #         40 permit 192.0.2.0 0.0.0.255
-        #         50 remark Remarks for 50
-        #         50 permit 198.51.100.0 0.0.0.255
-        #         remark stray remark 1
-        #         remark stray 1223 test
-        #     """,
-        # )
         return connection.get("show running-config | section access-list")
 
     def get_acl_names(self, connection):
