@@ -27,9 +27,7 @@ class TestIosAclsModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls."
@@ -40,9 +38,7 @@ class TestIosAclsModule(TestIosModule):
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls."
             "AclsFacts.get_acl_names",
         )
-        self.execute_show_command_name = (
-            self.mock_execute_show_command_name_specific.start()
-        )
+        self.execute_show_command_name = self.mock_execute_show_command_name_specific.start()
 
     def tearDown(self):
         super(TestIosAclsModule, self).tearDown()
@@ -2238,12 +2234,12 @@ class TestIosAclsModule(TestIosModule):
                                             "Remark not specific to sequence",
                                             "============",
                                             "End Remarks 1",
-                                        ]
+                                        ],
                                     },
                                 ],
-                            }
+                            },
                         ],
-                    }
+                    },
                 ],
                 state="overridden",
             ),
