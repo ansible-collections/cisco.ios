@@ -39,11 +39,15 @@ def _tmplt_route_map_match(config_data):
                 cmd += " best {best}".format(**config_data["match"]["additional_paths"])
             if config_data["match"]["additional_paths"].get("best_range"):
                 cmd += " best-range"
-                if config_data["match"]["additional_paths"]["best_range"].get("lower_limit"):
+                if config_data["match"]["additional_paths"]["best_range"].get(
+                    "lower_limit"
+                ):
                     cmd += " lower-limit {lower_limit}".format(
                         **config_data["match"]["additional_paths"]["best_range"],
                     )
-                if config_data["match"]["additional_paths"]["best_range"].get("upper_limit"):
+                if config_data["match"]["additional_paths"]["best_range"].get(
+                    "upper_limit"
+                ):
                     cmd += " upper-limit {upper_limit}".format(
                         **config_data["match"]["additional_paths"]["best_range"],
                     )
@@ -231,7 +235,9 @@ def _tmplt_route_map_match_ip(config_data):
                     config_data["match"]["ip"]["address"]["prefix_lists"],
                 )
             elif config_data["match"]["ip"]["address"].get("acls"):
-                cmd = construct_cmd_from_list(cmd, config_data["match"]["ip"]["address"]["acls"])
+                cmd = construct_cmd_from_list(
+                    cmd, config_data["match"]["ip"]["address"]["acls"]
+                )
         if config_data["match"]["ip"].get("flowspec"):
             cmd += " flowspec"
             if config_data["match"]["ip"]["flowspec"].get("dest_pfx"):
@@ -245,7 +251,9 @@ def _tmplt_route_map_match_ip(config_data):
                     config_data["match"]["ip"]["flowspec"]["prefix_lists"],
                 )
             elif config_data["match"]["ip"]["flowspec"].get("acls"):
-                cmd = construct_cmd_from_list(cmd, config_data["match"]["ip"]["flowspec"]["acls"])
+                cmd = construct_cmd_from_list(
+                    cmd, config_data["match"]["ip"]["flowspec"]["acls"]
+                )
         if config_data["match"]["ip"].get("next_hop"):
             cmd += " next-hop"
             if config_data["match"]["ip"]["next_hop"].get("prefix_lists"):
@@ -255,7 +263,9 @@ def _tmplt_route_map_match_ip(config_data):
                     config_data["match"]["ip"]["next_hop"]["prefix_lists"],
                 )
             elif config_data["match"]["ip"]["next_hop"].get("acls"):
-                cmd = construct_cmd_from_list(cmd, config_data["match"]["ip"]["next_hop"]["acls"])
+                cmd = construct_cmd_from_list(
+                    cmd, config_data["match"]["ip"]["next_hop"]["acls"]
+                )
         if config_data["match"]["ip"].get("redistribution_source"):
             cmd += " redistribution-source"
             if config_data["match"]["ip"]["redistribution_source"].get("prefix_lists"):
@@ -411,7 +421,9 @@ def _tmplt_route_map_set(config_data):
                     cmd += " additive"
                 command.append(cmd)
             if set["extcommunity"].get("soo"):
-                command.append("set extcommunity soo {soo}".format(**set["extcommunity"]))
+                command.append(
+                    "set extcommunity soo {soo}".format(**set["extcommunity"])
+                )
             if set["extcommunity"].get("vpn_distinguisher"):
                 cmd = "set extcommunity vpn-distinguisher"
                 if set["extcommunity"]["vpn_distinguisher"].get("range"):
@@ -419,7 +431,9 @@ def _tmplt_route_map_set(config_data):
                         **set["extcommunity"]["vpn_distinguisher"]["range"],
                     )
                 elif set["extcommunity"]["vpn_distinguisher"].get("address"):
-                    cmd += " {address}".format(**set["extcommunity"]["vpn_distinguisher"])
+                    cmd += " {address}".format(
+                        **set["extcommunity"]["vpn_distinguisher"]
+                    )
                 if set["extcommunity"]["vpn_distinguisher"].get("additive"):
                     cmd += " additive"
                 command.append(cmd)
@@ -452,16 +466,12 @@ def _tmplt_route_map_set(config_data):
                 cmd += " {metric_value}".format(**set["metric"])
                 if set["metric"].get("deviation"):
                     if set["metric"]["deviation"] == "plus":
-                        cmd += (
-                            " +{eigrp_delay} {metric_reliability} {metric_bandwidth} {mtu}".format(
-                                **set["metric"],
-                            )
+                        cmd += " +{eigrp_delay} {metric_reliability} {metric_bandwidth} {mtu}".format(
+                            **set["metric"],
                         )
                     elif set["metric"]["deviation"] == "minus":
-                        cmd += (
-                            " -{eigrp_delay} {metric_reliability} {metric_bandwidth} {mtu}".format(
-                                **set["metric"],
-                            )
+                        cmd += " -{eigrp_delay} {metric_reliability} {metric_bandwidth} {mtu}".format(
+                            **set["metric"],
                         )
             if set["metric"].get("deviation") and not set["metric"].get("eigrp_delay"):
                 if set["metric"]["deviation"] == "plus":
@@ -525,7 +535,9 @@ def _tmplt_route_map_set_ip(config_data):
                 command.append("{0} dynamic dhcp".format(cmd))
             if set_ip["next_hop"].get("encapsulate"):
                 command.append(
-                    "{0} encapsulate l3vpn {encapsulate}".format(cmd, **set_ip["next_hop"]),
+                    "{0} encapsulate l3vpn {encapsulate}".format(
+                        cmd, **set_ip["next_hop"]
+                    ),
                 )
             if set_ip["next_hop"].get("peer_address"):
                 command.append("{0} peer-address".format(cmd))
@@ -620,10 +632,8 @@ def _tmplt_route_map_set_ipv6(config_data):
         if set_ipv6.get("precedence"):
             cmd += " precedence {precedence}".format(**set_ipv6)
         if set_ipv6.get("vrf"):
-            cmd += (
-                " vrf {vrf} next-hop verify-availability {address} {sequence} track {track}".format(
-                    **set_ipv6["vrf"]["verify_availability"],
-                )
+            cmd += " vrf {vrf} next-hop verify-availability {address} {sequence} track {track}".format(
+                **set_ipv6["vrf"]["verify_availability"],
             )
         return cmd
 
@@ -649,7 +659,10 @@ class Route_mapsTemplate(NetworkTemplate):
                 "{{ route_map }}": {
                     "route_map": "{{ route_map }}",
                     "{{ action|d() + '_' + sequence|d() }}": {
-                        "entries": {"action": "{{ action }}", "sequence": "{{ sequence }}"},
+                        "entries": {
+                            "action": "{{ action }}",
+                            "sequence": "{{ sequence }}",
+                        },
                     },
                 },
             },
@@ -691,7 +704,7 @@ class Route_mapsTemplate(NetworkTemplate):
             "result": {
                 "{{ route_map }}": {
                     "{{ action|d() + '_' + sequence|d() }}": {
-                        "entries": {"description": "{{ description }}"},
+                        "entries": {"description": "'{{ description }}'"},
                     },
                 },
             },

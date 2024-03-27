@@ -447,7 +447,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "description {{ route_server_context.description }}",
-            "result": {"route_server_context": {"description": "{{ description }}"}},
+            "result": {"route_server_context": {"description": "'{{ description }}'"}},
         },
         {
             "name": "synchronization",
@@ -1482,7 +1482,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 "neighbors": {
                     "{{ neighbor_address }}": {
                         "neighbor_address": "{{ neighbor_address }}",
-                        "description": "{{ description }}",
+                        "description": "'{{ description }}'",
                     },
                 },
             },

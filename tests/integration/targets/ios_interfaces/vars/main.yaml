@@ -20,7 +20,7 @@ merged:
     - interface GigabitEthernet2
     - description Configured and Merged by Ansible-Network
     - interface GigabitEthernet3
-    - description Configured and Merged by Ansible-Network
+    - description 04j
     - shutdown
   after:
     - enabled: true
@@ -30,7 +30,7 @@ merged:
       enabled: true
       name: GigabitEthernet2
       speed: "1000"
-    - description: Configured and Merged by Ansible-Network
+    - description: 04j
       enabled: false
       name: GigabitEthernet3
       speed: "1000"
