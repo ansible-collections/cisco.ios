@@ -7,11 +7,10 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-
+from unittest.mock import patch
 from textwrap import dedent
 
 from ansible_collections.cisco.ios.plugins.modules import ios_ntp_global
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
@@ -27,7 +26,9 @@ class TestIosNtpGlobalModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+        self.get_resource_connection_facts = (
+            self.mock_get_resource_connection_facts.start()
+        )
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ntp_global.ntp_global."
@@ -86,7 +87,12 @@ class TestIosNtpGlobalModule(TestIosModule):
                     allow=dict(control=dict(rate_limit=4)),
                     authenticate=True,
                     authentication_keys=[
-                        dict(algorithm="md5", encryption=7, id=2, key="SomeSecurePassword"),
+                        dict(
+                            algorithm="md5",
+                            encryption=7,
+                            id=2,
+                            key="SomeSecurePassword",
+                        ),
                     ],
                     broadcast_delay=22,
                     logging=True,
@@ -98,8 +104,16 @@ class TestIosNtpGlobalModule(TestIosModule):
                     panic_update=True,
                     peers=[
                         dict(peer="172.16.1.10", version=2),
-                        dict(key_id=2, minpoll=5, peer="172.16.1.11", prefer=True, version=2),
-                        dict(peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True),
+                        dict(
+                            key_id=2,
+                            minpoll=5,
+                            peer="172.16.1.11",
+                            prefer=True,
+                            version=2,
+                        ),
+                        dict(
+                            peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True
+                        ),
                         dict(peer="checkPeerDomainIpv6.com", use_ipv6=True),
                         dict(peer="testPeerDomainIpv6.com", prefer=True, use_ipv6=True),
                     ],
@@ -109,7 +123,10 @@ class TestIosNtpGlobalModule(TestIosModule):
                         dict(server="checkServerDomainIpv6.com", use_ipv6=True),
                     ],
                     source="GigabitEthernet0/1",
-                    trusted_keys=[dict(range_start=21), dict(range_end=13, range_start=3)],
+                    trusted_keys=[
+                        dict(range_start=21),
+                        dict(range_end=13, range_start=3),
+                    ],
                     update_calendar=True,
                 ),
                 state="merged",
@@ -138,7 +155,12 @@ class TestIosNtpGlobalModule(TestIosModule):
                     allow=dict(control=dict(rate_limit=4)),
                     authenticate=True,
                     authentication_keys=[
-                        dict(algorithm="md5", encryption=7, id=2, key="SomeSecurePassword"),
+                        dict(
+                            algorithm="md5",
+                            encryption=7,
+                            id=2,
+                            key="SomeSecurePassword",
+                        ),
                     ],
                     broadcast_delay=22,
                     logging=True,
@@ -150,8 +172,12 @@ class TestIosNtpGlobalModule(TestIosModule):
                     panic_update=True,
                     peers=[
                         dict(peer="172.16.1.10", version=2),
-                        dict(key=2, minpoll=5, peer="172.16.1.11", prefer=True, version=2),
-                        dict(peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True),
+                        dict(
+                            key=2, minpoll=5, peer="172.16.1.11", prefer=True, version=2
+                        ),
+                        dict(
+                            peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True
+                        ),
                         dict(peer="checkPeerDomainIpv6.com", use_ipv6=True),
                         dict(peer="testPeerDomainIpv6.com", prefer=True, use_ipv6=True),
                     ],
@@ -162,7 +188,10 @@ class TestIosNtpGlobalModule(TestIosModule):
                         dict(server="checkServerDomainIpv6.com", use_ipv6=True),
                     ],
                     source="GigabitEthernet0/1",
-                    trusted_keys=[dict(range_start=21), dict(range_end=13, range_start=3)],
+                    trusted_keys=[
+                        dict(range_start=21),
+                        dict(range_end=13, range_start=3),
+                    ],
                     update_calendar=True,
                 ),
                 state="merged",
@@ -324,7 +353,12 @@ class TestIosNtpGlobalModule(TestIosModule):
                     allow=dict(control=dict(rate_limit=4)),
                     authenticate=True,
                     authentication_keys=[
-                        dict(algorithm="md5", encryption=7, id=2, key="SomeSecurePassword"),
+                        dict(
+                            algorithm="md5",
+                            encryption=7,
+                            id=2,
+                            key="SomeSecurePassword",
+                        ),
                     ],
                     broadcast_delay=22,
                     logging=True,
@@ -336,8 +370,12 @@ class TestIosNtpGlobalModule(TestIosModule):
                     panic_update=True,
                     peers=[
                         dict(peer="172.16.1.10", version=2),
-                        dict(key=2, minpoll=5, peer="172.16.1.11", prefer=True, version=2),
-                        dict(peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True),
+                        dict(
+                            key=2, minpoll=5, peer="172.16.1.11", prefer=True, version=2
+                        ),
+                        dict(
+                            peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True
+                        ),
                         dict(peer="checkPeerDomainIpv6.com", use_ipv6=True),
                         dict(peer="testPeerDomainIpv6.com", prefer=True, use_ipv6=True),
                     ],
@@ -347,7 +385,10 @@ class TestIosNtpGlobalModule(TestIosModule):
                         dict(server="checkServerDomainIpv6.com", use_ipv6=True),
                     ],
                     source="GigabitEthernet0/1",
-                    trusted_keys=[dict(range_start=21), dict(range_end=13, range_start=3)],
+                    trusted_keys=[
+                        dict(range_start=21),
+                        dict(range_end=13, range_start=3),
+                    ],
                     update_calendar=True,
                 ),
                 state="replaced",
@@ -415,7 +456,12 @@ class TestIosNtpGlobalModule(TestIosModule):
                     allow=dict(control=dict(rate_limit=4)),
                     authenticate=True,
                     authentication_keys=[
-                        dict(algorithm="md5", encryption=7, id=2, key="SomeSecurePassword"),
+                        dict(
+                            algorithm="md5",
+                            encryption=7,
+                            id=2,
+                            key="SomeSecurePassword",
+                        ),
                     ],
                     broadcast_delay=22,
                     logging=True,
@@ -426,15 +472,26 @@ class TestIosNtpGlobalModule(TestIosModule):
                     orphan=4,
                     panic_update=True,
                     peers=[
-                        dict(key_id=2, minpoll=5, peer="172.16.1.11", prefer=True, version=2),
-                        dict(peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True),
+                        dict(
+                            key_id=2,
+                            minpoll=5,
+                            peer="172.16.1.11",
+                            prefer=True,
+                            version=2,
+                        ),
+                        dict(
+                            peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True
+                        ),
                     ],
                     servers=[
                         dict(server="172.16.1.13", source="GigabitEthernet0/1"),
                         dict(server="checkServerDomainIpv6.com", use_ipv6=True),
                     ],
                     source="Loopback888",
-                    trusted_keys=[dict(range_start=21), dict(range_end=13, range_start=3)],
+                    trusted_keys=[
+                        dict(range_start=21),
+                        dict(range_end=13, range_start=3),
+                    ],
                     update_calendar=True,
                 ),
                 state="overridden",

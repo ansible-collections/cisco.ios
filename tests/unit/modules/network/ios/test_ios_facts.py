@@ -19,11 +19,11 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-
+from unittest.mock import patch
 from ansible.module_utils.six import assertCountEqual
 
 from ansible_collections.cisco.ios.plugins.modules import ios_facts
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
+
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule, load_fixture
@@ -80,8 +80,12 @@ class TestIosFactsModule(TestIosModule):
         set_module_args(dict(gather_subset="default"))
         result = self.execute_module()
         self.assertEqual(result["ansible_facts"]["ansible_net_model"], "WS-C3750-24TS")
-        self.assertEqual(result["ansible_facts"]["ansible_net_serialnum"], "CAT0726R0ZU")
-        self.assertEqual(result["ansible_facts"]["ansible_net_operatingmode"], "autonomous")
+        self.assertEqual(
+            result["ansible_facts"]["ansible_net_serialnum"], "CAT0726R0ZU"
+        )
+        self.assertEqual(
+            result["ansible_facts"]["ansible_net_operatingmode"], "autonomous"
+        )
         self.assertEqual(
             result["ansible_facts"]["ansible_net_stacked_models"],
             ["WS-C3750-24TS-E", "WS-C3750-24TS-E", "WS-C3750G-12S-E"],
@@ -95,30 +99,38 @@ class TestIosFactsModule(TestIosModule):
         set_module_args(dict(gather_subset="interfaces"))
         result = self.execute_module()
         self.assertEqual(
-            result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet0/0/0.1012"][
-                "macaddress"
-            ],
+            result["ansible_facts"]["ansible_net_interfaces"][
+                "GigabitEthernet0/0/0.1012"
+            ]["macaddress"],
             "5e00.0003.0000",
         )
         self.assertEqual(
-            result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet0/0"]["macaddress"],
+            result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet0/0"][
+                "macaddress"
+            ],
             "5e00.0008.0000",
         )
         self.assertEqual(
-            result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet1"]["macaddress"],
+            result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet1"][
+                "macaddress"
+            ],
             "5e00.0006.0000",
         )
         self.assertIsNone(
-            result["ansible_facts"]["ansible_net_interfaces"]["Tunnel1110"]["macaddress"],
+            result["ansible_facts"]["ansible_net_interfaces"]["Tunnel1110"][
+                "macaddress"
+            ],
         )
         self.assertEqual(
-            result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet1"]["lineprotocol"],
+            result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet1"][
+                "lineprotocol"
+            ],
             "up",
         )
         self.assertEqual(
-            result["ansible_facts"]["ansible_net_interfaces"]["TenGigabitEthernet2/5/5"][
-                "lineprotocol"
-            ],
+            result["ansible_facts"]["ansible_net_interfaces"][
+                "TenGigabitEthernet2/5/5"
+            ]["lineprotocol"],
             "down",
         )
 

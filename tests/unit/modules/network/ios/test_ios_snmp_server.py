@@ -7,11 +7,10 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-
+from unittest.mock import patch
 from textwrap import dedent
 
 from ansible_collections.cisco.ios.plugins.modules import ios_snmp_server
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
@@ -26,7 +25,9 @@ class TestIosSnmpServerModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+        self.get_resource_connection_facts = (
+            self.mock_get_resource_connection_facts.start()
+        )
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.snmp_server.snmp_server."
@@ -168,10 +169,19 @@ class TestIosSnmpServerModule(TestIosModule):
                 "context": ["contextWord2", "contextWord1"],
                 "engine_id": [
                     {"id": "AB0C5342FA0A", "local": True},
-                    {"id": "AB0C5342FAAA", "remote": {"host": "172.16.0.1", "udp_port": 22}},
-                    {"id": "AB0C5342FAAB", "remote": {"host": "172.16.0.2", "udp_port": 23}},
+                    {
+                        "id": "AB0C5342FAAA",
+                        "remote": {"host": "172.16.0.1", "udp_port": 22},
+                    },
+                    {
+                        "id": "AB0C5342FAAB",
+                        "remote": {"host": "172.16.0.2", "udp_port": 23},
+                    },
                 ],
-                "file_transfer": {"access_group": "testAcl", "protocol": ["ftp", "rcp"]},
+                "file_transfer": {
+                    "access_group": "testAcl",
+                    "protocol": ["ftp", "rcp"],
+                },
                 "groups": [
                     {"group": "group0", "version": "v3", "version_option": "auth"},
                     {
@@ -182,7 +192,11 @@ class TestIosSnmpServerModule(TestIosModule):
                         "version": "v1",
                     },
                     {"group": "group2", "version": "v3", "version_option": "priv"},
-                    {"group": "replaceUser", "version": "v3", "version_option": "noauth"},
+                    {
+                        "group": "replaceUser",
+                        "version": "v3",
+                        "version_option": "noauth",
+                    },
                     {"acl_v6": "ipv6acl", "group": "group3", "version": "v1"},
                     {"acl_v4": "2", "group": "group4", "version": "v1"},
                 ],
@@ -221,8 +235,16 @@ class TestIosSnmpServerModule(TestIosModule):
                         "traps": ["msdp"],
                         "version": "2c",
                     },
-                    {"community_string": "check", "host": "172.16.2.99", "traps": ["slb"]},
-                    {"community_string": "checktrap", "host": "172.16.2.99", "traps": ["isis"]},
+                    {
+                        "community_string": "check",
+                        "host": "172.16.2.99",
+                        "traps": ["slb"],
+                    },
+                    {
+                        "community_string": "checktrap",
+                        "host": "172.16.2.99",
+                        "traps": ["isis"],
+                    },
                 ],
                 "inform": {"pending": 2},
                 "ip": {"dscp": 2},
@@ -304,7 +326,12 @@ class TestIosSnmpServerModule(TestIosModule):
                     },
                     "ipmulticast": True,
                     "ipsec": {
-                        "cryptomap": {"add": True, "attach": True, "delete": True, "detach": True},
+                        "cryptomap": {
+                            "add": True,
+                            "attach": True,
+                            "delete": True,
+                            "detach": True,
+                        },
                         "too_many_sas": True,
                         "tunnel": {"start": True, "stop": True},
                     },
@@ -357,7 +384,12 @@ class TestIosSnmpServerModule(TestIosModule):
                     },
                 },
                 "users": [
-                    {"acl_v4": "24", "group": "newfamily", "username": "newuser", "version": "v1"},
+                    {
+                        "acl_v4": "24",
+                        "group": "newfamily",
+                        "username": "newuser",
+                        "version": "v1",
+                    },
                     {
                         "acl_v4": "ipv4acl",
                         "acl_v6": "ipv6acl",
@@ -365,7 +397,11 @@ class TestIosSnmpServerModule(TestIosModule):
                         "username": "paul",
                         "version": "v3",
                     },
-                    {"group": "replaceUser", "username": "replaceUser", "version": "v3"},
+                    {
+                        "group": "replaceUser",
+                        "username": "replaceUser",
+                        "version": "v3",
+                    },
                 ],
             },
         }
@@ -441,9 +477,15 @@ class TestIosSnmpServerModule(TestIosModule):
                         "id": "AB0C5342FAAA",
                         "remote": {"host": "172.16.0.1", "udp_port": 22, "vrf": "mgmt"},
                     },
-                    {"id": "AB0C5342FAAB", "remote": {"host": "172.16.0.2", "udp_port": 23}},
+                    {
+                        "id": "AB0C5342FAAB",
+                        "remote": {"host": "172.16.0.2", "udp_port": 23},
+                    },
                 ],
-                "file_transfer": {"access_group": "testAcl", "protocol": ["ftp", "rcp"]},
+                "file_transfer": {
+                    "access_group": "testAcl",
+                    "protocol": ["ftp", "rcp"],
+                },
                 "groups": [
                     {"group": "group0", "version": "v3", "version_option": "auth"},
                     {
@@ -454,7 +496,11 @@ class TestIosSnmpServerModule(TestIosModule):
                         "version": "v1",
                     },
                     {"group": "group2", "version": "v3", "version_option": "priv"},
-                    {"group": "replaceUser", "version": "v3", "version_option": "noauth"},
+                    {
+                        "group": "replaceUser",
+                        "version": "v3",
+                        "version_option": "noauth",
+                    },
                     {"acl_v6": "ipv6acl", "group": "group3", "version": "v1"},
                     {"acl_v4": "2", "group": "group4", "version": "v1"},
                 ],
@@ -493,8 +539,16 @@ class TestIosSnmpServerModule(TestIosModule):
                         "traps": ["msdp"],
                         "version": "2c",
                     },
-                    {"community_string": "check", "host": "172.16.2.99", "traps": ["slb"]},
-                    {"community_string": "checktrap", "host": "172.16.2.99", "traps": ["isis"]},
+                    {
+                        "community_string": "check",
+                        "host": "172.16.2.99",
+                        "traps": ["slb"],
+                    },
+                    {
+                        "community_string": "checktrap",
+                        "host": "172.16.2.99",
+                        "traps": ["isis"],
+                    },
                 ],
                 "inform": {"pending": 2},
                 "ip": {"dscp": 2},
@@ -586,7 +640,12 @@ class TestIosSnmpServerModule(TestIosModule):
                     },
                     "ipmulticast": True,
                     "ipsec": {
-                        "cryptomap": {"add": True, "attach": True, "delete": True, "detach": True},
+                        "cryptomap": {
+                            "add": True,
+                            "attach": True,
+                            "delete": True,
+                            "detach": True,
+                        },
                         "too_many_sas": True,
                         "tunnel": {"start": True, "stop": True},
                     },
@@ -639,15 +698,29 @@ class TestIosSnmpServerModule(TestIosModule):
                     },
                 },
                 "users": [
-                    {"acl_v4": "24", "group": "newfamily", "username": "newuser", "version": "v1"},
+                    {
+                        "acl_v4": "24",
+                        "group": "newfamily",
+                        "username": "newuser",
+                        "version": "v1",
+                    },
                     {
                         "acl_v6": "ipv6only",
                         "group": "familypaul",
                         "username": "paul",
                         "version": "v3",
                     },
-                    {"group": "replaceUser", "username": "replaceUser", "version": "v3"},
-                    {"acl_v4": "27", "group": "mfamily", "username": "flow", "version": "v3"},
+                    {
+                        "group": "replaceUser",
+                        "username": "replaceUser",
+                        "version": "v3",
+                    },
+                    {
+                        "acl_v4": "27",
+                        "group": "mfamily",
+                        "username": "flow",
+                        "version": "v3",
+                    },
                 ],
             },
         }
@@ -1122,10 +1195,19 @@ class TestIosSnmpServerModule(TestIosModule):
                 "context": ["contextWord2", "contextWord1"],
                 "engine_id": [
                     {"id": "AB0C5342FA0A", "local": True},
-                    {"id": "AB0C5342FAAA", "remote": {"host": "172.16.0.1", "udp_port": 22}},
-                    {"id": "AB0C5342FAAB", "remote": {"host": "172.16.0.2", "udp_port": 23}},
+                    {
+                        "id": "AB0C5342FAAA",
+                        "remote": {"host": "172.16.0.1", "udp_port": 22},
+                    },
+                    {
+                        "id": "AB0C5342FAAB",
+                        "remote": {"host": "172.16.0.2", "udp_port": 23},
+                    },
                 ],
-                "file_transfer": {"access_group": "testAcl", "protocol": ["ftp", "rcp"]},
+                "file_transfer": {
+                    "access_group": "testAcl",
+                    "protocol": ["ftp", "rcp"],
+                },
                 "groups": [
                     {"group": "group0", "version": "v3", "version_option": "auth"},
                     {
@@ -1136,7 +1218,11 @@ class TestIosSnmpServerModule(TestIosModule):
                         "version": "v1",
                     },
                     {"group": "group2", "version": "v3", "version_option": "priv"},
-                    {"group": "replaceUser", "version": "v3", "version_option": "noauth"},
+                    {
+                        "group": "replaceUser",
+                        "version": "v3",
+                        "version_option": "noauth",
+                    },
                 ],
                 "hosts": [
                     {
@@ -1173,8 +1259,16 @@ class TestIosSnmpServerModule(TestIosModule):
                         "traps": ["msdp"],
                         "version": "2c",
                     },
-                    {"community_string": "check", "host": "172.16.2.99", "traps": ["slb"]},
-                    {"community_string": "checktrap", "host": "172.16.2.99", "traps": ["isis"]},
+                    {
+                        "community_string": "check",
+                        "host": "172.16.2.99",
+                        "traps": ["slb"],
+                    },
+                    {
+                        "community_string": "checktrap",
+                        "host": "172.16.2.99",
+                        "traps": ["isis"],
+                    },
                 ],
                 "inform": {"pending": 2},
                 "ip": {"dscp": 2},
@@ -1256,7 +1350,12 @@ class TestIosSnmpServerModule(TestIosModule):
                     },
                     "ipmulticast": True,
                     "ipsec": {
-                        "cryptomap": {"add": True, "attach": True, "delete": True, "detach": True},
+                        "cryptomap": {
+                            "add": True,
+                            "attach": True,
+                            "delete": True,
+                            "detach": True,
+                        },
                         "too_many_sas": True,
                         "tunnel": {"start": True, "stop": True},
                     },
@@ -1309,18 +1408,35 @@ class TestIosSnmpServerModule(TestIosModule):
                     },
                 },
                 "users": [
-                    {"acl_v4": "24", "group": "newfamily", "username": "newuser", "version": "v1"},
+                    {
+                        "acl_v4": "24",
+                        "group": "newfamily",
+                        "username": "newuser",
+                        "version": "v1",
+                    },
                     {
                         "acl_v6": "ipv6acl",
                         "group": "familypaul",
                         "username": "paul",
                         "version": "v3",
                     },
-                    {"group": "replaceUser", "username": "replaceUser", "version": "v3"},
+                    {
+                        "group": "replaceUser",
+                        "username": "replaceUser",
+                        "version": "v3",
+                    },
                 ],
                 "views": [
-                    {"name": "no-write.test", "family_name": "testiso", "excluded": True},
-                    {"name": "newView", "family_name": "TestFamilyName", "included": True},
+                    {
+                        "name": "no-write.test",
+                        "family_name": "testiso",
+                        "excluded": True,
+                    },
+                    {
+                        "name": "newView",
+                        "family_name": "TestFamilyName",
+                        "included": True,
+                    },
                 ],
             },
         }
@@ -1393,7 +1509,11 @@ class TestIosSnmpServerModule(TestIosModule):
                         "traps": ["msdp"],
                         "version": "2c",
                     },
-                    {"community_string": "check", "host": "172.16.2.99", "traps": ["slb"]},
+                    {
+                        "community_string": "check",
+                        "host": "172.16.2.99",
+                        "traps": ["slb"],
+                    },
                 ],
             },
         }
@@ -1445,10 +1565,18 @@ class TestIosSnmpServerModule(TestIosModule):
         parsed = {
             "engine_id": [
                 {"id": "AB0C5342FA0A", "local": True},
-                {"id": "AB0C5342FAAB", "remote": {"host": "172.16.0.2", "udp_port": 23}},
+                {
+                    "id": "AB0C5342FAAB",
+                    "remote": {"host": "172.16.0.2", "udp_port": 23},
+                },
             ],
             "users": [
-                {"username": "paul", "group": "familypaul", "version": "v3", "acl_v6": "ipv6acl"},
+                {
+                    "username": "paul",
+                    "group": "familypaul",
+                    "version": "v3",
+                    "acl_v6": "ipv6acl",
+                },
             ],
             "traps": {
                 "ospf": {
@@ -1525,8 +1653,16 @@ class TestIosSnmpServerModule(TestIosModule):
                     "traps": ["msdp", "stun"],
                     "version": "2c",
                 },
-                {"host": "172.16.2.99", "community_string": "check", "traps": ["slb", "pki"]},
-                {"host": "172.16.2.99", "community_string": "checktrap", "traps": ["isis", "hsrp"]},
+                {
+                    "host": "172.16.2.99",
+                    "community_string": "check",
+                    "traps": ["slb", "pki"],
+                },
+                {
+                    "host": "172.16.2.99",
+                    "community_string": "checktrap",
+                    "traps": ["isis", "hsrp"],
+                },
             ],
             "groups": [
                 {
@@ -1614,7 +1750,11 @@ class TestIosSnmpServerModule(TestIosModule):
                     "version": "3",
                     "version_option": "noauth",
                 },
-                {"host": "172.16.2.99", "community_string": "checktrap", "traps": ["isis", "hsrp"]},
+                {
+                    "host": "172.16.2.99",
+                    "community_string": "checktrap",
+                    "traps": ["isis", "hsrp"],
+                },
             ],
             "users": [
                 {
@@ -1663,7 +1803,10 @@ class TestIosSnmpServerModule(TestIosModule):
                 "config": {
                     "engine_id": [
                         {"id": "AB0C5342FA0A", "local": True},
-                        {"id": "AB0C5342FAAB", "remote": {"host": "172.16.0.2", "udp_port": 23}},
+                        {
+                            "id": "AB0C5342FAAB",
+                            "remote": {"host": "172.16.0.2", "udp_port": 23},
+                        },
                     ],
                     "views": [
                         {"family_name": "iso", "name": "ro"},
@@ -1759,8 +1902,16 @@ class TestIosSnmpServerModule(TestIosModule):
                             "traps": ["msdp"],
                             "version": "2c",
                         },
-                        {"host": "172.16.2.99", "community_string": "check", "traps": ["slb"]},
-                        {"host": "172.16.2.99", "community_string": "checktrap", "traps": ["isis"]},
+                        {
+                            "host": "172.16.2.99",
+                            "community_string": "check",
+                            "traps": ["slb"],
+                        },
+                        {
+                            "host": "172.16.2.99",
+                            "community_string": "checktrap",
+                            "traps": ["isis"],
+                        },
                     ],
                 },
                 "state": "rendered",
@@ -1808,7 +1959,10 @@ class TestIosSnmpServerModule(TestIosModule):
                             "username": "paul",
                             "group": "familypaul",
                             "version": "v3",
-                            "authentication": {"algorithm": "md5", "password": "somepass"},
+                            "authentication": {
+                                "algorithm": "md5",
+                                "password": "somepass",
+                            },
                             "encryption": {
                                 "priv": "aes",
                                 "priv_option": 128,
@@ -1820,7 +1974,9 @@ class TestIosSnmpServerModule(TestIosModule):
                 "state": "rendered",
             },
         )
-        rendered = ["snmp-server user paul familypaul v3 auth md5 somepass priv aes 128 somepass"]
+        rendered = [
+            "snmp-server user paul familypaul v3 auth md5 somepass priv aes 128 somepass"
+        ]
         result = self.execute_module(changed=False)
         self.maxDiff = None
         self.assertEqual(sorted(result["rendered"]), sorted(rendered))

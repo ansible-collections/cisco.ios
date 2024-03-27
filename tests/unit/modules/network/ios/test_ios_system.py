@@ -21,9 +21,8 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-
+from unittest.mock import patch
 from ansible_collections.cisco.ios.plugins.modules import ios_system
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule, load_fixture
@@ -70,7 +69,12 @@ class TestIosSystemModule(TestIosModule):
 
     def test_ios_system_domain_name_complex(self):
         set_module_args(
-            dict(domain_name=[{"name": "test.com", "vrf": "test"}, {"name": "eng.example.net"}]),
+            dict(
+                domain_name=[
+                    {"name": "test.com", "vrf": "test"},
+                    {"name": "eng.example.net"},
+                ]
+            ),
         )
         commands = [
             "ip domain name vrf test test.com",
@@ -107,7 +111,10 @@ class TestIosSystemModule(TestIosModule):
     def test_ios_system_name_servers(self):
         name_servers = ["8.8.8.8", "8.8.4.4"]
         set_module_args(dict(name_servers=name_servers))
-        commands = ["no ip name-server vrf management 8.8.8.8", "ip name-server 8.8.4.4"]
+        commands = [
+            "no ip name-server vrf management 8.8.8.8",
+            "ip name-server 8.8.4.4",
+        ]
         self.execute_module(changed=True, commands=commands, sort=False)
 
     def rest_ios_system_name_servers_complex(self):

@@ -7,11 +7,10 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-
+from unittest.mock import patch
 from textwrap import dedent
 
 from ansible_collections.cisco.ios.plugins.modules import ios_logging_global
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
@@ -27,7 +26,9 @@ class TestIosLoggingGlobalModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+        self.get_resource_connection_facts = (
+            self.mock_get_resource_connection_facts.start()
+        )
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.logging_global.logging_global."
@@ -120,7 +121,10 @@ class TestIosLoggingGlobalModule(TestIosModule):
                 reload=dict(severity="alerts"),
                 server_arp=True,
                 snmp_trap=["errors"],
-                source_interface=[dict(interface="GBit1/0"), dict(interface="CTunnel2")],
+                source_interface=[
+                    dict(interface="GBit1/0"),
+                    dict(interface="CTunnel2"),
+                ],
                 trap="errors",
                 userinfo=True,
             ),
@@ -250,7 +254,10 @@ class TestIosLoggingGlobalModule(TestIosModule):
                 ],
                 message_counter=["log", "debug"],
                 snmp_trap=["errors"],
-                source_interface=[dict(interface="GBit1/0"), dict(interface="CTunnel2")],
+                source_interface=[
+                    dict(interface="GBit1/0"),
+                    dict(interface="CTunnel2"),
+                ],
             ),
         )
         deleted = [
@@ -317,7 +324,10 @@ class TestIosLoggingGlobalModule(TestIosModule):
                 ],
                 message_counter=["log", "debug"],
                 snmp_trap=["errors"],
-                source_interface=[dict(interface="GBit1/0"), dict(interface="CTunnel2")],
+                source_interface=[
+                    dict(interface="GBit1/0"),
+                    dict(interface="CTunnel2"),
+                ],
             ),
         )
         overridden = [
@@ -402,9 +412,16 @@ class TestIosLoggingGlobalModule(TestIosModule):
                         ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7304",
                         discriminator="msglog01 severity includes 5",
                     ),
-                    dict(ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7314", sequence_num_session=True),
+                    dict(
+                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7314",
+                        sequence_num_session=True,
+                    ),
                     dict(ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7324", vrf="vpn1"),
-                    dict(ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7334", stream=10, filtered=True),
+                    dict(
+                        ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7334",
+                        stream=10,
+                        filtered=True,
+                    ),
                     dict(
                         ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7344",
                         session_id=dict(tag="ipv4"),
@@ -416,7 +433,9 @@ class TestIosLoggingGlobalModule(TestIosModule):
                     dict(
                         ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7374",
                         vrf="Apn2",
-                        transport=dict(udp=dict(discriminator="msglog01 severity includes 5")),
+                        transport=dict(
+                            udp=dict(discriminator="msglog01 severity includes 5")
+                        ),
                     ),
                     dict(
                         ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7384",
@@ -509,7 +528,13 @@ class TestIosLoggingGlobalModule(TestIosModule):
         )
         set_module_args(dict(state="gathered"))
         gathered = dict(
-            hosts=[dict(hostname="172.16.1.1", vrf="vpn-1", transport=dict(tcp=dict(audit=True)))],
+            hosts=[
+                dict(
+                    hostname="172.16.1.1",
+                    vrf="vpn-1",
+                    transport=dict(tcp=dict(audit=True)),
+                )
+            ],
         )
         result = self.execute_module(changed=False)
 
@@ -617,9 +642,14 @@ class TestIosLoggingGlobalModule(TestIosModule):
             """,
         )
         playbook = dict(
-            config=dict(hosts=[dict(hostname="172.16.2.15", session_id=dict(text="Test"))]),
+            config=dict(
+                hosts=[dict(hostname="172.16.2.15", session_id=dict(text="Test"))]
+            ),
         )
-        replaced = ["no logging host 172.16.1.1", "logging host 172.16.2.15 session-id string Test"]
+        replaced = [
+            "no logging host 172.16.1.1",
+            "logging host 172.16.2.15 session-id string Test",
+        ]
         playbook["state"] = "replaced"
         set_module_args(playbook)
         result = self.execute_module(changed=True)
@@ -651,8 +681,14 @@ class TestIosLoggingGlobalModule(TestIosModule):
                     {"hostname": "172.16.0.4", "vrf": "Mgmt-intf"},
                 ],
                 "origin_id": {"tag": "hostname"},
-                "rate_limit": {"console": True, "except_severity": "errors", "size": 10},
-                "source_interface": [{"interface": "GigabitEthernet0", "vrf": "Mgmt-intf"}],
+                "rate_limit": {
+                    "console": True,
+                    "except_severity": "errors",
+                    "size": 10,
+                },
+                "source_interface": [
+                    {"interface": "GigabitEthernet0", "vrf": "Mgmt-intf"}
+                ],
                 "trap": "informational",
             },
         }

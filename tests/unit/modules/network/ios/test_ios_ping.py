@@ -7,11 +7,10 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-
+from unittest.mock import patch
 from textwrap import dedent
 
 from ansible_collections.cisco.ios.plugins.modules import ios_ping
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
@@ -61,7 +60,9 @@ class TestIosPingModule(TestIosModule):
             Success rate is 100 percent (2/2), round-trip min/avg/max = 25/25/25 ms
             """,
         )
-        set_module_args(dict(count=2, dest="2001:db8:ffff:ffff:ffff:ffff:ffff:ffff", afi="ipv6"))
+        set_module_args(
+            dict(count=2, dest="2001:db8:ffff:ffff:ffff:ffff:ffff:ffff", afi="ipv6")
+        )
         result = self.execute_module()
         mock_res = {
             "commands": "ping ipv6 2001:db8:ffff:ffff:ffff:ffff:ffff:ffff repeat 2",

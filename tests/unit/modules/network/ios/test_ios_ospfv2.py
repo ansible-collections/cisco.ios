@@ -7,11 +7,10 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-
+from unittest.mock import patch
 from textwrap import dedent
 
 from ansible_collections.cisco.ios.plugins.modules import ios_ospfv2
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
@@ -27,7 +26,9 @@ class TestIosOspfV2Module(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+        self.get_resource_connection_facts = (
+            self.mock_get_resource_connection_facts.start()
+        )
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ospfv2.ospfv2."
@@ -76,13 +77,23 @@ class TestIosOspfV2Module(TestIosModule):
                                 ),
                             ),
                             network=[
-                                dict(address="198.51.100.0", wildcard_bits="0.0.0.255", area=5),
-                                dict(address="192.0.2.0", wildcard_bits="0.0.0.255", area=5),
+                                dict(
+                                    address="198.51.100.0",
+                                    wildcard_bits="0.0.0.255",
+                                    area=5,
+                                ),
+                                dict(
+                                    address="192.0.2.0",
+                                    wildcard_bits="0.0.0.255",
+                                    area=5,
+                                ),
                             ],
                             domain_id=dict(ip_address=dict(address="192.0.3.1")),
                             max_metric=dict(on_startup=dict(time=100), router_lsa=True),
                             passive_interfaces=dict(
-                                interface=dict(set_interface=False, name=["GigabitEthernet0/2"]),
+                                interface=dict(
+                                    set_interface=False, name=["GigabitEthernet0/2"]
+                                ),
                             ),
                             vrf="blue",
                         ),
@@ -284,11 +295,17 @@ class TestIosOspfV2Module(TestIosModule):
                             "areas": [
                                 {
                                     "area_id": "5",
-                                    "authentication": {"enable": True, "message_digest": True},
+                                    "authentication": {
+                                        "enable": True,
+                                        "message_digest": True,
+                                    },
                                 },
                                 {
                                     "area_id": "10",
-                                    "authentication": {"enable": True, "message_digest": True},
+                                    "authentication": {
+                                        "enable": True,
+                                        "message_digest": True,
+                                    },
                                     "capability": True,
                                     "default_cost": 10,
                                     "filter_list": [
@@ -470,7 +487,10 @@ class TestIosOspfV2Module(TestIosModule):
                             "passive_interfaces": {
                                 "default": True,
                                 "interface": {
-                                    "name": ["GigabitEthernet0/1", "GigabitEthernet0/2"],
+                                    "name": [
+                                        "GigabitEthernet0/1",
+                                        "GigabitEthernet0/2",
+                                    ],
                                     "set_interface": False,
                                 },
                             },
@@ -602,7 +622,10 @@ class TestIosOspfV2Module(TestIosModule):
             """,
         )
         set_module_args(
-            dict(config=dict(processes=[dict(process_id="200", vrf="blue")]), state="deleted"),
+            dict(
+                config=dict(processes=[dict(process_id="200", vrf="blue")]),
+                state="deleted",
+            ),
         )
         commands = ["no router ospf 200 vrf blue"]
         self.execute_module(changed=True, commands=commands)
@@ -633,7 +656,11 @@ class TestIosOspfV2Module(TestIosModule):
             "processes": [
                 {
                     "areas": [
-                        {"area_id": "5", "authentication": {"enable": True}, "capability": True},
+                        {
+                            "area_id": "5",
+                            "authentication": {"enable": True},
+                            "capability": True,
+                        },
                     ],
                     "process_id": 1,
                 },
@@ -678,11 +705,17 @@ class TestIosOspfV2Module(TestIosModule):
                             "areas": [
                                 {
                                     "area_id": "5",
-                                    "authentication": {"enable": True, "message_digest": True},
+                                    "authentication": {
+                                        "enable": True,
+                                        "message_digest": True,
+                                    },
                                 },
                                 {
                                     "area_id": "10",
-                                    "authentication": {"enable": True, "message_digest": True},
+                                    "authentication": {
+                                        "enable": True,
+                                        "message_digest": True,
+                                    },
                                     "capability": True,
                                     "default_cost": 10,
                                     "filter_list": [
@@ -863,7 +896,10 @@ class TestIosOspfV2Module(TestIosModule):
                             "passive_interfaces": {
                                 "default": True,
                                 "interface": {
-                                    "name": ["GigabitEthernet0/1", "GigabitEthernet0/2"],
+                                    "name": [
+                                        "GigabitEthernet0/1",
+                                        "GigabitEthernet0/2",
+                                    ],
                                     "set_interface": False,
                                 },
                             },
@@ -1031,13 +1067,19 @@ class TestIosOspfV2Module(TestIosModule):
                                     "lsa_group": 25,
                                 },
                             },
-                            "max_metric": {"router_lsa": True, "on_startup": {"time": 100}},
+                            "max_metric": {
+                                "router_lsa": True,
+                                "on_startup": {"time": 100},
+                            },
                             "areas": [{"area_id": "10", "capability": True}],
                             "passive_interfaces": {
                                 "default": True,
                                 "interface": {
                                     "set_interface": False,
-                                    "name": ["GigabitEthernet0/2", "GigabitEthernet0/1"],
+                                    "name": [
+                                        "GigabitEthernet0/2",
+                                        "GigabitEthernet0/1",
+                                    ],
                                 },
                             },
                         },
@@ -1143,13 +1185,19 @@ class TestIosOspfV2Module(TestIosModule):
                                 ],
                             },
                             "domain_id": {"ip_address": {"address": "192.0.3.1"}},
-                            "max_metric": {"router_lsa": True, "on_startup": {"time": 100}},
+                            "max_metric": {
+                                "router_lsa": True,
+                                "on_startup": {"time": 100},
+                            },
                             "areas": [{"area_id": "10", "capability": True}],
                             "passive_interfaces": {
                                 "default": True,
                                 "interface": {
                                     "set_interface": False,
-                                    "name": ["GigabitEthernet0/2", "GigabitEthernet0/1"],
+                                    "name": [
+                                        "GigabitEthernet0/2",
+                                        "GigabitEthernet0/1",
+                                    ],
                                 },
                             },
                         },
