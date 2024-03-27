@@ -322,9 +322,9 @@ class Acls(ResourceModule):
                                     for k, v in (
                                         ace.get("destination", {}).get("port_protocol", {}).items()
                                     ):
-                                        ace["destination"]["port_protocol"][
-                                            k
-                                        ] = self.port_protocl_no_to_protocol(v)
+                                        ace["destination"]["port_protocol"][k] = (
+                                            self.port_protocl_no_to_protocol(v)
+                                        )
                                 if acl.get("acl_type") == "standard":
                                     for ks in list(ace.keys()):
                                         if ks not in [
