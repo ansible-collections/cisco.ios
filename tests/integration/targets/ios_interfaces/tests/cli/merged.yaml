@@ -14,7 +14,7 @@
             enabled: true
 
           - name: GigabitEthernet3
-            description: 04j  # test to tackle - Object of type complex is not JSON serializable
+            description: 04j # test to tackle - Object of type complex is not JSON serializable
             enabled: false
         state: merged
 
