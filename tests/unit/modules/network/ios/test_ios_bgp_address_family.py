@@ -7,11 +7,10 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-from unittest.mock import patch
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_bgp_address_family
-
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
@@ -27,9 +26,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_address_family.bgp_address_family."
@@ -122,10 +119,10 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     neighbor_address="198.51.100.1",
                                     remote_as="65.11",
                                     route_maps=[
-                                        dict(name="test-route-out", out="true")
+                                        dict(name="test-route-out", out="true"),
                                     ],
                                     prefix_lists=[
-                                        dict(name="AS65100-PREFIX-OUT", out="true")
+                                        dict(name="AS65100-PREFIX-OUT", out="true"),
                                     ],
                                 ),
                             ],
@@ -135,7 +132,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             bgp=dict(aggregate_timer=20, dmzlink_bw=True, scan_time=10),
                             default_metric=10,
                             networks=[
-                                dict(address="192.0.1.1", route_map="test_route")
+                                dict(address="192.0.1.1", route_map="test_route"),
                             ],
                         ),
                     ],
@@ -336,13 +333,13 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     "neighbor_address": "198.51.100.1",
                                     "nexthop_self": {"all": True},
                                     "prefix_lists": [
-                                        {"name": "AS65100-PREFIX-OUT", "out": True}
+                                        {"name": "AS65100-PREFIX-OUT", "out": True},
                                     ],
                                     "remote_as": 10,
                                     "route_maps": [{"name": "test-out", "out": True}],
                                     "route_server_client": True,
                                     "slow_peer_options": {
-                                        "detection": {"threshold": 150}
+                                        "detection": {"threshold": 150},
                                     },
                                 },
                             ],
@@ -442,7 +439,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     activate=True,
                                     remote_as=200,
                                     route_maps=[
-                                        dict(name="test-replaced-route", out=True)
+                                        dict(name="test-replaced-route", out=True),
                                     ],
                                 ),
                             ],
@@ -552,14 +549,15 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                             cost_community=dict(
                                                 id=100,
                                                 poi=dict(
-                                                    igp_cost=True, transitive=True
+                                                    igp_cost=True,
+                                                    transitive=True,
                                                 ),
                                             ),
                                         ),
                                     ),
                                     nexthop_self=dict(all=True),
                                     prefix_lists=[
-                                        dict(name="AS65100-PREFIX-OUT", out="true")
+                                        dict(name="AS65100-PREFIX-OUT", out="true"),
                                     ],
                                     slow_peer=[dict(detection=dict(threshold=150))],
                                     remote_as=10,
@@ -731,14 +729,15 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                             cost_community=dict(
                                                 id=100,
                                                 poi=dict(
-                                                    igp_cost=True, transitive=True
+                                                    igp_cost=True,
+                                                    transitive=True,
                                                 ),
                                             ),
                                         ),
                                     ),
                                     nexthop_self=dict(all=True),
                                     prefix_lists=[
-                                        dict(name="AS65100-PREFIX-OUT", out="true")
+                                        dict(name="AS65100-PREFIX-OUT", out="true"),
                                     ],
                                     slow_peer=[dict(detection=dict(threshold=150))],
                                     remote_as=10,
@@ -963,7 +962,8 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                             cost_community=dict(
                                                 id=100,
                                                 poi=dict(
-                                                    igp_cost=True, transitive=True
+                                                    igp_cost=True,
+                                                    transitive=True,
                                                 ),
                                             ),
                                         ),
@@ -1209,7 +1209,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             },
                             "route_server_client": True,
                             "prefix_lists": [
-                                {"name": "AS65100-PREFIX-OUT", "out": True}
+                                {"name": "AS65100-PREFIX-OUT", "out": True},
                             ],
                             "slow_peer_options": {"detection": {"threshold": 150}},
                             "route_maps": [{"name": "test-out", "out": True}],

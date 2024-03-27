@@ -8,6 +8,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 from unittest.mock import patch
+
 from ansible_collections.cisco.ios.plugins.modules import ios_ospfv3
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
@@ -24,9 +25,7 @@ class TestIosOspfV3Module(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ospfv3.ospfv3."
@@ -60,7 +59,8 @@ class TestIosOspfV3Module(TestIosModule):
                                     unicast=True,
                                     vrf="blue",
                                     adjacency=dict(
-                                        min_adjacency=100, max_adjacency=100
+                                        min_adjacency=100,
+                                        max_adjacency=100,
                                     ),
                                 ),
                             ],
@@ -93,7 +93,7 @@ class TestIosOspfV3Module(TestIosModule):
                                 dict(
                                     area_id=10,
                                     nssa=dict(
-                                        default_information_originate=dict(metric=10)
+                                        default_information_originate=dict(metric=10),
                                     ),
                                 ),
                             ],
@@ -138,7 +138,8 @@ class TestIosOspfV3Module(TestIosModule):
                                     unicast=True,
                                     vrf="blue",
                                     adjacency=dict(
-                                        min_adjacency=100, max_adjacency=100
+                                        min_adjacency=100,
+                                        max_adjacency=100,
                                     ),
                                 ),
                             ],
@@ -172,7 +173,7 @@ class TestIosOspfV3Module(TestIosModule):
                                 dict(
                                     area_id=10,
                                     nssa=dict(
-                                        default_information_originate=dict(metric=10)
+                                        default_information_originate=dict(metric=10),
                                     ),
                                 ),
                             ],
@@ -215,7 +216,7 @@ class TestIosOspfV3Module(TestIosModule):
                                 dict(
                                     area_id=10,
                                     nssa=dict(
-                                        default_information_originate=dict(metric=10)
+                                        default_information_originate=dict(metric=10),
                                     ),
                                 ),
                             ],
@@ -268,7 +269,7 @@ class TestIosOspfV3Module(TestIosModule):
                                 dict(
                                     area_id=10,
                                     nssa=dict(
-                                        default_information_originate=dict(metric=10)
+                                        default_information_originate=dict(metric=10),
                                     ),
                                 ),
                             ],
@@ -301,7 +302,7 @@ class TestIosOspfV3Module(TestIosModule):
 
     def test_ios_ospfv3_deleted(self):
         set_module_args(
-            dict(config=dict(processes=[dict(process_id="1")]), state="deleted")
+            dict(config=dict(processes=[dict(process_id="1")]), state="deleted"),
         )
         commands = ["no router ospfv3 1"]
         self.execute_module(changed=True, commands=commands)

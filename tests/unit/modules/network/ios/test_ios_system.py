@@ -22,6 +22,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 from unittest.mock import patch
+
 from ansible_collections.cisco.ios.plugins.modules import ios_system
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
@@ -73,7 +74,7 @@ class TestIosSystemModule(TestIosModule):
                 domain_name=[
                     {"name": "test.com", "vrf": "test"},
                     {"name": "eng.example.net"},
-                ]
+                ],
             ),
         )
         commands = [

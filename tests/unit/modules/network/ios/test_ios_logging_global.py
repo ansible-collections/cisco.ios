@@ -7,8 +7,8 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-from unittest.mock import patch
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_logging_global
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
@@ -26,9 +26,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.logging_global.logging_global."
@@ -434,7 +432,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
                         ipv6="2001:0db8:85a3:0000:0000:8a2e:0370:7374",
                         vrf="Apn2",
                         transport=dict(
-                            udp=dict(discriminator="msglog01 severity includes 5")
+                            udp=dict(discriminator="msglog01 severity includes 5"),
                         ),
                     ),
                     dict(
@@ -533,7 +531,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
                     hostname="172.16.1.1",
                     vrf="vpn-1",
                     transport=dict(tcp=dict(audit=True)),
-                )
+                ),
             ],
         )
         result = self.execute_module(changed=False)
@@ -643,7 +641,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
         )
         playbook = dict(
             config=dict(
-                hosts=[dict(hostname="172.16.2.15", session_id=dict(text="Test"))]
+                hosts=[dict(hostname="172.16.2.15", session_id=dict(text="Test"))],
             ),
         )
         replaced = [
@@ -687,7 +685,7 @@ class TestIosLoggingGlobalModule(TestIosModule):
                     "size": 10,
                 },
                 "source_interface": [
-                    {"interface": "GigabitEthernet0", "vrf": "Mgmt-intf"}
+                    {"interface": "GigabitEthernet0", "vrf": "Mgmt-intf"},
                 ],
                 "trap": "informational",
             },

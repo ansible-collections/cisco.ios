@@ -22,6 +22,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 from unittest.mock import patch
+
 from ansible_collections.cisco.ios.plugins.modules import ios_vrf
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
@@ -186,7 +187,7 @@ class TestIosVrfModule(TestIosModule):
 
     def test_ios_vrf_route_import(self):
         set_module_args(
-            dict(name="test_6", rd="3:100", route_import=["3:100", "4:100"])
+            dict(name="test_6", rd="3:100", route_import=["3:100", "4:100"]),
         )
         commands = [
             "vrf definition test_6",
@@ -198,7 +199,7 @@ class TestIosVrfModule(TestIosModule):
 
     def test_ios_vrf_route_export(self):
         set_module_args(
-            dict(name="test_7", rd="4:100", route_export=["3:100", "4:100"])
+            dict(name="test_7", rd="4:100", route_export=["3:100", "4:100"]),
         )
         commands = [
             "vrf definition test_7",
@@ -297,7 +298,9 @@ class TestIosVrfModule(TestIosModule):
     def test_ios_vrf_route_both_ipv6(self):
         set_module_args(
             dict(
-                name="test_13", rd="2:100", route_both_ipv6=["2:100", "168.0.0.13:100"]
+                name="test_13",
+                rd="2:100",
+                route_both_ipv6=["2:100", "168.0.0.13:100"],
             ),
         )
         commands = [

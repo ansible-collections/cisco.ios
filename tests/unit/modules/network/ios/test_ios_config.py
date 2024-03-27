@@ -22,9 +22,9 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 from unittest.mock import MagicMock, patch
+
 from ansible_collections.cisco.ios.plugins.cliconf.ios import Cliconf
 from ansible_collections.cisco.ios.plugins.modules import ios_config
-
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule, load_fixture
@@ -124,7 +124,8 @@ class TestIosConfigModule(TestIosModule):
         set_module_args(dict(lines=lines))
         self.conn.get_diff = MagicMock(
             return_value=self.cliconf_obj.get_diff(
-                "\n".join(lines), self.running_config
+                "\n".join(lines),
+                self.running_config,
             ),
         )
         commands = ["hostname foo"]
@@ -140,7 +141,8 @@ class TestIosConfigModule(TestIosModule):
 
         self.conn.get_diff = MagicMock(
             return_value=self.cliconf_obj.get_diff(
-                candidate_config, self.running_config
+                candidate_config,
+                self.running_config,
             ),
         )
 
@@ -152,7 +154,8 @@ class TestIosConfigModule(TestIosModule):
         set_module_args(dict(lines=lines, before=["test1", "test2"]))
         self.conn.get_diff = MagicMock(
             return_value=self.cliconf_obj.get_diff(
-                "\n".join(lines), self.running_config
+                "\n".join(lines),
+                self.running_config,
             ),
         )
         commands = ["test1", "test2", "hostname foo"]
@@ -163,7 +166,8 @@ class TestIosConfigModule(TestIosModule):
         set_module_args(dict(lines=lines, after=["test1", "test2"]))
         self.conn.get_diff = MagicMock(
             return_value=self.cliconf_obj.get_diff(
-                "\n".join(lines), self.running_config
+                "\n".join(lines),
+                self.running_config,
             ),
         )
         commands = ["hostname foo", "test1", "test2"]
@@ -172,11 +176,12 @@ class TestIosConfigModule(TestIosModule):
     def test_ios_config_before_after_no_change(self):
         lines = ["hostname router"]
         set_module_args(
-            dict(lines=lines, before=["test1", "test2"], after=["test3", "test4"])
+            dict(lines=lines, before=["test1", "test2"], after=["test3", "test4"]),
         )
         self.conn.get_diff = MagicMock(
             return_value=self.cliconf_obj.get_diff(
-                "\n".join(lines), self.running_config
+                "\n".join(lines),
+                self.running_config,
             ),
         )
         self.execute_module()

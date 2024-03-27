@@ -7,8 +7,8 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-from unittest.mock import patch
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_ntp_global
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
@@ -26,9 +26,7 @@ class TestIosNtpGlobalModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ntp_global.ntp_global."
@@ -112,7 +110,9 @@ class TestIosNtpGlobalModule(TestIosModule):
                             version=2,
                         ),
                         dict(
-                            peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True
+                            peer="checkPeerDomainIpv4.com",
+                            prefer=True,
+                            use_ipv4=True,
                         ),
                         dict(peer="checkPeerDomainIpv6.com", use_ipv6=True),
                         dict(peer="testPeerDomainIpv6.com", prefer=True, use_ipv6=True),
@@ -173,10 +173,16 @@ class TestIosNtpGlobalModule(TestIosModule):
                     peers=[
                         dict(peer="172.16.1.10", version=2),
                         dict(
-                            key=2, minpoll=5, peer="172.16.1.11", prefer=True, version=2
+                            key=2,
+                            minpoll=5,
+                            peer="172.16.1.11",
+                            prefer=True,
+                            version=2,
                         ),
                         dict(
-                            peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True
+                            peer="checkPeerDomainIpv4.com",
+                            prefer=True,
+                            use_ipv4=True,
                         ),
                         dict(peer="checkPeerDomainIpv6.com", use_ipv6=True),
                         dict(peer="testPeerDomainIpv6.com", prefer=True, use_ipv6=True),
@@ -371,10 +377,16 @@ class TestIosNtpGlobalModule(TestIosModule):
                     peers=[
                         dict(peer="172.16.1.10", version=2),
                         dict(
-                            key=2, minpoll=5, peer="172.16.1.11", prefer=True, version=2
+                            key=2,
+                            minpoll=5,
+                            peer="172.16.1.11",
+                            prefer=True,
+                            version=2,
                         ),
                         dict(
-                            peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True
+                            peer="checkPeerDomainIpv4.com",
+                            prefer=True,
+                            use_ipv4=True,
                         ),
                         dict(peer="checkPeerDomainIpv6.com", use_ipv6=True),
                         dict(peer="testPeerDomainIpv6.com", prefer=True, use_ipv6=True),
@@ -480,7 +492,9 @@ class TestIosNtpGlobalModule(TestIosModule):
                             version=2,
                         ),
                         dict(
-                            peer="checkPeerDomainIpv4.com", prefer=True, use_ipv4=True
+                            peer="checkPeerDomainIpv4.com",
+                            prefer=True,
+                            use_ipv4=True,
                         ),
                     ],
                     servers=[

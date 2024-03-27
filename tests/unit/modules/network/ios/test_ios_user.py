@@ -21,6 +21,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 from unittest.mock import patch
+
 from ansible_collections.cisco.ios.plugins.modules import ios_user
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
@@ -117,7 +118,7 @@ class TestIosUserModule(TestIosModule):
 
     def test_ios_user_update_password_changed(self):
         set_module_args(
-            dict(name="test", configured_password="test", update_password="on_create")
+            dict(name="test", configured_password="test", update_password="on_create"),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["username test secret test"])
@@ -125,14 +126,16 @@ class TestIosUserModule(TestIosModule):
     def test_ios_user_update_password_on_create_ok(self):
         set_module_args(
             dict(
-                name="ansible", configured_password="test", update_password="on_create"
+                name="ansible",
+                configured_password="test",
+                update_password="on_create",
             ),
         )
         self.execute_module()
 
     def test_ios_user_update_password_always(self):
         set_module_args(
-            dict(name="ansible", configured_password="test", update_password="always")
+            dict(name="ansible", configured_password="test", update_password="always"),
         )
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["username ansible secret test"])
@@ -163,9 +166,7 @@ class TestIosUserModule(TestIosModule):
         self.assertEqual(result["commands"], commands)
 
     def test_add_hashed_password(self):
-        hashed_password_val = (
-            "replacementforhashwhichissupposedtogohereonlyfortestingpurposes"
-        )
+        hashed_password_val = "replacementforhashwhichissupposedtogohereonlyfortestingpurposes"
         set_module_args(
             dict(
                 name="ansible",
@@ -177,7 +178,8 @@ class TestIosUserModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
-            result["commands"], [f"username ansible secret 9 {hashed_password_val}"]
+            result["commands"],
+            [f"username ansible secret 9 {hashed_password_val}"],
         )
 
     def test_add_hpassword_with_type(self):

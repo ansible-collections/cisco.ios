@@ -7,8 +7,8 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-from unittest.mock import patch
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_static_routes
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
@@ -26,9 +26,7 @@ class TestIosStaticRoutesModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static_routes.static_routes."
@@ -1736,7 +1734,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                     dict(
                         vrf="testVrf2",
                         address_families=[
-                            dict(afi="ipv4", routes=[dict(dest="192.0.2.0/24")])
+                            dict(afi="ipv4", routes=[dict(dest="192.0.2.0/24")]),
                         ],
                     ),
                     dict(
@@ -2152,7 +2150,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                             {
                                 "dest": "10.0.0.0/8",
                                 "next_hops": [
-                                    {"interface": "Null0", "permanent": True}
+                                    {"interface": "Null0", "permanent": True},
                                 ],
                             },
                         ],

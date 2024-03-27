@@ -8,6 +8,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 from unittest.mock import patch
+
 from ansible_collections.cisco.ios.plugins.modules import ios_route_maps
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
@@ -24,9 +25,7 @@ class TestIosRouteMapsModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = (
-            self.mock_get_resource_connection_facts.start()
-        )
+        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.route_maps.route_maps."
@@ -60,7 +59,8 @@ class TestIosRouteMapsModule(TestIosModule):
                                     as_path=dict(acls=[100, 120]),
                                     clns=dict(address="test_osi"),
                                     community=dict(
-                                        exact_match=True, name=["new_merge"]
+                                        exact_match=True,
+                                        name=["new_merge"],
                                     ),
                                     ip=dict(address=dict(acls=[10, 100])),
                                     length=dict(maximum=50000, minimum=5000),
@@ -256,7 +256,8 @@ class TestIosRouteMapsModule(TestIosModule):
                                     as_path=dict(acls=[100, 120]),
                                     clns=dict(address="test_osi"),
                                     community=dict(
-                                        exact_match=True, name=["new_replace"]
+                                        exact_match=True,
+                                        name=["new_replace"],
                                     ),
                                     ip=dict(address=dict(acls=[10, 100])),
                                     length=dict(maximum=50000, minimum=5000),
@@ -466,7 +467,8 @@ class TestIosRouteMapsModule(TestIosModule):
                                     as_path=dict(acls=[100, 120]),
                                     clns=dict(address="test_osi"),
                                     community=dict(
-                                        exact_match=True, name=["new_override"]
+                                        exact_match=True,
+                                        name=["new_override"],
                                     ),
                                     ip=dict(address=dict(acls=[10, 100])),
                                     length=dict(maximum=50000, minimum=5000),
@@ -722,7 +724,7 @@ class TestIosRouteMapsModule(TestIosModule):
                                 set=dict(
                                     as_path=dict(
                                         prepend=dict(
-                                            as_number=["65512", 65522, "65532", 65543]
+                                            as_number=["65512", 65522, "65532", 65543],
                                         ),
                                     ),
                                 ),
