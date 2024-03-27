@@ -30,11 +30,10 @@ try:
     from unittest.mock import MagicMock
 except ImportError:
     from mock import MagicMock
-
+from unittest import TestCase
 from ansible.module_utils._text import to_bytes
 
 from ansible_collections.cisco.ios.plugins.cliconf import ios
-from ansible_collections.cisco.ios.tests.unit.compat import unittest
 
 
 b_FIXTURE_DIR = b"%s/fixtures/ios" % (
@@ -49,7 +48,9 @@ def _connection_side_effect(*args, **kwargs):
         else:
             value = kwargs.get("command")
 
-        fixture_path = path.abspath(b"%s/%s" % (b_FIXTURE_DIR, b"_".join(value.split(b" "))))
+        fixture_path = path.abspath(
+            b"%s/%s" % (b_FIXTURE_DIR, b"_".join(value.split(b" ")))
+        )
         with open(fixture_path, "rb") as file_desc:
             return file_desc.read()
     except (OSError, IOError):
@@ -63,7 +64,7 @@ def _connection_side_effect(*args, **kwargs):
         return "Nope"
 
 
-class TestPluginCLIConfIOS(unittest.TestCase):
+class TestPluginCLIConfIOS(TestCase):
     """Test class for IOS CLI Conf Methods"""
 
     def setUp(self):
