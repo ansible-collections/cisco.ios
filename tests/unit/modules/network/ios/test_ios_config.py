@@ -21,10 +21,10 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
+from unittest.mock import MagicMock, patch
 
 from ansible_collections.cisco.ios.plugins.cliconf.ios import Cliconf
 from ansible_collections.cisco.ios.plugins.modules import ios_config
-from ansible_collections.cisco.ios.tests.unit.compat.mock import MagicMock, patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule, load_fixture
@@ -123,7 +123,10 @@ class TestIosConfigModule(TestIosModule):
         lines = ["hostname foo"]
         set_module_args(dict(lines=lines))
         self.conn.get_diff = MagicMock(
-            return_value=self.cliconf_obj.get_diff("\n".join(lines), self.running_config),
+            return_value=self.cliconf_obj.get_diff(
+                "\n".join(lines),
+                self.running_config,
+            ),
         )
         commands = ["hostname foo"]
         self.execute_module(changed=True, commands=commands)
@@ -137,7 +140,10 @@ class TestIosConfigModule(TestIosModule):
         candidate_config = ios_config.get_candidate_config(module)
 
         self.conn.get_diff = MagicMock(
-            return_value=self.cliconf_obj.get_diff(candidate_config, self.running_config),
+            return_value=self.cliconf_obj.get_diff(
+                candidate_config,
+                self.running_config,
+            ),
         )
 
         commands = ["interface GigabitEthernet0/0", "shutdown"]
@@ -147,7 +153,10 @@ class TestIosConfigModule(TestIosModule):
         lines = ["hostname foo"]
         set_module_args(dict(lines=lines, before=["test1", "test2"]))
         self.conn.get_diff = MagicMock(
-            return_value=self.cliconf_obj.get_diff("\n".join(lines), self.running_config),
+            return_value=self.cliconf_obj.get_diff(
+                "\n".join(lines),
+                self.running_config,
+            ),
         )
         commands = ["test1", "test2", "hostname foo"]
         self.execute_module(changed=True, commands=commands, sort=False)
@@ -156,16 +165,24 @@ class TestIosConfigModule(TestIosModule):
         lines = ["hostname foo"]
         set_module_args(dict(lines=lines, after=["test1", "test2"]))
         self.conn.get_diff = MagicMock(
-            return_value=self.cliconf_obj.get_diff("\n".join(lines), self.running_config),
+            return_value=self.cliconf_obj.get_diff(
+                "\n".join(lines),
+                self.running_config,
+            ),
         )
         commands = ["hostname foo", "test1", "test2"]
         self.execute_module(changed=True, commands=commands, sort=False)
 
     def test_ios_config_before_after_no_change(self):
         lines = ["hostname router"]
-        set_module_args(dict(lines=lines, before=["test1", "test2"], after=["test3", "test4"]))
+        set_module_args(
+            dict(lines=lines, before=["test1", "test2"], after=["test3", "test4"]),
+        )
         self.conn.get_diff = MagicMock(
-            return_value=self.cliconf_obj.get_diff("\n".join(lines), self.running_config),
+            return_value=self.cliconf_obj.get_diff(
+                "\n".join(lines),
+                self.running_config,
+            ),
         )
         self.execute_module()
 
@@ -242,7 +259,11 @@ class TestIosConfigModule(TestIosModule):
         self.execute_module(changed=True, commands=commands, sort=False)
 
     def test_ios_config_match_strict(self):
-        lines = ["ip address 1.2.3.4 255.255.255.0", "description test string", "shutdown"]
+        lines = [
+            "ip address 1.2.3.4 255.255.255.0",
+            "description test string",
+            "shutdown",
+        ]
         parents = ["interface GigabitEthernet0/0"]
         set_module_args(dict(lines=lines, parents=parents, match="strict"))
 
@@ -262,7 +283,11 @@ class TestIosConfigModule(TestIosModule):
         self.execute_module(changed=True, commands=commands, sort=False)
 
     def test_ios_config_match_exact(self):
-        lines = ["ip address 1.2.3.4 255.255.255.0", "description test string", "shutdown"]
+        lines = [
+            "ip address 1.2.3.4 255.255.255.0",
+            "description test string",
+            "shutdown",
+        ]
         parents = ["interface GigabitEthernet0/0"]
         set_module_args(dict(lines=lines, parents=parents, match="exact"))
 

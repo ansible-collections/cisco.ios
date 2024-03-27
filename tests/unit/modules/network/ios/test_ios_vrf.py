@@ -21,9 +21,9 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
+from unittest.mock import patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_vrf
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule, load_fixture
@@ -58,7 +58,11 @@ class TestIosVrfModule(TestIosModule):
 
     def load_fixtures(self, commands=None):
         self.get_config.return_value = load_fixture("ios_vrf_config.cfg")
-        self.exec_command.return_value = (0, load_fixture("ios_vrf_config.cfg").strip(), None)
+        self.exec_command.return_value = (
+            0,
+            load_fixture("ios_vrf_config.cfg").strip(),
+            None,
+        )
         self.load_config.return_value = None
 
     def test_ios_vrf_name(self):
@@ -158,7 +162,11 @@ class TestIosVrfModule(TestIosModule):
     def test_ios_vrfs_local_override_state(self):
         vrfs = [{"name": "test_1", "state": "absent"}, {"name": "test_2"}]
         set_module_args(dict(vrfs=vrfs, description="test string"))
-        commands = ["no vrf definition test_1", "vrf definition test_2", "description test string"]
+        commands = [
+            "no vrf definition test_1",
+            "vrf definition test_2",
+            "description test string",
+        ]
         self.execute_module(changed=True, commands=commands, sort=False)
 
     def test_ios_vrf_route_both(self):
@@ -178,7 +186,9 @@ class TestIosVrfModule(TestIosModule):
         self.execute_module(changed=True, commands=commands, sort=False)
 
     def test_ios_vrf_route_import(self):
-        set_module_args(dict(name="test_6", rd="3:100", route_import=["3:100", "4:100"]))
+        set_module_args(
+            dict(name="test_6", rd="3:100", route_import=["3:100", "4:100"]),
+        )
         commands = [
             "vrf definition test_6",
             "rd 3:100",
@@ -188,7 +198,9 @@ class TestIosVrfModule(TestIosModule):
         self.execute_module(changed=True, commands=commands, sort=False)
 
     def test_ios_vrf_route_export(self):
-        set_module_args(dict(name="test_7", rd="4:100", route_export=["3:100", "4:100"]))
+        set_module_args(
+            dict(name="test_7", rd="4:100", route_export=["3:100", "4:100"]),
+        )
         commands = [
             "vrf definition test_7",
             "rd 4:100",
@@ -210,7 +222,11 @@ class TestIosVrfModule(TestIosModule):
 
     def test_ios_vrf_route_both_ipv4(self):
         set_module_args(
-            dict(name="test_9", rd="168.0.0.9:100", route_both_ipv4=["168.0.0.9:100", "3:100"]),
+            dict(
+                name="test_9",
+                rd="168.0.0.9:100",
+                route_both_ipv4=["168.0.0.9:100", "3:100"],
+            ),
         )
         commands = [
             "vrf definition test_9",
@@ -281,7 +297,11 @@ class TestIosVrfModule(TestIosModule):
 
     def test_ios_vrf_route_both_ipv6(self):
         set_module_args(
-            dict(name="test_13", rd="2:100", route_both_ipv6=["2:100", "168.0.0.13:100"]),
+            dict(
+                name="test_13",
+                rd="2:100",
+                route_both_ipv6=["2:100", "168.0.0.13:100"],
+            ),
         )
         commands = [
             "vrf definition test_13",
@@ -301,7 +321,11 @@ class TestIosVrfModule(TestIosModule):
 
     def test_ios_vrf_route_import_ipv6(self):
         set_module_args(
-            dict(name="test_14", rd="3:100", route_import_ipv6=["3:100", "168.0.0.14:100"]),
+            dict(
+                name="test_14",
+                rd="3:100",
+                route_import_ipv6=["3:100", "168.0.0.14:100"],
+            ),
         )
         commands = [
             "vrf definition test_14",
@@ -317,7 +341,11 @@ class TestIosVrfModule(TestIosModule):
 
     def test_ios_vrf_route_export_ipv6(self):
         set_module_args(
-            dict(name="test_15", rd="4:100", route_export_ipv6=["168.0.0.15:100", "4:100"]),
+            dict(
+                name="test_15",
+                rd="4:100",
+                route_export_ipv6=["168.0.0.15:100", "4:100"],
+            ),
         )
         commands = [
             "vrf definition test_15",
@@ -386,7 +414,11 @@ class TestIosVrfModule(TestIosModule):
 
     def test_ios_vrf_interface_brownfield(self):
         set_module_args(dict(name="test_19", interfaces=["Ethernet1"]))
-        commands = ["interface Ethernet1", "vrf forwarding test_19", "ip address 1.2.3.4/5"]
+        commands = [
+            "interface Ethernet1",
+            "vrf forwarding test_19",
+            "ip address 1.2.3.4/5",
+        ]
         self.execute_module(changed=True, commands=commands, sort=False)
 
     def test_ios_mdt(self):
