@@ -678,6 +678,7 @@ remarks_check_override:
     - remark Remark not specific to sequence
     - remark ============
     - remark End Remarks updated
+    - remark 04j
     - no ip access-list extended 110
     - no ip access-list extended 123
     - no ip access-list extended test_acl

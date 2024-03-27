@@ -124,6 +124,7 @@
                       - "Remark not specific to sequence"
                       - "============"
                       - "End Remarks updated"
+                      - "04j"
         state: overridden
 
     - ansible.builtin.assert:

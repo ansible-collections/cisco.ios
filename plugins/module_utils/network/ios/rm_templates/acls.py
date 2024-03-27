@@ -191,7 +191,7 @@ class AclsTemplate(NetworkTemplate):
                         "name": "{{ acl_name }}",
                         "aces": [
                             {
-                                "the_remark": "{{ remarks }}",
+                                "the_remark": "'{{ remarks }}'",
                                 "order": "{{ order }}",
                                 "is_remark_for": "{{ sequence }}",
                             },
@@ -213,7 +213,7 @@ class AclsTemplate(NetworkTemplate):
                         "name": "{{ acl_name }}",
                         "aces": [
                             {
-                                "the_remark": "{{ remarks }}",
+                                "the_remark": "'{{ remarks }}'",
                                 "order": "{{ order }}",
                                 "is_remark_for": "remark",
                             },
@@ -238,7 +238,7 @@ class AclsTemplate(NetworkTemplate):
                         "aces": [
                             {
                                 "sequence": "{{ sequence }}",
-                                "remarks": ["{{ remarks }}"],
+                                "remarks": ["'{{ remarks }}'"],
                             },
                         ],
                     },
