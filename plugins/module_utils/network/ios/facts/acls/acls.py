@@ -105,7 +105,10 @@ class AclsFacts(object):
 
         if namedata:
             # parse just names to update empty acls
-            templateObjName = NetworkTemplate(lines=namedata.splitlines(), tmplt=AclsTemplate())
+            templateObjName = NetworkTemplate(
+                lines=namedata.splitlines(),
+                tmplt=AclsTemplate(),
+            )
             raw_acl_names = templateObjName.parse()
             raw_acls = self.populate_empty_acls(raw_acls, raw_acl_names)
 
@@ -114,7 +117,10 @@ class AclsFacts(object):
 
         if raw_acls.get("acls"):
             for k, v in iteritems(raw_acls.get("acls")):
-                if v.get("afi") == "ipv4" and v.get("acl_type") in ["standard", "extended"]:
+                if v.get("afi") == "ipv4" and v.get("acl_type") in [
+                    "standard",
+                    "extended",
+                ]:
                     del v["afi"]
                     temp_v4.append(v)
                 elif v.get("afi") == "ipv6":
@@ -142,10 +148,15 @@ class AclsFacts(object):
             def process_protocol_options(each):
                 for each_ace in each.get("aces"):
                     if each.get("acl_type") == "standard":
-                        if len(each_ace.get("source", {})) == 1 and each_ace.get("source", {}).get(
+                        if len(each_ace.get("source", {})) == 1 and each_ace.get(
+                            "source",
+                            {},
+                        ).get(
                             "address",
                         ):
-                            each_ace["source"]["host"] = each_ace["source"].pop("address")
+                            each_ace["source"]["host"] = each_ace["source"].pop(
+                                "address",
+                            )
                         if each_ace.get("source", {}).get("address"):
                             addr = each_ace.get("source", {}).get("address")
                             if addr[-1] == ",":
@@ -159,7 +170,10 @@ class AclsFacts(object):
                     if each_ace.get("icmp_igmp_tcp_protocol"):
                         each_ace["protocol_options"] = {
                             each_ace["protocol"]: {
-                                each_ace.pop("icmp_igmp_tcp_protocol").replace("-", "_"): True,
+                                each_ace.pop("icmp_igmp_tcp_protocol").replace(
+                                    "-",
+                                    "_",
+                                ): True,
                             },
                         }
                     if each_ace.get("protocol_number"):
@@ -172,13 +186,21 @@ class AclsFacts(object):
                 ace_entry = []
                 ace_rem = []
                 rem = {}
+                # every remarks is one list item which has a sequence number
+                # every ace remark is preserved and ordered
+                # at the end of each sequence it is flushed to a ace entry
                 for i in aces:
+                    # i here denotes an ace, which would be populated with remarks entries
                     if i.get("is_remark_for"):
                         if not rem.get(i.get("is_remark_for")):
                             rem[i.get("is_remark_for")] = {"remarks": []}
-                            rem[i.get("is_remark_for")]["remarks"].append(i.get("the_remark"))
+                            rem[i.get("is_remark_for")]["remarks"].append(
+                                i.get("the_remark"),
+                            )
                         else:
-                            rem[i.get("is_remark_for")]["remarks"].append(i.get("the_remark"))
+                            rem[i.get("is_remark_for")]["remarks"].append(
+                                i.get("the_remark"),
+                            )
                     else:
                         if rem:
                             if rem.get(i.get("sequence")):
@@ -187,12 +209,27 @@ class AclsFacts(object):
                         ace_entry.append(i)
 
                 if rem:  # pending remarks
-                    pending_rem = rem.get("remark")
-                    ace_entry.append({"remarks": pending_rem.get("remarks")})
+                    for pending_rem_seq, pending_rem_val in rem.items():
+                        # there can be ace entry with just a remarks and no ace actually
+                        # 10 remarks I am a remarks
+                        # 20 ..... so onn
+                        if pending_rem_seq != "remark":
+                            ace_entry.append(
+                                {
+                                    "sequence": pending_rem_seq,
+                                    "remarks": pending_rem_val.get("remarks"),
+                                },
+                            )
+                        else:
+                            # this handles the classic set of remarks at the end, which is not tied to
+                            # any sequence number
+                            pending_rem = rem.get("remark", {})
+                            ace_entry.append({"remarks": pending_rem.get("remarks")})
                 return ace_entry
 
             for each in temp_v4:
                 if each.get("aces"):
+                    # handling remarks for each ace entry
                     each["aces"] = collect_remarks(each.get("aces"))
                     process_protocol_options(each)
 

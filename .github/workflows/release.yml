@@ -1,12 +1,12 @@
 ---
-name: release
+name: "Release collection"
 on:  # yamllint disable-line rule:truthy
   release:
     types: [published]
 
 jobs:
   release:
-    uses: ansible/devtools/.github/workflows/release_collection.yml@main
+    uses: ansible/ansible-content-actions/.github/workflows/release.yaml@main
     with:
       environment: release
     secrets:

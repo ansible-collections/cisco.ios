@@ -7,11 +7,10 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_l2_interfaces
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
@@ -136,7 +135,11 @@ class TestIosL2InterfacesModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    dict(access=dict(vlan=10), mode="access", name="GigabitEthernet0/1"),
+                    dict(
+                        access=dict(vlan=10),
+                        mode="access",
+                        name="GigabitEthernet0/1",
+                    ),
                     dict(
                         mode="trunk",
                         name="GigabitEthernet0/2",
@@ -270,7 +273,11 @@ class TestIosL2InterfacesModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    dict(access=dict(vlan=10), mode="access", name="GigabitEthernet0/1"),
+                    dict(
+                        access=dict(vlan=10),
+                        mode="access",
+                        name="GigabitEthernet0/1",
+                    ),
                     dict(
                         mode="trunk",
                         name="GigabitEthernet0/2",
@@ -281,7 +288,11 @@ class TestIosL2InterfacesModule(TestIosModule):
                             pruning_vlans=["10", "20"],
                         ),
                     ),
-                    dict(access=dict(vlan=20), mode="access", name="TwoGigabitEthernet1/0/1"),
+                    dict(
+                        access=dict(vlan=20),
+                        mode="access",
+                        name="TwoGigabitEthernet1/0/1",
+                    ),
                     dict(
                         mode="trunk",
                         name="GigabitEthernet0/3",
@@ -416,7 +427,11 @@ class TestIosL2InterfacesModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    dict(access=dict(vlan=10), mode="access", name="GigabitEthernet0/1"),
+                    dict(
+                        access=dict(vlan=10),
+                        mode="access",
+                        name="GigabitEthernet0/1",
+                    ),
                     dict(
                         mode="trunk",
                         name="GigabitEthernet0/2",
@@ -427,7 +442,11 @@ class TestIosL2InterfacesModule(TestIosModule):
                             pruning_vlans=["10", "20"],
                         ),
                     ),
-                    dict(access=dict(vlan=20), mode="access", name="TwoGigabitEthernet1/0/1"),
+                    dict(
+                        access=dict(vlan=20),
+                        mode="access",
+                        name="TwoGigabitEthernet1/0/1",
+                    ),
                     dict(
                         mode="trunk",
                         name="GigabitEthernet0/3",
@@ -592,7 +611,11 @@ class TestIosL2InterfacesModule(TestIosModule):
                 },
                 "mode": "trunk",
             },
-            {"name": "TwoGigabitEthernet1/0/1", "mode": "access", "access": {"vlan": 20}},
+            {
+                "name": "TwoGigabitEthernet1/0/1",
+                "mode": "access",
+                "access": {"vlan": 20},
+            },
             {
                 "name": "GigabitEthernet0/3",
                 "trunk": {
@@ -695,7 +718,13 @@ class TestIosL2InterfacesModule(TestIosModule):
         )
         set_module_args(
             dict(
-                config=[dict(access=dict(vlan=20), mode="trunk", name="TwoGigabitEthernet1/0/1")],
+                config=[
+                    dict(
+                        access=dict(vlan=20),
+                        mode="trunk",
+                        name="TwoGigabitEthernet1/0/1",
+                    ),
+                ],
                 state="merged",
             ),
         )
@@ -731,7 +760,11 @@ class TestIosL2InterfacesModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    dict(access=dict(vlan=20), mode="trunk", name="FiveGigabitEthernet1/0/1"),
+                    dict(
+                        access=dict(vlan=20),
+                        mode="trunk",
+                        name="FiveGigabitEthernet1/0/1",
+                    ),
                     dict(
                         access=dict(vlan_name="vlan12"),
                         mode="trunk",

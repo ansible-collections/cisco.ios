@@ -5,6 +5,43 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v6.1.3
+======
+
+Bugfixes
+--------
+
+- ios_acls - Adds back existing remarks for an ace entry when updated with replaced or overridden state, as all remarks for a specific sequence gets removed when ace entry is updated.
+- ios_bgp_global - Shutdown attributes generates negate command on set as false.
+- ios_vrf - Update and add missing argspec keys that define the attributes.
+
+Documentation Changes
+---------------------
+
+- ios_vrf - Update and add missing documentation for ios_vrf module.
+
+v6.1.2
+======
+
+Bugfixes
+--------
+
+- ios_acls - Fix replaced state to consider remarks and ace entries while comparing configuration.
+- ios_acls - correctly match the different line for ACL without sequence number
+- ios_acls - take correctly in case where we want to push an ACL from a different type
+- ios_ospfv2 - Fix improper rendering of admin_distance attribute.
+- ios_snmp_server - fixed config issue with snmp user password update being idempotent on consecutive runs.
+- ios_user - Fix configuration of hashed passwords and secrets.
+
+v6.1.1
+======
+
+Bugfixes
+--------
+
+- Prevents module_defaults from were being incorrectly applied to the platform action, instead of the concerned module.
+- ios_vlans - fixes behaviour of shutdown attribute with action states.
+
 v6.1.0
 ======
 

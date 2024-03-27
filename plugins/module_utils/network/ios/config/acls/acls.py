@@ -119,6 +119,16 @@ class Acls(ResourceModule):
         for wname, wentry in iteritems(wplists):
             hentry = hplists.pop(wname, {})
             acl_type = wentry["acl_type"] if wentry.get("acl_type") else hentry.get("acl_type")
+            # If ACLs type is different between existing and wanted ACL, we need first remove it
+            if acl_type != hentry.get("acl_type", acl_type):
+                self.commands.append(
+                    "no " + self.acl_name_cmd(wname, afi, hentry.get("acl_type", "")),
+                )
+                hentry.pop(
+                    "aces",
+                    {},
+                )  # We remove ACEs because we have previously add a command to suppress completely the ACL
+
             begin = len(self.commands)  # to determine the index for acl command
             self._compare_aces(
                 wentry.pop("aces", {}),
@@ -159,20 +169,22 @@ class Acls(ResourceModule):
             else:
                 return {}
 
+        # case 1 - loop on want and compare with have data here
         for wseq, wentry in iteritems(want):
             hentry = have.pop(wseq, {})
             rem_hentry, rem_wentry = {}, {}
 
-            if hentry:
+            if hentry:  # if there is have information with same sequence
+                # the protocol options are processed here
                 hentry = self.sanitize_protocol_options(wentry, hentry)
 
-            if hentry != wentry:  # will let in if ace is same but remarks is not same
-                if hentry:
+            if hentry != wentry:  # if want and have is different
+                if hentry:  # separate remarks from have in an ace entry
                     rem_hentry["remarks"] = pop_remark(hentry, afi)
-                if wentry:
+                if wentry:  # separate remarks from want in an ace entry
                     rem_wentry["remarks"] = pop_remark(wentry, afi)
 
-                if hentry:
+                if hentry:  # have aces processing starts here
                     if self.state == "merged":
                         self._module.fail_json(
                             msg="Cannot update existing sequence {0} of ACLs {1} with state merged."
@@ -180,55 +192,78 @@ class Acls(ResourceModule):
                                 hentry.get("sequence", ""),
                                 name,
                             ),
-                        )
-                    else:  # other action states
-                        if rem_hentry.get("remarks"):  # remove remark if not in want
-                            for k_hrems, hrems in rem_hentry.get("remarks").items():
-                                if k_hrems not in rem_wentry.get("remarks", {}).keys():
-                                    if self.state in ["replaced", "overridden"]:
-                                        self.addcmd(
-                                            {
-                                                "remarks": hrems,
-                                                "sequence": hentry.get("sequence", ""),
-                                            },
-                                            "remarks_no_data",
-                                            negate=True,
-                                        )
-                                        break
-                                    else:
-                                        self.addcmd(
-                                            {
-                                                "remarks": hrems,
-                                                "sequence": hentry.get("sequence", ""),
-                                            },
-                                            "remarks",
-                                            negate=True,
-                                        )
-                        # remove ace if not in want
-                        if hentry != wentry:
-                            self.addcmd(add_afi(hentry, afi), "aces", negate=True)
+                        )  # if merged then don't update anything and fail
+
+                    # i.e if not merged
+                    if rem_hentry.get("remarks") != rem_wentry.get("remarks"):
+                        self.addcmd(
+                            {
+                                "sequence": hentry.get("sequence", None),
+                            },
+                            "remarks_no_data",
+                            negate=True,
+                        )  # remove all remarks for a ace if want and have don't match
+                        # as if we randomly add aces we cannot maintain order we have to
+                        # add all of them again, for that ace
+                        rem_hentry["remarks"] = {}
+                        # and me empty our have as we would add back
+                        # all our remarks for that ace anyways
+
+                    # remove ace if not in want
+                    # we might think why not update it directly,
+                    # if we try to update without negating the entry appliance
+                    # reports % Duplicate sequence number
+                    if hentry != wentry:
+                        self.addcmd(add_afi(hentry, afi), "aces", negate=True)
+                        # once an ace is negated intentionally emptying out have so that
+                        # the remarks are repopulated, as the remarks and ace behavior is sticky
+                        # if an ace is taken out all the remarks is removed automatically.
+                        rem_hentry["remarks"] = {}
+
                 if rem_wentry.get("remarks"):  # add remark if not in have
+                    if rem_hentry.get("remarks"):
+                        self.addcmd(
+                            {
+                                "sequence": hentry.get("sequence", None),
+                            },
+                            "remarks_no_data",
+                            negate=True,
+                        )  # but delete all remarks before to protect order
                     for k_wrems, wrems in rem_wentry.get("remarks").items():
-                        if k_wrems not in rem_hentry.get("remarks", {}).keys():
-                            self.addcmd(
-                                {"remarks": wrems, "sequence": hentry.get("sequence", "")},
-                                "remarks",
-                            )
+                        self.addcmd(
+                            {
+                                "remarks": wrems,
+                                "sequence": wentry.get("sequence", ""),
+                            },
+                            "remarks",
+                        )
+
                 # add ace if not in have
                 if hentry != wentry:
-                    self.addcmd(add_afi(wentry, afi), "aces")
+                    if len(wentry) == 1 and wentry.get(
+                        "sequence",
+                    ):  # if the ace entry just has sequence then do nothing
+                        continue
+                    else:  # add normal ace entries from want
+                        self.addcmd(add_afi(wentry, afi), "aces")
 
-        # remove remaining entries from have aces list
+        # case 2 - loop over remaining have and remove them
         for hseq in have.values():
-            if hseq.get("remarks"):  # remove remarks that are extra in have
-                for krems, rems in hseq.get("remarks").items():
-                    self.addcmd(
-                        {"remarks": rems, "sequence": hseq.get("sequence", "")},
-                        "remarks",
-                        negate=True,
-                    )
-            else:  # remove extra aces
-                self.addcmd(add_afi(hseq, afi), "aces", negate=True)
+            if hseq.get("remarks"):  # remove all remarks in that
+                self.addcmd(
+                    {
+                        "sequence": hseq.get("sequence", None),
+                    },
+                    "remarks_no_data",
+                    negate=True,
+                )
+                hseq.pop("remarks")
+            # deal with the rest of ace entry
+            self.addcmd(
+                add_afi(hseq, afi),
+                "aces",
+                negate=True,
+            )
 
     def sanitize_protocol_options(self, wace, hace):
         """handles protocol and protocol options as optional attribute"""
@@ -262,7 +297,7 @@ class Acls(ResourceModule):
     def list_to_dict(self, param):
         """converts list attributes to dict"""
 
-        temp, count = dict(), 0
+        temp = dict()
         if param:
             for each in param:  # ipv4 and ipv6 acl
                 temp_acls = {}
@@ -271,7 +306,9 @@ class Acls(ResourceModule):
                         temp_aces = {}
                         if acl.get("aces"):
                             rem_idx = 0  # remarks if defined in an ace
-                            for ace in acl.get("aces"):  # each ace turned to dict
+                            for count, ace in enumerate(
+                                acl.get("aces"),
+                            ):  # each ace turned to dict
                                 if (
                                     ace.get("destination")
                                     and ace.get("destination", {}).get(
@@ -311,13 +348,14 @@ class Acls(ResourceModule):
                                     # temp_rem.extend(ace.pop("remarks"))
                                     for remks in ace.get("remarks"):
                                         rem_ace[remks.replace(" ", "_")] = remks
-                                        rem_idx += 1
                                     ace["remarks"] = rem_ace
 
                                 if ace.get("sequence"):
                                     temp_aces.update({ace.get("sequence"): ace})
+                                elif ace.get("remarks"):
+                                    temp_aces.update({"__{0}".format(rem_idx): ace})
+                                    rem_idx += 1
                                 elif ace:
-                                    count += 1
                                     temp_aces.update({"_" + to_text(count): ace})
 
                             # if temp_rem:  # add remarks to the temp ace
@@ -325,7 +363,12 @@ class Acls(ResourceModule):
 
                         if acl.get("acl_type"):  # update acl dict with req info
                             temp_acls.update(
-                                {acl.get("name"): {"aces": temp_aces, "acl_type": acl["acl_type"]}},
+                                {
+                                    acl.get("name"): {
+                                        "aces": temp_aces,
+                                        "acl_type": acl["acl_type"],
+                                    },
+                                },
                             )
                         else:  # if no acl type then here eg: ipv6
                             temp_acls.update({acl.get("name"): {"aces": temp_aces}})
