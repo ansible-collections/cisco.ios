@@ -30,7 +30,9 @@ try:
     from unittest.mock import MagicMock
 except ImportError:
     from mock import MagicMock
+
 from unittest import TestCase
+
 from ansible.module_utils._text import to_bytes
 
 from ansible_collections.cisco.ios.plugins.cliconf import ios
@@ -49,7 +51,7 @@ def _connection_side_effect(*args, **kwargs):
             value = kwargs.get("command")
 
         fixture_path = path.abspath(
-            b"%s/%s" % (b_FIXTURE_DIR, b"_".join(value.split(b" ")))
+            b"%s/%s" % (b_FIXTURE_DIR, b"_".join(value.split(b" "))),
         )
         with open(fixture_path, "rb") as file_desc:
             return file_desc.read()
