@@ -4,4 +4,4 @@ bugfixes:
   - ios_prefix_lists - description attribute, evalutated as complex object casted to string.
   - ios_route_maps - description attribute, evalutated as complex object casted to string.
   - ios_bgp_address_family - description attribute, evalutated as complex object casted to string.
-  - ios_bgp_global -description attribute, evalutated as complex object casted to string.
+  - ios_bgp_global - description attribute, evalutated as complex object casted to string.
