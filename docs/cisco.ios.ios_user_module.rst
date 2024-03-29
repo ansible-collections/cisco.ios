@@ -5,7 +5,7 @@
 cisco.ios.ios_user
 ******************
 
-**Module to manage the aggregates of local users.**
+**(deprecated, removed after 2024-10-01) Module to manage the aggregates of local users.**
 
 
 Version added: 1.0.0
@@ -13,6 +13,13 @@ Version added: 1.0.0
 .. contents::
    :local:
    :depth: 1
+
+DEPRECATED
+----------
+:Removed in collection release after 2024-10-01
+:Why: Updated module released with more functionality.
+:Alternative: ios_users
+
 
 
 Synopsis
@@ -870,6 +877,10 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
 
 Status
 ------
+
+
+- This module will be removed in a release after 2024-10-01. *[deprecated]*
+- For more information see `DEPRECATED`_.
 
 
 Authors
