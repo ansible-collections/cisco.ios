@@ -5,6 +5,19 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v7.0.0
+======
+
+Major Changes
+-------------
+
+- ios_ntp - Remove deprecated ntp legacy module
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- Deprecated ios_ntp module in favor of ios_ntp_global.
+
 v6.1.4
 ======
 

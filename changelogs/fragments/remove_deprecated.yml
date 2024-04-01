@@ -1,5 +1,0 @@
----
-major_changes:
-  - ios_ntp - Remove deprecated ntp legacy module
-removed_features:
-  - Deprecated ios_ntp module in favor of ios_ntp_global.
