@@ -1,3 +1,0 @@
----
-- name: Main task for ntp module
-  ansible.builtin.include_tasks: cli.yaml
