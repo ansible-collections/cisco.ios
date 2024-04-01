@@ -23,9 +23,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 
 def remarks_with_sequence(remarks_data):
-    cmd = "remark "
+    cmd = "remark"
     if remarks_data.get("remarks"):
-        cmd += remarks_data.get("remarks")
+        cmd += " " + remarks_data.get("remarks")
     if remarks_data.get("sequence"):
         cmd = to_text(remarks_data.get("sequence")) + " " + cmd
     return cmd
@@ -191,7 +191,7 @@ class AclsTemplate(NetworkTemplate):
                         "name": "{{ acl_name }}",
                         "aces": [
                             {
-                                "the_remark": "{{ remarks }}",
+                                "the_remark": "'{{ remarks }}'",
                                 "order": "{{ order }}",
                                 "is_remark_for": "{{ sequence }}",
                             },
@@ -206,14 +206,14 @@ class AclsTemplate(NetworkTemplate):
                 r"""(?P<order>^\d+)\s*remark\s(?P<remarks>.+)$""",
                 re.VERBOSE,
             ),
-            "setval": "{{ sequence }} remark",
+            "setval": remarks_with_sequence,
             "result": {
                 "acls": {
                     "{{ acl_name|d() }}": {
                         "name": "{{ acl_name }}",
                         "aces": [
                             {
-                                "the_remark": "{{ remarks }}",
+                                "the_remark": "'{{ remarks }}'",
                                 "order": "{{ order }}",
                                 "is_remark_for": "remark",
                             },
@@ -238,7 +238,7 @@ class AclsTemplate(NetworkTemplate):
                         "aces": [
                             {
                                 "sequence": "{{ sequence }}",
-                                "remarks": ["{{ remarks }}"],
+                                "remarks": ["'{{ remarks }}'"],
                             },
                         ],
                     },

@@ -80,7 +80,7 @@ class Prefix_listsTemplate(NetworkTemplate):
                 "{{ afi + name }}": {
                     "name": "{{ name }}",
                     "afi": "{{ 'ipv4' if afi is defined and afi=='ip' else 'ipv6' }}",
-                    "description": "{{ description }}",
+                    "description": "'{{ description }}'",
                 },
             },
         },

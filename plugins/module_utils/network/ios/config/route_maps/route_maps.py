@@ -304,11 +304,11 @@ class Route_maps(ResourceModule):
                                                 "acl",
                                             )
                                         elif match["ip"][each_ip_param].get("prefix_lists"):
-                                            match["ip"][each_ip_param][
-                                                "prefix_lists"
-                                            ] = convert_to_dict(
-                                                match["ip"][each_ip_param]["prefix_lists"],
-                                                "prefix_list",
+                                            match["ip"][each_ip_param]["prefix_lists"] = (
+                                                convert_to_dict(
+                                                    match["ip"][each_ip_param]["prefix_lists"],
+                                                    "prefix_list",
+                                                )
                                             )
                             if match.get("local_preference") and match.get("local_preference").get(
                                 "value",
