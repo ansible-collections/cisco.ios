@@ -69,6 +69,7 @@ class AclsArgs(object):  # pylint: disable=R0903
                                 },
                                 "dscp": {"type": "str"},
                                 "evaluate": {"type": "str"},
+                                "fragments": {"type": "str"},
                                 "enable_fragments": {"type": "bool"},
                                 "grant": {"choices": ["permit", "deny"], "type": "str"},
                                 "log": {
