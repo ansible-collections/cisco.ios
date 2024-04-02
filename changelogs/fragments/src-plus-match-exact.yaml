@@ -1,0 +1,2 @@
+minor_changes:
+  - ios_config - Add support for src plus match:exact (https://github.com/ansible-collections/cisco.ios/issues/655).
