@@ -726,7 +726,7 @@ class TestIosVlansModule(TestIosModule):
             "no state active",
             "no mtu 1500",
             "no remote-span",
-            "no no shutdown",
+            "shutdown",
         ]
         self.assertEqual(result["commands"], commands)
 
@@ -1240,7 +1240,7 @@ class TestIosVlansModule(TestIosModule):
         ]
         self.assertEqual(result["commands"], commands)
 
-    def test_ios_delete_vlans_config(self):
+    def test_ios_delete_vlans_config_2(self):
         self.mock_l2_device_command.side_effect = True
         self.mock_execute_show_command_conf.side_effect = ""
         self.execute_show_command.return_value = dedent(
