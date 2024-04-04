@@ -62,7 +62,7 @@ per-file-ignores =
   # these will need to be added to that line as well.
 
 
-   # S101: Allow the use of assert within the tests directory, since tests require it.
+  # S101: Allow the use of assert within the tests directory, since tests require it.
   tests/**.py: S101
 
   # The following were present during the initial implementation.
