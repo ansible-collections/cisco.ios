@@ -726,7 +726,7 @@ class TestIosVlansModule(TestIosModule):
             "no state active",
             "no mtu 1500",
             "no remote-span",
-            "no no shutdown",
+            "shutdown",
         ]
         self.assertEqual(result["commands"], commands)
 
