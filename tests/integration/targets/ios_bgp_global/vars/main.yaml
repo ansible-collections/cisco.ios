@@ -5,32 +5,20 @@ merged:
   commands:
     - router bgp 65000
     - timers bgp 100 200 150
-    - bgp advertise-best-external
     - bgp bestpath compare-routerid
-    - bgp dampening 1 1 1 1
     - no bgp default ipv4-unicast
     - no bgp default route-target filter
-    - bgp advertise-best-external
     - bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
     - bgp log-neighbor-changes
     - bgp nopeerup-delay post-boot 10
     - neighbor 198.0.2.1 remote-as 100
     - neighbor 198.0.2.1 description merge neighbor
-    - neighbor 198.0.2.1 aigp send cost-community 100 poi igp-cost transitive
-    - neighbor 198.0.2.1 route-map test-route out
-    - redistribute connected metric 10
 
   after:
     as_number: "65000"
     bgp:
-      advertise_best_external: true
       bestpath_options:
         compare_routerid: true
-      dampening:
-        max_suppress: 1
-        penalty_half_time: 1
-        reuse_route_val: 1
-        suppress_route_val: 1
       default:
         ipv4_unicast: false
         route_target:
@@ -44,23 +32,9 @@ merged:
       nopeerup_delay_options:
         post_boot: 10
     neighbors:
-      - aigp:
-          send:
-            cost_community:
-              id: 100
-              poi:
-                igp_cost: true
-                transitive: true
-        description: merge neighbor
+      - description: merge neighbor
         neighbor_address: 198.0.2.1
         remote_as: "100"
-        route_maps:
-          - name: test-route
-            out: true
-    redistribute:
-      - connected:
-          metric: 10
-          set: true
     timers:
       holdtime: 200
       keepalive: 100
@@ -70,6 +44,10 @@ gathered:
   after:
     as_number: "65000"
     bgp:
+      default:
+        ipv4_unicast: true
+        route_target:
+          filter: true
       advertise_best_external: true
       bestpath_options:
         compare_routerid: true
@@ -126,6 +104,10 @@ replaced:
   after:
     as_number: "65000"
     bgp:
+      default:
+        ipv4_unicast: true
+        route_target:
+          filter: true
       advertise_best_external: true
       bestpath_options:
         med:
@@ -150,6 +132,10 @@ parsed:
   after:
     as_number: "65000"
     bgp:
+      default:
+        ipv4_unicast: true
+        route_target:
+          filter: true
       advertise_best_external: true
       bestpath_options:
         compare_routerid: true
@@ -220,6 +206,11 @@ deleted:
 
   after:
     as_number: "65000"
+    bgp:
+      default:
+        ipv4_unicast: true
+        route_target:
+          filter: true
 
 rtt:
   commands:

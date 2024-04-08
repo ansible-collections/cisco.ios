@@ -237,7 +237,7 @@ class Bgp_global(ResourceModule):
             have.get("redistribute", {}),
         )
 
-        # add as_number in the begining of commands set if commands generated
+        # add as_number in the beginning of commands set if commands generated
         if len(self.commands) != cmd_len or (not have and want):
             self.commands.insert(
                 0,
@@ -245,7 +245,10 @@ class Bgp_global(ResourceModule):
             )
 
     def _set_bgp_defaults(self, bgp_dict):
-        bgp_dict.setdefault("bgp", {}).setdefault("default", {}).setdefault("ipv4_unicast", True)
+        bgp_dict.setdefault("bgp", {}).setdefault("default", {}).setdefault(
+            "ipv4_unicast",
+            True,
+        )
         bgp_dict.setdefault("bgp", {}).setdefault("default", {}).setdefault(
             "route_target",
             {},
@@ -357,10 +360,21 @@ class Bgp_global(ResourceModule):
         ]
 
         for name, w_neighbor in want.items():
+            handle_shutdown_default = False
             have_nbr = have.pop(name, {})
             want_route = w_neighbor.pop("route_maps", {})
             have_route = have_nbr.pop("route_maps", {})
+            if (
+                not w_neighbor.get("shutdown", {}).get("set")
+                and have_nbr.get("shutdown", {}).get("set")
+                and self.state in ["merged", "replaced", "overridden"]
+            ):
+                neig_parses.remove("shutdown")
+                handle_shutdown_default = True
             self.compare(parsers=neig_parses, want=w_neighbor, have=have_nbr)
+            if handle_shutdown_default:
+                self.addcmd(have_nbr, "shutdown", True)
+
             if want_route:
                 for k_rmps, w_rmps in want_route.items():
                     have_rmps = have_route.pop(k_rmps, {})

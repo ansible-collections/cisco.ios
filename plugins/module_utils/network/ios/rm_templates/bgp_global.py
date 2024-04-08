@@ -447,7 +447,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "description {{ route_server_context.description }}",
-            "result": {"route_server_context": {"description": "{{ description }}"}},
+            "result": {"route_server_context": {"description": "'{{ description }}'"}},
         },
         {
             "name": "synchronization",
@@ -782,7 +782,10 @@ class Bgp_globalTemplate(NetworkTemplate):
         },
         {
             "name": "bgp.default.route_target.filter",
-            "getval": re.compile(r"""\sno\sbgp\sdefault\sroute\-target\sfilter""", re.VERBOSE),
+            "getval": re.compile(
+                r"""\sno\sbgp\sdefault\sroute\-target\sfilter""",
+                re.VERBOSE,
+            ),
             "setval": "bgp default route-target filter",
             "result": {"bgp": {"default": {"route_target": {"filter": False}}}},
         },
@@ -1479,7 +1482,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 "neighbors": {
                     "{{ neighbor_address }}": {
                         "neighbor_address": "{{ neighbor_address }}",
-                        "description": "{{ description }}",
+                        "description": "'{{ description }}'",
                     },
                 },
             },

@@ -7,9 +7,9 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
+from unittest.mock import patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_route_maps
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule, load_fixture
@@ -58,7 +58,10 @@ class TestIosRouteMapsModule(TestIosModule):
                                     additional_paths=dict(all=True),
                                     as_path=dict(acls=[100, 120]),
                                     clns=dict(address="test_osi"),
-                                    community=dict(exact_match=True, name=["new_merge"]),
+                                    community=dict(
+                                        exact_match=True,
+                                        name=["new_merge"],
+                                    ),
                                     ip=dict(address=dict(acls=[10, 100])),
                                     length=dict(maximum=50000, minimum=5000),
                                     mpls_label=True,
@@ -213,7 +216,10 @@ class TestIosRouteMapsModule(TestIosModule):
                                         vpn_distinguisher=dict(address="192.0.2.1:12"),
                                     ),
                                     global_route=True,
-                                    interfaces=["GigabitEthernet0/2", "GigabitEthernet0/1"],
+                                    interfaces=[
+                                        "GigabitEthernet0/2",
+                                        "GigabitEthernet0/1",
+                                    ],
                                     level=dict(level_1_2=True),
                                     lisp="test_lisp",
                                     local_preference=100,
@@ -249,7 +255,10 @@ class TestIosRouteMapsModule(TestIosModule):
                                     additional_paths=dict(all=True),
                                     as_path=dict(acls=[100, 120]),
                                     clns=dict(address="test_osi"),
-                                    community=dict(exact_match=True, name=["new_replace"]),
+                                    community=dict(
+                                        exact_match=True,
+                                        name=["new_replace"],
+                                    ),
                                     ip=dict(address=dict(acls=[10, 100])),
                                     length=dict(maximum=50000, minimum=5000),
                                     mpls_label=True,
@@ -418,7 +427,10 @@ class TestIosRouteMapsModule(TestIosModule):
                                         vpn_distinguisher=dict(address="192.0.2.1:12"),
                                     ),
                                     global_route=True,
-                                    interfaces=["GigabitEthernet0/2", "GigabitEthernet0/1"],
+                                    interfaces=[
+                                        "GigabitEthernet0/2",
+                                        "GigabitEthernet0/1",
+                                    ],
                                     level=dict(level_1_2=True),
                                     lisp="test_lisp",
                                     local_preference=100,
@@ -454,7 +466,10 @@ class TestIosRouteMapsModule(TestIosModule):
                                     additional_paths=dict(all=True),
                                     as_path=dict(acls=[100, 120]),
                                     clns=dict(address="test_osi"),
-                                    community=dict(exact_match=True, name=["new_override"]),
+                                    community=dict(
+                                        exact_match=True,
+                                        name=["new_override"],
+                                    ),
                                     ip=dict(address=dict(acls=[10, 100])),
                                     length=dict(maximum=50000, minimum=5000),
                                     mpls_label=True,
@@ -623,7 +638,10 @@ class TestIosRouteMapsModule(TestIosModule):
                                         vpn_distinguisher=dict(address="192.0.2.1:12"),
                                     ),
                                     global_route=True,
-                                    interfaces=["GigabitEthernet0/2", "GigabitEthernet0/1"],
+                                    interfaces=[
+                                        "GigabitEthernet0/2",
+                                        "GigabitEthernet0/1",
+                                    ],
                                     level=dict(level_1_2=True),
                                     lisp="test_lisp",
                                     local_preference=100,
@@ -676,7 +694,10 @@ class TestIosRouteMapsModule(TestIosModule):
                                         name=["99", "98", "test_1", "test_2"],
                                     ),
                                     extcommunity=["110", "130"],
-                                    interfaces=["GigabitEthernet0/1", "GigabitEthernet0/2"],
+                                    interfaces=[
+                                        "GigabitEthernet0/1",
+                                        "GigabitEthernet0/2",
+                                    ],
                                     ip=dict(address=dict(acls=[10, 100])),
                                     ipv6=dict(route_source=dict(acl="test_ipv6")),
                                     length=dict(maximum=10000, minimum=1000),
@@ -702,7 +723,9 @@ class TestIosRouteMapsModule(TestIosModule):
                                 sequence=30,
                                 set=dict(
                                     as_path=dict(
-                                        prepend=dict(as_number=["65512", 65522, "65532", 65543]),
+                                        prepend=dict(
+                                            as_number=["65512", 65522, "65532", 65543],
+                                        ),
                                     ),
                                 ),
                             ),
@@ -727,7 +750,10 @@ class TestIosRouteMapsModule(TestIosModule):
                                         vpn_distinguisher=dict(address="192.0.2.1:12"),
                                     ),
                                     global_route=True,
-                                    interfaces=["GigabitEthernet0/2", "GigabitEthernet0/1"],
+                                    interfaces=[
+                                        "GigabitEthernet0/2",
+                                        "GigabitEthernet0/1",
+                                    ],
                                     level=dict(level_1_2=True),
                                     lisp="test_lisp",
                                     local_preference=100,

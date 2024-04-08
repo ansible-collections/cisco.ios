@@ -7,11 +7,10 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_lag_interfaces
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
@@ -73,7 +72,11 @@ class TestIosLagInterfacesModule(TestIosModule):
                         "members": [
                             {"member": "GigabitEthernet0/2", "mode": "active"},
                             {"member": "GigabitEthernet0/3", "mode": "passive"},
-                            {"link": 20, "member": "GigabitEthernet0/4", "mode": "active"},
+                            {
+                                "link": 20,
+                                "member": "GigabitEthernet0/4",
+                                "mode": "active",
+                            },
                             {"link": 22, "member": "GigabitEthernet0/5"},
                         ],
                         "name": "Port-channel22",
@@ -120,7 +123,11 @@ class TestIosLagInterfacesModule(TestIosModule):
                         "members": [
                             {"member": "GigabitEthernet0/2", "mode": "active"},
                             {"member": "GigabitEthernet0/3", "mode": "active"},
-                            {"link": 20, "member": "GigabitEthernet0/4", "mode": "active"},
+                            {
+                                "link": 20,
+                                "member": "GigabitEthernet0/4",
+                                "mode": "active",
+                            },
                             {"link": 22, "member": "GigabitEthernet0/5"},
                         ],
                         "name": "Port-channel22",
@@ -164,7 +171,11 @@ class TestIosLagInterfacesModule(TestIosModule):
                         "members": [
                             {"member": "GigabitEthernet0/1", "mode": "active"},
                             {"member": "GigabitEthernet0/3", "mode": "on"},
-                            {"link": 20, "member": "GigabitEthernet0/4", "mode": "active"},
+                            {
+                                "link": 20,
+                                "member": "GigabitEthernet0/4",
+                                "mode": "active",
+                            },
                             {"link": 22, "member": "GigabitEthernet0/5"},
                         ],
                         "name": "Port-channel22",
@@ -219,7 +230,11 @@ class TestIosLagInterfacesModule(TestIosModule):
                         "members": [
                             {"member": "GigabitEthernet0/2", "mode": "active"},
                             {"member": "GigabitEthernet0/3", "mode": "active"},
-                            {"link": 20, "member": "GigabitEthernet0/4", "mode": "active"},
+                            {
+                                "link": 20,
+                                "member": "GigabitEthernet0/4",
+                                "mode": "active",
+                            },
                             {"link": 22, "member": "GigabitEthernet0/5"},
                         ],
                         "name": "Port-channel22",
@@ -259,7 +274,11 @@ class TestIosLagInterfacesModule(TestIosModule):
                         "members": [
                             {"member": "GigabitEthernet0/2", "mode": "active"},
                             {"member": "GigabitEthernet0/3", "mode": "active"},
-                            {"link": 20, "member": "GigabitEthernet0/4", "mode": "active"},
+                            {
+                                "link": 20,
+                                "member": "GigabitEthernet0/4",
+                                "mode": "active",
+                            },
                             {"link": 22, "member": "GigabitEthernet0/5"},
                         ],
                         "name": "Port-channel22",
@@ -314,7 +333,11 @@ class TestIosLagInterfacesModule(TestIosModule):
                         "members": [
                             {"member": "GigabitEthernet0/2", "mode": "active"},
                             {"member": "GigabitEthernet0/3", "mode": "active"},
-                            {"link": 20, "member": "GigabitEthernet0/4", "mode": "active"},
+                            {
+                                "link": 20,
+                                "member": "GigabitEthernet0/4",
+                                "mode": "active",
+                            },
                             {"link": 22, "member": "GigabitEthernet0/5"},
                         ],
                         "name": "Port-channel22",
@@ -459,7 +482,11 @@ class TestIosLagInterfacesModule(TestIosModule):
                         "members": [
                             {"member": "GigabitEthernet0/2", "mode": "active"},
                             {"member": "GigabitEthernet0/3", "mode": "active"},
-                            {"link": 20, "member": "GigabitEthernet0/4", "mode": "active"},
+                            {
+                                "link": 20,
+                                "member": "GigabitEthernet0/4",
+                                "mode": "active",
+                            },
                             {"link": 22, "member": "GigabitEthernet0/5"},
                         ],
                         "name": "Port-channel22",

@@ -20,9 +20,9 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
+from unittest.mock import patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_user
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule, load_fixture
@@ -117,18 +117,26 @@ class TestIosUserModule(TestIosModule):
         self.assertEqual(result["commands"], ["username ansible view test"])
 
     def test_ios_user_update_password_changed(self):
-        set_module_args(dict(name="test", configured_password="test", update_password="on_create"))
+        set_module_args(
+            dict(name="test", configured_password="test", update_password="on_create"),
+        )
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["username test secret test"])
 
     def test_ios_user_update_password_on_create_ok(self):
         set_module_args(
-            dict(name="ansible", configured_password="test", update_password="on_create"),
+            dict(
+                name="ansible",
+                configured_password="test",
+                update_password="on_create",
+            ),
         )
         self.execute_module()
 
     def test_ios_user_update_password_always(self):
-        set_module_args(dict(name="ansible", configured_password="test", update_password="always"))
+        set_module_args(
+            dict(name="ansible", configured_password="test", update_password="always"),
+        )
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["username ansible secret test"])
 
@@ -169,7 +177,10 @@ class TestIosUserModule(TestIosModule):
             ),
         )
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], [f"username ansible secret 9 {hashed_password_val}"])
+        self.assertEqual(
+            result["commands"],
+            [f"username ansible secret 9 {hashed_password_val}"],
+        )
 
     def test_add_hpassword_with_type(self):
         set_module_args(
