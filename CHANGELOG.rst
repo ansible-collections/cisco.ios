@@ -5,6 +5,32 @@ Cisco Ios Collection Release Notes
 .. contents:: Topics
 
 
+v7.0.0
+======
+
+Major Changes
+-------------
+
+- ios_ntp - Remove deprecated ntp legacy module
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- Deprecated ios_ntp module in favor of ios_ntp_global.
+
+v6.1.4
+======
+
+Bugfixes
+--------
+
+- ios_acls - update module to apply remarks entry with sequence numbers.
+- ios_bgp_address_family - description attribute, evalutated as complex object casted to string.
+- ios_bgp_global - description attribute, evalutated as complex object casted to string.
+- ios_interfaces - description attribute, evalutated as complex object casted to string.
+- ios_prefix_lists - description attribute, evalutated as complex object casted to string.
+- ios_route_maps - description attribute, evalutated as complex object casted to string.
+
 v6.1.3
 ======
 

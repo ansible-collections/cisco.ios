@@ -7,9 +7,9 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
+from unittest.mock import patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_prefix_lists
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule, load_fixture
@@ -74,7 +74,12 @@ class TestIosPrefixListsModule(TestIosModule):
                                         prefix="35.0.0.0/8",
                                         sequence=5,
                                     ),
-                                    dict(action="deny", ge=20, prefix="35.0.0.0/8", sequence=10),
+                                    dict(
+                                        action="deny",
+                                        ge=20,
+                                        prefix="35.0.0.0/8",
+                                        sequence=10,
+                                    ),
                                 ],
                                 name="test_prefix",
                             ),
@@ -121,9 +126,24 @@ class TestIosPrefixListsModule(TestIosModule):
                             dict(
                                 description="this is test description",
                                 entries=[
-                                    dict(action="deny", le=15, prefix="1.0.0.0/8", sequence=5),
-                                    dict(action="deny", ge=10, prefix="35.0.0.0/8", sequence=10),
-                                    dict(action="deny", ge=15, prefix="12.0.0.0/8", sequence=15),
+                                    dict(
+                                        action="deny",
+                                        le=15,
+                                        prefix="1.0.0.0/8",
+                                        sequence=5,
+                                    ),
+                                    dict(
+                                        action="deny",
+                                        ge=10,
+                                        prefix="35.0.0.0/8",
+                                        sequence=10,
+                                    ),
+                                    dict(
+                                        action="deny",
+                                        ge=15,
+                                        prefix="12.0.0.0/8",
+                                        sequence=15,
+                                    ),
                                     dict(
                                         action="deny",
                                         ge=20,
@@ -137,7 +157,12 @@ class TestIosPrefixListsModule(TestIosModule):
                             dict(
                                 description="this is test",
                                 entries=[
-                                    dict(action="deny", ge=15, prefix="12.0.0.0/8", sequence=50),
+                                    dict(
+                                        action="deny",
+                                        ge=15,
+                                        prefix="12.0.0.0/8",
+                                        sequence=50,
+                                    ),
                                 ],
                                 name="test",
                             ),
@@ -151,7 +176,12 @@ class TestIosPrefixListsModule(TestIosModule):
                                         prefix="35.0.0.0/8",
                                         sequence=5,
                                     ),
-                                    dict(action="deny", ge=20, prefix="35.0.0.0/8", sequence=10),
+                                    dict(
+                                        action="deny",
+                                        ge=20,
+                                        prefix="35.0.0.0/8",
+                                        sequence=10,
+                                    ),
                                 ],
                                 name="test_prefix",
                             ),
@@ -190,7 +220,12 @@ class TestIosPrefixListsModule(TestIosModule):
                             dict(
                                 description="this is replace test",
                                 entries=[
-                                    dict(action="deny", ge=15, prefix="12.0.0.0/8", sequence=15),
+                                    dict(
+                                        action="deny",
+                                        ge=15,
+                                        prefix="12.0.0.0/8",
+                                        sequence=15,
+                                    ),
                                     dict(
                                         action="deny",
                                         ge=20,
@@ -204,7 +239,12 @@ class TestIosPrefixListsModule(TestIosModule):
                             dict(
                                 description="this is replace test",
                                 entries=[
-                                    dict(action="deny", ge=20, prefix="35.0.0.0/8", sequence=10),
+                                    dict(
+                                        action="deny",
+                                        ge=20,
+                                        prefix="35.0.0.0/8",
+                                        sequence=10,
+                                    ),
                                 ],
                                 name="test_replace",
                             ),
@@ -255,9 +295,24 @@ class TestIosPrefixListsModule(TestIosModule):
                             dict(
                                 description="this is test description",
                                 entries=[
-                                    dict(action="deny", le=15, prefix="1.0.0.0/8", sequence=5),
-                                    dict(action="deny", ge=10, prefix="35.0.0.0/8", sequence=10),
-                                    dict(action="deny", ge=15, prefix="12.0.0.0/8", sequence=15),
+                                    dict(
+                                        action="deny",
+                                        le=15,
+                                        prefix="1.0.0.0/8",
+                                        sequence=5,
+                                    ),
+                                    dict(
+                                        action="deny",
+                                        ge=10,
+                                        prefix="35.0.0.0/8",
+                                        sequence=10,
+                                    ),
+                                    dict(
+                                        action="deny",
+                                        ge=15,
+                                        prefix="12.0.0.0/8",
+                                        sequence=15,
+                                    ),
                                     dict(
                                         action="deny",
                                         ge=20,
@@ -271,7 +326,12 @@ class TestIosPrefixListsModule(TestIosModule):
                             dict(
                                 description="this is test",
                                 entries=[
-                                    dict(action="deny", ge=15, prefix="12.0.0.0/8", sequence=50),
+                                    dict(
+                                        action="deny",
+                                        ge=15,
+                                        prefix="12.0.0.0/8",
+                                        sequence=50,
+                                    ),
                                 ],
                                 name="test",
                             ),
@@ -285,7 +345,12 @@ class TestIosPrefixListsModule(TestIosModule):
                                         prefix="35.0.0.0/8",
                                         sequence=5,
                                     ),
-                                    dict(action="deny", ge=20, prefix="35.0.0.0/8", sequence=10),
+                                    dict(
+                                        action="deny",
+                                        ge=20,
+                                        prefix="35.0.0.0/8",
+                                        sequence=10,
+                                    ),
                                 ],
                                 name="test_prefix",
                             ),
@@ -324,7 +389,12 @@ class TestIosPrefixListsModule(TestIosModule):
                             dict(
                                 description="this is override test",
                                 entries=[
-                                    dict(action="deny", ge=15, prefix="12.0.0.0/8", sequence=15),
+                                    dict(
+                                        action="deny",
+                                        ge=15,
+                                        prefix="12.0.0.0/8",
+                                        sequence=15,
+                                    ),
                                     dict(
                                         action="deny",
                                         ge=20,
@@ -338,7 +408,12 @@ class TestIosPrefixListsModule(TestIosModule):
                             dict(
                                 description="this is override test",
                                 entries=[
-                                    dict(action="deny", ge=20, prefix="35.0.0.0/8", sequence=10),
+                                    dict(
+                                        action="deny",
+                                        ge=20,
+                                        prefix="35.0.0.0/8",
+                                        sequence=10,
+                                    ),
                                 ],
                                 name="test_override",
                             ),
@@ -391,9 +466,24 @@ class TestIosPrefixListsModule(TestIosModule):
                             dict(
                                 description="this is test description",
                                 entries=[
-                                    dict(action="deny", le=15, prefix="1.0.0.0/8", sequence=5),
-                                    dict(action="deny", ge=10, prefix="35.0.0.0/8", sequence=10),
-                                    dict(action="deny", ge=15, prefix="12.0.0.0/8", sequence=15),
+                                    dict(
+                                        action="deny",
+                                        le=15,
+                                        prefix="1.0.0.0/8",
+                                        sequence=5,
+                                    ),
+                                    dict(
+                                        action="deny",
+                                        ge=10,
+                                        prefix="35.0.0.0/8",
+                                        sequence=10,
+                                    ),
+                                    dict(
+                                        action="deny",
+                                        ge=15,
+                                        prefix="12.0.0.0/8",
+                                        sequence=15,
+                                    ),
                                     dict(
                                         action="deny",
                                         ge=20,
@@ -407,7 +497,12 @@ class TestIosPrefixListsModule(TestIosModule):
                             dict(
                                 description="this is test",
                                 entries=[
-                                    dict(action="deny", ge=15, prefix="12.0.0.0/8", sequence=50),
+                                    dict(
+                                        action="deny",
+                                        ge=15,
+                                        prefix="12.0.0.0/8",
+                                        sequence=50,
+                                    ),
                                 ],
                                 name="test",
                             ),
@@ -421,7 +516,12 @@ class TestIosPrefixListsModule(TestIosModule):
                                         prefix="35.0.0.0/8",
                                         sequence=5,
                                     ),
-                                    dict(action="deny", ge=20, prefix="35.0.0.0/8", sequence=10),
+                                    dict(
+                                        action="deny",
+                                        ge=20,
+                                        prefix="35.0.0.0/8",
+                                        sequence=10,
+                                    ),
                                 ],
                                 name="test_prefix",
                             ),
@@ -491,7 +591,12 @@ class TestIosPrefixListsModule(TestIosModule):
                                         prefix="35.0.0.0/8",
                                         sequence=5,
                                     ),
-                                    dict(action="deny", ge=20, prefix="35.0.0.0/8", sequence=10),
+                                    dict(
+                                        action="deny",
+                                        ge=20,
+                                        prefix="35.0.0.0/8",
+                                        sequence=10,
+                                    ),
                                 ],
                                 name="test_prefix",
                             ),

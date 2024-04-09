@@ -53,7 +53,7 @@ class InterfacesTemplate(NetworkTemplate):
             "setval": "description {{ description }}",
             "result": {
                 '{{ name }}': {
-                    'description': '{{ description }}',
+                    'description': "'{{ description }}'",
                 },
             },
         },

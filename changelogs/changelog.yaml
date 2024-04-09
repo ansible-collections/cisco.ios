@@ -1153,3 +1153,30 @@ releases:
       - ios_acls_sticky.yml
       - ios_vrf_docfix.yml
     release_date: "2024-03-08"
+  6.1.4:
+    changes:
+      bugfixes:
+        - ios_acls - update module to apply remarks entry with sequence numbers.
+        - ios_bgp_address_family - description attribute, evalutated as complex object
+          casted to string.
+        - ios_bgp_global - description attribute, evalutated as complex object casted
+          to string.
+        - ios_interfaces - description attribute, evalutated as complex object casted
+          to string.
+        - ios_prefix_lists - description attribute, evalutated as complex object casted
+          to string.
+        - ios_route_maps - description attribute, evalutated as complex object casted
+          to string.
+    fragments:
+      - acl_refactor.yaml
+      - json_serializable_issue.yaml
+    release_date: "2024-03-27"
+  7.0.0:
+    changes:
+      major_changes:
+        - ios_ntp - Remove deprecated ntp legacy module
+      removed_features:
+        - Deprecated ios_ntp module in favor of ios_ntp_global.
+    fragments:
+      - remove_deprecated.yml
+    release_date: "2024-04-01"
