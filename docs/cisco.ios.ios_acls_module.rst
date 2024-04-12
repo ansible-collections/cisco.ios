@@ -3145,6 +3145,8 @@ Parameters
                         <div>The remarks/description of the ACL.</div>
                         <div>The remarks attribute used within an ace with or without a sequence number will produce remarks that are pushed before the ace entry.</div>
                         <div>Remarks entry used as the only key in as the list option will produce non ace specific remarks, these remarks would be pushed at the end of all the aces for an acl.</div>
+                        <div>Remarks is treated a block, for every single remarks updated for an ace all the remarks are negated and added back to maintain the order of remarks mentioned.</div>
+                        <div>As the appliance deletes all the remarks once the ace is updated, the set of remarks would be re-applied that is an expected behavior.</div>
                 </td>
             </tr>
             <tr>
@@ -5195,6 +5197,347 @@ Examples
     # ip access-list extended 150
     #     10 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10
 
+    # Using overridden - example remarks specific on multiple sequence
+
+    # Before state:
+    # -------------
+    #
+    # vios#show running-config | section access-list
+    # ip access-list extended TEST
+    #  10 remark FIRST REMARK BEFORE SEQUENCE 10
+    #  10 remark ============
+    #  10 remark REMARKS FOR SEQUENCE 10 NO FOLLOWING ACE
+    #  20 remark FIRST REMARK BEFORE SEQUENCE 20
+    #  20 remark ============
+    #  20 remark ALLOW HOST FROM SEQUENCE 20
+    #  20 permit ip host 1.1.1.1 any
+    #  30 remark FIRST REMARK BEFORE SEQUENCE 30
+    #  30 remark ============
+    #  30 remark ALLOW HOST FROM SEQUENCE 30
+    #  30 permit ip host 2.2.2.2 any
+    #  40 remark FIRST REMARK BEFORE SEQUENCE 40
+    #  40 remark ============
+    #  40 remark ALLOW NEW HOST FROM SEQUENCE 40
+    #  40 permit ip host 3.3.3.3 any
+    #  remark Remark not specific to sequence
+    #  remark ============
+    #  remark End Remarks
+    # ip access-list extended test_acl
+    #  10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www fin option traceroute ttl eq 10
+    # ip access-list extended 110
+    #  10 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
+    # ip access-list extended 123
+    #  10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12
+    #  20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
+    # ipv6 access-list R1_TRAFFIC
+    #  sequence 10 deny tcp any eq www any eq telnet ack dscp af11
+
+    - name: Override remarks and ace configurations
+      cisco.ios.ios_acls:
+        config:
+          - afi: ipv4
+            acls:
+              - name: TEST
+                acl_type: extended
+                aces:
+                  - sequence: 10
+                    remarks:
+                      - "FIRST REMARK BEFORE SEQUENCE 10"
+                      - "============"
+                      - "REMARKS FOR SEQUENCE 10 NO FOLLOWING ACE"
+                    grant: permit
+                    protocol: ip
+                    source:
+                      host: 1.1.1.1
+                    destination:
+                      any: true
+                  - sequence: 20
+                    remarks:
+                      - "FIRST REMARK BEFORE SEQUENCE 20"
+                      - "============"
+                      - "ALLOW HOST FROM SEQUENCE 20"
+                    grant: permit
+                    protocol: ip
+                    source:
+                      host: 192.168.0.1
+                    destination:
+                      any: true
+                  - sequence: 30
+                    remarks:
+                      - "FIRST REMARK BEFORE SEQUENCE 30"
+                      - "============"
+                      - "ALLOW HOST FROM SEQUENCE 30 updated"
+                    grant: permit
+                    protocol: ip
+                    source:
+                      host: 2.2.2.2
+                    destination:
+                      any: true
+                  - sequence: 40
+                    remarks:
+                      - "FIRST REMARK BEFORE SEQUENCE 40"
+                      - "============"
+                      - "ALLOW NEW HOST FROM SEQUENCE 40"
+                    grant: permit
+                    protocol: ip
+                    source:
+                      host: 3.3.3.3
+                    destination:
+                      any: true
+                  - remarks:
+                      - "Remark not specific to sequence"
+                      - "============"
+                      - "End Remarks 1"
+        state: overridden
+
+    # Task Output
+    # -----------
+    #
+    # before:
+    # - acls:
+    #   - aces:
+    #     - destination:
+    #         address: 192.0.3.0
+    #         wildcard_bits: 0.0.0.255
+    #       dscp: ef
+    #       grant: deny
+    #       protocol: icmp
+    #       protocol_options:
+    #         icmp:
+    #           echo: true
+    #       sequence: 10
+    #       source:
+    #         address: 192.0.2.0
+    #         wildcard_bits: 0.0.0.255
+    #       ttl:
+    #         eq: 10
+    #     acl_type: extended
+    #     name: '110'
+    #   - aces:
+    #     - destination:
+    #         address: 198.51.101.0
+    #         port_protocol:
+    #           eq: telnet
+    #         wildcard_bits: 0.0.0.255
+    #       grant: deny
+    #       protocol: tcp
+    #       protocol_options:
+    #         tcp:
+    #           ack: true
+    #       sequence: 10
+    #       source:
+    #         address: 198.51.100.0
+    #         wildcard_bits: 0.0.0.255
+    #       tos:
+    #         service_value: 12
+    #     - destination:
+    #         address: 192.0.4.0
+    #         port_protocol:
+    #           eq: www
+    #         wildcard_bits: 0.0.0.255
+    #       dscp: ef
+    #       grant: deny
+    #       protocol: tcp
+    #       protocol_options:
+    #         tcp:
+    #           ack: true
+    #       sequence: 20
+    #       source:
+    #         address: 192.0.3.0
+    #         wildcard_bits: 0.0.0.255
+    #       ttl:
+    #         lt: 20
+    #     acl_type: extended
+    #     name: '123'
+    #   - aces:
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE SEQUENCE 20
+    #       - ============
+    #       - ALLOW HOST FROM SEQUENCE 20
+    #       sequence: 20
+    #       source:
+    #         host: 1.1.1.1
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE SEQUENCE 30
+    #       - ============
+    #       - ALLOW HOST FROM SEQUENCE 30
+    #       sequence: 30
+    #       source:
+    #         host: 2.2.2.2
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE SEQUENCE 40
+    #       - ============
+    #       - ALLOW NEW HOST FROM SEQUENCE 40
+    #       sequence: 40
+    #       source:
+    #         host: 3.3.3.3
+    #     - remarks:
+    #       - FIRST REMARK BEFORE SEQUENCE 10
+    #       - ============
+    #       - REMARKS FOR SEQUENCE 10 NO FOLLOWING ACE
+    #       sequence: 10
+    #     - remarks:
+    #       - Remark not specific to sequence
+    #       - ============
+    #       - End Remarks
+    #     acl_type: extended
+    #     name: TEST
+    #   - aces:
+    #     - destination:
+    #         address: 192.0.3.0
+    #         port_protocol:
+    #           eq: www
+    #         wildcard_bits: 0.0.0.255
+    #       grant: deny
+    #       option:
+    #         traceroute: true
+    #       protocol: tcp
+    #       protocol_options:
+    #         tcp:
+    #           fin: true
+    #       sequence: 10
+    #       source:
+    #         address: 192.0.2.0
+    #         wildcard_bits: 0.0.0.255
+    #       ttl:
+    #         eq: 10
+    #     acl_type: extended
+    #     name: test_acl
+    #   afi: ipv4
+    # - acls:
+    #   - aces:
+    #     - destination:
+    #         any: true
+    #         port_protocol:
+    #           eq: telnet
+    #       dscp: af11
+    #       grant: deny
+    #       protocol: tcp
+    #       protocol_options:
+    #         tcp:
+    #           ack: true
+    #       sequence: 10
+    #       source:
+    #         any: true
+    #         port_protocol:
+    #           eq: www
+    #     name: R1_TRAFFIC
+    #   afi: ipv6
+    # commands:
+    # - no ipv6 access-list R1_TRAFFIC
+    # - ip access-list extended TEST
+    # - no 10  # removes all remarks and ace entry for sequence 10
+    # - no 20 permit ip host 1.1.1.1 any  # removing the ace automatically removes the remarks
+    # - no 30 remark  # just remove remarks for sequence 30
+    # - no remark  # remove all remarks at end of acl, that has no sequence
+    # - 10 remark FIRST REMARK BEFORE SEQUENCE 10
+    # - 10 remark ============
+    # - 10 remark REMARKS FOR SEQUENCE 10 NO FOLLOWING ACE
+    # - 10 permit ip host 1.1.1.1 any
+    # - 20 remark FIRST REMARK BEFORE SEQUENCE 20
+    # - 20 remark ============
+    # - 20 remark ALLOW HOST FROM SEQUENCE 20
+    # - 20 permit ip host 192.168.0.1 any
+    # - 30 remark FIRST REMARK BEFORE SEQUENCE 30
+    # - 30 remark ============
+    # - 30 remark ALLOW HOST FROM SEQUENCE 30 updated
+    # - remark Remark not specific to sequence
+    # - remark ============
+    # - remark End Remarks 1
+    # - no ip access-list extended 110
+    # - no ip access-list extended 123
+    # - no ip access-list extended test_acl
+    # after:
+    # - acls:
+    #   - aces:
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE SEQUENCE 10
+    #       - ============
+    #       - REMARKS FOR SEQUENCE 10 NO FOLLOWING ACE
+    #       sequence: 10
+    #       source:
+    #         host: 1.1.1.1
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE SEQUENCE 20
+    #       - ============
+    #       - ALLOW HOST FROM SEQUENCE 20
+    #       sequence: 20
+    #       source:
+    #         host: 192.168.0.1
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE SEQUENCE 30
+    #       - ============
+    #       - ALLOW HOST FROM SEQUENCE 30 updated
+    #       sequence: 30
+    #       source:
+    #         host: 2.2.2.2
+    #     - destination:
+    #         any: true
+    #       grant: permit
+    #       protocol: ip
+    #       remarks:
+    #       - FIRST REMARK BEFORE SEQUENCE 40
+    #       - ============
+    #       - ALLOW NEW HOST FROM SEQUENCE 40
+    #       sequence: 40
+    #       source:
+    #         host: 3.3.3.3
+    #     - remarks:
+    #       - Remark not specific to sequence
+    #       - ============
+    #       - End Remarks 1
+    #     acl_type: extended
+    #     name: TEST
+    #   afi: ipv4
+
+    # After state:
+    # -------------
+    #
+    # foo#show running-config | section access-list
+    # ip access-list extended TEST
+    #  10 remark FIRST REMARK BEFORE SEQUENCE 10
+    #  10 remark ============
+    #  10 remark REMARKS FOR SEQUENCE 10 NO FOLLOWING ACE
+    #  10 permit ip host 1.1.1.1 any
+    #  20 remark FIRST REMARK BEFORE SEQUENCE 20
+    #  20 remark ============
+    #  20 remark ALLOW HOST FROM SEQUENCE 20
+    #  20 permit ip host 192.168.0.1 any
+    #  30 remark FIRST REMARK BEFORE SEQUENCE 30
+    #  30 remark ============
+    #  30 remark ALLOW HOST FROM SEQUENCE 30 updated
+    #  30 permit ip host 2.2.2.2 any
+    #  40 remark FIRST REMARK BEFORE SEQUENCE 40
+    #  40 remark ============
+    #  40 remark ALLOW NEW HOST FROM SEQUENCE 40
+    #  40 permit ip host 3.3.3.3 any
+    #  remark Remark not specific to sequence
+    #  remark ============
+    #  remark End Remarks 1
 
     # Using deleted - delete ACL(s)
 

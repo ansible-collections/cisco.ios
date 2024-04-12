@@ -1,0 +1,134 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_acls round trip integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Apply the configuration with remarks
+      register: base_config
+      cisco.ios.ios_acls:
+        config:
+          - afi: ipv4
+            acls:
+              - name: TEST
+                acl_type: extended
+                aces:
+                  - sequence: 10
+                    remarks:
+                      - "FIRST REMARK BEFORE SEQUENCE 10"
+                      - "============"
+                      - "REMARKS FOR SEQUENCE 10 NO FOLLOWING ACE"
+                  - sequence: 20
+                    remarks:
+                      - "FIRST REMARK BEFORE SEQUENCE 20"
+                      - "============"
+                      - "ALLOW HOST FROM SEQUENCE 20"
+                    grant: permit
+                    protocol: ip
+                    source:
+                      host: 1.1.1.1
+                    destination:
+                      any: true
+                  - sequence: 30
+                    remarks:
+                      - "FIRST REMARK BEFORE SEQUENCE 30"
+                      - "============"
+                      - "ALLOW HOST FROM SEQUENCE 30"
+                    grant: permit
+                    protocol: ip
+                    source:
+                      host: 2.2.2.2
+                    destination:
+                      any: true
+                  - sequence: 40
+                    remarks:
+                      - "FIRST REMARK BEFORE SEQUENCE 40"
+                      - "============"
+                      - "ALLOW NEW HOST FROM SEQUENCE 40"
+                    grant: permit
+                    protocol: ip
+                    source:
+                      host: 3.3.3.3
+                    destination:
+                      any: true
+                  - remarks:
+                      - "Remark not specific to sequence"
+                      - "============"
+                      - "End Remarks"
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - base_config.changed == true
+          - base_config.commands|symmetric_difference(remarks_check.commands) == []
+          - base_config.before|symmetric_difference(remarks_check.before) == []
+          - base_config.after|symmetric_difference(remarks_check.after) == []
+
+    - name: Apply enhanced configuration
+      register: base_config_overridden
+      cisco.ios.ios_acls:
+        config:
+          - afi: ipv4
+            acls:
+              - name: TEST
+                acl_type: extended
+                aces:
+                  - sequence: 10
+                    remarks:
+                      - "FIRST REMARK BEFORE SEQUENCE 10"
+                      - "============"
+                      - "REMARKS FOR SEQUENCE 10 NO FOLLOWING ACE"
+                    grant: permit
+                    protocol: ip
+                    source:
+                      host: 1.1.1.1
+                    destination:
+                      any: true
+                  - sequence: 20
+                    remarks:
+                      - "FIRST REMARK BEFORE SEQUENCE 20"
+                      - "============"
+                      - "ALLOW HOST FROM SEQUENCE 20"
+                    grant: permit
+                    protocol: ip
+                    source:
+                      host: 192.168.0.1
+                    destination:
+                      any: true
+                  - sequence: 30
+                    remarks:
+                      - "FIRST REMARK BEFORE SEQUENCE 30"
+                      - "============"
+                      - "ALLOW HOST FROM SEQUENCE 30 updated"
+                    grant: permit
+                    protocol: ip
+                    source:
+                      host: 2.2.2.2
+                    destination:
+                      any: true
+                  - sequence: 40
+                    remarks:
+                      - "FIRST REMARK BEFORE SEQUENCE 40"
+                      - "============"
+                      - "ALLOW NEW HOST FROM SEQUENCE 40"
+                    grant: permit
+                    protocol: ip
+                    source:
+                      host: 3.3.3.3
+                    destination:
+                      any: true
+                  - remarks:
+                      - "Remark not specific to sequence"
+                      - "============"
+                      - "End Remarks updated"
+                      - "04j"
+        state: overridden
+
+    - ansible.builtin.assert:
+        that:
+          - base_config_overridden.commands|symmetric_difference(remarks_check_override.commands) == []
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
