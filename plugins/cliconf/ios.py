@@ -179,7 +179,7 @@ class Cliconf(CliconfBase):
         cmd = cmd.strip()
 
         return self.send_command(cmd)
-    
+
     @enable_mode
     def restore(self, filename=None, path=""):
         if not filename:
