@@ -1,6 +1,0 @@
-major_changes:
-  - Update the netcommon base version 6.1.0 to support cli_restore plugin.
-minor_changes:
-  - Add support for cli_restore functionality.
-  - cli_restore module is part of netcommon.
-  - Please refer the PR to know more about core changes (https://github.com/ansible-collections/ansible.netcommon/pull/618).
