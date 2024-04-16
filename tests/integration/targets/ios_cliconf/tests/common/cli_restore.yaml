@@ -22,7 +22,7 @@
       cisco.ios.ios_hostname:
         config:
         state: deleted
- 
+
     - name: Delete ios hostname config
       register: result
       cisco.ios.ios_hostname:
