@@ -102,7 +102,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vxlan_vtep.vxlan_vtep import (
     Vxlan_vtepFacts,
 )
-
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vrf_global.vrf_global import (
+    Vrf_globalFacts,
+)
 
 FACT_LEGACY_SUBSETS = dict(
     default=Default,
@@ -139,6 +141,7 @@ FACT_RESOURCE_SUBSETS = dict(
     vxlan_vtep=Vxlan_vtepFacts,
     evpn_global=Evpn_globalFacts,
     evpn_evi=Evpn_eviFacts,
+    vrf_global=Vrf_globalFacts,
 )
 
 
