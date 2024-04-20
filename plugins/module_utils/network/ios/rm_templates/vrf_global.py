@@ -62,7 +62,7 @@ class Vrf_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "ipv4_multicast_multitopology",
+            "name": "ipv4.multicast.multitopology",
             "getval": re.compile(
                 r"""
                 \s+ipv4\smulticast\s(?P<multitopology>multitopology)
@@ -81,7 +81,7 @@ class Vrf_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "ipv6_multicast_multitopology",
+            "name": "ipv6.multicast.multitopology",
             "getval": re.compile(
                 r"""
                 \s+ipv6\smulticast\s(?P<multitopology>multitopology)
@@ -115,7 +115,7 @@ class Vrf_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "route_target_export",
+            "name": "route_target.export",
             "getval": re.compile(
                 r"""
                 \s+route-target\sexport\s(?P<route_target_export>\S+)
@@ -132,7 +132,7 @@ class Vrf_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "route_target_import_config",
+            "name": "route_target.import_config",
             "getval": re.compile(
                 r"""
                 \s+route-target\simport\s(?P<route_target_import_config>\S+)
@@ -149,7 +149,7 @@ class Vrf_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "route_target_both",
+            "name": "route_target.both",
             "getval": re.compile(
                 r"""
                 \s+route-target\sboth\s(?P<route_target_both>\S+)
@@ -166,7 +166,7 @@ class Vrf_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "vnet_tag",
+            "name": "vnet.tag",
             "getval": re.compile(
                 r"""
                 \s+vnet\stag\s(?P<vnet_tag>\d+)
@@ -183,7 +183,7 @@ class Vrf_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "vpn_id",
+            "name": "vpn.id",
             "getval": re.compile(
                 r"""
                 \s+vpn\sid\s(?P<vpn_id>\S+)

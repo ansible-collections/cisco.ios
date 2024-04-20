@@ -41,14 +41,22 @@ options:
         suboptions:
           multicast:
             description: IP Multicast configuration
-            type: bool
+            type: dict
+            suboptions:
+              multitopology:
+                description:  Enable Multicast-Specific RPF Topology
+                type: bool
       ipv6:
         description: VRF IPv6 configuration
         type: dict
         suboptions:
           multicast:
             description: IP Multicast configuration
-            type: bool
+            type: dict
+            suboptions:
+              multitopology:
+                description:  Enable Multicast-Specific RPF Topology
+                type: bool
       rd:
         description: Specify Route Distinguisher (RD).
         type: str
@@ -162,10 +170,10 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.cisco.ios.ios.plugins.module_utils.network.ios.argspec.vrf_global.vrf_global import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vrf_global.vrf_global import (
     Vrf_globalArgs,
 )
-from ansible_collections.cisco.ios.ios.plugins.module_utils.network.ios.config.vrf_global.vrf_global import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.vrf_global.vrf_global import (
     Vrf_global,
 )
 

@@ -50,14 +50,14 @@ class Vrf_global(ResourceModule):
         self.parsers = [
             "name",
             "description",
-            "ipv4_multicast_multitopology",
-            "ipv6_multicast_multitopology",
+            "ipv4.multicast.multitopology",
+            "ipv6.multicast.multitopology",
             "rd",
-            "route_target_export",
-            "route_target_import_config",
-            "route_target_both",
-            "vnet_tag",
-            "vpn_id",
+            "route_target.export",
+            "route_target.import_config",
+            "route_target.both",
+            "vnet.tag",
+            "vpn.id",
         ]
 
     def execute_module(self):

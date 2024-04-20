@@ -41,11 +41,21 @@ class Vrf_globalArgs(object):  # pylint: disable=R0903
                 "description": {"type": "str"},
                 "ipv4": {
                     "type": "dict",
-                    "options": {"multicast": {"type": "bool"}},
+                    "options": {
+                        "multicast": {
+                            "type": "dict",
+                            "options": {"multitopology": {"type": "bool"}},
+                        }
+                    },
                 },
                 "ipv6": {
                     "type": "dict",
-                    "options": {"multicast": {"type": "bool"}},
+                    "options": {
+                        "multicast": {
+                            "type": "dict",
+                            "options": {"multitopology": {"type": "bool"}},
+                        }
+                    },
                 },
                 "rd": {"type": "str"},
                 "route_target": {
