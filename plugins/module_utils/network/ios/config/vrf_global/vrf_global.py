@@ -87,14 +87,11 @@ class Vrf_global(ResourceModule):
             haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             wantd = {}
 
-        # remove superfluous config for overridden and deleted
-        if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
-                if k not in wantd:
-                    self._compare(want={}, have=have)
+        if self.state == "purged":
+            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            wantd = {}
 
-        for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, {}))
+        self._compare(want=wantd, have=haved)
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -102,7 +99,25 @@ class Vrf_global(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Vrf_global network resource.
         """
-        self.compare(parsers=self.parsers, want=want, have=have)
+        self._compare_vrf(want=want, have=have)
+
+    def _compare_vrf(self, want, have):
+        """Custom handling of vrfs option
+        :params want: the want VRF dictionary
+        :params have: the have VRF dictionary
+        """
+
+        for name, entry in iteritems(want):
+            begin = len(self.commands)
+            vrf_have = have.pop(name, {})
+
+            self.compare(parsers=self.parsers, want=entry, have=vrf_have)
+
+        # for deleted and overridden state
+        if self.state != "replaced":
+            begin = len(self.commands)
+            for name, entry in iteritems(have):
+                self.commands.insert(begin, "no vrf definition {0}".format(name))
 
     def _get_config(self):
         return self._connection.get("show running-config vrf")
