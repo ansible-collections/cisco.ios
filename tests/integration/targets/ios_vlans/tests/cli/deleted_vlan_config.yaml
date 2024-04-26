@@ -8,29 +8,36 @@
 
 - block:
     - name: Delete vlans attributes for all configured vlans
+      when: run_test
       register: result
       cisco.ios.ios_vlans: &id001
         state: deleted
 
     - name: Assert that correct set of commands were generated
+      when: run_test
       ansible.builtin.assert:
         that:
           - "{{ deleted_vlan_config['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
+      when: run_test
       ansible.builtin.assert:
         that:
           - deleted_vlan_config['before'] == result['before']
 
     - name: Assert that after dict is correctly generated
+      when: run_test
       ansible.builtin.assert:
         that:
           - deleted_vlan_config['after'] == result['after']
 
     - name: Delete vlans attributes for all configured vlans (idempotent)
+      when: run_test
       register: result
       cisco.ios.ios_vlans: *id001
+
     - name: Assert that the previous task was idempotent
+      when: run_test
       ansible.builtin.assert:
         that:
           - result.changed == false

@@ -1,5 +1,6 @@
 ---
 - name: Populate configuration
+  when: run_test
   cisco.ios.ios_vlans:
     config:
       - vlan_id: 101
