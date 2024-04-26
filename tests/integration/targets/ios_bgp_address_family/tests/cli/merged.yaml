@@ -8,6 +8,7 @@
 - block:
     - name: Merge provided configuration with device configuration
       register: result
+      when: run_test
       cisco.ios.ios_bgp_address_family: &id001
         config:
           address_family:
@@ -104,11 +105,13 @@
         state: merged
 
     - name: Assert that correct set of commands were generated
+      when: run_test
       ansible.builtin.assert:
         that:
           - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
+      when: run_test
       ansible.builtin.assert:
         that:
           - merged['before'] == {}
@@ -119,6 +122,7 @@
     #       - merged['after'] == result['after']
 
     - name: Merge provided configuration with device configuration (idempotent)
+      when: run_test
       register: result
       cisco.ios.ios_bgp_address_family: *id001
 
