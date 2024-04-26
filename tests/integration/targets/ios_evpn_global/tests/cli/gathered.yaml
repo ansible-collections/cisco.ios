@@ -7,12 +7,14 @@
 
 - block:
     - name: Ios_evpn_global gathered - play
+      when: run_test
       register: result
       cisco.ios.ios_evpn_global:
         config:
         state: gathered
 
     - name: Ios_evpn_global gathered - assert config
+      when: run_test
       ansible.builtin.assert:
         that:
           - result.changed == false

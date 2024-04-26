@@ -6,6 +6,7 @@
     config: "{{ lines }}"
 
 - name: Populate configuration evpn_global
+  when: run_test
   cisco.ios.ios_evpn_global:
     config:
       replication_type: ingress

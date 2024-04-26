@@ -7,6 +7,7 @@
 
 - block:
     - name: Ios_evpn_global replaced - play
+      when: run_test
       register: result
       cisco.ios.ios_evpn_global: &id001
         config:
@@ -20,24 +21,30 @@
         state: replaced
 
     - name: Ios_evpn_global replaced - assert commands
+      when: run_test
       ansible.builtin.assert:
         that:
           - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Ios_evpn_global replaced - assert before
+      when: run_test
       ansible.builtin.assert:
         that:
           - replaced['before'] == result['before']
 
     - name: Ios_evpn_global replaced - assert after
+      when: run_test
       ansible.builtin.assert:
         that:
           - replaced['after'] == result['after']
 
     - name: Ios_evpn_global replaced - play (idempotent)
+      when: run_test
       register: result
       cisco.ios.ios_evpn_global: *id001
+
     - name: Ios_evpn_global replaced - assert above task was idempotent
+      when: run_test
       ansible.builtin.assert:
         that:
           - result['changed'] == false
