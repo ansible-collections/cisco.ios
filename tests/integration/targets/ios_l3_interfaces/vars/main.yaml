@@ -25,6 +25,8 @@ merged:
     - ipv6 enable
     - interface Vlan902
     - ipv6 enable
+    - interface Vlan101
+    - no autostate
   after:
     - name: Loopback888
     - ipv4:
@@ -46,10 +48,7 @@ merged:
         - address: 2001:DB8:0:3::/64
       name: GigabitEthernet3
     - name: GigabitEthernet4
-    - name: Vlan101
-      ipv4:
-        - address: 198.51.100.2/24
-      mac_address: dead:beef:abcd
+    - name: Loopback1
     - name: Vlan901
       ipv4:
         - source_interface:
@@ -61,6 +60,8 @@ merged:
       ipv6:
         - enable: true
       autostate: true
+    - name: Vlan101
+      autostate: false
 
 replaced:
   before:
