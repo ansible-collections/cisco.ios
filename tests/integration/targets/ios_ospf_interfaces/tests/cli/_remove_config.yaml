@@ -14,9 +14,6 @@
   cisco.ios.ios_interfaces:
     config:
       - name: Loopback1
-      - name: Vlan101
-      - name: Vlan901
-      - name: Vlan902
       - name: Port-channel10
       - name: Port-channel11
       - name: Port-channel22

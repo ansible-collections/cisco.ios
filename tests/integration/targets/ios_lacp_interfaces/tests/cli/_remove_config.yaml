@@ -17,7 +17,4 @@
       - name: Port-channel11
       - name: Port-channel22
       - name: Port-channel40
-      - name: Vlan101
-      - name: Vlan901
-      - name: Vlan902
     state: purged

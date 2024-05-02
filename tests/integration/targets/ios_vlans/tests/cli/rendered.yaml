@@ -24,10 +24,13 @@
             shutdown: enabled
         state: rendered
 
+    - name: debug
+      ansible.builtin.debug:
+        var: result
+
     - name: Assert that correct set of commands were generated
-      when: run_test
       ansible.builtin.assert:
         that:
           - result.changed == false
-          - result.rendered|symmetric_difference(rendered.commands) == []
+          - "{{ rendered['commands'] | symmetric_difference(result['rendered']) | length == 0 }}"
   when: ansible_net_version != "15.6(2)T"

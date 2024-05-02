@@ -8,14 +8,12 @@
 
 - block:
     - name: Gather the provided configuration with the existing running configuration
-      when: run_test
       register: result
       cisco.ios.ios_vlans:
         config:
         state: gathered
 
     - name: Assert
-      when: run_test
       ansible.builtin.assert:
         that:
           - gathered_vlan_config.config == result.gathered

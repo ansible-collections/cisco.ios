@@ -7,37 +7,31 @@
 
 - block:
     - name: Ios_evpn_global deleted - play
-      when: run_test
       register: result
       cisco.ios.ios_evpn_global: &id001
         config:
         state: deleted
 
     - name: Ios_evpn_global deleted - assert commands
-      when: run_test
       ansible.builtin.assert:
         that:
           - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Ios_evpn_global deleted - assert before
-      when: run_test
       ansible.builtin.assert:
         that:
           - deleted['before'] == result['before']
 
     - name: Ios_evpn_global deleted - assert after
-      when: run_test
       ansible.builtin.assert:
         that:
           - deleted['after'] == result['after']
 
     - name: Ios_evpn_global deleted - play (idempotent)
-      when: run_test
       register: result
       cisco.ios.ios_evpn_global: *id001
 
     - name: Ios_evpn_global deleted - assert above task was idempotent
-      when: run_test
       ansible.builtin.assert:
         that:
           - result.changed == false

@@ -8,7 +8,6 @@
 
 - block:
     - name: Override device configuration of all vlans with provided configuration
-      when: run_test
       register: result
       cisco.ios.ios_vlans: &id001
         config:
@@ -23,30 +22,25 @@
         state: overridden
 
     - name: Assert that correct set of commands were generated
-      when: run_test
       ansible.builtin.assert:
         that:
           - "{{ overridden_vlan_config['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Assert that before dicts are correctly generated
-      when: run_test
       ansible.builtin.assert:
         that:
           - overridden_vlan_config['before'] == result['before']
 
     - name: Assert that after dict is correctly generated
-      when: run_test
       ansible.builtin.assert:
         that:
           - overridden_vlan_config['after'] == result['after']
 
     - name: Override device configuration of all interfaces with provided configuration (idempotent)
-      when: run_test
       register: result
       cisco.ios.ios_vlans: *id001
 
     - name: Assert that task was idempotent
-      when: run_test
       ansible.builtin.assert:
         that:
           - result['changed'] == false

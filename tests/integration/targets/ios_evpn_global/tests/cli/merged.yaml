@@ -6,7 +6,6 @@
 
 - block:
     - name: Ios_evpn_global merged - play
-      when: run_test
       register: result
       cisco.ios.ios_evpn_global: &id001
         config:
@@ -26,30 +25,25 @@
         state: merged
 
     - name: Ios_evpn_global merged - assert commands
-      when: run_test
       ansible.builtin.assert:
         that:
           - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
 
     - name: Ios_evpn_global merged - assert before
-      when: run_test
       ansible.builtin.assert:
         that:
           - merged['before'] == result['before']
 
     - name: Ios_evpn_global merged - assert after
-      when: run_test
       ansible.builtin.assert:
         that:
           - merged['after'] == result['after']
 
     - name: Ios_evpn_global merged - play (idempotent)
-      when: run_test
       register: result
       cisco.ios.ios_evpn_global: *id001
 
     - name: Ios_evpn_global merged - assert above task was idempotent
-      when: run_test
       ansible.builtin.assert:
         that:
           - result['changed'] == false
