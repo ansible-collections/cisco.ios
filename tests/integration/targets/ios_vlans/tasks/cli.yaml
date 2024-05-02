@@ -16,7 +16,7 @@
   cisco.ios.ios_facts:
     gather_subset: all
 
-- name: ansible debug
+- name: Set filtered paths to run only non l2 tests
   ansible.builtin.set_fact:
     filtered_file_paths: "{{ test_items | reject('search', 'vlan_config') | list }}"
 
