@@ -34,40 +34,51 @@ class Vrf_globalArgs(object):  # pylint: disable=R0903
 
     argument_spec = {
         "config": {
-            "type": "list",
-            "elements": "dict",
+            "type": "dict",
             "options": {
-                "name": {"type": "str", "required": True},
-                "description": {"type": "str"},
-                "ipv4": {
-                    "type": "dict",
+                "vrfs": {
+                    "type": "list",
+                    "elements": "dict",
                     "options": {
-                        "multicast": {
+                        "name": {"type": "str", "required": True},
+                        "description": {"type": "str"},
+                        "ipv4": {
                             "type": "dict",
-                            "options": {"multitopology": {"type": "bool"}},
-                        }
-                    },
-                },
-                "ipv6": {
-                    "type": "dict",
-                    "options": {
-                        "multicast": {
+                            "options": {
+                                "multicast": {
+                                    "type": "dict",
+                                    "options": {"multitopology": {"type": "bool"}},
+                                }
+                            },
+                        },
+                        "ipv6": {
                             "type": "dict",
-                            "options": {"multitopology": {"type": "bool"}},
-                        }
+                            "options": {
+                                "multicast": {
+                                    "type": "dict",
+                                    "options": {"multitopology": {"type": "bool"}},
+                                }
+                            },
+                        },
+                        "rd": {"type": "str"},
+                        "route_target": {
+                            "type": "dict",
+                            "options": {
+                                "export": {"type": "str"},
+                                "import_config": {"type": "str"},
+                                "both": {"type": "str"},
+                            },
+                        },
+                        "vnet": {
+                            "type": "dict",
+                            "options": {"tag": {"type": "int"}},
+                        },
+                        "vpn": {
+                            "type": "dict",
+                            "options": {"id": {"type": "str"}},
+                        },
                     },
-                },
-                "rd": {"type": "str"},
-                "route_target": {
-                    "type": "dict",
-                    "options": {
-                        "export": {"type": "str"},
-                        "import_config": {"type": "str"},
-                        "both": {"type": "str"},
-                    },
-                },
-                "vnet": {"type": "dict", "options": {"tag": {"type": "int"}}},
-                "vpn": {"type": "dict", "options": {"id": {"type": "str"}}},
+                }
             },
         },
         "running_config": {"type": "str"},

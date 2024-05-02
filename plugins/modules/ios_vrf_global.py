@@ -16,77 +16,81 @@ DOCUMENTATION = """
 module: ios_vrf_global
 short_description: Resource module to configure VRF definitions.
 description: This module provides declarative management of VRF definitions on Cisco IOS.
-version_added: 7.0.0
+version_added: 8.0.0
 author: Ruchi Pakhle (@Ruchip16)
 notes:
-  - Tested against Cisco IOSXE version 17.3 on CML.
+  - Tested against Cisco IOS-XE version 17.3 on CML.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   config:
-    description: A list of device configurations for VRF.
-    type: list
-    elements: dict
+    description: A dictionary containing device configurations for VRF, including a list of VRF definitions.
+    type: dict
     suboptions:
-      name:
-        description: Name of the VRF.
-        type: str
-        required: true
-      description:
-        description: VRF specific description
-        type: str
-      ipv4:
-        description: VRF IPv4 configuration
-        type: dict
+      vrfs:
+        description: List of VRF definitions.
+        type: list
+        elements: dict
         suboptions:
-          multicast:
-            description: IP Multicast configuration
+          name:
+            description: Name of the VRF.
+            type: str
+            required: true
+          description:
+            description: VRF specific description
+            type: str
+          ipv4:
+            description: VRF IPv4 configuration
             type: dict
             suboptions:
-              multitopology:
-                description:  Enable Multicast-Specific RPF Topology
-                type: bool
-      ipv6:
-        description: VRF IPv6 configuration
-        type: dict
-        suboptions:
-          multicast:
-            description: IP Multicast configuration
+              multicast:
+                description: IP Multicast configuration
+                type: dict
+                suboptions:
+                  multitopology:
+                    description:  Enable Multicast-Specific RPF Topology
+                    type: bool
+          ipv6:
+            description: VRF IPv6 configuration
             type: dict
             suboptions:
-              multitopology:
-                description:  Enable Multicast-Specific RPF Topology
-                type: bool
-      rd:
-        description: Specify Route Distinguisher (RD).
-        type: str
-      route_target:
-        description: Specify Target VPN Extended Communities.
-        type: dict
-        suboptions:
-          export:
-            description: Export Target-VPN community.
+              multicast:
+                description: IP Multicast configuration
+                type: dict
+                suboptions:
+                  multitopology:
+                    description:  Enable Multicast-Specific RPF Topology
+                    type: bool
+          rd:
+            description: Specify Route Distinguisher (RD).
             type: str
-          import_config:
-            description: Export Target-VPN community.
-            type: str
-          both:
-            description: Both export and import Target-VPN community
-            type: str
-      vnet:
-        description: Virtual NETworking configuration.
-        type: dict
-        suboptions:
-          tag:
-            description: Identifier used to tag packets associated with this VNET
-            type: int
-      vpn:
-        description: Configure VPN ID for the VRF as specified in RFC 2685
-        type: dict
-        suboptions:
-          id:
-            description: Configure VPN ID in RFC 2685 format
-            type: str
+          route_target:
+            description: Specify Target VPN Extended Communities.
+            type: dict
+            suboptions:
+              export:
+                description: Export Target-VPN community.
+                type: str
+              import_config:
+                description: Export Target-VPN community.
+                type: str
+              both:
+                description: Both export and import Target-VPN community
+                type: str
+          vnet:
+            description: Virtual NETworking configuration.
+            type: dict
+            suboptions:
+              tag:
+                description: Identifier used to tag packets associated with this VNET
+                type: int
+          vpn:
+            description: Configure VPN ID for the VRF as specified in RFC 2685
+            type: dict
+            suboptions:
+              id:
+                description: Configure VPN ID in RFC 2685 format
+                type: str
   running_config:
     description:
       - This option is used only with state I(parsed).

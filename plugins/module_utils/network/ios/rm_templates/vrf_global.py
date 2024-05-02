@@ -40,8 +40,10 @@ class Vrf_globalTemplate(NetworkTemplate):
             ),
             "setval": "vrf definition {{ name }}",
             "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                    },
                 },
             },
             "shared": True,
@@ -55,9 +57,11 @@ class Vrf_globalTemplate(NetworkTemplate):
             ),
             "setval": "description {{ description }}",
             "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    'description': '{{ description }}',
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        'description': '{{ description }}',
+                    },
                 },
             },
         },
@@ -70,11 +74,13 @@ class Vrf_globalTemplate(NetworkTemplate):
             ),
             "setval": "ipv4 multicast multitopology",
             "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    'ipv4': {
-                        'multicast': {
-                            'multitopology': "{{ true if multitopology is defined }}",
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        'ipv4': {
+                            'multicast': {
+                                'multitopology': "{{ true if multitopology is defined }}",
+                            },
                         },
                     },
                 },
@@ -89,11 +95,13 @@ class Vrf_globalTemplate(NetworkTemplate):
             ),
             "setval": "ipv6 multicast multitopology",
             "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    'ipv6': {
-                        'multicast': {
-                            'multitopology': "{{ true if multitopology is defined }}",
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        'ipv6': {
+                            'multicast': {
+                                'multitopology': "{{ true if multitopology is defined }}",
+                            },
                         },
                     },
                 },
@@ -108,9 +116,11 @@ class Vrf_globalTemplate(NetworkTemplate):
             ),
             "setval": "rd {{ rd }}",
             "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    "rd": "{{ rd }}",
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "rd": "{{ rd }}",
+                    },
                 },
             },
         },
@@ -123,10 +133,12 @@ class Vrf_globalTemplate(NetworkTemplate):
             ),
             "setval": "route-target export {{ route_target.export }}",
             "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    "route_target": {
-                        "export": "{{ route_target_export }}",
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "route_target": {
+                            "export": "{{ route_target_export }}",
+                        },
                     },
                 },
             },
@@ -140,10 +152,12 @@ class Vrf_globalTemplate(NetworkTemplate):
             ),
             "setval": "route-target import {{ route_target.import_config}}",
             "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    "route_target": {
-                        "import_config": "{{ route_target_import_config }}",
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "route_target": {
+                            "import_config": "{{ route_target_import_config }}",
+                        },
                     },
                 },
             },
@@ -157,10 +171,12 @@ class Vrf_globalTemplate(NetworkTemplate):
             ),
             "setval": "route-target both {{ route_target.both }}",
             "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    "route_target": {
-                        "both": "{{ route_target_both }}",
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "route_target": {
+                            "both": "{{ route_target_both }}",
+                        },
                     },
                 },
             },
@@ -174,10 +190,12 @@ class Vrf_globalTemplate(NetworkTemplate):
             ),
             "setval": "vnet tag {{ vnet.tag }}",
             "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    "vnet": {
-                        "tag": "{{ vnet_tag }}",
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "vnet": {
+                            "tag": "{{ vnet_tag }}",
+                        },
                     },
                 },
             },
@@ -191,10 +209,12 @@ class Vrf_globalTemplate(NetworkTemplate):
             ),
             "setval": "vpn id {{ vpn.id }}",
             "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    "vpn": {
-                        "id": "{{ vpn_id }}",
+                "vrfs": {
+                    '{{ name }}': {
+                        'name': '{{ name }}',
+                        "vpn": {
+                            "id": "{{ vpn_id }}",
+                        },
                     },
                 },
             },

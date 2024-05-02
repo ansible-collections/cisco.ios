@@ -38,6 +38,18 @@ class Vrf_globalFacts(object):
 
         return connection.get("show running-config vrf")
 
+    def dict_to_list(self, vrf_data):
+        """Convert a dictionary to a list of dictionaries"""
+
+        facts_output = {"vrfs": []}
+
+        for vrf_entry in vrf_data.get("vrfs", []):
+            if "vrfs" in vrf_entry:
+                vrf_entry["vrfs"] = list(vrf_entry["vrfs"].values())
+            facts_output["vrfs"].append(vrf_entry)
+
+        return facts_output
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Vrf_global network resource
 
@@ -48,23 +60,29 @@ class Vrf_globalFacts(object):
         :rtype: dictionary
         :returns: facts
         """
+        # import epdb; epdb.serve()
         facts = {}
-        objs = []
 
         if not data:
             data = self.get_config(connection)
 
         # parse native config using the Vrf_global template
         vrf_global_parser = Vrf_globalTemplate(lines=data.splitlines(), module=self._module)
-        objs = list(vrf_global_parser.parse().values())
+        objs = vrf_global_parser.parse()
+
+        # Convert the dictionary to a list of dictionaries
+        objs["vrfs"] = (
+            objs["vrfs"].values() if "vrfs" in objs else []
+        )
+
+        facts_output = self.dict_to_list(objs)
 
         ansible_facts['ansible_network_resources'].pop('vrf_global', None)
 
-        params = utils.remove_empties(
-            vrf_global_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
-        )
-
-        facts['vrf_global'] = params.get("config", {})
-        ansible_facts['ansible_network_resources'].update(facts)
+        if objs["vrfs"]:
+            params = vrf_global_parser.validate_config(self.argument_spec, {"config": facts_output}, redact=True)
+            params = utils.remove_empties(params)
+            facts['vrf_global'] = params["config"]
+            ansible_facts['ansible_network_resources'].update(facts)
 
         return ansible_facts
