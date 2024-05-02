@@ -1,6 +1,5 @@
 ---
 - name: Configure VLANs and VRFs
-  when: run_test
   ansible.netcommon.cli_config:
     config: |
       vlan 101
