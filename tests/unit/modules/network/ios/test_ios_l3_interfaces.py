@@ -541,13 +541,13 @@ class TestIosL3InterfacesModule(TestIosModule):
         result = self.execute_module(changed=False)
         gathered = [
             {
-                'name': 'GigabitEthernet0/1', 
-                'autostate': False
-            }, 
+                "name": "GigabitEthernet0/1",
+                "autostate": False,
+            },
             {
-                'name': 'Vlan901', 
-                'ipv4': [{'source_interface': {'name': 'Loopback2'}}], 
-                'autostate': True
-            }
+                "name": "Vlan901",
+                "ipv4": [{"source_interface": {"name": "Loopback2"}}],
+                "autostate": True,
+            },
         ]
         self.assertEqual(result["gathered"], gathered)
