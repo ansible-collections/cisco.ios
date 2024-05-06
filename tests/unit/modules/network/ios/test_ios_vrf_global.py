@@ -16,6 +16,7 @@ from .ios_module import TestIosModule
 
 class TestIosVrfGlobalModule(TestIosModule):
     """Test the ios_vrf_global module."""
+
     module = ios_vrf_global
 
     def setUp(self):
@@ -362,6 +363,6 @@ class TestIosVrfGlobalModule(TestIosModule):
                 "route_target": {"export": "23.1.3.4:400", "import_config": "123.3.4.5:700"},
                 "vnet": {"tag": 34},
                 "vpn": {"id": "3:4"},
-            }
+            },
         ]
         self.assertEqual(parsed_list, result["parsed"])

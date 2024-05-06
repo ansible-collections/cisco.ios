@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -29,8 +30,7 @@ The arg spec for the ios_vrf_global module
 
 
 class Vrf_globalArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_vrf_global module
-    """
+    """The arg spec for the ios_vrf_global module"""
 
     argument_spec = {
         "config": {
@@ -48,7 +48,7 @@ class Vrf_globalArgs(object):  # pylint: disable=R0903
                                 "multicast": {
                                     "type": "dict",
                                     "options": {"multitopology": {"type": "bool"}},
-                                }
+                                },
                             },
                         },
                         "ipv6": {
@@ -57,7 +57,7 @@ class Vrf_globalArgs(object):  # pylint: disable=R0903
                                 "multicast": {
                                     "type": "dict",
                                     "options": {"multitopology": {"type": "bool"}},
-                                }
+                                },
                             },
                         },
                         "rd": {"type": "str"},
@@ -78,7 +78,7 @@ class Vrf_globalArgs(object):  # pylint: disable=R0903
                             "options": {"id": {"type": "str"}},
                         },
                     },
-                }
+                },
             },
         },
         "running_config": {"type": "str"},

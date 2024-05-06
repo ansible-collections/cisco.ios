@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,6 +16,7 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
@@ -25,7 +27,7 @@ class Vrf_globalTemplate(NetworkTemplate):
         super(Vrf_globalTemplate, self).__init__(
             lines=lines,
             tmplt=self,
-            module=module
+            module=module,
         )
 
     # fmt: off
