@@ -1,4 +1,3 @@
-#
 # -*- coding: utf-8 -*-
 # Copyright 2024 Red Hat
 # GNU General Public License v3.0+
@@ -17,7 +16,7 @@ is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to its desired end-state is
 created.
 """
-import q
+
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
@@ -73,11 +72,16 @@ class Vrf_global(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
+        haved, wantd = dict(), dict()
 
-        wantd = {entry["name"]: entry for entry in self.want}
-        q(wantd)
-        haved = {entry["name"]: entry for entry in self.have}
-        q(haved)
+        if self.want:
+            for entry in self.want.get("vrfs", []):
+                wantd.update({(entry["name"]): entry})
+
+        if self.have:
+            for entry in self.have.get("vrfs", []):
+                haved.update({(entry["name"]): entry})
+
         # if state is merged, merge want onto have
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
@@ -87,11 +91,6 @@ class Vrf_global(ResourceModule):
             haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             wantd = {}
 
-        # if self.state in ["overridden", "deleted"]:
-        #     for k, have in iteritems(haved):
-        #         if k not in wantd:
-        #             self.addcmd(have, "name", True)
-
         self._compare(want=wantd, have=haved)
 
     def _compare(self, want, have):
@@ -100,8 +99,14 @@ class Vrf_global(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Vrf_global network resource.
         """
-
         self._compare_vrf(want=want, have=have)
+        # if want != have:
+        #     # self.addcmd(want or have, "name", False)
+        #     self.compare(self.parsers, want, have)
+        #     self._compare_vrf(want=want, have=have)
+
+        #     if len(self.commands) == 1 and "vrf" in self.commands[0]:
+        #         del self.commands[0]
 
     def _compare_vrf(self, want, have):
         """Custom handling of vrfs option
@@ -116,7 +121,7 @@ class Vrf_global(ResourceModule):
             self.compare(parsers=self.parsers, want=entry, have=vrf_have)
 
         # for purged state
-        if self.state == "purged":
+        if self.state != "replaced":
             begin = len(self.commands)
             for name, entry in iteritems(have):
                 self.commands.insert(begin, "no vrf definition {0}".format(name))
