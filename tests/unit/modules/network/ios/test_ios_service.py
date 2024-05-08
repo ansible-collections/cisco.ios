@@ -26,7 +26,9 @@ class TestIosServiceModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+        self.get_resource_connection_facts = (
+            self.mock_get_resource_connection_facts.start()
+        )
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.service.service."
@@ -223,7 +225,6 @@ class TestIosServiceModule(TestIosModule):
         playbook["state"] = "overridden"
         set_module_args(playbook)
         result = self.execute_module(changed=True)
-        print(result["commands"])
         self.assertEqual(sorted(result["commands"]), sorted(overridden))
 
     def test_ios_service_replaced(self):
@@ -279,7 +280,6 @@ class TestIosServiceModule(TestIosModule):
         playbook["state"] = "replaced"
         set_module_args(playbook)
         result = self.execute_module(changed=True)
-        print(result["commands"])
         self.assertEqual(sorted(result["commands"]), sorted(replaced))
 
     def test_ios_service_replaced_idempotent(self):
@@ -501,5 +501,4 @@ class TestIosServiceModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.maxDiff = None
-        print(result["rendered"])
         self.assertEqual(sorted(result["rendered"]), sorted(rendered))
