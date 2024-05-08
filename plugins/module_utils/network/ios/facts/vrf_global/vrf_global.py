@@ -36,7 +36,7 @@ class Vrf_globalFacts(object):
     def get_config(self, connection):
         """Get the configuration from the device"""
 
-        return connection.get("show running-config vrf")
+        return connection.get("show running-config | section ^vrf")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Vrf_global network resource
