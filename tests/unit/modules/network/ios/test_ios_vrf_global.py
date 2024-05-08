@@ -9,7 +9,7 @@ from textwrap import dedent
 from unittest.mock import patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_vrf_global
-from ansible_collections.cisco.ios.tests.unit.modules.utils import AnsibleFailJson, set_module_args
+from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
 
