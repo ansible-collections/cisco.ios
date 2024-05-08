@@ -68,7 +68,8 @@ class ServiceArgs(object):  # pylint: disable=R0903
                 "tcp_small_servers": {
                     "options": {
                         "enable": {"type": "bool"},
-                        "max_servers": {"type": "str"},
+                        "max_servers": {"type": "int"},
+                        "no_limit": {"type": "bool"},
                     },
                     "type": "dict",
                 },
@@ -97,7 +98,8 @@ class ServiceArgs(object):  # pylint: disable=R0903
                 "udp_small_servers": {
                     "options": {
                         "enable": {"type": "bool"},
-                        "max_servers": {"type": "str"},
+                        "max_servers": {"type": "int"},
+                        "no_limit": {"type": "bool"},
                     },
                     "type": "dict",
                 },

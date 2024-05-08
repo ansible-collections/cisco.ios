@@ -32,36 +32,36 @@ class ServiceTemplate(NetworkTemplate):
             "name": "call_home",
             "getval": re.compile(
                 r"""
-                ^service\s(?P<call_home>call-home)
+                ^service\scall-home
                 """, re.VERBOSE,
             ),
             "setval": "service call-home",
             "result": {
-                "call_home": "{{ not not call_home }}",
+                "call_home": True,
             },
         },
         {
             "name": "compress_config",
             "getval": re.compile(
                 r"""
-                ^service\s(?P<compress_config>compress-config)
+                ^service\scompress-config
                 """, re.VERBOSE,
             ),
             "setval": "service compress-config",
             "result": {
-                "compress_config": "{{ not not compress_config }}",
+                "compress_config": True,
             },
         },
         {
             "name": "config",
             "getval": re.compile(
                 r"""
-                ^service\s(?P<config>config)
+                ^service\sconfig
                 """, re.VERBOSE,
             ),
             "setval": "service config",
             "result": {
-                "config": "{{ not not config }}",
+                "config": True,
             },
         },
         {
@@ -92,120 +92,120 @@ class ServiceTemplate(NetworkTemplate):
             "name": "disable_ip_fast_frag",
             "getval": re.compile(
                 r"""
-                ^service\s(?P<disable_ip_fast_frag>disable-ip-fast-frag)
+                ^service\sdisable-ip-fast-frag
                 """, re.VERBOSE,
             ),
             "setval": "service disable-ip-fast-frag",
             "result": {
-                "disable_ip_fast_frag": "{{ not not disable_ip_fast_frag }}",
+                "disable_ip_fast_frag": True,
             },
         },
         {
             "name": "exec_callback",
             "getval": re.compile(
                 r"""
-                ^service\s(?P<exec_callback>exec-callback)
+                ^service\sexec-callback
                 """, re.VERBOSE,
             ),
             "setval": "service exec-callback",
             "result": {
-                "exec_callback": "{{ not not exec_callback }}",
+                "exec_callback": True,
             },
         },
         {
             "name": "exec_wait",
             "getval": re.compile(
                 r"""
-                ^service\s(?P<exec_wait>exec-wait)
+                ^service\sexec-wait
                 """, re.VERBOSE,
             ),
             "setval": "service exec-wait",
             "return": {
-                "exec_wait": "{{ not not exec_wait }}",
+                "exec_wait": True,
             },
         },
         {
             "name": "hide_telnet_addresses",
             "getval": re.compile(
                 r"""
-                ^service\s(?P<hide_telnet_addresses>hide-telnet-addresses)
+                ^service\shide-telnet-addresses
                 """, re.VERBOSE,
             ),
             "setval": "service hide-telnet-addresses",
             "result": {
-                "hide_telnet_addresses": "{{ not not hide_telnet_addresses }}",
+                "hide_telnet_addresses": True,
             },
         },
         {
             "name": "internal",
             "getval": re.compile(
                 r"""
-                ^service\s(?P<internal>internal)
+                ^service\sinternal
                 """, re.VERBOSE,
             ),
             "setval": "service internal",
             "result": {
-                "internal": "{{ not not internal }}",
+                "internal": True,
             },
         },
         {
             "name": "linenumber",
             "getval": re.compile(
                 r"""
-                ^service\s(?P<linenumber>linenumber)
+                ^service\slinenumber
                 """, re.VERBOSE,
             ),
             "setval": "service linenumber",
             "result": {
-                "linenumber": "{{ not not linenumber }}",
+                "linenumber": True,
             },
         },
         {
             "name": "log",
             "getval": re.compile(
                 r"""
-                ^service\slog(\s(?P<backtrace>backtrace))?
+                ^service\slog\sbacktrace?
                 """, re.VERBOSE,
             ),
             "setval": "service log backtrace",
             "result": {
-                "log": "{{ not not backtrace }}",
+                "log": True,
             },
         },
         {
             "name": "log_hidden",
             "getval": re.compile(
                 r"""
-                ^service\s(?P<log_hidden>log-hidden)
+                ^service\slog-hidden
                 """, re.VERBOSE,
             ),
             "setval": "service log-hidden",
             "result": {
-                "log_hidden": "{{ not not log_hidden }}",
+                "log_hidden": True,
             },
         },
         {
             "name": "nagle",
             "getval": re.compile(
                 r"""
-                ^service\s(?P<nagle>nagle)
+                ^service\snagle
                 """, re.VERBOSE,
             ),
             "setval": "service nagle",
             "result": {
-                "nagle": "{{ not not nagle }}",
+                "nagle": True,
             },
         },
         {
             "name": "old_slip_prompts",
             "getval": re.compile(
                 r"""
-                ^service\s(?P<old_slip_prompts>old-slip-prompts)
+                ^service\sold-slip-prompts
                 """, re.VERBOSE,
             ),
             "setval": "service old-slip-prompts",
             "result": {
-                "old_slip_prompts": "{{ not not old_slip_prompts }}",
+                "old_slip_prompts": True,
             },
         },
         {
@@ -260,12 +260,12 @@ class ServiceTemplate(NetworkTemplate):
             "name": "password_encryption",
             "getval": re.compile(
                 r"""
-                ^service\s(?P<password_encryption>password-encryption)
+                ^service\spassword-encryption
                 """, re.VERBOSE,
             ),
             "setval": "service password-encryption",
             "result": {
-                "password_encryption": "{{ not not password_encryption }}",
+                "password_encryption": True,
             },
         },
         {
@@ -309,48 +309,48 @@ class ServiceTemplate(NetworkTemplate):
             "name": "pt_vty_logging",
             "getval": re.compile(
                 r"""
-                ^service\s(?P<pt_vty_logging>pt-vty-logging)
+                ^service\spt-vty-logging
                 """, re.VERBOSE,
             ),
             "setval": "service pt-vty-logging",
             "result": {
-                "pt_vty_logging": "{{ not not pt_vty_logging }}",
+                "pt_vty_logging": True,
             },
         },
         {
             "name": "scripting",
             "getval": re.compile(
                 r"""
-                ^service\s(?P<scripting>scripting)
+                ^service\sscripting
                 """, re.VERBOSE,
             ),
             "setval": "service scripting",
             "result": {
-                "scripting": "{{ not not scripting }}",
+                "scripting": True,
             },
         },
         {
             "name": "sequence_numbers",
             "getval": re.compile(
                 r"""
-                ^service\s(?P<sequence_numbers>sequence-numbers)
+                ^service\ssequence-numbers
                 """, re.VERBOSE,
             ),
             "setval": "service sequence-numbers",
             "result": {
-                "sequence_numbers": "{{ not not sequence_numbers }}",
+                "sequence_numbers": True,
             },
         },
         {
             "name": "slave_coredump",
             "getval": re.compile(
                 r"""
-                ^service\s(?P<slave_coredump>slave-coredump)
+                ^service\sslave-coredump
                 """, re.VERBOSE,
             ),
             "setval": "service slave-coredump",
             "result": {
-                "slave_coredump": "{{ not not slave_coredump }}",
+                "slave_coredump": True,
             },
         },
         {
@@ -390,6 +390,46 @@ class ServiceTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "tcp_small_servers",
+            "getval": re.compile(
+                r"""
+                ^service\stcp-small-servers
+                (\s(?P<max_servers>\d+))?
+                (\s(?P<no_limit>no-limit))?
+                """, re.VERBOSE,
+            ),
+            "setval": "service tcp-small-servers"
+            "{{ (' ' + tcp_small_servers.max_servers|string) if tcp_small_servers.max_servers is defined else '' }}"
+            "{{ (' no-limit') if tcp_small_servers.no_limit|d(False) else '' }}",
+            "result": {
+                "tcp_small_servers": {
+                    "enable": True,
+                    "max_servers": "{{ max_servers }}",
+                    "no_limit": "{{ not not no_limit }}",
+                },
+            },
+        },
+        {
+            "name": "udp_small_servers",
+            "getval": re.compile(
+                r"""
+                ^service\sudp-small-servers
+                (\s(?P<max_servers>\d+))?
+                (\s(?P<no_limit>no-limit))?
+                """, re.VERBOSE,
+            ),
+            "setval": "{{ ('service udp-small-servers') if udp_small_servers.enable|d(False) else '' }}"
+            "{{ (' ' + udp_small_servers.max_servers|string) if udp_small_servers.max_servers is defined else '' }}"
+            "{{ (' no-limit') if udp_small_servers.no_limit|d(False) else '' }}",
+            "result": {
+                "udp_small_servers": {
+                    "enable": True,
+                    "max_servers": "{{ max_servers }}",
+                    "no_limit": "{{ not not no_limit }}",
+                },
+            },
+        },
+        {
             "name": "telnet_zeroidle",
             "getval": re.compile(
                 r"""
@@ -402,11 +442,10 @@ class ServiceTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "timestamps",
+            "name": "log_timestamps",
             "getval": re.compile(
                 r"""
-                ^service\stimestamps
-                (\s(?P<msg>\S+))?
+                ^service\stimestamps\slog
                 (\s(?P<timestamp>\S+))?
                 (\s(?P<msec>msec))?
                 (\s(?P<localtime>localtime))?
@@ -414,23 +453,53 @@ class ServiceTemplate(NetworkTemplate):
                 (\s(?P<year>year))?
                 """, re.VERBOSE,
             ),
-            "remval": "service timestamps{{ (' ' + msg) if msg is defined else '' }}",
-            "setval": "service timestamps"
-                      "{{ (' ' + msg) if msg is defined else '' }}"
-                      "{% if msg is defined %}"
+            "remval": "service timestamps log",
+            "setval": "service timestamps log"
                       "{{ (' ' + timestamp) if timestamp is defined else '' }}"
-                      "{% if timestamp == 'datetime' and datetime_options is defined %}"
-                      "{{ ' msec' if datetime_options.msec else '' }}"
-                      "{{ ' localtime' if datetime_options.localtime else '' }}"
-                      "{{ ' show-timezone' if datetime_options.show_timezone else '' }}"
-                      "{{ ' year' if datetime_options.year else '' }}"
-                      "{% endif %}"
-                      "{% endif %}"
+                      "{{ ' msec' if datetime_options.msec is defined else '' }}"
+                      "{{ ' localtime' if datetime_options.localtime is defined else '' }}"
+                      "{{ ' show-timezone' if datetime_options.show_timezone is defined else '' }}"
+                      "{{ ' year' if datetime_options.year is defined else '' }}"
                       "",
             "result": {
                 "timestamps": [
                     {
-                        "msg": "{{ msg if msg is defined else 'debug' }}",
+                        "msg": "log",
+                        "timestamp": "{{ timestamp if timestamp is defined else 'uptime' }}",
+                        "datetime_options": {
+                            "msec": "{{ True if msec else False}}",
+                            "localtime": "{{ True if localtime else False }}",
+                            "show_timezone": "{{ True if show_timezone else False }}",
+                            "year": "{{ True if year else False }}",
+                        },
+                    },
+                ],
+            },
+        },
+        {
+            "name": "debug_timestamps",
+            "getval": re.compile(
+                r"""
+                ^service\stimestamps\sdebug
+                (\s(?P<timestamp>\S+))?
+                (\s(?P<msec>msec))?
+                (\s(?P<localtime>localtime))?
+                (\s(?P<show_timezone>show-timezone))?
+                (\s(?P<year>year))?
+                """, re.VERBOSE,
+            ),
+            "remval": "service timestamps debug",
+            "setval": "service timestamps debug"
+                      "{{ (' ' + timestamp) if timestamp is defined else '' }}"
+                      "{{ ' msec' if datetime_options is defined else '' }}"
+                      "{{ ' localtime' if datetime_options is defined else '' }}"
+                      "{{ ' show-timezone' if datetime_options is defined else '' }}"
+                      "{{ ' year' if datetime_options is defined else '' }}"
+                      "",
+            "result": {
+                "timestamps": [
+                    {
+                        "msg": "debug",
                         "timestamp": "{{ timestamp if timestamp is defined else 'uptime' }}",
                         "datetime_options": {
                             "msec": "{{ True if msec else False}}",
