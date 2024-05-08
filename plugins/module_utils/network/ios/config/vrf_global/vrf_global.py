@@ -16,7 +16,7 @@ is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to its desired end-state is
 created.
 """
-import q
+
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
@@ -24,7 +24,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
 )
-
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.vrf_global import (
     Vrf_globalTemplate,
