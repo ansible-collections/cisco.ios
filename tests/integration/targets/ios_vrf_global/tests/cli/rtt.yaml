@@ -9,38 +9,60 @@
       register: result
       cisco.ios.ios_vrf_global:
         config:
-          - name: VRF2
-            description: This is a test VRF for merged state
-            ipv4:
-              multicast:
-                multitopology: true
-            ipv6:
-              multicast:
-                multitopology: true
-            rd: "2:3"
-            route_target:
-              export: "23.1.3.4:400"
-              import_config: "10.1.3.4:400"
-            vpn:
-              id: "2:45"
-            vnet:
-              tag: 200
+          vrfs:
+            - name: VRF2
+              description: This is a test VRF for merged state
+              ipv4:
+                multicast:
+                  multitopology: true
+              ipv6:
+                multicast:
+                  multitopology: true
+              rd: "2:3"
+              route_target:
+                export: "23.1.3.4:400"
+                import_config: "10.1.3.4:400"
+              vpn:
+                id: "2:45"
+              vnet:
+                tag: 200
         state: merged
 
     - name: Ios_vrf_global RTT - gather vrf_global facts
       cisco.ios.ios_facts:
-        gather_subset:
-          - "!all"
-          - "!min"
         gather_network_resources:
           - vrf_global
 
-    - name: Ios_vrf_global RTT - apply the provided configuration (config to be reverted)
+    - name: Apply the provided configuration (config to be reverted)
+      register: result
       cisco.ios.ios_vrf_global:
         config:
-        state: merged
+          vrfs:
+            - name: VRF6
+              description: VRF6 description
+              ipv4:
+                multicast:
+                  multitopology: true
+              ipv6:
+                multicast:
+                  multitopology: true
+              rd: "6:7"
+              route_target:
+                export: "3.1.3.4:400"
+                import_config: "1.12.3.4:200"
+              vpn:
+                id: "4:5"
+              vnet:
+                tag: 500
+        state: overridden
 
-    - name: Ios_vrf_global RTT - revert back to base configuration using facts round trip
+    - ansible.builtin.assert:
+        that:
+          - result.commands|length == 18
+          - result.changed == true
+          - result.commands|symmetric_difference(rtt.commands) == []
+
+    - name: Revert back to base configuration using facts round trip
       register: revert
       cisco.ios.ios_vrf_global:
         config: "{{ ansible_facts['network_resources']['vrf_global'] }}"
@@ -49,7 +71,7 @@
     - ansible.builtin.assert:
         that:
           - revert.changed == true
-          - revert['commands'] == rtt['commands']
+          - revert['commands'] == merged['commands']
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

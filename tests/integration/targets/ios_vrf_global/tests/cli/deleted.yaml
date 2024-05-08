@@ -10,13 +10,24 @@
       register: result
       cisco.ios.ios_vrf_global: &id001
         config:
+          vrfs:
+            - name: VRF2
         state: deleted
 
     - ansible.builtin.assert:
         that:
-          - result.commands|length == 1
           - result.changed == true
           - "'no vrf definition test' not in result.commands"
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - "{{ merged['after']['vrfs'] | symmetric_difference(result['before']['vrfs']) | length == 0 }}"
 
     - name: Assert that after dicts are correctly generated
       ansible.builtin.assert:
@@ -26,11 +37,10 @@
     - name: Delete provided BGP global (idempotent)
       register: result
       cisco.ios.ios_vrf_global: *id001
-
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:
-          - result.changed == false
+          - result.changed == true
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

@@ -16,7 +16,7 @@ is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to its desired end-state is
 created.
 """
-
+import q
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
@@ -45,7 +45,6 @@ class Vrf_global(ResourceModule):
             tmplt=Vrf_globalTemplate(),
         )
         self.parsers = [
-            "name",
             "description",
             "ipv4.multicast.multitopology",
             "ipv6.multicast.multitopology",
@@ -91,7 +90,17 @@ class Vrf_global(ResourceModule):
             haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             wantd = {}
 
-        self._compare(want=wantd, have=haved)
+        if self.state in ["overridden", "deleted"]:
+            for k, have in iteritems(haved):
+                if k not in wantd:
+                    self._compare(want={}, have=have)
+
+        if self.state == "purged":
+            for k, have in iteritems(haved):
+                self.purge(have)
+
+        for k, want in iteritems(wantd):
+            self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -99,32 +108,10 @@ class Vrf_global(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Vrf_global network resource.
         """
-        self._compare_vrf(want=want, have=have)
-        # if want != have:
-        #     # self.addcmd(want or have, "name", False)
-        #     self.compare(self.parsers, want, have)
-        #     self._compare_vrf(want=want, have=have)
+        if want != have:
+            self.addcmd(want or have, "name", False)
+            self.compare(self.parsers, want, have)
 
-        #     if len(self.commands) == 1 and "vrf" in self.commands[0]:
-        #         del self.commands[0]
-
-    def _compare_vrf(self, want, have):
-        """Custom handling of vrfs option
-        :params want: the want VRF dictionary
-        :params have: the have VRF dictionary
-        """
-
-        for name, entry in iteritems(want):
-            begin = len(self.commands)
-            vrf_have = have.pop(name, {})
-
-            self.compare(parsers=self.parsers, want=entry, have=vrf_have)
-
-        # for purged state
-        if self.state != "replaced":
-            begin = len(self.commands)
-            for name, entry in iteritems(have):
-                self.commands.insert(begin, "no vrf definition {0}".format(name))
-
-    def _get_config(self):
-        return self._connection.get("show running-config vrf")
+    def purge(self, have):
+        """Purge the VRF configuration"""
+        self.commands.append("no vrf definition {0}".format(have["name"]))

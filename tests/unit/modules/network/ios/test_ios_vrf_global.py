@@ -57,18 +57,20 @@ class TestIosVrfGlobalModule(TestIosModule):
 
         set_module_args(
             dict(
-                config=[
-                    dict(
-                        name="VRF2",
-                        description="This is a test VRF for merged state",
-                        ipv4=dict(multicast=dict(multitopology=True)),
-                        ipv6=dict(multicast=dict(multitopology=True)),
-                        rd="2:3",
-                        route_target=dict(export="23.1.3.4:400", import_config="10.1.3.4:400"),
-                        vnet=dict(tag=200),
-                        vpn=dict(id="2:45"),
-                    ),
-                ],
+                config=dict(
+                    vrfs=[
+                        dict(
+                            name="VRF2",
+                            description="This is a test VRF for merged state",
+                            ipv4=dict(multicast=dict(multitopology=True)),
+                            ipv6=dict(multicast=dict(multitopology=True)),
+                            rd="2:3",
+                            route_target=dict(export="23.1.3.4:400", import_config="10.1.3.4:400"),
+                            vnet=dict(tag=200),
+                            vpn=dict(id="2:45"),
+                        ),
+                    ],
+                ),
                 state="merged",
             ),
         )
@@ -102,18 +104,20 @@ class TestIosVrfGlobalModule(TestIosModule):
         )
         set_module_args(
             dict(
-                config=[
-                    dict(
-                        name="VRF2",
-                        description="This is a test VRF for merged state",
-                        ipv4=dict(multicast=dict(multitopology=True)),
-                        ipv6=dict(multicast=dict(multitopology=True)),
-                        rd="2:3",
-                        route_target=dict(export="23.1.3.4:400", import_config="10.1.3.4:400"),
-                        vnet=dict(tag=200),
-                        vpn=dict(id="2:45"),
-                    ),
-                ],
+                config=dict(
+                    vrfs=[
+                        dict(
+                            name="VRF2",
+                            description="This is a test VRF for merged state",
+                            ipv4=dict(multicast=dict(multitopology=True)),
+                            ipv6=dict(multicast=dict(multitopology=True)),
+                            rd="2:3",
+                            route_target=dict(export="23.1.3.4:400", import_config="10.1.3.4:400"),
+                            vnet=dict(tag=200),
+                            vpn=dict(id="2:45"),
+                        ),
+                    ],
+                ),
                 state="merged",
             ),
         )
@@ -135,22 +139,36 @@ class TestIosVrfGlobalModule(TestIosModule):
         )
         set_module_args(
             dict(
-                config=[
-                    dict(
-                        name="VRF6",
-                        description="VRF6 description",
-                        ipv4=dict(multicast=dict(multitopology=True)),
-                        ipv6=dict(multicast=dict(multitopology=True)),
-                        rd="6:7",
-                        route_target=dict(export="3.1.3.4:400", import_config="1.12.3.4:200"),
-                        vnet=dict(tag=500),
-                        vpn=dict(id="4:5"),
-                    ),
-                ],
+                config=dict(
+                    vrfs=[
+                        dict(
+                            name="VRF2",
+                        ),
+                        dict(
+                            name="VRF6",
+                            description="VRF6 description",
+                            ipv4=dict(multicast=dict(multitopology=True)),
+                            ipv6=dict(multicast=dict(multitopology=True)),
+                            rd="6:7",
+                            route_target=dict(export="3.1.3.4:400", import_config="1.12.3.4:200"),
+                            vnet=dict(tag=500),
+                            vpn=dict(id="4:5"),
+                        ),
+                    ],
+                ),
                 state="overridden",
             ),
         )
         commands = [
+            "vrf definition VRF2",
+            "no description This is a test VRF for merged state",
+            "no ipv4 multicast multitopology",
+            "no ipv6 multicast multitopology",
+            "no rd 2:3",
+            "no route-target export 23.1.3.4:400",
+            "no route-target import 10.1.3.4:400",
+            "no vnet tag 200",
+            "no vpn id 2:45",
             "vrf definition VRF6",
             "description VRF6 description",
             "ipv4 multicast multitopology",
@@ -160,7 +178,6 @@ class TestIosVrfGlobalModule(TestIosModule):
             "route-target import 1.12.3.4:200",
             "vnet tag 500",
             "vpn id 4:5",
-            "no vrf definition VRF2",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -168,6 +185,7 @@ class TestIosVrfGlobalModule(TestIosModule):
     def test_ios_vrf_global_replaced(self):
         self.execute_show_command.return_value = dedent(
             """\
+            vrf definition VRF2
             vrf definition VRF6
              description VRF6 description
              ipv4 multicast multitopology
@@ -181,18 +199,33 @@ class TestIosVrfGlobalModule(TestIosModule):
         )
         set_module_args(
             dict(
-                config=[
-                    dict(
-                        name="VRF7",
-                        description="VRF7 description",
-                        ipv4=dict(multicast=dict(multitopology=True)),
-                        ipv6=dict(multicast=dict(multitopology=True)),
-                        rd="7:8",
-                        route_target=dict(export="23.1.3.4:500", import_config="12.1.3.4:400"),
-                        vnet=dict(tag=300),
-                        vpn=dict(id="2:45"),
-                    ),
-                ],
+                config=dict(
+                    vrfs=[
+                        dict(
+                            name="VRF2"
+                        ),
+                        dict(
+                            name="VRF6",
+                            description="VRF6 description",
+                            ipv4=dict(multicast=dict(multitopology=True)),
+                            ipv6=dict(multicast=dict(multitopology=True)),
+                            rd="6:7",
+                            route_target=dict(export="3.1.3.4:400", import_config="1.12.3.4:200"),
+                            vnet=dict(tag=500),
+                            vpn=dict(id="4:5"),
+                        ),
+                        dict(
+                            name="VRF7",
+                            description="VRF7 description",
+                            ipv4=dict(multicast=dict(multitopology=True)),
+                            ipv6=dict(multicast=dict(multitopology=True)),
+                            rd="7:8",
+                            route_target=dict(export="23.1.3.4:500", import_config="12.1.3.4:400"),
+                            vnet=dict(tag=300),
+                            vpn=dict(id="2:45"),
+                        ),
+                    ],
+                ),
                 state="replaced",
             ),
         )
@@ -213,75 +246,131 @@ class TestIosVrfGlobalModule(TestIosModule):
     def test_ios_vrf_global_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
+            vrf definition VRF2
+            vrf definition VRF6
+             vnet tag 500
+             description VRF6 description
+             ipv4 multicast multitopology
+             ipv6 multicast multitopology
+             rd 6:7
+             vpn id 4:5
+             route-target export 3.1.3.4:400
+             route-target import 1.12.3.4:200
             vrf definition VRF7
+             vnet tag 300
              description VRF7 description
              ipv4 multicast multitopology
              ipv6 multicast multitopology
              rd 7:8
+             vpn id 2:45
              route-target export 23.1.3.4:500
              route-target import 12.1.3.4:400
-             vnet tag 300
-             vpn id 2:45
             """,
         )
         set_module_args(
             dict(
-                config=[
-                    dict(
-                        name="VRF7",
-                        description="VRF7 description",
-                        ipv4=dict(multicast=dict(multitopology=True)),
-                        ipv6=dict(multicast=dict(multitopology=True)),
-                        rd="7:8",
-                        route_target=dict(export="23.1.3.4:500", import_config="12.1.3.4:400"),
-                        vnet=dict(tag=300),
-                        vpn=dict(id="2:45"),
-                    ),
-                ],
+                config=dict(
+                    vrfs=[
+                        dict(
+                            name="VRF2"
+                        ),
+                        dict(
+                            name="VRF6",
+                            description="VRF6 description",
+                            ipv4=dict(multicast=dict(multitopology=True)),
+                            ipv6=dict(multicast=dict(multitopology=True)),
+                            rd="6:7",
+                            route_target=dict(export="3.1.3.4:400", import_config="1.12.3.4:200"),
+                            vnet=dict(tag=500),
+                            vpn=dict(id="4:5"),
+                        ),
+                        dict(
+                            name="VRF7",
+                            description="VRF7 description",
+                            ipv4=dict(multicast=dict(multitopology=True)),
+                            ipv6=dict(multicast=dict(multitopology=True)),
+                            rd="7:8",
+                            route_target=dict(export="23.1.3.4:500", import_config="12.1.3.4:400"),
+                            vnet=dict(tag=300),
+                            vpn=dict(id="2:45"),
+                        ),
+                    ],
+                ),
                 state="replaced",
             ),
         )
         self.execute_module(changed=False, commands=[])
 
-    # def test_ios_vrf_global_deleted(self):
-    #     self.execute_show_command.return_value = dedent(
-    #         """\
-    #         router bgp 65000
-    #          no bgp default ipv4-unicast
-    #          bgp nopeerup-delay post-boot 10
-    #          bgp bestpath compare-routerid
-    #          bgp advertise-best-external
-    #          timers bgp 100 200 150
-    #          redistribute connected metric 10
-    #          neighbor 192.0.2.1 remote-as 100
-    #          neighbor 192.0.2.1 route-map test-route out
-    #          address-family ipv4
-    #           neighbor 192.0.2.28 activate
-    #           neighbor 172.31.35.140 activate
-    #         """,
-    #     )
-    #     set_module_args(dict(config=dict(as_number=65000), state="deleted"))
-    #     commands = [
-    #         "router bgp 65000",
-    #         "bgp default ipv4-unicast",
-    #         "no timers bgp 100 200 150",
-    #         "no bgp advertise-best-external",
-    #         "no bgp bestpath compare-routerid",
-    #         "no bgp nopeerup-delay post-boot 10",
-    #         "no neighbor 192.0.2.1",
-    #         "no redistribute connected",
-    #     ]
-    #     result = self.execute_module(changed=True)
-    #     self.assertEqual(sorted(result["commands"]), sorted(commands))
+    def test_ios_vrf_global_deleted(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            vrf definition VRF2
+            vrf definition VRF6
+             vnet tag 500
+             description VRF6 description
+             ipv4 multicast multitopology
+             ipv6 multicast multitopology
+             rd 6:7
+             vpn id 4:5
+             route-target export 3.1.3.4:400
+             route-target import 1.12.3.4:200
+            vrf definition VRF7
+             vnet tag 300
+             description VRF7 description
+             ipv4 multicast multitopology
+             ipv6 multicast multitopology
+             rd 7:8
+             vpn id 2:45
+             route-target export 23.1.3.4:500
+             route-target import 12.1.3.4:400
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    vrfs=[
+                        {
+                            "name": "VRF6"
+                        },
+                        {
+                            "name": "VRF7"
+                        },
+                    ],
+                ),
+                state="deleted",
+            ),
+        )
+        commands = [
+            "vrf definition VRF6",
+            "no description VRF6 description",
+            "no ipv4 multicast multitopology",
+            "no ipv6 multicast multitopology",
+            "no rd 6:7",
+            "no route-target export 3.1.3.4:400",
+            "no route-target import 1.12.3.4:200",
+            "no vnet tag 500",
+            "no vpn id 4:5",
+            "vrf definition VRF7",
+            "no description VRF7 description",
+            "no ipv4 multicast multitopology",
+            "no ipv6 multicast multitopology",
+            "no rd 7:8",
+            "no route-target export 23.1.3.4:500",
+            "no route-target import 12.1.3.4:400",
+            "no vnet tag 300",
+            "no vpn id 2:45",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-    # def test_ios_vrf_global_deleted_empty(self):
-    #     self.execute_show_command.return_value = dedent(
-    #         """\
-    #         """,
-    #     )
-    #     set_module_args(dict(config=dict(as_number=65000), state="deleted"))
-    #     result = self.execute_module(changed=False)
-    #     self.assertEqual(result["commands"], [])
+    def test_ios_vrf_global_deleted_empty(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            """,
+        )
+        set_module_args(dict(config=dict(), state="deleted"))
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
 
     def test_ios_vrf_global_purged(self):
         self.execute_show_command.return_value = dedent(
@@ -304,18 +393,20 @@ class TestIosVrfGlobalModule(TestIosModule):
     def test_deprecated_attributes_rendered(self):
         set_module_args(
             dict(
-                config=[
-                    dict(
-                        name="VRF2",
-                        description="This is a test VRF for rendered state",
-                        ipv4=dict(multicast=dict(multitopology=True)),
-                        ipv6=dict(multicast=dict(multitopology=True)),
-                        rd="2:3",
-                        route_target=dict(export="23.1.3.4:400", import_config="10.1.3.4:400"),
-                        vnet=dict(tag=200),
-                        vpn=dict(id="2:45"),
-                    ),
-                ],
+                config={
+                    "vrfs": [
+                        dict(
+                            name="VRF2",
+                            description="This is a test VRF for rendered state",
+                            ipv4=dict(multicast=dict(multitopology=True)),
+                            ipv6=dict(multicast=dict(multitopology=True)),
+                            rd="2:3",
+                            route_target=dict(export="23.1.3.4:400", import_config="10.1.3.4:400"),
+                            vnet=dict(tag=200),
+                            vpn=dict(id="2:45"),
+                        ),
+                    ],
+                },
                 state="rendered",
             ),
         )
@@ -353,16 +444,18 @@ class TestIosVrfGlobalModule(TestIosModule):
             ),
         )
         result = self.execute_module(changed=False)
-        parsed_list = [
-            {
-                "name": "test",
-                "description": "This is test VRF",
-                "ipv4": {"multicast": {"multitopology": True}},
-                "ipv6": {"multicast": {"multitopology": True}},
-                "rd": "10.2.3.4:300",
-                "route_target": {"export": "23.1.3.4:400", "import_config": "123.3.4.5:700"},
-                "vnet": {"tag": 34},
-                "vpn": {"id": "3:4"},
-            },
-        ]
+        parsed_list = {
+            "vrfs": [
+                {
+                    "name": "test",
+                    "description": "This is test VRF",
+                    "ipv4": {"multicast": {"multitopology": True}},
+                    "ipv6": {"multicast": {"multitopology": True}},
+                    "rd": "10.2.3.4:300",
+                    "route_target": {"export": "23.1.3.4:400", "import_config": "123.3.4.5:700"},
+                    "vnet": {"tag": 34},
+                    "vpn": {"id": "3:4"},
+                },
+            ]
+        }
         self.assertEqual(parsed_list, result["parsed"])

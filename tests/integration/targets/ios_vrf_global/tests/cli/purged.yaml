@@ -14,7 +14,7 @@
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
-          - "'no VRF definition VRF2' in result.commands"
+          - "'no vrf definition VRF2' in result.commands"
           - result.commands|length == 1
 
     - name: Purge provided VRF global (idempotent)
