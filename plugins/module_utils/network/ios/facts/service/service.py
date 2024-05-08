@@ -15,9 +15,7 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
-)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.service.service import (
     ServiceArgs,
@@ -62,7 +60,9 @@ class ServiceFacts(object):
 
         params = utils.remove_empties(
             service_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
             ),
         )
 
