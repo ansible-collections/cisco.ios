@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_vlans - Fails module when vlan name is longer than appliance permitted characters.
