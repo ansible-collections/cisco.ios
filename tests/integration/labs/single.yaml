@@ -116,6 +116,7 @@ nodes:
       !
       interface GigabitEthernet1
       ip address dhcp
+      no shutdown
       negotiation auto
       !
       interface GigabitEthernet2
