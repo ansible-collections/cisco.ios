@@ -2,7 +2,6 @@ import subprocess
 
 import pytest
 
-
 def run(ansible_project, environment):
     __tracebackhide__ = True
     args = [
