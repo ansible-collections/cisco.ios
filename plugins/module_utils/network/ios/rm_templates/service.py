@@ -456,10 +456,10 @@ class ServiceTemplate(NetworkTemplate):
             "remval": "service timestamps log",
             "setval": "service timestamps log"
                       "{{ (' ' + timestamp) if timestamp is defined else '' }}"
-                      "{{ ' msec' if datetime_options.msec is defined else '' }}"
-                      "{{ ' localtime' if datetime_options.localtime is defined else '' }}"
-                      "{{ ' show-timezone' if datetime_options.show_timezone is defined else '' }}"
-                      "{{ ' year' if datetime_options.year is defined else '' }}"
+                      "{{ ' msec' if datetime_options and datetime_options.msec is defined else '' }}"
+                      "{{ ' localtime' if datetime_options and datetime_options.localtime is defined else '' }}"
+                      "{{ ' show-timezone' if datetime_options and datetime_options.show_timezone is defined else '' }}"
+                      "{{ ' year' if datetime_options and datetime_options.year is defined else '' }}"
                       "",
             "result": {
                 "timestamps": [
@@ -491,10 +491,10 @@ class ServiceTemplate(NetworkTemplate):
             "remval": "service timestamps debug",
             "setval": "service timestamps debug"
                       "{{ (' ' + timestamp) if timestamp is defined else '' }}"
-                      "{{ ' msec' if datetime_options is defined else '' }}"
-                      "{{ ' localtime' if datetime_options is defined else '' }}"
-                      "{{ ' show-timezone' if datetime_options is defined else '' }}"
-                      "{{ ' year' if datetime_options is defined else '' }}"
+                      "{{ (' msec') if datetime_options and datetime_options.msec is defined else '' }}"
+                      "{{ (' localtime') if datetime_options and datetime_options.localtime is defined else '' }}"
+                      "{{ (' show-timezone') if datetime_options and datetime_options.show_timezone is defined else '' }}"
+                      "{{ (' year') if datetime_options and datetime_options.year is defined else '' }}"
                       "",
             "result": {
                 "timestamps": [
