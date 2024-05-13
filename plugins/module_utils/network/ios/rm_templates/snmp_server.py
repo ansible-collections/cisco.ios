@@ -63,12 +63,12 @@ def cmd_option_hosts(config_data):  # contain sub list attr
             cmd += " {host}".format(host=config_data.get("host"))
         if config_data.get("informs"):
             cmd += " informs"
+        if config_data.get("vrf"):
+            cmd += " vrf {vrf}".format(vrf=config_data.get("vrf"))
         if config_data.get("version"):
             cmd += " version {version}".format(version=config_data.get("version"))
         if config_data.get("version_option"):
             cmd += " {version}".format(version=config_data.get("version_option"))
-        if config_data.get("vrf"):
-            cmd += " vrf {vrf}".format(vrf=config_data.get("vrf"))
         if config_data.get("community_string"):
             cmd += " {community_string}".format(
                 community_string=config_data.get("community_string"),
