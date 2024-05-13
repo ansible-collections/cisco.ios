@@ -22,6 +22,23 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
+def handleTimestamp(config_data):
+    command = "service timestamps"
+    command += " " + config_data.get("msg") if config_data.get("msg") else ""
+    command += (
+        " " + config_data.get("timestamp") if config_data.get("timestamp") else ""
+    )
+
+    if config_data.get("datetime_options"):
+        datetime_op = config_data.get("datetime_options")
+        command += " mesc" if datetime_op.get("msec") else ""
+        command += " localtime" if datetime_op.get("localtime") else ""
+        command += " show-timezone" if datetime_op.get("show_timezone") else ""
+        command += " year" if datetime_op.get("year") else ""
+
+    return command
+
+
 class ServiceTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(ServiceTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -454,13 +471,7 @@ class ServiceTemplate(NetworkTemplate):
                 """, re.VERBOSE,
             ),
             "remval": "service timestamps log",
-            "setval": "service timestamps log"
-                      "{{ (' ' + timestamp) if timestamp is defined else '' }}"
-                      "{{ ' msec' if datetime_options and datetime_options.msec|d(False) is defined else '' }}"
-                      "{{ ' localtime' if datetime_options and datetime_options.localtime|d(False) is defined else '' }}"
-                      "{{ ' show-timezone' if datetime_options and datetime_options.show_timezone|d(False) is defined else '' }}"
-                      "{{ ' year' if datetime_options and datetime_options.year|d(False) is defined else '' }}"
-                      "",
+            "setval": handleTimestamp,
             "result": {
                 "timestamps": [
                     {
@@ -489,13 +500,7 @@ class ServiceTemplate(NetworkTemplate):
                 """, re.VERBOSE,
             ),
             "remval": "service timestamps debug",
-            "setval": "service timestamps debug"
-                      "{{ (' ' + timestamp) if timestamp is defined else '' }}"
-                      "{{ (' msec') if datetime_options and datetime_options.msec|d(False) is defined else '' }}"
-                      "{{ (' localtime') if datetime_options and datetime_options.localtime|d(False) is defined else '' }}"
-                      "{{ (' show-timezone') if datetime_options and datetime_options.show_timezone|d(False) is defined else '' }}"
-                      "{{ (' year') if datetime_options and datetime_options.year|d(False) is defined else '' }}"
-                      "",
+            "setval": handleTimestamp,
             "result": {
                 "timestamps": [
                     {

@@ -26,7 +26,9 @@ class TestIosServiceModule(TestIosModule):
             "ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module_base."
             "get_resource_connection",
         )
-        self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
+        self.get_resource_connection_facts = (
+            self.mock_get_resource_connection_facts.start()
+        )
 
         self.mock_execute_show_command = patch(
             "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.service.service."
@@ -129,8 +131,8 @@ class TestIosServiceModule(TestIosModule):
         }
         merged = [
             "service password-encryption",
-            "service timestamps debug uptime msec",
-            "service timestamps log datetime msec localtime show-timezone year",
+            "service timestamps debug uptime mesc",
+            "service timestamps log datetime mesc localtime show-timezone year",
         ]
         playbook["state"] = "merged"
         set_module_args(playbook)
@@ -212,12 +214,13 @@ class TestIosServiceModule(TestIosModule):
         overridden = [
             "no service call-home",
             "no service config",
-            "no service pad",
             "service counters max age 5",
+            "no service pad",
             "service password-encryption",
             "service tcp-keepalives-in",
             "service tcp-keepalives-out",
-            "service timestamps log datetime msec localtime show-timezone year",
+            "service timestamps log datetime mesc localtime show-timezone year",
+            "service timestamps debug datetime",
         ]
         playbook["state"] = "overridden"
         set_module_args(playbook)
@@ -275,8 +278,8 @@ class TestIosServiceModule(TestIosModule):
             "service password-encryption",
             "service tcp-keepalives-in",
             "service tcp-keepalives-out",
-            "service timestamps log datetime msec localtime show-timezone year",
-            "service timestamps debug datetime msec localtime",
+            "service timestamps log datetime mesc localtime show-timezone year",
+            "service timestamps debug datetime mesc localtime",
         ]
         playbook["state"] = "replaced"
         set_module_args(playbook)
@@ -499,7 +502,7 @@ class TestIosServiceModule(TestIosModule):
             "service tcp-keepalives-in",
             "service tcp-keepalives-out",
             "service timestamps debug uptime localtime",
-            "service timestamps log datetime msec localtime show-timezone year",
+            "service timestamps log datetime mesc localtime show-timezone year",
         ]
         result = self.execute_module(changed=False)
         self.maxDiff = None
