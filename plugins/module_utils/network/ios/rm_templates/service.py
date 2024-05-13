@@ -25,9 +25,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 def handleTimestamp(config_data):
     command = "service timestamps"
     command += " " + config_data.get("msg") if config_data.get("msg") else ""
-    command += (
-        " " + config_data.get("timestamp") if config_data.get("timestamp") else ""
-    )
+    command += " " + config_data.get("timestamp") if config_data.get("timestamp") else ""
 
     if config_data.get("datetime_options"):
         datetime_op = config_data.get("datetime_options")
