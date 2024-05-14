@@ -1928,7 +1928,7 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server enable traps ospf state-change",
             "snmp-server enable traps ethernet cfm cc mep-up mep-down cross-connect loop config",
             "snmp-server enable traps ethernet cfm crosscheck mep-missing mep-unknown service-up",
-            "snmp-server host 172.16.1.1 version 3 auth vrf mgmt group0 tty",
+            "snmp-server host 172.16.1.1 vrf mgmt version 3 auth group0 tty",
             "snmp-server host 172.16.2.1 version 3 priv newtera rsrb",
             "snmp-server host 172.16.2.1 version 3 noauth replaceUser slb",
             "snmp-server host 172.16.2.1 version 2c trapsac tty",
