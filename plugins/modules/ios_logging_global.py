@@ -38,7 +38,7 @@ options:
             description: Logging buffer size
             type: int
           severity: &severity
-            description: 
+            description:
               - Logging severity level
               - Idempotancy is not maintained for this attribute as value not shown in running-config
             type: str
