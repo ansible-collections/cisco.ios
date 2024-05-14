@@ -38,7 +38,9 @@ options:
             description: Logging buffer size
             type: int
           severity: &severity
-            description: Logging severity level
+            description: 
+              - Logging severity level
+              - Idempotancy is not maintained for this attribute as value not shown in running-config
             type: str
             choices: &severity_subgroup
               - alerts
