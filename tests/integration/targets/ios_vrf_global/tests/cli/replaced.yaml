@@ -39,7 +39,7 @@
         that:
           - replaced['after'] == result['after']
 
-    - name: Replaced provided BGP global configuration (idempotent)
+    - name: Replaced provided VRF global configuration (idempotent)
       register: result
       cisco.ios.ios_vrf_global: *id001
     - name: Assert that task was idempotent

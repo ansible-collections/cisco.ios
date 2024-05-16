@@ -419,11 +419,11 @@ EXAMPLES = """
 #  route-target import 1.12.3.4:200
 # vrf definition VRF7
 #
-- name: Delete the provided configuration
+- name: Delete the provided configuration when config is given
   hosts: ios
   gather_facts: false
   tasks:
-    - name: Delete the provided configuration
+    - name: Delete the provided configuration when config is given
       cisco.ios.ios_vrf_global:
         config:
           vrfs:
@@ -452,6 +452,38 @@ EXAMPLES = """
 # vrf definition VRF2
 # vrf definition VRF6
 # vrf definition VRF7
+#
+- name: Delete the provided configuration when config is empty
+  hosts: ios
+  gather_facts: false
+  tasks:
+    - name: Delete the provided configuration when config is empty
+      cisco.ios.ios_vrf_global:
+        config:
+        state: deleted
+
+# Task output
+# -------------
+# commands:
+# - vrf definition VRF2
+# - vrf definition VRF6
+# - no description VRF6 description
+# - no ipv4 multicast multitopology
+# - no ipv6 multicast multitopology
+# - no rd 6:7
+# - no route-target export 3.1.3.4:400
+# - no route-target import 1.12.3.4:200
+# - no vnet tag 500
+# - no vpn id 4:5
+# - vrf definition VRF7
+#
+# After state:
+# -------------
+# admin#show running-config | section ^vrf
+# vrf definition VRF2
+# vrf definition VRF6
+# vrf definition VRF7
+#
 #
 # Using purged
 # Before state:
@@ -556,6 +588,55 @@ EXAMPLES = """
 #  ipv4 multicast multitopology
 #  ipv6 multicast multitopology
 #  rd 1.2.3.4:500
+"""
+
+RETURN = """
+before:
+  description: The configuration prior to the module execution.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+after:
+  description: The resulting configuration after module execution.
+  returned: when changed
+  type: dict
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+commands:
+  description: The set of commands pushed to the remote device.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: list
+  sample:
+    - "vrf definition test"
+    - "description This is a test VRF"
+    - "rd: 2:3"
+rendered:
+  description: The provided configuration in the task rendered in device-native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - "vrf definition management"
+    - "description This is a test VRF"
+    - "rd: 2:3"
+    - "route-target export 190.0.2.3:400"
+    - "route-target import 190.0.2.1:300"
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
 
 

@@ -24,6 +24,17 @@
     that:
       - result.msg == 'value of config parameter must not be empty for state replaced'
 
+- name: Overridden with empty configuration should give appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.ios.ios_vrf_global:
+    config:
+    state: overridden
+
+- ansible.builtin.assert:
+    that:
+      - result.msg == 'value of config parameter must not be empty for state overridden'
+
 - name: Rendered with empty configuration should give appropriate error message
   register: result
   ignore_errors: true
@@ -45,6 +56,17 @@
 - ansible.builtin.assert:
     that:
       - result.msg == 'value of running_config parameter must not be empty for state parsed'
+
+- name: Purged with empty configuration should give appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.ios.ios_vrf_global:
+    config:
+    state: purged
+
+- ansible.builtin.assert:
+    that:
+      - result.msg == 'value of running_config parameter must not be empty for state purged'
 
 - ansible.builtin.debug:
     msg: END ios_vrf_global empty_config integration tests on connection={{ ansible_connection }}
