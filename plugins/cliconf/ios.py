@@ -141,14 +141,16 @@ import re
 import time
 
 from ansible.errors import AnsibleConnectionFailure
-from ansible.module_utils._text import to_text
+from ansible.module_utils._text import to_bytes, to_text
 from ansible.module_utils.common._collections_compat import Mapping
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     NetworkConfig,
     dumps,
 )
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import to_list
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    to_list,
+)
 from ansible_collections.ansible.netcommon.plugins.plugin_utils.cliconf_base import (
     CliconfBase,
     enable_mode,
@@ -166,7 +168,9 @@ class Cliconf(CliconfBase):
             raise ValueError("fetching configuration from %s is not supported" % source)
 
         if format:
-            raise ValueError("'format' value %s is not supported for get_config" % format)
+            raise ValueError(
+                "'format' value %s is not supported for get_config" % format
+            )
 
         if not flags:
             flags = []
@@ -256,7 +260,9 @@ class Cliconf(CliconfBase):
         if running and diff_match != "none":
             # running configuration
             have_src, have_banners = self._extract_banners(running)
-            running_obj = NetworkConfig(indent=1, contents=have_src, ignore_lines=diff_ignore_lines)
+            running_obj = NetworkConfig(
+                indent=1, contents=have_src, ignore_lines=diff_ignore_lines
+            )
             configdiffobjs = candidate_obj.difference(
                 running_obj,
                 path=path,
@@ -268,7 +274,9 @@ class Cliconf(CliconfBase):
             configdiffobjs = candidate_obj.items
             have_banners = {}
 
-        diff["config_diff"] = dumps(configdiffobjs, "commands") if configdiffobjs else ""
+        diff["config_diff"] = (
+            dumps(configdiffobjs, "commands") if configdiffobjs else ""
+        )
         banners = self._diff_banners(want_banners, have_banners)
         diff["banner_diff"] = banners if banners else {}
         return diff
@@ -280,14 +288,18 @@ class Cliconf(CliconfBase):
         status of commit_confirm
         :return: None
         """
-        if self.get_option("commit_confirm_timeout") or self.get_option("commit_confirm_immediate"):
+        if self.get_option("commit_confirm_timeout") or self.get_option(
+            "commit_confirm_immediate"
+        ):
             commit_timeout = (
                 self.get_option("commit_confirm_timeout")
                 if self.get_option("commit_confirm_timeout")
                 else 1
             )  # add default timeout not default: 1 to support above or operation
 
-            persistent_command_timeout = self._connection.get_option("persistent_command_timeout")
+            persistent_command_timeout = self._connection.get_option(
+                "persistent_command_timeout"
+            )
             # check archive state
             archive_state = self.send_command("show archive")
             rollback_state = self.send_command("show archive config rollback timer")
@@ -317,36 +329,60 @@ class Cliconf(CliconfBase):
             self.send_command("configure terminal")
 
     @enable_mode
-    def edit_config(self, candidate=None, commit=True, replace=None, comment=None):
+    def edit_config(
+        self,
+        candidate=None,
+        commit=True,
+        replace=None,
+        comment=None,
+        err_responses=None,
+    ):
         resp = {}
         operations = self.get_device_operations()
-        self.check_edit_config_capability(operations, candidate, commit, replace, comment)
+        self.check_edit_config_capability(
+            operations, candidate, commit, replace, comment
+        )
+
+        if err_responses:
+            # update platform default stderr regexes to include modules specific ones
+            err_responses = [re.compile(to_bytes(err_re)) for err_re in err_responses]
+            current_stderr_re = self._connection._get_terminal_std_re(
+                "terminal_stderr_re",
+            )
+            current_stderr_re.extend(err_responses)
 
         results = []
         requests = []
         # commit confirm specific attributes
         commit_confirm = self.get_option("commit_confirm_immediate")
-        if commit:
-            self.configure()
-            for line in to_list(candidate):
-                if not isinstance(line, Mapping):
-                    line = {"command": line}
 
-                cmd = line["command"]
-                if cmd != "end" and cmd[0] != "!":
-                    results.append(self.send_command(**line))
-                    requests.append(cmd)
+        try:
+            if commit:
+                self.configure()
+                for line in to_list(candidate):
+                    if not isinstance(line, Mapping):
+                        line = {"command": line}
 
-            self.send_command("end")
-            if commit_confirm:
-                self.send_command("configure confirm")
+                    cmd = line["command"]
+                    if cmd != "end" and cmd[0] != "!":
+                        results.append(self.send_command(**line))
+                        requests.append(cmd)
 
-        else:
-            raise ValueError("check mode is not supported")
+                self.send_command("end")
+                if commit_confirm:
+                    self.send_command("configure confirm")
 
-        resp["request"] = requests
-        resp["response"] = results
-        return resp
+            else:
+                raise ValueError("check mode is not supported")
+
+            resp["request"] = requests
+            resp["response"] = results
+            return resp
+        finally:
+            # always reset terminal regexes to platform default
+            if err_responses:
+                for x in err_responses:
+                    current_stderr_re.remove(x)
 
     def edit_macro(self, candidate=None, commit=True, replace=None, comment=None):
         """
@@ -359,7 +395,9 @@ class Cliconf(CliconfBase):
         """
         resp = {}
         operations = self.get_device_operations()
-        self.check_edit_config_capability(operations, candidate, commit, replace, comment)
+        self.check_edit_config_capability(
+            operations, candidate, commit, replace, comment
+        )
 
         results = []
         requests = []
@@ -480,7 +518,12 @@ class Cliconf(CliconfBase):
 
     def get_capabilities(self):
         result = super(Cliconf, self).get_capabilities()
-        result["rpc"] += ["edit_banner", "get_diff", "run_commands", "get_defaults_flag"]
+        result["rpc"] += [
+            "edit_banner",
+            "get_diff",
+            "run_commands",
+            "get_defaults_flag",
+        ]
         result["device_operations"] = self.get_device_operations()
         result.update(self.get_option_values())
         return json.dumps(result)
@@ -531,7 +574,9 @@ class Cliconf(CliconfBase):
 
             output = cmd.pop("output", None)
             if output:
-                raise ValueError("'output' value %s is not supported for run_commands" % output)
+                raise ValueError(
+                    "'output' value %s is not supported for run_commands" % output
+                )
 
             try:
                 out = self.send_command(**cmd)
@@ -577,8 +622,12 @@ class Cliconf(CliconfBase):
                     " response window: %s" % self._connection._last_recv_window,
                 )
 
-            if re.search(r"config.*\)#", to_text(out, errors="surrogate_then_replace").strip()):
-                self._connection.queue_message("vvvv", "wrong context, sending end to device")
+            if re.search(
+                r"config.*\)#", to_text(out, errors="surrogate_then_replace").strip()
+            ):
+                self._connection.queue_message(
+                    "vvvv", "wrong context, sending end to device"
+                )
                 self._connection.send_command("end")
 
     def _extract_banners(self, config):

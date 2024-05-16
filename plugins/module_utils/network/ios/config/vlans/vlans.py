@@ -27,10 +27,14 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
+    Facts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.vlans import (
     VlansTemplate,
 )
+
+err_responses = [r"You must disable"]
 
 
 class Vlans(ResourceModule):
@@ -64,7 +68,7 @@ class Vlans(ResourceModule):
         """
         if self.state not in ["parsed", "gathered"]:
             self.segregate_resource()
-            self.run_commands()
+            self.run_commands(err_responses=self.err_responses)
         return self.result
 
     def segregate_resource(self):
