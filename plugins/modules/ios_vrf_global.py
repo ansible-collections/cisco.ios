@@ -147,8 +147,8 @@ EXAMPLES = """
                   multitopology: true
               rd: "2:3"
               route_target:
-                export: "23.1.3.4:400"
-                import_config: "10.1.3.4:400"
+                export: "192.0.2.0:100"
+                import_config: "192.1.2.3:200"
               vpn:
                 id: "2:45"
               vnet:
@@ -162,8 +162,8 @@ EXAMPLES = """
 # - ipv4 multicast multitopology
 # - ipv6 multicast multitopology
 # - rd 2:3
-# - route-target export 23.1.3.4:400
-# - route-target import 10.1.3.4:400
+# - route-target export 192.0.2.0:100
+# - route-target import 192.1.2.3:200
 # - vnet tag 200
 # - vpn id 2:45
 #
@@ -179,8 +179,8 @@ EXAMPLES = """
 #       multitopology: true
 #   rd: "2:3"
 #   route_target:
-#     export: "23.1.3.4:400"
-#     import_config: "10.1.3.4:400"
+#     export: "192.0.2.0:100"
+#     import_config: "192.1.2.3:200"
 #   vnet:
 #     tag: 200
 #   vpn:
@@ -196,8 +196,8 @@ EXAMPLES = """
 #  ipv6 multicast multitopology
 #  rd 2:3
 #  vpn id 2:45
-#  route-target export 23.1.3.4:400
-#  route-target import 10.1.3.4:400
+#  route-target export 192.0.2.0:100
+#  route-target import 192.1.2.3:200
 
 #
 # Using replaced
@@ -211,8 +211,8 @@ EXAMPLES = """
 #  ipv6 multicast multitopology
 #  rd 2:3
 #  vpn id 2:45
-#  route-target export 23.1.3.4:400
-#  route-target import 10.1.3.4:400
+#  route-target export 192.0.2.0:100
+#  route-target import 192.1.2.3:200
 #
 #
 - name: Replace the provided configuration with the existing running configuration
@@ -233,8 +233,8 @@ EXAMPLES = """
                   multitopology: true
               rd: "7:8"
               route_target:
-                export: "23.1.3.4:500"
-                import_config: "12.1.3.4:400"
+                export: "198.51.100.112:500"
+                import_config: "192.0.2.4:400"
               vpn:
                 id: "2:45"
               vnet:
@@ -248,8 +248,8 @@ EXAMPLES = """
 # - ipv4 multicast multitopology
 # - ipv6 multicast multitopology
 # - rd 7:8
-# - route-target export 23.1.3.4:500
-# - route-target import 12.1.3.4:400
+# - route-target export 198.51.100.112:500
+# - route-target import 192.0.2.4:400
 # - vnet tag 300
 # - vpn id 2:45
 #
@@ -264,8 +264,8 @@ EXAMPLES = """
 #       multitopology: true
 #   rd: "2:3"
 #   route_target:
-#     export: "23.1.3.4:400"
-#     import_config: "10.1.3.4:400"
+#     export: "192.0.2.0:100"
+#     import_config: "192.1.2.3:200"
 #   vnet:
 #     tag: 200
 #   vpn:
@@ -280,8 +280,8 @@ EXAMPLES = """
 #       multitopology: true
 #   rd: "7:8"
 #   route_target:
-#     export: "23.1.3.4:500"
-#     import_config: "12.1.3.4:400"
+#     export: "198.51.100.112:500"
+#     import_config: "192.0.2.4:400"
 #   vnet:
 #     tag: 300
 #   vpn:
@@ -297,16 +297,16 @@ EXAMPLES = """
 #  ipv6 multicast multitopology
 #  rd 2:3
 #  vpn id 2:45
-#  route-target export 23.1.3.4:400
-#  route-target import 10.1.3.4:400
+#  route-target export 192.0.2.0:100
+#  route-target import 192.1.2.3:200
 # vrf definition VRF7
 #  vnet tag 300
 #  description VRF7 description
 #  ipv4 multicast multitopology
 #  ipv6 multicast multitopology
 #  rd 7:8
-#  route-target export 23.1.3.4:500
-#  route-target import 12.1.3.4:400
+#  route-target export 198.51.100.112:500
+#  route-target import 192.0.2.4:400
 
 #
 # Using overridden
