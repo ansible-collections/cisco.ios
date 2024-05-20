@@ -2157,7 +2157,7 @@ class TestIosStaticRoutesModule(TestIosModule):
                                 "next_hops": [
                                     {
                                         "interface": "Null0",
-                                        "permanent": True
+                                        "permanent": True,
                                     },
                                 ],
                             },
@@ -2167,12 +2167,12 @@ class TestIosStaticRoutesModule(TestIosModule):
                                     {
                                         "forward_router_address": "10.0.0.1",
                                         "interface": "GigabitEthernet0/1.22",
-                                        "tag": 30
+                                        "tag": 30,
                                     },
                                     {
-                                        "forward_router_address": "10.0.0.2"
-                                    }
-                                ]
+                                        "forward_router_address": "10.0.0.2",
+                                    },
+                                ],
                             },
                             {
                                 "dest": "192.168.1.0/29",
@@ -2180,10 +2180,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                     {
                                         "forward_router_address": "10.0.0.3",
                                         "interface": "GigabitEthernet0/1.23",
-                                        "tag": 30
-                                    }
-                                ]
-                            }
+                                        "tag": 30,
+                                    },
+                                ],
+                            },
                         ],
                     },
                     {
@@ -2193,20 +2193,20 @@ class TestIosStaticRoutesModule(TestIosModule):
                                 "dest": "2001:DB8:0:3::/128",
                                 "next_hops": [
                                     {
-                                        "forward_router_address": "2001:DB8:0:3::33"
-                                    }
-                                ]
+                                        "forward_router_address": "2001:DB8:0:3::33",
+                                    },
+                                ],
                             },
                             {
                                 "dest": "2001:DB8:0:3::/64",
                                 "next_hops": [
                                     {
-                                        "forward_router_address": "2001:DB8:0:3::3"
-                                    }
-                                ]
+                                        "forward_router_address": "2001:DB8:0:3::3",
+                                    },
+                                ],
                             },
-                        ]
-                    }
+                        ],
+                    },
                 ],
             },
         ]
