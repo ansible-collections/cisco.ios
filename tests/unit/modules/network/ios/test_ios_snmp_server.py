@@ -1761,7 +1761,7 @@ class TestIosSnmpServerModule(TestIosModule):
                     "version_option": "priv",
                     "community_string": "newtera1",
                     "traps": ["rsrb", "pim"],
-                }
+                },
             ],
             "users": [
                 {
