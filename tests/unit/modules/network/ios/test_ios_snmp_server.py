@@ -1681,8 +1681,8 @@ class TestIosSnmpServerModule(TestIosModule):
     def test_ios_snmp_server_gathered(self):
         self.execute_show_command.return_value = dedent(
             """\
-            snmp-server host 172.16.2.99 checktrap  isis hsrp
-            snmp-server host 172.16.2.1 version 3 priv newtera  rsrb pim rsvp slb pki
+            snmp-server host 172.16.2.99 checktrap isis hsrp
+            snmp-server host 172.16.2.1 version 3 priv newtera rsrb pim rsvp slb pki
             snmp-server host 172.16.2.1 version 3 noauth replace-User! slb pki
             snmp-server host 172.16.2.1 vrf vrf1 version 3 priv newtera1 rsrb pim
             """,
