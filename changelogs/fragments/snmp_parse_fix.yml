@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - snmp_server - Fix configuration command for snmp-server host.
