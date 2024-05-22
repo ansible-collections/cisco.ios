@@ -368,8 +368,8 @@ class TestIosAclsModule(TestIosModule):
                                         "destination": {
                                             "any": True,
                                             "port_protocol": {
-                                                "eq": "135"
-                                            }
+                                                "eq": "135",
+                                            },
                                         },
                                         "grant": "permit",
                                         "protocol": "tcp",
@@ -380,8 +380,8 @@ class TestIosAclsModule(TestIosModule):
                                         "destination": {
                                             "any": True,
                                             "port_protocol": {
-                                                "eq": "135"
-                                            }
+                                                "eq": "135",
+                                            },
                                         },
                                         "grant": "permit",
                                         "protocol": "udp",
@@ -391,7 +391,7 @@ class TestIosAclsModule(TestIosModule):
                                 ],
                                 "name": "example",
                                 "acl_type": "extended",
-                            }
+                            },
                         ],
                         "afi": "ipv4",
                     },
