@@ -322,9 +322,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\shost
                 (\s(?P<host>\S+))?
                 (\s(?P<informs>informs))?
+                (\svrf\s(?P<vrf>\S+))?
                 (\sversion\s(?P<version>1|3|2c))?
                 (\s(?P<version_option>auth|noauth|priv))?
-                (\svrf\s(?P<vrf>\S+))?
                 (\s(?P<community_string>\S+))?
                 (\s+(?P<traps>.+$))?
                 """, re.VERBOSE,
