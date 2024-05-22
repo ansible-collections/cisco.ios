@@ -530,8 +530,6 @@ class TestIosAclsModule(TestIosModule):
             "50 remark I am new set of ipv6 ace",
             "permit icmp any any sequence 60",
         ]
-        print(len(result["commands"]))
-        print(len(commands))
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_merged_idempotent(self):
