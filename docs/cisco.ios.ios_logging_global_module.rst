@@ -127,7 +127,7 @@ Parameters
                 </td>
                 <td>
                         <div>Logging severity level</div>
-                        <div>Idempotancy is not maintained for this attribute as value not shown in running-config</div>
+                        <div>Idempotancy is not maintained for this attribute for the value debugging as value not shown in running-config</div>
                 </td>
             </tr>
             <tr>
@@ -634,7 +634,7 @@ Parameters
                 </td>
                 <td>
                         <div>Logging severity level</div>
-                        <div>Idempotancy is not maintained for this attribute as value not shown in running-config</div>
+                        <div>Idempotancy is not maintained for this attribute for the value debugging as value not shown in running-config</div>
                 </td>
             </tr>
             <tr>
@@ -1463,7 +1463,7 @@ Parameters
                 </td>
                 <td>
                         <div>Logging severity level</div>
-                        <div>Idempotancy is not maintained for this attribute as value not shown in running-config</div>
+                        <div>Idempotancy is not maintained for this attribute for the value debugging as value not shown in running-config</div>
                 </td>
             </tr>
             <tr>
@@ -1973,7 +1973,7 @@ Parameters
                 </td>
                 <td>
                         <div>Logging severity level</div>
-                        <div>Idempotancy is not maintained for this attribute as value not shown in running-config</div>
+                        <div>Idempotancy is not maintained for this attribute for the value debugging as value not shown in running-config</div>
                 </td>
             </tr>
 
