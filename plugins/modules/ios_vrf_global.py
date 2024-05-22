@@ -45,58 +45,58 @@ options:
             type: dict
             suboptions:
               multicast:
-                description: IP Multicast configuration
+                description: IPv4 multicast configuration
                 type: dict
                 suboptions:
                   multitopology:
-                    description:  Enable Multicast-Specific RPF Topology
+                    description: Enable multicast-specific topology
                     type: bool
           ipv6:
             description: VRF IPv6 configuration
             type: dict
             suboptions:
               multicast:
-                description: IP Multicast configuration
+                description: IPv6 multicast configuration
                 type: dict
                 suboptions:
                   multitopology:
-                    description:  Enable Multicast-Specific RPF Topology
+                    description:  Enable multicast-specific topology
                     type: bool
           rd:
-            description: Specify Route Distinguisher (RD).
+            description: Specify route distinguisher (RD).
             type: str
           route_target:
-            description: Specify Target VPN Extended Communities.
+            description: Specify target VPN extended configurations.
             type: dict
             suboptions:
               export:
-                description: Export Target-VPN community.
+                description: Export target-VPN configuration.
                 type: str
               import_config:
-                description: Export Target-VPN community.
+                description: Import target-VPN configuration.
                 type: str
               both:
-                description: Both export and import Target-VPN community
+                description: Both export and import target-VPN configuration.
                 type: str
           vnet:
-            description: Virtual NETworking configuration.
+            description: Virtual networking configuration.
             type: dict
             suboptions:
               tag:
-                description: Identifier used to tag packets associated with this VNET
+                description: Identifier used to tag packets associated with this VNET.
                 type: int
           vpn:
-            description: Configure VPN ID for the VRF as specified in RFC 2685
+            description: Configure vpn-id for the VRF as specified in RFC 2685.
             type: dict
             suboptions:
               id:
-                description: Configure VPN ID in RFC 2685 format
+                description: Configure vpn-id in RFC 2685 format.
                 type: str
   running_config:
     description:
       - This option is used only with state I(parsed).
       - The value of this option should be the output received from the IOS device by
-        executing the command B(show running-config vrf).
+        executing the command B(show running-config | section ^vrf).
       - The state I(parsed) reads the configuration from C(running_config) option and
         transforms it into Ansible structured data as per the resource module's argspec
         and the value is then returned in the I(parsed) key within the result.
@@ -118,7 +118,7 @@ options:
       - The state I(parsed) reads the configuration from C(running_config) option and
         transforms it into JSON format as per the resource module parameters and the
         value is returned in the I(parsed) key within the result. The value of C(running_config)
-        option should be the same format as the output of command I(sh running-config | section vrf).
+        option should be the same format as the output of command I(show running-config | section vrf).
         connection to remote host is not required.
     type: str
 """
