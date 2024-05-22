@@ -362,6 +362,36 @@ class TestIosAclsModule(TestIosModule):
                                 "acl_type": "extended",
                                 "name": "mytest",
                             },
+                            {
+                                "aces": [
+                                    {
+                                        "destination": {
+                                            "any": True,
+                                            "port_protocol": {
+                                                "eq": "135"
+                                            }
+                                        },
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "sequence": 10,
+                                        "source": {"any": True},
+                                    },
+                                    {
+                                        "destination": {
+                                            "any": True,
+                                            "port_protocol": {
+                                                "eq": "135"
+                                            }
+                                        },
+                                        "grant": "permit",
+                                        "protocol": "udp",
+                                        "sequence": 20,
+                                        "source": {"any": True},
+                                    },
+                                ],
+                                "name": "example",
+                                "acl_type": "extended",
+                            }
                         ],
                         "afi": "ipv4",
                     },
@@ -467,6 +497,9 @@ class TestIosAclsModule(TestIosModule):
             "110 permit ip host 10.40.150.0 any",
             "remark I am the peace ace",
             "remark Peace out",
+            "ip access-list extended example",
+            "10 permit tcp any any eq msrpc",
+            "20 permit udp any any eq 135",
             "ip access-list extended TEST",
             "10 remark FIRST REMARK BEFORE LINE 10",
             "10 remark ============",
@@ -497,6 +530,8 @@ class TestIosAclsModule(TestIosModule):
             "50 remark I am new set of ipv6 ace",
             "permit icmp any any sequence 60",
         ]
+        print(len(result["commands"]))
+        print(len(commands))
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_acls_merged_idempotent(self):
