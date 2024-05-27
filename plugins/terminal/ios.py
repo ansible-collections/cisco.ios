@@ -27,7 +27,9 @@ import re
 from ansible.errors import AnsibleConnectionFailure
 from ansible.module_utils._text import to_bytes, to_text
 from ansible.utils.display import Display
-from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import TerminalBase
+from ansible_collections.ansible.netcommon.plugins.plugin_utils.terminal_base import (
+    TerminalBase,
+)
 
 
 display = Display()
@@ -63,7 +65,7 @@ class TerminalModule(TerminalBase):
         ),
         re.compile(rb"% BGP: Error initializing topology", re.I),
         re.compile(rb"%SNMP agent not enabled", re.I),
-        re.compile(rb"% Invalid", re.I),
+        # re.compile(rb"% Invalid", re.I),
     ]
 
     terminal_config_prompt = re.compile(r"^.+\(config(-.*)?\)#$")
@@ -95,7 +97,9 @@ class TerminalModule(TerminalBase):
             try:
                 self._exec_cli_command(b"screen-length 0")  # support to SD-WAN mode
                 _is_sdWan = True
-            except AnsibleConnectionFailure:  # fails as length required for handling prompt
+            except (
+                AnsibleConnectionFailure
+            ):  # fails as length required for handling prompt
                 raise AnsibleConnectionFailure("unable to set terminal parameters")
         try:
             if _is_sdWan:
