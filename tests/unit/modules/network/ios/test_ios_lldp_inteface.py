@@ -7,11 +7,10 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_lldp_interfaces
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
@@ -241,7 +240,10 @@ class TestIosLldpInterfacesModule(TestIosModule):
         )
         set_module_args(
             dict(
-                config=[dict(name="GigabitEthernet0/2"), dict(name="GigabitEthernet0/1")],
+                config=[
+                    dict(name="GigabitEthernet0/2"),
+                    dict(name="GigabitEthernet0/1"),
+                ],
                 state="deleted",
             ),
         )

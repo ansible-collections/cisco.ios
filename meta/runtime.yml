@@ -31,10 +31,6 @@ plugin_routing:
       deprecation:
         removal_date: "2024-06-01"
         warning_text: See the plugin documentation for more details
-    ios_ntp:
-      deprecation:
-        removal_date: "2024-01-01"
-        warning_text: See the plugin documentation for more details
     l2_interfaces:
       redirect: cisco.ios.ios_l2_interfaces
     l3_interfaces:
@@ -63,11 +59,6 @@ plugin_routing:
       redirect: cisco.ios.ios_lldp_interfaces
     logging_global:
       redirect: cisco.ios.ios_logging_global
-    ntp:
-      deprecation:
-        removal_date: "2024-01-01"
-        warning_text: See the plugin documentation for more details
-      redirect: cisco.ios.ios_ntp
     ntp_global:
       redirect: cisco.ios.ios_ntp_global
     ospfv2:

@@ -7,11 +7,10 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_service
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
@@ -129,14 +128,13 @@ class TestIosServiceModule(TestIosModule):
             },
         }
         merged = [
-            "service timestamps debug uptime",
-            "service timestamps log datetime msec localtime show-timezone year",
             "service password-encryption",
+            "service timestamps debug uptime mesc",
+            "service timestamps log datetime mesc localtime show-timezone year",
         ]
         playbook["state"] = "merged"
         set_module_args(playbook)
         result = self.execute_module(changed=True)
-
         self.assertEqual(sorted(result["commands"]), sorted(merged))
 
     def test_ios_snm_server_deleted(self):
@@ -214,18 +212,17 @@ class TestIosServiceModule(TestIosModule):
         overridden = [
             "no service call-home",
             "no service config",
-            "no service pad",
             "service counters max age 5",
+            "no service pad",
             "service password-encryption",
             "service tcp-keepalives-in",
             "service tcp-keepalives-out",
+            "service timestamps log datetime mesc localtime show-timezone year",
             "service timestamps debug datetime",
-            "service timestamps log datetime msec localtime show-timezone year",
         ]
         playbook["state"] = "overridden"
         set_module_args(playbook)
         result = self.execute_module(changed=True)
-
         self.assertEqual(sorted(result["commands"]), sorted(overridden))
 
     def test_ios_service_replaced(self):
@@ -259,6 +256,10 @@ class TestIosServiceModule(TestIosModule):
                     {
                         "msg": "debug",
                         "timestamp": "datetime",
+                        "datetime_options": {
+                            "localtime": True,
+                            "msec": True,
+                        },
                     },
                 ],
                 "tcp_keepalives_in": True,
@@ -270,18 +271,17 @@ class TestIosServiceModule(TestIosModule):
         replaced = [
             "no service call-home",
             "no service config",
-            "no service pad",
             "service counters max age 5",
+            "no service pad",
             "service password-encryption",
             "service tcp-keepalives-in",
             "service tcp-keepalives-out",
-            "service timestamps debug datetime",
-            "service timestamps log datetime msec localtime show-timezone year",
+            "service timestamps log datetime mesc localtime show-timezone year",
+            "service timestamps debug datetime mesc localtime",
         ]
         playbook["state"] = "replaced"
         set_module_args(playbook)
         result = self.execute_module(changed=True)
-
         self.assertEqual(sorted(result["commands"]), sorted(replaced))
 
     def test_ios_service_replaced_idempotent(self):
@@ -369,8 +369,6 @@ class TestIosServiceModule(TestIosModule):
 
         self.assertEqual(sorted(result["commands"]), sorted(replaced))
 
-    ####################
-
     def test_ios_service_parsed(self):
         set_module_args(
             dict(
@@ -427,36 +425,36 @@ class TestIosServiceModule(TestIosModule):
             service timestamps log datetime msec localtime show-timezone year
             service timestamps debug uptime
             service call-home
+            service udp-small-servers
+            service tcp-small-servers no-limit
             """,
         )
         set_module_args(dict(state="gathered"))
         gathered = {
             "timestamps": [
                 {
-                    "msg": "debug",
-                    "timestamp": "uptime",
-                },
-                {
                     "msg": "log",
                     "timestamp": "datetime",
                     "datetime_options": {
-                        "localtime": True,
                         "msec": True,
+                        "localtime": True,
                         "show_timezone": True,
                         "year": True,
                     },
                 },
+                {"msg": "debug", "timestamp": "uptime"},
             ],
             "call_home": True,
-            "dhcp": True,
+            "udp_small_servers": {"enable": True},
+            "tcp_small_servers": {"enable": True, "no_limit": True},
             "counters": 0,
+            "dhcp": True,
             "password_recovery": True,
             "prompt": True,
             "slave_log": True,
         }
         result = self.execute_module(changed=False)
         self.maxDiff = None
-
         self.assertEqual(sorted(result["gathered"]), sorted(gathered))
 
     def test_ios_service_rendered(self):
@@ -473,6 +471,9 @@ class TestIosServiceModule(TestIosModule):
                         {
                             "msg": "debug",
                             "timestamp": "uptime",
+                            "datetime_options": {
+                                "localtime": True,
+                            },
                         },
                         {
                             "msg": "log",
@@ -498,10 +499,9 @@ class TestIosServiceModule(TestIosModule):
             "service slave-log",
             "service tcp-keepalives-in",
             "service tcp-keepalives-out",
-            "service timestamps debug uptime",
-            "service timestamps log datetime msec localtime show-timezone year",
+            "service timestamps debug uptime localtime",
+            "service timestamps log datetime mesc localtime show-timezone year",
         ]
         result = self.execute_module(changed=False)
         self.maxDiff = None
-
         self.assertEqual(sorted(result["rendered"]), sorted(rendered))

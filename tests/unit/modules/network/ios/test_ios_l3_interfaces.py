@@ -7,11 +7,10 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_l3_interfaces
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
@@ -408,7 +407,6 @@ class TestIosL3InterfacesModule(TestIosModule):
             "ipv6 enable",
             "no autostate",
         ]
-
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
@@ -525,3 +523,31 @@ class TestIosL3InterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_l3_interfaces_gathered(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             no autostate
+            interface Vlan901
+             ip unnumbered Loopback2
+            """,
+        )
+        set_module_args(
+            dict(
+                state="gathered",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        gathered = [
+            {
+                "name": "GigabitEthernet0/1",
+                "autostate": False,
+            },
+            {
+                "name": "Vlan901",
+                "ipv4": [{"source_interface": {"name": "Loopback2"}}],
+                "autostate": True,
+            },
+        ]
+        self.assertEqual(result["gathered"], gathered)

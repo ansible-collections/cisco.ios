@@ -7,11 +7,10 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_static_routes
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
@@ -232,7 +231,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                 "routes": [
                                     {
                                         "next_hops": [
-                                            {"forward_router_address": "10.1.1.2", "track": 10},
+                                            {
+                                                "forward_router_address": "10.1.1.2",
+                                                "track": 10,
+                                            },
                                             {
                                                 "forward_router_address": "10.1.1.3",
                                                 "distance_metric": 22,
@@ -422,7 +424,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                 "routes": [
                                     {
                                         "next_hops": [
-                                            {"forward_router_address": "10.1.1.2", "track": 10},
+                                            {
+                                                "forward_router_address": "10.1.1.2",
+                                                "track": 10,
+                                            },
                                             {
                                                 "forward_router_address": "10.1.1.3",
                                                 "distance_metric": 22,
@@ -639,7 +644,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                 "routes": [
                                     {
                                         "next_hops": [
-                                            {"forward_router_address": "10.1.1.2", "track": 10},
+                                            {
+                                                "forward_router_address": "10.1.1.2",
+                                                "track": 10,
+                                            },
                                             {
                                                 "forward_router_address": "10.1.1.3",
                                                 "distance_metric": 22,
@@ -829,7 +837,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                 "routes": [
                                     {
                                         "next_hops": [
-                                            {"forward_router_address": "10.1.1.2", "track": 10},
+                                            {
+                                                "forward_router_address": "10.1.1.2",
+                                                "track": 10,
+                                            },
                                             {
                                                 "forward_router_address": "10.1.1.3",
                                                 "distance_metric": 22,
@@ -1046,7 +1057,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                 "routes": [
                                     {
                                         "next_hops": [
-                                            {"forward_router_address": "10.1.1.2", "track": 10},
+                                            {
+                                                "forward_router_address": "10.1.1.2",
+                                                "track": 10,
+                                            },
                                             {
                                                 "forward_router_address": "10.1.1.3",
                                                 "distance_metric": 22,
@@ -1236,7 +1250,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                 "routes": [
                                     {
                                         "next_hops": [
-                                            {"forward_router_address": "10.1.1.2", "track": 10},
+                                            {
+                                                "forward_router_address": "10.1.1.2",
+                                                "track": 10,
+                                            },
                                             {
                                                 "forward_router_address": "10.1.1.3",
                                                 "distance_metric": 22,
@@ -1716,7 +1733,9 @@ class TestIosStaticRoutesModule(TestIosModule):
                 config=[
                     dict(
                         vrf="testVrf2",
-                        address_families=[dict(afi="ipv4", routes=[dict(dest="192.0.2.0/24")])],
+                        address_families=[
+                            dict(afi="ipv4", routes=[dict(dest="192.0.2.0/24")]),
+                        ],
                     ),
                     dict(
                         vrf="testVrfv6",
@@ -1840,7 +1859,10 @@ class TestIosStaticRoutesModule(TestIosModule):
                                 "routes": [
                                     {
                                         "next_hops": [
-                                            {"forward_router_address": "10.1.1.2", "track": 10},
+                                            {
+                                                "forward_router_address": "10.1.1.2",
+                                                "track": 10,
+                                            },
                                             {
                                                 "forward_router_address": "10.1.1.3",
                                                 "distance_metric": 22,
@@ -2116,6 +2138,11 @@ class TestIosStaticRoutesModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             ip route 10.0.0.0 255.0.0.0 Null0 permanent
+            ip route 192.168.1.0 255.255.255.0 GigabitEthernet0/1.22 10.0.0.1 tag 30
+            ip route 192.168.1.0 255.255.255.0 10.0.0.2
+            ip route 192.168.1.0 255.255.255.248 GigabitEthernet0/1.23 10.0.0.3 tag 30
+            ipv6 route 2001:DB8:0:3::/128 2001:DB8:0:3::33
+            ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::3
             """,
         )
         set_module_args(dict(state="gathered"))
@@ -2127,7 +2154,56 @@ class TestIosStaticRoutesModule(TestIosModule):
                         "routes": [
                             {
                                 "dest": "10.0.0.0/8",
-                                "next_hops": [{"interface": "Null0", "permanent": True}],
+                                "next_hops": [
+                                    {
+                                        "interface": "Null0",
+                                        "permanent": True,
+                                    },
+                                ],
+                            },
+                            {
+                                "dest": "192.168.1.0/24",
+                                "next_hops": [
+                                    {
+                                        "forward_router_address": "10.0.0.1",
+                                        "interface": "GigabitEthernet0/1.22",
+                                        "tag": 30,
+                                    },
+                                    {
+                                        "forward_router_address": "10.0.0.2",
+                                    },
+                                ],
+                            },
+                            {
+                                "dest": "192.168.1.0/29",
+                                "next_hops": [
+                                    {
+                                        "forward_router_address": "10.0.0.3",
+                                        "interface": "GigabitEthernet0/1.23",
+                                        "tag": 30,
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        "afi": "ipv6",
+                        "routes": [
+                            {
+                                "dest": "2001:DB8:0:3::/128",
+                                "next_hops": [
+                                    {
+                                        "forward_router_address": "2001:DB8:0:3::33",
+                                    },
+                                ],
+                            },
+                            {
+                                "dest": "2001:DB8:0:3::/64",
+                                "next_hops": [
+                                    {
+                                        "forward_router_address": "2001:DB8:0:3::3",
+                                    },
+                                ],
                             },
                         ],
                     },
@@ -2138,4 +2214,3 @@ class TestIosStaticRoutesModule(TestIosModule):
         self.maxDiff = None
         print(result["gathered"])
         self.assertEqual(sorted(result["gathered"]), sorted(gathered))
-        # self.assertEqual(result["gathered"], gathered)

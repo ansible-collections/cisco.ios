@@ -2,107 +2,75 @@ ancestor: null
 releases:
   1.0.0:
     modules:
-      - description: ACL interfaces resource module
+      - description: Resource module to configure ACL interfaces.
         name: ios_acl_interfaces
         namespace: ""
-      - description: ACLs resource module
+      - description: Resource module to configure ACLs.
         name: ios_acls
         namespace: ""
-      - description: Manage multiline banners on Cisco IOS devices
+      - description: Module to configure multiline banners.
         name: ios_banner
         namespace: ""
-      - description: Configure global BGP protocol settings on Cisco IOS.
-        name: ios_bgp
-        namespace: ""
-      - description: Run commands on remote devices running Cisco IOS
+      - description: Module to run commands on remote devices.
         name: ios_command
         namespace: ""
-      - description: Manage Cisco IOS configuration sections
+      - description: Module to manage configuration sections.
         name: ios_config
         namespace: ""
-      - description: Collect facts from remote devices running Cisco IOS
+      - description: Module to collect facts from remote devices.
         name: ios_facts
         namespace: ""
-      - description:
-          (deprecated, removed after 2022-06-01) Manage Interface on Cisco
-          IOS network devices
-        name: ios_interface
-        namespace: ""
-      - description: Interfaces resource module
+      - description: Resource module to configure interfaces.
         name: ios_interfaces
         namespace: ""
-      - description:
-          (deprecated, removed after 2022-06-01) Manage Layer-2 interface
-          on Cisco IOS devices.
-        name: ios_l2_interface
-        namespace: ""
-      - description: L2 interfaces resource module
+      - description: Resource module to configure L2 interfaces.
         name: ios_l2_interfaces
         namespace: ""
-      - description:
-          (deprecated, removed after 2022-06-01) Manage Layer-3 interfaces
-          on Cisco IOS network devices.
-        name: ios_l3_interface
-        namespace: ""
-      - description: L3 interfaces resource module
+      - description: Resource module to configure L3 interfaces.
         name: ios_l3_interfaces
         namespace: ""
-      - description: LACP resource module
+      - description: Resource module to configure LACP.
         name: ios_lacp
         namespace: ""
-      - description: LACP interfaces resource module
+      - description: Resource module to configure LACP interfaces.
         name: ios_lacp_interfaces
         namespace: ""
-      - description: LAG interfaces resource module
+      - description: Resource module to configure LAG interfaces.
         name: ios_lag_interfaces
         namespace: ""
-      - description: Manage link aggregation groups on Cisco IOS network devices
+      - description: Module to configure link aggregation groups.
         name: ios_linkagg
         namespace: ""
-      - description: Manage LLDP configuration on Cisco IOS network devices.
+      - description:
+          (deprecated, removed after 2024-06-01) Manage LLDP configuration
+          on Cisco IOS network devices.
         name: ios_lldp
         namespace: ""
-      - description: LLDP resource module
+      - description: Resource module to configure LLDP.
         name: ios_lldp_global
         namespace: ""
-      - description: LLDP interfaces resource module
+      - description: Resource module to configure LLDP interfaces.
         name: ios_lldp_interfaces
         namespace: ""
-      - description: Manage logging on network devices
-        name: ios_logging
-        namespace: ""
-      - description: Manages core NTP configuration.
-        name: ios_ntp
-        namespace: ""
-      - description: OSPFv2 resource module
+      - description: Resource module to configure OSPFv2.
         name: ios_ospfv2
         namespace: ""
-      - description: Tests reachability using ping from Cisco IOS network devices
+      - description: Tests reachability using ping from IOS switch.
         name: ios_ping
         namespace: ""
-      - description:
-          (deprecated, removed after 2022-06-01) Manage static IP routes
-          on Cisco IOS network devices
-        name: ios_static_route
-        namespace: ""
-      - description: Static routes resource module
+      - description: Resource module to configure static routes.
         name: ios_static_routes
         namespace: ""
-      - description: Manage the system attributes on Cisco IOS devices
+      - description: Module to manage the system attributes.
         name: ios_system
         namespace: ""
-      - description: Manage the aggregate of local users on Cisco IOS device
+      - description: Module to manage the aggregates of local users.
         name: ios_user
         namespace: ""
-      - description:
-          (deprecated, removed after 2022-06-01) Manage VLANs on IOS network
-          devices
-        name: ios_vlan
-        namespace: ""
-      - description: VLANs resource module
+      - description: Resource module to configure VLANs.
         name: ios_vlans
         namespace: ""
-      - description: Manage the collection of VRF definitions on Cisco IOS devices
+      - description: Module to configure VRF definitions.
         name: ios_vrf
         namespace: ""
     plugins:
@@ -153,7 +121,7 @@ releases:
       minor_changes:
         - Add ios_ospfv3 module.
     modules:
-      - description: OSPFv3 resource module
+      - description: Resource module to configure OSPFv3.
         name: ios_ospfv3
         namespace: ""
     release_date: "2020-10-01"
@@ -172,7 +140,7 @@ releases:
       minor_changes:
         - Add ios_ospf_interfaces module.
     modules:
-      - description: OSPF Interfaces resource module
+      - description: Resource module to configure OSPF interfaces.
         name: ios_ospf_interfaces
         namespace: ""
     release_date: "2020-11-01"
@@ -196,7 +164,7 @@ releases:
       minor_changes:
         - Add ios_bgp_global module.
     modules:
-      - description: BGP Global resource module
+      - description: Resource module to configure BGP.
         name: ios_bgp_global
         namespace: ""
     release_date: "2021-01-29"
@@ -214,7 +182,7 @@ releases:
         - Add ios_bgp_address_family Resource Module. (https://github.com/ansible-collections/cisco.ios/pull/219).
         - Adds support for single_user_mode command output caching. (https://github.com/ansible-collections/cisco.ios/pull/204).
     modules:
-      - description: BGP Address Family resource module.
+      - description: Resource module to configure BGP Address family.
         name: ios_bgp_address_family
         namespace: ""
     release_date: "2021-02-25"
@@ -246,7 +214,7 @@ releases:
       security_fixes:
         - To fix Cisco IOS no log issue and add ignore txt for 2.12 (https://github.com/ansible-collections/cisco.ios/pull/304).
     modules:
-      - description: Route Maps resource module.
+      - description: Resource module to configure route maps.
         name: ios_route_maps
         namespace: ""
     release_date: "2021-04-27"
@@ -265,10 +233,10 @@ releases:
         - Add ios_logging_global module.
         - IOS Prefix list resource module.
     modules:
-      - description: Logging resource module.
+      - description: Resource module to configure logging.
         name: ios_logging_global
         namespace: ""
-      - description: Prefix Lists resource module.
+      - description: Resource module to configure prefix lists.
         name: ios_prefix_lists
         namespace: ""
     release_date: "2021-05-18"
@@ -377,7 +345,7 @@ releases:
       - sd_wan_support.yaml
       - set_allow_duplicates.yaml
     modules:
-      - description: ntp_global resource module
+      - description: Resource module to configure NTP.
         name: ios_ntp_global
         namespace: ""
     release_date: "2021-09-24"
@@ -409,7 +377,7 @@ releases:
       - sanity-213.yaml
       - snmp_server_resource_module.yaml
     modules:
-      - description: snmp_server resource module
+      - description: Resource module to configure snmp server.
         name: ios_snmp_server
         namespace: ""
     release_date: "2021-12-07"
@@ -452,7 +420,7 @@ releases:
       - snmp_server_feature_user.yaml
       - static_route_interface_issue.yaml
     modules:
-      - description: hostname resource module
+      - description: Resource module to configure hostname.
         name: ios_hostname
         namespace: ""
     release_date: "2022-01-31"
@@ -1153,3 +1121,42 @@ releases:
       - ios_acls_sticky.yml
       - ios_vrf_docfix.yml
     release_date: "2024-03-08"
+  6.1.4:
+    changes:
+      bugfixes:
+        - ios_acls - update module to apply remarks entry with sequence numbers.
+        - ios_bgp_address_family - description attribute, evalutated as complex object
+          casted to string.
+        - ios_bgp_global - description attribute, evalutated as complex object casted
+          to string.
+        - ios_interfaces - description attribute, evalutated as complex object casted
+          to string.
+        - ios_prefix_lists - description attribute, evalutated as complex object casted
+          to string.
+        - ios_route_maps - description attribute, evalutated as complex object casted
+          to string.
+    fragments:
+      - acl_refactor.yaml
+      - json_serializable_issue.yaml
+    release_date: "2024-03-27"
+  7.0.0:
+    changes:
+      major_changes:
+        - ios_ntp - Remove deprecated ntp legacy module
+      removed_features:
+        - Deprecated ios_ntp module in favor of ios_ntp_global.
+    fragments:
+      - remove_deprecated.yml
+    release_date: "2024-04-01"
+  8.0.0:
+    changes:
+      major_changes:
+        - Update the netcommon base version 6.1.0 to support cli_restore plugin.
+      minor_changes:
+        - Add support for cli_restore functionality.
+        - Please refer the PR to know more about core changes (https://github.com/ansible-collections/ansible.netcommon/pull/618).
+        - cli_restore module is part of netcommon.
+    fragments:
+      - add_restore_support.yaml
+      - sanityfix.yml
+    release_date: "2024-04-12"

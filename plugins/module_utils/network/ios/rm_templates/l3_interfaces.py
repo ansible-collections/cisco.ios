@@ -166,7 +166,7 @@ class L3_interfacesTemplate(NetworkTemplate):
             "name": "ipv4.source_interface",
             "getval": re.compile(
                 r"""\s+ip\sunnumbered
-                    (\s(?P<name>\S+))
+                    (\s(?P<src_name>\S+))
                     (\s(?P<poll>poll))?
                     (\s(?P<point_to_point>point-to-point))?
                     $""",
@@ -180,7 +180,7 @@ class L3_interfacesTemplate(NetworkTemplate):
                     "ipv4": [
                         {
                             "source_interface": {
-                                "name": "{{ True if name is defined }}",
+                                "name": "{{ src_name }}",
                                 "poll": "{{ True if poll is defined }}",
                                 "point_to_point": "{{ True if point_to_point is defined }}",
                             },

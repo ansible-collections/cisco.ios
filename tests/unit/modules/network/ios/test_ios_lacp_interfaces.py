@@ -7,11 +7,10 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-
 from textwrap import dedent
+from unittest.mock import patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_lacp_interfaces
-from ansible_collections.cisco.ios.tests.unit.compat.mock import patch
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
@@ -83,7 +82,11 @@ class TestIosLacpInterfaceModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    {"name": "Port-channel10", "fast_switchover": True, "max_bundle": 12},
+                    {
+                        "name": "Port-channel10",
+                        "fast_switchover": True,
+                        "max_bundle": 12,
+                    },
                     {"name": "Port-channel40", "max_bundle": 5},
                     {"name": "GigabitEthernet0/0"},
                     {"name": "GigabitEthernet0/1", "port_priority": 20},
@@ -121,7 +124,11 @@ class TestIosLacpInterfaceModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    {"name": "Port-channel10", "fast_switchover": True, "max_bundle": 2},
+                    {
+                        "name": "Port-channel10",
+                        "fast_switchover": True,
+                        "max_bundle": 2,
+                    },
                     {"name": "Port-channel40", "max_bundle": 5},
                     {"name": "GigabitEthernet0/0"},
                     {"name": "GigabitEthernet0/1", "port_priority": 30},
@@ -150,7 +157,11 @@ class TestIosLacpInterfaceModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    {"name": "Port-channel10", "fast_switchover": True, "max_bundle": 12},
+                    {
+                        "name": "Port-channel10",
+                        "fast_switchover": True,
+                        "max_bundle": 12,
+                    },
                     {"name": "Port-channel40", "max_bundle": 5},
                     {"name": "GigabitEthernet0/0"},
                     {"name": "GigabitEthernet0/1", "port_priority": 20},
@@ -188,7 +199,11 @@ class TestIosLacpInterfaceModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    {"name": "Port-channel10", "fast_switchover": True, "max_bundle": 12},
+                    {
+                        "name": "Port-channel10",
+                        "fast_switchover": True,
+                        "max_bundle": 12,
+                    },
                     {"name": "Port-channel40", "max_bundle": 5},
                     {"name": "GigabitEthernet0/0"},
                     {"name": "GigabitEthernet0/1", "port_priority": 20},
@@ -226,7 +241,11 @@ class TestIosLacpInterfaceModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    {"name": "Port-channel10", "fast_switchover": True, "max_bundle": 12},
+                    {
+                        "name": "Port-channel10",
+                        "fast_switchover": True,
+                        "max_bundle": 12,
+                    },
                     {"name": "Port-channel40", "max_bundle": 5},
                     {"name": "GigabitEthernet0/0"},
                     {"name": "GigabitEthernet0/1", "port_priority": 20},
@@ -287,7 +306,11 @@ class TestIosLacpInterfaceModule(TestIosModule):
         set_module_args(
             dict(
                 config=[
-                    {"fast_switchover": True, "max_bundle": 2, "name": "Port-channel10"},
+                    {
+                        "fast_switchover": True,
+                        "max_bundle": 2,
+                        "name": "Port-channel10",
+                    },
                     {"max_bundle": 5, "name": "Port-channel40"},
                     {"name": "GigabitEthernet0/0"},
                     {"name": "GigabitEthernet0/1", "port_priority": 30},
