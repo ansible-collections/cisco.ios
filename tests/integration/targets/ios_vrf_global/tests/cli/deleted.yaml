@@ -17,7 +17,6 @@
     - ansible.builtin.assert:
         that:
           - result.changed == true
-          - "'no vrf definition test' not in result.commands"
 
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:

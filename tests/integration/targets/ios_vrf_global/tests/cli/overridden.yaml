@@ -4,13 +4,12 @@
 
 - ansible.builtin.include_tasks: _populate_config.yaml
 
-- ansible.builtin.include_tasks: _remove_config.yaml
-
 - block:
     - name: Override the provided configuration with the existing running configuration
       cisco.ios.ios_vrf_global: &overridden
         config:
           vrfs:
+            - name: VRF2
             - name: VRF6
               description: VRF6 description
               ipv4:
@@ -21,8 +20,8 @@
                   multitopology: true
               rd: "6:7"
               route_target:
-                export: "3.1.3.4:400"
-                import_config: "1.12.3.4:200"
+                export: "192.0.2.2:300"
+                import_config: "192.0.2.3:400"
               vpn:
                 id: "4:5"
               vnet:
@@ -34,6 +33,11 @@
       ansible.builtin.assert:
         that:
           - "{{ overridden['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - "{{ overridden['before'] == result['before'] }}"
 
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:

@@ -5,5 +5,6 @@
       - no vrf definition VRF2
       - no vrf definition VRF7
       - no vrf definition VRF6
+      - no vrf definition test
     save_when: always
   register: result

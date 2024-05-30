@@ -47,9 +47,9 @@ class TestIosVrfGlobalModule(TestIosModule):
              description This is test VRF
              ipv4 multicast multitopology
              ipv6 multicast multitopology
-             rd 10.2.3.4:300
-             route-target export 23.1.3.4:400
-             route-target import 123.3.4.5:700
+             rd 2:3
+             route-target export 192.0.2.0:100
+             route-target import 192.0.2.3:300
              vnet tag 34
              vpn id 3:4
             """,
@@ -65,7 +65,7 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv4=dict(multicast=dict(multitopology=True)),
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="2:3",
-                            route_target=dict(export="23.1.3.4:400", import_config="10.1.3.4:400"),
+                            route_target=dict(export="192.0.2.1:400", import_config="192.0.2.6:400"),
                             vnet=dict(tag=200),
                             vpn=dict(id="2:45"),
                         ),
@@ -80,8 +80,8 @@ class TestIosVrfGlobalModule(TestIosModule):
             "ipv4 multicast multitopology",
             "ipv6 multicast multitopology",
             "rd 2:3",
-            "route-target export 23.1.3.4:400",
-            "route-target import 10.1.3.4:400",
+            "route-target export 192.0.2.1:400",
+            "route-target import 192.0.2.6:400",
             "vnet tag 200",
             "vpn id 2:45",
         ]
@@ -96,8 +96,8 @@ class TestIosVrfGlobalModule(TestIosModule):
              ipv4 multicast multitopology
              ipv6 multicast multitopology
              rd 2:3
-             route-target export 23.1.3.4:400
-             route-target import 10.1.3.4:400
+             route-target export 192.0.2.1:400
+             route-target import 192.0.2.6:400
              vnet tag 200
              vpn id 2:45
             """,
@@ -112,7 +112,7 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv4=dict(multicast=dict(multitopology=True)),
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="2:3",
-                            route_target=dict(export="23.1.3.4:400", import_config="10.1.3.4:400"),
+                            route_target=dict(export="192.0.2.1:400", import_config="192.0.2.6:400"),
                             vnet=dict(tag=200),
                             vpn=dict(id="2:45"),
                         ),
@@ -131,8 +131,8 @@ class TestIosVrfGlobalModule(TestIosModule):
              ipv4 multicast multitopology
              ipv6 multicast multitopology
              rd 2:3
-             route-target export 23.1.3.4:400
-             route-target import 10.1.3.4:400
+             route-target export 192.0.2.1:400
+             route-target import 192.0.2.6:400
              vnet tag 200
              vpn id 2:45
             """,
@@ -150,7 +150,7 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv4=dict(multicast=dict(multitopology=True)),
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="6:7",
-                            route_target=dict(export="3.1.3.4:400", import_config="1.12.3.4:200"),
+                            route_target=dict(export="192.0.2.2:300", import_config="192.0.2.3:400"),
                             vnet=dict(tag=500),
                             vpn=dict(id="4:5"),
                         ),
@@ -165,8 +165,8 @@ class TestIosVrfGlobalModule(TestIosModule):
             "no ipv4 multicast multitopology",
             "no ipv6 multicast multitopology",
             "no rd 2:3",
-            "no route-target export 23.1.3.4:400",
-            "no route-target import 10.1.3.4:400",
+            "no route-target export 192.0.2.1:400",
+            "no route-target import 192.0.2.6:400",
             "no vnet tag 200",
             "no vpn id 2:45",
             "vrf definition VRF6",
@@ -174,8 +174,8 @@ class TestIosVrfGlobalModule(TestIosModule):
             "ipv4 multicast multitopology",
             "ipv6 multicast multitopology",
             "rd 6:7",
-            "route-target export 3.1.3.4:400",
-            "route-target import 1.12.3.4:200",
+            "route-target export 192.0.2.2:300",
+            "route-target import 192.0.2.3:400",
             "vnet tag 500",
             "vpn id 4:5",
         ]
@@ -191,8 +191,8 @@ class TestIosVrfGlobalModule(TestIosModule):
              ipv4 multicast multitopology
              ipv6 multicast multitopology
              rd 6:7
-             route-target export 3.1.3.4:400
-             route-target import 1.12.3.4:200
+             route-target export 192.0.2.2:300
+             route-target import 192.0.2.3:400
              vnet tag 500
              vpn id 4:5
             """,
@@ -210,7 +210,7 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv4=dict(multicast=dict(multitopology=True)),
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="6:7",
-                            route_target=dict(export="3.1.3.4:400", import_config="1.12.3.4:200"),
+                            route_target=dict(export="192.0.2.2:300", import_config="192.0.2.3:400"),
                             vnet=dict(tag=500),
                             vpn=dict(id="4:5"),
                         ),
@@ -220,7 +220,7 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv4=dict(multicast=dict(multitopology=True)),
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="7:8",
-                            route_target=dict(export="23.1.3.4:500", import_config="12.1.3.4:400"),
+                            route_target=dict(export="198.51.100.2:500", import_config="198.51.100.5:400"),
                             vnet=dict(tag=300),
                             vpn=dict(id="2:45"),
                         ),
@@ -235,8 +235,8 @@ class TestIosVrfGlobalModule(TestIosModule):
             "ipv4 multicast multitopology",
             "ipv6 multicast multitopology",
             "rd 7:8",
-            "route-target export 23.1.3.4:500",
-            "route-target import 12.1.3.4:400",
+            "route-target export 198.51.100.2:500",
+            "route-target import 198.51.100.5:400",
             "vnet tag 300",
             "vpn id 2:45",
         ]
@@ -254,8 +254,8 @@ class TestIosVrfGlobalModule(TestIosModule):
              ipv6 multicast multitopology
              rd 6:7
              vpn id 4:5
-             route-target export 3.1.3.4:400
-             route-target import 1.12.3.4:200
+             route-target export 192.0.2.2:300
+             route-target import 192.0.2.3:400
             vrf definition VRF7
              vnet tag 300
              description VRF7 description
@@ -263,8 +263,8 @@ class TestIosVrfGlobalModule(TestIosModule):
              ipv6 multicast multitopology
              rd 7:8
              vpn id 2:45
-             route-target export 23.1.3.4:500
-             route-target import 12.1.3.4:400
+             route-target export 198.51.100.2:500
+             route-target import 198.51.100.5:400
             """,
         )
         set_module_args(
@@ -280,7 +280,7 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv4=dict(multicast=dict(multitopology=True)),
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="6:7",
-                            route_target=dict(export="3.1.3.4:400", import_config="1.12.3.4:200"),
+                            route_target=dict(export="192.0.2.2:300", import_config="192.0.2.3:400"),
                             vnet=dict(tag=500),
                             vpn=dict(id="4:5"),
                         ),
@@ -290,7 +290,7 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv4=dict(multicast=dict(multitopology=True)),
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="7:8",
-                            route_target=dict(export="23.1.3.4:500", import_config="12.1.3.4:400"),
+                            route_target=dict(export="198.51.100.2:500", import_config="198.51.100.5:400"),
                             vnet=dict(tag=300),
                             vpn=dict(id="2:45"),
                         ),
@@ -312,8 +312,8 @@ class TestIosVrfGlobalModule(TestIosModule):
              ipv6 multicast multitopology
              rd 6:7
              vpn id 4:5
-             route-target export 3.1.3.4:400
-             route-target import 1.12.3.4:200
+             route-target export 192.0.2.2:300
+             route-target import 192.0.2.3:400
             vrf definition VRF7
              vnet tag 300
              description VRF7 description
@@ -321,8 +321,8 @@ class TestIosVrfGlobalModule(TestIosModule):
              ipv6 multicast multitopology
              rd 7:8
              vpn id 2:45
-             route-target export 23.1.3.4:500
-             route-target import 12.1.3.4:400
+             route-target export 198.51.100.2:500
+             route-target import 198.51.100.5:400
             """,
         )
         set_module_args(
@@ -346,8 +346,8 @@ class TestIosVrfGlobalModule(TestIosModule):
             "no ipv4 multicast multitopology",
             "no ipv6 multicast multitopology",
             "no rd 6:7",
-            "no route-target export 3.1.3.4:400",
-            "no route-target import 1.12.3.4:200",
+            "no route-target export 192.0.2.2:300",
+            "no route-target import 192.0.2.3:400",
             "no vnet tag 500",
             "no vpn id 4:5",
             "vrf definition VRF7",
@@ -355,8 +355,8 @@ class TestIosVrfGlobalModule(TestIosModule):
             "no ipv4 multicast multitopology",
             "no ipv6 multicast multitopology",
             "no rd 7:8",
-            "no route-target export 23.1.3.4:500",
-            "no route-target import 12.1.3.4:400",
+            "no route-target export 198.51.100.2:500",
+            "no route-target import 198.51.100.5:400",
             "no vnet tag 300",
             "no vpn id 2:45",
         ]
@@ -380,8 +380,8 @@ class TestIosVrfGlobalModule(TestIosModule):
              ipv4 multicast multitopology
              ipv6 multicast multitopology
              rd 7:8
-             route-target export 23.1.3.4:500
-             route-target import 12.1.3.4:400
+             route-target export 198.51.100.2:500
+             route-target import 198.51.100.5:400
              vnet tag 300
              vpn id 2:45
             """,
@@ -390,7 +390,7 @@ class TestIosVrfGlobalModule(TestIosModule):
         commands = ["no vrf definition VRF7"]
         self.execute_module(changed=True, commands=commands)
 
-    def test_deprecated_attributes_rendered(self):
+    def test_ios_vrf_global_rendered(self):
         set_module_args(
             dict(
                 config={
@@ -401,7 +401,7 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv4=dict(multicast=dict(multitopology=True)),
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="2:3",
-                            route_target=dict(export="23.1.3.4:400", import_config="10.1.3.4:400"),
+                            route_target=dict(export="192.0.2.1:400", import_config="192.0.2.6:400"),
                             vnet=dict(tag=200),
                             vpn=dict(id="2:45"),
                         ),
@@ -416,8 +416,8 @@ class TestIosVrfGlobalModule(TestIosModule):
             "ipv4 multicast multitopology",
             "ipv6 multicast multitopology",
             "rd 2:3",
-            "route-target export 23.1.3.4:400",
-            "route-target import 10.1.3.4:400",
+            "route-target export 192.0.2.1:400",
+            "route-target import 192.0.2.6:400",
             "vnet tag 200",
             "vpn id 2:45",
         ]
@@ -430,14 +430,14 @@ class TestIosVrfGlobalModule(TestIosModule):
                 running_config=dedent(
                     """\
                     vrf definition test
-                     vnet tag 34
                      description This is test VRF
                      ipv4 multicast multitopology
                      ipv6 multicast multitopology
-                     rd 10.2.3.4:300
+                     rd 2:3
+                     route-target export 192.0.2.0:100
+                     route-target import 192.0.2.3:300
+                     vnet tag 34
                      vpn id 3:4
-                     route-target export 23.1.3.4:400
-                     route-target import 123.3.4.5:700
                     """,
                 ),
                 state="parsed",
@@ -451,8 +451,8 @@ class TestIosVrfGlobalModule(TestIosModule):
                     "description": "This is test VRF",
                     "ipv4": {"multicast": {"multitopology": True}},
                     "ipv6": {"multicast": {"multitopology": True}},
-                    "rd": "10.2.3.4:300",
-                    "route_target": {"export": "23.1.3.4:400", "import_config": "123.3.4.5:700"},
+                    "rd": "2:3",
+                    "route_target": {"export": "192.0.2.0:100", "import_config": "192.0.2.3:300"},
                     "vnet": {"tag": 34},
                     "vpn": {"id": "3:4"},
                 },

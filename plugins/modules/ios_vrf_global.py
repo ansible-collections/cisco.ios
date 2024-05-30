@@ -148,7 +148,7 @@ EXAMPLES = """
               rd: "2:3"
               route_target:
                 export: "192.0.2.0:100"
-                import_config: "192.1.2.3:200"
+                import_config: "192.0.2.3:200"
               vpn:
                 id: "2:45"
               vnet:
@@ -163,7 +163,7 @@ EXAMPLES = """
 # - ipv6 multicast multitopology
 # - rd 2:3
 # - route-target export 192.0.2.0:100
-# - route-target import 192.1.2.3:200
+# - route-target import 192.0.2.3:200
 # - vnet tag 200
 # - vpn id 2:45
 #
@@ -180,7 +180,7 @@ EXAMPLES = """
 #   rd: "2:3"
 #   route_target:
 #     export: "192.0.2.0:100"
-#     import_config: "192.1.2.3:200"
+#     import_config: "192.0.2.3:200"
 #   vnet:
 #     tag: 200
 #   vpn:
@@ -197,7 +197,7 @@ EXAMPLES = """
 #  rd 2:3
 #  vpn id 2:45
 #  route-target export 192.0.2.0:100
-#  route-target import 192.1.2.3:200
+#  route-target import 192.0.2.3:200
 
 #
 # Using replaced
@@ -212,7 +212,7 @@ EXAMPLES = """
 #  rd 2:3
 #  vpn id 2:45
 #  route-target export 192.0.2.0:100
-#  route-target import 192.1.2.3:200
+#  route-target import 192.0.2.3:200
 #
 #
 - name: Replace the provided configuration with the existing running configuration
@@ -265,7 +265,7 @@ EXAMPLES = """
 #   rd: "2:3"
 #   route_target:
 #     export: "192.0.2.0:100"
-#     import_config: "192.1.2.3:200"
+#     import_config: "192.0.2.3:200"
 #   vnet:
 #     tag: 200
 #   vpn:
@@ -298,7 +298,7 @@ EXAMPLES = """
 #  rd 2:3
 #  vpn id 2:45
 #  route-target export 192.0.2.0:100
-#  route-target import 192.1.2.3:200
+#  route-target import 192.0.2.3:200
 # vrf definition VRF7
 #  vnet tag 300
 #  description VRF7 description
@@ -320,16 +320,16 @@ EXAMPLES = """
 #  ipv6 multicast multitopology
 #  rd 2:3
 #  vpn id 2:45
-#  route-target export 23.1.3.4:400
-#  route-target import 10.1.3.4:400
+#  route-target export 192.0.2.0:100
+#  route-target import 192.0.2.3:200
 # vrf definition VRF7
 #  vnet tag 300
 #  description VRF7 description
 #  ipv4 multicast multitopology
 #  ipv6 multicast multitopology
 #  rd 7:8
-#  route-target export 23.1.3.4:500
-#  route-target import 12.1.3.4:400
+#  route-target export 198.51.100.112:500
+#  route-target import 192.0.2.4:400
 
 - name: Override the provided configuration with the existing running configuration
   hosts: ios
@@ -349,8 +349,8 @@ EXAMPLES = """
                   multitopology: true
               rd: "6:7"
               route_target:
-                export: "3.1.3.4:400"
-                import_config: "1.12.3.4:200"
+                export: "198.51.0.2:400"
+                import_config: "198.51.0.5:200"
               vpn:
                 id: "4:5"
               vnet:
@@ -365,8 +365,8 @@ EXAMPLES = """
 # - no ipv4 multicast multitopology
 # - no ipv6 multicast multitopology
 # - no rd 2:3
-# - no route-target export 23.1.3.4:400
-# - no route-target import 10.1.3.4:400
+# - no route-target export 192.0.2.0:100
+# - no route-target import 192.0.2.3:200
 # - no vnet tag 200
 # - no vpn id 2:45
 # - vrf definition VRF7
@@ -374,16 +374,16 @@ EXAMPLES = """
 # - no ipv4 multicast multitopology
 # - no ipv6 multicast multitopology
 # - no rd 7:8
-# - no route-target export 23.1.3.4:500
-# - no route-target import 12.1.3.4:400
+# - no route-target export 198.51.100.112:500
+# - no route-target import 192.0.2.4:400
 # - no vnet tag 300
 # - vrf definition VRF6
 # - description VRF6 description
 # - ipv4 multicast multitopology
 # - ipv6 multicast multitopology
 # - rd 6:7
-# - route-target export 3.1.3.4:400
-# - route-target import 1.12.3.4:200
+# - route-target export 198.51.0.2:400
+# - route-target import 198.51.0.5:200
 # - vnet tag 500
 # - vpn id 4:5
 #
@@ -398,8 +398,8 @@ EXAMPLES = """
 #  ipv6 multicast multitopology
 #  rd 6:7
 #  vpn id 4:5
-#  route-target export 3.1.3.4:400
-#  route-target import 1.12.3.4:200
+#  route-target export 198.51.0.2:400
+#  route-target import 198.51.0.5:200
 # vrf definition VRF7
 #
 #
@@ -415,8 +415,8 @@ EXAMPLES = """
 #  ipv6 multicast multitopology
 #  rd 6:7
 #  vpn id 4:5
-#  route-target export 3.1.3.4:400
-#  route-target import 1.12.3.4:200
+#  route-target export 198.51.0.2:400
+#  route-target import 198.51.0.5:200
 # vrf definition VRF7
 #
 - name: Delete the provided configuration when config is given
@@ -440,8 +440,8 @@ EXAMPLES = """
 # - no ipv4 multicast multitopology
 # - no ipv6 multicast multitopology
 # - no rd 6:7
-# - no route-target export 3.1.3.4:400
-# - no route-target import 1.12.3.4:200
+# - no route-target export 198.51.0.2:400
+# - no route-target import 198.51.0.5:200
 # - no vnet tag 500
 # - no vpn id 4:5
 # - vrf definition VRF7
@@ -471,8 +471,8 @@ EXAMPLES = """
 # - no ipv4 multicast multitopology
 # - no ipv6 multicast multitopology
 # - no rd 6:7
-# - no route-target export 3.1.3.4:400
-# - no route-target import 1.12.3.4:200
+# - no route-target export 198.51.0.2:400
+# - no route-target import 198.51.0.5:200
 # - no vnet tag 500
 # - no vpn id 4:5
 # - vrf definition VRF7
@@ -532,8 +532,8 @@ EXAMPLES = """
                   multitopology: true
               rd: "2:3"
               route_target:
-                export: "23.1.3.4:400"
-                import_config: "10.1.3.4:400"
+                export: "192.0.2.0:100"
+                import_config: "192.0.2.3:200"
               vpn:
                 id: "2:45"
               vnet:
@@ -548,8 +548,8 @@ EXAMPLES = """
 # - ipv4 multicast multitopology
 # - ipv6 multicast multitopology
 # - rd 2:3
-# - route-target export 23.1.3.4:400
-# - route-target import 10.1.3.4:400
+# - route-target export 192.0.2.0:100
+# - route-target import 192.0.2.3:200
 # - vnet tag 200
 # - vpn id 2:45
 #
@@ -578,16 +578,16 @@ EXAMPLES = """
 #  description This is test VRF
 #  ipv4 multicast multitopology
 #  ipv6 multicast multitopology
-#  rd 10.2.3.4:300
+#  rd 192.0.2.0:300
 #  vpn id 3:4
-#  route-target export 23.1.3.4:400
-#  route-target import 123.3.4.5:700
+#  route-target export 192.0.2.0:100
+#  route-target import 192.0.2.2:300
 # vrf definition test2
 #  vnet tag 35
 #  description This is test VRF
 #  ipv4 multicast multitopology
 #  ipv6 multicast multitopology
-#  rd 1.2.3.4:500
+#  rd 192.0.2.3:300
 """
 
 RETURN = """

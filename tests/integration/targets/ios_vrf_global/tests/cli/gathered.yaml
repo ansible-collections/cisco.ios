@@ -9,7 +9,14 @@
     - name: Gather the provided configuration with the existing running configuration
       register: result
       cisco.ios.ios_vrf_global:
+        config:
         state: gathered
+
+    - name: Assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - gathered['after'] == result['gathered']
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
