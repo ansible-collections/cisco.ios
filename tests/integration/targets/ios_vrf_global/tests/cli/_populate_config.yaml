@@ -13,4 +13,3 @@
       - vnet tag 200
       - vpn id 2:45
     save_when: always
-

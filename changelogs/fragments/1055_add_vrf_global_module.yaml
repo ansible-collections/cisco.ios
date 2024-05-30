@@ -1,3 +1,3 @@
 ---
 minor_changes:
-- Add ios_vrf_global resource module in favor of ios_vrf module (fixes - https://github.com/ansible-collections/cisco.ios/pull/1055)
+  - Add ios_vrf_global resource module in favor of ios_vrf module (fixes - https://github.com/ansible-collections/cisco.ios/pull/1055)

@@ -65,7 +65,10 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv4=dict(multicast=dict(multitopology=True)),
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="2:3",
-                            route_target=dict(export="192.0.2.1:400", import_config="192.0.2.6:400"),
+                            route_target=dict(
+                                export="192.0.2.1:400",
+                                import_config="192.0.2.6:400",
+                            ),
                             vnet=dict(tag=200),
                             vpn=dict(id="2:45"),
                         ),
@@ -112,7 +115,10 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv4=dict(multicast=dict(multitopology=True)),
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="2:3",
-                            route_target=dict(export="192.0.2.1:400", import_config="192.0.2.6:400"),
+                            route_target=dict(
+                                export="192.0.2.1:400",
+                                import_config="192.0.2.6:400",
+                            ),
                             vnet=dict(tag=200),
                             vpn=dict(id="2:45"),
                         ),
@@ -150,7 +156,10 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv4=dict(multicast=dict(multitopology=True)),
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="6:7",
-                            route_target=dict(export="192.0.2.2:300", import_config="192.0.2.3:400"),
+                            route_target=dict(
+                                export="192.0.2.2:300",
+                                import_config="192.0.2.3:400",
+                            ),
                             vnet=dict(tag=500),
                             vpn=dict(id="4:5"),
                         ),
@@ -202,7 +211,7 @@ class TestIosVrfGlobalModule(TestIosModule):
                 config=dict(
                     vrfs=[
                         dict(
-                            name="VRF2"
+                            name="VRF2",
                         ),
                         dict(
                             name="VRF6",
@@ -210,7 +219,10 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv4=dict(multicast=dict(multitopology=True)),
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="6:7",
-                            route_target=dict(export="192.0.2.2:300", import_config="192.0.2.3:400"),
+                            route_target=dict(
+                                export="192.0.2.2:300",
+                                import_config="192.0.2.3:400",
+                            ),
                             vnet=dict(tag=500),
                             vpn=dict(id="4:5"),
                         ),
@@ -220,7 +232,10 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv4=dict(multicast=dict(multitopology=True)),
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="7:8",
-                            route_target=dict(export="198.51.100.2:500", import_config="198.51.100.5:400"),
+                            route_target=dict(
+                                export="198.51.100.2:500",
+                                import_config="198.51.100.5:400",
+                            ),
                             vnet=dict(tag=300),
                             vpn=dict(id="2:45"),
                         ),
@@ -272,7 +287,7 @@ class TestIosVrfGlobalModule(TestIosModule):
                 config=dict(
                     vrfs=[
                         dict(
-                            name="VRF2"
+                            name="VRF2",
                         ),
                         dict(
                             name="VRF6",
@@ -280,7 +295,10 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv4=dict(multicast=dict(multitopology=True)),
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="6:7",
-                            route_target=dict(export="192.0.2.2:300", import_config="192.0.2.3:400"),
+                            route_target=dict(
+                                export="192.0.2.2:300",
+                                import_config="192.0.2.3:400",
+                            ),
                             vnet=dict(tag=500),
                             vpn=dict(id="4:5"),
                         ),
@@ -290,7 +308,10 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv4=dict(multicast=dict(multitopology=True)),
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="7:8",
-                            route_target=dict(export="198.51.100.2:500", import_config="198.51.100.5:400"),
+                            route_target=dict(
+                                export="198.51.100.2:500",
+                                import_config="198.51.100.5:400",
+                            ),
                             vnet=dict(tag=300),
                             vpn=dict(id="2:45"),
                         ),
@@ -330,10 +351,10 @@ class TestIosVrfGlobalModule(TestIosModule):
                 config=dict(
                     vrfs=[
                         {
-                            "name": "VRF6"
+                            "name": "VRF6",
                         },
                         {
-                            "name": "VRF7"
+                            "name": "VRF7",
                         },
                     ],
                 ),
@@ -401,7 +422,10 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv4=dict(multicast=dict(multitopology=True)),
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="2:3",
-                            route_target=dict(export="192.0.2.1:400", import_config="192.0.2.6:400"),
+                            route_target=dict(
+                                export="192.0.2.1:400",
+                                import_config="192.0.2.6:400",
+                            ),
                             vnet=dict(tag=200),
                             vpn=dict(id="2:45"),
                         ),
@@ -456,6 +480,6 @@ class TestIosVrfGlobalModule(TestIosModule):
                     "vnet": {"tag": 34},
                     "vpn": {"id": "3:4"},
                 },
-            ]
+            ],
         }
         self.assertEqual(parsed_list, result["parsed"])

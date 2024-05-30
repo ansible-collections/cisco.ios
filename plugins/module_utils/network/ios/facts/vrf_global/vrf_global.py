@@ -63,7 +63,7 @@ class Vrf_globalFacts(object):
 
         ansible_facts["ansible_network_resources"].pop("vrf_global", None)
         params = utils.remove_empties(
-            vrf_global_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            vrf_global_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
         facts["vrf_global"] = params.get("config", {})
