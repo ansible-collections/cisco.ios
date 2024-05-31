@@ -74,6 +74,7 @@
         that:
           - resultdeb['changed'] == true
           - "'logging buffered xml 5099 debugging' in resultdeb['commands']"
+          - resultdeb["before"]["buffered"] == resultdeb["after"]["buffered"]
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
