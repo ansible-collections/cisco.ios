@@ -41,7 +41,7 @@ options:
             description:
               - Logging severity level
               - Idempotancy is not maintained for this attribute for the value debugging
-                as value not shown in running-config
+                since this value is not shown in running-config.
             type: str
             choices: &severity_subgroup
               - alerts
