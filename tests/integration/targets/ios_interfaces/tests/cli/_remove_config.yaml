@@ -15,4 +15,5 @@
       - name: Port-channel11
       - name: Port-channel22
       - name: Port-channel40
+      - name: Loopback1
     state: purged

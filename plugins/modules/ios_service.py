@@ -22,13 +22,14 @@ description:
 version_added: 4.6.0
 author:
   - Ambroise Rosset (@earendilfr)
+  - Sagar Paul (@KB-perByte)
 notes:
-  - Tested against Cisco IOSXE Version 16.9
+  - Tested against Cisco IOSXE Version 17.9.1a on CML.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   config:
-    description: A dictionnary of service configuration
+    description: A dictionary of service configuration
     suboptions:
       call_home:
         description: Cisco call-home service
@@ -128,7 +129,7 @@ options:
         type: bool
       tcp_small_servers:
         description:
-          - TCP and UDP small servers are servers (daemons, in Unix parlance) that run in the
+          - TCP small servers are servers (daemons, in Unix parlance) that run in the
             router which are useful for diagnostics.
         suboptions:
           enable:
@@ -137,8 +138,11 @@ options:
           max_servers:
             description:
               - Set number of allowable TCP small servers
-              - 1 to 2147483647 or no-limit
-            type: str
+              - 1 to 2147483647
+            type: int
+          no_limit:
+            description: No limit on number of allowable TCP small servers
+            type: bool
         type: dict
       telnet_zeroidle:
         description: Set TCP window 0 when connection is idle
@@ -181,7 +185,7 @@ options:
         type: list
       udp_small_servers:
         description:
-          - TCP and UDP small servers are servers (daemons, in Unix parlance) that run in the
+          - UDP small servers are servers (daemons, in Unix parlance) that run in the
             router which are useful for diagnostics.
         suboptions:
           enable:
@@ -189,9 +193,12 @@ options:
             type: bool
           max_servers:
             description:
-              - Set number of allowable TCP small servers
-              - 1 to 2147483647 or no-limit
-            type: str
+              - Set number of allowable UDP small servers
+              - 1 to 2147483647
+            type: int
+          no_limit:
+            description: No limit on number of allowable UDP small servers
+            type: bool
         type: dict
       unsupported_transceiver:
         description: enable support for third-party transceivers
