@@ -1,0 +1,3 @@
+---
+doc_changes:
+  - logging_global - update documentation for severity attribute within buffered.
