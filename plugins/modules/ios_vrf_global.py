@@ -23,6 +23,8 @@ notes:
   - Tested against Cisco IOS-XE version 17.3 on CML.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
+  - The module examples uses callback plugin (stdout_callback = yaml) to generate task
+    output in yaml format.
 options:
   config:
     description: A dictionary containing device configurations for VRF, including a list of VRF definitions.
@@ -120,55 +122,133 @@ options:
         value is returned in the I(parsed) key within the result. The value of C(running_config)
         option should be the same format as the output of command I(show running-config | section vrf).
         connection to remote host is not required.
+      - The state I(merged) is used to add or update the configuration on the device.
+      - The state I(replaced) is used to replace the configuration on the device.
+      - The state I(overridden) is used to override the configuration on the device.
+      - The state I(deleted) is used to delete the configuration from the device.
+      - The state I(purged) is used to delete all the VRF definitions from the device.
     type: str
 """
 
 EXAMPLES = """
 # Using merged
+
 # Before state:
 # -------------
-# admin#show running-config | section ^vrf
 #
+# admin#show running-config | section ^vrf
+
 - name: Merge provided configuration with device configuration
-  hosts: ios
-  gather_facts: false
-  tasks:
-    - name: Merge provided configuration with device configuration
-      cisco.ios.ios_vrf_global:
-        config:
-          vrfs:
-            - name: VRF2
-              description: This is a test VRF for merged state
-              ipv4:
-                multicast:
-                  multitopology: true
-              ipv6:
-                multicast:
-                  multitopology: true
-              rd: "2:3"
-              route_target:
-                export: "192.0.2.0:100"
-                import_config: "192.0.2.3:200"
-              vpn:
-                id: "2:45"
-              vnet:
-                tag: 200
-        state: merged
+  cisco.ios.ios_vrf_global:
+    config:
+      vrfs:
+        - name: VRF2
+          description: This is a test VRF for merged state
+          ipv4:
+            multicast:
+              multitopology: true
+          ipv6:
+            multicast:
+              multitopology: true
+          rd: "2:3"
+          route_target:
+            export: "192.0.2.0:100"
+            import_config: "192.0.2.3:200"
+          vpn:
+            id: "2:45"
+          vnet:
+            tag: 200
+    state: merged
+
 # Task output
 # -------------
+#
+# before: {}
 # commands:
-# - vrf definition VRF2
-# - description This is a test VRF for merged state
-# - ipv4 multicast multitopology
-# - ipv6 multicast multitopology
-# - rd 2:3
-# - route-target export 192.0.2.0:100
-# - route-target import 192.0.2.3:200
-# - vnet tag 200
-# - vpn id 2:45
-#
-#
+#   - vrf definition VRF2
+#   - description This is a test VRF for merged state
+#   - ipv4 multicast multitopology
+#   - ipv6 multicast multitopology
+#   - rd 2:3
+#   - route-target export 192.0.2.0:100
+#   - route-target import 192.0.2.3:200
+#   - vnet tag 200
+#   - vpn id 2:45
+
 # after:
+#     name: VRF2
+#     description: This is a test VRF for merged state
+#     ipv4:
+#       multicast:
+#         multitopology: true
+#     ipv6:
+#       multicast:
+#         multitopology: true
+#     rd: "2:3"
+#     route_target:
+#       export: "192.0.2.0:100"
+#       import_config: "192.0.2.3:200"
+#     vnet:
+#       tag: 200
+#     vpn:
+#       id: "2:45"
+
+# After state:
+# -------------
+#
+# admin#show running-config | section ^vrf
+# vrf definition VRF2
+#  vnet tag 200
+#  description This is a test VRF for merged state
+#  ipv4 multicast multitopology
+#  ipv6 multicast multitopology
+#  rd 2:3
+#  vpn id 2:45
+#  route-target export 192.0.2.0:100
+#  route-target import 192.0.2.3:200
+
+# Using replaced
+
+# Before state:
+# -------------
+#
+# admin#show running-config | section ^vrf
+# vrf definition VRF2
+#  vnet tag 200
+#  description This is a test VRF for merged state
+#  ipv4 multicast multitopology
+#  ipv6 multicast multitopology
+#  rd 2:3
+#  vpn id 2:45
+#  route-target export 192.0.2.0:100
+#  route-target import 192.0.2.3:200
+
+- name: Replace the provided configuration with the existing running configuration
+  cisco.ios.ios_vrf_global:
+    config:
+      vrfs:
+        - name: VRF7
+          description: VRF7 description
+          ipv4:
+            multicast:
+              multitopology: true
+          ipv6:
+            multicast:
+              multitopology: true
+          rd: "7:8"
+          route_target:
+            export: "198.51.100.112:500"
+            import_config: "192.0.2.4:400"
+          vpn:
+            id: "5:45"
+          vnet:
+            tag: 300
+    state: replaced
+
+# Task Output:
+# ------------
+#
+# before:
 #   name: VRF2
 #   description: This is a test VRF for merged state
 #   ipv4:
@@ -186,62 +266,6 @@ EXAMPLES = """
 #   vpn:
 #     id: "2:45"
 #
-# After state:
-# -------------
-# admin#show running-config | section ^vrf
-# vrf definition VRF2
-#  vnet tag 200
-#  description This is a test VRF for merged state
-#  ipv4 multicast multitopology
-#  ipv6 multicast multitopology
-#  rd 2:3
-#  vpn id 2:45
-#  route-target export 192.0.2.0:100
-#  route-target import 192.0.2.3:200
-
-#
-# Using replaced
-# Before state:
-# -------------
-# admin#show running-config | section ^vrf
-# vrf definition VRF2
-#  vnet tag 200
-#  description This is a test VRF for merged state
-#  ipv4 multicast multitopology
-#  ipv6 multicast multitopology
-#  rd 2:3
-#  vpn id 2:45
-#  route-target export 192.0.2.0:100
-#  route-target import 192.0.2.3:200
-#
-#
-- name: Replace the provided configuration with the existing running configuration
-  hosts: ios
-  gather_facts: false
-  tasks:
-    - name: Replace the provided configuration with the existing running configuration
-      cisco.ios.ios_vrf_global:
-        config:
-          vrfs:
-            - name: VRF7
-              description: VRF7 description
-              ipv4:
-                multicast:
-                  multitopology: true
-              ipv6:
-                multicast:
-                  multitopology: true
-              rd: "7:8"
-              route_target:
-                export: "198.51.100.112:500"
-                import_config: "192.0.2.4:400"
-              vpn:
-                id: "2:45"
-              vnet:
-                tag: 300
-        state: replaced
-
-# -------------
 # commands:
 # - vrf definition VRF7
 # - description VRF7 description
@@ -251,7 +275,7 @@ EXAMPLES = """
 # - route-target export 198.51.100.112:500
 # - route-target import 192.0.2.4:400
 # - vnet tag 300
-# - vpn id 2:45
+# - vpn id 5:45
 #
 # after:
 #   name: VRF2
@@ -285,10 +309,11 @@ EXAMPLES = """
 #   vnet:
 #     tag: 300
 #   vpn:
-#     id: "2:45"
+#     id: "5:45"
 #
 # After state:
 # -------------
+#
 # admin#show running-config | section ^vrf
 # vrf definition VRF2
 #  vnet tag 200
@@ -307,11 +332,13 @@ EXAMPLES = """
 #  rd 7:8
 #  route-target export 198.51.100.112:500
 #  route-target import 192.0.2.4:400
+#  vpn id 5:45
 
-#
-# Using overridden
+# Using Overridden
+
 # Before state:
 # -------------
+#
 # admin#show running-config | section ^vrf
 # vrf definition VRF2
 #  vnet tag 200
@@ -330,35 +357,67 @@ EXAMPLES = """
 #  rd 7:8
 #  route-target export 198.51.100.112:500
 #  route-target import 192.0.2.4:400
+#  vpn id 5:45
 
 - name: Override the provided configuration with the existing running configuration
-  hosts: ios
-  gather_facts: false
-  tasks:
-    - name: Override the provided configuration with the existing running configuration
-      cisco.ios.ios_vrf_global:
-        config:
-          vrfs:
-            - name: VRF6
-              description: VRF6 description
-              ipv4:
-                multicast:
-                  multitopology: true
-              ipv6:
-                multicast:
-                  multitopology: true
-              rd: "6:7"
-              route_target:
-                export: "198.51.0.2:400"
-                import_config: "198.51.0.5:200"
-              vpn:
-                id: "4:5"
-              vnet:
-                tag: 500
-        state: overridden
+  cisco.ios.ios_vrf_global:
+    config:
+      vrfs:
+        - name: VRF6
+          description: VRF6 description
+          ipv4:
+            multicast:
+              multitopology: true
+          ipv6:
+            multicast:
+              multitopology: true
+          rd: "6:7"
+          route_target:
+            export: "198.51.0.2:400"
+            import_config: "198.51.0.5:200"
+          vpn:
+            id: "4:5"
+          vnet:
+            tag: 500
+    state: overridden
 
-# Task output
-# -------------
+# Task Output:
+# ------------
+#
+# before:
+#   name: VRF2
+#   description: This is a test VRF for merged state
+#   ipv4:
+#     multicast:
+#       multitopology: true
+#   ipv6:
+#     multicast:
+#       multitopology: true
+#   rd: "2:3"
+#   route_target:
+#     export: "192.0.2.0:100"
+#     import_config: "192.0.2.3:200"
+#   vnet:
+#     tag: 200
+#   vpn:
+#     id: "2:45
+#   name: VRF7
+#   description: VRF7 description
+#   ipv4:
+#     multicast:
+#       multitopology: true
+#   ipv6:
+#     multicast:
+#       multitopology: true
+#   rd: "7:8"
+#   route_target:
+#     export: "198.51.100.112:500"
+#     import_config: "192.0.2.4:400"
+#   vnet:
+#     tag: 300
+#   vpn:
+#     id: "5:45"
+#
 # commands:
 # - vrf definition VRF2
 # - no description This is a test VRF for merged state
@@ -377,6 +436,7 @@ EXAMPLES = """
 # - no route-target export 198.51.100.112:500
 # - no route-target import 192.0.2.4:400
 # - no vnet tag 300
+# - no vpn id 5:45
 # - vrf definition VRF6
 # - description VRF6 description
 # - ipv4 multicast multitopology
@@ -387,83 +447,92 @@ EXAMPLES = """
 # - vnet tag 500
 # - vpn id 4:5
 #
-# After state:
-# -------------
-# admin#show running-config | section ^vrf
-# vrf definition VRF2
-# vrf definition VRF6
-#  vnet tag 500
-#  description VRF6 description
-#  ipv4 multicast multitopology
-#  ipv6 multicast multitopology
-#  rd 6:7
-#  vpn id 4:5
-#  route-target export 198.51.0.2:400
-#  route-target import 198.51.0.5:200
-# vrf definition VRF7
-#
-#
-# Using deleted
-# Before state:
-# -------------
-# admin#show running-config | section ^vrf
-# vrf definition VRF2
-# vrf definition VRF6
-#  vnet tag 500
-#  description VRF6 description
-#  ipv4 multicast multitopology
-#  ipv6 multicast multitopology
-#  rd 6:7
-#  vpn id 4:5
-#  route-target export 198.51.0.2:400
-#  route-target import 198.51.0.5:200
-# vrf definition VRF7
-#
-- name: Delete the provided configuration when config is given
-  hosts: ios
-  gather_facts: false
-  tasks:
-    - name: Delete the provided configuration when config is given
-      cisco.ios.ios_vrf_global:
-        config:
-          vrfs:
-            - name: VRF2
-            - name: VRF6
-            - name: VRF7
-        state: deleted
-# Task output
-# -------------
-# commands:
-# - vrf definition VRF2
-# - vrf definition VRF6
-# - no description VRF6 description
-# - no ipv4 multicast multitopology
-# - no ipv6 multicast multitopology
-# - no rd 6:7
-# - no route-target export 198.51.0.2:400
-# - no route-target import 198.51.0.5:200
-# - no vnet tag 500
-# - no vpn id 4:5
-# - vrf definition VRF7
-#
-# After state:
-# -------------
-# admin#show running-config | section ^vrf
-# vrf definition VRF2
-# vrf definition VRF6
-# vrf definition VRF7
-#
-- name: Delete the provided configuration when config is empty
-  hosts: ios
-  gather_facts: false
-  tasks:
-    - name: Delete the provided configuration when config is empty
-      cisco.ios.ios_vrf_global:
-        config:
-        state: deleted
+# after:
+#   - name: VRF2
+#   - name: VRF6
+#     description: VRF6 description
+#     ipv4:
+#       multicast:
+#         multitopology: true
+#     ipv6:
+#       multicast:
+#         multitopology: true
+#     rd: "6:7"
+#     route_target:
+#       export: "198.51.0.2:400"
+#       import_config: "198.51.0.5:200"
+#     vnet:
+#       tag: 500
+#     vpn:
+#       id: "4:5
+#   - name: VRF7
 
-# Task output
+# After state:
+# ------------
+#
+# admin#show running-config | section ^vrf
+# vrf definition VRF2
+# vrf definition VRF6
+#  vnet tag 500
+#  description VRF6 description
+#  ipv4 multicast multitopology
+#  ipv6 multicast multitopology
+#  rd 6:7
+#  vpn id 4:5
+#  route-target export 198.51.0.2:400
+#  route-target import 198.51.0.5:200
+# vrf definition VRF7
+
+# Using Deleted
+
+# Before state:
 # -------------
+#
+# admin#show running-config | section ^vrf
+# vrf definition VRF2
+# vrf definition VRF6
+#  vnet tag 500
+#  description VRF6 description
+#  ipv4 multicast multitopology
+#  ipv6 multicast multitopology
+#  rd 6:7
+#  vpn id 4:5
+#  route-target export 198.51.0.2:400
+#  route-target import 198.51.0.5:200
+# vrf definition VRF7
+
+- name: Delete the provided configuration when config is given
+  cisco.ios.ios_vrf_global:
+    config:
+      vrfs:
+        - name: VRF2
+        - name: VRF6
+        - name: VRF7
+    state: deleted
+
+# Task Output:
+# ------------
+#
+# before:
+#   - name: VRF2
+#   - name: VRF6
+#     description: VRF6 description
+#     ipv4:
+#       multicast:
+#         multitopology: true
+#     ipv6:
+#       multicast:
+#         multitopology: true
+#     rd: "6:7"
+#     route_target:
+#       export: "198.51.0.2:400"
+#       import_config: "198.51.0.5:200"
+#     vnet:
+#       tag: 500
+#     vpn:
+#       id: "4:5"
+#   - name: VRF7
+#
 # commands:
 # - vrf definition VRF2
 # - vrf definition VRF6
@@ -477,72 +546,150 @@ EXAMPLES = """
 # - no vpn id 4:5
 # - vrf definition VRF7
 #
+# after:
+#   - name: VRF2
+#   - name: VRF6
+#   - name: VRF7
+
 # After state:
 # -------------
 # admin#show running-config | section ^vrf
 # vrf definition VRF2
 # vrf definition VRF6
 # vrf definition VRF7
-#
-#
-# Using purged
+
+# Using Deleted with empty config
+
 # Before state:
 # -------------
+#
+# admin#show running-config | section ^vrf
+# vrf definition VRF2
+# vrf definition VRF6
+#  vnet tag 500
+#  description VRF6 description
+#  ipv4 multicast multitopology
+#  ipv6 multicast multitopology
+#  rd 6:7
+#  vpn id 4:5
+#  route-target export 198.51.0.2:400
+#  route-target import 198.51.0.5:200
+# vrf definition VRF7
+
+- name: Delete the provided configuration when config is empty
+  cisco.ios.ios_vrf_global:
+    config:
+    state: deleted
+
+# Task Output:
+# ------------
+#
+# before:
+#   - name: VRF2
+#   - name: VRF6
+#     description: VRF6 description
+#     ipv4:
+#       multicast:
+#         multitopology: true
+#     ipv6:
+#       multicast:
+#         multitopology: true
+#     rd: "6:7"
+#     route_target:
+#       export: "198.51.0.2:400"
+#       import_config: "198.51.0.5:200"
+#     vnet:
+#       tag: 500
+#     vpn:
+#       id: "4:5"
+#   - name: VRF7
+
+# commands:
+# - vrf definition VRF2
+# - vrf definition VRF6
+# - no description VRF6 description
+# - no ipv4 multicast multitopology
+# - no ipv6 multicast multitopology
+# - no rd 6:7
+# - no route-target export 198.51.0.2:400
+# - no route-target import 198.51.0.5:200
+# - no vnet tag 500
+# - no vpn id 4:5
+# - vrf definition VRF7
+#
+# after:
+#   - name: VRF2
+#   - name: VRF6
+#   - name: VRF7
+
+# After state:
+# -------------
+#
 # admin#show running-config | section ^vrf
 # vrf definition VRF2
 # vrf definition VRF6
 # vrf definition VRF7
-#
-- name: Purge all the configuration from the device
-  hosts: ios
-  gather_facts: false
-  tasks:
-    - name: Purge all the configuration from the device
-      cisco.ios.ios_vrf_global:
-        state: purged
-# Task output
+
+# Using purged - would delete all the VRF definitions
+
+# Before state:
 # -------------
+#
+# admin#show running-config | section ^vrf
+# vrf definition VRF2
+# vrf definition VRF6
+# vrf definition VRF7
+
+- name: Purge all the configuration from the device
+  cisco.ios.ios_vrf_global:
+    state: purged
+
+# Task Output:
+# ------------
+#
+# before:
+#   - name: VRF2
+#   - name: VRF6
+#   - name: VRF7
 # commands:
 # - no vrf definition VRF2
 # - no vrf definition VRF6
 # - no vrf definition VRF7
-#
+# after: {}
+
 # After state:
 # -------------
-# admin#show running-config | section ^vrf
-# -
 #
-# Using rendered
-# ----------------
-- name: Render provided configuration with device configuration
-  hosts: ios
-  gather_facts: false
-  tasks:
-    - name: Render provided configuration with device configuration
-      cisco.ios.ios_vrf_global:
-        config:
-          vrfs:
-            - name: VRF2
-              description: This is a test VRF for merged state
-              ipv4:
-                multicast:
-                  multitopology: true
-              ipv6:
-                multicast:
-                  multitopology: true
-              rd: "2:3"
-              route_target:
-                export: "192.0.2.0:100"
-                import_config: "192.0.2.3:200"
-              vpn:
-                id: "2:45"
-              vnet:
-                tag: 200
-        state: rendered
+# admin#show running-config | section ^vrf
 
-# Task output
-# -------------
-# commands:
+# Using Rendered
+
+- name: Render provided configuration with device configuration
+  cisco.ios.ios_vrf_global:
+    config:
+      vrfs:
+        - name: VRF2
+          description: This is a test VRF for merged state
+          ipv4:
+            multicast:
+              multitopology: true
+          ipv6:
+            multicast:
+              multitopology: true
+          rd: "2:3"
+          route_target:
+            export: "192.0.2.0:100"
+            import_config: "192.0.2.3:200"
+          vpn:
+            id: "2:45"
+          vnet:
+            tag: 200
+    state: rendered
+
+# Task Output:
+# ------------
+#
+# rendered:
 # - vrf definition VRF2
 # - description This is a test VRF for merged state
 # - ipv4 multicast multitopology
@@ -552,27 +699,55 @@ EXAMPLES = """
 # - route-target import 192.0.2.3:200
 # - vnet tag 200
 # - vpn id 2:45
-#
-# Using gathered
-# -------------
-- name: Display existing running configuration
-  hosts: ios
-  gather_facts: false
-  tasks:
-    - name: Gather existing running configuration
-      cisco.ios.ios_vrf_global:
-        state: gathered
 
-# gathered:
+# Using Gathered
+
+# Before state:
+# -------------
 #
-# name: VRF2
-# name: VRF6
-# name: VRF7
-#
-# Using parsed
-#
-# parsed.cfg
+# admin#show running-config | section ^vrf
+# vrf definition VRF2
+#  vnet tag 200
+#  description This is a test VRF for merged state
+#  ipv4 multicast multitopology
+#  ipv6 multicast multitopology
+#  rd 2:3
+#  vpn id 2:45
+#  route-target export 192.0.2.0:100
+#  route-target import 192.0.2.3:200
+
+- name: Gather existing running configuration
+  cisco.ios.ios_vrf_global:
+    config:
+    state: gathered
+
+# Task Output:
 # ------------
+#
+# gathered:
+#   vrfs:
+#     - name: VRF2
+#       description: This is a test VRF for merged state
+#       ipv4:
+#         multicast:
+#           multitopology: true
+#       ipv6:
+#         multicast:
+#           multitopology: true
+#       rd: "2:3"
+#       route_target:
+#         export: "192.0.2.0:100"
+#         import_config: "192.0.2.3:200"
+#       vnet:
+#         tag: 200
+#       vpn:
+#         id: "2:45"
+
+# Using parsed
+
+# File: parsed.cfg
+# ----------------
+#
 # vrf definition test
 #  vnet tag 34
 #  description This is test VRF
@@ -588,6 +763,44 @@ EXAMPLES = """
 #  ipv4 multicast multitopology
 #  ipv6 multicast multitopology
 #  rd 192.0.2.3:300
+
+- name: Parse the provided configuration
+  cisco.ios.ios_vrf_global:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task Output:
+# ------------
+#
+# parsed:
+#   vrfs:
+#     - name: test
+#       description: This is test VRF
+#       ipv4:
+#         multicast:
+#           multitopology: true
+#       ipv6:
+#         multicast:
+#           multitopology: true
+#       rd: "192.0.2.0:300"
+#       route_target:
+#         export: "192.0.2.0:100"
+#         import_config: "192.0.2.2:300"
+#       vnet:
+#         tag: 34
+#       vpn:
+#         id: "3:4"
+#     - name: test2
+#       description: This is test VRF
+#       ipv4:
+#         multicast:
+#           multitopology: true
+#       ipv6:
+#         multicast:
+#           multitopology: true
+#       rd: "192.0.2.3:300"
+#       vnet:
+#         tag: 35
 """
 
 RETURN = """
