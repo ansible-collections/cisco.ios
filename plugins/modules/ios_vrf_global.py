@@ -122,11 +122,12 @@ options:
         value is returned in the I(parsed) key within the result. The value of C(running_config)
         option should be the same format as the output of command I(show running-config | section vrf).
         connection to remote host is not required.
-      - The state I(merged) is used to add or update the configuration on the device.
-      - The state I(replaced) is used to replace the configuration on the device.
-      - The state I(overridden) is used to override the configuration on the device.
-      - The state I(deleted) is used to delete the configuration from the device.
-      - The state I(purged) is used to delete all the VRF definitions from the device.
+      - The state I(deleted) only removes the VRF attributes that this module
+        manages and does not negate the VRF completely. Thereby, preserving
+        address-family related configurations under VRF context.
+      - The state I(purged) removes all the VRF definitions from the
+        target device. Use caution with this state.
+      - Refer to examples for more details.
     type: str
 """
 
