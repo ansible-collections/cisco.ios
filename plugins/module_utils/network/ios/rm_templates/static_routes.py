@@ -64,7 +64,7 @@ class Static_routesTemplate(NetworkTemplate):
             "{{ (' dhcp' ) if ipv4.dhcp|d(False) else '' }}"
             "{{ (' global' ) if ipv4.global|d(False) else '' }}",
             "result": {
-                "{{ dest }}_{{ vrf|d() }}_{{ topology|d() }}_ipv4": [
+                "{{ dest }}_{{ netmask }}_{{ vrf|d() }}_{{ topology|d() }}_ipv4": [
                     {
                         "_vrf": "{{ vrf }}",
                         "_topology": "{{ topology }}",

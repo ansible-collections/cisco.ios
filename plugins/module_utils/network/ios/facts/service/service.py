@@ -33,7 +33,7 @@ class ServiceFacts(object):
         self.argument_spec = ServiceArgs.argument_spec
 
     def get_service_data(self, connection):
-        return connection.get("show running-config all | section ^service ")
+        return connection.get("show running-config all | section ^service")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Service network resource
@@ -59,7 +59,11 @@ class ServiceFacts(object):
         ansible_facts["ansible_network_resources"].pop("service", None)
 
         params = utils.remove_empties(
-            service_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
+            service_parser.validate_config(
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
+            ),
         )
 
         facts["service"] = params.get("config", {})

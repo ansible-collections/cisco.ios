@@ -323,7 +323,7 @@ class Acls(ResourceModule):
                                         ace.get("destination", {}).get("port_protocol", {}).items()
                                     ):
                                         ace["destination"]["port_protocol"][k] = (
-                                            self.port_protocl_no_to_protocol(v)
+                                            self.port_protocl_no_to_protocol(v, ace.get("protocol"))
                                         )
                                 if acl.get("acl_type") == "standard":
                                     for ks in list(ace.keys()):
@@ -376,7 +376,7 @@ class Acls(ResourceModule):
                 temp.update({each["afi"]: {"acls": temp_acls}})
             return temp
 
-    def port_protocl_no_to_protocol(self, num):
+    def port_protocl_no_to_protocol(self, num, protocol):
         map_protocol = {
             "179": "bgp",
             "19": "chargen",
@@ -414,4 +414,6 @@ class Acls(ResourceModule):
             "43": "whois",
             "80": "www",
         }  # NOTE - "514": "syslog" duplicate value device renders "cmd"
+        if protocol == "udp" and num in ["135"]:
+            return num
         return map_protocol.get(num, num)

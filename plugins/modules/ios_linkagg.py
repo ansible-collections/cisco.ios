@@ -265,11 +265,11 @@ def parse_mode(module, config, group, member):
 def parse_members(module, config, group):
     members = []
     for line in config.strip().split("!"):
-        l = line.strip()
-        if l.startswith("interface"):
-            match_group = re.findall("channel-group {0} mode".format(group), l, re.M)
+        lineStrip = line.strip()
+        if lineStrip.startswith("interface"):
+            match_group = re.findall("channel-group {0} mode".format(group), lineStrip, re.M)
             if match_group:
-                match = re.search("interface (\\S+)", l, re.M)
+                match = re.search("interface (\\S+)", lineStrip, re.M)
                 if match:
                     members.append(match.group(1))
     return members
@@ -291,8 +291,8 @@ def map_config_to_obj(module):
     objs = list()
     config = get_config(module)
     for line in config.split("\n"):
-        l = line.strip()
-        match = re.search("interface Port-channel(\\S+)", l, re.M)
+        lStrip = line.strip()
+        match = re.search("interface Port-channel(\\S+)", lStrip, re.M)
         if match:
             obj = {}
             group = match.group(1)
