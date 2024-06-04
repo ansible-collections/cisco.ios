@@ -164,6 +164,7 @@ EXAMPLES = """
 # -------------
 #
 # before: {}
+#
 # commands:
 #   - vrf definition VRF2
 #   - description This is a test VRF for merged state
@@ -174,9 +175,9 @@ EXAMPLES = """
 #   - route-target import 192.0.2.3:200
 #   - vnet tag 200
 #   - vpn id 2:45
-
+#
 # after:
-#     name: VRF2
+#   - name: VRF2
 #     description: This is a test VRF for merged state
 #     ipv4:
 #       multicast:
@@ -249,22 +250,22 @@ EXAMPLES = """
 # ------------
 #
 # before:
-#   name: VRF2
-#   description: This is a test VRF for merged state
-#   ipv4:
-#     multicast:
-#       multitopology: true
-#   ipv6:
-#     multicast:
-#       multitopology: true
-#   rd: "2:3"
-#   route_target:
-#     export: "192.0.2.0:100"
-#     import_config: "192.0.2.3:200"
-#   vnet:
-#     tag: 200
-#   vpn:
-#     id: "2:45"
+#   - name: VRF2
+#     description: This is a test VRF for merged state
+#     ipv4:
+#       multicast:
+#         multitopology: true
+#     ipv6:
+#       multicast:
+#         multitopology: true
+#     rd: "2:3"
+#     route_target:
+#       export: "192.0.2.0:100"
+#       import_config: "192.0.2.3:200"
+#     vnet:
+#       tag: 200
+#     vpn:
+#       id: "2:45"
 #
 # commands:
 # - vrf definition VRF7
@@ -278,38 +279,38 @@ EXAMPLES = """
 # - vpn id 5:45
 #
 # after:
-#   name: VRF2
-#   description: This is a test VRF for merged state
-#   ipv4:
-#     multicast:
-#       multitopology: true
-#   ipv6:
-#     multicast:
-#       multitopology: true
-#   rd: "2:3"
-#   route_target:
-#     export: "192.0.2.0:100"
-#     import_config: "192.0.2.3:200"
-#   vnet:
-#     tag: 200
-#   vpn:
-#     id: "2:45
-#   name: VRF7
-#   description: VRF7 description
-#   ipv4:
-#     multicast:
-#       multitopology: true
-#   ipv6:
-#     multicast:
-#       multitopology: true
-#   rd: "7:8"
-#   route_target:
-#     export: "198.51.100.112:500"
-#     import_config: "192.0.2.4:400"
-#   vnet:
-#     tag: 300
-#   vpn:
-#     id: "5:45"
+#   - name: VRF2
+#     description: This is a test VRF for merged state
+#     ipv4:
+#       multicast:
+#         multitopology: true
+#     ipv6:
+#       multicast:
+#         multitopology: true
+#     rd: "2:3"
+#     route_target:
+#       export: "192.0.2.0:100"
+#       import_config: "192.0.2.3:200"
+#     vnet:
+#       tag: 200
+#     vpn:
+#       id: "2:45
+#   - name: VRF7
+#     description: VRF7 description
+#     ipv4:
+#       multicast:
+#         multitopology: true
+#     ipv6:
+#       multicast:
+#         multitopology: true
+#     rd: "7:8"
+#     route_target:
+#       export: "198.51.100.112:500"
+#       import_config: "192.0.2.4:400"
+#     vnet:
+#       tag: 300
+#     vpn:
+#       id: "5:45"
 #
 # After state:
 # -------------
@@ -385,38 +386,38 @@ EXAMPLES = """
 # ------------
 #
 # before:
-#   name: VRF2
-#   description: This is a test VRF for merged state
-#   ipv4:
-#     multicast:
-#       multitopology: true
-#   ipv6:
-#     multicast:
-#       multitopology: true
-#   rd: "2:3"
-#   route_target:
-#     export: "192.0.2.0:100"
-#     import_config: "192.0.2.3:200"
-#   vnet:
-#     tag: 200
-#   vpn:
-#     id: "2:45
-#   name: VRF7
-#   description: VRF7 description
-#   ipv4:
-#     multicast:
-#       multitopology: true
-#   ipv6:
-#     multicast:
-#       multitopology: true
-#   rd: "7:8"
-#   route_target:
-#     export: "198.51.100.112:500"
-#     import_config: "192.0.2.4:400"
-#   vnet:
-#     tag: 300
-#   vpn:
-#     id: "5:45"
+#   - name: VRF2
+#     description: This is a test VRF for merged state
+#     ipv4:
+#       multicast:
+#         multitopology: true
+#     ipv6:
+#       multicast:
+#         multitopology: true
+#     rd: "2:3"
+#     route_target:
+#       export: "192.0.2.0:100"
+#       import_config: "192.0.2.3:200"
+#     vnet:
+#       tag: 200
+#     vpn:
+#       id: "2:45
+#   - name: VRF7
+#     description: VRF7 description
+#     ipv4:
+#       multicast:
+#         multitopology: true
+#     ipv6:
+#       multicast:
+#         multitopology: true
+#     rd: "7:8"
+#     route_target:
+#       export: "198.51.100.112:500"
+#       import_config: "192.0.2.4:400"
+#     vnet:
+#       tag: 300
+#     vpn:
+#       id: "5:45"
 #
 # commands:
 # - vrf definition VRF2
