@@ -262,8 +262,8 @@ class Cliconf(CliconfBase):
             for _candidate in candidates:
                 path = [_candidate[0].strip()]
                 _candidate = "".join(_candidate)
-                _candidate_obj = NetworkConfig(indent=1)
-                _candidate_obj.load(_candidate)
+                candidate_obj = NetworkConfig(indent=1)
+                candidate_obj.load(_candidate)
 
                 running_obj = NetworkConfig(
                     indent=1,
@@ -275,7 +275,7 @@ class Cliconf(CliconfBase):
                     have_lines = running_obj.get_block(path)
                 except ValueError:
                     have_lines = []
-                want_lines = _candidate_obj.get_block(path)
+                want_lines = candidate_obj.get_block(path)
 
                 negates = ""
                 negated_parents = []
