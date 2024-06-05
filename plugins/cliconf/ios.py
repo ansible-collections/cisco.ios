@@ -262,8 +262,8 @@ class Cliconf(CliconfBase):
             for _candidate in candidates:
                 path = [_candidate[0].strip()]
                 _candidate = "".join(_candidate)
-                candidate_obj = NetworkConfig(indent=1)
-                candidate_obj.load(_candidate)
+                _candidate_obj = NetworkConfig(indent=1)
+                _candidate_obj.load(_candidate)
 
                 running_obj = NetworkConfig(
                     indent=1,
@@ -275,7 +275,7 @@ class Cliconf(CliconfBase):
                     have_lines = running_obj.get_block(path)
                 except ValueError:
                     have_lines = []
-                want_lines = candidate_obj.get_block(path)
+                want_lines = _candidate_obj.get_block(path)
 
                 negates = ""
                 negated_parents = []
@@ -311,24 +311,24 @@ class Cliconf(CliconfBase):
             want_src, want_banners = self._extract_banners(candidate)
             candidate_obj.load(want_src)
 
-        if running and diff_match != "none":
-            # running configuration
-            have_src, have_banners = self._extract_banners(running)
-            running_obj = NetworkConfig(indent=1, contents=have_src, ignore_lines=diff_ignore_lines)
-            configdiffobjs = candidate_obj.difference(
-                running_obj,
-                path=path,
-                match=diff_match,
-                replace=diff_replace,
-            )
+            if running and diff_match != "none":
+                # running configuration
+                have_src, have_banners = self._extract_banners(running)
+                running_obj = NetworkConfig(indent=1, contents=have_src, ignore_lines=diff_ignore_lines)
+                configdiffobjs = candidate_obj.difference(
+                    running_obj,
+                    path=path,
+                    match=diff_match,
+                    replace=diff_replace,
+                )
 
-        else:
-            configdiffobjs = candidate_obj.items
-            have_banners = {}
+            else:
+                configdiffobjs = candidate_obj.items
+                have_banners = {}
 
-        diff["config_diff"] = dumps(configdiffobjs, "commands") if configdiffobjs else ""
-        banners = self._diff_banners(want_banners, have_banners)
-        diff["banner_diff"] = banners if banners else {}
+            diff["config_diff"] = dumps(configdiffobjs, "commands") if configdiffobjs else ""
+            banners = self._diff_banners(want_banners, have_banners)
+            diff["banner_diff"] = banners if banners else {}
         return diff
 
     @enable_mode
