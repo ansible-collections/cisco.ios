@@ -1,0 +1,6 @@
+---
+release_summary: >
+  Starting from this release, the minimum `ansible-core` version this collection requires is `2.15.0`.
+  The last known version compatible with ansible-core<2.15 is v8.1.0.
+major_changes:
+  - Bumping `requires_ansible` to `>=2.15.0`, since previous ansible-core versions are EoL now.
