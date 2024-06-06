@@ -1,0 +1,196 @@
+---
+deleted:
+  commands:
+    - "line con 0"
+    - "escape-character DEFAULT"
+    - "login authentication default"
+    - "no stopbits 1"
+    - "no session-timeout 15"
+deleted_line:
+  commands:
+    - "line vty 0 4"
+    - "exec-timeout 10 0"
+    - "transport input ssh"
+    - "login authentication default"
+    - "no logging synchronous"
+    - "no password 7 ********"
+    - "no session-timeout 15"
+deleted_all:
+  commands:
+    - "line con 0"
+    - "escape-character DEFAULT"
+    - "login authentication default"
+    - "no session-timeout 15"
+    - "no stopbits 1"
+    - "line vty 0 4"
+    - "exec-timeout 10 0"
+    - "transport input ssh"
+    - "login authentication default"
+    - "no password 7 ********"
+    - "no logging synchronous"
+    - "no session-timeout 15"
+
+gathered:
+  config:
+    lines:
+      - name: "con 0"
+        escape_character:
+          value: "3"
+        login: "limited"
+        motd: true
+        session:
+          timeout: 15
+        stopbits: "1"
+      - name: "aux 0"
+        login: "default"
+        motd: true
+        transport:
+          - name: input
+            ssh: true
+      - name: "vty 0 4"
+        exec:
+          timeout: 60
+        logging:
+          enable: true
+        login: "remote"
+        motd: true
+        password:
+          hash: 7
+          value: "VALUE_SPECIFIED_IN_NO_LOG_PARAMETER"
+        session:
+          timeout: 15
+        transport:
+          - name: input
+            ssh: true
+            telnet: true
+
+merged:
+  commands:
+    - "line con 0"
+    - "authorization exec console"
+    - "exec-timeout 60 0"
+    - "line vty 0 4"
+    - "exec-timeout 60 0"
+    - "transport output ssh"
+    - "transport preferred none"
+    - "session-timeout 15"
+    - "line vty 5 15"
+    - "exec-timeout 60 0"
+    - "escape-character 3"
+    - "session-timeout 15"
+    - "stopbits 1"
+    - "transport preferred none"
+    - "transport input ssh"
+    - "transport output ssh"
+
+overridden:
+  commands:
+    - "line con 0"
+    - "authorization exec console"
+    - "authorization commands 1 console"
+    - "authorization commands 15 console"
+    - "exec-timeout 60 0"
+    - "login authentication console"
+    - "line vty 0 4"
+    - "transport input ssh"
+    - "transport output ssh"
+    - "transport preferred none"
+    - "escape-character 3"
+    - "login authentication default"
+    - "no logging synchronous"
+    - "no password 7 ********"
+    - "line vty 5 15"
+    - "exec-timeout 60 0"
+    - "escape-character 3"
+    - "session-timeout 15"
+    - "transport preferred none"
+    - "transport input ssh"
+    - "transport output ssh"
+
+replaced:
+  commands:
+    - "line con 0"
+    - "authorization exec console"
+    - "authorization commands 1 console"
+    - "authorization commands 15 console"
+    - "exec-timeout 60 0"
+    - "login authentication console"
+    - "line vty 0 4"
+    - "escape-character 3"
+    - "login authentication default"
+    - "transport preferred none"
+    - "transport input ssh"
+    - "transport output ssh"
+    - "no password 7 ********"
+    - "no logging synchronous"
+
+parsed:
+  config:
+    lines:
+      - name: "con 0"
+        authorization:
+          arap: "default"
+          exec: "console"
+          commands:
+            - level: 1
+              command: console
+            - level: 15
+              command: console
+          reverse_access: "default"
+        login: "console"
+        motd: true
+        session:
+          timeout: 15
+        exec:
+          timeout: 60
+        escape_character:
+          value: "3"
+        stopbits: "1"
+      - name: "aux 0"
+        motd: true
+        login: "default"
+        stopbits: "1"
+      - name: "vty 0 4"
+        motd: true
+        login: "default"
+        logging:
+          enable: true
+        length: 0
+        session:
+          timeout: 15
+        exec:
+          timeout: 60
+        escape_character:
+          value: "3"
+        transport:
+          - name: preferred
+            none: true
+          - name: input
+            ssh: true
+          - name: output
+            ssh: true
+      - name: "vty 5 15"
+        motd: true
+        login: "default"
+        session:
+          timeout: 15
+        exec:
+          timeout: 60
+        escape_character:
+          value: "3"
+        transport:
+          - name: preferred
+            none: true
+          - name: input
+            ssh: true
+          - name: output
+            ssh: true
+
+rendered:
+  commands:
+    - "line con 0"
+    - "escape-character 3"
+    - "stopbits 1"
+    - "line aux 0"
+    - "transport input ssh"
+    - "stopbits 1"

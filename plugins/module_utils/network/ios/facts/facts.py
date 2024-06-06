@@ -60,6 +60,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.legacy
     Hardware,
     Interfaces,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.line.line import LineFacts
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lldp_global.lldp_global import (
     Lldp_globalFacts,
 )
@@ -121,6 +122,7 @@ FACT_RESOURCE_SUBSETS = dict(
     lag_interfaces=Lag_interfacesFacts,
     lacp=LacpFacts,
     lacp_interfaces=Lacp_InterfacesFacts,
+    line=LineFacts,
     lldp_global=Lldp_globalFacts,
     lldp_interfaces=Lldp_InterfacesFacts,
     l3_interfaces=L3_InterfacesFacts,

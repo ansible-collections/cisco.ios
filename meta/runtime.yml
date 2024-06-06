@@ -41,6 +41,8 @@ plugin_routing:
       redirect: cisco.ios.ios_lacp_interfaces
     lag_interfaces:
       redirect: cisco.ios.ios_lag_interfaces
+    line:
+      redirect: cisco.ios.ios_line
     linkagg:
       deprecation:
         removal_date: "2024-06-01"

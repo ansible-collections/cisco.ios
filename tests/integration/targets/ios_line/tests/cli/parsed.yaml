@@ -1,0 +1,20 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_line parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parse the commands for provided configuration
+  become: true
+  register: result
+  cisco.ios.ios_line:
+    running_config: "{{ lookup('file', '_parsed.cfg') }}"
+    state: parsed
+
+- ansible.builtin.debug:
+    var: parsed['config']
+- ansible.builtin.debug:
+    var: result.parsed
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - parsed['config'] == result.parsed
