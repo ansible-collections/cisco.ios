@@ -63,12 +63,12 @@ def cmd_option_hosts(config_data):  # contain sub list attr
             cmd += " {host}".format(host=config_data.get("host"))
         if config_data.get("informs"):
             cmd += " informs"
+        if config_data.get("vrf"):
+            cmd += " vrf {vrf}".format(vrf=config_data.get("vrf"))
         if config_data.get("version"):
             cmd += " version {version}".format(version=config_data.get("version"))
         if config_data.get("version_option"):
             cmd += " {version}".format(version=config_data.get("version_option"))
-        if config_data.get("vrf"):
-            cmd += " vrf {vrf}".format(vrf=config_data.get("vrf"))
         if config_data.get("community_string"):
             cmd += " {community_string}".format(
                 community_string=config_data.get("community_string"),
@@ -322,9 +322,9 @@ class Snmp_serverTemplate(NetworkTemplate):
                 ^snmp-server\shost
                 (\s(?P<host>\S+))?
                 (\s(?P<informs>informs))?
+                (\svrf\s(?P<vrf>\S+))?
                 (\sversion\s(?P<version>1|3|2c))?
                 (\s(?P<version_option>auth|noauth|priv))?
-                (\svrf\s(?P<vrf>\S+))?
                 (\s(?P<community_string>\S+))?
                 (\s+(?P<traps>.+$))?
                 """, re.VERBOSE,

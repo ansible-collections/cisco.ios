@@ -45,7 +45,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>A dictionnary of service configuration</div>
+                        <div>A dictionary of service configuration</div>
                 </td>
             </tr>
                                 <tr>
@@ -658,7 +658,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>TCP and UDP small servers are servers (daemons, in Unix parlance) that run in the router which are useful for diagnostics.</div>
+                        <div>TCP small servers are servers (daemons, in Unix parlance) that run in the router which are useful for diagnostics.</div>
                 </td>
             </tr>
                                 <tr>
@@ -690,14 +690,35 @@ Parameters
                     <b>max_servers</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">string</span>
+                        <span style="color: purple">integer</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
                         <div>Set number of allowable TCP small servers</div>
-                        <div>1 to 2147483647 or no-limit</div>
+                        <div>1 to 2147483647</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>no_limit</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>No limit on number of allowable TCP small servers</div>
                 </td>
             </tr>
 
@@ -921,7 +942,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>TCP and UDP small servers are servers (daemons, in Unix parlance) that run in the router which are useful for diagnostics.</div>
+                        <div>UDP small servers are servers (daemons, in Unix parlance) that run in the router which are useful for diagnostics.</div>
                 </td>
             </tr>
                                 <tr>
@@ -953,14 +974,35 @@ Parameters
                     <b>max_servers</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">string</span>
+                        <span style="color: purple">integer</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>Set number of allowable TCP small servers</div>
-                        <div>1 to 2147483647 or no-limit</div>
+                        <div>Set number of allowable UDP small servers</div>
+                        <div>1 to 2147483647</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>no_limit</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>No limit on number of allowable UDP small servers</div>
                 </td>
             </tr>
 
@@ -1036,7 +1078,7 @@ Notes
 -----
 
 .. note::
-   - Tested against Cisco IOSXE Version 16.9
+   - Tested against Cisco IOSXE Version 17.9.1a on CML.
    - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
 
 
@@ -1556,3 +1598,4 @@ Authors
 ~~~~~~~
 
 - Ambroise Rosset (@earendilfr)
+- Sagar Paul (@KB-perByte)
