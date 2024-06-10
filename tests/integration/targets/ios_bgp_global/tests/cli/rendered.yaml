@@ -10,8 +10,6 @@
           as_number: 65000
           bgp:
             advertise_best_external: true
-            bestpath:
-              - compare_routerid: true
             dampening:
               penalty_half_time: 1
               reuse_route_val: 1
@@ -26,7 +24,7 @@
             nopeerup_delay_options:
               post_boot: 10
           neighbor:
-            - address: 192.0.2.1
+            - neighbor_address: 192.0.2.1
               description: merge neighbor
               remote_as: 100
               aigp:
@@ -36,9 +34,6 @@
                     poi:
                       igp_cost: true
                       transitive: true
-              route_map:
-                name: test-route
-                out: true
           redistribute:
             - connected:
                 metric: 10
