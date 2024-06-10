@@ -378,7 +378,6 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                         "allpaths": {"type": "bool"},
                                     },
                                 },
-                                "password": {"type": "str", "no_log": True},
                                 "password_options": {
                                     "type": "dict",
                                     "no_log": False,
