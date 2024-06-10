@@ -11,8 +11,6 @@
         config:
           as_number: 65000
           bgp:
-            bestpath:
-              - compare_routerid: true
             default:
               ipv4_unicast: false
               route_target:
@@ -23,10 +21,8 @@
               community: 100
               local_preference: 100
             log_neighbor_changes: true
-            nopeerup_delay:
-              - post_boot: 10
           neighbor:
-            - address: 198.0.2.1
+            - neighbor_address: 198.0.2.1
               description: merge neighbor
               remote_as: 100
               shutdown:

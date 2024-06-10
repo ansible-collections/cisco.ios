@@ -35,37 +35,6 @@ options:
       as_number:
         description: Autonomous system number
         type: str
-      aggregate_address:
-        description:
-          - Configure BGP aggregate entry
-          - This option is DEPRECATED and is replaced with aggregate_addresses which
-            accepts list of dict as input, this attribute will be removed after 2024-06-01.
-        type: dict
-        suboptions:
-          address:
-            description: Specify aggregate address
-            type: str
-          netmask:
-            description: Specify aggregate mask
-            type: str
-          advertise_map:
-            description: Set condition to advertise attribute
-            type: str
-          as_confed_set:
-            description: Generate AS confed set path information
-            type: bool
-          as_set:
-            description: Generate AS set path information
-            type: bool
-          attribute_map:
-            description: Set attributes of aggregate
-            type: str
-          summary_only:
-            description: Filter more specific routes from updates
-            type: bool
-          suppress_map:
-            description: Conditionally filter more specific routes from updates
-            type: str
       aggregate_addresses:
         description: Configure BGP aggregate entries
         type: list
@@ -147,40 +116,6 @@ options:
               - Change the default as plain notation
               - asdot notation
             type: bool
-          bestpath:
-            description:
-              - Change the default bestpath selection
-              - This option is DEPRECATED and replaced with bestpath_options of type dict,
-                this attribute will be removed after 2024-06-01.
-            type: list
-            elements: dict
-            suboptions:
-              aigp:
-                description:
-                  - if both paths doesn't have aigp ignore on bestpath comparison
-                  - ignore
-                type: bool
-              compare_routerid:
-                description: Compare router-id for identical EBGP paths
-                type: bool
-              cost_community:
-                description: cost community
-                type: bool
-              igp_metric:
-                description:
-                  - igp metric
-                  - Ignore igp metric in bestpath selection
-                type: bool
-              med:
-                description: MED attribute
-                type: dict
-                suboptions:
-                  confed:
-                    description: Compare MED among confederation paths
-                    type: bool
-                  missing_as_worst:
-                    description: Treat missing MED as the least preferred one
-                    type: bool
           bestpath_options:
             description:
               - Change the default bestpath selection
@@ -390,22 +325,6 @@ options:
                   - Set Local Preference for Gshut routes
                   - Please refer vendor documentation for valid values
                 type: int
-          inject_map:
-            description:
-              - Routemap which specifies prefixes to inject
-              - This option is DEPRECATED and is updated with inject_maps which is a
-                list of dict, this attribute will be removed after 2024-06-01.
-            type: dict
-            suboptions:
-              name:
-                description: route-map name
-                type: str
-              exist_map_name:
-                description: route-map name
-                type: str
-              copy_attributes:
-                description: Copy attributes from aggregate
-                type: bool
           inject_maps:
             description: Routemap which specifies prefixes to inject
             type: list
@@ -433,18 +352,6 @@ options:
                 description: Subnet network range
                 type: dict
                 suboptions:
-                  ipv4_with_subnet:
-                    description:
-                      - IPv4 subnet range(A.B.C.D/nn)
-                      - This option is DEPRECATED and is updated with host_with_subnet which is a
-                        common attribute for address, this attribute will be removed after 2024-06-01.
-                    type: str
-                  ipv6_with_subnet:
-                    description:
-                      - IPv6 subnet range(X:X:X:X::X/<0-128>)
-                      - This option is DEPRECATED and is updated with host_with_subnet which is a
-                        common attribute for address attribute will be removed after 2024-06-01.
-                    type: str
                   host_with_subnet:
                     description:
                       - IPv4 subnet range(A.B.C.D/nn)
@@ -490,36 +397,6 @@ options:
                   enable:
                     description: Enable nexthop tracking
                     type: bool
-          nopeerup_delay:
-            description:
-              - Set how long BGP will wait for the first peer to come up before beginning the update delay or
-                graceful restart timers (in seconds)
-              - This option is DEPRECATED and is replaced with nopeerup_delay_options which is of type dict,
-                this attribute will be removed after 2024-06-01.
-            type: list
-            elements: dict
-            suboptions:
-              cold_boot:
-                description:
-                  - How long to wait for the first peer to come up upon a cold boot
-                  - Please refer vendor documentation for valid values
-                type: int
-              nsf_switchover:
-                description:
-                  - How long to wait for the first peer, post NSF switchover
-                  - Please refer vendor documentation for valid values
-                type: int
-              post_boot:
-                description:
-                  - How long to wait for the first peer to come up once the system is already
-                    booted and all peers go down
-                  - Please refer vendor documentation for valid values
-                type: int
-              user_initiated:
-                description:
-                  - How long to wait for the first peer, post a manual clear of BGP peers by the admin user
-                  - Please refer vendor documentation for valid values
-                type: int
           nopeerup_delay_options:
             description:
               Set how long BGP will wait for the first peer to come up before beginning the update delay or
@@ -805,25 +682,6 @@ options:
           interface:
             description: interface details
             type: str
-      distribute_list:
-        description:
-          - Filter networks in routing updates
-          - This option is DEPRECATED and is replaced with distributes which is of type list of dict,
-            this attribute will be removed after 2024-06-01.
-        type: dict
-        suboptions:
-          acl:
-            description: IP access list number/name
-            type: str
-          in:
-            description: Filter incoming routing updates
-            type: bool
-          out:
-            description: Filter outgoing routing updates
-            type: bool
-          interface:
-            description: interface details
-            type: str
       maximum_paths:
         description: Forward packets over multiple paths
         type: dict
@@ -862,24 +720,6 @@ options:
               - Neighbor address (A.B.C.D)
               - Neighbor tag
               - Neighbor ipv6 address (X:X:X:X::X)
-            type: str
-          address:
-            description:
-              - Neighbor address (A.B.C.D)
-              - This option is DEPRECATED and replaced with neighbor_address,
-                this attribute will be removed after 2024-06-01.
-            type: str
-          tag:
-            description:
-              - Neighbor tag
-              - This option is DEPRECATED and replaced with neighbor_address,
-                this attribute will be removed after 2024-06-01.
-            type: str
-          ipv6_adddress:
-            description:
-              - Neighbor ipv6 address (X:X:X:X::X)
-              - This option is DEPRECATED and replaced with neighbor_address,
-                this attribute will be removed after 2024-06-01.
             type: str
           activate:
             description: Enable the Address Family for this Neighbor
@@ -1194,12 +1034,6 @@ options:
               allpaths:
                 description: Propagate next hop unchanged for all paths (iBGP and eBGP) to this neighbor
                 type: bool
-          password:
-            description:
-              - Set a password
-              - This option is DEPRECATED and is replaced with password_options which
-                accepts dict as input, this attribute will be removed after 2024-06-01.
-            type: str
           password_options:
             description: Set a password with encryption type
             type: dict
@@ -1286,22 +1120,6 @@ options:
                 type: bool
               replace_as:
                 description: Replace all private AS numbers with local AS
-                type: bool
-          route_map:
-            description:
-              - Apply route map to neighbor
-              - This option is DEPRECATED and is replaced with route_maps which
-                accepts list of dict as input, this attribute will be removed after 2024-06-01.
-            type: dict
-            suboptions:
-              name:
-                description: Replace all private AS numbers with local AS
-                type: str
-              in:
-                description: Apply map to incoming routes
-                type: bool
-              out:
-                description: Apply map to outbound routes
                 type: bool
           route_maps:
             description: Apply a list of route maps to neighbor
@@ -1750,51 +1568,6 @@ options:
               global:
                 description: global VRF
                 type: bool
-      route_server_context:
-        description:
-          - Enter route server context command mode
-          - This option is DEPRECATED as it is out of scope of the module,
-            this attribute will be removed after 2024-06-01.
-        type: dict
-        suboptions:
-          name:
-            description: Name of route server context
-            type: str
-          address_family:
-            description: Enter address family command mode
-            type: dict
-            suboptions:
-              afi:
-                description: Address family
-                type: str
-                choices: ["ipv4", "ipv6"]
-              modifier:
-                description: Address Family modifier
-                type: str
-                choices: ["multicast", "unicast"]
-              import_map:
-                description:
-                  - Import matching routes using a route map
-                  - Name of route map
-                type: str
-          description:
-            description: Textual description of the router server context
-            type: str
-      scope:
-        description:
-          - Enter scope command mode
-          - This option is DEPRECATED as is not valid within the scope of module,
-            this attribute will be removed after 2024-06-01.
-        type: dict
-        suboptions:
-          global:
-            description: Global scope
-            type: bool
-          vrf:
-            description:
-              - VRF scope
-              - VPN Routing/Forwarding instance name
-            type: str
       synchronization:
         description: Perform IGP synchronization
         type: bool
