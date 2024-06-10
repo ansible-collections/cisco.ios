@@ -22,6 +22,14 @@ Minor Changes
 
 - Add ios_vrf_global resource module in favor of ios_vrf module (fixes - https://github.com/ansible-collections/cisco.ios/pull/1055)
 
+Deprecated Features
+-------------------
+
+- ios_bgp_address_family - deprecated attribute password in favour of password_options within neigbhors.
+- ios_bgp_global - deprecated attributes aggregate_address, bestpath, inject_map, ipv4_with_subnet, ipv6_with_subnet, nopeerup_delay, distribute_list, address, tag, ipv6_addresses, password, route_map, route_server_context and scope
+- ios_linkagg - deprecate legacy module ios_linkagg
+- ios_lldp - deprecate legacy module ios_lldp
+
 Bugfixes
 --------
 
