@@ -1681,9 +1681,10 @@ class TestIosSnmpServerModule(TestIosModule):
     def test_ios_snmp_server_gathered(self):
         self.execute_show_command.return_value = dedent(
             """\
-            snmp-server host 172.16.2.99 checktrap  isis hsrp
-            snmp-server host 172.16.2.1 version 3 priv newtera  rsrb pim rsvp slb pki
-            snmp-server host 172.16.2.1 version 3 noauth replace-User!  slb pki
+            snmp-server host 172.16.2.99 checktrap isis hsrp
+            snmp-server host 172.16.2.1 version 3 priv newtera rsrb pim rsvp slb pki
+            snmp-server host 172.16.2.1 version 3 noauth replace-User! slb pki
+            snmp-server host 172.16.2.1 vrf vrf1 version 3 priv newtera1 rsrb pim
             """,
         )
         self.execute_show_command_user.return_value = dedent(
@@ -1752,6 +1753,14 @@ class TestIosSnmpServerModule(TestIosModule):
                     "host": "172.16.2.99",
                     "community_string": "checktrap",
                     "traps": ["isis", "hsrp"],
+                },
+                {
+                    "host": "172.16.2.99",
+                    "vrf": "vrf1",
+                    "version": "3",
+                    "version_option": "priv",
+                    "community_string": "newtera1",
+                    "traps": ["rsrb", "pim"],
                 },
             ],
             "users": [
@@ -1928,7 +1937,7 @@ class TestIosSnmpServerModule(TestIosModule):
             "snmp-server enable traps ospf state-change",
             "snmp-server enable traps ethernet cfm cc mep-up mep-down cross-connect loop config",
             "snmp-server enable traps ethernet cfm crosscheck mep-missing mep-unknown service-up",
-            "snmp-server host 172.16.1.1 version 3 auth vrf mgmt group0 tty",
+            "snmp-server host 172.16.1.1 vrf mgmt version 3 auth group0 tty",
             "snmp-server host 172.16.2.1 version 3 priv newtera rsrb",
             "snmp-server host 172.16.2.1 version 3 noauth replaceUser slb",
             "snmp-server host 172.16.2.1 version 2c trapsac tty",

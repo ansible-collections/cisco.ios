@@ -1,4 +1,8 @@
 ---
+- name: Set a fact for 'skip_test'
+  ansible.builtin.set_fact:
+    skip_test: false
+
 - name: Main task for VXLAN VTEP module
   ansible.builtin.include_tasks: cli.yaml
   tags:

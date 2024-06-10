@@ -573,11 +573,11 @@ rendered:
     - name Vlan_20
     - state active
     - mtu 610
-    - shutdown
+    - no shutdown
     - vlan 30
     - name Vlan_30
     - state suspend
-    - shutdown
+    - no shutdown
 
 rendered_vlan_config:
   commands:

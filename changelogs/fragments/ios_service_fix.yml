@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - ios_service - Fix timestamps attribute, to generate right configuration.
+  - ios_service - Add tcp_small_servers and udp_small_servers attributes, to generate configuration.
