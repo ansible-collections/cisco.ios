@@ -38,6 +38,7 @@ Bugfixes
 - ios_service - Add tcp_small_servers and udp_small_servers attributes, to generate configuration.
 - ios_service - Fix timestamps attribute, to generate right configuration.
 - ios_static_routes - Fix gathering facts by properly distinguising routes.
+- l2_interfaces - If a large number of VLANs are affected, the configuration will now be correctly split into several commands.
 - snmp_server - Fix configuration command for snmp-server host.
 - snmp_server - Fix wrong syntax of snmp-server host command generation.
 
