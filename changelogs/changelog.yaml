@@ -4,113 +4,113 @@ releases:
     modules:
       - description: ACL interfaces resource module
         name: ios_acl_interfaces
-        namespace: ''
+        namespace: ""
       - description: ACLs resource module
         name: ios_acls
-        namespace: ''
+        namespace: ""
       - description: Manage multiline banners on Cisco IOS devices
         name: ios_banner
-        namespace: ''
+        namespace: ""
       - description: Configure global BGP protocol settings on Cisco IOS.
         name: ios_bgp
-        namespace: ''
+        namespace: ""
       - description: Run commands on remote devices running Cisco IOS
         name: ios_command
-        namespace: ''
+        namespace: ""
       - description: Manage Cisco IOS configuration sections
         name: ios_config
-        namespace: ''
+        namespace: ""
       - description: Collect facts from remote devices running Cisco IOS
         name: ios_facts
-        namespace: ''
+        namespace: ""
       - description:
           (deprecated, removed after 2022-06-01) Manage Interface on Cisco
           IOS network devices
         name: ios_interface
-        namespace: ''
+        namespace: ""
       - description: Interfaces resource module
         name: ios_interfaces
-        namespace: ''
+        namespace: ""
       - description:
           (deprecated, removed after 2022-06-01) Manage Layer-2 interface
           on Cisco IOS devices.
         name: ios_l2_interface
-        namespace: ''
+        namespace: ""
       - description: L2 interfaces resource module
         name: ios_l2_interfaces
-        namespace: ''
+        namespace: ""
       - description:
           (deprecated, removed after 2022-06-01) Manage Layer-3 interfaces
           on Cisco IOS network devices.
         name: ios_l3_interface
-        namespace: ''
+        namespace: ""
       - description: L3 interfaces resource module
         name: ios_l3_interfaces
-        namespace: ''
+        namespace: ""
       - description: LACP resource module
         name: ios_lacp
-        namespace: ''
+        namespace: ""
       - description: LACP interfaces resource module
         name: ios_lacp_interfaces
-        namespace: ''
+        namespace: ""
       - description: LAG interfaces resource module
         name: ios_lag_interfaces
-        namespace: ''
+        namespace: ""
       - description: Manage link aggregation groups on Cisco IOS network devices
         name: ios_linkagg
-        namespace: ''
+        namespace: ""
       - description: Manage LLDP configuration on Cisco IOS network devices.
         name: ios_lldp
-        namespace: ''
+        namespace: ""
       - description: LLDP resource module
         name: ios_lldp_global
-        namespace: ''
+        namespace: ""
       - description: LLDP interfaces resource module
         name: ios_lldp_interfaces
-        namespace: ''
+        namespace: ""
       - description: Manage logging on network devices
         name: ios_logging
-        namespace: ''
+        namespace: ""
       - description: Manages core NTP configuration.
         name: ios_ntp
-        namespace: ''
+        namespace: ""
       - description: OSPFv2 resource module
         name: ios_ospfv2
-        namespace: ''
+        namespace: ""
       - description: Tests reachability using ping from Cisco IOS network devices
         name: ios_ping
-        namespace: ''
+        namespace: ""
       - description:
           (deprecated, removed after 2022-06-01) Manage static IP routes
           on Cisco IOS network devices
         name: ios_static_route
-        namespace: ''
+        namespace: ""
       - description: Static routes resource module
         name: ios_static_routes
-        namespace: ''
+        namespace: ""
       - description: Manage the system attributes on Cisco IOS devices
         name: ios_system
-        namespace: ''
+        namespace: ""
       - description: Manage the aggregate of local users on Cisco IOS device
         name: ios_user
-        namespace: ''
+        namespace: ""
       - description:
           (deprecated, removed after 2022-06-01) Manage VLANs on IOS network
           devices
         name: ios_vlan
-        namespace: ''
+        namespace: ""
       - description: VLANs resource module
         name: ios_vlans
-        namespace: ''
+        namespace: ""
       - description: Manage the collection of VRF definitions on Cisco IOS devices
         name: ios_vrf
-        namespace: ''
+        namespace: ""
     plugins:
       cliconf:
         - description: Use ios cliconf to run command on Cisco IOS platform
           name: ios
           namespace: null
-    release_date: '2020-06-23'
+    release_date: "2020-06-23"
   1.0.1:
     changes:
       bugfixes:
@@ -124,13 +124,13 @@ releases:
       - 90-add-change-log-1.0.0.yaml
       - handle_src_backup_with_module_alias.yaml
       - remove_ios_ignore.yaml
-    release_date: '2020-08-03'
+    release_date: "2020-08-03"
   1.0.2:
     changes:
       release_summary: Re-releasing 1.0.1 with updated changelog.
     fragments:
       - 1.0.2.yaml
-    release_date: '2020-08-07'
+    release_date: "2020-08-07"
   1.0.3:
     changes:
       bugfixes:
@@ -141,7 +141,7 @@ releases:
       release_summary:
         Releasing 1.0.3 with updated readme with changelog link, galaxy
         description, and bugfix.
-    release_date: '2020-08-28'
+    release_date: "2020-08-28"
   1.1.0:
     changes:
       bugfixes:
@@ -155,8 +155,8 @@ releases:
     modules:
       - description: OSPFv3 resource module
         name: ios_ospfv3
-        namespace: ''
-    release_date: '2020-10-01'
+        namespace: ""
+    release_date: "2020-10-01"
   1.2.0:
     changes:
       bugfixes:
@@ -174,15 +174,15 @@ releases:
     modules:
       - description: OSPF Interfaces resource module
         name: ios_ospf_interfaces
-        namespace: ''
-    release_date: '2020-11-01'
+        namespace: ""
+    release_date: "2020-11-01"
   1.2.1:
     changes:
       bugfixes:
         - Add version key to galaxy.yaml to work around ansible-galaxy bug.
         - To fix ios_ospf_interfaces resource module authentication param behaviour
           (https://github.com/ansible-collections/cisco.ios/issues/209).
-    release_date: '2020-11-26'
+    release_date: "2020-11-26"
   1.3.0:
     changes:
       bugfixes:
@@ -198,8 +198,8 @@ releases:
     modules:
       - description: BGP Global resource module
         name: ios_bgp_global
-        namespace: ''
-    release_date: '2021-01-29'
+        namespace: ""
+    release_date: "2021-01-29"
   2.0.0:
     changes:
       bugfixes:
@@ -216,8 +216,8 @@ releases:
     modules:
       - description: BGP Address Family resource module.
         name: ios_bgp_address_family
-        namespace: ''
-    release_date: '2021-02-25'
+        namespace: ""
+    release_date: "2021-02-25"
   2.0.1:
     changes:
       bugfixes:
@@ -234,7 +234,7 @@ releases:
           is available in config (https://github.com/ansible-collections/cisco.ios/pull/273).
       minor_changes:
         - Remove tests/sanity/requirements.txt (https://github.com/ansible-collections/cisco.ios/pull/261).
-    release_date: '2021-03-30'
+    release_date: "2021-03-30"
   2.1.0:
     changes:
       bugfixes:
@@ -248,8 +248,8 @@ releases:
     modules:
       - description: Route Maps resource module.
         name: ios_route_maps
-        namespace: ''
-    release_date: '2021-04-27'
+        namespace: ""
+    release_date: "2021-04-27"
   2.2.0:
     changes:
       bugfixes:
@@ -267,11 +267,11 @@ releases:
     modules:
       - description: Logging resource module.
         name: ios_logging_global
-        namespace: ''
+        namespace: ""
       - description: Prefix Lists resource module.
         name: ios_prefix_lists
-        namespace: ''
-    release_date: '2021-05-18'
+        namespace: ""
+    release_date: "2021-05-18"
   2.3.0:
     changes:
       bugfixes:
@@ -309,7 +309,7 @@ releases:
       - config_module_warning_msg.yaml
       - depricated_next_hop_self_bgpAddFamilt.yaml
       - readme_freenode_to_liberachat.yml
-    release_date: '2021-06-23'
+    release_date: "2021-06-23"
   2.3.1:
     changes:
       bugfixes:
@@ -321,7 +321,7 @@ releases:
       - 166_ios_command_doc_fix.yaml
       - doc_broken_link.yaml
       - ios_user_issue.yaml
-    release_date: '2021-07-27'
+    release_date: "2021-07-27"
   2.4.0:
     changes:
       bugfixes:
@@ -345,7 +345,7 @@ releases:
       - ios_ntp_foc_update.yaml
       - provider_testing.yaml
       - sample_commands_added_l3_interface.yaml
-    release_date: '2021-08-27'
+    release_date: "2021-08-27"
   2.5.0:
     changes:
       bugfixes:
@@ -379,8 +379,8 @@ releases:
     modules:
       - description: ntp_global resource module
         name: ios_ntp_global
-        namespace: ''
-    release_date: '2021-09-24'
+        namespace: ""
+    release_date: "2021-09-24"
   2.6.0:
     changes:
       bugfixes:
@@ -396,7 +396,7 @@ releases:
         - Added connection network_cli in note for missing modules.
         - Fixed ios_commands module example as per documentation.
       minor_changes:
-        - 'ios_acls - feature: Remarks can be configured for ACLs.'
+        - "ios_acls - feature: Remarks can be configured for ACLs."
         - ios_snmp_server - New Resource module added.
     fragments:
       - 0-copy_ignore_txt.yml
@@ -411,8 +411,8 @@ releases:
     modules:
       - description: snmp_server resource module
         name: ios_snmp_server
-        namespace: ''
-    release_date: '2021-12-07'
+        namespace: ""
+    release_date: "2021-12-07"
   2.7.0:
     changes:
       bugfixes:
@@ -454,21 +454,21 @@ releases:
     modules:
       - description: hostname resource module
         name: ios_hostname
-        namespace: ''
-    release_date: '2022-01-31'
+        namespace: ""
+    release_date: "2022-01-31"
   2.7.1:
     changes:
       release_summary: Re-releasing 2.7.0 due to Automation Hub uploading issue.
     fragments:
       - reflexive_acls_fix.yaml
-    release_date: '2022-02-21'
+    release_date: "2022-02-21"
   2.7.2:
     changes:
       bugfixes:
         - "'ios_acls'- filters out dynamically generated reflexive type acls."
     fragments:
       - reflexive_acls_fix.yaml
-    release_date: '2022-03-02'
+    release_date: "2022-03-02"
   2.8.0:
     changes:
       bugfixes:
@@ -507,7 +507,7 @@ releases:
       - bgp_global_optimization copy.yaml
       - bgp_global_optimization.yaml
       - sanity_fix_docs.yaml
-    release_date: '2022-03-15'
+    release_date: "2022-03-15"
   2.8.1:
     changes:
       bugfixes:
@@ -535,7 +535,7 @@ releases:
       - rename_module_desc.yml
       - route_maps_as_numbr.yml
       - snmp_server_views_facts.yaml
-    release_date: '2022-04-04'
+    release_date: "2022-04-04"
   3.0.0:
     changes:
       bugfixes:
@@ -560,7 +560,7 @@ releases:
       - gather_subset_update.yml
       - netcommon_ref_update.yaml
       - ordering_commands_l3_interface.yml
-    release_date: '2022-04-26'
+    release_date: "2022-04-26"
   3.1.0:
     changes:
       bugfixes:
@@ -589,7 +589,7 @@ releases:
       - lag_interfaces_bug.yaml
       - logging_global_571.yaml
       - snmp_server_view_group_fix.yaml
-    release_date: '2022-05-23'
+    release_date: "2022-05-23"
   3.2.0:
     changes:
       bugfixes:
@@ -601,7 +601,7 @@ releases:
       - interface_605.yml
       - interface_testfix.yml
       - ios_ping_update.yml
-    release_date: '2022-07-01'
+    release_date: "2022-07-01"
   3.3.0:
     changes:
       bugfixes:
@@ -623,7 +623,7 @@ releases:
       - l2_interfaes_add_op.yml
       - re_order_regex_acl.yml
       - snmp-server_special_names.yml
-    release_date: '2022-08-02'
+    release_date: "2022-08-02"
   3.3.1:
     changes:
       bugfixes:
@@ -632,7 +632,7 @@ releases:
     fragments:
       - l2_vlan_tag.yaml
       - snmp_envmon.yaml
-    release_date: '2022-09-07'
+    release_date: "2022-09-07"
   3.3.2:
     changes:
       bugfixes:
@@ -644,7 +644,7 @@ releases:
       - 654-config-mode.yaml
       - arguments-renamed.yaml
       - prefix_list_facts.yaml
-    release_date: '2022-09-23'
+    release_date: "2022-09-23"
   4.0.0:
     changes:
       bugfixes:
@@ -654,7 +654,7 @@ releases:
         - Update supported IOSXE version for modules.
       major_changes:
         - Only valid connection types for this collection is network_cli.
-        - 'This release drops support for `connection: local` and provider dictionary.'
+        - "This release drops support for `connection: local` and provider dictionary."
       removed_features:
         - ios_interface - use ios_interfaces instead.
         - ios_l2_interface - use ios_l2_interfaces instead.
@@ -669,7 +669,7 @@ releases:
       - net_remove.yaml
       - remove_deprecated.yaml
       - remove_provider.yaml
-    release_date: '2022-10-12'
+    release_date: "2022-10-12"
   4.1.0:
     changes:
       bugfixes:
@@ -701,7 +701,7 @@ releases:
       - acl_doc.yaml
       - bgp_add_fam_fix.yaml
       - testfix_integration.yaml
-    release_date: '2022-11-18'
+    release_date: "2022-11-18"
   4.2.0:
     changes:
       bugfixes:
@@ -730,7 +730,7 @@ releases:
       - l2_interface_fix.yaml
       - l2_interface_fix_replaced_state.yaml
       - l3_interface_default_fix.yaml
-    release_date: '2022-12-13'
+    release_date: "2022-12-13"
   4.3.0:
     changes:
       bugfixes:
@@ -746,7 +746,7 @@ releases:
       - 692-fix-community-issues.yaml
       - 708-fix-interface-vrf-assignment.yaml
       - 717_acls_bug_fix.yaml
-    release_date: '2023-01-13'
+    release_date: "2023-01-13"
   4.3.1:
     changes:
       bugfixes:
@@ -756,7 +756,7 @@ releases:
       - fix_lint.yaml
       - reorder_parsers_bgp_add.yaml
       - rm_base.yaml
-    release_date: '2023-01-30'
+    release_date: "2023-01-30"
   4.4.0:
     changes:
       bugfixes:
@@ -791,7 +791,7 @@ releases:
       - ospf_interface_minimal.yaml
       - ospfv2_module_docfix.yml
       - retry_ios_command.yaml
-    release_date: '2023-02-28'
+    release_date: "2023-02-28"
   4.4.1:
     changes:
       bugfixes:
@@ -815,7 +815,7 @@ releases:
       - fix_host_acls_rendering.yaml
       - fix_static_routes.yaml
       - snmp_fix_cmd_rendering.yaml
-    release_date: '2023-04-04'
+    release_date: "2023-04-04"
   4.5.0:
     changes:
       bugfixes:
@@ -858,7 +858,7 @@ releases:
       - logging_global_history_bug.yml
       - update_bgp_af_docs.yaml
       - update_bgp_global_docs.yaml
-    release_date: '2023-04-18'
+    release_date: "2023-04-18"
   4.6.0:
     changes:
       bugfixes:
@@ -893,8 +893,8 @@ releases:
     modules:
       - description: Resource module to configure service.
         name: ios_service
-        namespace: ''
-    release_date: '2023-06-01'
+        namespace: ""
+    release_date: "2023-06-01"
   4.6.1:
     changes:
       bugfixes:
@@ -915,7 +915,7 @@ releases:
       - ospf_intf_fix.yml
       - snmpv3_user_render.yml
       - update_galaxy.yml
-    release_date: '2023-06-13'
+    release_date: "2023-06-13"
   5.0.0:
     changes:
       bugfixes:
@@ -942,7 +942,7 @@ releases:
       - facts_fix.yml
       - snmp_log.yml
       - snmp_user_bug.yml
-    release_date: '2023-07-05'
+    release_date: "2023-07-05"
   5.1.0:
     changes:
       bugfixes:
@@ -999,7 +999,7 @@ releases:
       - rework_ospfv2.yml
       - stderr_re_fix.yaml
       - update_ospf_docs.yaml
-    release_date: '2023-10-04'
+    release_date: "2023-10-04"
   5.2.0:
     changes:
       bugfixes:
@@ -1022,7 +1022,7 @@ releases:
       - error_parser_bug.yml
       - fix_config.yaml
       - ios_snmp_server_changes.yml
-    release_date: '2023-10-27'
+    release_date: "2023-10-27"
   5.3.0:
     changes:
       bugfixes:
@@ -1057,14 +1057,14 @@ releases:
     modules:
       - description: Resource module to configure L2VPN EVPN EVI.
         name: ios_evpn_evi
-        namespace: ''
+        namespace: ""
       - description: Resource module to configure L2VPN EVPN.
         name: ios_evpn_global
-        namespace: ''
+        namespace: ""
       - description: Resource module to configure VXLAN VTEP interface.
         name: ios_vxlan_vtep
-        namespace: ''
-    release_date: '2023-11-29'
+        namespace: ""
+    release_date: "2023-11-29"
   6.0.0:
     changes:
       major_changes:
@@ -1080,7 +1080,7 @@ releases:
     fragments:
       - bgp_dep_rem.yml
       - major_600.yml
-    release_date: '2023-11-30'
+    release_date: "2023-11-30"
   6.1.0:
     changes:
       bugfixes:
@@ -1108,7 +1108,7 @@ releases:
       - ios_vlans_revert.yml
       - snmp_server_ipv6_acl.yml
       - template_revoke_bgp.yaml
-    release_date: '2024-01-11'
+    release_date: "2024-01-11"
   6.1.1:
     changes:
       bugfixes:
@@ -1118,7 +1118,7 @@ releases:
     fragments:
       - module_defaults.yaml
       - vlan_shutdown_fix.yaml
-    release_date: '2024-01-30'
+    release_date: "2024-01-30"
   6.1.2:
     changes:
       bugfixes:
@@ -1137,7 +1137,7 @@ releases:
       - ios_user_bug.yml
       - ospfv2_admin_distance_fix.yml
       - snmp_idempotancy_fix.yml
-    release_date: '2024-02-14'
+    release_date: "2024-02-14"
   6.1.3:
     changes:
       bugfixes:
@@ -1152,7 +1152,7 @@ releases:
       - bgp_global_shutdown.yml
       - ios_acls_sticky.yml
       - ios_vrf_docfix.yml
-    release_date: '2024-03-08'
+    release_date: "2024-03-08"
   6.1.4:
     changes:
       bugfixes:
@@ -1170,7 +1170,7 @@ releases:
     fragments:
       - acl_refactor.yaml
       - json_serializable_issue.yaml
-    release_date: '2024-03-27'
+    release_date: "2024-03-27"
   7.0.0:
     changes:
       major_changes:
@@ -1179,7 +1179,7 @@ releases:
         - Deprecated ios_ntp module in favor of ios_ntp_global.
     fragments:
       - remove_deprecated.yml
-    release_date: '2024-04-01'
+    release_date: "2024-04-01"
   8.0.0:
     changes:
       major_changes:
@@ -1191,7 +1191,7 @@ releases:
     fragments:
       - add_restore_support.yaml
       - sanityfix.yml
-    release_date: '2024-04-12'
+    release_date: "2024-04-12"
   9.0.0:
     changes:
       bugfixes:
@@ -1233,4 +1233,4 @@ releases:
       - snmp_parse_fix.yml
       - snmp_server_host.yml
       - static_routes_facts_fix.yml
-    release_date: '2024-06-11'
+    release_date: "2024-06-11"
