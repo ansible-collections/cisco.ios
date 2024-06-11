@@ -2,75 +2,107 @@ ancestor: null
 releases:
   1.0.0:
     modules:
-      - description: Resource module to configure ACL interfaces.
+      - description: ACL interfaces resource module
         name: ios_acl_interfaces
         namespace: ""
-      - description: Resource module to configure ACLs.
+      - description: ACLs resource module
         name: ios_acls
         namespace: ""
-      - description: Module to configure multiline banners.
+      - description: Manage multiline banners on Cisco IOS devices
         name: ios_banner
         namespace: ""
-      - description: Module to run commands on remote devices.
+      - description: Configure global BGP protocol settings on Cisco IOS.
+        name: ios_bgp
+        namespace: ""
+      - description: Run commands on remote devices running Cisco IOS
         name: ios_command
         namespace: ""
-      - description: Module to manage configuration sections.
+      - description: Manage Cisco IOS configuration sections
         name: ios_config
         namespace: ""
-      - description: Module to collect facts from remote devices.
+      - description: Collect facts from remote devices running Cisco IOS
         name: ios_facts
         namespace: ""
-      - description: Resource module to configure interfaces.
+      - description:
+          (deprecated, removed after 2022-06-01) Manage Interface on Cisco
+          IOS network devices
+        name: ios_interface
+        namespace: ""
+      - description: Interfaces resource module
         name: ios_interfaces
         namespace: ""
-      - description: Resource module to configure L2 interfaces.
+      - description:
+          (deprecated, removed after 2022-06-01) Manage Layer-2 interface
+          on Cisco IOS devices.
+        name: ios_l2_interface
+        namespace: ""
+      - description: L2 interfaces resource module
         name: ios_l2_interfaces
         namespace: ""
-      - description: Resource module to configure L3 interfaces.
+      - description:
+          (deprecated, removed after 2022-06-01) Manage Layer-3 interfaces
+          on Cisco IOS network devices.
+        name: ios_l3_interface
+        namespace: ""
+      - description: L3 interfaces resource module
         name: ios_l3_interfaces
         namespace: ""
-      - description: Resource module to configure LACP.
+      - description: LACP resource module
         name: ios_lacp
         namespace: ""
-      - description: Resource module to configure LACP interfaces.
+      - description: LACP interfaces resource module
         name: ios_lacp_interfaces
         namespace: ""
-      - description: Resource module to configure LAG interfaces.
+      - description: LAG interfaces resource module
         name: ios_lag_interfaces
         namespace: ""
-      - description: Module to configure link aggregation groups.
+      - description: Manage link aggregation groups on Cisco IOS network devices
         name: ios_linkagg
         namespace: ""
-      - description:
-          (deprecated, removed after 2024-06-01) Manage LLDP configuration
-          on Cisco IOS network devices.
+      - description: Manage LLDP configuration on Cisco IOS network devices.
         name: ios_lldp
         namespace: ""
-      - description: Resource module to configure LLDP.
+      - description: LLDP resource module
         name: ios_lldp_global
         namespace: ""
-      - description: Resource module to configure LLDP interfaces.
+      - description: LLDP interfaces resource module
         name: ios_lldp_interfaces
         namespace: ""
-      - description: Resource module to configure OSPFv2.
+      - description: Manage logging on network devices
+        name: ios_logging
+        namespace: ""
+      - description: Manages core NTP configuration.
+        name: ios_ntp
+        namespace: ""
+      - description: OSPFv2 resource module
         name: ios_ospfv2
         namespace: ""
-      - description: Tests reachability using ping from IOS switch.
+      - description: Tests reachability using ping from Cisco IOS network devices
         name: ios_ping
         namespace: ""
-      - description: Resource module to configure static routes.
+      - description:
+          (deprecated, removed after 2022-06-01) Manage static IP routes
+          on Cisco IOS network devices
+        name: ios_static_route
+        namespace: ""
+      - description: Static routes resource module
         name: ios_static_routes
         namespace: ""
-      - description: Module to manage the system attributes.
+      - description: Manage the system attributes on Cisco IOS devices
         name: ios_system
         namespace: ""
-      - description: Module to manage the aggregates of local users.
+      - description: Manage the aggregate of local users on Cisco IOS device
         name: ios_user
         namespace: ""
-      - description: Resource module to configure VLANs.
+      - description:
+          (deprecated, removed after 2022-06-01) Manage VLANs on IOS network
+          devices
+        name: ios_vlan
+        namespace: ""
+      - description: VLANs resource module
         name: ios_vlans
         namespace: ""
-      - description: Module to configure VRF definitions.
+      - description: Manage the collection of VRF definitions on Cisco IOS devices
         name: ios_vrf
         namespace: ""
     plugins:
@@ -121,7 +153,7 @@ releases:
       minor_changes:
         - Add ios_ospfv3 module.
     modules:
-      - description: Resource module to configure OSPFv3.
+      - description: OSPFv3 resource module
         name: ios_ospfv3
         namespace: ""
     release_date: "2020-10-01"
@@ -140,7 +172,7 @@ releases:
       minor_changes:
         - Add ios_ospf_interfaces module.
     modules:
-      - description: Resource module to configure OSPF interfaces.
+      - description: OSPF Interfaces resource module
         name: ios_ospf_interfaces
         namespace: ""
     release_date: "2020-11-01"
@@ -164,7 +196,7 @@ releases:
       minor_changes:
         - Add ios_bgp_global module.
     modules:
-      - description: Resource module to configure BGP.
+      - description: BGP Global resource module
         name: ios_bgp_global
         namespace: ""
     release_date: "2021-01-29"
@@ -182,7 +214,7 @@ releases:
         - Add ios_bgp_address_family Resource Module. (https://github.com/ansible-collections/cisco.ios/pull/219).
         - Adds support for single_user_mode command output caching. (https://github.com/ansible-collections/cisco.ios/pull/204).
     modules:
-      - description: Resource module to configure BGP Address family.
+      - description: BGP Address Family resource module.
         name: ios_bgp_address_family
         namespace: ""
     release_date: "2021-02-25"
@@ -214,7 +246,7 @@ releases:
       security_fixes:
         - To fix Cisco IOS no log issue and add ignore txt for 2.12 (https://github.com/ansible-collections/cisco.ios/pull/304).
     modules:
-      - description: Resource module to configure route maps.
+      - description: Route Maps resource module.
         name: ios_route_maps
         namespace: ""
     release_date: "2021-04-27"
@@ -233,10 +265,10 @@ releases:
         - Add ios_logging_global module.
         - IOS Prefix list resource module.
     modules:
-      - description: Resource module to configure logging.
+      - description: Logging resource module.
         name: ios_logging_global
         namespace: ""
-      - description: Resource module to configure prefix lists.
+      - description: Prefix Lists resource module.
         name: ios_prefix_lists
         namespace: ""
     release_date: "2021-05-18"
@@ -345,7 +377,7 @@ releases:
       - sd_wan_support.yaml
       - set_allow_duplicates.yaml
     modules:
-      - description: Resource module to configure NTP.
+      - description: ntp_global resource module
         name: ios_ntp_global
         namespace: ""
     release_date: "2021-09-24"
@@ -377,7 +409,7 @@ releases:
       - sanity-213.yaml
       - snmp_server_resource_module.yaml
     modules:
-      - description: Resource module to configure snmp server.
+      - description: snmp_server resource module
         name: ios_snmp_server
         namespace: ""
     release_date: "2021-12-07"
@@ -420,7 +452,7 @@ releases:
       - snmp_server_feature_user.yaml
       - static_route_interface_issue.yaml
     modules:
-      - description: Resource module to configure hostname.
+      - description: hostname resource module
         name: ios_hostname
         namespace: ""
     release_date: "2022-01-31"
