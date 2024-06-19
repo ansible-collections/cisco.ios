@@ -4,6 +4,48 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v9.0.0
+======
+
+Release Summary
+---------------
+
+Starting from this release, the minimum `ansible-core` version this collection requires is `2.15.0`. The last known version compatible with ansible-core<2.15 is v8.0.0.
+
+Major Changes
+-------------
+
+- Bumping `requires_ansible` to `>=2.15.0`, since previous ansible-core versions are EoL now.
+
+Minor Changes
+-------------
+
+- Add ios_vrf_global resource module in favor of ios_vrf module (fixes - https://github.com/ansible-collections/cisco.ios/pull/1055)
+
+Deprecated Features
+-------------------
+
+- ios_bgp_address_family - deprecated attribute password in favour of password_options within neigbhors.
+- ios_bgp_global - deprecated attributes aggregate_address, bestpath, inject_map, ipv4_with_subnet, ipv6_with_subnet, nopeerup_delay, distribute_list, address, tag, ipv6_addresses, password, route_map, route_server_context and scope
+- ios_linkagg - deprecate legacy module ios_linkagg
+- ios_lldp - deprecate legacy module ios_lldp
+
+Bugfixes
+--------
+
+- ios_acls - fix incorrect mapping of port 135/udp to msrpc.
+- ios_l3_interfaces - Fix gathering wrong facts for source interface in ipv4.
+- ios_service - Add tcp_small_servers and udp_small_servers attributes, to generate configuration.
+- ios_service - Fix timestamps attribute, to generate right configuration.
+- ios_static_routes - Fix gathering facts by properly distinguising routes.
+- l2_interfaces - If a large number of VLANs are affected, the configuration will now be correctly split into several commands.
+- snmp_server - Fix configuration command for snmp-server host.
+- snmp_server - Fix wrong syntax of snmp-server host command generation.
+
+Documentation Changes
+---------------------
+
+- logging_global - update documentation for severity attribute within buffered.
 
 v8.0.0
 ======
@@ -686,7 +728,7 @@ Documentation Changes
 New Modules
 -----------
 
-- ios_hostname - Resource module to configure hostname.
+- ios_hostname - hostname resource module
 
 v2.6.0
 ======
@@ -717,7 +759,7 @@ Documentation Changes
 New Modules
 -----------
 
-- ios_snmp_server - Resource module to configure snmp server.
+- ios_snmp_server - snmp_server resource module
 
 v2.5.0
 ======
@@ -750,7 +792,7 @@ Documentation Changes
 New Modules
 -----------
 
-- ios_ntp_global - Resource module to configure NTP.
+- ios_ntp_global - ntp_global resource module
 
 v2.4.0
 ======
@@ -837,8 +879,8 @@ Bugfixes
 New Modules
 -----------
 
-- ios_logging_global - Resource module to configure logging.
-- ios_prefix_lists - Resource module to configure prefix lists.
+- ios_logging_global - Logging resource module.
+- ios_prefix_lists - Prefix Lists resource module.
 
 v2.1.0
 ======
@@ -862,7 +904,7 @@ Bugfixes
 New Modules
 -----------
 
-- ios_route_maps - Resource module to configure route maps.
+- ios_route_maps - Route Maps resource module.
 
 v2.0.1
 ======
@@ -907,7 +949,7 @@ Bugfixes
 New Modules
 -----------
 
-- ios_bgp_address_family - Resource module to configure BGP Address family.
+- ios_bgp_address_family - BGP Address Family resource module.
 
 v1.3.0
 ======
@@ -930,7 +972,7 @@ Bugfixes
 New Modules
 -----------
 
-- ios_bgp_global - Resource module to configure BGP.
+- ios_bgp_global - BGP Global resource module
 
 v1.2.1
 ======
@@ -961,7 +1003,7 @@ Bugfixes
 New Modules
 -----------
 
-- ios_ospf_interfaces - Resource module to configure OSPF interfaces.
+- ios_ospf_interfaces - OSPF Interfaces resource module
 
 v1.1.0
 ======
@@ -982,7 +1024,7 @@ Bugfixes
 New Modules
 -----------
 
-- ios_ospfv3 - Resource module to configure OSPFv3.
+- ios_ospfv3 - OSPFv3 resource module
 
 v1.0.3
 ======
@@ -1034,26 +1076,34 @@ Cliconf
 New Modules
 -----------
 
-- ios_acl_interfaces - Resource module to configure ACL interfaces.
-- ios_acls - Resource module to configure ACLs.
-- ios_banner - Module to configure multiline banners.
-- ios_command - Module to run commands on remote devices.
-- ios_config - Module to manage configuration sections.
-- ios_facts - Module to collect facts from remote devices.
-- ios_interfaces - Resource module to configure interfaces.
-- ios_l2_interfaces - Resource module to configure L2 interfaces.
-- ios_l3_interfaces - Resource module to configure L3 interfaces.
-- ios_lacp - Resource module to configure LACP.
-- ios_lacp_interfaces - Resource module to configure LACP interfaces.
-- ios_lag_interfaces - Resource module to configure LAG interfaces.
-- ios_linkagg - Module to configure link aggregation groups.
-- ios_lldp - (deprecated, removed after 2024-06-01) Manage LLDP configuration on Cisco IOS network devices.
-- ios_lldp_global - Resource module to configure LLDP.
-- ios_lldp_interfaces - Resource module to configure LLDP interfaces.
-- ios_ospfv2 - Resource module to configure OSPFv2.
-- ios_ping - Tests reachability using ping from IOS switch.
-- ios_static_routes - Resource module to configure static routes.
-- ios_system - Module to manage the system attributes.
-- ios_user - Module to manage the aggregates of local users.
-- ios_vlans - Resource module to configure VLANs.
-- ios_vrf - Module to configure VRF definitions.
+- ios_acl_interfaces - ACL interfaces resource module
+- ios_acls - ACLs resource module
+- ios_banner - Manage multiline banners on Cisco IOS devices
+- ios_bgp - Configure global BGP protocol settings on Cisco IOS.
+- ios_command - Run commands on remote devices running Cisco IOS
+- ios_config - Manage Cisco IOS configuration sections
+- ios_facts - Collect facts from remote devices running Cisco IOS
+- ios_interface - (deprecated, removed after 2022-06-01) Manage Interface on Cisco IOS network devices
+- ios_interfaces - Interfaces resource module
+- ios_l2_interface - (deprecated, removed after 2022-06-01) Manage Layer-2 interface on Cisco IOS devices.
+- ios_l2_interfaces - L2 interfaces resource module
+- ios_l3_interface - (deprecated, removed after 2022-06-01) Manage Layer-3 interfaces on Cisco IOS network devices.
+- ios_l3_interfaces - L3 interfaces resource module
+- ios_lacp - LACP resource module
+- ios_lacp_interfaces - LACP interfaces resource module
+- ios_lag_interfaces - LAG interfaces resource module
+- ios_linkagg - Manage link aggregation groups on Cisco IOS network devices
+- ios_lldp - Manage LLDP configuration on Cisco IOS network devices.
+- ios_lldp_global - LLDP resource module
+- ios_lldp_interfaces - LLDP interfaces resource module
+- ios_logging - Manage logging on network devices
+- ios_ntp - Manages core NTP configuration.
+- ios_ospfv2 - OSPFv2 resource module
+- ios_ping - Tests reachability using ping from Cisco IOS network devices
+- ios_static_route - (deprecated, removed after 2022-06-01) Manage static IP routes on Cisco IOS network devices
+- ios_static_routes - Static routes resource module
+- ios_system - Manage the system attributes on Cisco IOS devices
+- ios_user - Manage the aggregate of local users on Cisco IOS device
+- ios_vlan - (deprecated, removed after 2022-06-01) Manage VLANs on IOS network devices
+- ios_vlans - VLANs resource module
+- ios_vrf - Manage the collection of VRF definitions on Cisco IOS devices
