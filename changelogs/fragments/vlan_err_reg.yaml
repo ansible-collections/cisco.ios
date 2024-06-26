@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_vlans - Make the module fail when vlan name is longer than 32 characters with configuration as VTPv1 and VTPv2.
