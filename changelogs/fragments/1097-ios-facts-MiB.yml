@@ -1,0 +1,3 @@
+---
+doc_changes:
+  - ios_facts - update documentation for ansible_net_memtotal_mb, ansible_net_memfree_mb return values as mebibytes (MiB), not megabits (Mb)
