@@ -323,7 +323,7 @@ class TestIosBgpGlobalModule(TestIosModule):
             """,
         )
         set_module_args(
-            {   
+            {
                 "config": {
                     "as_number": "65000",
                     "neighbors": [
@@ -332,7 +332,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                             "remote_as": "100",
                             "ebgp_multihop": {
                                 "enable": True,
-                                "hop_count": 255
+                                "hop_count": 255,
                             },
                         },
                     ],
