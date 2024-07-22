@@ -129,8 +129,8 @@ class TestIosServiceModule(TestIosModule):
         }
         merged = [
             "service password-encryption",
-            "service timestamps debug uptime mesc",
-            "service timestamps log datetime mesc localtime show-timezone year",
+            "service timestamps debug uptime msec",
+            "service timestamps log datetime msec localtime show-timezone year",
         ]
         playbook["state"] = "merged"
         set_module_args(playbook)
