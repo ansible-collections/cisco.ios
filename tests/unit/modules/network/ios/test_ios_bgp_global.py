@@ -314,6 +314,34 @@ class TestIosBgpGlobalModule(TestIosModule):
         )
         self.execute_module(changed=False, commands=[])
 
+    def test_ios_bgp_global_ebgp_multihop(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             neighbor 192.0.2.1 remote-as 100
+             neighbor 192.0.2.1 ebgp-multihop 255
+            """,
+        )
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "192.0.2.1",
+                            "remote_as": "100",
+                            "ebgp_multihop": {
+                                "enable": True,
+                                "hop_count": 255,
+                            },
+                        },
+                    ],
+                },
+                "state": "merged",
+            },
+        )
+        self.execute_module(changed=False, commands=[])
+
     def test_ios_bgp_global_merged_fail_msg(self):
         self.execute_show_command.return_value = dedent(
             """\
