@@ -4,6 +4,22 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v9.0.1
+======
+
+Bugfixes
+--------
+
+- bgp_global - fix ebgp_multihop recognnition and hop_count settings
+- ios_service - Fix a typo causing log timestamps not being configurable
+- ios_vlans - Make the module fail when vlan name is longer than 32 characters with configuration as VTPv1 and VTPv2.
+- static_routes - add TenGigabitEthernet as valid interface
+
+Documentation Changes
+---------------------
+
+- ios_facts - update documentation for ansible_net_memtotal_mb, ansible_net_memfree_mb return values as mebibytes (MiB), not megabits (Mb)
+
 v9.0.0
 ======
 

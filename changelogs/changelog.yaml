@@ -1237,3 +1237,20 @@ releases:
       - snmp_server_host.yml
       - static_routes_facts_fix.yml
     release_date: "2024-06-11"
+  9.0.1:
+    changes:
+      bugfixes:
+        - bgp_global - fix ebgp_multihop recognnition and hop_count settings
+        - ios_service - Fix a typo causing log timestamps not being configurable
+        - ios_vlans - Make the module fail when vlan name is longer than 32 characters
+          with configuration as VTPv1 and VTPv2.
+        - static_routes - add TenGigabitEthernet as valid interface
+      doc_changes:
+        - ios_facts - update documentation for ansible_net_memtotal_mb, ansible_net_memfree_mb
+          return values as mebibytes (MiB), not megabits (Mb)
+    fragments:
+      - 1097-ios-facts-MiB.yml
+      - 1101-typo-ios_service.yml
+      - pr-1095-fragment.yaml
+      - vlan_err_reg.yaml
+    release_date: "2024-08-05"
