@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_service - Fix a typo causing log timestamps not being configurable
