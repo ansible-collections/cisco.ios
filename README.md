@@ -12,7 +12,7 @@ This collection has been tested against Cisco IOS XE Version 17.3 on CML.
 
 * Join the Ansible forum:
   * [Get Help](https://forum.ansible.com/c/help/6): get help or help others.
-  * [Posts tagged with 'your tag'](https://forum.ansible.com/tag/YOUR_TAG): subscribe to participate in collection-related conversations.
+  * [Posts tagged with 'network'](https://forum.ansible.com/tag/network): subscribe to participate in collection-related conversations.
   * [Refer to your forum group here if exists](https://forum.ansible.com/network-wg/): by joining the team you will automatically get subscribed to the posts tagged with [network](https://forum.ansible.com/tags/network).
   * [Social Spaces](https://forum.ansible.com/c/chat/4): gather and interact with fellow enthusiasts.
   * [News & Announcements](https://forum.ansible.com/c/news/5): track project-wide announcements including social events.
