@@ -235,47 +235,54 @@ class Snmp_server(ResourceModule):
         self._compare_lists_attrs(want, have)
 
     def _compare_lists_attrs(self, want, have):
-            """Compare list of dict, ensuring idempotency and proper password handling."""
-            for _parser in self.list_parsers:
+        """Compare list of dict, ensuring idempotency and proper password handling."""
+        for _parser in self.list_parsers:
+            i_want = want.get(_parser, {})
+            i_have = have.get(_parser, {})
+
+            if _parser == "users":
+                for key, wanting in iteritems(i_want):
+                    wanting_compare = deepcopy(wanting)
+                    if (
+                        "authentication" in wanting_compare
+                        and "password" in wanting_compare["authentication"]
+                    ):
+                        wanting_compare["authentication"].pop("password")
+                    if (
+                        "encryption" in wanting_compare
+                        and "password" in wanting_compare["encryption"]
+                    ):
+                        wanting_compare["encryption"].pop("password")
+                    haveing = i_have.pop(key, {})
+                    if wanting_compare != haveing:
+                        if haveing and self.state in ["overridden", "replaced"]:
+                            self.addcmd(haveing, _parser, negate=True)
+                        self.addcmd(wanting, _parser)
+                for key, haveing in iteritems(i_have):
+                    self.addcmd(haveing, _parser, negate=True)
+
+            else:
                 i_want = want.get(_parser, {})
                 i_have = have.get(_parser, {})
+                key_attrs = []
+                if _parser == "communities":
+                    key_attrs = ["name"]
+                elif _parser == "groups":
+                    key_attrs = ["name", "version_option"]
+                elif _parser == "views":
+                    key_attrs = ["name", "family_name"]
 
-                if _parser == "users":
-                    for key, wanting in iteritems(i_want):
-                        wanting_compare = deepcopy(wanting)
-                        if "authentication" in wanting_compare and "password" in wanting_compare["authentication"]:
-                            wanting_compare["authentication"].pop("password")
-                        if "encryption" in wanting_compare and "password" in wanting_compare["encryption"]:
-                            wanting_compare["encryption"].pop("password")
-                        haveing = i_have.pop(key, {})
-                        if wanting_compare != haveing:
-                            if haveing and self.state in ["overridden", "replaced"]:
-                                self.addcmd(haveing, _parser, negate=True)
-                            self.addcmd(wanting, _parser)
-                    for key, haveing in iteritems(i_have):
-                        self.addcmd(haveing, _parser, negate=True)
-
-                else:             
-                    i_want = want.get(_parser, {})
-                    i_have = have.get(_parser, {})
-                    key_attrs = []
-                    if _parser == "communities":
-                        key_attrs = ["name"]
-                    elif _parser == "groups":
-                        key_attrs = ["name", "version_option"]
-                    elif _parser == "views":
-                        key_attrs = ["name", "family_name"]
-
-                    for key, wanting in iteritems(i_want):
-                        haveing = i_have.pop(key, {})
-                        if any(wanting.get(attr) != haveing.get(attr) for attr in key_attrs) or (not key_attrs and wanting != haveing):
-                            if haveing and self.state in ["overridden", "replaced"]:
-                                self.addcmd(haveing, _parser, negate=True)
-                            self.addcmd(wanting, _parser)
-                    for key, haveing in iteritems(i_have):
-                        if key not in i_want:
+                for key, wanting in iteritems(i_want):
+                    haveing = i_have.pop(key, {})
+                    if any(wanting.get(attr) != haveing.get(attr) for attr in key_attrs) or (
+                        not key_attrs and wanting != haveing
+                    ):
+                        if haveing and self.state in ["overridden", "replaced"]:
                             self.addcmd(haveing, _parser, negate=True)
-
+                        self.addcmd(wanting, _parser)
+                for key, haveing in iteritems(i_have):
+                    if key not in i_want:
+                        self.addcmd(haveing, _parser, negate=True)
 
     def _snmp_list_to_dict(self, data):
         """Convert all list of dicts to dicts of dicts"""
