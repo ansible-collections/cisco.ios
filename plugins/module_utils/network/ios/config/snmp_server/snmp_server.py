@@ -235,21 +235,24 @@ class Snmp_server(ResourceModule):
         self._compare_lists_attrs(want, have)
 
     def _compare_lists_attrs(self, want, have):
-                """Compare list of dicts"""
-                for _parser in self.list_parsers:
-                    i_want = want.get(_parser, {})
-                    i_have = have.get(_parser, {})
-                    have_keys = set(i_have.keys())
-                    for key, wanting in i_want.items():
-                        haveing = i_have.get(key, {})
-                        if wanting != haveing:
-                            if haveing and self.state in ["overridden", "replaced"]:
-                                if not (_parser == "users" and wanting.get("username") == haveing.get("username")):
-                                    self.addcmd(haveing, _parser, negate=True)
-                            self.addcmd(wanting, _parser)
-                        have_keys.discard(key)
-                    for key in have_keys:
-                        self.addcmd(i_have[key], _parser, negate=True)
+        """Compare list of dicts"""
+        for _parser in self.list_parsers:
+            i_want = want.get(_parser, {})
+            i_have = have.get(_parser, {})
+            have_keys = set(i_have.keys())
+            for key, wanting in i_want.items():
+                haveing = i_have.get(key, {})
+                if wanting != haveing:
+                    if haveing and self.state in ["overridden", "replaced"]:
+                        if not (
+                            _parser == "users"
+                            and wanting.get("username") == haveing.get("username")
+                        ):
+                            self.addcmd(haveing, _parser, negate=True)
+                    self.addcmd(wanting, _parser)
+                have_keys.discard(key)
+            for key in have_keys:
+                self.addcmd(i_have[key], _parser, negate=True)
 
     def _snmp_list_to_dict(self, data):
         """Convert all list of dicts to dicts of dicts"""
