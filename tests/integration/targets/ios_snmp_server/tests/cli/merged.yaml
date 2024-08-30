@@ -18,6 +18,14 @@
               traps:
                 - isis
               version: 2c
+          location: "in the racks"
+          contact: "john@doe.org"
+          packet_size: 900
+          communities:
+            - acl_v4: ADMIN-SUP
+              name: community_name
+              rw: false
+              ro: true
         state: merged
 
     - name: Ios_snmp_server merged - assert commands
