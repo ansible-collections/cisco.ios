@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Fixed idempotency issue in SNMP configuration management, preventing unintended overwrites and ensuring accurate updates.
