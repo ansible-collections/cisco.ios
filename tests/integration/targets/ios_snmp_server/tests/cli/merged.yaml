@@ -39,7 +39,7 @@
       ansible.builtin.assert:
         that:
           - merged['after'] == result['after']
-                              
+
     - name: Ios_snmp_server merged - play (idempotent)
       register: result
       cisco.ios.ios_snmp_server: *id001
