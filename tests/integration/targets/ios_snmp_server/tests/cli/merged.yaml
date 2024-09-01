@@ -11,6 +11,16 @@
       register: result
       cisco.ios.ios_snmp_server: &id001
         config:
+          location: "in the racks"
+          contact: "john@doe.org"
+          packet_size: 900
+          communities:
+            - acl_v4: ADMIN-SUP
+              name: community_name
+              ro: true
+            - acl_v4: test_Acl
+              name: integrationComm
+              rw: true
           hosts:
             - community_string: integrationComm
               host: 192.0.2.10
@@ -18,14 +28,6 @@
               traps:
                 - isis
               version: 2c
-          location: "in the racks"
-          contact: "john@doe.org"
-          packet_size: 900
-          communities:
-            - acl_v4: ADMIN-SUP
-              name: community_name
-              rw: false
-              ro: true
         state: merged
 
     - name: Ios_snmp_server merged - assert commands
@@ -37,7 +39,7 @@
       ansible.builtin.assert:
         that:
           - merged['after'] == result['after']
-
+                              
     - name: Ios_snmp_server merged - play (idempotent)
       register: result
       cisco.ios.ios_snmp_server: *id001

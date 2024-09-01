@@ -1,3 +1,3 @@
 ---
 bugfixes:
-  - Fixed idempotency issue in SNMP configuration management. Replaced in-place modifications of `i_have` with key tracking using a set. This change preserves the original `i_have` during iteration, ensuring consistent and accurate updates by only negating the remaining keys and preventing unintended overwrites.
+  - ios_snmp_server - Fixed the idempotency issue in SNMP configuration management caused by in-place modifications in compare lists method, using key tracking to ensure accurate updates without unintended overwrites
