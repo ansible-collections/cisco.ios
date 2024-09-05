@@ -1462,13 +1462,13 @@ class Bgp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \sneighbor\s(?P<neighbor_address>\S+)
-                \s(?P<enable>ebgp_multihop)
+                \s(?P<enable>ebgp-multihop)
                 (\s(?P<hop_count>\d+))?
                 $""",
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} ebgp-multihop"
-            "{{ (' ' + hop_count|string) if hop_count is defined else '' }}",
+            "{{ (' ' + ebgp_multihop.hop_count|string) if ebgp_multihop.hop_count is defined else '' }}",
             "result": {
                 "neighbors": {
                     "{{ neighbor_address }}": {

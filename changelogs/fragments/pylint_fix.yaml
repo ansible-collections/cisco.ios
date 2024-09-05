@@ -1,0 +1,3 @@
+---
+trivial:
+  - ospfv2 - Fixes pylint error where variable is potentially unbound.

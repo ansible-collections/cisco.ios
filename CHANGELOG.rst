@@ -4,6 +4,64 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v9.0.1
+======
+
+Bugfixes
+--------
+
+- bgp_global - fix ebgp_multihop recognnition and hop_count settings
+- ios_service - Fix a typo causing log timestamps not being configurable
+- ios_vlans - Make the module fail when vlan name is longer than 32 characters with configuration as VTPv1 and VTPv2.
+- static_routes - add TenGigabitEthernet as valid interface
+
+Documentation Changes
+---------------------
+
+- ios_facts - update documentation for ansible_net_memtotal_mb, ansible_net_memfree_mb return values as mebibytes (MiB), not megabits (Mb)
+
+v9.0.0
+======
+
+Release Summary
+---------------
+
+Starting from this release, the minimum `ansible-core` version this collection requires is `2.15.0`. The last known version compatible with ansible-core<2.15 is v8.0.0.
+
+Major Changes
+-------------
+
+- Bumping `requires_ansible` to `>=2.15.0`, since previous ansible-core versions are EoL now.
+
+Minor Changes
+-------------
+
+- Add ios_vrf_global resource module in favor of ios_vrf module (fixes - https://github.com/ansible-collections/cisco.ios/pull/1055)
+
+Deprecated Features
+-------------------
+
+- ios_bgp_address_family - deprecated attribute password in favour of password_options within neigbhors.
+- ios_bgp_global - deprecated attributes aggregate_address, bestpath, inject_map, ipv4_with_subnet, ipv6_with_subnet, nopeerup_delay, distribute_list, address, tag, ipv6_addresses, password, route_map, route_server_context and scope
+- ios_linkagg - deprecate legacy module ios_linkagg
+- ios_lldp - deprecate legacy module ios_lldp
+
+Bugfixes
+--------
+
+- ios_acls - fix incorrect mapping of port 135/udp to msrpc.
+- ios_l3_interfaces - Fix gathering wrong facts for source interface in ipv4.
+- ios_service - Add tcp_small_servers and udp_small_servers attributes, to generate configuration.
+- ios_service - Fix timestamps attribute, to generate right configuration.
+- ios_static_routes - Fix gathering facts by properly distinguising routes.
+- l2_interfaces - If a large number of VLANs are affected, the configuration will now be correctly split into several commands.
+- snmp_server - Fix configuration command for snmp-server host.
+- snmp_server - Fix wrong syntax of snmp-server host command generation.
+
+Documentation Changes
+---------------------
+
+- logging_global - update documentation for severity attribute within buffered.
 
 v8.0.0
 ======
@@ -686,7 +744,7 @@ Documentation Changes
 New Modules
 -----------
 
-- ios_hostname - Resource module to configure hostname.
+- ios_hostname - hostname resource module
 
 v2.6.0
 ======
@@ -717,7 +775,7 @@ Documentation Changes
 New Modules
 -----------
 
-- ios_snmp_server - Resource module to configure snmp server.
+- ios_snmp_server - snmp_server resource module
 
 v2.5.0
 ======
@@ -750,7 +808,7 @@ Documentation Changes
 New Modules
 -----------
 
-- ios_ntp_global - Resource module to configure NTP.
+- ios_ntp_global - ntp_global resource module
 
 v2.4.0
 ======
@@ -837,8 +895,8 @@ Bugfixes
 New Modules
 -----------
 
-- ios_logging_global - Resource module to configure logging.
-- ios_prefix_lists - Resource module to configure prefix lists.
+- ios_logging_global - Logging resource module.
+- ios_prefix_lists - Prefix Lists resource module.
 
 v2.1.0
 ======
@@ -862,7 +920,7 @@ Bugfixes
 New Modules
 -----------
 
-- ios_route_maps - Resource module to configure route maps.
+- ios_route_maps - Route Maps resource module.
 
 v2.0.1
 ======
@@ -907,7 +965,7 @@ Bugfixes
 New Modules
 -----------
 
-- ios_bgp_address_family - Resource module to configure BGP Address family.
+- ios_bgp_address_family - BGP Address Family resource module.
 
 v1.3.0
 ======
@@ -930,7 +988,7 @@ Bugfixes
 New Modules
 -----------
 
-- ios_bgp_global - Resource module to configure BGP.
+- ios_bgp_global - BGP Global resource module
 
 v1.2.1
 ======
@@ -961,7 +1019,7 @@ Bugfixes
 New Modules
 -----------
 
-- ios_ospf_interfaces - Resource module to configure OSPF interfaces.
+- ios_ospf_interfaces - OSPF Interfaces resource module
 
 v1.1.0
 ======
@@ -982,7 +1040,7 @@ Bugfixes
 New Modules
 -----------
 
-- ios_ospfv3 - Resource module to configure OSPFv3.
+- ios_ospfv3 - OSPFv3 resource module
 
 v1.0.3
 ======
