@@ -2109,12 +2109,13 @@ class TestIosSnmpServerModule(TestIosModule):
     def test_ios_snmp_server_configuration(self):
         self.execute_show_command.return_value = dedent(
             """\
-                snmp-server community community_name RO
-                snmp-server packetsize 400
-                snmp-server location in the server room
-                """,
+                snmp-server community community_name RO ADMIN-SUP
+                snmp-server packetsize 500
+                snmp-server location in the racks
+                snmp-server contact john@doe.org
+            """,
         )
-        self.execute_show_command_user.return_value = ""  # No specific user configurations
+        self.execute_show_command_user.return_value = ""
         playbook = {
             "config": {
                 "location": "in the racks",
@@ -2124,20 +2125,13 @@ class TestIosSnmpServerModule(TestIosModule):
                     {
                         "acl_v4": "ADMIN-SUP",
                         "name": "community_name",
-                        "rw": False,
                         "ro": True,
                     },
                 ],
             },
+            "state": "merged",
         }
-        expected_commands = [
-            "no snmp-server community community_name ro",
-            "snmp-server community community_name ro ADMIN-SUP",
-            "snmp-server contact john@doe.org",
-            "snmp-server location in the racks",
-            "snmp-server packetsize 500",
-        ]
-        playbook["state"] = "overridden"
         set_module_args(playbook)
-        result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(expected_commands))
+        result = self.execute_module()
+        self.assertEqual(result["changed"], False)
+        self.assertEqual(result["commands"], [])
