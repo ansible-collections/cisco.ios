@@ -314,11 +314,13 @@ class Cliconf(CliconfBase):
             if running and diff_match != "none":
                 # running configuration
                 have_src, have_banners = self._extract_banners(running)
+
                 running_obj = NetworkConfig(
                     indent=1,
                     contents=have_src,
                     ignore_lines=diff_ignore_lines,
                 )
+
                 configdiffobjs = candidate_obj.difference(
                     running_obj,
                     path=path,
