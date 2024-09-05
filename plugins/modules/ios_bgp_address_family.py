@@ -669,12 +669,6 @@ options:
                   allpaths:
                     description: Propagate next hop unchanged for all paths (iBGP and eBGP) to this neighbor
                     type: bool
-              password:
-                description:
-                  - Set a password
-                  - This option is DEPRECATED and is replaced with password_options which
-                    accepts dict as input, this attribute will be removed after 2024-06-01.
-                type: str
               password_options:
                 description: Set a password with encryption type
                 type: dict

@@ -422,3 +422,35 @@ def sort_dict(dictionary):
         else:
             sorted_dict[key] = value
     return sorted_dict
+
+
+def generate_switchport_trunk(type, add, vlans_range):
+    """
+    Generates a list of switchport commands based on the trunk type and VLANs range.
+    Ensures that the length of VLANs lexeme in a command does not exceed 220 characters.
+    """
+
+    def append_command():
+        command_prefix = f"switchport trunk {type} vlan "
+        if add or commands:
+            command_prefix += "add "
+        commands.append(command_prefix + ",".join(current_chunk))
+
+    commands = []
+    current_chunk = []
+    current_length = 0
+
+    for vrange in vlans_range.split(","):
+        next_addition = vrange if not current_chunk else "," + vrange
+        if current_length + len(next_addition) <= 220:
+            current_chunk.append(vrange)
+            current_length += len(next_addition)
+        else:
+            append_command()
+            current_chunk = [vrange]
+            current_length = len(vrange)
+
+    if current_chunk:
+        append_command()
+
+    return commands
