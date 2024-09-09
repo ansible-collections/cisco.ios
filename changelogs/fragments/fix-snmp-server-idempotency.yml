@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_snmp_server - Fixes an issue where enabling the read-only (ro) attribute in communities was not idempotent.

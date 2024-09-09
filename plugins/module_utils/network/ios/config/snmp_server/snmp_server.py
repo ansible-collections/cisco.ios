@@ -20,7 +20,6 @@ created.
 
 from copy import deepcopy
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -235,12 +234,13 @@ class Snmp_server(ResourceModule):
         self._compare_lists_attrs(want, have)
 
     def _compare_lists_attrs(self, want, have):
-        """Compare list of dict"""
+        """Compare list of dicts"""
         for _parser in self.list_parsers:
             i_want = want.get(_parser, {})
             i_have = have.get(_parser, {})
-            for key, wanting in iteritems(i_want):
-                haveing = i_have.pop(key, {})
+            have_keys = set(i_have.keys())
+            for key, wanting in i_want.items():
+                haveing = i_have.get(key, {})
                 if wanting != haveing:
                     if haveing and self.state in ["overridden", "replaced"]:
                         if not (
@@ -249,8 +249,9 @@ class Snmp_server(ResourceModule):
                         ):
                             self.addcmd(haveing, _parser, negate=True)
                     self.addcmd(wanting, _parser)
-            for key, haveing in iteritems(i_have):
-                self.addcmd(haveing, _parser, negate=True)
+                have_keys.discard(key)
+            for key in have_keys:
+                self.addcmd(i_have[key], _parser, negate=True)
 
     def _snmp_list_to_dict(self, data):
         """Convert all list of dicts to dicts of dicts"""
