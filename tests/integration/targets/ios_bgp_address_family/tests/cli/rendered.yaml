@@ -85,7 +85,7 @@
                     metric: 10
                     route_map: bar
                     include_connected: true
-          as_number: '65000'
+          as_number: "65000"
         state: rendered
 
     - name: Assert that change was false
