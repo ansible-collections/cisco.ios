@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - ios_bgp_address_family - Add support for maximum-paths configuration.
+  - ios_bgp_address_family - Add support for maximum-secondary-paths configuration.
