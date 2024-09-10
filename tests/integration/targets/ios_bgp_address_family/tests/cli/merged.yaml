@@ -29,6 +29,10 @@
             #     afi: l2vpn
             #     safi: evpn
             - afi: ipv4
+              maximum_paths:
+                paths: 12
+              maximum_secondary_paths:
+                eibgp: 2
               redistribute:
                 - connected:
                     metric: 10
@@ -101,7 +105,7 @@
                     metric: 10
                     route_map: bar
                     include_connected: true
-          as_number: "65000"
+          as_number: '65000'
         state: merged
 
     - name: Assert that correct set of commands were generated

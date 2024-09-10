@@ -4,29 +4,24 @@ merged:
 
   commands:
     - router bgp 65000
-    # - address-family l2vpn evpn
-    # - neighbor 198.51.100.1 activate
-    # - neighbor 198.51.100.1 inherit peer-policy LEAF-EVPN-PEER-POLICY
-    # - address-family ipv4 vrf green
-    # - advertise l2vpn evpn
-    # - redistribute connected
-    # - redistribute static
     - address-family ipv4 multicast
     - default-metric 12
     - distance bgp 10 10 100
     - table-map test_tableMap filter
     - network 198.51.111.11 mask 255.255.255.255 route-map test
     - aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+    - address-family ipv6
+    - redistribute ospf 124 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar include-connected
     - address-family ipv4 mdt
     - bgp dmzlink-bw
     - bgp soft-reconfig-backup
     - bgp dampening 1 10 100 5
-    - address-family ipv6
-    - redistribute ospf 124 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar include-connected
     - address-family ipv4
+    - maximum-paths 12
+    - maximum-secondary-paths eibgp 2
     - redistribute connected metric 10
-    - redistribute ospf 123 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar
     - redistribute ospf 124
+    - redistribute ospf 123 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar
     - redistribute ospfv3 123 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar
 
   after:
@@ -121,7 +116,7 @@ merged:
               metric: 10
               process_id: 124
               route_map: bar
-    as_number: "65000"
+    as_number: '65000'
 
 overridden:
   commands:
@@ -179,11 +174,11 @@ overridden:
                   type_1: true
               metric: 15
               route_map: foo
-      - afi: "ipv4"
+      - afi: 'ipv4'
         aggregate_addresses:
-          - address: "192.0.2.1"
+          - address: '192.0.2.1'
             as_confed_set: true
-            netmask: "255.255.255.255"
+            netmask: '255.255.255.255'
         bgp:
           aggregate_timer: 10
           dampening:
@@ -195,15 +190,15 @@ overridden:
             detection:
               threshold: 150
         networks:
-          - address: "198.51.110.10"
+          - address: '198.51.110.10'
             backdoor: true
-            mask: "255.255.255.255"
-        safi: "multicast"
+            mask: '255.255.255.255'
+        safi: 'multicast'
         # vrf: "blue"
-      - afi: "ipv4"
-        safi: "mdt"
-      - afi: "ipv6"
-      - afi: "ipv6"
+      - afi: 'ipv4'
+        safi: 'mdt'
+      - afi: 'ipv6'
+      - afi: 'ipv6'
         bgp:
           aggregate_timer: 10
           dampening:
@@ -217,8 +212,8 @@ overridden:
         networks:
           - address: 2001:DB8:0:3::/64
             route_map: test_ipv6
-        safi: "multicast"
-    as_number: "65000"
+        safi: 'multicast'
+    as_number: '65000'
 
 replaced:
   commands:
@@ -305,7 +300,7 @@ replaced:
               metric: 10
               route_map: bar
               include_connected: true
-    as_number: "65000"
+    as_number: '65000'
 
 deleted:
   commands:
@@ -315,9 +310,32 @@ deleted:
     - no address-family ipv4
     - no address-family ipv6
 
+rendered:
+  commands:
+    - router bgp 65000
+    - address-family ipv4
+    - maximum-paths 12
+    - maximum-secondary-paths eibgp 2
+    - redistribute connected metric 10
+    - redistribute ospf 124
+    - redistribute ospf 123 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar
+    - redistribute ospfv3 123 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar
+    - address-family ipv4 multicast
+    - default-metric 12
+    - distance bgp 10 10 100
+    - table-map test_tableMap filter
+    - network 198.51.111.11 mask 255.255.255.255 route-map test
+    - aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+    - address-family ipv4 mdt
+    - bgp dmzlink-bw
+    - bgp soft-reconfig-backup
+    - bgp dampening 1 10 100 5
+    - address-family ipv6
+    - redistribute ospf 124 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar include-connected
+
 deleted_all:
   after:
-    as_number: "65000"
+    as_number: '65000'
 
 parsed:
   config:
@@ -334,4 +352,4 @@ parsed:
           - address: 192.0.2.0
           - address: 192.0.3.0
           - address: 192.0.4.0
-    as_number: "65536"
+    as_number: '65536'
