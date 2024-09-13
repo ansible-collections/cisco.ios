@@ -2224,37 +2224,37 @@ class TestIosStaticRoutesModule(TestIosModule):
         )
         set_module_args(dict(state="gathered"))
         gathered = [
-            {'address_families': 
-                [
+            {
+                "address_families": [
                     {
-                        'afi': 'ipv4', 
-                        'routes': [
+                        "afi": "ipv4",
+                        "routes": [
                             {
-                                'next_hops': [
+                                "next_hops": [
                                     {
-                                        'forward_router_address': '198.51.101.1', 
-                                        'distance_metric': 175, 
-                                        'tag': 70, 
-                                        'name': 'replaced_route', 
-                                        'multicast': True
-                                    }
-                                ], 
-                                'dest': '198.51.100.0/24'
-                            }, 
+                                        "forward_router_address": "198.51.101.1",
+                                        "distance_metric": 175,
+                                        "tag": 70,
+                                        "name": "replaced_route",
+                                        "multicast": True,
+                                    },
+                                ],
+                                "dest": "198.51.100.0/24",
+                            },
                             {
-                                'next_hops': [
+                                "next_hops": [
                                     {
-                                        'interface': 'GigabitEthernet0/1.22', 
-                                        'forward_router_address': '10.0.0.1', 
-                                        'tag': 30
-                                    }
-                                ], 
-                                'dest': '192.168.1.0/24'
-                            }
-                        ]
-                    }
-                ]
-            }
+                                        "interface": "GigabitEthernet0/1.22",
+                                        "forward_router_address": "10.0.0.1",
+                                        "tag": 30,
+                                    },
+                                ],
+                                "dest": "192.168.1.0/24",
+                            },
+                        ],
+                    },
+                ],
+            },
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["gathered"]), sorted(gathered))
