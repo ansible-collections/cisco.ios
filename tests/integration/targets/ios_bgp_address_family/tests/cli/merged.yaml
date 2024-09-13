@@ -29,6 +29,10 @@
             #     afi: l2vpn
             #     safi: evpn
             - afi: ipv4
+              maximum_paths:
+                paths: 12
+              maximum_secondary_paths:
+                eibgp: 2
               redistribute:
                 - connected:
                     metric: 10
