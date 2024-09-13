@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_static_routes - Fixes an issue where metric_distance is being populated in the forward_router_address attribute.
