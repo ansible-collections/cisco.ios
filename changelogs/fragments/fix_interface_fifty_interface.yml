@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_interfaces - Fixes rendering of FiftyGigabitEthernet as it was wrongly rendering FiftyGigabitEthernet as FiveGigabitEthernet.
