@@ -81,6 +81,22 @@ gathered:
                   name: route_2
                 - forward_router_address: 198.51.101.3
                   name: route_3
+parsed_data:
+  - address_families:
+      - afi: ipv4
+        routes:
+          - dest: 198.51.100.0/24
+            next_hops:
+              - distance_metric: 175
+                forward_router_address: 198.51.101.1
+                multicast: true
+                name: replaced_route
+                tag: 70
+          - dest: 192.168.1.0/24
+            next_hops:
+              - forward_router_address: 10.0.0.1
+                interface: GigabitEthernet0/1.22
+                tag: 30
 rtt:
   override_commands:
     - ip route vrf ansible_temp_vrf 192.0.2.0 255.255.255.0 192.0.2.12 tag 10 name new_rtt_vrf track 150
