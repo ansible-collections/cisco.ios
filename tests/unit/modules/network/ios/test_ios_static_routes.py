@@ -2266,7 +2266,9 @@ class TestIosStaticRoutesModule(TestIosModule):
             ip route 192.168.1.0 255.255.255.0 GigabitEthernet0/1.22 10.0.0.1 tag 30
             """,
         )
-        set_module_args(dict(config=[
+        set_module_args(
+            dict(
+                config=[
                     {
                         "address_families": [
                             {
@@ -2292,14 +2294,15 @@ class TestIosStaticRoutesModule(TestIosModule):
                             },
                         ],
                     },
-            ],
-            state="overridden"
-        ))
+                ],
+                state="overridden",
+            ),
+        )
         commands = [
-            'ip route 198.51.100.0 255.255.255.0 198.51.101.20 175 tag 70 name replaced_route track 150', 
-            'ip route 198.51.100.0 255.255.255.0 198.51.101.3 name merged_route_3', 
-            'no ip route 198.51.100.0 255.255.255.0 198.51.101.1 175 tag 70 name replaced_route multicast', 
-            'no ip route 192.168.1.0 255.255.255.0 GigabitEthernet0/1.22 10.0.0.1 tag 30'
+            "ip route 198.51.100.0 255.255.255.0 198.51.101.20 175 tag 70 name replaced_route track 150",
+            "ip route 198.51.100.0 255.255.255.0 198.51.101.3 name merged_route_3",
+            "no ip route 198.51.100.0 255.255.255.0 198.51.101.1 175 tag 70 name replaced_route multicast",
+            "no ip route 192.168.1.0 255.255.255.0 GigabitEthernet0/1.22 10.0.0.1 tag 30",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
