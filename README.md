@@ -164,10 +164,6 @@ Please read and familiarize yourself with this document.
 
 Release notes are available [here](https://github.com/ansible-collections/cisco.ios/blob/main/CHANGELOG.rst).
 
-## Roadmap
-
-<!-- Optional. Include the roadmap for this collection, and the proposed release/versioning strategy so users can anticipate the upgrade/update cycle. -->
-
 ## More information
 
 - [Ansible network resources](https://docs.ansible.com/ansible/latest/network/getting_started/network_resources.html)
