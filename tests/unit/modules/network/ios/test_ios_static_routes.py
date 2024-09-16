@@ -2258,3 +2258,48 @@ class TestIosStaticRoutesModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["gathered"]), sorted(gathered))
+
+    def test_ios_static_route_overridden_2(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            ip route 198.51.100.0 255.255.255.0 198.51.101.1 175 tag 70 name replaced_route multicast
+            ip route 192.168.1.0 255.255.255.0 GigabitEthernet0/1.22 10.0.0.1 tag 30
+            """,
+        )
+        set_module_args(dict(config=[
+                    {
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "routes": [
+                                    {
+                                        "next_hops": [
+                                            {
+                                                "forward_router_address": "198.51.101.20",
+                                                "distance_metric": 175,
+                                                "tag": 70,
+                                                "name": "replaced_route",
+                                                "track": 150,
+                                            },
+                                            {
+                                                "forward_router_address": "198.51.101.3",
+                                                "name": "merged_route_3",
+                                            },
+                                        ],
+                                        "dest": "198.51.100.0/24",
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+            ],
+            state="overridden"
+        ))
+        commands = [
+            'ip route 198.51.100.0 255.255.255.0 198.51.101.20 175 tag 70 name replaced_route track 150', 
+            'ip route 198.51.100.0 255.255.255.0 198.51.101.3 name merged_route_3', 
+            'no ip route 198.51.100.0 255.255.255.0 198.51.101.1 175 tag 70 name replaced_route multicast', 
+            'no ip route 192.168.1.0 255.255.255.0 GigabitEthernet0/1.22 10.0.0.1 tag 30'
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
