@@ -4,6 +4,18 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v9.0.2
+======
+
+Bugfixes
+--------
+
+- ios_bgp_address_family - Add support for maximum-paths configuration.
+- ios_bgp_address_family - Add support for maximum-secondary-paths configuration.
+- ios_interfaces - Fixes rendering of FiftyGigabitEthernet as it was wrongly rendering FiftyGigabitEthernet as FiveGigabitEthernet.
+- ios_snmp_server - Fixes an issue where enabling the read-only (ro) attribute in communities was not idempotent.
+- ios_static_routes - Fix processing of metric_distance as it was wrongly populated under the forward_router_address attribute.
+
 v9.0.1
 ======
 
