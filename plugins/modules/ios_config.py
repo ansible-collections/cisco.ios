@@ -428,7 +428,7 @@ def save_config(module, result):
 
 def trim_trailing_whitespace(multiline_str):
     # Removes trailing whitespace from each line in a multiline string.
-    return '\n'.join(line.rstrip() for line in multiline_str.splitlines())
+    return "\n".join(line.rstrip() for line in multiline_str.splitlines())
 
 
 def main():
@@ -566,11 +566,11 @@ def main():
                     after = running_config
                 result.update(
                     {
-                      "changed": True,
-                      "diff": {
-                        "before": trim_trailing_whitespace(str(before)),
-                        "after": trim_trailing_whitespace(str(after)),
-                      },
+                        "changed": True,
+                        "diff": {
+                            "before": trim_trailing_whitespace(str(before)),
+                            "after": trim_trailing_whitespace(str(after)),
+                        },
                     },
                 )
 
