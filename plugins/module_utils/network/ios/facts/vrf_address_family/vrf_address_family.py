@@ -25,6 +25,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vrf_
     Vrf_address_familyArgs,
 )
 
+import debugpy
+debugpy.listen(3000)
+debugpy.wait_for_client()
+
 
 class Vrf_address_familyFacts(object):
     """ The ios vrf_address_family facts class
@@ -51,13 +55,22 @@ class Vrf_address_familyFacts(object):
         """
         facts = {}
         objs = []
+        obj = {}
 
         if not data:
-            data = connection.get()
+            data = self.get_config(connection)
 
         # parse native config using the Vrf_address_family template
         vrf_address_family_parser = Vrf_address_familyTemplate(lines=data.splitlines(), module=self._module)
-        objs = list(vrf_address_family_parser.parse().values())
+        obj = vrf_address_family_parser.parse()
+        objs = list(obj.values())
+
+        for vrf in objs:
+            af = vrf.get("address_families", {})
+            if af:
+                self._post_parse(vrf)
+            else:
+                vrf["address_families"] = []
 
         ansible_facts['ansible_network_resources'].pop('vrf_address_family', None)
 
@@ -65,7 +78,16 @@ class Vrf_address_familyFacts(object):
             vrf_address_family_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
         )
 
-        facts['vrf_address_family'] = params['config']
+        facts['vrf_address_family'] = params.get("config", [])
         ansible_facts['ansible_network_resources'].update(facts)
 
         return ansible_facts
+
+    def _post_parse(self, af_data):
+        """Converts the intermediate data structure
+            to valid format as per argspec.
+        :param obj: dict
+        """
+        af = af_data.get("address_families", {})
+        if af:
+            af_data["address_families"] = list(af.values())

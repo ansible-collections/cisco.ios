@@ -17,6 +17,7 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
+import q
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
@@ -46,6 +47,10 @@ class Vrf_address_family(ResourceModule):
             tmplt=Vrf_address_familyTemplate(),
         )
         self.parsers = [
+            "address_family",
+            "bgp.next_hop.loopback",
+            "export.map",
+            "route_target.export",
         ]
 
     def execute_module(self):
@@ -63,8 +68,11 @@ class Vrf_address_family(ResourceModule):
         """ Generate configuration commands to send based on
             want, have and desired state.
         """
-        wantd = {entry['name']: entry for entry in self.want}
-        haved = {entry['name']: entry for entry in self.have}
+        wantd = self.want
+        haved = self.have
+
+        wantd = self._vrf_list_to_dict(wantd)
+        haved = self._vrf_list_to_dict(haved)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -93,3 +101,19 @@ class Vrf_address_family(ResourceModule):
            for the Vrf_address_family network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
+
+    def _vrf_list_to_dict(self, entry):
+        """Convert list of items to dict of items
+           for efficient diff calculation.
+        :params entry: data dictionary
+        """
+
+        for vrf in entry:
+            if "address_families" in vrf:
+                vrf["address_families"] = {
+                    (x["afi"], x.get("safi")): x for x in vrf["address_families"]
+                }
+
+        entry = {x["name"]: x for x in entry}
+        # q(entry)
+        return entry

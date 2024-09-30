@@ -19,31 +19,70 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
+UNIQUE_AFI = "{{ 'address_families_'+ afi + '_' + safi }}"
+
 class Vrf_address_familyTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
-        super(Vrf_address_familyTemplate, self).__init__(lines=lines, tmplt=self, module=module)
+        super(Vrf_address_familyTemplate, self).__init__(
+            lines=lines,
+            tmplt=self,
+            module=module,
+        )
 
     # fmt: off
     PARSERS = [
         {
-            "name": "key_a",
+            "name": "name",
             "getval": re.compile(
                 r"""
-                ^key_a\s(?P<key_a>\S+)
-                $""", re.VERBOSE),
-            "setval": "",
+                ^vrf\sdefinition\s(?P<name>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "vrf definition {{ name }}",
             "result": {
+                '{{ name }}': {
+                    'name': '{{ name }}',
+                },
             },
-            "shared": True
+            "shared": True,
         },
         {
-            "name": "key_b",
+            "name": "address_family",
             "getval": re.compile(
                 r"""
-                \s+key_b\s(?P<key_b>\S+)
-                $""", re.VERBOSE),
-            "setval": "",
+                (?P<address_families>\s+address-family\s(?P<afi>\S+)\s(?P<safi>\S+))
+                $""", re.VERBOSE,
+            ),
+            "setval": "address-family {{ afi }} {{ safi }}",
             "result": {
+                '{{ name }}': {
+                    'name': '{{ name }}',
+                    "address_families": {
+                        UNIQUE_AFI: {
+                            "afi": "{{ afi }}",
+                            "safi": "{{ safi }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "route_target.export",
+            "getval": re.compile(
+                r"""
+                \s+route-target\sexport\s(?P<export>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "route-target export {{ route_target.export }}",
+            "result": {
+                '{{ name }}': {
+                    'name': '{{ name }}',
+                    "address_families": {
+                        "route_target": {
+                            "export": "{{ export }}",
+                        },
+                    },
+                },
             },
         },
     ]
