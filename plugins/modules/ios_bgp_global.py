@@ -972,7 +972,7 @@ options:
                 description:
                   - AS number used as local AS
                   - Please refer vendor documentation for valid values
-                type: int
+                type: str
               dual_as:
                 description: Accept either real AS or local AS from the ebgp peer
                 type: bool
