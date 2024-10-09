@@ -1642,7 +1642,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 r"""
                 \sneighbor\s(?P<neighbor_address>\S+)\spassword
                 \s(?P<encryption>\d+)
-                (\s(?P<pass_key>.$))?
+                (\s(?P<pass_key>.+))?
                 $""",
                 re.VERBOSE,
             ),
