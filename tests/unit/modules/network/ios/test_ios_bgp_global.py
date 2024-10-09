@@ -791,7 +791,6 @@ class TestIosBgpGlobalModule(TestIosModule):
             result = self.execute_module(changed=True)
             self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-
     def test_ios_bgp_global_asdot_parsed(self):
         set_module_args(
             dict(
@@ -814,12 +813,12 @@ class TestIosBgpGlobalModule(TestIosModule):
             "bgp": {
                 "asnotation": True,
                 "log_neighbor_changes": True,
-                "default": {'ipv4_unicast': True, 'route_target': {'filter': True}},
+                "default": {"ipv4_unicast": True, "route_target": {"filter": True}},
                 "graceful_shutdown": {
                     "neighbors": {"time": 50},
                     "local_preference": 100,
-                    "community": "100"
-                }
+                    "community": "100",
+                },
             },
             "neighbors": [
                 {
@@ -829,11 +828,11 @@ class TestIosBgpGlobalModule(TestIosModule):
                         "number": "501.65083",
                         "no_prepend": {
                             "replace_as": True,
-                            "set": True
+                            "set": True,
                         },
-                        "set": True
-                    }
-                }
-            ]
+                        "set": True,
+                    },
+                },
+            ],
         }
         self.assertEqual(parsed_list, result["parsed"])
