@@ -880,6 +880,49 @@ class TestIosBgpGlobalModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
+    def test_ios_bgp_global_int_merged(self):
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    bgp=dict(
+                        asnotation=True,
+                        log_neighbor_changes=True,
+                        graceful_shutdown=dict(
+                            neighbors=dict(time=50),
+                            local_preference=100,
+                            community="100",
+                        ),
+                    ),
+                    neighbors=[
+                        dict(
+                            neighbor_address="192.0.2.1",
+                            remote_as="500.65083",
+                            local_as=dict(
+                                number="501",
+                                no_prepend=dict(
+                                    replace_as=True,
+                                    set=True,
+                                ),
+                                set=True,
+                            ),
+                        ),
+                    ],
+                ),
+                state="merged",
+            ),
+        )
+        commands = [
+            "router bgp 65000",
+            "bgp asnotation dot",
+            "bgp log-neighbor-changes",
+            "bgp graceful-shutdown all neighbors 50 local-preference 100 community 100",
+            "neighbor 192.0.2.1 remote-as 500.65083",
+            "neighbor 192.0.2.1 local-as 501 no-prepend replace-as",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
     def test_ios_bgp_global_asdot_rendered(self):
         set_module_args(
             dict(

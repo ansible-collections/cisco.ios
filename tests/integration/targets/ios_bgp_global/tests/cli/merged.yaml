@@ -36,6 +36,14 @@
                   replace_as: true
                   set: true
                 set: true
+            - neighbor_address: 192.0.2.2
+              remote_as: 200
+              local_as:
+                number: 501
+                no_prepend:
+                  replace_as: true
+                  set: true
+                set: true
           timers:
             keepalive: 100
             holdtime: 200

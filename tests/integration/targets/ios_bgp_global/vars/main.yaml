@@ -14,6 +14,8 @@ merged:
     - bgp asnotation dot
     - neighbor 192.0.2.1 remote-as 500.65083
     - neighbor 192.0.2.1 local-as 501.65083 no-prepend replace-as
+    - neighbor 192.0.2.2 remote-as 200
+    - neighbor 192.0.2.2 local-as 501 no-prepend replace-as
 
   after:
     as_number: "65000"
@@ -38,6 +40,14 @@ merged:
           set: true
         neighbor_address: "192.0.2.1"
         remote_as: "500.65083"
+      - local_as:
+          no_prepend:
+            replace_as: true
+            set: true
+          number: "501"
+          set: true
+        neighbor_address: "192.0.2.2"
+        remote_as: "200"
       - description: merge neighbor
         neighbor_address: 198.0.2.1
         remote_as: "100"
