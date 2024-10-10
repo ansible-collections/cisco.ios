@@ -867,7 +867,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                     ],
                 ),
                 state="merged",
-            )
+            ),
         )
         commands = [
             "router bgp 65000",
@@ -878,7 +878,7 @@ class TestIosBgpGlobalModule(TestIosModule):
             "neighbor 192.0.2.1 local-as 501.65083 no-prepend replace-as",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result['commands']), sorted(commands))
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_bgp_global_asdot_rendered(self):
         set_module_args(
@@ -910,7 +910,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                     ],
                 ),
                 state="rendered",
-            )
+            ),
         )
         commands = [
             "router bgp 65000",
@@ -921,4 +921,4 @@ class TestIosBgpGlobalModule(TestIosModule):
             "neighbor 192.0.2.1 local-as 501.65083 no-prepend replace-as",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result['rendered']), sorted(commands))
+        self.assertEqual(sorted(result["rendered"]), sorted(commands))
