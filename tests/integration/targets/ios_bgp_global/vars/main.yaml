@@ -11,10 +11,14 @@ merged:
     - bgp log-neighbor-changes
     - neighbor 198.0.2.1 remote-as 100
     - neighbor 198.0.2.1 description merge neighbor
+    - bgp asnotation dot
+    - neighbor 192.0.2.1 remote-as 500.65083
+    - neighbor 192.0.2.1 local-as 501.65083 no-prepend replace-as
 
   after:
     as_number: "65000"
     bgp:
+      asnotation: true
       default:
         ipv4_unicast: false
         route_target:
@@ -26,6 +30,14 @@ merged:
           time: 50
       log_neighbor_changes: true
     neighbors:
+      - local_as:
+          no_prepend:
+            replace_as: true
+            set: true
+          number: "501.65083"
+          set: true
+        neighbor_address: "192.0.2.1"
+        remote_as: "500.65083"
       - description: merge neighbor
         neighbor_address: 198.0.2.1
         remote_as: "100"
