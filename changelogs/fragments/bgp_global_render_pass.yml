@@ -1,4 +1,0 @@
----
-bugfixes:
-  - ios_bgp_global - fix parsing of password_options while gathering password configuration from appliance.
-  - ios_bgp_address_family - fix parsing of password_options while gathering password configuration from appliance.
