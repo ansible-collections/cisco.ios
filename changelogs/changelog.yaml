@@ -1273,3 +1273,18 @@ releases:
       - ios_static_routes.yaml
       - pylint_fix.yaml
     release_date: "2024-09-16"
+  9.0.3:
+    changes:
+      bugfixes:
+        - ios_bgp_address_family - fix parsing of password_options while gathering password
+          configuration from appliance.
+        - ios_bgp_global - fix parsing of password_options while gathering password
+          configuration from appliance.
+      doc_changes:
+        - Includes a new support related section in the README.
+        - Removed the Roadmap section from the README.
+    fragments:
+      - bgp_global_render_pass.yml
+      - support_section.yml
+      - trivial_ignore_files.yaml
+    release_date: "2024-10-16"
