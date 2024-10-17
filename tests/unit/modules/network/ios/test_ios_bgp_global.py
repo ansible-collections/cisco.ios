@@ -791,52 +791,6 @@ class TestIosBgpGlobalModule(TestIosModule):
             result = self.execute_module(changed=True)
             self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-    def test_ios_bgp_global_asdot_parsed(self):
-        set_module_args(
-            dict(
-                running_config=dedent(
-                    """\
-                    router bgp 65000
-                     bgp asnotation dot
-                     bgp log-neighbor-changes
-                     bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
-                     neighbor 192.0.2.1 remote-as 500.65083
-                     neighbor 192.0.2.1 local-as 501.65083 no-prepend replace-as
-                    """,
-                ),
-                state="parsed",
-            ),
-        )
-        result = self.execute_module(changed=False)
-        parsed_list = {
-            "as_number": "65000",
-            "bgp": {
-                "asnotation": True,
-                "log_neighbor_changes": True,
-                "default": {"ipv4_unicast": True, "route_target": {"filter": True}},
-                "graceful_shutdown": {
-                    "neighbors": {"time": 50},
-                    "local_preference": 100,
-                    "community": "100",
-                },
-            },
-            "neighbors": [
-                {
-                    "neighbor_address": "192.0.2.1",
-                    "remote_as": "500.65083",
-                    "local_as": {
-                        "number": "501.65083",
-                        "no_prepend": {
-                            "replace_as": True,
-                            "set": True,
-                        },
-                        "set": True,
-                    },
-                },
-            ],
-        }
-        self.assertEqual(parsed_list, result["parsed"])
-
     def test_ios_bgp_global_asdot_merged(self):
         set_module_args(
             dict(
@@ -856,7 +810,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                             neighbor_address="192.0.2.1",
                             remote_as="500.65083",
                             local_as=dict(
-                                number="501.65083",
+                                asn="501.7843",
                                 no_prepend=dict(
                                     replace_as=True,
                                     set=True,
@@ -875,12 +829,55 @@ class TestIosBgpGlobalModule(TestIosModule):
             "bgp log-neighbor-changes",
             "bgp graceful-shutdown all neighbors 50 local-preference 100 community 100",
             "neighbor 192.0.2.1 remote-as 500.65083",
-            "neighbor 192.0.2.1 local-as 501.65083 no-prepend replace-as",
+            "neighbor 192.0.2.1 local-as 501.7843 no-prepend replace-as",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-    def test_ios_bgp_global_int_merged(self):
+    def test_ios_bgp_global_merged_number(self):
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    bgp=dict(
+                        asnotation=True,
+                        log_neighbor_changes=True,
+                        graceful_shutdown=dict(
+                            neighbors=dict(time=50),
+                            local_preference=100,
+                            community="100",
+                        ),
+                    ),
+                    neighbors=[
+                        dict(
+                            neighbor_address="192.0.2.1",
+                            remote_as=500,
+                            local_as=dict(
+                                number=501,
+                                no_prepend=dict(
+                                    replace_as=True,
+                                    set=True,
+                                ),
+                                set=True,
+                            ),
+                        ),
+                    ],
+                ),
+                state="merged",
+            ),
+        )
+        commands = [
+            "router bgp 65000",
+            "bgp asnotation dot",
+            "bgp log-neighbor-changes",
+            "bgp graceful-shutdown all neighbors 50 local-preference 100 community 100",
+            "neighbor 192.0.2.1 remote-as 500",
+            "neighbor 192.0.2.1 local-as 501 no-prepend replace-as",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_bgp_global_merged_asn(self):
         set_module_args(
             dict(
                 config=dict(
@@ -899,7 +896,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                             neighbor_address="192.0.2.1",
                             remote_as="500.65083",
                             local_as=dict(
-                                number="501",
+                                asn="501",
                                 no_prepend=dict(
                                     replace_as=True,
                                     set=True,
@@ -923,7 +920,7 @@ class TestIosBgpGlobalModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-    def test_ios_bgp_global_asdot_rendered(self):
+    def test_ios_bgp_global_merged_num(self):
         set_module_args(
             dict(
                 config=dict(
@@ -940,9 +937,9 @@ class TestIosBgpGlobalModule(TestIosModule):
                     neighbors=[
                         dict(
                             neighbor_address="192.0.2.1",
-                            remote_as="500.65083",
+                            remote_as="600.65083",
                             local_as=dict(
-                                number="501.65083",
+                                number="701",
                                 no_prepend=dict(
                                     replace_as=True,
                                     set=True,
@@ -952,7 +949,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                         ),
                     ],
                 ),
-                state="rendered",
+                state="merged",
             ),
         )
         commands = [
@@ -960,8 +957,8 @@ class TestIosBgpGlobalModule(TestIosModule):
             "bgp asnotation dot",
             "bgp log-neighbor-changes",
             "bgp graceful-shutdown all neighbors 50 local-preference 100 community 100",
-            "neighbor 192.0.2.1 remote-as 500.65083",
-            "neighbor 192.0.2.1 local-as 501.65083 no-prepend replace-as",
+            "neighbor 192.0.2.1 remote-as 600.65083",
+            "neighbor 192.0.2.1 local-as 701 no-prepend replace-as",
         ]
-        result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))

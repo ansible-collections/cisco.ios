@@ -500,7 +500,12 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                             "type": "dict",
                             "options": {
                                 "set": {"type": "bool"},
-                                "number": {"type": "str"},
+                                "number": {
+                                    "type": "int",
+                                    "deprecated_by": "asn",
+                                    "removed_at_date": "2027-01-01",
+                                },
+                                "asn": {"type": "str"},
                                 "dual_as": {"type": "bool"},
                                 "no_prepend": {
                                     "type": "dict",
