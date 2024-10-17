@@ -48,19 +48,19 @@ class ActionModule(ActionNetworkModule):
             }
 
         # Handle deprecated 'number' parameter
-        if 'config' in self._task.args and self._task.args['config'] is not None:
-            config = self._task.args['config']
-            if 'neighbors' in config:
-                for neighbor in config['neighbors']:
-                    if 'local_as' in neighbor:
-                        if 'number' in neighbor['local_as']:
+        if "config" in self._task.args and self._task.args["config"] is not None:
+            config = self._task.args["config"]
+            if "neighbors" in config:
+                for neighbor in config["neighbors"]:
+                    if "local_as" in neighbor:
+                        if "number" in neighbor["local_as"]:
                             display.deprecated(
                                 msg="DEPRECATED: The 'number' option in 'local_as' is deprecated, Use 'asn' instead.",
                                 date="2027-01-01",
                                 collection_name="cisco.ios",
                             )
-                            neighbor['local_as']['asn'] = str(neighbor['local_as']['number'])
-                            del neighbor['local_as']['number'] 
+                            neighbor["local_as"]["asn"] = str(neighbor["local_as"]["number"])
+                            del neighbor["local_as"]["number"]
 
         result = super(ActionModule, self).run(task_vars=task_vars)
         if warnings:
