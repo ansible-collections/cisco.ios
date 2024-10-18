@@ -140,11 +140,11 @@ class Bgp_global(ResourceModule):
         :rtype: A dictionary
         :returns: The result from module execution
         """
-        if self.want:
-            self.want = self.handle_deprecates(self.want)
-
         if self.state not in ["parsed", "gathered"]:
+<<<<<<< Updated upstream
             # self.want = self.handle_deprecates(self.want)
+=======
+>>>>>>> Stashed changes
             self.generate_commands()
             self.run_commands()
         return self.result
@@ -164,8 +164,8 @@ class Bgp_global(ResourceModule):
                     "configuring new ASN".format(h_asn),
                 )
 
-        self.want = self.handle_deprecates(self.want)
-        self.have = self.handle_deprecates(self.have)
+        if self.want:
+            self.handle_deprecates(self.want)
 
         for each in self.want, self.have:
             self._bgp_global_list_to_dict(each)
@@ -197,8 +197,6 @@ class Bgp_global(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Bgp_global network resource.
         """
-        want = self.handle_deprecates(want)
-
         self.generic_list_parsers = ["distributes", "aggregate_addresses", "networks"]
 
         if self._has_bgp_inject_maps(want):
@@ -362,10 +360,8 @@ class Bgp_global(ResourceModule):
         ]
 
         for name, w_neighbor in want.items():
-            w_neighbor = self.handle_deprecates(w_neighbor, is_nbr=True)
             handle_shutdown_default = False
             have_nbr = have.pop(name, {})
-            have_nbr = self.handle_deprecates(have_nbr, is_nbr=True)
             want_route = w_neighbor.pop("route_maps", {})
             have_route = have_nbr.pop("route_maps", {})
             if (
@@ -469,6 +465,7 @@ class Bgp_global(ResourceModule):
                 if "number" in want["local_as"]:
                     want["local_as"]["asn"] = str(want["local_as"].pop("number"))
         return want
+<<<<<<< Updated upstream
 
     # def handle_deprecates(self, want, is_nbr=False):
     #     """
@@ -490,3 +487,5 @@ class Bgp_global(ResourceModule):
     #                 want["local_as"]["asn"] = str(want["local_as"]["number"])
     #                 del want["local_as"]["number"]
     #     return want
+=======
+>>>>>>> Stashed changes

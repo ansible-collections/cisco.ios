@@ -970,7 +970,7 @@ options:
                 type: bool
               number:
                 description:
-                  - DEPRECATED: This option is deprecated and will be removed at/as of jan 2027. Use 'asn' instead.
+                  - "DEPRECATED: This option is deprecated and will be removed at/as of jan 2027. Use 'asn' instead."
                   - AS number used as local AS
                   - Please refer vendor documentation for valid values
                 type: int
