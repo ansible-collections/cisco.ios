@@ -141,10 +141,6 @@ class Bgp_global(ResourceModule):
         :returns: The result from module execution
         """
         if self.state not in ["parsed", "gathered"]:
-<<<<<<< Updated upstream
-            # self.want = self.handle_deprecates(self.want)
-=======
->>>>>>> Stashed changes
             self.generate_commands()
             self.run_commands()
         return self.result
@@ -465,27 +461,3 @@ class Bgp_global(ResourceModule):
                 if "number" in want["local_as"]:
                     want["local_as"]["asn"] = str(want["local_as"].pop("number"))
         return want
-<<<<<<< Updated upstream
-
-    # def handle_deprecates(self, want, is_nbr=False):
-    #     """
-    #     Handles deprecated values post rewrite
-    #     neighbor.route_map [dict] - neighbor.route_maps [list:dict]
-
-    #     Args:
-    #         want (_type_): Handle want attributes for deprecated values
-    #         is_nbr (bool, optional): activates neighbor part on recursion. Defaults to False.
-    #     """
-    #     if not is_nbr:
-    #         if want.get("neighbors"):
-    #             _want_nbrs = want.get("neighbors", {})
-    #             for nbr in _want_nbrs:
-    #                 nbr = self.handle_deprecates(nbr, is_nbr=True)
-    #     else:
-    #         if "local_as" in want:
-    #             if "number" in want["local_as"]:
-    #                 want["local_as"]["asn"] = str(want["local_as"]["number"])
-    #                 del want["local_as"]["number"]
-    #     return want
-=======
->>>>>>> Stashed changes
