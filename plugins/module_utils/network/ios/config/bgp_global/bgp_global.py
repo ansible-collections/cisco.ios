@@ -144,7 +144,7 @@ class Bgp_global(ResourceModule):
             self.want = self.handle_deprecates(self.want)
 
         if self.state not in ["parsed", "gathered"]:
-            #self.want = self.handle_deprecates(self.want)
+            # self.want = self.handle_deprecates(self.want)
             self.generate_commands()
             self.run_commands()
         return self.result
@@ -469,7 +469,6 @@ class Bgp_global(ResourceModule):
                 if "number" in want["local_as"]:
                     want["local_as"]["asn"] = str(want["local_as"].pop("number"))
         return want
-
 
     # def handle_deprecates(self, want, is_nbr=False):
     #     """
