@@ -500,10 +500,10 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                             "type": "dict",
                             "options": {
                                 "set": {"type": "bool"},
-                                'number': {
-                                    'type': 'int',
-                                    'removed_at_date': '2027-01-31',
-                                    'removed_from_collection': 'cisco.ios',
+                                "number": {
+                                    "type": "int",
+                                    "removed_at_date": "2027-01-31",
+                                    "removed_from_collection": "cisco.ios",
                                 },
                                 "asn": {"type": "str"},
                                 "dual_as": {"type": "bool"},

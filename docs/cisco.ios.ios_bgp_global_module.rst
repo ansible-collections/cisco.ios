@@ -4917,7 +4917,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>{&#x27;DEPRECATED&#x27;: &quot;This option is deprecated and will be removed at/as of jan 2027. Use &#x27;asn&#x27; instead.&quot;}</div>
+                        <div>DEPRECATED: This option is deprecated and will be removed at/as of jan 2027. Use &#x27;asn&#x27; instead.</div>
                         <div>AS number used as local AS</div>
                         <div>Please refer vendor documentation for valid values</div>
                 </td>
