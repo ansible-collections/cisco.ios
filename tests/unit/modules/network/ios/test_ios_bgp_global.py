@@ -628,6 +628,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                      timers bgp 100 200 150
                      redistribute connected metric 10
                      neighbor 192.0.2.1 remote-as 100
+                     neighbor 192.0.2.1 password 7 DEQPITOP101395
                      neighbor 192.0.2.1 route-map test-route out
                      address-family ipv4
                       neighbor 192.0.2.28 activate
@@ -652,7 +653,13 @@ class TestIosBgpGlobalModule(TestIosModule):
                 {
                     "remote_as": "100",
                     "neighbor_address": "192.0.2.1",
-                    "route_maps": [{"name": "test-route", "out": True}],
+                    "route_maps": [
+                        {"name": "test-route", "out": True},
+                    ],
+                    "password_options": {
+                        "encryption": 7,
+                        "pass_key": "DEQPITOP101395",
+                    },
                 },
             ],
         }
