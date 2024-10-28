@@ -47,6 +47,7 @@ class Vrf_address_family(ResourceModule):
             tmplt=Vrf_address_familyTemplate(),
         )
         self.parsers = [
+            "name",
             "address_family",
             "bgp.next_hop.loopback",
             "export.map",

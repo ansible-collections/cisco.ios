@@ -19,7 +19,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
-UNIQUE_AFI = "{{ 'address_families_'+ afi + '_' + safi }}"
+# UNIQUE_AFI = "{{ 'address_families_'+ afi + '_' + safi }}"
+
 
 class Vrf_address_familyTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
@@ -58,9 +59,35 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        UNIQUE_AFI: {
+                        '{{"address_families_" + afi + "_" + safi }}': {
                             "afi": "{{ afi }}",
                             "safi": "{{ safi }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "bgp.next_hop.loopback",
+            "getval": re.compile(
+                r"""
+                (?P<address_families>\s+address-family\s(?P<afi>\S+)\s(?P<safi>\S+))
+                \s\sbgp\snext-hop\sloopback\s(?P<loopback>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "bgp next-hop loopback {{ bgp.next_hop.loopback }}",
+            "result": {
+                '{{ name }}': {
+                    'name': '{{ name }}',
+                    "address_families": {
+                        '{{"address_families_" + afi + "_" + safi }}': {
+                            "afi": "{{ afi }}",
+                            "safi": "{{ safi }}",
+                            "bgp": {
+                                "next_hop": {
+                                    "loopback": "{{ loopback }}",
+                                },
+                            },
                         },
                     },
                 },
@@ -70,7 +97,8 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             "name": "route_target.export",
             "getval": re.compile(
                 r"""
-                \s+route-target\sexport\s(?P<export>\S+)
+                (?P<address_families>\s+address-family\s(?P<afi>\S+)\s(?P<safi>\S+))
+                \s+route-target\sexport\s(?P<route_target_export>\S+)
                 $""", re.VERBOSE,
             ),
             "setval": "route-target export {{ route_target.export }}",
@@ -78,8 +106,12 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        "route_target": {
-                            "export": "{{ export }}",
+                        '{{"address_families_" + afi + "_" + safi }}': {
+                            "afi": "{{ afi }}",
+                            "safi": "{{ safi }}",
+                            "route_target": {
+                                "export": "{{ route_target_export }}",
+                            },
                         },
                     },
                 },
