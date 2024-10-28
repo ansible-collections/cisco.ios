@@ -1,0 +1,90 @@
+---
+annotations: []
+nodes:
+  - boot_disk_size: null
+    configuration:
+      - name: iosxe_config.txt
+        content: |-
+          hostname Router1
+          !
+          username admin privilege 15 secret admin
+          !
+          interface GigabitEthernet1
+           ip address dhcp
+           no shutdown
+          !
+          ip domain-name test.example
+          crypto key generate rsa modulus 2048
+          !
+          line vty 0 4
+           login local
+           transport input ssh
+          !
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n0
+    image_definition: null
+    label: cat8000v-0
+    node_definition: cat8000v
+    parameters: {}
+    ram: null
+    tags: []
+    x: -200
+    y: 0
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        slot: 0
+        type: physical
+      - id: i2
+        label: GigabitEthernet2
+        slot: 1
+        type: physical
+      - id: i3
+        label: GigabitEthernet3
+        slot: 2
+        type: physical
+      - id: i4
+        label: GigabitEthernet4
+        slot: 3
+        type: physical
+  - boot_disk_size: null
+    configuration:
+      - name: default
+        content: NAT
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n1
+    image_definition: null
+    label: ext-conn-0
+    node_definition: external_connector
+    parameters: {}
+    ram: null
+    tags: []
+    x: 160
+    y: 0
+    interfaces:
+      - id: i0
+        label: port
+        slot: 0
+        type: physical
+links:
+  - id: l0
+    n1: n0
+    n2: n1
+    i1: i1
+    i2: i0
+    conditioning: {}
+    label: cat8000v-0-GigabitEthernet1<->ext-conn-0-port
+lab:
+  description: Cisco IOS Integration Testing Lab
+  notes: ""
+  title: ios test
+  version: 0.2.2
