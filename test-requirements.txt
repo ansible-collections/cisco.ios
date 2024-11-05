@@ -4,7 +4,7 @@ flake8
 yamllint
 
 # For CML
-virl2-client==2.6.1
+virl2-client==2.7.1
 
 # Unit test runner
 pytest-ansible
