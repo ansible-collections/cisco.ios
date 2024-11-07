@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -29,8 +30,7 @@ The arg spec for the ios_vrf_interface module
 
 
 class Vrf_interfaceArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_vrf_interface module
-    """
+    """The arg spec for the ios_vrf_interface module"""
 
     argument_spec = {
         "config": {
