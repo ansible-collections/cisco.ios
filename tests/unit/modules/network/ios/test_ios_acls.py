@@ -2313,13 +2313,13 @@ class TestIosAclsModule(TestIosModule):
             permit ip any mac any
             ip access-list extended ext_acl
             10 permit ip 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255
-            """
+            """,
         )
         self.execute_show_command_name.return_value = dedent(
             """\
             Standard IP access list 10
             Extended IP access list ext_acl
-            """
+            """,
         )
 
         set_module_args(
@@ -2337,25 +2337,25 @@ class TestIosAclsModule(TestIosModule):
                                         protocol="ip",
                                         source=dict(
                                             address="192.0.2.0",
-                                            wildcard_bits="0.0.0.255"
+                                            wildcard_bits="0.0.0.255",
                                         ),
                                         destination=dict(
                                             address="192.0.3.0",
-                                            wildcard_bits="0.0.0.255"
-                                        )
-                                    )
-                                ]
-                            )
-                        ]
-                    )
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
                 ],
-                state="merged"
-            )
+                state="merged",
+            ),
         )
 
         result = self.execute_module(changed=True)
         commands = [
             "ip access-list extended test_ext_acl",
-            "permit ip 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255"
+            "permit ip 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255",
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
