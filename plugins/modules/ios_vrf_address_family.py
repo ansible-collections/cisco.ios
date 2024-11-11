@@ -87,6 +87,9 @@ options:
                       map:
                         description: Route-map name
                         type: str
+                      allow_evpn:
+                        description: Allow EVPN routes into global table
+                        type: bool
           import_config: &import01
             description: VRF import
             type: dict
@@ -117,15 +120,10 @@ options:
                         type: int
                       map:
                         description: Route-map based VRF import
-                        type: dict
-                        suboptions:
-                          route_map:
-                            description: VRF import route-map name
-                            type: dict
-                            suboptions:
-                              allow_evpn:
-                                description: allow Global->VRF routes into EVPN
-                                type: bool
+                        type: str
+                      allow_evpn:
+                        description: allow Global->VRF routes into EVPN
+                        type: bool
           maximum: &maximum
             description: Set a limit to a routing table
             type: dict
@@ -136,21 +134,20 @@ options:
                 suboptions:
                   limit:
                     description: Maximum number of routes allowed
+                    type: int
+                  threshold:
+                    description: Threshold value (%) at which to generate a warning msg
+                    type: int
+                  reinstall:
+                    description: Reinstall previous rejected route due to over maximum route limit
                     type: dict
                     suboptions:
                       threshold:
-                        description: Threshold value (%) at which to generate a warning msg
-                        type: dict
-                      reinstall:
-                        description: Reinstall previous rejected route due to over maximum route limit
-                        type: dict
-                        suboptions:
-                          threshold:
-                            description: Threshold value (%) at which to reinstall routes back to VRF
-                            type: int
-                      warning_only:
-                        description: Only give a warning message if limit is exceeded
-                        type: bool
+                        description: Threshold value (%) at which to reinstall routes back to VRF
+                        type: int
+                  warning_only:
+                    description: Only give a warning message if limit is exceeded
+                    type: bool
           inter_as_hybrid: &inter_as_hybrid
             description: Inter AS hybrid mode
             type: dict
@@ -161,11 +158,7 @@ options:
                 suboptions:
                   next_hop: &next_hop
                     description: Next-hop for the routes of a VRF in the backbone.
-                    type: dict
-                    suboptions:
-                      ip_address:
-                        description: Next-hop IP address
-                        type: str
+                    type: str
               next_hop: *next_hop
           mdt:
             description: Backbone Multicast Distribution Tree
@@ -196,15 +189,13 @@ options:
                         type: dict
                         suboptions:
                           mdt_hello_enable: *mdt_hello_enable
-                          pim_tlv_announce:
+                          pim_tlv_announce: &pim_tlv_announce
                             description: Announce PIM TLV for data MDT
                             type: dict
                             suboptions:
                               mdt_hello_enable: *mdt_hello_enable
                       mdt_hello_enable: *mdt_hello_enable
-                      pim_tlv_announce:
-                        description: Announce PIM TLV for data MDT
-                        type: bool
+                      pim_tlv_announce: *pim_tlv_announce
                   receiver_site:
                     description: BGP receiver only site for MVPN
                     type: bool
@@ -503,6 +494,9 @@ options:
               export:
                 description: Export Target-VPN community.
                 type: str
+              stitching:
+                    description: VXLAN route target set.
+                    type: bool
               import_config:
                 description: Export Target-VPN community.
                 type: str

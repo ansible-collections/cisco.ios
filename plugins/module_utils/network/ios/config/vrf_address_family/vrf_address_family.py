@@ -17,7 +17,7 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-import q
+# import q
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     dict_merge,
@@ -47,7 +47,6 @@ class Vrf_address_family(ResourceModule):
             tmplt=Vrf_address_familyTemplate(),
         )
         self.parsers = [
-            "name",
             "address_family",
             "bgp.next_hop.loopback",
             "export.map",
@@ -81,27 +80,74 @@ class Vrf_address_family(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {
-                k: v for k, v in iteritems(haved) if k in wantd or not wantd
-            }
-            wantd = {}
+            for vrfk, vrfv in iteritems(haved):
+                for afk, afv in iteritems(vrfv.get("address_families", {})):
+                    adrf = wantd.get(vrfk, {}).get("address_families", {})
+                    if afk in adrf or not adrf:
+                        self.addcmd(
+                            {"name": vrfk},
+                            "name",
+                            False,
+                        )
+                        self.addcmd(
+                            {"afi": afv.get("afi"), "safi": afv.get("safi")},
+                            "address_family",
+                            True,
+                        )
 
-        # remove superfluous config for overridden and deleted
-        if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
-                if k not in wantd:
-                    self._compare(want={}, have=have)
+        if self.state in ["overridden"]:
+            for vrfk, vrfv in iteritems(haved):
+                for k, have in iteritems(vrfv.get("address_families", {})):
+                    wantx = wantd.get(vrfk, {}).get("address_families", {})
+                    if k not in wantx:
+                        self.addcmd(
+                            {"name": vrfk},
+                            "name",
+                            False,
+                        )
+                        self.addcmd(
+                            {"afi": have.get("afi"), "safi": have.get("safi")},
+                            "address_family",
+                            False,
+                        )
+                        self.compare(parsers=self.parsers, want={}, have=have)
 
-        for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, {}))
+        if self.state != "deleted":
+            self._compare(want=wantd, have=haved)
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
-           populates the list of commands to be run by comparing
-           the `want` and `have` data with the `parsers` defined
-           for the Vrf_address_family network resource.
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the Vrf network resource.
         """
-        self.compare(parsers=self.parsers, want=want, have=have)
+        for name, entry in iteritems(want):
+            begin = len(self.commands)
+            vrf_want = entry
+            vrf_have = have.pop(name, {})
+            self._compare_afs(vrf_want, vrf_have)
+            if len(self.commands) != begin:
+                self.commands.insert(begin, "vrf definition {0}".format(name))
+
+    def _compare_afs(self, want, have):
+        """Custom handling of afs option
+        :params want: the want VRF dictionary
+        :params have: the have VRF dictionary
+        """
+        waafs = want.get("address_families", {})
+        haafs = have.get("address_families", {})
+        for afk, afv in iteritems(waafs):
+            begin = len(self.commands)
+            self._compare_single_af(want=afv, have=haafs.get(afk, {}))
+            if len(self.commands) != begin:
+                self.commands.insert(begin, f"address-family {afv.get('afi')} {afv.get('safi')}")
+
+    def _compare_single_af(self, want, have):
+        """Custom handling of single af option
+        :params want: the want VRF dictionary
+        :params have: the have VRF dictionary
+        """
+        self.compare(parsers=self.parsers[1:], want=want, have=have)
 
     def _vrf_list_to_dict(self, entry):
         """Convert list of items to dict of items
@@ -116,5 +162,4 @@ class Vrf_address_family(ResourceModule):
                 }
 
         entry = {x["name"]: x for x in entry}
-        # q(entry)
         return entry
