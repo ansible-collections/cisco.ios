@@ -29,26 +29,34 @@ class Vrf_interfacesTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
-            "name": "key_a",
+            "name": "interface",
             "getval": re.compile(
                 r"""
-                ^key_a\s(?P<key_a>\S+)
-                $""", re.VERBOSE,
+                ^interface\s(?P<name>\S+)$""",
+                re.VERBOSE,
             ),
-            "setval": "",
-            "result": {
+            "setval": "interface {{ name }}",
+            'result': {
+                '{{ name }}': {
+                    'name': '{{ name }}',
+                },
             },
+            "shared": True,
             "shared": True,
         },
         {
-            "name": "key_b",
+            "name": "vrf_name",
             "getval": re.compile(
                 r"""
-                \s+key_b\s(?P<key_b>\S+)
-                $""", re.VERBOSE,
+                \s*vrf\sforwarding\s(?P<vrf_name>\S+)$
+                """,
+                re.VERBOSE,
             ),
-            "setval": "",
+            "setval": "vrf forwarding {{ vrf_name }}",
             "result": {
+                '{{ name }}': {
+                    'vrf_name': '{{ vrf_name }}',
+                },
             },
         },
     ]

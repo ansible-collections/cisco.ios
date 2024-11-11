@@ -38,7 +38,7 @@ class Vrf_interfacesArgs(object):  # pylint: disable=R0903
             "elements": "dict",
             "options": {
                 "name": {"type": "str", "required": True},
-                "vrf": {"type": "str"},
+                "vrf_name": {"type": "str"},
             },
         },
         "running_config": {"type": "str"},

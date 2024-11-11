@@ -62,25 +62,14 @@ class Vrf_interfacesFacts(object):
             module=self._module,
         )
 
-        objs = vrf_interfaces_parser.parse()
-        final_objs = []
-
-        for key, value in objs.items():
-            # Adjust VRF data if necessary, similar to how address families were handled
-            if "vrf" in value:
-                value["vrf"] = value["vrf"]  # Could be expanded if more processing is needed
-
-            if value:
-                value = utils.remove_empties(value)
-                final_objs.append(value)
-
+        objs  = list(vrf_interfaces_parser.parse().values())
         # Ensure previous facts are removed to avoid duplication
         ansible_facts["ansible_network_resources"].pop("vrf_interfaces", None)
 
         params = utils.remove_empties(
             vrf_interfaces_parser.validate_config(
                 self.argument_spec,
-                {"config": final_objs},
+                {"config": objs},
                 redact=True,
             ),
         )

@@ -47,7 +47,9 @@ class Vrf_interfaces(ResourceModule):
             resource="vrf_interfaces",
             tmplt=Vrf_interfacesTemplate(),
         )
-        self.parsers = []
+        self.parsers = ["interface",
+                        "vrf_name"
+        ]
 
     def execute_module(self):
         """Execute the module
@@ -91,4 +93,7 @@ class Vrf_interfaces(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Vrf_interfaces network resource.
         """
+        begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
+        if len(self.commands) != begin:
+            self.commands.insert(begin, self._tmplt.render(want or have, "interface", False))
