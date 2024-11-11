@@ -83,9 +83,8 @@ class TestIosVrfInterfacesModule(TestIosModule):
                 config=[
                     {"name": "GigabitEthernet1"},
                     {"name": "GigabitEthernet2"},
-                    {"name": "GigabitEthernet3","vrf_name": "testvrf2"},
+                    {"name": "GigabitEthernet3", "vrf_name": "testvrf2"},
                     {"name": "GigabitEthernet4", "vrf_name": "testvrf1"},
-                    
                 ],
                 state="merged",
             ),
@@ -98,7 +97,6 @@ class TestIosVrfInterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
-
 
     def test_ios_vrf_interfaces_merged(self):
         self.maxDiff = None
@@ -133,7 +131,6 @@ class TestIosVrfInterfacesModule(TestIosModule):
                     {"name": "GigabitEthernet2"},
                     {"name": "GigabitEthernet3"},
                     {"name": "GigabitEthernet4", "vrf_name": "testvrf1"},
-                    
                 ],
                 state="merged",
             ),
@@ -144,8 +141,6 @@ class TestIosVrfInterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
-
-
 
     def test_ios_vrf_interfaces_replaced(self):
         self.maxDiff = None
@@ -180,7 +175,6 @@ class TestIosVrfInterfacesModule(TestIosModule):
                     {"name": "GigabitEthernet2"},
                     {"name": "GigabitEthernet3"},
                     {"name": "GigabitEthernet4", "vrf_name": "testvrf1_replaced"},
-                    
                 ],
                 state="replaced",
             ),
@@ -191,7 +185,6 @@ class TestIosVrfInterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
-
 
     def test_ios_vrf_interfaces_deleted(self):
         self.maxDiff = None
@@ -226,7 +219,6 @@ class TestIosVrfInterfacesModule(TestIosModule):
                     {"name": "GigabitEthernet2"},
                     {"name": "GigabitEthernet3"},
                     {"name": "GigabitEthernet4"},
-                    
                 ],
                 state="replaced",
             ),
@@ -235,18 +227,15 @@ class TestIosVrfInterfacesModule(TestIosModule):
             "interface GigabitEthernet4",
             "no vrf forwarding vrf_2",
             "interface GigabitEthernet3",
-            "no vrf forwarding vrf_3"
-
+            "no vrf forwarding vrf_3",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-
-
     def test_ios_vrf_interfaces_parsed(self):
         set_module_args(
-        dict(
-            running_config = dedent(
+            dict(
+                running_config=dedent(
                     """\
                     interface GigabitEthernet1
                     ip address dhcp
@@ -276,13 +265,11 @@ class TestIosVrfInterfacesModule(TestIosModule):
             {"name": "GigabitEthernet2", "vrf_name": "vrf_1"},
             {"name": "GigabitEthernet3"},
             {"name": "GigabitEthernet4", "vrf_name": "vrf_2"},
-       
         ]
-        
+
         result = self.execute_module(changed=False)
 
         self.assertEqual(result["parsed"], parsed_list)
-
 
     def test_ios_vrf_interfaces_overridden(self):
         self.maxDiff = None
@@ -316,7 +303,6 @@ class TestIosVrfInterfacesModule(TestIosModule):
                     {"name": "GigabitEthernet2"},
                     {"name": "GigabitEthernet3"},
                     {"name": "GigabitEthernet4", "vrf_name": "vrf_5"},
-                    
                 ],
                 state="replaced",
             ),
