@@ -267,7 +267,6 @@ class TestIosVrfInterfacesModule(TestIosModule):
             {"name": "GigabitEthernet3"},
             {"name": "GigabitEthernet4", "vrf_name": "vrf_2"},
         ]
-        
         result = self.execute_module(changed=False)
 
         self.assertEqual(result["parsed"], parsed_list)
