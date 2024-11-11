@@ -84,6 +84,7 @@ class TestIosVrfInterfacesModule(TestIosModule):
                     {"name": "GigabitEthernet1"},
                     {"name": "GigabitEthernet2"},
                     {"name": "GigabitEthernet3", "vrf_name": "testvrf2"},
+                    {"name": "GigabitEthernet3", "vrf_name": "testvrf2"},
                     {"name": "GigabitEthernet4", "vrf_name": "testvrf1"},
                 ],
                 state="merged",
@@ -266,7 +267,7 @@ class TestIosVrfInterfacesModule(TestIosModule):
             {"name": "GigabitEthernet3"},
             {"name": "GigabitEthernet4", "vrf_name": "vrf_2"},
         ]
-
+        
         result = self.execute_module(changed=False)
 
         self.assertEqual(result["parsed"], parsed_list)

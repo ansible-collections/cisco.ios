@@ -39,7 +39,7 @@ options:
           - Example - GigabitEthernet0/1, FastEthernet0/0
         type: str
         required: true
-      vrf:
+      vrf_name:
         description:
           - Name of the VRF to be configured on the interface.
           - When configured, applies 'vrf forwarding <vrf_name>' under the interface.
