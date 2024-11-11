@@ -62,7 +62,7 @@ class Vrf_interfacesFacts(object):
             module=self._module,
         )
 
-        objs  = list(vrf_interfaces_parser.parse().values())
+        objs = list(vrf_interfaces_parser.parse().values())
         # Ensure previous facts are removed to avoid duplication
         ansible_facts["ansible_network_resources"].pop("vrf_interfaces", None)
 

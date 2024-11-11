@@ -47,8 +47,9 @@ class Vrf_interfaces(ResourceModule):
             resource="vrf_interfaces",
             tmplt=Vrf_interfacesTemplate(),
         )
-        self.parsers = ["interface",
-                        "vrf_name"
+        self.parsers = [
+            "interface",
+            "vrf_name",
         ]
 
     def execute_module(self):
