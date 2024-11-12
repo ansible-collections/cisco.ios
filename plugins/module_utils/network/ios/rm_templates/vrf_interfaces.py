@@ -42,7 +42,6 @@ class Vrf_interfacesTemplate(NetworkTemplate):
                 },
             },
             "shared": True,
-            "shared": True,
         },
         {
             "name": "vrf_name",

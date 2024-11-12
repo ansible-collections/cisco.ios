@@ -1,0 +1,57 @@
+---
+gathered:
+  config:
+    - name: "Loopback24"
+    - name: "GigabitEthernet1"
+    - name: "GigabitEthernet2"
+      vrf_name: "vrf_B"
+    - name: "GigabitEthernet3"
+    - name: "GigabitEthernet4"
+
+merged:
+  commands:
+    - interface GigabitEthernet2
+    - vrf forwarding vrf_D
+  after:
+    - name: "Loopback24"
+    - name: "GigabitEthernet1"
+    - name: "GigabitEthernet2"
+      vrf_name: "vrf_D"
+    - name: "GigabitEthernet3"
+    - name: "GigabitEthernet4"
+  before:
+    - name: "Loopback24"
+    - name: "GigabitEthernet1"
+    - name: "GigabitEthernet2"
+    - name: "GigabitEthernet3"
+    - name: "GigabitEthernet4"
+
+overridden:
+  commands:
+    - interface GigabitEthernet2
+    - no vrf forwarding vrf_B
+    - interface GigabitEthernet4
+    - vrf forwarding vrf_C
+  after:
+    - name: "Loopback24"
+    - name: "GigabitEthernet1"
+    - name: "GigabitEthernet2"
+    - name: "GigabitEthernet3"
+    - name: "GigabitEthernet4"
+      vrf_name: "vrf_C"
+  before:
+    - name: "Loopback24"
+    - name: "GigabitEthernet1"
+    - name: "GigabitEthernet2"
+      vrf_name: "vrf_B"
+    - name: "GigabitEthernet3"
+    - name: "GigabitEthernet4"
+
+parsed:
+  after:
+    - name: "GigabitEthernet1"
+      vrf_name: "vrf_C"
+    - name: "GigabitEthernet2"
+      vrf_name: "vrf_D"
+    - name: "GigabitEthernet3"
+    - name: "GigabitEthernet4"
