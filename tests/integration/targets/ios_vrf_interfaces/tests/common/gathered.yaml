@@ -1,38 +1,22 @@
 ---
-- ansible.builtin.debug:
+- name: START ios_vrf_interfaces gathered integration tests
+  ansible.builtin.debug:
     msg: START ios_vrf_interfaces gathered integration tests on connection={{ ansible_connection }}
 
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
-    - name: Gathered the provided configuration with the existing running configuration
+    - name: Gather the provided configuration
       register: result
       cisco.ios.ios_vrf_interfaces:
         config:
         state: gathered
 
-    - name: Debug gathered.config
-      ansible.builtin.debug:
-        var: gathered.config
-
-    - name: Debug result.gathered
-      ansible.builtin.debug:
-        var: result.gathered
-
-    - name: Run show running-config | section ^interface
-      cisco.ios.ios_command:
-        commands: show running-config | section ^interface
-      register: config
-
     - name: Assert
       ansible.builtin.assert:
         that:
-          - gathered.config | length == result.gathered | length
-          - result.gathered[1].name == 'GigabitEthernet1'
-          - result.gathered[2].name == 'GigabitEthernet2'
-          - result.gathered[2].vrf_name == 'vrf_B'
-          - result.gathered[3].name == 'GigabitEthernet3'
-          - result.gathered[4].name == 'GigabitEthernet4'
-          - result['changed'] == false
+          - not result.changed
+          - "{{ gathered['config'] | symmetric_difference(result['gathered']) |length == 0 }}"
+
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
