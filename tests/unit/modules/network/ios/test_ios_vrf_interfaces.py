@@ -317,3 +317,145 @@ class TestIosVrfInterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_vrf_interfaces_replaced_idempotent(self):
+        self.maxDiff = None
+        run_cfg = dedent(
+            """\
+            interface GigabitEthernet1
+            ip address dhcp
+            no shutdown
+            !
+
+            interface GigabitEthernet2
+            no ip address
+            shutdown
+            !
+
+            interface GigabitEthernet3
+            vrf forwarding testvrf2
+            no ip address
+            shutdown
+            !
+
+            interface GigabitEthernet4
+            vrf forwarding testvrf1
+            no ip address
+            shutdown
+            !
+            """,
+        )
+        self.get_config.return_value = run_cfg
+        set_module_args(
+            dict(
+                config=[
+                    {"name": "GigabitEthernet1"},
+                    {"name": "GigabitEthernet2"},
+                    {"name": "GigabitEthernet3", "vrf_name": "testvrf2"},
+                    {"name": "GigabitEthernet4", "vrf_name": "testvrf1"},
+                ],
+                state="replaced",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_vrf_interfaces_overridden_idempotent(self):
+        self.maxDiff = None
+        run_cfg = dedent(
+            """\
+            interface GigabitEthernet1
+            ip address dhcp
+            no shutdown
+            !
+
+            interface GigabitEthernet2
+            no ip address
+            shutdown
+            !
+
+            interface GigabitEthernet3
+            vrf forwarding testvrf2
+            no ip address
+            shutdown
+            !
+
+            interface GigabitEthernet4
+            vrf forwarding testvrf1
+            no ip address
+            shutdown
+            !
+            """,
+        )
+        self.get_config.return_value = run_cfg
+        set_module_args(
+            dict(
+                config=[
+                    {"name": "GigabitEthernet1"},
+                    {"name": "GigabitEthernet2"},
+                    {"name": "GigabitEthernet3", "vrf_name": "testvrf2"},
+                    {"name": "GigabitEthernet4", "vrf_name": "testvrf1"},
+                ],
+                state="overridden",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_vrf_interfaces_gathered(self):
+        self.maxDiff = None
+        run_cfg = dedent(
+            """\
+            interface GigabitEthernet1
+            ip address dhcp
+            no shutdown
+            !
+
+            interface GigabitEthernet2
+            vrf forwarding vrf_1
+            shutdown
+            !
+
+            interface GigabitEthernet3
+            vrf forwarding vrf_2
+            no ip address
+            shutdown
+            !
+
+            interface GigabitEthernet4
+            no shutdown
+            !
+            """,
+        )
+        self.get_config.return_value = run_cfg
+        set_module_args(dict(state="gathered"))
+        gathered_list = [
+            {"name": "GigabitEthernet1"},
+            {"name": "GigabitEthernet2", "vrf_name": "vrf_1"},
+            {"name": "GigabitEthernet3", "vrf_name": "vrf_2"},
+            {"name": "GigabitEthernet4"},
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], gathered_list)
+
+    def test_ios_vrf_interfaces_rendered(self):
+        self.maxDiff = None
+        set_module_args(
+            dict(
+                config=[
+                    {"name": "GigabitEthernet1"},
+                    {"name": "GigabitEthernet2", "vrf_name": "vrf_1"},
+                    {"name": "GigabitEthernet3", "vrf_name": "vrf_2"},
+                    {"name": "GigabitEthernet4"},
+                ],
+                state="rendered",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet2",
+            "vrf forwarding vrf_1",
+            "interface GigabitEthernet3",
+            "vrf forwarding vrf_2",
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(sorted(result["rendered"]), sorted(commands))
