@@ -315,12 +315,160 @@ EXAMPLES = """
 #     vrf_name: "vrf_D"
 #   - name: "GigabitEthernet3"
 #   - name: "GigabitEthernet4"
+
+# Using replaced
+
+# Before state:
+# -------------
+#
+# vios#show running-config | section ^interface
+# interface Loopback24
+#  no ip address
+# interface GigabitEthernet1
+#  vrf forwarding vrf_A
+#  ip address dhcp
+#  negotiation auto
+# interface GigabitEthernet2
+#  vrf forwarding vrf_B
+#  no ip address
+#  shutdown
+#  negotiation auto
+# interface GigabitEthernet3
+#  no ip address
+#  negotiation auto
+# interface GigabitEthernet4
+#  vrf forwarding vrf_C
+#  no ip address
+#  shutdown
+#  negotiation auto
+
+- name: Replace device configuration of listed VRF interfaces with provided configuration
+  cisco.ios.ios_vrf_interfaces:
+    config:
+      - name: GigabitEthernet1
+        vrf_name: vrf_D
+      - name: GigabitEthernet2
+        vrf_name: vrf_E
+    state: replaced
+
+# Task Output:
+# ------------
+#
+# before:
+#   - name: "Loopback24"
+#   - name: "GigabitEthernet1"
+#     vrf_name: "vrf_A"
+#   - name: "GigabitEthernet2"
+#     vrf_name: "vrf_B"
+#   - name: "GigabitEthernet3"
+#   - name: "GigabitEthernet4"
+#     vrf_name: "vrf_C"
+#
+# commands:
+#   - interface GigabitEthernet1
+#   - no vrf forwarding vrf_A
+#   - vrf forwarding vrf_D
+#   - interface GigabitEthernet2
+#   - no vrf forwarding vrf_B
+#   - vrf forwarding vrf_E
+#
+# after:
+#   - name: "Loopback24"
+#   - name: "GigabitEthernet1"
+#     vrf_name: "vrf_D"
+#   - name: "GigabitEthernet2"
+#     vrf_name: "vrf_E"
+#   - name: "GigabitEthernet3"
+#   - name: "GigabitEthernet4"
+#     vrf_name: "vrf_C"
+
+# Using deleted
+
+# Before state:
+# -------------
+#
+# vios#show running-config | section ^interface
+# interface Loopback24
+#  no ip address
+# interface GigabitEthernet1
+#  vrf forwarding vrf_A
+#  ip address dhcp
+#  negotiation auto
+# interface GigabitEthernet2
+#  vrf forwarding vrf_B
+#  no ip address
+#  shutdown
+#  negotiation auto
+# interface GigabitEthernet3
+#  no ip address
+#  negotiation auto
+# interface GigabitEthernet4
+#  vrf forwarding vrf_C
+#  no ip address
+#  shutdown
+#  negotiation auto
+
+- name: Delete VRF configuration of specified interfaces
+  cisco.ios.ios_vrf_interfaces:
+    config:
+      - name: GigabitEthernet1
+      - name: GigabitEthernet2
+    state: deleted
+
+# Task Output:
+# ------------
+#
+# before:
+#   - name: "Loopback24"
+#   - name: "GigabitEthernet1"
+#     vrf_name: "vrf_A"
+#   - name: "GigabitEthernet2"
+#     vrf_name: "vrf_B"
+#   - name: "GigabitEthernet3"
+#   - name: "GigabitEthernet4"
+#     vrf_name: "vrf_C"
+#
+# commands:
+#   - interface GigabitEthernet1
+#   - no vrf forwarding vrf_A
+#   - interface GigabitEthernet2
+#   - no vrf forwarding vrf_B
+#
+# after:
+#   - name: "Loopback24"
+#   - name: "GigabitEthernet1"
+#   - name: "GigabitEthernet2"
+#   - name: "GigabitEthernet3"
+#   - name: "GigabitEthernet4"
+#     vrf_name: "vrf_C"
+
+# After state:
+# ------------
+#
+# vios#show running-config | section ^interface
+# interface Loopback24
+#  no ip address
+# interface GigabitEthernet1
+#  ip address dhcp
+#  negotiation auto
+# interface GigabitEthernet2
+#  no ip address
+#  shutdown
+#  negotiation auto
+# interface GigabitEthernet3
+#  no ip address
+#  negotiation auto
+# interface GigabitEthernet4
+#  vrf forwarding vrf_C
+#  no ip address
+#  shutdown
+#  negotiation auto
 """
 
 RETURN = """
 before:
   description: The configuration prior to the module execution.
-  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted)
   type: list
   sample: >
     [
@@ -368,7 +516,7 @@ after:
 
 commands:
   description: The set of commands pushed to the remote device.
-  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted)
   type: list
   sample:
     - "interface GigabitEthernet2"

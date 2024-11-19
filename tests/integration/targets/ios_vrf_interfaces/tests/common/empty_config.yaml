@@ -24,6 +24,17 @@
     that:
       - result.msg == 'value of config parameter must not be empty for state replaced'
 
+- name: Overridden with empty configuration should give appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.ios.ios_vrf_interfaces:
+    config:
+    state: overridden
+
+- ansible.builtin.assert:
+    that:
+      - result.msg == 'value of config parameter must not be empty for state overridden'
+
 - name: Rendered with empty configuration should give appropriate error message
   register: result
   ignore_errors: true
