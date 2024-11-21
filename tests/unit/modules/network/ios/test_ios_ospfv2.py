@@ -1216,13 +1216,13 @@ class TestIosOspfV2Module(TestIosModule):
              network 10.140.2.0 0.0.0.255 area 0
              network 10.140.5.0 0.0.0.255 area 0
             """,
-        )  
+        )
         set_module_args(
             dict(
                 config=dict(
                     processes=[
                         dict(
-                            process_id="1", 
+                            process_id="1",
                             router_id="1.1.1.1",
                             network=[
                                 dict(
@@ -1242,7 +1242,7 @@ class TestIosOspfV2Module(TestIosModule):
                                     name=["GigabitEthernet1"],
                                 ),
                             ),
-                            vrf=None, 
+                            vrf=None,
                         ),
                     ],
                 ),
@@ -1251,4 +1251,3 @@ class TestIosOspfV2Module(TestIosModule):
         )
 
         self.execute_module(changed=False, commands=[])
-
