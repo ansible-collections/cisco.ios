@@ -121,6 +121,12 @@ class Ospfv2(ResourceModule):
         if self.want:
             for entry in self.want.get("processes", []):
                 entry = self._handle_deprecated(entry)
+                # remove set_interface from passive_intf if it already exists 
+                passive_intf = entry.get("passive_interfaces", {}).get("interface", {})
+                if passive_intf and any(h["process_id"] == entry["process_id"] and
+                                    h.get("passive_interfaces", {}).get("interface", {}).get("name") == passive_intf.get("name")
+                                    for h in self.have.get("processes", [])):
+                    passive_intf.pop("set_interface", None)
                 wantd.update({(entry["process_id"], entry.get("vrf")): entry})
 
         if self.have:
