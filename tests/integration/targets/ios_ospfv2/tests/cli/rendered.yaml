@@ -13,11 +13,6 @@
                 router_lsa: true
                 on_startup:
                   time: 110
-              passive_interfaces:
-                interface:
-                  set_interface: true
-                  name:
-                    - GigabitEthernet1
               areas:
                 - area_id: "5"
                   capability: true
