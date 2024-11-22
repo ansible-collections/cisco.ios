@@ -74,6 +74,7 @@
       ansible.builtin.assert:
         that:
           - "{{ merged['after']['processes'] | symmetric_difference(result['after']['processes']) | length == 0 }}"
+
     - name: Merge provided configuration with device configuration (idempotent)
       register: result
       cisco.ios.ios_ospfv2: *id001
