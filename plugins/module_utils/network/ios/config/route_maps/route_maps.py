@@ -223,14 +223,19 @@ class Route_maps(ResourceModule):
                                     have={compare_type: {k: {key: have_val}}},
                                 )
                             else:
-                                list_type = next(iter(have_val))  # Gets 'acls' or whatever first key is
-                                diff = {k: v for k, v in have_val[list_type].items()
-                                        if k not in val[list_type]}
+                                list_type = next(
+                                    iter(have_val)
+                                )  # Gets 'acls' or whatever first key is
+                                diff = {
+                                    k: v
+                                    for k, v in have_val[list_type].items()
+                                    if k not in val[list_type]
+                                }
                                 if diff:
                                     self.compare(
                                         parsers=parsers,
                                         want=dict(),
-                                        have={compare_type: {k: {key: {list_type: diff}}}}
+                                        have={compare_type: {k: {key: {list_type: diff}}}},
                                     )
                         else:
                             self.compare(

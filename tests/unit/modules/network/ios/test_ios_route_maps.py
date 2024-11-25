@@ -665,16 +665,16 @@ class TestIosRouteMapsModule(TestIosModule):
                                 action="permit",
                                 match=dict(
                                     ip=dict(
-                                        address=dict(acls=["185", "186"])
-                                    )
+                                        address=dict(acls=["185", "186"]),
+                                    ),
                                 ),
                                 set=dict(
-                                    as_path=dict(prepend=dict(as_number=["1321"]))
-                                )
-                            )
+                                    as_path=dict(prepend=dict(as_number=["1321"])),
+                                ),
+                            ),
                         ],
                         route_map="TO_OUT",
-                    )
+                    ),
                 ],
                 state="overridden",
             ),
@@ -850,22 +850,22 @@ class TestIosRouteMapsModule(TestIosModule):
                                 action="permit",
                                 match=dict(
                                     ip=dict(
-                                        address=dict(acls=["185"])
-                                    )
+                                        address=dict(acls=["185"]),
+                                    ),
                                 ),
                                 set=dict(
-                                    as_path=dict(prepend=dict(as_number=["1321"]))
+                                    as_path=dict(prepend=dict(as_number=["1321"])),
                                 ),
-                            )
+                            ),
                         ],
-                    )
+                    ),
                 ],
                 state="replaced",
-            )
+            ),
         )
         expected_commands = [
             "no match ip address 186",
-            "route-map TO_OUT permit 10"
+            "route-map TO_OUT permit 10",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(expected_commands))
