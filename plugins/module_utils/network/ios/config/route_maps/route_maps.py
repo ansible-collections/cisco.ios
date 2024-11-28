@@ -218,7 +218,7 @@ class Route_maps(ResourceModule):
                         if have_val:
                             if self.state == "overridden" or self.state == "replaced":
                                 list_type = next(
-                                    iter(have_val)
+                                    iter(have_val),
                                 )  # Gets 'acls' or whatever first key is
                                 diff = {
                                     k: v
