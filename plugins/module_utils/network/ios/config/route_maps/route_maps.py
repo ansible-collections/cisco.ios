@@ -216,21 +216,10 @@ class Route_maps(ResourceModule):
                     have_val = have_v.pop(key, {})
                     if val != have_val:
                         if have_val:
-                            if self.state == "overridden":
-                                self.compare(
-                                    parsers=parsers,
-                                    want=dict(),
-                                    have={compare_type: {k: {key: have_val}}},
-                                )
-                            else:
-                                list_type = next(
-                                    iter(have_val)
-                                )  # Gets 'acls' or whatever first key is
-                                diff = {
-                                    k: v
-                                    for k, v in have_val[list_type].items()
-                                    if k not in val[list_type]
-                                }
+                            if self.state == "overridden" or self.state == "replaced":
+                                list_type = next(iter(have_val))  # Gets 'acls' or whatever first key is
+                                diff = {k: v for k, v in have_val[list_type].items()
+                                        if k not in val[list_type]}
                                 if diff:
                                     self.compare(
                                         parsers=parsers,

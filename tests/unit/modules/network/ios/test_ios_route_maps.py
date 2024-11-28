@@ -864,8 +864,8 @@ class TestIosRouteMapsModule(TestIosModule):
             ),
         )
         expected_commands = [
-            "no match ip address 186",
             "route-map TO_OUT permit 10",
+            "no match ip address 186"
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(expected_commands))
