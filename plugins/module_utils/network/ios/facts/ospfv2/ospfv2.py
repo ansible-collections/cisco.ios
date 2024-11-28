@@ -47,20 +47,11 @@ class Ospfv2Facts(object):
         facts_output = {"processes": []}
 
         for process in ospf_data.get("processes", []):
-            if "passive_interfaces" in process:
+            if "passive_interfaces" in process and process["passive_interfaces"].get("default"):
                 if process.get("passive_interfaces", {}).get("interface"):
-                    interface_config = process["passive_interfaces"]["interface"]
-                    if "name" in interface_config:
-                        # Use the negation presence to determine set_interface value
-                        if process["passive_interfaces"].get("default"):
-                            # If default is true, interfaces in name list are non-passive
-                            interface_config["set_interface"] = False
-                        else:
-                            # If no default, interfaces in name list are passive
-                            interface_config["set_interface"] = True
-                        interface_config["name"] = [
-                            each for each in interface_config["name"] if each
-                        ]
+                    process["passive_interfaces"]["interface"]["name"] = [
+                        each for each in process["passive_interfaces"]["interface"]["name"] if each
+                    ]
             if "areas" in process:
                 process["areas"] = list(process["areas"].values())
             facts_output["processes"].append(process)
