@@ -1,0 +1,3 @@
+---
+bug_fixes:
+  - Fixed route-maps ACL removal in replaced state for Cisco IOS config module
