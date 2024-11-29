@@ -236,7 +236,7 @@ class Route_maps(ResourceModule):
                                         parsers=parsers,
                                         want=dict(),
                                         have={compare_type: {k: {key: {list_type: diff}}}},
-                                    ),
+                                    )
                                 # Then handle additions
                                 if to_add:
                                     diff = {f"acl_{v}": v for v in to_add}
@@ -244,7 +244,7 @@ class Route_maps(ResourceModule):
                                         parsers=parsers,
                                         want={compare_type: {k: {key: {list_type: diff}}}},
                                         have=dict(),
-                                    ),
+                                    )
                         else:
                             self.compare(
                                 parsers=parsers,
