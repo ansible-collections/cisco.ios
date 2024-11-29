@@ -540,7 +540,6 @@ class TestIosRouteMapsModule(TestIosModule):
             ),
         )
         commands = [
-            "no route-map TO_OUT",
             "route-map test_1 deny 10",
             "no description this is test",
             "continue 20",
@@ -660,23 +659,6 @@ class TestIosRouteMapsModule(TestIosModule):
                         ],
                         route_map="test_1",
                     ),
-                    dict(
-                        entries=[
-                            dict(
-                                sequence=10,
-                                action="permit",
-                                match=dict(
-                                    ip=dict(
-                                        address=dict(acls=["185", "186"]),
-                                    ),
-                                ),
-                                set=dict(
-                                    as_path=dict(prepend=dict(as_number=["1321"])),
-                                ),
-                            ),
-                        ],
-                        route_map="TO_OUT",
-                    ),
                 ],
                 state="overridden",
             ),
@@ -691,7 +673,7 @@ class TestIosRouteMapsModule(TestIosModule):
 
     def test_ios_route_maps_delete_without_config(self):
         set_module_args(dict(state="deleted"))
-        commands = ["no route-map test_1", "no route-map TO_OUT"]
+        commands = ["no route-map test_1"]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
