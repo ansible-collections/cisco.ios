@@ -667,16 +667,16 @@ class TestIosRouteMapsModule(TestIosModule):
                                 action="permit",
                                 match=dict(
                                     ip=dict(
-                                        address=dict(acls=["185", "186"])
-                                    )
+                                        address=dict(acls=["185", "186"]),
+                                    ),
                                 ),
                                 set=dict(
-                                    as_path=dict(prepend=dict(as_number=["1321"]))
-                                )
-                            )
+                                    as_path=dict(prepend=dict(as_number=["1321"])),
+                                ),
+                            ),
                         ],
                         route_map="TO_OUT",
-                    )
+                    ),
                 ],
                 state="overridden",
             ),

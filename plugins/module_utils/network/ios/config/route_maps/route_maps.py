@@ -220,30 +220,30 @@ class Route_maps(ResourceModule):
                                 list_type = next(iter(val))
                                 # Get sets of values for comparison
                                 want_values = set(str(v) for v in val[list_type].values())
-                                have_values = set(str(v) for v in have_val[list_type].values()) if have_val else set()
+                                have_values = (
+                                    set(str(v) for v in have_val[list_type].values())
+                                    if have_val
+                                    else set()
+                                )
                                 # Find values that need to be removed (in have but not in want)
                                 to_remove = have_values - want_values
                                 # Find values that need to be added (in want but not in have)
                                 to_add = want_values - have_values
                                 # Handle removals first
                                 if to_remove:
-                                    diff = {
-                                        f'acl_{v}': v for v in to_remove
-                                    }
+                                    diff = {f"acl_{v}": v for v in to_remove}
                                     self.compare(
                                         parsers=parsers,
                                         want=dict(),
-                                        have={compare_type: {k: {key: {list_type: diff}}}}
+                                        have={compare_type: {k: {key: {list_type: diff}}}},
                                     ),
                                 # Then handle additions
                                 if to_add:
-                                    diff = {
-                                        f'acl_{v}': v for v in to_add
-                                    }
+                                    diff = {f"acl_{v}": v for v in to_add}
                                     self.compare(
                                         parsers=parsers,
                                         want={compare_type: {k: {key: {list_type: diff}}}},
-                                        have=dict()
+                                        have=dict(),
                                     ),
                         else:
                             self.compare(
