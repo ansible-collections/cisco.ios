@@ -23,7 +23,7 @@ repos:
       - id: add-trailing-comma
 
   - repo: https://github.com/pycontribs/mirrors-prettier
-    rev: "v3.3.3"
+    rev: "54f80f36c84731f6436048e224d511d3581c7641"
     hooks:
       - id: prettier
         entry: env CI=1 bash -c "prettier --list-different . || ec=$? && prettier --loglevel=error --write . && exit $ec"
