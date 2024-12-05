@@ -63,6 +63,8 @@ plugin_routing:
       redirect: cisco.ios.ios_vlans
     vrf:
       redirect: cisco.ios.ios_vrf
+    vrf_interfaces:
+      redirect: cisco.ios.vrf_interfaces
     vxlan_vtep:
       redirect: cisco.ios.ios_vxlan_vtep
     vrf_global:
