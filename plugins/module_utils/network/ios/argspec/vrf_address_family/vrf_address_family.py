@@ -201,7 +201,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                             "type": "dict",
                                             "options": {
                                                 "number": {"type": "int"},
-                                                "immediate_swich": {
+                                                "immediate_switch": {
                                                     "type": "bool"
                                                 },
                                                 "list": {
@@ -210,7 +210,9 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                         "access_list_number": {
                                                             "type": "int"
                                                         },
-                                                        "name": {"type": "str"},
+                                                        "access_list_name": {
+                                                            "type": "str"
+                                                        },
                                                     },
                                                 },
                                             },
@@ -221,7 +223,9 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                 "access_list_number": {
                                                     "type": "int"
                                                 },
-                                                "name": {"type": "str"},
+                                                "access_list_name": {
+                                                    "type": "str"
+                                                },
                                             },
                                         },
                                         "threshold": {"type": "int"},
@@ -236,8 +240,8 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                 "direct": {"type": "bool"},
                                 "log_reuse": {"type": "bool"},
                                 "mode": {
-                                    "type": "bool",
-                                    "choices": ["gre", "GRE"],
+                                    "type": "dict",
+                                    "options": {"gre": {"type": "bool"}},
                                 },
                                 "mtu": {"type": "int"},
                                 "overlay": {
@@ -247,16 +251,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                             "type": "dict",
                                             "options": {
                                                 "shared_tree_prune_delay": {
-                                                    "type": "dict",
-                                                    "options": {
-                                                        "delay": {"type": "int"}
-                                                    },
+                                                    "type": "int"
                                                 },
                                                 "source_tree_prune_delay": {
-                                                    "type": "dict",
-                                                    "options": {
-                                                        "delay": {"type": "int"}
-                                                    },
+                                                    "type": "int"
                                                 },
                                             },
                                         },
@@ -574,6 +572,286 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                             "type": "dict",
                                             "options": {
                                                 "name": {"type": "str"},
+                                                "multicast": {
+                                                    "type": "dict",
+                                                    "options": {
+                                                        "all": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                        },
+                                                        "bgp": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "as_number": {
+                                                                    "type": "int"
+                                                                },
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                },
+                                                            },
+                                                        },
+                                                        "eigrp": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "as_number": {
+                                                                    "type": "int"
+                                                                },
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                },
+                                                            },
+                                                        },
+                                                        "isis": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "iso_tag": {
+                                                                    "type": "str"
+                                                                },
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                },
+                                                            },
+                                                        },
+                                                        "mobile": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                        },
+                                                        "odr": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                        },
+                                                        "ospf": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "process_id": {
+                                                                    "type": "int"
+                                                                },
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                },
+                                                            },
+                                                        },
+                                                        "rip": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                        },
+                                                        "static": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                        },
+                                                        "topology": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "base": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "all": {
+                                                                            "type": "dict",
+                                                                            "options": {
+                                                                                "route_map": {
+                                                                                    "type": "str"
+                                                                                }
+                                                                            },
+                                                                        },
+                                                                        "bgp": {
+                                                                            "type": "dict",
+                                                                            "options": {
+                                                                                "as_number": {
+                                                                                    "type": "int"
+                                                                                },
+                                                                                "route_map": {
+                                                                                    "type": "str"
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                        "eigrp": {
+                                                                            "type": "dict",
+                                                                            "options": {
+                                                                                "as_number": {
+                                                                                    "type": "int"
+                                                                                },
+                                                                                "route_map": {
+                                                                                    "type": "str"
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                        "isis": {
+                                                                            "type": "dict",
+                                                                            "options": {
+                                                                                "iso_tag": {
+                                                                                    "type": "str"
+                                                                                },
+                                                                                "route_map": {
+                                                                                    "type": "str"
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                        "mobile": {
+                                                                            "type": "dict",
+                                                                            "options": {
+                                                                                "route_map": {
+                                                                                    "type": "str"
+                                                                                }
+                                                                            },
+                                                                        },
+                                                                        "odr": {
+                                                                            "type": "dict",
+                                                                            "options": {
+                                                                                "route_map": {
+                                                                                    "type": "str"
+                                                                                }
+                                                                            },
+                                                                        },
+                                                                        "ospf": {
+                                                                            "type": "dict",
+                                                                            "options": {
+                                                                                "process_id": {
+                                                                                    "type": "int"
+                                                                                },
+                                                                                "route_map": {
+                                                                                    "type": "str"
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                        "rip": {
+                                                                            "type": "dict",
+                                                                            "options": {
+                                                                                "route_map": {
+                                                                                    "type": "str"
+                                                                                }
+                                                                            },
+                                                                        },
+                                                                        "static": {
+                                                                            "type": "dict",
+                                                                            "options": {
+                                                                                "route_map": {
+                                                                                    "type": "str"
+                                                                                }
+                                                                            },
+                                                                        },
+                                                                    },
+                                                                }
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                                "unicast": {
+                                                    "type": "dict",
+                                                    "options": {
+                                                        "all": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                        },
+                                                        "bgp": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "as_number": {
+                                                                    "type": "int"
+                                                                },
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                },
+                                                            },
+                                                        },
+                                                        "connected": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                        },
+                                                        "eigrp": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "as_number": {
+                                                                    "type": "int"
+                                                                },
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                },
+                                                            },
+                                                        },
+                                                        "isis": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "iso_tag": {
+                                                                    "type": "str"
+                                                                },
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                },
+                                                            },
+                                                        },
+                                                        "mobile": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                        },
+                                                        "odr": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                        },
+                                                        "ospf": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "process_id": {
+                                                                    "type": "int"
+                                                                },
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                },
+                                                            },
+                                                        },
+                                                        "rip": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                        },
+                                                        "static": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "route_map": {
+                                                                    "type": "str"
+                                                                }
+                                                            },
+                                                        },
+                                                    },
+                                                },
                                                 "global": {
                                                     "type": "dict",
                                                     "options": {
@@ -2081,6 +2359,286 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "name": {"type": "str"},
+                                                        "multicast": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "all": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        }
+                                                                    },
+                                                                },
+                                                                "bgp": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "as_number": {
+                                                                            "type": "int"
+                                                                        },
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        },
+                                                                    },
+                                                                },
+                                                                "eigrp": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "as_number": {
+                                                                            "type": "int"
+                                                                        },
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        },
+                                                                    },
+                                                                },
+                                                                "isis": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "iso_tag": {
+                                                                            "type": "str"
+                                                                        },
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        },
+                                                                    },
+                                                                },
+                                                                "mobile": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        }
+                                                                    },
+                                                                },
+                                                                "odr": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        }
+                                                                    },
+                                                                },
+                                                                "ospf": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "process_id": {
+                                                                            "type": "int"
+                                                                        },
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        },
+                                                                    },
+                                                                },
+                                                                "rip": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        }
+                                                                    },
+                                                                },
+                                                                "static": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        }
+                                                                    },
+                                                                },
+                                                                "topology": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "base": {
+                                                                            "type": "dict",
+                                                                            "options": {
+                                                                                "all": {
+                                                                                    "type": "dict",
+                                                                                    "options": {
+                                                                                        "route_map": {
+                                                                                            "type": "str"
+                                                                                        }
+                                                                                    },
+                                                                                },
+                                                                                "bgp": {
+                                                                                    "type": "dict",
+                                                                                    "options": {
+                                                                                        "as_number": {
+                                                                                            "type": "int"
+                                                                                        },
+                                                                                        "route_map": {
+                                                                                            "type": "str"
+                                                                                        },
+                                                                                    },
+                                                                                },
+                                                                                "eigrp": {
+                                                                                    "type": "dict",
+                                                                                    "options": {
+                                                                                        "as_number": {
+                                                                                            "type": "int"
+                                                                                        },
+                                                                                        "route_map": {
+                                                                                            "type": "str"
+                                                                                        },
+                                                                                    },
+                                                                                },
+                                                                                "isis": {
+                                                                                    "type": "dict",
+                                                                                    "options": {
+                                                                                        "iso_tag": {
+                                                                                            "type": "str"
+                                                                                        },
+                                                                                        "route_map": {
+                                                                                            "type": "str"
+                                                                                        },
+                                                                                    },
+                                                                                },
+                                                                                "mobile": {
+                                                                                    "type": "dict",
+                                                                                    "options": {
+                                                                                        "route_map": {
+                                                                                            "type": "str"
+                                                                                        }
+                                                                                    },
+                                                                                },
+                                                                                "odr": {
+                                                                                    "type": "dict",
+                                                                                    "options": {
+                                                                                        "route_map": {
+                                                                                            "type": "str"
+                                                                                        }
+                                                                                    },
+                                                                                },
+                                                                                "ospf": {
+                                                                                    "type": "dict",
+                                                                                    "options": {
+                                                                                        "process_id": {
+                                                                                            "type": "int"
+                                                                                        },
+                                                                                        "route_map": {
+                                                                                            "type": "str"
+                                                                                        },
+                                                                                    },
+                                                                                },
+                                                                                "rip": {
+                                                                                    "type": "dict",
+                                                                                    "options": {
+                                                                                        "route_map": {
+                                                                                            "type": "str"
+                                                                                        }
+                                                                                    },
+                                                                                },
+                                                                                "static": {
+                                                                                    "type": "dict",
+                                                                                    "options": {
+                                                                                        "route_map": {
+                                                                                            "type": "str"
+                                                                                        }
+                                                                                    },
+                                                                                },
+                                                                            },
+                                                                        }
+                                                                    },
+                                                                },
+                                                            },
+                                                        },
+                                                        "unicast": {
+                                                            "type": "dict",
+                                                            "options": {
+                                                                "all": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        }
+                                                                    },
+                                                                },
+                                                                "bgp": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "as_number": {
+                                                                            "type": "int"
+                                                                        },
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        },
+                                                                    },
+                                                                },
+                                                                "connected": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        }
+                                                                    },
+                                                                },
+                                                                "eigrp": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "as_number": {
+                                                                            "type": "int"
+                                                                        },
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        },
+                                                                    },
+                                                                },
+                                                                "isis": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "iso_tag": {
+                                                                            "type": "str"
+                                                                        },
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        },
+                                                                    },
+                                                                },
+                                                                "mobile": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        }
+                                                                    },
+                                                                },
+                                                                "odr": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        }
+                                                                    },
+                                                                },
+                                                                "ospf": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "process_id": {
+                                                                            "type": "int"
+                                                                        },
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        },
+                                                                    },
+                                                                },
+                                                                "rip": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        }
+                                                                    },
+                                                                },
+                                                                "static": {
+                                                                    "type": "dict",
+                                                                    "options": {
+                                                                        "route_map": {
+                                                                            "type": "str"
+                                                                        }
+                                                                    },
+                                                                },
+                                                            },
+                                                        },
                                                         "global": {
                                                             "type": "dict",
                                                             "options": {

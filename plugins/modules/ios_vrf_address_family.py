@@ -210,7 +210,7 @@ options:
                       number:
                         description: Number of data MDT
                         type: int
-                      immediate_swich:
+                      immediate_switch:
                         description: Switch immediately to Data MDT tree
                         type: bool
                       list: &list
@@ -220,7 +220,7 @@ options:
                           access_list_number:
                             description: Access-list number
                             type: int
-                          name:
+                          access_list_name:
                             description: IP Named Extended Access list
                             type: str
                   list: *list
@@ -242,8 +242,11 @@ options:
                 type: bool
               mode:
                 description: The type of encapsulation
-                type: bool
-                choices: ['gre', 'GRE']
+                type: dict
+                suboptions:
+                  gre:
+                    description: GRE encapsulation
+                    type: bool
               mtu:
                 description: The MTU
                 type: int
@@ -257,18 +260,10 @@ options:
                     suboptions:
                       shared_tree_prune_delay:
                         description: Delay before shared tree is pruned at C-RP PE
-                        type: dict
-                        suboptions:
-                          delay:
-                            description: Delay (in secs)
-                            type: int
+                        type: int
                       source_tree_prune_delay:
                         description: Delay before source tree is pruned at C-S PE
-                        type: dict
-                        suboptions:
-                          delay:
-                            description: Delay (in secs)
-                            type: int
+                        type: int
                   use_bgp:
                     description: Use BGP for MDT overlay signaling
                     type: dict
@@ -417,6 +412,38 @@ options:
                       name:
                         description: Source VRF name
                         type: str
+                      multicast:
+                        description: Multicast SAFI
+                        type: dict
+                        suboptions:
+                          all: *all
+                          bgp: *bgp
+                          eigrp: *eigrp
+                          isis: *isis
+                          mobile: *mobile
+                          odr: *odr
+                          ospf: *ospf
+                          rip: *rip
+                          static: *static
+                          topology: *topology
+                      unicast:
+                        description: Unicast SAFI
+                        type: dict
+                        suboptions:
+                          all: *all
+                          bgp: *bgp
+                          connected:
+                            description: Connected routes
+                            type: dict
+                            suboptions:
+                              route_map: *route_map
+                          eigrp: *eigrp
+                          isis: *isis
+                          mobile: *mobile
+                          odr: *odr
+                          ospf: *ospf
+                          rip: *rip
+                          static: *static
                       global:
                         description: global VRF
                         type: dict
