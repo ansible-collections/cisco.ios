@@ -1,0 +1,55 @@
+---
+- ansible.builtin.debug:
+    msg: START replaced ios_vrf_global state for integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Replace the provided configuration with the existing running configuration
+      register: result
+      cisco.ios.ios_vrf_global: &id001
+        config:
+          vrfs:
+            - name: VRF7
+              description: VRF7 description
+              ipv4:
+                multicast:
+                  multitopology: true
+              ipv6:
+                multicast:
+                  multitopology: true
+              rd: "7:8"
+              route_target:
+                export: "198.51.100.2:500"
+                import_config: "198.51.100.5:400"
+              vpn:
+                id: "5:45"
+              vnet:
+                tag: 300
+        state: replaced
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that before dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - "{{ replaced['before'] == result['before'] }}"
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - replaced['after'] == result['after']
+
+    - name: Replaced provided VRF global configuration (idempotent)
+      register: result
+      cisco.ios.ios_vrf_global: *id001
+    - name: Assert that task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

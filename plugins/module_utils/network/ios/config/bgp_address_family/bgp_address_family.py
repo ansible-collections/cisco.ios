@@ -47,6 +47,12 @@ class Bgp_address_family(ResourceModule):
         "default_information",
         "default_metric",
         "distance",
+        "maximum_paths.paths",
+        "maximum_paths.eibgp",
+        "maximum_paths.ibgp",
+        "maximum_secondary_paths.paths",
+        "maximum_secondary_paths.eibgp",
+        "maximum_secondary_paths.ibgp",
         "table_map",
         "bgp.additional_paths.select",  # bgp
         "bgp.additional_paths.install",

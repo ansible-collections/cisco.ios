@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_l3_interfaces - Fix gathering wrong facts for source interface in ipv4.

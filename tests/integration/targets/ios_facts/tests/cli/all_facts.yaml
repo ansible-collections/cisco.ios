@@ -55,6 +55,7 @@
       - ntp_global
       - service
       - hostname
+      - vrf_global
 
 - name: Collect list of available network resources for IOS
   register: result

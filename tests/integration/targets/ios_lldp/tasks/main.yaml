@@ -1,3 +1,0 @@
----
-- name: Main task for lldp module
-  ansible.builtin.include_tasks: cli.yaml

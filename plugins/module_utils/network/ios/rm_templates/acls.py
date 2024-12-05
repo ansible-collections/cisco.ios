@@ -88,7 +88,7 @@ def _tmplt_access_list_entries(aces):
             command += " dscp {dscp}".format(**aces)
         if aces.get("sequence") and aces.get("afi") == "ipv6":
             command += " sequence {sequence}".format(**aces)
-        if aces.get("enable_fragments") or aces.get("fragments"):
+        if aces.get("enable_fragments"):
             command += " fragments"
         if aces.get("log"):
             command += " log"

@@ -371,7 +371,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                 </td>
                 <td>when hardware is configured</td>
                 <td>
-                            <div>The available free memory on the remote device in Mb</div>
+                            <div>The available free memory on the remote device in MiB</div>
                     <br/>
                 </td>
             </tr>
@@ -386,7 +386,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                 </td>
                 <td>when hardware is configured</td>
                 <td>
-                            <div>The total memory on the remote device in Mb</div>
+                            <div>The total memory on the remote device in MiB</div>
                     <br/>
                 </td>
             </tr>

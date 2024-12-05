@@ -4,29 +4,24 @@ merged:
 
   commands:
     - router bgp 65000
-    # - address-family l2vpn evpn
-    # - neighbor 198.51.100.1 activate
-    # - neighbor 198.51.100.1 inherit peer-policy LEAF-EVPN-PEER-POLICY
-    # - address-family ipv4 vrf green
-    # - advertise l2vpn evpn
-    # - redistribute connected
-    # - redistribute static
     - address-family ipv4 multicast
     - default-metric 12
     - distance bgp 10 10 100
     - table-map test_tableMap filter
     - network 198.51.111.11 mask 255.255.255.255 route-map test
     - aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+    - address-family ipv6
+    - redistribute ospf 124 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar include-connected
     - address-family ipv4 mdt
     - bgp dmzlink-bw
     - bgp soft-reconfig-backup
     - bgp dampening 1 10 100 5
-    - address-family ipv6
-    - redistribute ospf 124 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar include-connected
     - address-family ipv4
+    - maximum-paths 12
+    - maximum-secondary-paths eibgp 2
     - redistribute connected metric 10
-    - redistribute ospf 123 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar
     - redistribute ospf 124
+    - redistribute ospf 123 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar
     - redistribute ospfv3 123 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar
 
   after:
@@ -314,6 +309,29 @@ deleted:
     - no address-family ipv4 mdt
     - no address-family ipv4
     - no address-family ipv6
+
+rendered:
+  commands:
+    - router bgp 65000
+    - address-family ipv4
+    - maximum-paths 12
+    - maximum-secondary-paths eibgp 2
+    - redistribute connected metric 10
+    - redistribute ospf 124
+    - redistribute ospf 123 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar
+    - redistribute ospfv3 123 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar
+    - address-family ipv4 multicast
+    - default-metric 12
+    - distance bgp 10 10 100
+    - table-map test_tableMap filter
+    - network 198.51.111.11 mask 255.255.255.255 route-map test
+    - aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+    - address-family ipv4 mdt
+    - bgp dmzlink-bw
+    - bgp soft-reconfig-backup
+    - bgp dampening 1 10 100 5
+    - address-family ipv6
+    - redistribute ospf 124 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar include-connected
 
 deleted_all:
   after:

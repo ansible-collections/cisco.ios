@@ -127,6 +127,7 @@ def _tmplt_ospf_neighbor(config_data):
 
 
 def _tmplt_ospf_passive_interfaces(config_data):
+    cmd = ""  # Initialize cmd to avoid potential unbound error
     if "passive_interfaces" in config_data:
         if config_data["passive_interfaces"].get("interface"):
             if config_data["passive_interfaces"].get("set_interface"):

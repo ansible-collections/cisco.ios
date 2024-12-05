@@ -3,79 +3,97 @@
     msg: Start ios_bgp_address_family rendered integration tests ansible_connection={{ ansible_connection }}
 
 - block:
-    - name: Render the commands for provided  configuration
+    - name: Render config lines for the provided configuration
       register: result
-      cisco.ios.ios_bgp_address_family:
+      cisco.ios.ios_bgp_address_family: &id001
         config:
-          as_number: 65000
           address_family:
             - afi: ipv4
-              safi: multicast
-              # vrf: blue
-              aggregate_address:
-                - address: 192.0.2.1
-                  netmask: 255.255.255.255
-                  as_confed_set: true
-              bgp:
-                aggregate_timer: 10
-                dampening:
-                  penalty_half_time: 1
-                  reuse_route_val: 1
-                  suppress_route_val: 1
-                  max_suppress: 1
-                slow_peer:
-                  - detection:
-                      threshold: 150
-              neighbor:
-                - address: 198.51.100.1
-                  aigp:
-                    send:
-                      cost_community:
-                        id: 100
-                        poi:
-                          igp_cost: true
-                          transitive: true
-                  slow_peer:
-                    - detection:
-                        threshold: 150
-                  remote_as: 10
-                  route_maps:
-                    - name: test-route
-                      out: true
-              network:
-                - address: 198.51.110.10
-                  mask: 255.255.255.255
-                  backdoor: true
+              maximum_paths:
+                paths: 12
+              maximum_secondary_paths:
+                eibgp: 2
+              redistribute:
+                - connected:
+                    metric: 10
+                - ospf:
+                    process_id: 124
+                - ospf:
+                    process_id: 123
+                    match:
+                      internal: true
+                      externals:
+                        type_1: true
+                        type_2: true
+                      nssa_externals:
+                        type_1: true
+                        type_2: true
+                    metric: 10
+                    route_map: bar
+                - ospfv3:
+                    process_id: 123
+                    match:
+                      internal: true
+                      externals:
+                        type_1: true
+                        type_2: true
+                      nssa_externals:
+                        type_1: true
+                        type_2: true
+                    metric: 10
+                    route_map: bar
             - afi: ipv4
-              safi: mdt
-              bgp:
-                dmzlink_bw: true
-                dampening:
-                  penalty_half_time: 1
-                  reuse_route_val: 10
-                  suppress_route_val: 100
-                  max_suppress: 5
-                soft_reconfig_backup: true
-            - afi: ipv4
-              safi: multicast
-              aggregate_address:
+              aggregate_addresses:
                 - address: 192.0.3.1
-                  netmask: 255.255.255.255
                   as_confed_set: true
+                  netmask: 255.255.255.255
               default_metric: 12
               distance:
                 external: 10
                 internal: 10
                 local: 100
-              network:
+              networks:
                 - address: 198.51.111.11
                   mask: 255.255.255.255
                   route_map: test
+              safi: multicast
               table_map:
-                name: test_tableMap
                 filter: true
+                name: test_tableMap
+            - afi: ipv4
+              bgp:
+                dampening:
+                  max_suppress: 5
+                  penalty_half_time: 1
+                  reuse_route_val: 10
+                  suppress_route_val: 100
+                dmzlink_bw: true
+                soft_reconfig_backup: true
+              safi: mdt
+            - afi: ipv6
+              redistribute:
+                - ospf:
+                    process_id: 124
+                    match:
+                      internal: true
+                      externals:
+                        type_1: true
+                        type_2: true
+                      nssa_externals:
+                        type_1: true
+                        type_2: true
+                    metric: 10
+                    route_map: bar
+                    include_connected: true
+          as_number: "65000"
         state: rendered
 
-    - ansible.builtin.assert:
+    - name: Assert that change was false
+      ansible.builtin.assert:
         that:
           - result.changed == false
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ rendered['commands'] | symmetric_difference(result['rendered']) | length == 0 }}"

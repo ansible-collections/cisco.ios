@@ -73,6 +73,22 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                             },
                         },
                         "auto_summary": {"type": "bool"},
+                        "maximum_paths": {
+                            "type": "dict",
+                            "options": {
+                                "paths": {"type": "int"},
+                                "eibgp": {"type": "int"},
+                                "ibgp": {"type": "int"},
+                            },
+                        },
+                        "maximum_secondary_paths": {
+                            "type": "dict",
+                            "options": {
+                                "paths": {"type": "int"},
+                                "eibgp": {"type": "int"},
+                                "ibgp": {"type": "int"},
+                            },
+                        },
                         "bgp": {
                             "type": "dict",
                             "options": {
@@ -378,7 +394,6 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                         "allpaths": {"type": "bool"},
                                     },
                                 },
-                                "password": {"type": "str", "no_log": True},
                                 "password_options": {
                                     "type": "dict",
                                     "no_log": False,

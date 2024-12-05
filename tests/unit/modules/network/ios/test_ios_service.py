@@ -129,8 +129,8 @@ class TestIosServiceModule(TestIosModule):
         }
         merged = [
             "service password-encryption",
-            "service timestamps debug uptime mesc",
-            "service timestamps log datetime mesc localtime show-timezone year",
+            "service timestamps debug uptime msec",
+            "service timestamps log datetime msec localtime show-timezone year",
         ]
         playbook["state"] = "merged"
         set_module_args(playbook)
@@ -217,7 +217,7 @@ class TestIosServiceModule(TestIosModule):
             "service password-encryption",
             "service tcp-keepalives-in",
             "service tcp-keepalives-out",
-            "service timestamps log datetime mesc localtime show-timezone year",
+            "service timestamps log datetime msec localtime show-timezone year",
             "service timestamps debug datetime",
         ]
         playbook["state"] = "overridden"
@@ -276,8 +276,8 @@ class TestIosServiceModule(TestIosModule):
             "service password-encryption",
             "service tcp-keepalives-in",
             "service tcp-keepalives-out",
-            "service timestamps log datetime mesc localtime show-timezone year",
-            "service timestamps debug datetime mesc localtime",
+            "service timestamps log datetime msec localtime show-timezone year",
+            "service timestamps debug datetime msec localtime",
         ]
         playbook["state"] = "replaced"
         set_module_args(playbook)
@@ -500,7 +500,7 @@ class TestIosServiceModule(TestIosModule):
             "service tcp-keepalives-in",
             "service tcp-keepalives-out",
             "service timestamps debug uptime localtime",
-            "service timestamps log datetime mesc localtime show-timezone year",
+            "service timestamps log datetime msec localtime show-timezone year",
         ]
         result = self.execute_module(changed=False)
         self.maxDiff = None

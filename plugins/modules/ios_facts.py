@@ -177,11 +177,11 @@ ansible_net_filesystems_info:
   returned: when hardware is configured
   type: dict
 ansible_net_memfree_mb:
-  description: The available free memory on the remote device in Mb
+  description: The available free memory on the remote device in MiB
   returned: when hardware is configured
   type: int
 ansible_net_memtotal_mb:
-  description: The total memory on the remote device in Mb
+  description: The total memory on the remote device in MiB
   returned: when hardware is configured
   type: int
 ansible_net_cpu_utilization:

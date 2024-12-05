@@ -20,7 +20,7 @@
               post_boot: 10
               cold_boot: 20
           neighbor:
-            - address: 192.0.2.2
+            - neighbor_address: 192.0.2.2
               description: replace neighbor
               remote_as: 100
               slow_peer:
