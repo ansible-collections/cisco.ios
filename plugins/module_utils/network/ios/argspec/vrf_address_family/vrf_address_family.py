@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -29,8 +30,7 @@ The arg spec for the ios_vrf_address_family module
 
 
 class Vrf_address_familyArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_vrf_address_family module
-    """
+    """The arg spec for the ios_vrf_address_family module"""
 
     argument_spec = {
         "config": {
@@ -53,7 +53,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                 "next_hop": {
                                     "type": "dict",
                                     "options": {"loopback": {"type": "int"}},
-                                }
+                                },
                             },
                         },
                         "export": {
@@ -119,12 +119,12 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                         "reinstall": {
                                             "type": "dict",
                                             "options": {
-                                                "threshold": {"type": "int"}
+                                                "threshold": {"type": "int"},
                                             },
                                         },
                                         "warning_only": {"type": "bool"},
                                     },
-                                }
+                                },
                             },
                         },
                         "inter_as_hybrid": {
@@ -150,12 +150,12 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "mdt_hello_enable": {
-                                                            "type": "bool"
-                                                        }
+                                                            "type": "bool",
+                                                        },
                                                     },
                                                 },
                                                 "mdt_hello_enable": {
-                                                    "type": "bool"
+                                                    "type": "bool",
                                                 },
                                             },
                                         },
@@ -166,27 +166,27 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "mdt_hello_enable": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                         "pim_tlv_announce": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "mdt_hello_enable": {
-                                                                    "type": "bool"
-                                                                }
+                                                                    "type": "bool",
+                                                                },
                                                             },
                                                         },
                                                     },
                                                 },
                                                 "mdt_hello_enable": {
-                                                    "type": "bool"
+                                                    "type": "bool",
                                                 },
                                                 "pim_tlv_announce": {
                                                     "type": "dict",
                                                     "options": {
                                                         "mdt_hello_enable": {
-                                                            "type": "bool"
-                                                        }
+                                                            "type": "bool",
+                                                        },
                                                     },
                                                 },
                                             },
@@ -202,16 +202,16 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                             "options": {
                                                 "number": {"type": "int"},
                                                 "immediate_switch": {
-                                                    "type": "bool"
+                                                    "type": "bool",
                                                 },
                                                 "list": {
                                                     "type": "dict",
                                                     "options": {
                                                         "access_list_number": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                         "access_list_name": {
-                                                            "type": "str"
+                                                            "type": "str",
                                                         },
                                                     },
                                                 },
@@ -221,10 +221,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                             "type": "dict",
                                             "options": {
                                                 "access_list_number": {
-                                                    "type": "int"
+                                                    "type": "int",
                                                 },
                                                 "access_list_name": {
-                                                    "type": "str"
+                                                    "type": "str",
                                                 },
                                             },
                                         },
@@ -234,7 +234,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                 "default": {
                                     "type": "dict",
                                     "options": {
-                                        "ingress_replication": {"type": "bool"}
+                                        "ingress_replication": {"type": "bool"},
                                     },
                                 },
                                 "direct": {"type": "bool"},
@@ -251,17 +251,17 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                             "type": "dict",
                                             "options": {
                                                 "shared_tree_prune_delay": {
-                                                    "type": "int"
+                                                    "type": "int",
                                                 },
                                                 "source_tree_prune_delay": {
-                                                    "type": "int"
+                                                    "type": "int",
                                                 },
                                             },
                                         },
                                         "use_bgp": {
                                             "type": "dict",
                                             "options": {
-                                                "spt_only": {"type": "bool"}
+                                                "spt_only": {"type": "bool"},
                                             },
                                         },
                                     },
@@ -269,7 +269,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                 "partitioned": {
                                     "type": "dict",
                                     "options": {
-                                        "ingress_replication": {"type": "bool"}
+                                        "ingress_replication": {"type": "bool"},
                                     },
                                 },
                                 "strict_rpf": {
@@ -299,18 +299,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "route_map": {
-                                                            "type": "str"
-                                                        }
+                                                            "type": "str",
+                                                        },
                                                     },
                                                 },
                                                 "bgp": {
                                                     "type": "dict",
                                                     "options": {
                                                         "as_number": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                         "route_map": {
-                                                            "type": "str"
+                                                            "type": "str",
                                                         },
                                                     },
                                                 },
@@ -318,10 +318,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "as_number": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                         "route_map": {
-                                                            "type": "str"
+                                                            "type": "str",
                                                         },
                                                     },
                                                 },
@@ -330,7 +330,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                     "options": {
                                                         "iso_tag": {"type": "str"},
                                                         "route_map": {
-                                                            "type": "str"
+                                                            "type": "str",
                                                         },
                                                     },
                                                 },
@@ -338,26 +338,26 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "route_map": {
-                                                            "type": "str"
-                                                        }
+                                                            "type": "str",
+                                                        },
                                                     },
                                                 },
                                                 "odr": {
                                                     "type": "dict",
                                                     "options": {
                                                         "route_map": {
-                                                            "type": "str"
-                                                        }
+                                                            "type": "str",
+                                                        },
                                                     },
                                                 },
                                                 "ospf": {
                                                     "type": "dict",
                                                     "options": {
                                                         "process_id": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                         "route_map": {
-                                                            "type": "str"
+                                                            "type": "str",
                                                         },
                                                     },
                                                 },
@@ -365,16 +365,16 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "route_map": {
-                                                            "type": "str"
-                                                        }
+                                                            "type": "str",
+                                                        },
                                                     },
                                                 },
                                                 "static": {
                                                     "type": "dict",
                                                     "options": {
                                                         "route_map": {
-                                                            "type": "str"
-                                                        }
+                                                            "type": "str",
+                                                        },
                                                     },
                                                 },
                                                 "topology": {
@@ -387,18 +387,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "bgp": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "as_number": {
-                                                                            "type": "int"
+                                                                            "type": "int",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -406,10 +406,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "as_number": {
-                                                                            "type": "int"
+                                                                            "type": "int",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -417,10 +417,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "iso_tag": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -428,26 +428,26 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "odr": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "ospf": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "process_id": {
-                                                                            "type": "int"
+                                                                            "type": "int",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -455,20 +455,20 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "static": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                             },
-                                                        }
+                                                        },
                                                     },
                                                 },
                                             },
@@ -480,18 +480,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "route_map": {
-                                                            "type": "str"
-                                                        }
+                                                            "type": "str",
+                                                        },
                                                     },
                                                 },
                                                 "bgp": {
                                                     "type": "dict",
                                                     "options": {
                                                         "as_number": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                         "route_map": {
-                                                            "type": "str"
+                                                            "type": "str",
                                                         },
                                                     },
                                                 },
@@ -499,18 +499,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "route_map": {
-                                                            "type": "str"
-                                                        }
+                                                            "type": "str",
+                                                        },
                                                     },
                                                 },
                                                 "eigrp": {
                                                     "type": "dict",
                                                     "options": {
                                                         "as_number": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                         "route_map": {
-                                                            "type": "str"
+                                                            "type": "str",
                                                         },
                                                     },
                                                 },
@@ -519,7 +519,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                     "options": {
                                                         "iso_tag": {"type": "str"},
                                                         "route_map": {
-                                                            "type": "str"
+                                                            "type": "str",
                                                         },
                                                     },
                                                 },
@@ -527,26 +527,26 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "route_map": {
-                                                            "type": "str"
-                                                        }
+                                                            "type": "str",
+                                                        },
                                                     },
                                                 },
                                                 "odr": {
                                                     "type": "dict",
                                                     "options": {
                                                         "route_map": {
-                                                            "type": "str"
-                                                        }
+                                                            "type": "str",
+                                                        },
                                                     },
                                                 },
                                                 "ospf": {
                                                     "type": "dict",
                                                     "options": {
                                                         "process_id": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                         "route_map": {
-                                                            "type": "str"
+                                                            "type": "str",
                                                         },
                                                     },
                                                 },
@@ -554,16 +554,16 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "route_map": {
-                                                            "type": "str"
-                                                        }
+                                                            "type": "str",
+                                                        },
                                                     },
                                                 },
                                                 "static": {
                                                     "type": "dict",
                                                     "options": {
                                                         "route_map": {
-                                                            "type": "str"
-                                                        }
+                                                            "type": "str",
+                                                        },
                                                     },
                                                 },
                                             },
@@ -579,18 +579,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "bgp": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "as_number": {
-                                                                    "type": "int"
+                                                                    "type": "int",
                                                                 },
                                                                 "route_map": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                             },
                                                         },
@@ -598,10 +598,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "as_number": {
-                                                                    "type": "int"
+                                                                    "type": "int",
                                                                 },
                                                                 "route_map": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                             },
                                                         },
@@ -609,10 +609,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "iso_tag": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                                 "route_map": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                             },
                                                         },
@@ -620,26 +620,26 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "odr": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "ospf": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "process_id": {
-                                                                    "type": "int"
+                                                                    "type": "int",
                                                                 },
                                                                 "route_map": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                             },
                                                         },
@@ -647,16 +647,16 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "static": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "topology": {
@@ -669,18 +669,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                         "bgp": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "as_number": {
-                                                                                    "type": "int"
+                                                                                    "type": "int",
                                                                                 },
                                                                                 "route_map": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                             },
                                                                         },
@@ -688,10 +688,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "as_number": {
-                                                                                    "type": "int"
+                                                                                    "type": "int",
                                                                                 },
                                                                                 "route_map": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                             },
                                                                         },
@@ -699,10 +699,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "iso_tag": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                                 "route_map": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                             },
                                                                         },
@@ -710,26 +710,26 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                         "odr": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                         "ospf": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "process_id": {
-                                                                                    "type": "int"
+                                                                                    "type": "int",
                                                                                 },
                                                                                 "route_map": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                             },
                                                                         },
@@ -737,20 +737,20 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                         "static": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                     },
-                                                                }
+                                                                },
                                                             },
                                                         },
                                                     },
@@ -762,18 +762,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "bgp": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "as_number": {
-                                                                    "type": "int"
+                                                                    "type": "int",
                                                                 },
                                                                 "route_map": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                             },
                                                         },
@@ -781,18 +781,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "eigrp": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "as_number": {
-                                                                    "type": "int"
+                                                                    "type": "int",
                                                                 },
                                                                 "route_map": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                             },
                                                         },
@@ -800,10 +800,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "iso_tag": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                                 "route_map": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                             },
                                                         },
@@ -811,26 +811,26 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "odr": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "ospf": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "process_id": {
-                                                                    "type": "int"
+                                                                    "type": "int",
                                                                 },
                                                                 "route_map": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                             },
                                                         },
@@ -838,16 +838,16 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "static": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                     },
@@ -862,18 +862,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "bgp": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "as_number": {
-                                                                            "type": "int"
+                                                                            "type": "int",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -881,10 +881,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "as_number": {
-                                                                            "type": "int"
+                                                                            "type": "int",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -892,10 +892,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "iso_tag": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -903,26 +903,26 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "odr": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "ospf": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "process_id": {
-                                                                            "type": "int"
+                                                                            "type": "int",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -930,16 +930,16 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "static": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "topology": {
@@ -952,18 +952,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "route_map": {
-                                                                                            "type": "str"
-                                                                                        }
+                                                                                            "type": "str",
+                                                                                        },
                                                                                     },
                                                                                 },
                                                                                 "bgp": {
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "as_number": {
-                                                                                            "type": "int"
+                                                                                            "type": "int",
                                                                                         },
                                                                                         "route_map": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                     },
                                                                                 },
@@ -971,10 +971,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "as_number": {
-                                                                                            "type": "int"
+                                                                                            "type": "int",
                                                                                         },
                                                                                         "route_map": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                     },
                                                                                 },
@@ -982,10 +982,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "iso_tag": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "route_map": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                     },
                                                                                 },
@@ -993,26 +993,26 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "route_map": {
-                                                                                            "type": "str"
-                                                                                        }
+                                                                                            "type": "str",
+                                                                                        },
                                                                                     },
                                                                                 },
                                                                                 "odr": {
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "route_map": {
-                                                                                            "type": "str"
-                                                                                        }
+                                                                                            "type": "str",
+                                                                                        },
                                                                                     },
                                                                                 },
                                                                                 "ospf": {
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "process_id": {
-                                                                                            "type": "int"
+                                                                                            "type": "int",
                                                                                         },
                                                                                         "route_map": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                     },
                                                                                 },
@@ -1020,20 +1020,20 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "route_map": {
-                                                                                            "type": "str"
-                                                                                        }
+                                                                                            "type": "str",
+                                                                                        },
                                                                                     },
                                                                                 },
                                                                                 "static": {
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "route_map": {
-                                                                                            "type": "str"
-                                                                                        }
+                                                                                            "type": "str",
+                                                                                        },
                                                                                     },
                                                                                 },
                                                                             },
-                                                                        }
+                                                                        },
                                                                     },
                                                                 },
                                                             },
@@ -1045,18 +1045,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "bgp": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "as_number": {
-                                                                            "type": "int"
+                                                                            "type": "int",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -1064,18 +1064,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "eigrp": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "as_number": {
-                                                                            "type": "int"
+                                                                            "type": "int",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -1083,10 +1083,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "iso_tag": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -1094,26 +1094,26 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "odr": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "ospf": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "process_id": {
-                                                                            "type": "int"
+                                                                            "type": "int",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -1121,16 +1121,16 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "static": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                             },
@@ -1160,10 +1160,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "distance": {
-                                                                    "type": "int"
-                                                                }
+                                                                    "type": "int",
+                                                                },
                                                             },
-                                                        }
+                                                        },
                                                     },
                                                 },
                                             },
@@ -1179,16 +1179,16 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "distance": {
-                                                                    "type": "int"
-                                                                }
+                                                                    "type": "int",
+                                                                },
                                                             },
-                                                        }
+                                                        },
                                                     },
                                                 },
                                             },
                                         },
                                     },
-                                }
+                                },
                             },
                         },
                         "route_target": {
@@ -1239,19 +1239,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "password": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                                 "access": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "number": {
-                                                                            "type": "int"
+                                                                            "type": "int",
                                                                         },
                                                                         "name": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                         "ipv6": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -1262,19 +1262,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "password": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                                 "access": {
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "number": {
-                                                                                            "type": "int"
+                                                                                            "type": "int",
                                                                                         },
                                                                                         "name": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "ipv6": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                     },
                                                                                 },
@@ -1284,19 +1284,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "password": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                                 "access": {
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "number": {
-                                                                                            "type": "int"
+                                                                                            "type": "int",
                                                                                         },
                                                                                         "name": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "ipv6": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                     },
                                                                                 },
@@ -1309,19 +1309,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "password": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "access": {
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "number": {
-                                                                                                    "type": "int"
+                                                                                                    "type": "int",
                                                                                                 },
                                                                                                 "name": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "ipv6": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                             },
                                                                                         },
@@ -1331,19 +1331,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "password": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "access": {
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "number": {
-                                                                                                    "type": "int"
+                                                                                                    "type": "int",
                                                                                                 },
                                                                                                 "name": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "ipv6": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                             },
                                                                                         },
@@ -1353,19 +1353,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "password": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "access": {
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "number": {
-                                                                                                    "type": "int"
+                                                                                                    "type": "int",
                                                                                                 },
                                                                                                 "name": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "ipv6": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                             },
                                                                                         },
@@ -1377,19 +1377,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "password": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                                 "access": {
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "number": {
-                                                                                            "type": "int"
+                                                                                            "type": "int",
                                                                                         },
                                                                                         "name": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "ipv6": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                     },
                                                                                 },
@@ -1398,7 +1398,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     },
                                                                 },
                                                                 "encrypted": {
-                                                                    "type": "bool"
+                                                                    "type": "bool",
                                                                 },
                                                             },
                                                         },
@@ -1406,19 +1406,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "password": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                                 "access": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "number": {
-                                                                            "type": "int"
+                                                                            "type": "int",
                                                                         },
                                                                         "name": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                         "ipv6": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -1429,19 +1429,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "password": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                                 "access": {
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "number": {
-                                                                                            "type": "int"
+                                                                                            "type": "int",
                                                                                         },
                                                                                         "name": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "ipv6": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                     },
                                                                                 },
@@ -1451,19 +1451,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "password": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                                 "access": {
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "number": {
-                                                                                            "type": "int"
+                                                                                            "type": "int",
                                                                                         },
                                                                                         "name": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "ipv6": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                     },
                                                                                 },
@@ -1476,19 +1476,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "password": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "access": {
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "number": {
-                                                                                                    "type": "int"
+                                                                                                    "type": "int",
                                                                                                 },
                                                                                                 "name": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "ipv6": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                             },
                                                                                         },
@@ -1498,19 +1498,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "password": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "access": {
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "number": {
-                                                                                                    "type": "int"
+                                                                                                    "type": "int",
                                                                                                 },
                                                                                                 "name": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "ipv6": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                             },
                                                                                         },
@@ -1520,19 +1520,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "password": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "access": {
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "number": {
-                                                                                                    "type": "int"
+                                                                                                    "type": "int",
                                                                                                 },
                                                                                                 "name": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "ipv6": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                             },
                                                                                         },
@@ -1544,19 +1544,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "password": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                                 "access": {
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "number": {
-                                                                                            "type": "int"
+                                                                                            "type": "int",
                                                                                         },
                                                                                         "name": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "ipv6": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                     },
                                                                                 },
@@ -1573,7 +1573,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                             },
                                         },
                                     },
-                                }
+                                },
                             },
                         },
                         "topology": {
@@ -1588,9 +1588,9 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                         "next_hop": {
                                             "type": "dict",
                                             "options": {
-                                                "loopback": {"type": "int"}
+                                                "loopback": {"type": "int"},
                                             },
-                                        }
+                                        },
                                     },
                                 },
                                 "export": {
@@ -1613,7 +1613,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                         "prefix": {"type": "int"},
                                                         "map": {"type": "str"},
                                                         "allow_evpn": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                     },
                                                 },
@@ -1641,7 +1641,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                         "limit": {"type": "int"},
                                                         "map": {"type": "str"},
                                                         "allow_evpn": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                     },
                                                 },
@@ -1661,13 +1661,13 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "threshold": {
-                                                            "type": "int"
-                                                        }
+                                                            "type": "int",
+                                                        },
                                                     },
                                                 },
                                                 "warning_only": {"type": "bool"},
                                             },
-                                        }
+                                        },
                                     },
                                 },
                                 "snmp": {
@@ -1682,10 +1682,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                     "options": {
                                                         "name": {"type": "str"},
                                                         "access_number": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                         "access_name": {
-                                                            "type": "str"
+                                                            "type": "str",
                                                         },
                                                         "ipv6": {"type": "str"},
                                                         "mode": {
@@ -1705,13 +1705,13 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "number": {
-                                                                    "type": "int"
+                                                                    "type": "int",
                                                                 },
                                                                 "name": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                                 "ipv6": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                             },
                                                         },
@@ -1722,19 +1722,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "password": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                         "access": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "number": {
-                                                                                    "type": "int"
+                                                                                    "type": "int",
                                                                                 },
                                                                                 "name": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                                 "ipv6": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                             },
                                                                         },
@@ -1745,19 +1745,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "password": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "access": {
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "number": {
-                                                                                                    "type": "int"
+                                                                                                    "type": "int",
                                                                                                 },
                                                                                                 "name": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "ipv6": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                             },
                                                                                         },
@@ -1767,19 +1767,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "password": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "access": {
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "number": {
-                                                                                                    "type": "int"
+                                                                                                    "type": "int",
                                                                                                 },
                                                                                                 "name": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "ipv6": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                             },
                                                                                         },
@@ -1792,19 +1792,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "password": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "access": {
                                                                                                     "type": "dict",
                                                                                                     "options": {
                                                                                                         "number": {
-                                                                                                            "type": "int"
+                                                                                                            "type": "int",
                                                                                                         },
                                                                                                         "name": {
-                                                                                                            "type": "str"
+                                                                                                            "type": "str",
                                                                                                         },
                                                                                                         "ipv6": {
-                                                                                                            "type": "str"
+                                                                                                            "type": "str",
                                                                                                         },
                                                                                                     },
                                                                                                 },
@@ -1814,19 +1814,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "password": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "access": {
                                                                                                     "type": "dict",
                                                                                                     "options": {
                                                                                                         "number": {
-                                                                                                            "type": "int"
+                                                                                                            "type": "int",
                                                                                                         },
                                                                                                         "name": {
-                                                                                                            "type": "str"
+                                                                                                            "type": "str",
                                                                                                         },
                                                                                                         "ipv6": {
-                                                                                                            "type": "str"
+                                                                                                            "type": "str",
                                                                                                         },
                                                                                                     },
                                                                                                 },
@@ -1836,19 +1836,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "password": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "access": {
                                                                                                     "type": "dict",
                                                                                                     "options": {
                                                                                                         "number": {
-                                                                                                            "type": "int"
+                                                                                                            "type": "int",
                                                                                                         },
                                                                                                         "name": {
-                                                                                                            "type": "str"
+                                                                                                            "type": "str",
                                                                                                         },
                                                                                                         "ipv6": {
-                                                                                                            "type": "str"
+                                                                                                            "type": "str",
                                                                                                         },
                                                                                                     },
                                                                                                 },
@@ -1860,19 +1860,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "password": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "access": {
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "number": {
-                                                                                                    "type": "int"
+                                                                                                    "type": "int",
                                                                                                 },
                                                                                                 "name": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "ipv6": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                             },
                                                                                         },
@@ -1881,7 +1881,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             },
                                                                         },
                                                                         "encrypted": {
-                                                                            "type": "bool"
+                                                                            "type": "bool",
                                                                         },
                                                                     },
                                                                 },
@@ -1889,19 +1889,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "password": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                         "access": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "number": {
-                                                                                    "type": "int"
+                                                                                    "type": "int",
                                                                                 },
                                                                                 "name": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                                 "ipv6": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                             },
                                                                         },
@@ -1912,19 +1912,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "password": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "access": {
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "number": {
-                                                                                                    "type": "int"
+                                                                                                    "type": "int",
                                                                                                 },
                                                                                                 "name": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "ipv6": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                             },
                                                                                         },
@@ -1934,19 +1934,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "password": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "access": {
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "number": {
-                                                                                                    "type": "int"
+                                                                                                    "type": "int",
                                                                                                 },
                                                                                                 "name": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "ipv6": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                             },
                                                                                         },
@@ -1959,19 +1959,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "password": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "access": {
                                                                                                     "type": "dict",
                                                                                                     "options": {
                                                                                                         "number": {
-                                                                                                            "type": "int"
+                                                                                                            "type": "int",
                                                                                                         },
                                                                                                         "name": {
-                                                                                                            "type": "str"
+                                                                                                            "type": "str",
                                                                                                         },
                                                                                                         "ipv6": {
-                                                                                                            "type": "str"
+                                                                                                            "type": "str",
                                                                                                         },
                                                                                                     },
                                                                                                 },
@@ -1981,19 +1981,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "password": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "access": {
                                                                                                     "type": "dict",
                                                                                                     "options": {
                                                                                                         "number": {
-                                                                                                            "type": "int"
+                                                                                                            "type": "int",
                                                                                                         },
                                                                                                         "name": {
-                                                                                                            "type": "str"
+                                                                                                            "type": "str",
                                                                                                         },
                                                                                                         "ipv6": {
-                                                                                                            "type": "str"
+                                                                                                            "type": "str",
                                                                                                         },
                                                                                                     },
                                                                                                 },
@@ -2003,19 +2003,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "password": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "access": {
                                                                                                     "type": "dict",
                                                                                                     "options": {
                                                                                                         "number": {
-                                                                                                            "type": "int"
+                                                                                                            "type": "int",
                                                                                                         },
                                                                                                         "name": {
-                                                                                                            "type": "str"
+                                                                                                            "type": "str",
                                                                                                         },
                                                                                                         "ipv6": {
-                                                                                                            "type": "str"
+                                                                                                            "type": "str",
                                                                                                         },
                                                                                                     },
                                                                                                 },
@@ -2027,19 +2027,19 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "password": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "access": {
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "number": {
-                                                                                                    "type": "int"
+                                                                                                    "type": "int",
                                                                                                 },
                                                                                                 "name": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "ipv6": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                             },
                                                                                         },
@@ -2052,15 +2052,15 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             },
                                                         },
                                                         "credential": {
-                                                            "type": "str"
+                                                            "type": "str",
                                                         },
                                                         "encrypted": {
-                                                            "type": "bool"
+                                                            "type": "bool",
                                                         },
                                                     },
                                                 },
                                             },
-                                        }
+                                        },
                                     },
                                 },
                                 "route_replicate": {
@@ -2069,7 +2069,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                         "recursion_policy": {
                                             "type": "dict",
                                             "options": {
-                                                "destination": {"type": "bool"}
+                                                "destination": {"type": "bool"},
                                             },
                                         },
                                         "from_config": {
@@ -2082,18 +2082,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "bgp": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "as_number": {
-                                                                    "type": "int"
+                                                                    "type": "int",
                                                                 },
                                                                 "route_map": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                             },
                                                         },
@@ -2101,10 +2101,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "as_number": {
-                                                                    "type": "int"
+                                                                    "type": "int",
                                                                 },
                                                                 "route_map": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                             },
                                                         },
@@ -2112,10 +2112,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "iso_tag": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                                 "route_map": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                             },
                                                         },
@@ -2123,26 +2123,26 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "odr": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "ospf": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "process_id": {
-                                                                    "type": "int"
+                                                                    "type": "int",
                                                                 },
                                                                 "route_map": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                             },
                                                         },
@@ -2150,16 +2150,16 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "static": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "topology": {
@@ -2172,18 +2172,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                         "bgp": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "as_number": {
-                                                                                    "type": "int"
+                                                                                    "type": "int",
                                                                                 },
                                                                                 "route_map": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                             },
                                                                         },
@@ -2191,10 +2191,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "as_number": {
-                                                                                    "type": "int"
+                                                                                    "type": "int",
                                                                                 },
                                                                                 "route_map": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                             },
                                                                         },
@@ -2202,10 +2202,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "iso_tag": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                                 "route_map": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                             },
                                                                         },
@@ -2213,26 +2213,26 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                         "odr": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                         "ospf": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "process_id": {
-                                                                                    "type": "int"
+                                                                                    "type": "int",
                                                                                 },
                                                                                 "route_map": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                             },
                                                                         },
@@ -2240,20 +2240,20 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                         "static": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                     },
-                                                                }
+                                                                },
                                                             },
                                                         },
                                                     },
@@ -2265,18 +2265,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "bgp": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "as_number": {
-                                                                    "type": "int"
+                                                                    "type": "int",
                                                                 },
                                                                 "route_map": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                             },
                                                         },
@@ -2284,18 +2284,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "eigrp": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "as_number": {
-                                                                    "type": "int"
+                                                                    "type": "int",
                                                                 },
                                                                 "route_map": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                             },
                                                         },
@@ -2303,10 +2303,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "iso_tag": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                                 "route_map": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                             },
                                                         },
@@ -2314,26 +2314,26 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "odr": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "ospf": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "process_id": {
-                                                                    "type": "int"
+                                                                    "type": "int",
                                                                 },
                                                                 "route_map": {
-                                                                    "type": "str"
+                                                                    "type": "str",
                                                                 },
                                                             },
                                                         },
@@ -2341,16 +2341,16 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                         "static": {
                                                             "type": "dict",
                                                             "options": {
                                                                 "route_map": {
-                                                                    "type": "str"
-                                                                }
+                                                                    "type": "str",
+                                                                },
                                                             },
                                                         },
                                                     },
@@ -2366,18 +2366,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "bgp": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "as_number": {
-                                                                            "type": "int"
+                                                                            "type": "int",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -2385,10 +2385,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "as_number": {
-                                                                            "type": "int"
+                                                                            "type": "int",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -2396,10 +2396,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "iso_tag": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -2407,26 +2407,26 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "odr": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "ospf": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "process_id": {
-                                                                            "type": "int"
+                                                                            "type": "int",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -2434,16 +2434,16 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "static": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "topology": {
@@ -2456,18 +2456,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "route_map": {
-                                                                                            "type": "str"
-                                                                                        }
+                                                                                            "type": "str",
+                                                                                        },
                                                                                     },
                                                                                 },
                                                                                 "bgp": {
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "as_number": {
-                                                                                            "type": "int"
+                                                                                            "type": "int",
                                                                                         },
                                                                                         "route_map": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                     },
                                                                                 },
@@ -2475,10 +2475,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "as_number": {
-                                                                                            "type": "int"
+                                                                                            "type": "int",
                                                                                         },
                                                                                         "route_map": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                     },
                                                                                 },
@@ -2486,10 +2486,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "iso_tag": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                         "route_map": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                     },
                                                                                 },
@@ -2497,26 +2497,26 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "route_map": {
-                                                                                            "type": "str"
-                                                                                        }
+                                                                                            "type": "str",
+                                                                                        },
                                                                                     },
                                                                                 },
                                                                                 "odr": {
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "route_map": {
-                                                                                            "type": "str"
-                                                                                        }
+                                                                                            "type": "str",
+                                                                                        },
                                                                                     },
                                                                                 },
                                                                                 "ospf": {
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "process_id": {
-                                                                                            "type": "int"
+                                                                                            "type": "int",
                                                                                         },
                                                                                         "route_map": {
-                                                                                            "type": "str"
+                                                                                            "type": "str",
                                                                                         },
                                                                                     },
                                                                                 },
@@ -2524,20 +2524,20 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "route_map": {
-                                                                                            "type": "str"
-                                                                                        }
+                                                                                            "type": "str",
+                                                                                        },
                                                                                     },
                                                                                 },
                                                                                 "static": {
                                                                                     "type": "dict",
                                                                                     "options": {
                                                                                         "route_map": {
-                                                                                            "type": "str"
-                                                                                        }
+                                                                                            "type": "str",
+                                                                                        },
                                                                                     },
                                                                                 },
                                                                             },
-                                                                        }
+                                                                        },
                                                                     },
                                                                 },
                                                             },
@@ -2549,18 +2549,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "bgp": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "as_number": {
-                                                                            "type": "int"
+                                                                            "type": "int",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -2568,18 +2568,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "eigrp": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "as_number": {
-                                                                            "type": "int"
+                                                                            "type": "int",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -2587,10 +2587,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "iso_tag": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -2598,26 +2598,26 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "odr": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "ospf": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "process_id": {
-                                                                            "type": "int"
+                                                                            "type": "int",
                                                                         },
                                                                         "route_map": {
-                                                                            "type": "str"
+                                                                            "type": "str",
                                                                         },
                                                                     },
                                                                 },
@@ -2625,16 +2625,16 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                                 "static": {
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "route_map": {
-                                                                            "type": "str"
-                                                                        }
+                                                                            "type": "str",
+                                                                        },
                                                                     },
                                                                 },
                                                             },
@@ -2649,18 +2649,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                         "bgp": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "as_number": {
-                                                                                    "type": "int"
+                                                                                    "type": "int",
                                                                                 },
                                                                                 "route_map": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                             },
                                                                         },
@@ -2668,10 +2668,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "as_number": {
-                                                                                    "type": "int"
+                                                                                    "type": "int",
                                                                                 },
                                                                                 "route_map": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                             },
                                                                         },
@@ -2679,10 +2679,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "iso_tag": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                                 "route_map": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                             },
                                                                         },
@@ -2690,26 +2690,26 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                         "odr": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                         "ospf": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "process_id": {
-                                                                                    "type": "int"
+                                                                                    "type": "int",
                                                                                 },
                                                                                 "route_map": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                             },
                                                                         },
@@ -2717,16 +2717,16 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                         "static": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                         "topology": {
@@ -2739,18 +2739,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "route_map": {
-                                                                                                    "type": "str"
-                                                                                                }
+                                                                                                    "type": "str",
+                                                                                                },
                                                                                             },
                                                                                         },
                                                                                         "bgp": {
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "as_number": {
-                                                                                                    "type": "int"
+                                                                                                    "type": "int",
                                                                                                 },
                                                                                                 "route_map": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                             },
                                                                                         },
@@ -2758,10 +2758,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "as_number": {
-                                                                                                    "type": "int"
+                                                                                                    "type": "int",
                                                                                                 },
                                                                                                 "route_map": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                             },
                                                                                         },
@@ -2769,10 +2769,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "iso_tag": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                                 "route_map": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                             },
                                                                                         },
@@ -2780,26 +2780,26 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "route_map": {
-                                                                                                    "type": "str"
-                                                                                                }
+                                                                                                    "type": "str",
+                                                                                                },
                                                                                             },
                                                                                         },
                                                                                         "odr": {
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "route_map": {
-                                                                                                    "type": "str"
-                                                                                                }
+                                                                                                    "type": "str",
+                                                                                                },
                                                                                             },
                                                                                         },
                                                                                         "ospf": {
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "process_id": {
-                                                                                                    "type": "int"
+                                                                                                    "type": "int",
                                                                                                 },
                                                                                                 "route_map": {
-                                                                                                    "type": "str"
+                                                                                                    "type": "str",
                                                                                                 },
                                                                                             },
                                                                                         },
@@ -2807,20 +2807,20 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "route_map": {
-                                                                                                    "type": "str"
-                                                                                                }
+                                                                                                    "type": "str",
+                                                                                                },
                                                                                             },
                                                                                         },
                                                                                         "static": {
                                                                                             "type": "dict",
                                                                                             "options": {
                                                                                                 "route_map": {
-                                                                                                    "type": "str"
-                                                                                                }
+                                                                                                    "type": "str",
+                                                                                                },
                                                                                             },
                                                                                         },
                                                                                     },
-                                                                                }
+                                                                                },
                                                                             },
                                                                         },
                                                                     },
@@ -2832,18 +2832,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                         "bgp": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "as_number": {
-                                                                                    "type": "int"
+                                                                                    "type": "int",
                                                                                 },
                                                                                 "route_map": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                             },
                                                                         },
@@ -2851,18 +2851,18 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                         "eigrp": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "as_number": {
-                                                                                    "type": "int"
+                                                                                    "type": "int",
                                                                                 },
                                                                                 "route_map": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                             },
                                                                         },
@@ -2870,10 +2870,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "iso_tag": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                                 "route_map": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                             },
                                                                         },
@@ -2881,26 +2881,26 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                         "odr": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                         "ospf": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "process_id": {
-                                                                                    "type": "int"
+                                                                                    "type": "int",
                                                                                 },
                                                                                 "route_map": {
-                                                                                    "type": "str"
+                                                                                    "type": "str",
                                                                                 },
                                                                             },
                                                                         },
@@ -2908,16 +2908,16 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                         "static": {
                                                                             "type": "dict",
                                                                             "options": {
                                                                                 "route_map": {
-                                                                                    "type": "str"
-                                                                                }
+                                                                                    "type": "str",
+                                                                                },
                                                                             },
                                                                         },
                                                                     },
@@ -2940,7 +2940,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "distance": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                         "topology": {
                                                             "type": "dict",
@@ -2949,10 +2949,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "distance": {
-                                                                            "type": "int"
-                                                                        }
+                                                                            "type": "int",
+                                                                        },
                                                                     },
-                                                                }
+                                                                },
                                                             },
                                                         },
                                                     },
@@ -2961,7 +2961,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                     "type": "dict",
                                                     "options": {
                                                         "distance": {
-                                                            "type": "int"
+                                                            "type": "int",
                                                         },
                                                         "topology": {
                                                             "type": "dict",
@@ -2970,16 +2970,16 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                                     "type": "dict",
                                                                     "options": {
                                                                         "distance": {
-                                                                            "type": "int"
-                                                                        }
+                                                                            "type": "int",
+                                                                        },
                                                                     },
-                                                                }
+                                                                },
                                                             },
                                                         },
                                                     },
                                                 },
                                             },
-                                        }
+                                        },
                                     },
                                 },
                                 "route_target": {
@@ -2997,7 +2997,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                         "csc": {
                                             "type": "dict",
                                             "options": {
-                                                "next_hop": {"type": "str"}
+                                                "next_hop": {"type": "str"},
                                             },
                                         },
                                         "next_hop": {"type": "str"},
@@ -3012,7 +3012,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                 "base": {"type": "bool"},
                                                 "name": {"type": "str"},
                                             },
-                                        }
+                                        },
                                     },
                                 },
                             },

@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,9 +16,11 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
+
 
 # UNIQUE_AFI = "{{ 'address_families_'+ afi + '_' + safi }}"
 
@@ -782,7 +785,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                             "mdt": {
                                 "default": {
                                     "ingress_replication": "{{ true }}",
-                                }
+                                },
                             },
                         },
                     },
@@ -912,8 +915,8 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                                 "overlay": {
                                     "bgp": {
                                         "shared_tree_prune_delay": "{{ shared_tree_prune_delay }}",
-                                    }
-                                }
+                                    },
+                                },
                             },
                         },
                     },
@@ -998,7 +1001,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                             "mdt": {
                                 "partitioned": {
                                     "ingress_replication": "{{ true }}",
-                                }
+                                },
                             },
                         },
                     },
@@ -1025,7 +1028,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                             "mdt": {
                                 "strict_rpf": {
                                     "interface": "{{ true }}",
-                                }
+                                },
                             },
                         },
                     },
@@ -1051,7 +1054,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                             "safi": "{{ safi }}",
                             "protection": {
                                 "local_prefixes": "{{ true }}",
-                            }
+                            },
                         },
                     },
                 },
@@ -1108,7 +1111,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                                         "unicast": {
                                             "all": {
                                                 "route_map": "{{ route_map }}",
-                                            }
+                                            },
                                         },
                                     },
                                 },
