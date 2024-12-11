@@ -511,42 +511,13 @@ class TestIosVlansModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
-            "vlan 1",
-            "no name default",
-            "no state active",
-            "no mtu 1500",
-            "shutdown",
-            "vlan 150",
-            "no name VLAN0150",
-            "no state active",
-            "no mtu 1500",
-            "no remote-span",
-            "shutdown",
-            "vlan 888",
-            "no name a_very_long_vlan_name_a_very_long_vlan_name",
-            "no state active",
-            "no mtu 1500",
-            "shutdown",
-            "vlan 1002",
-            "no name fddi-default",
-            "no state active",
-            "no mtu 1500",
-            "shutdown",
-            "vlan 1003",
-            "no name trcrf-default",
-            "no state active",
-            "no mtu 4472",
-            "shutdown",
-            "vlan 1004",
-            "no name fddinet-default",
-            "no state active",
-            "no mtu 1500",
-            "shutdown",
-            "vlan 1005",
-            "no name trbrf-default",
-            "no state active",
-            "no mtu 4472",
-            "shutdown",
+            "no vlan 1",
+            "no vlan 150",
+            "no vlan 888",
+            "no vlan 1002",
+            "no vlan 1003",
+            "no vlan 1004",
+            "no vlan 1005",
             "vlan 200",
             "name test_vlan_200",
             "state active",
@@ -558,6 +529,13 @@ class TestIosVlansModule(TestIosModule):
             "no mtu 610",
             "remote-span",
             "shutdown",
+            "no vlan configuration 1",
+            "no vlan configuration 150",
+            "no vlan configuration 888",
+            "no vlan configuration 1002",
+            "no vlan configuration 1003",
+            "no vlan configuration 1004",
+            "no vlan configuration 1005",
         ]
 
         self.assertEqual(result["commands"], commands)
@@ -1225,14 +1203,14 @@ class TestIosVlansModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
-            "vlan configuration 201",
-            "no member evpn-instance 201 vni 10201",
-            "vlan configuration 202",
-            "no member evpn-instance 202 vni 10202",
-            "vlan configuration 901",
-            "no member vni 50901",
-            "vlan configuration 902",
-            "no member vni 50902",
+            "no vlan 201",
+            "no vlan 202",
+            "no vlan 901",
+            "no vlan 902",
+            "no vlan configuration 201",
+            "no vlan configuration 202",
+            "no vlan configuration 901",
+            "no vlan configuration 902",
             "vlan configuration 101",
             "member evpn-instance 102 vni 10102",
             "vlan configuration 102",
@@ -1299,7 +1277,7 @@ class TestIosVlansModule(TestIosModule):
             ),
         )
         result = self.execute_module(changed=True)
-        commands = ["no vlan configuration 101"]
+        commands = ["no vlan 101", "no vlan configuration 101"]
         self.assertEqual(result["commands"], commands)
 
     def test_ios_vlans_config_rendered(self):
