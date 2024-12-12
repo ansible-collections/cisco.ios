@@ -78,7 +78,8 @@ def _tmplt_access_list_entries(aces):
                 )
         elif aces.get("protocol"):
             command += " {protocol}".format(**aces)
-        if aces.get("service_object_group"):                                                                                                                                                                                                      command += " object-group {service_object_group}".format(**aces)
+        if aces.get("service_object_group"):
+            command += " object-group {service_object_group}".format(**aces)
         if aces.get("source"):
             command = source_destination_common_config(aces, command, "source")
         if aces.get("destination"):
