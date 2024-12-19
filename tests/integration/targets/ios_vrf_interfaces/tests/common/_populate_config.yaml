@@ -1,0 +1,12 @@
+---
+- name: Populate with simple overridden
+  cisco.ios.ios_vrf_interfaces:
+    state: overridden
+    config:
+      - name: GigabitEthernet1
+      - name: GigabitEthernet2
+        vrf_name: vrf_B
+      - name: GigabitEthernet3
+      - name: GigabitEthernet4
+  vars:
+    ansible_connection: ansible.netcommon.network_cli

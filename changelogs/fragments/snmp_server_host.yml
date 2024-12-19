@@ -1,3 +1,0 @@
----
-bugfixes:
-  - snmp_server - Fix wrong syntax of snmp-server host command generation.

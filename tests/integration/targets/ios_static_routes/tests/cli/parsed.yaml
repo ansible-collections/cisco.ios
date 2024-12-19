@@ -1,0 +1,14 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_static_routes parsed integration test
+
+- name: Ios_static_routes parsed - play
+  register: result
+  cisco.ios.ios_static_routes:
+    running_config: "{{ lookup('file', '_parsed.cfg') }}"
+    state: parsed
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - parsed_data == result['parsed']

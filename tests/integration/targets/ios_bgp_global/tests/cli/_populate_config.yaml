@@ -18,10 +18,10 @@
             time: 50
           community: 100
           local_preference: 100
-        nopeerup_delay:
-          - post_boot: 10
+        nopeerup_delay_options:
+          post_boot: 10
       neighbor:
-        - address: 192.0.2.1
+        - neighbor_address: 192.0.2.1
           description: merge neighbor
           remote_as: 100
           aigp:
@@ -31,9 +31,6 @@
                 poi:
                   igp_cost: true
                   transitive: true
-          route_map:
-            name: test-route
-            out: true
       redistribute:
         - connected:
             metric: 10

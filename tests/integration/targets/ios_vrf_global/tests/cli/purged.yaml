@@ -1,0 +1,29 @@
+---
+- ansible.builtin.debug:
+    msg: Start Deleted integration state for ios_vrf_global ansible_connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Purge provided VRF global
+      register: result
+      cisco.ios.ios_vrf_global: &id001
+        state: purged
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "'no vrf definition VRF2' in result.commands"
+          - result.commands|length == 1
+
+    - name: Purge provided VRF global (idempotent)
+      register: result
+      cisco.ios.ios_vrf_global: *id001
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

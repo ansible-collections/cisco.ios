@@ -1,3 +1,0 @@
----
-- name: Main task for linkagg module
-  ansible.builtin.include_tasks: cli.yaml

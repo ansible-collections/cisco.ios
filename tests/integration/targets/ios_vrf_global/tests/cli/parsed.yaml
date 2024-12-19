@@ -1,0 +1,14 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_vrf_global parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parse the commands for provided configuration
+  register: result
+  cisco.ios.ios_vrf_global:
+    running_config: "{{ lookup('file', '_parsed.cfg') }}"
+    state: parsed
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - parsed['after'] == result['parsed']

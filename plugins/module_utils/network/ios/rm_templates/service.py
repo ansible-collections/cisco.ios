@@ -29,7 +29,7 @@ def handleTimestamp(config_data):
 
     if config_data.get("datetime_options"):
         datetime_op = config_data.get("datetime_options")
-        command += " mesc" if datetime_op.get("msec") else ""
+        command += " msec" if datetime_op.get("msec") else ""
         command += " localtime" if datetime_op.get("localtime") else ""
         command += " show-timezone" if datetime_op.get("show_timezone") else ""
         command += " year" if datetime_op.get("year") else ""

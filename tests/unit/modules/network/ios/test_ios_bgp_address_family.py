@@ -211,6 +211,8 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               neighbor TEST-PEER-GROUP send-community
               neighbor TEST-PEER-GROUP next-hop-self all
               neighbor 2001:db8::1 activate
+              maximum-secondary-paths eibgp 2
+              maximum-paths 12
              !
              address-family ipv4 multicast
               table-map test_tableMap filter
@@ -251,6 +253,8 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                         {
                             "afi": "ipv4",
                             "bgp": {"redistribute_internal": True},
+                            "maximum_paths": {"paths": 12},
+                            "maximum_secondary_paths": {"eibgp": 2},
                             "neighbors": [
                                 {
                                     "neighbor_address": "TEST-PEER-GROUP",
@@ -938,6 +942,8 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             afi="ipv4",
                             safi="multicast",
                             vrf="blue",
+                            maximum_paths=dict(paths=12),
+                            maximum_secondary_paths=dict(eibgp=2),
                             aggregate_address=[
                                 dict(
                                     address="192.0.2.1",
@@ -1023,6 +1029,8 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "router bgp 65000",
             "address-family ipv4 multicast vrf blue",
             "bgp dampening 1 1 1 1",
+            "maximum-secondary-paths eibgp 2",
+            "maximum-paths 12",
             "neighbor 198.51.100.1 remote-as 10",
             "neighbor 198.51.100.1 activate",
             "neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
@@ -1061,6 +1069,8 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                       neighbor TEST-PEER-GROUP send-community
                       neighbor TEST-PEER-GROUP next-hop-self all
                       neighbor 2001:db8::1 activate
+                      maximum-secondary-paths eibgp 2
+                      maximum-paths 12
                      !
                      address-family ipv4 multicast
                       table-map test_tableMap filter
@@ -1120,6 +1130,8 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             },
                         },
                     ],
+                    "maximum_paths": {"paths": 12},
+                    "maximum_secondary_paths": {"eibgp": 2},
                     "neighbors": [
                         {
                             "send_community": {"set": True},
