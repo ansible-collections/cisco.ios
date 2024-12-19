@@ -99,6 +99,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.vlans import (
     VlansFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vrf_address_family.vrf_address_family import (
+    Vrf_address_familyFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vrf_global.vrf_global import (
     Vrf_globalFacts,
 )
@@ -107,9 +110,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vrf_in
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vxlan_vtep.vxlan_vtep import (
     Vxlan_vtepFacts,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vrf_address_family.vrf_address_family import (
-    Vrf_address_familyFacts,
 )
 
 

@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -29,8 +30,7 @@ The arg spec for the ios_vrf_address_family module
 
 
 class Vrf_address_familyArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_vrf_address_family module
-    """
+    """The arg spec for the ios_vrf_address_family module"""
 
     argument_spec = {
         "config": {
@@ -53,7 +53,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                 "next_hop": {
                                     "type": "dict",
                                     "options": {"loopback": {"type": "int"}},
-                                }
+                                },
                             },
                         },
                         "export": {
@@ -119,12 +119,12 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                         "reinstall": {
                                             "type": "dict",
                                             "options": {
-                                                "threshold": {"type": "int"}
+                                                "threshold": {"type": "int"},
                                             },
                                         },
                                         "warning_only": {"type": "bool"},
                                     },
-                                }
+                                },
                             },
                         },
                         "inter_as_hybrid": {
