@@ -31,12 +31,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
     Vrf_address_familyTemplate,
 )
 
-# import debugpy
-# debugpy.listen(3000)
-# debugpy.wait_for_client()
-
-# debugpy.disconnect()
-
 
 class Vrf_address_family(ResourceModule):
     """
@@ -57,49 +51,11 @@ class Vrf_address_family(ResourceModule):
             "export.map",
             "import_config.map",
             "export.ipv4.multicast",
-            # "export.ipv4.unicast.allow_evpn",
-            # "import_config.ipv4.multicast",
-            # "import_config.ipv4.unicast",
-            # "maximum.routes.limit.warning_only",
-            # "inter_as_hybrid.csc.next_hop",
-            # "inter_as_hybrid.next_hop",
-            # "mdt.auto_discovery.ingress_replication.inter_as.mdt_hello_enable",
-            # "mdt.auto_discovery.pim.inter_as.mdt_hello_enable",
-            # "mdt.auto_discovery.pim.inter_as.pim_tlv_announce.mdt_hello_enable",
-            # "mdt.auto_discovery.ingress_replication.mdt_hello_enable",
-            # "mdt.auto_discovery.pim.mdt_hello_enable",
-            # "mdt.auto_discovery.pim.pim_tlv_announce.mdt_hello_enable",
-            # "mdt.auto_discovery.receiver_site",
-            # "mdt.data.ingress_replication.number",
-            # "mdt.data.ingress_replication.immediate_switch",
-            # "mdt.data.ingress_replication.number.immediate_switch",
-            # "mdt.data.list.access_list",
-            # "mdt.data.list.access_list_name",
-            # "mdt.data.threshold",
-            # "mdt.default_ingress_replication",
-            # "mdt.direct",
-            # "mdt.log_reuse",
-            # "mdt.mode.gre",
-            # "mdt.mtu.value",
-            # "mdt.overlay.bgp.shared_tree_prune_delay",
-            # "mdt.overlay.bgp.source_tree_prune_delay",
-            # "mdt.overlay.use_bgp_spt_only",
-            # "mdt.partitioned.ingress_replication",
-            # "mdt.strict_rpf_interface",
-            # "protection.local_prefixes",
-            # "route_replicate.recursion_policy.destination",
-            # "route_replicate.from.vrf.vrf_name.unicast.all.route_map",
-            # "route_replicate.from.vrf.vrf_name.unicast.bgp.asn.route_map",
-            # "route_replicate.from.vrf.vrf_name.unicast.connected.route_map",
-            # "route_replicate.from.vrf.vrf_name.unicast.eigrp.asn.route_map",
-            # "route_replicate.from.vrf.vrf_name.unicast.isis.route_map",
-            # "route_replicate.from.vrf.vrf_name.unicast.mobile.route_map",
-            # "route_replicate.from.vrf.vrf_name.unicast.odr.route_map",
-            # "route_replicate.from.vrf.vrf_name.unicast.ospf.id.route_map",
-            # "route_replicate.from.vrf.vrf_name.unicast.rip.route_map",
-            # "route_replicate.from.vrf.vrf_name.unicast.static.route_map",
-            # "route_target.export",
-            # "route_target.import_config",
+            "export.ipv4.unicast.allow_evpn",
+            "import_config.ipv4.multicast",
+            "import_config.ipv4.unicast",
+            "inter_as_hybrid.csc.next_hop",
+            "inter_as_hybrid.next_hop",
         ]
 
     def execute_module(self):

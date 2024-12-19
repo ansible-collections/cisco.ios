@@ -45,7 +45,7 @@ options:
             description: Address Family modifier
             type: str
             choices: ['multicast', 'unicast']
-          bgp: &bgp01
+          bgp:
             description: Commands pertaining to BGP configuration.
             type: dict
             suboptions:
@@ -56,7 +56,7 @@ options:
                   loopback:
                     description: Loopback interface for next-hop
                     type: int
-          export: &export
+          export:
             description: VRF export
             type: dict
             suboptions:
@@ -90,7 +90,7 @@ options:
                       allow_evpn:
                         description: Allow EVPN routes into global table
                         type: bool
-          import_config: &import01
+          import_config:
             description: VRF import
             type: dict
             suboptions:
@@ -124,7 +124,7 @@ options:
                       allow_evpn:
                         description: allow Global->VRF routes into EVPN
                         type: bool
-          maximum: &maximum
+          maximum:
             description: Set a limit to a routing table
             type: dict
             suboptions:
@@ -148,7 +148,7 @@ options:
                   warning_only:
                     description: Only give a warning message if limit is exceeded
                     type: bool
-          inter_as_hybrid: &inter_as_hybrid
+          inter_as_hybrid:
             description: Inter AS hybrid mode
             type: dict
             suboptions:
@@ -160,549 +160,6 @@ options:
                     description: Next-hop for the routes of a VRF in the backbone.
                     type: str
               next_hop: *next_hop
-          # mdt:
-          #   description: Backbone Multicast Distribution Tree
-          #   type: dict
-          #   suboptions:
-          #     auto_discovery:
-          #       description: BGP auto-discovery for MVPN
-          #       type: dict
-          #       suboptions:
-          #         ingress_replication:
-          #           description: BGP auto-discovery for Ingress-Replication
-          #           type: dict
-          #           suboptions:
-          #             inter_as:
-          #               description: Enable Inter-AS BGP auto-discovery
-          #               type: dict
-          #               suboptions:
-          #                 mdt_hello_enable: &mdt_hello_enable
-          #                   description: Enable PIM Hellos over MDT interface
-          #                   type: bool
-          #             mdt_hello_enable: *mdt_hello_enable
-          #         pim:
-          #           description: BGP auto-discovery for PIM
-          #           type: dict
-          #           suboptions:
-          #             inter_as:
-          #               description: Enable Inter-AS BGP auto-discovery
-          #               type: dict
-          #               suboptions:
-          #                 mdt_hello_enable: *mdt_hello_enable
-          #                 pim_tlv_announce: &pim_tlv_announce
-          #                   description: Announce PIM TLV for data MDT
-          #                   type: dict
-          #                   suboptions:
-          #                     mdt_hello_enable: *mdt_hello_enable
-          #             mdt_hello_enable: *mdt_hello_enable
-          #             pim_tlv_announce: *pim_tlv_announce
-          #         receiver_site:
-          #           description: BGP receiver only site for MVPN
-          #           type: bool
-          #     data:
-          #       description: MDT data trees
-          #       type: dict
-          #       suboptions:
-          #         ingress_replication:
-          #           description: Use Ingress-Replication to create the data MDT
-          #           type: dict
-          #           suboptions:
-          #             number:
-          #               description: Number of data MDT
-          #               type: int
-          #             immediate_switch:
-          #               description: Switch immediately to Data MDT tree
-          #               type: bool
-          #             list: &list
-          #               description: Access-list
-          #               type: dict
-          #               suboptions:
-          #                 access_list_number:
-          #                   description: Access-list number
-          #                   type: int
-          #                 access_list_name:
-          #                   description: IP Named Extended Access list
-          #                   type: str
-          #         list: *list
-          #         threshold:
-          #           description: MDT switching threshold
-          #           type: int
-          #     default:
-          #       description: Default MDT configuration
-          #       type: dict
-          #       suboptions:
-          #         ingress_replication:
-          #           description: Use Ingress-Replication for the default MDT
-          #           type: bool
-          #     direct:
-          #       description: Direct MDT's
-          #       type: bool
-          #     log_reuse:
-          #       description: Event logging for data MDT reuse
-          #       type: bool
-          #     mode:
-          #       description: The type of encapsulation
-          #       type: dict
-          #       suboptions:
-          #         gre:
-          #           description: GRE encapsulation
-          #           type: bool
-          #     mtu:
-          #       description: The MTU
-          #       type: int
-          #     overlay:
-          #       description: MDT overlay Protocol
-          #       type: dict
-          #       suboptions:
-          #         bgp:
-          #           description: BGP Overlay signalling
-          #           type: dict
-          #           suboptions:
-          #             shared_tree_prune_delay:
-          #               description: Delay before shared tree is pruned at C-RP PE
-          #               type: int
-          #             source_tree_prune_delay:
-          #               description: Delay before source tree is pruned at C-S PE
-          #               type: int
-          #         use_bgp:
-          #           description: Use BGP for MDT overlay signaling
-          #           type: dict
-          #           suboptions:
-          #             spt_only:
-          #               description: Enable SPT-only ASM mode
-          #               type: bool
-          #     partitioned:
-          #       description: Partitioned Multicast Distribution Tree
-          #       type: dict
-          #       suboptions:
-          #         ingress_replication:
-          #           description: Use Ingress-Replication for the partitioned MDT
-          #           type: bool
-          #     strict_rpf:
-          #       description: Enable strict RPF check
-          #       type: dict
-          #       suboptions:
-          #         interface:
-          #           description: Interface based strict RPF check
-          #           type: bool
-          # protection:
-          #   description: Configure local repair
-          #   type: dict
-          #   suboptions:
-          #     local_prefixes:
-          #       description: Enable protection for local prefixes
-          #       type: bool
-          # route_replicate: &route_replicate
-          #   description: Replicate (import) routes from another topology (and another VRF)
-          #   type: dict
-          #   suboptions:
-          #     recursion_policy:
-          #       description: Route replication recursion policy
-          #       type: dict
-          #       suboptions:
-          #         destination:
-          #           description: Recurse in destination topology
-          #           type: bool
-          #     from_config:
-          #       description: Replicate routes from another VRF
-          #       type: dict
-          #       suboptions:
-          #         multicast:
-          #           description: Multicast SAFI
-          #           type: dict
-          #           suboptions:
-          #             all: &all
-          #               description: All routes
-          #               type: dict
-          #               suboptions:
-          #                 route_map: &route_map
-          #                   description: Route-map reference
-          #                   type: str
-          #             bgp: &bgp
-          #               description: Border Gateway Protocol (BGP)
-          #               type: dict
-          #               suboptions:
-          #                 as_number:
-          #                   description: Autonomous System Number
-          #                   type: int
-          #                 route_map: *route_map
-          #             eigrp: &eigrp
-          #               description: Enhanced Interior Gateway Routing Protocol (EIGRP)
-          #               type: dict
-          #               suboptions:
-          #                 as_number:
-          #                   description: Autonomous System Number
-          #                   type: int
-          #                 route_map: *route_map
-          #             isis: &isis
-          #               description: Intermediate System-to-Intermediate System (ISIS)
-          #               type: dict
-          #               suboptions:
-          #                 iso_tag:
-          #                   description: ISO routing area tag
-          #                   type: str
-          #                 route_map: *route_map
-          #             mobile: &mobile
-          #               description: Mobile routes
-          #               type: dict
-          #               suboptions:
-          #                 route_map: *route_map
-          #             odr: &odr
-          #               description: On-Demand Stub routes
-          #               type: dict
-          #               suboptions:
-          #                 route_map: *route_map
-          #             ospf: &ospf
-          #               description: Open Shortest Path First (OSPF)
-          #               type: dict
-          #               suboptions:
-          #                 process_id:
-          #                   description: OSPF process ID
-          #                   type: int
-          #                 route_map: *route_map
-          #             rip: &rip
-          #               description: Routing Information Protocol (RIP)
-          #               type: dict
-          #               suboptions:
-          #                 route_map: *route_map
-          #             static: &static
-          #               description: Static routes
-          #               type: dict
-          #               suboptions:
-          #                 route_map: *route_map
-          #             topology: &topology
-          #               description: Topology name
-          #               type: dict
-          #               suboptions:
-          #                 base:
-          #                   description: Base topology
-          #                   type: dict
-          #                   suboptions:
-          #                     all: *all
-          #                     bgp: *bgp
-          #                     eigrp: *eigrp
-          #                     isis: *isis
-          #                     mobile: *mobile
-          #                     odr: *odr
-          #                     ospf: *ospf
-          #                     rip: *rip
-          #                     static: *static
-          #         unicast:
-          #           description: Unicast SAFI
-          #           type: dict
-          #           suboptions:
-          #             all: *all
-          #             bgp: *bgp
-          #             connected:
-          #               description: Connected routes
-          #               type: dict
-          #               suboptions:
-          #                 route_map: *route_map
-          #             eigrp: *eigrp
-          #             isis: *isis
-          #             mobile: *mobile
-          #             odr: *odr
-          #             ospf: *ospf
-          #             rip: *rip
-          #             static: *static
-          #         vrf:
-          #           description: Specify a source VRF
-          #           type: dict
-          #           suboptions:
-          #             name:
-          #               description: Source VRF name
-          #               type: str
-          #             multicast:
-          #               description: Multicast SAFI
-          #               type: dict
-          #               suboptions:
-          #                 all: *all
-          #                 bgp: *bgp
-          #                 eigrp: *eigrp
-          #                 isis: *isis
-          #                 mobile: *mobile
-          #                 odr: *odr
-          #                 ospf: *ospf
-          #                 rip: *rip
-          #                 static: *static
-          #                 topology: *topology
-          #             unicast:
-          #               description: Unicast SAFI
-          #               type: dict
-          #               suboptions:
-          #                 all: *all
-          #                 bgp: *bgp
-          #                 connected:
-          #                   description: Connected routes
-          #                   type: dict
-          #                   suboptions:
-          #                     route_map: *route_map
-          #                 eigrp: *eigrp
-          #                 isis: *isis
-          #                 mobile: *mobile
-          #                 odr: *odr
-          #                 ospf: *ospf
-          #                 rip: *rip
-          #                 static: *static
-          #             global:
-          #               description: global VRF
-          #               type: dict
-          #               suboptions:
-          #                 multicast:
-          #                   description: Multicast SAFI
-          #                   type: dict
-          #                   suboptions:
-          #                     all: *all
-          #                     bgp: *bgp
-          #                     eigrp: *eigrp
-          #                     isis: *isis
-          #                     mobile: *mobile
-          #                     odr: *odr
-          #                     ospf: *ospf
-          #                     rip: *rip
-          #                     static: *static
-          #                     topology: *topology
-          #                 unicast:
-          #                   description: Unicast SAFI
-          #                   type: dict
-          #                   suboptions:
-          #                     all: *all
-          #                     bgp: *bgp
-          #                     connected:
-          #                       description: Connected routes
-          #                       type: dict
-          #                       suboptions:
-          #                         route_map: *route_map
-          #                     eigrp: *eigrp
-          #                     isis: *isis
-          #                     mobile: *mobile
-          #                     odr: *odr
-          #                     ospf: *ospf
-          #                     rip: *rip
-          #                     static: *static
-          # route_replicate_distance: &route_replicate_distance
-          #   description: Route replicate distance
-          #   type: dict
-          #   suboptions:
-          #     from_config:
-          #       description: Route replicate distance from another VRF
-          #       type: dict
-          #       suboptions:
-          #         multicast:
-          #           description: Multicast SAFI
-          #           type: dict
-          #           suboptions:
-          #             distance:
-          #               description: Route replicate distance range
-          #               type: int
-          #             topology: &id001
-          #               description: Specify a Routing Topology
-          #               type: dict
-          #               suboptions:
-          #                 base:
-          #                   description: Base routing topology
-          #                   type: dict
-          #                   suboptions:
-          #                     distance:
-          #                       description: Route replicate distance range
-          #                       type: int
-          #         unicast:
-          #           description: Unicast SAFI
-          #           type: dict
-          #           suboptions:
-          #             distance:
-          #               description: Route replicate distance range
-          #               type: int
-          #             topology: *id001
-          # route_target: &route_target
-          #   description: Specify Target VPN Extended Communities.
-          #   type: dict
-          #   suboptions:
-          #     export:
-          #       description: Export Target-VPN community.
-          #       type: str
-          #     stitching:
-          #           description: VXLAN route target set.
-          #           type: bool
-          #     import_config:
-          #       description: Export Target-VPN community.
-          #       type: str
-          #     both:
-          #       description: Both export and import Target-VPN community
-          #       type: str
-          # snmp: &snmp
-          #   description: Modify snmp parameters
-          #   type: dict
-          #   suboptions:
-          #     context:
-          #       description: Configure a SNMP context
-          #       type: dict
-          #       suboptions:
-          #         name:
-          #           description: SNMP context name
-          #           type: str
-          #         community:
-          #           description: Configure a SNMP v2c Community string and access privileges.
-          #           type: dict
-          #           suboptions:
-          #             name:
-          #               description: SNMP community string
-          #               type: str
-          #             access_number:
-          #               description: Access-list number
-          #               type: int
-          #             access_name:
-          #               description: Access-list name
-          #               type: str
-          #             ipv6:
-          #               description: Specify IPv6 Named Access-List
-          #               type: str
-          #             mode:
-          #               description: SNMP community mode
-          #               type: str
-          #               choices: ['ro', 'rw']
-          #         user:
-          #           description: Configure a SNMP v3 user
-          #           type: dict
-          #           suboptions:
-          #             name:
-          #               description: SNMP user name
-          #               type: str
-          #             access: &access
-          #               description: Specify an access-list associated with this group
-          #               type: dict
-          #               suboptions:
-          #                 number:
-          #                   description: Access-list number
-          #                   type: int
-          #                 name:
-          #                   description: Access-list name
-          #                   type: str
-          #                 ipv6:
-          #                   description: Specify IPv6 Named Access-List
-          #                   type: str
-          #             auth:
-          #               description: SNMP user authentication parameters
-          #               type: dict
-          #               suboptions:
-          #                 md5:
-          #                   description: Use HMAC MD5 algorithm for authentication
-          #                   type: dict
-          #                   suboptions:
-          #                     password:
-          #                       description: authentication password for user
-          #                       type: str
-          #                     access: *access
-          #                     priv: &priv
-          #                       description: encryption parameters for the user
-          #                       type: dict
-          #                       suboptions:
-          #                         3des:
-          #                           description: Use 168 bit 3DES algorithm for encryption
-          #                           type: dict
-          #                           suboptions:
-          #                             password:
-          #                               description: SNMP user password
-          #                               type: str
-          #                             access: *access
-          #                         des:
-          #                           description: Use 56 bit DES algorithm for encryption
-          #                           type: dict
-          #                           suboptions:
-          #                             password:
-          #                               description: SNMP user password
-          #                               type: str
-          #                             access: *access
-          #                         # aes:
-          #                         #   description: Use AES algorithm for encryption
-          #                         #   type: dict
-          #                         #   suboptions:
-          #                         #     128:
-          #                         #       description: Use 128 bit AES algorithm for encryption
-          #                         #       type: dict
-          #                         #       suboptions:
-          #                         #         password:
-          #                         #           description: privacy password for user
-          #                         #           type: str
-          #                         #         access: *access
-          #                         #     192:
-          #                         #       description: Use 192 bit AES algorithm for encryption
-          #                         #       type: dict
-          #                         #       suboptions:
-          #                         #         password:
-          #                         #           description: privacy password for user
-          #                         #           type: str
-          #                         #         access: *access
-          #                         #     256:
-          #                         #       description: Use 256 bit AES algorithm for encryption
-          #                         #       type: dict
-          #                         #       suboptions:
-          #                         #         password:
-          #                         #           description: privacy password for user
-          #                         #           type: str
-          #                         #         access: *access
-          #                         des56:
-          #                           description: Use 56 bit DES algorithm for encryption
-          #                           type: dict
-          #                           suboptions:
-          #                             password:
-          #                               description: SNMP user password
-          #                               type: str
-          #                             access: *access
-          #                     encrypted:
-          #                       description: Specify passwords as MD5 or SHA digests
-          #                       type: bool
-          #                 sha:
-          #                   description: Use HMAC MD5 algorithm for authentication
-          #                   type: dict
-          #                   suboptions:
-          #                     password:
-          #                       description: SNMP user password
-          #                       type: str
-          #                     access: *access
-          #                     priv: *priv
-          #             credential:
-          #               description: If the user password is already configured and saved
-          #               type: str
-          #             encrypted:
-          #               description: Specifying passwords as MD5 or SHA digests
-          #               type: bool
-          # topology:
-          #   description: Configure a VRF topology
-          #   type: dict
-          #   suboptions:
-          #     base:
-          #       description: Base topology
-          #       type: str
-          #     name:
-          #       description: Topology name
-          #       type: str
-          #     all_interfaces:
-          #       description: Associate a non-base routing topology with all interfaces
-          #       type: bool
-          #     bgp: *bgp01
-          #     export: *export
-          #     import_config: *import01
-          #     maximum: *maximum
-          #     snmp: *snmp
-          #     route_replicate: *route_replicate
-          #     route_replicate_distance: *route_replicate_distance
-          #     route_target: *route_target
-          #     inter_as_hybrid: *inter_as_hybrid
-          #     use_topology:
-          #       description: Configure the unicast topology to be used
-          #       type: dict
-          #       suboptions:
-          #         unicast:
-          #           description: Sub Address Family
-          #           type: dict
-          #           suboptions:
-          #             base:
-          #               description: Base topology
-          #               type: bool
-          #             name:
-          #               description: Topology name
-          #               type: str
   running_config:
     description:
       - This option is used only with state I(parsed).
@@ -736,39 +193,635 @@ options:
 
 EXAMPLES = """
 
+# Using merged
+#
+# Before state:
+# -------------
+#
+# RP/0/0/CPU0:ios#show running-config | section ^vrf
+# vrf defnition test
+#
+
+- name: Merge provided configuration with device configuration
+  cisco.ios.ios_vrf_address_family:
+    config:
+      - name: test1
+        address_families:
+          - afi: "ipv4"
+            safi: "unicast"
+            bgp:
+              next_hop:
+                loopback: 40
+            export:
+              ipv4:
+                multicast:
+                  map: "single"
+                  prefix: 345
+                unicast:
+                  allow_evpn: true
+                  map: "test-map"
+                  prefix: 67
+              map: "testing-map"
+            import_config:
+              ipv4:
+                multicast:
+                  map: "import-map"
+                  prefix: 89
+                unicast:
+                  allow_evpn: true
+                  limit: 12
+                  map: "ran-map"
+              map: "import-map"
+    state: merged
+
+# Task Output:
+# ------------
+#
+# before: []
+#
+# commands:
+# - vrf definition test1
+# - address-family ipv4 unicast
+# - bgp next-hop loopback 40
+# - export map "testing-map"
+# - export ipv4 multicast 345 map "single"
+# - export ipv4 unicast 67 map "test-map" allow-evpn
+# - import map "import-map"
+# - import ipv4 multicast 89 map "import-map"
+# - import ipv4 unicast 12 map "ran-map" allow-evpn
+#
+# after:
+# - name: test1
+#   address_families:
+#     - afi: "ipv4"
+#       safi: "unicast"
+#       bgp:
+#         next_hop:
+#           loopback: 40
+#       export:
+#         ipv4:
+#           multicast:
+#             map: "single"
+#             prefix: 345
+#           unicast:
+#             allow_evpn: true
+#             map: "test-map"
+#             prefix: 67
+#         map: "testing-map"
+#       import_config:
+#         ipv4:
+#           multicast:
+#             map: "import-map"
+#             prefix: 89
+#           unicast:
+#             allow_evpn: true
+#             limit: 12
+#             map: "ran-map"
+#       map: "import-map"
+#
+# After state:
+# ------------
+#
+# RP/0/0/CPU0:ios#show running-config | section ^vrf
+# vrf definition test1
+#  address-family ipv4 unicast
+#   bgp next-hop loopback 40
+#   export map "testing-map"
+#   export ipv4 multicast 345 map "single"
+#   export ipv4 unicast 67 map "test-map" allow-evpn
+#   import map "import-map"
+#   import ipv4 multicast 89 map "import-map"
+#   import ipv4 unicast 12 map "ran-map" allow-evpn
+
+# Using replaced
+#
+# Before state:
+# -------------
+#
+# RP/0/0/CPU0:ios#show running-config | section ^vrf
+# vrf definition test1
+#  address-family ipv4 unicast
+#   bgp next-hop loopback 40
+#   export map "testing-map"
+#   export ipv4 multicast 345 map "single"
+#   export ipv4 unicast 67 map "test-map" allow-evpn
+#   import map "import-map"
+#   import ipv4 multicast 89 map "import-map"
+#   import ipv4 unicast 12 map "ran-map" allow-evpn
+
+- name: Replace the provided configuration with the existing running configuration
+  cisco.ios.ios_vrf_address_family:
+    config:
+      - name: test1
+        address_families:
+          - afi: "ipv4"
+            safi: "unicast"
+            bgp:
+              next_hop:
+                loopback: 40
+            export:
+              ipv4:
+                multicast:
+                  map: "single"
+                  prefix: 345
+                unicast:
+                  allow_evpn: true
+                  map: "test-map"
+                  prefix: 67
+              map: "testing-map"
+            import_config:
+              ipv4:
+                multicast:
+                  map: "import-map"
+                  prefix: 89
+                unicast:
+                  allow_evpn: true
+                  limit: 12
+                  map: "ran-map"
+              map: "import-map"
+    state: replaced
+
+# Task Output:
+# ------------
+#
+# before:
+# - name: test1
+#   address_families:
+#     - afi: "ipv4"
+#       safi: "unicast"
+#       bgp:
+#         next_hop:
+#           loopback: 40
+#       export:
+#         ipv4:
+#           multicast:
+#             map: "single"
+#             prefix: 345
+#           unicast:
+#             allow_evpn: true
+#             map: "test-map"
+#             prefix: 67
+#         map: "testing-map"
+#       import_config:
+#         ipv4:
+#           multicast:
+#             map: "import-map"
+#             prefix: 89
+#           unicast:
+#             allow_evpn: true
+#             limit: 12
+#             map: "ran-map"
+#       map: "import-map"
+#
+# commands:
+# - vrf definition test1
+# - address-family ipv4 unicast
+# - bgp next-hop loopback 40
+# - export map "testing-map"
+# - export ipv4 multicast 345 map "single"
+# - export ipv4 unicast 67 map "test-map" allow-evpn
+# - import map "import-map"
+# - import ipv4 multicast 89 map "import-map"
+# - import ipv4 unicast 12 map "ran-map" allow-evpn
+#
+# after:
+# - name: VRF1
+#   address_families:
+#     - afi: "ipv4"
+#       safi: "unicast"
+#       bgp:
+#         next_hop:
+#           loopback: 23
+#       export:
+#         ipv4:
+#           multicast:
+#             map: "single"
+#             prefix: 33
+#           unicast:
+#             allow_evpn: true
+#             map: "test-map1"
+#             prefix: 7
+#         map: "testing-map"
+#       import_config:
+#         ipv4:
+#           multicast:
+#             map: "import-map1"
+#             prefix: 89
+#           unicast:
+#             allow_evpn: true
+#             limit: 12
+#             map: "ran-map"
+#       map: "import-map"
+#
+# After state:
+# ------------
+#
+# RP/0/RP0/CPU0:ios(config)#show running-config vrf
+# vrf definition VRF1
+#  address-family ipv4 unicast
+#   bgp next-hop loopback 23
+#   export map "testing-map"
+#   export ipv4 multicast 345 map "single"
+#   export ipv4 unicast 67 map "test-map1" allow-evpn
+#   import map "import-map"
+#   import ipv4 multicast 89 map "import-map1"
+#   import ipv4 unicast 12 map "ran-map" allow-evpn
+
+# Using overridden
+#
+# Before state:
+# -------------
+#
+# RP/0/RP0/CPU0:ios(config)#show running-config | section ^vrf
+# vrf definition test1
+#  address-family ipv4 unicast
+#   bgp next-hop loopback 40
+#   export map "testing-map"
+#   export ipv4 multicast 345 map "single"
+#   export ipv4 unicast 67 map "test-map" allow-evpn
+#   import map "import-map"
+#   import ipv4 multicast 89 map "import-map"
+#   import ipv4 unicast 12 map "ran-map" allow-evpn
+
+- name: Override the provided configuration with the existing running configuration
+  cisco.ios.ios_vrf_address_family:
+    state: overridden
+    config:
+      - name: VRF7
+        address_families:
+          - afi: "ipv4"
+            safi: "unicast"
+            bgp:
+              next_hop:
+                loopback: 89
+            export:
+              ipv4:
+                multicast:
+                  map: "single"
+                  prefix: 345
+                unicast:
+                  allow_evpn: true
+                  map: "test-map"
+                  prefix: 67
+              map: "testing-map"
+            import_config:
+              ipv4:
+                multicast:
+                  map: "import-map"
+                  prefix: 89
+                unicast:
+                  allow_evpn: true
+                  limit: 12
+                  map: "ran-map"
+              map: "import-map"
+# Task Output:
+# ------------
+#
+# before:
+# - name: test1
+#   address_families:
+#     - afi: "ipv4"
+#       safi: "unicast"
+#       bgp:
+#         next_hop:
+#           loopback: 40
+#       export:
+#         ipv4:
+#           multicast:
+#             map: "single"
+#             prefix: 345
+#           unicast:
+#             allow_evpn: true
+#             map: "test-map"
+#             prefix: 67
+#         map: "testing-map"
+#       import_config:
+#         ipv4:
+#           multicast:
+#             map: "import-map"
+#             prefix: 89
+#           unicast:
+#             allow_evpn: true
+#             limit: 12
+#             map: "ran-map"
+#       map: "import-map"
+#
+# commands:
+# - vrf definition VRF7
+# - address-family ipv4 unicast
+# - bgp next-hop loopback 89
+# - export map "testing-map"
+# - export ipv4 multicast 345 map "single"
+# - export ipv4 unicast 67 map "test-map" allow-evpn
+# - import map "import-map"
+# - import ipv4 multicast 89 map "import-map"
+# - import ipv4 unicast 12 map "ran-map" allow-evpn
+
+#
+# after:
+# - name: VRF4
+# - name: VRF7
+#   address_families:
+#     - afi: "ipv4"
+#       safi: "unicast"
+#       bgp:
+#         next_hop:
+#           loopback: 89
+#       export:
+#         ipv4:
+#           multicast:
+#             map: "single"
+#             prefix: 345
+#           unicast:
+#             allow_evpn: true
+#             map: "test-map"
+#             prefix: 67
+#         map: "testing-map"
+#       import_config:
+#         ipv4:
+#           multicast:
+#             map: "import-map1"
+#             prefix: 89
+#           unicast:
+#             allow_evpn: true
+#             limit: 12
+#             map: "ran-map"
+#       map: "import-map"
+#
+# After state:
+# -------------
+# RP/0/RP0/CPU0:ios(config)#show running-config vrf
+# vrf definition VRF4
+# vrf definition VRF7
+#  address-family ipv4 unicast
+#   bgp next-hop loopback 89
+#   export map "testing-map"
+#   export ipv4 multicast 345 map "single"
+#   export ipv4 unicast 67 map "test-map" allow-evpn
+#   import map "import-map"
+#   import ipv4 multicast 89 map "import-map1"
+#   import ipv4 unicast 12 map "ran-map" allow-evpn
+
+# Using deleted
+#
+# Before state:
+# -------------
+#
+# RP/0/RP0/CPU0:ios(config)#show running-config | section ^vrf
+# vrf definition VRF4
+# vrf definition VRF6
+# address-family ipv4 unicast
+#  bgp next-hop loopback 40
+#  import map "import-map"
+#  import ipv4 multicast 89 map "import-map"
+#  import ipv4 unicast 12 map "ran-map" allow-evpn
+#  export map "testing-map"
+#  export ipv4 multicast 345 map "single"
+#  export ipv4 unicast 67 map "test-map" allow-evpn
+# vrf definition VRF7
+
+- name: Delete the provided configuration
+  cisco.ios.ios_vrf_address_family:
+    config:
+    state: deleted
+
+# Task Output:
+# ------------
+#
+# before:
+# - name: VRF4
+# - name: VRF6
+#   address_families:
+#     - afi: "ipv4"
+#       safi: "unicast"
+#       bgp:
+#         next_hop:
+#           loopback: 23
+#       import_config:
+#         ipv4:
+#           multicast:
+#             map: "import-map"
+#             prefix: 89
+#           unicast:
+#             map: "ran-map"
+#             limit: 12
+#             allow_evpn: true
+#         map: "import-map"
+#       export:
+#         ipv4:
+#           multicast:
+#             map: "single"
+#             prefix: 345
+#           unicast:
+#             map: "test-map"
+#             prefix: 67
+#             allow_evpn: true
+#         map: "testing-map"
+# - name: VRF7
+
+# commands:
+# - vrf definition VRF4
+# - vrf definition VRF6
+# - no address-family ipv4 unicast
+# - vrf definition VRF7
+#
+# after:
+# - name: VRF4
+# - name: VRF6
+# - name: VRF7
+#
+# After state:
+# ------------
+#
+# RP/0/RP0/CPU0:ios(config)#show running-config | section ^vrf
+# vrf definition VRF4
+# vrf definition VRF6
+# vrf definition VRF7
+
+# Using rendered
+#
+- name: Render provided configuration with device configuration
+  cisco.ios.ios_vrf_address_family:
+    config:
+      - name: test
+        address_families:
+          - afi: "ipv4"
+            safi: "unicast"
+            bgp:
+              next_hop:
+                loopback: 23
+            import_config:
+              ipv4:
+                multicast:
+                  map: "import-map"
+                  prefix: 89
+                unicast:
+                  map: "ran-map"
+                  limit: 12
+                  allow_evpn: true
+              map: "import-map"
+            export:
+              ipv4:
+                multicast:
+                  map: "single"
+                  prefix: 345
+                unicast:
+                  map: "test-map"
+                  prefix: 67
+                  allow_evpn: true
+              map: "testing-map"
+    state: rendered
+
+# Task Output:
+# ------------
+#
+# rendered:
+# - vrf definition test
+# - address-family ipv4 unicast
+# - bgp next-hop loopback 23
+# - import map "import-map"
+# - import ipv4 multicast 89 map "import-map"
+# - import ipv4 unicast 12 map "ran-map" allow-evpn
+# - export map "testing-map"
+# - export ipv4 multicast 345 map "single"
+# - export ipv4 unicast 67 map "test-map" allow-evpn
+
+# Using gathered
+#
+# Before state:
+# -------------
+#
+# RP/0/RP0/CPU0:ios(config)#show running-config | section ^vrf
+# vrf definition test1
+# address-family ipv4 unicast
+#  bgp next-hop loopback 40
+#  import map "import-map"
+#  import ipv4 multicast 89 map "import-map"
+#  import ipv4 unicast 12 map "ran-map" allow-evpn
+#  export map "testing-map"
+#  export ipv4 multicast 345 map "single"
+#  export ipv4 unicast 67 map "test-map" allow-evpn
+
+- name: Gather existing running configuration
+  cisco.ios.ios_vrf_address_family:
+    state: gathered
+
+# Task Output:
+# ------------
+#
+# gathered:
+# - name: test1
+#   address_families:
+#    - afi: "ipv4"
+#      safi: "unicast"
+#      bgp:
+#        next_hop:
+#          loopback: 40
+#      export:
+#        ipv4:
+#          multicast:
+#            map: "single"
+#            prefix: 345
+#          unicast:
+#            allow_evpn: true
+#            map: "test-map"
+#            prefix: 67
+#        map: "testing-map"
+#      import_config:
+#        ipv4:
+#          multicast:
+#            map: "import-map"
+#            prefix: 89
+#          unicast:
+#            allow_evpn: true
+#            limit: 12
+#            map: "ran-map"
+#        map: "import-map"
+
+# Using parsed
+#
+# File: parsed.cfg
+# ----------------
+#
+# vrf definition test
+# address-family ipv4 unicast
+#  bgp next-hop loopback 23
+#  import map "import-map"
+#  import ipv4 multicast 89 map "import-map"
+#  import ipv4 unicast 12 map "ran-map" allow-evpn
+#  export map "testing-map"
+#  export ipv4 multicast 345 map "single"
+#  export ipv4 unicast 67 map "test-map" allow-evpn
+
+- name: Parse the provided configuration
+  cisco.ios.ios_vrf_address_family:
+    running_config: "{{ lookup('file', 'parsed.cfg') }}"
+    state: parsed
+
+# Task Output:
+# ------------
+#
+# parsed:
+#   - address_families:
+#     - afi: ipv4
+#       bgp:
+#         next_hop:
+#           loopback: 40
+#        export:
+#          ipv4:
+#            multicast:
+#              map: "single"
+#              prefix: 345
+#            unicast:
+#              allow_evpn: true
+#              map: "test-map"
+#              prefix: 67
+#          map: "testing-map"
+#        import_config:
+#          ipv4:
+#            multicast:
+#              map: "import-map"
+#              prefix: 89
+#            unicast:
+#              allow_evpn: true
+#              limit: 12
+#              map: "ran-map"
+#       safi: unicast
+#     name: test
 """
 
 RETURN = """
 before:
-  description: The configuration prior to the module execution.
-  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
-  type: dict
+  description: The configuration prior to the model invocation.
+  returned: always
+  type: list
   sample: >
-    This output will always be in the same format as the
-    module argspec.
+    The configuration returned will always be in the same format
+     of the parameters above.
 after:
-  description: The resulting configuration after module execution.
+  description: The resulting configuration model invocation.
   returned: when changed
-  type: dict
+  type: list
   sample: >
-    This output will always be in the same format as the
-    module argspec.
+    The configuration returned will always be in the same format
+     of the parameters above.
 commands:
   description: The set of commands pushed to the remote device.
-  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  returned: always
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+  - vrf definition  VRF7
+  - address-family ipv4 unicast
+  - export map testing-map
+  - import map import-map
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+  - vrf definition VRF4
+  - address-family ipv4 unicast
+  - export map testing-map
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)
