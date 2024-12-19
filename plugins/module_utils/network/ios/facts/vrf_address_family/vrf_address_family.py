@@ -14,7 +14,7 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-# from ansible.module_utils.six import iteritems
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
@@ -27,10 +27,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vrf_
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     flatten_config,
 )
-
-# import debugpy
-# debugpy.listen(3000)
-# debugpy.wait_for_client()
 
 
 class Vrf_address_familyFacts(object):
@@ -63,8 +59,6 @@ class Vrf_address_familyFacts(object):
         if not data:
             data = self.get_config(connection)
 
-        # export_data = flatten_config(data, "export")
-        # import_data = flatten_config(export_data, "import")
         address_data = flatten_config(data, "address-family")
         data = flatten_config(address_data, "vrf")
 

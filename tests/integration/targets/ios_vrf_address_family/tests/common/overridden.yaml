@@ -18,33 +18,25 @@
                   next_hop:
                     loopback: 56
                 export:
-                  # ipv4:
-                  #   multicast:
-                  #     map: "single"
-                  #     prefix: 345
-                  #   unicast:
-                  #     allow_evpn: true
-                  #     map: "test-map"
-                  #     prefix: 67
+                  ipv4:
+                    multicast:
+                      map: "single"
+                      prefix: 345
+                    unicast:
+                      allow_evpn: true
+                      map: "test-map"
+                      prefix: 67
                   map: "testing-map"
                 import_config:
-                  # ipv4:
-                  #   multicast:
-                  #     map: "import-map"
-                  #     prefix: 89
-                  #   unicast:
-                  #     allow_evpn: true
-                  #     limit: 12
-                  #     map: "ran-map"
+                  ipv4:
+                    multicast:
+                      map: "import-map"
+                      prefix: 89
+                    unicast:
+                      allow_evpn: true
+                      limit: 12
+                      map: "ran-map"
                   map: "import-map"
-                # inter_as_hybrid:
-                #   csc:
-                #     next_hop: "1.2.3.4"
-                #   next_hop: "1.0.0.0"
-                # maximum:
-                #   routes:
-                #     limit: 2
-                #     warning_only: true
         state: overridden
       register: result
 
