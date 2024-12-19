@@ -1,0 +1,273 @@
+---
+merged:
+  before: {}
+  commands:
+    - vrf definition test1
+    - address-family ipv4 unicast
+    - bgp next-hop loopback 23
+    - import map "import-map"
+    - import ipv4 multicast 89 map "import-map"
+    - import ipv4 unicast 12 map "ran-map" allow-evpn
+    - export map "testing-map"
+    - export ipv4 multicast 345 map "single"
+    - export ipv4 unicast 67 map "test-map" allow-evpn
+  after:
+    - name: test1
+      address_families:
+        - afi: "ipv4"
+          safi: "unicast"
+          bgp:
+            next_hop:
+              loopback: 40
+          export:
+            ipv4:
+              multicast:
+                map: "single"
+                prefix: 345
+              unicast:
+                allow_evpn: true
+                map: "test-map"
+                prefix: 67
+            map: "testing-map"
+          import_config:
+            ipv4:
+              multicast:
+                map: "import-map"
+                prefix: 89
+              unicast:
+                allow_evpn: true
+                limit: 12
+                map: "ran-map"
+            map: "import-map"
+
+replaced:
+  before:
+    - name: test1
+      address_families:
+        - afi: "ipv4"
+          safi: "unicast"
+          bgp:
+            next_hop:
+              loopback: 40
+          export:
+            ipv4:
+              multicast:
+                map: "single"
+                prefix: 345
+              unicast:
+                allow_evpn: true
+                map: "test-map"
+                prefix: 67
+            map: "testing-map"
+          import_config:
+            ipv4:
+              multicast:
+                map: "import-map"
+                prefix: 89
+              unicast:
+                allow_evpn: true
+                limit: 12
+                map: "ran-map"
+            map: "import-map"
+
+  commands:
+    - vrf definition VRF6
+    - address-family ipv4 unicast
+    - bgp next-hop loopback 56
+    - import map "import-map"
+    - import ipv4 multicast 89 map "import-map"
+    - import ipv4 unicast 12 map "ran-map" allow-evpn
+    - export map "testing-map"
+    - export ipv4 multicast 345 map "single"
+    - export ipv4 unicast 67 map "test-map" allow-evpn
+
+  after:
+    - name: test1
+      address_families:
+        - afi: "ipv4"
+          safi: "unicast"
+          bgp:
+            next_hop:
+              loopback: 40
+          export:
+            ipv4:
+              multicast:
+                map: "single"
+                prefix: 345
+              unicast:
+                allow_evpn: true
+                map: "test-map"
+                prefix: 67
+            map: "testing-map"
+          import_config:
+            ipv4:
+              multicast:
+                map: "import-map"
+                prefix: 89
+              unicast:
+                allow_evpn: true
+                limit: 12
+                map: "ran-map"
+            map: "import-map"
+    - name: VRF1
+      address_families:
+        - afi: "ipv4"
+          safi: "unicast"
+          bgp:
+            next_hop:
+              loopback: 56
+          export:
+            ipv4:
+              multicast:
+                map: "test"
+                prefix: 345
+              unicast:
+                allow_evpn: true
+                map: "test-map"
+                prefix: 67
+            map: "testing-map"
+          import_config:
+            ipv4:
+              multicast:
+                map: "import-map"
+                prefix: 89
+              unicast:
+                allow_evpn: true
+                limit: 12
+                map: "ran-map"
+            map: "import-map"
+
+overridden:
+  before: {}
+  commands:
+    - vrf definition VRF7
+    - address-family ipv4 unicast
+    - bgp next-hop loopback 23
+    - import map "import-map1"
+    - import ipv4 multicast 78 map "import-map"
+    - import ipv4 unicast 12 map "ran-map" allow-evpn
+    - export map "testing-map"
+    - export ipv4 multicast 345 map "test"
+    - export ipv4 unicast 56 map "test-map" allow-evpn
+  after:
+    - name: VRF7
+      address_families:
+        - afi: "ipv4"
+          safi: "unicast"
+          bgp:
+            next_hop:
+              loopback: 23
+          export:
+            ipv4:
+              multicast:
+                map: "test"
+                prefix: 345
+              unicast:
+                allow_evpn: true
+                map: "test-map"
+                prefix: 56
+            map: "testing-map"
+          import_config:
+            ipv4:
+              multicast:
+                map: "import-map1"
+                prefix: 78
+              unicast:
+                allow_evpn: true
+                limit: 12
+                map: "ran-map"
+            map: "import-map"
+
+gathered:
+  after:
+    - name: test1
+      address_families:
+        - afi: "ipv4"
+          safi: "unicast"
+          bgp:
+            next_hop:
+              loopback: 40
+          export:
+            ipv4:
+              multicast:
+                map: "single"
+                prefix: 345
+              unicast:
+                allow_evpn: true
+                map: "test-map"
+                prefix: 67
+            map: "testing-map"
+          import_config:
+            ipv4:
+              multicast:
+                map: "import-map"
+                prefix: 89
+              unicast:
+                allow_evpn: true
+                limit: 12
+                map: "ran-map"
+            map: "import-map"
+parsed:
+  after:
+    - name: test
+      address_families:
+        - afi: "ipv4"
+          safi: "unicast"
+          bgp:
+            next_hop:
+              loopback: 40
+          export:
+            ipv4:
+              multicast:
+                map: "single"
+                prefix: 345
+              unicast:
+                allow_evpn: true
+                map: "test-map"
+                prefix: 67
+            map: "testing-map"
+          import_config:
+            ipv4:
+              multicast:
+                map: "import-map"
+                prefix: 89
+              unicast:
+                allow_evpn: true
+                limit: 12
+                map: "ran-map"
+            map: "import-map"
+
+deleted:
+  before:
+    - name: test1
+      address_families:
+        - afi: "ipv4"
+          safi: "unicast"
+          bgp:
+            next_hop:
+              loopback: 40
+          export:
+            ipv4:
+              multicast:
+                map: "single"
+                prefix: 345
+              unicast:
+                allow_evpn: true
+                map: "test-map"
+                prefix: 67
+            map: "testing-map"
+          import_config:
+            ipv4:
+              multicast:
+                map: "import-map"
+                prefix: 89
+              unicast:
+                allow_evpn: true
+                limit: 12
+                map: "ran-map"
+            map: "import-map"
+  commands:
+    - vrf definition test1
+    - no address-family ipv4 unicast
+  after:
+    - name: test1

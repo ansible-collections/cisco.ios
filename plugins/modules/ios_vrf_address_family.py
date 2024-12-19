@@ -16,7 +16,7 @@ DOCUMENTATION = """
 module: ios_vrf_address_family
 short_description: Resource module to configure VRF definitions.
 description: This module provides declarative management of VRF definitions on Cisco IOS.
-version_added: 7.0.0
+version_added: 10.0.0
 author: Ruchi Pakhle (@Ruchip16)
 notes:
   - Tested against Cisco IOSXE version 17.3 on CML.
@@ -160,549 +160,549 @@ options:
                     description: Next-hop for the routes of a VRF in the backbone.
                     type: str
               next_hop: *next_hop
-          mdt:
-            description: Backbone Multicast Distribution Tree
-            type: dict
-            suboptions:
-              auto_discovery:
-                description: BGP auto-discovery for MVPN
-                type: dict
-                suboptions:
-                  ingress_replication:
-                    description: BGP auto-discovery for Ingress-Replication
-                    type: dict
-                    suboptions:
-                      inter_as:
-                        description: Enable Inter-AS BGP auto-discovery
-                        type: dict
-                        suboptions:
-                          mdt_hello_enable: &mdt_hello_enable
-                            description: Enable PIM Hellos over MDT interface
-                            type: bool
-                      mdt_hello_enable: *mdt_hello_enable
-                  pim:
-                    description: BGP auto-discovery for PIM
-                    type: dict
-                    suboptions:
-                      inter_as:
-                        description: Enable Inter-AS BGP auto-discovery
-                        type: dict
-                        suboptions:
-                          mdt_hello_enable: *mdt_hello_enable
-                          pim_tlv_announce: &pim_tlv_announce
-                            description: Announce PIM TLV for data MDT
-                            type: dict
-                            suboptions:
-                              mdt_hello_enable: *mdt_hello_enable
-                      mdt_hello_enable: *mdt_hello_enable
-                      pim_tlv_announce: *pim_tlv_announce
-                  receiver_site:
-                    description: BGP receiver only site for MVPN
-                    type: bool
-              data:
-                description: MDT data trees
-                type: dict
-                suboptions:
-                  ingress_replication:
-                    description: Use Ingress-Replication to create the data MDT
-                    type: dict
-                    suboptions:
-                      number:
-                        description: Number of data MDT
-                        type: int
-                      immediate_switch:
-                        description: Switch immediately to Data MDT tree
-                        type: bool
-                      list: &list
-                        description: Access-list
-                        type: dict
-                        suboptions:
-                          access_list_number:
-                            description: Access-list number
-                            type: int
-                          access_list_name:
-                            description: IP Named Extended Access list
-                            type: str
-                  list: *list
-                  threshold:
-                    description: MDT switching threshold
-                    type: int
-              default:
-                description: Default MDT configuration
-                type: dict
-                suboptions:
-                  ingress_replication:
-                    description: Use Ingress-Replication for the default MDT
-                    type: bool
-              direct:
-                description: Direct MDT's
-                type: bool
-              log_reuse:
-                description: Event logging for data MDT reuse
-                type: bool
-              mode:
-                description: The type of encapsulation
-                type: dict
-                suboptions:
-                  gre:
-                    description: GRE encapsulation
-                    type: bool
-              mtu:
-                description: The MTU
-                type: int
-              overlay:
-                description: MDT overlay Protocol
-                type: dict
-                suboptions:
-                  bgp:
-                    description: BGP Overlay signalling
-                    type: dict
-                    suboptions:
-                      shared_tree_prune_delay:
-                        description: Delay before shared tree is pruned at C-RP PE
-                        type: int
-                      source_tree_prune_delay:
-                        description: Delay before source tree is pruned at C-S PE
-                        type: int
-                  use_bgp:
-                    description: Use BGP for MDT overlay signaling
-                    type: dict
-                    suboptions:
-                      spt_only:
-                        description: Enable SPT-only ASM mode
-                        type: bool
-              partitioned:
-                description: Partitioned Multicast Distribution Tree
-                type: dict
-                suboptions:
-                  ingress_replication:
-                    description: Use Ingress-Replication for the partitioned MDT
-                    type: bool
-              strict_rpf:
-                description: Enable strict RPF check
-                type: dict
-                suboptions:
-                  interface:
-                    description: Interface based strict RPF check
-                    type: bool
-          protection:
-            description: Configure local repair
-            type: dict
-            suboptions:
-              local_prefixes:
-                description: Enable protection for local prefixes
-                type: bool
-          route_replicate: &route_replicate
-            description: Replicate (import) routes from another topology (and another VRF)
-            type: dict
-            suboptions:
-              recursion_policy:
-                description: Route replication recursion policy
-                type: dict
-                suboptions:
-                  destination:
-                    description: Recurse in destination topology
-                    type: bool
-              from_config:
-                description: Replicate routes from another VRF
-                type: dict
-                suboptions:
-                  multicast:
-                    description: Multicast SAFI
-                    type: dict
-                    suboptions:
-                      all: &all
-                        description: All routes
-                        type: dict
-                        suboptions:
-                          route_map: &route_map
-                            description: Route-map reference
-                            type: str
-                      bgp: &bgp
-                        description: Border Gateway Protocol (BGP)
-                        type: dict
-                        suboptions:
-                          as_number:
-                            description: Autonomous System Number
-                            type: int
-                          route_map: *route_map
-                      eigrp: &eigrp
-                        description: Enhanced Interior Gateway Routing Protocol (EIGRP)
-                        type: dict
-                        suboptions:
-                          as_number:
-                            description: Autonomous System Number
-                            type: int
-                          route_map: *route_map
-                      isis: &isis
-                        description: Intermediate System-to-Intermediate System (ISIS)
-                        type: dict
-                        suboptions:
-                          iso_tag:
-                            description: ISO routing area tag
-                            type: str
-                          route_map: *route_map
-                      mobile: &mobile
-                        description: Mobile routes
-                        type: dict
-                        suboptions:
-                          route_map: *route_map
-                      odr: &odr
-                        description: On-Demand Stub routes
-                        type: dict
-                        suboptions:
-                          route_map: *route_map
-                      ospf: &ospf
-                        description: Open Shortest Path First (OSPF)
-                        type: dict
-                        suboptions:
-                          process_id:
-                            description: OSPF process ID
-                            type: int
-                          route_map: *route_map
-                      rip: &rip
-                        description: Routing Information Protocol (RIP)
-                        type: dict
-                        suboptions:
-                          route_map: *route_map
-                      static: &static
-                        description: Static routes
-                        type: dict
-                        suboptions:
-                          route_map: *route_map
-                      topology: &topology
-                        description: Topology name
-                        type: dict
-                        suboptions:
-                          base:
-                            description: Base topology
-                            type: dict
-                            suboptions:
-                              all: *all
-                              bgp: *bgp
-                              eigrp: *eigrp
-                              isis: *isis
-                              mobile: *mobile
-                              odr: *odr
-                              ospf: *ospf
-                              rip: *rip
-                              static: *static
-                  unicast:
-                    description: Unicast SAFI
-                    type: dict
-                    suboptions:
-                      all: *all
-                      bgp: *bgp
-                      connected:
-                        description: Connected routes
-                        type: dict
-                        suboptions:
-                          route_map: *route_map
-                      eigrp: *eigrp
-                      isis: *isis
-                      mobile: *mobile
-                      odr: *odr
-                      ospf: *ospf
-                      rip: *rip
-                      static: *static
-                  vrf:
-                    description: Specify a source VRF
-                    type: dict
-                    suboptions:
-                      name:
-                        description: Source VRF name
-                        type: str
-                      multicast:
-                        description: Multicast SAFI
-                        type: dict
-                        suboptions:
-                          all: *all
-                          bgp: *bgp
-                          eigrp: *eigrp
-                          isis: *isis
-                          mobile: *mobile
-                          odr: *odr
-                          ospf: *ospf
-                          rip: *rip
-                          static: *static
-                          topology: *topology
-                      unicast:
-                        description: Unicast SAFI
-                        type: dict
-                        suboptions:
-                          all: *all
-                          bgp: *bgp
-                          connected:
-                            description: Connected routes
-                            type: dict
-                            suboptions:
-                              route_map: *route_map
-                          eigrp: *eigrp
-                          isis: *isis
-                          mobile: *mobile
-                          odr: *odr
-                          ospf: *ospf
-                          rip: *rip
-                          static: *static
-                      global:
-                        description: global VRF
-                        type: dict
-                        suboptions:
-                          multicast:
-                            description: Multicast SAFI
-                            type: dict
-                            suboptions:
-                              all: *all
-                              bgp: *bgp
-                              eigrp: *eigrp
-                              isis: *isis
-                              mobile: *mobile
-                              odr: *odr
-                              ospf: *ospf
-                              rip: *rip
-                              static: *static
-                              topology: *topology
-                          unicast:
-                            description: Unicast SAFI
-                            type: dict
-                            suboptions:
-                              all: *all
-                              bgp: *bgp
-                              connected:
-                                description: Connected routes
-                                type: dict
-                                suboptions:
-                                  route_map: *route_map
-                              eigrp: *eigrp
-                              isis: *isis
-                              mobile: *mobile
-                              odr: *odr
-                              ospf: *ospf
-                              rip: *rip
-                              static: *static
-          route_replicate_distance: &route_replicate_distance
-            description: Route replicate distance
-            type: dict
-            suboptions:
-              from_config:
-                description: Route replicate distance from another VRF
-                type: dict
-                suboptions:
-                  multicast:
-                    description: Multicast SAFI
-                    type: dict
-                    suboptions:
-                      distance:
-                        description: Route replicate distance range
-                        type: int
-                      topology: &id001
-                        description: Specify a Routing Topology
-                        type: dict
-                        suboptions:
-                          base:
-                            description: Base routing topology
-                            type: dict
-                            suboptions:
-                              distance:
-                                description: Route replicate distance range
-                                type: int
-                  unicast:
-                    description: Unicast SAFI
-                    type: dict
-                    suboptions:
-                      distance:
-                        description: Route replicate distance range
-                        type: int
-                      topology: *id001
-          route_target: &route_target
-            description: Specify Target VPN Extended Communities.
-            type: dict
-            suboptions:
-              export:
-                description: Export Target-VPN community.
-                type: str
-              stitching:
-                    description: VXLAN route target set.
-                    type: bool
-              import_config:
-                description: Export Target-VPN community.
-                type: str
-              both:
-                description: Both export and import Target-VPN community
-                type: str
-          snmp: &snmp
-            description: Modify snmp parameters
-            type: dict
-            suboptions:
-              context:
-                description: Configure a SNMP context
-                type: dict
-                suboptions:
-                  name:
-                    description: SNMP context name
-                    type: str
-                  community:
-                    description: Configure a SNMP v2c Community string and access privileges.
-                    type: dict
-                    suboptions:
-                      name:
-                        description: SNMP community string
-                        type: str
-                      access_number:
-                        description: Access-list number
-                        type: int
-                      access_name:
-                        description: Access-list name
-                        type: str
-                      ipv6:
-                        description: Specify IPv6 Named Access-List
-                        type: str
-                      mode:
-                        description: SNMP community mode
-                        type: str
-                        choices: ['ro', 'rw']
-                  user:
-                    description: Configure a SNMP v3 user
-                    type: dict
-                    suboptions:
-                      name:
-                        description: SNMP user name
-                        type: str
-                      access: &access
-                        description: Specify an access-list associated with this group
-                        type: dict
-                        suboptions:
-                          number:
-                            description: Access-list number
-                            type: int
-                          name:
-                            description: Access-list name
-                            type: str
-                          ipv6:
-                            description: Specify IPv6 Named Access-List
-                            type: str
-                      auth:
-                        description: SNMP user authentication parameters
-                        type: dict
-                        suboptions:
-                          md5:
-                            description: Use HMAC MD5 algorithm for authentication
-                            type: dict
-                            suboptions:
-                              password:
-                                description: authentication password for user
-                                type: str
-                              access: *access
-                              priv: &priv
-                                description: encryption parameters for the user
-                                type: dict
-                                suboptions:
-                                  3des:
-                                    description: Use 168 bit 3DES algorithm for encryption
-                                    type: dict
-                                    suboptions:
-                                      password:
-                                        description: SNMP user password
-                                        type: str
-                                      access: *access
-                                  des:
-                                    description: Use 56 bit DES algorithm for encryption
-                                    type: dict
-                                    suboptions:
-                                      password:
-                                        description: SNMP user password
-                                        type: str
-                                      access: *access
-                                  aes:
-                                    description: Use AES algorithm for encryption
-                                    type: dict
-                                    suboptions:
-                                      128:
-                                        description: Use 128 bit AES algorithm for encryption
-                                        type: dict
-                                        suboptions:
-                                          password:
-                                            description: privacy password for user
-                                            type: str
-                                          access: *access
-                                      192:
-                                        description: Use 192 bit AES algorithm for encryption
-                                        type: dict
-                                        suboptions:
-                                          password:
-                                            description: privacy password for user
-                                            type: str
-                                          access: *access
-                                      256:
-                                        description: Use 256 bit AES algorithm for encryption
-                                        type: dict
-                                        suboptions:
-                                          password:
-                                            description: privacy password for user
-                                            type: str
-                                          access: *access
-                                  des56:
-                                    description: Use 56 bit DES algorithm for encryption
-                                    type: dict
-                                    suboptions:
-                                      password:
-                                        description: SNMP user password
-                                        type: str
-                                      access: *access
-                              encrypted:
-                                description: Specify passwords as MD5 or SHA digests
-                                type: bool
-                          sha:
-                            description: Use HMAC MD5 algorithm for authentication
-                            type: dict
-                            suboptions:
-                              password:
-                                description: SNMP user password
-                                type: str
-                              access: *access
-                              priv: *priv
-                      credential:
-                        description: If the user password is already configured and saved
-                        type: str
-                      encrypted:
-                        description: Specifying passwords as MD5 or SHA digests
-                        type: bool
-          topology:
-            description: Configure a VRF topology
-            type: dict
-            suboptions:
-              base:
-                description: Base topology
-                type: str
-              name:
-                description: Topology name
-                type: str
-              all_interfaces:
-                description: Associate a non-base routing topology with all interfaces
-                type: bool
-              bgp: *bgp01
-              export: *export
-              import_config: *import01
-              maximum: *maximum
-              snmp: *snmp
-              route_replicate: *route_replicate
-              route_replicate_distance: *route_replicate_distance
-              route_target: *route_target
-              inter_as_hybrid: *inter_as_hybrid
-              use_topology:
-                description: Configure the unicast topology to be used
-                type: dict
-                suboptions:
-                  unicast:
-                    description: Sub Address Family
-                    type: dict
-                    suboptions:
-                      base:
-                        description: Base topology
-                        type: bool
-                      name:
-                        description: Topology name
-                        type: str
+          # mdt:
+          #   description: Backbone Multicast Distribution Tree
+          #   type: dict
+          #   suboptions:
+          #     auto_discovery:
+          #       description: BGP auto-discovery for MVPN
+          #       type: dict
+          #       suboptions:
+          #         ingress_replication:
+          #           description: BGP auto-discovery for Ingress-Replication
+          #           type: dict
+          #           suboptions:
+          #             inter_as:
+          #               description: Enable Inter-AS BGP auto-discovery
+          #               type: dict
+          #               suboptions:
+          #                 mdt_hello_enable: &mdt_hello_enable
+          #                   description: Enable PIM Hellos over MDT interface
+          #                   type: bool
+          #             mdt_hello_enable: *mdt_hello_enable
+          #         pim:
+          #           description: BGP auto-discovery for PIM
+          #           type: dict
+          #           suboptions:
+          #             inter_as:
+          #               description: Enable Inter-AS BGP auto-discovery
+          #               type: dict
+          #               suboptions:
+          #                 mdt_hello_enable: *mdt_hello_enable
+          #                 pim_tlv_announce: &pim_tlv_announce
+          #                   description: Announce PIM TLV for data MDT
+          #                   type: dict
+          #                   suboptions:
+          #                     mdt_hello_enable: *mdt_hello_enable
+          #             mdt_hello_enable: *mdt_hello_enable
+          #             pim_tlv_announce: *pim_tlv_announce
+          #         receiver_site:
+          #           description: BGP receiver only site for MVPN
+          #           type: bool
+          #     data:
+          #       description: MDT data trees
+          #       type: dict
+          #       suboptions:
+          #         ingress_replication:
+          #           description: Use Ingress-Replication to create the data MDT
+          #           type: dict
+          #           suboptions:
+          #             number:
+          #               description: Number of data MDT
+          #               type: int
+          #             immediate_switch:
+          #               description: Switch immediately to Data MDT tree
+          #               type: bool
+          #             list: &list
+          #               description: Access-list
+          #               type: dict
+          #               suboptions:
+          #                 access_list_number:
+          #                   description: Access-list number
+          #                   type: int
+          #                 access_list_name:
+          #                   description: IP Named Extended Access list
+          #                   type: str
+          #         list: *list
+          #         threshold:
+          #           description: MDT switching threshold
+          #           type: int
+          #     default:
+          #       description: Default MDT configuration
+          #       type: dict
+          #       suboptions:
+          #         ingress_replication:
+          #           description: Use Ingress-Replication for the default MDT
+          #           type: bool
+          #     direct:
+          #       description: Direct MDT's
+          #       type: bool
+          #     log_reuse:
+          #       description: Event logging for data MDT reuse
+          #       type: bool
+          #     mode:
+          #       description: The type of encapsulation
+          #       type: dict
+          #       suboptions:
+          #         gre:
+          #           description: GRE encapsulation
+          #           type: bool
+          #     mtu:
+          #       description: The MTU
+          #       type: int
+          #     overlay:
+          #       description: MDT overlay Protocol
+          #       type: dict
+          #       suboptions:
+          #         bgp:
+          #           description: BGP Overlay signalling
+          #           type: dict
+          #           suboptions:
+          #             shared_tree_prune_delay:
+          #               description: Delay before shared tree is pruned at C-RP PE
+          #               type: int
+          #             source_tree_prune_delay:
+          #               description: Delay before source tree is pruned at C-S PE
+          #               type: int
+          #         use_bgp:
+          #           description: Use BGP for MDT overlay signaling
+          #           type: dict
+          #           suboptions:
+          #             spt_only:
+          #               description: Enable SPT-only ASM mode
+          #               type: bool
+          #     partitioned:
+          #       description: Partitioned Multicast Distribution Tree
+          #       type: dict
+          #       suboptions:
+          #         ingress_replication:
+          #           description: Use Ingress-Replication for the partitioned MDT
+          #           type: bool
+          #     strict_rpf:
+          #       description: Enable strict RPF check
+          #       type: dict
+          #       suboptions:
+          #         interface:
+          #           description: Interface based strict RPF check
+          #           type: bool
+          # protection:
+          #   description: Configure local repair
+          #   type: dict
+          #   suboptions:
+          #     local_prefixes:
+          #       description: Enable protection for local prefixes
+          #       type: bool
+          # route_replicate: &route_replicate
+          #   description: Replicate (import) routes from another topology (and another VRF)
+          #   type: dict
+          #   suboptions:
+          #     recursion_policy:
+          #       description: Route replication recursion policy
+          #       type: dict
+          #       suboptions:
+          #         destination:
+          #           description: Recurse in destination topology
+          #           type: bool
+          #     from_config:
+          #       description: Replicate routes from another VRF
+          #       type: dict
+          #       suboptions:
+          #         multicast:
+          #           description: Multicast SAFI
+          #           type: dict
+          #           suboptions:
+          #             all: &all
+          #               description: All routes
+          #               type: dict
+          #               suboptions:
+          #                 route_map: &route_map
+          #                   description: Route-map reference
+          #                   type: str
+          #             bgp: &bgp
+          #               description: Border Gateway Protocol (BGP)
+          #               type: dict
+          #               suboptions:
+          #                 as_number:
+          #                   description: Autonomous System Number
+          #                   type: int
+          #                 route_map: *route_map
+          #             eigrp: &eigrp
+          #               description: Enhanced Interior Gateway Routing Protocol (EIGRP)
+          #               type: dict
+          #               suboptions:
+          #                 as_number:
+          #                   description: Autonomous System Number
+          #                   type: int
+          #                 route_map: *route_map
+          #             isis: &isis
+          #               description: Intermediate System-to-Intermediate System (ISIS)
+          #               type: dict
+          #               suboptions:
+          #                 iso_tag:
+          #                   description: ISO routing area tag
+          #                   type: str
+          #                 route_map: *route_map
+          #             mobile: &mobile
+          #               description: Mobile routes
+          #               type: dict
+          #               suboptions:
+          #                 route_map: *route_map
+          #             odr: &odr
+          #               description: On-Demand Stub routes
+          #               type: dict
+          #               suboptions:
+          #                 route_map: *route_map
+          #             ospf: &ospf
+          #               description: Open Shortest Path First (OSPF)
+          #               type: dict
+          #               suboptions:
+          #                 process_id:
+          #                   description: OSPF process ID
+          #                   type: int
+          #                 route_map: *route_map
+          #             rip: &rip
+          #               description: Routing Information Protocol (RIP)
+          #               type: dict
+          #               suboptions:
+          #                 route_map: *route_map
+          #             static: &static
+          #               description: Static routes
+          #               type: dict
+          #               suboptions:
+          #                 route_map: *route_map
+          #             topology: &topology
+          #               description: Topology name
+          #               type: dict
+          #               suboptions:
+          #                 base:
+          #                   description: Base topology
+          #                   type: dict
+          #                   suboptions:
+          #                     all: *all
+          #                     bgp: *bgp
+          #                     eigrp: *eigrp
+          #                     isis: *isis
+          #                     mobile: *mobile
+          #                     odr: *odr
+          #                     ospf: *ospf
+          #                     rip: *rip
+          #                     static: *static
+          #         unicast:
+          #           description: Unicast SAFI
+          #           type: dict
+          #           suboptions:
+          #             all: *all
+          #             bgp: *bgp
+          #             connected:
+          #               description: Connected routes
+          #               type: dict
+          #               suboptions:
+          #                 route_map: *route_map
+          #             eigrp: *eigrp
+          #             isis: *isis
+          #             mobile: *mobile
+          #             odr: *odr
+          #             ospf: *ospf
+          #             rip: *rip
+          #             static: *static
+          #         vrf:
+          #           description: Specify a source VRF
+          #           type: dict
+          #           suboptions:
+          #             name:
+          #               description: Source VRF name
+          #               type: str
+          #             multicast:
+          #               description: Multicast SAFI
+          #               type: dict
+          #               suboptions:
+          #                 all: *all
+          #                 bgp: *bgp
+          #                 eigrp: *eigrp
+          #                 isis: *isis
+          #                 mobile: *mobile
+          #                 odr: *odr
+          #                 ospf: *ospf
+          #                 rip: *rip
+          #                 static: *static
+          #                 topology: *topology
+          #             unicast:
+          #               description: Unicast SAFI
+          #               type: dict
+          #               suboptions:
+          #                 all: *all
+          #                 bgp: *bgp
+          #                 connected:
+          #                   description: Connected routes
+          #                   type: dict
+          #                   suboptions:
+          #                     route_map: *route_map
+          #                 eigrp: *eigrp
+          #                 isis: *isis
+          #                 mobile: *mobile
+          #                 odr: *odr
+          #                 ospf: *ospf
+          #                 rip: *rip
+          #                 static: *static
+          #             global:
+          #               description: global VRF
+          #               type: dict
+          #               suboptions:
+          #                 multicast:
+          #                   description: Multicast SAFI
+          #                   type: dict
+          #                   suboptions:
+          #                     all: *all
+          #                     bgp: *bgp
+          #                     eigrp: *eigrp
+          #                     isis: *isis
+          #                     mobile: *mobile
+          #                     odr: *odr
+          #                     ospf: *ospf
+          #                     rip: *rip
+          #                     static: *static
+          #                     topology: *topology
+          #                 unicast:
+          #                   description: Unicast SAFI
+          #                   type: dict
+          #                   suboptions:
+          #                     all: *all
+          #                     bgp: *bgp
+          #                     connected:
+          #                       description: Connected routes
+          #                       type: dict
+          #                       suboptions:
+          #                         route_map: *route_map
+          #                     eigrp: *eigrp
+          #                     isis: *isis
+          #                     mobile: *mobile
+          #                     odr: *odr
+          #                     ospf: *ospf
+          #                     rip: *rip
+          #                     static: *static
+          # route_replicate_distance: &route_replicate_distance
+          #   description: Route replicate distance
+          #   type: dict
+          #   suboptions:
+          #     from_config:
+          #       description: Route replicate distance from another VRF
+          #       type: dict
+          #       suboptions:
+          #         multicast:
+          #           description: Multicast SAFI
+          #           type: dict
+          #           suboptions:
+          #             distance:
+          #               description: Route replicate distance range
+          #               type: int
+          #             topology: &id001
+          #               description: Specify a Routing Topology
+          #               type: dict
+          #               suboptions:
+          #                 base:
+          #                   description: Base routing topology
+          #                   type: dict
+          #                   suboptions:
+          #                     distance:
+          #                       description: Route replicate distance range
+          #                       type: int
+          #         unicast:
+          #           description: Unicast SAFI
+          #           type: dict
+          #           suboptions:
+          #             distance:
+          #               description: Route replicate distance range
+          #               type: int
+          #             topology: *id001
+          # route_target: &route_target
+          #   description: Specify Target VPN Extended Communities.
+          #   type: dict
+          #   suboptions:
+          #     export:
+          #       description: Export Target-VPN community.
+          #       type: str
+          #     stitching:
+          #           description: VXLAN route target set.
+          #           type: bool
+          #     import_config:
+          #       description: Export Target-VPN community.
+          #       type: str
+          #     both:
+          #       description: Both export and import Target-VPN community
+          #       type: str
+          # snmp: &snmp
+          #   description: Modify snmp parameters
+          #   type: dict
+          #   suboptions:
+          #     context:
+          #       description: Configure a SNMP context
+          #       type: dict
+          #       suboptions:
+          #         name:
+          #           description: SNMP context name
+          #           type: str
+          #         community:
+          #           description: Configure a SNMP v2c Community string and access privileges.
+          #           type: dict
+          #           suboptions:
+          #             name:
+          #               description: SNMP community string
+          #               type: str
+          #             access_number:
+          #               description: Access-list number
+          #               type: int
+          #             access_name:
+          #               description: Access-list name
+          #               type: str
+          #             ipv6:
+          #               description: Specify IPv6 Named Access-List
+          #               type: str
+          #             mode:
+          #               description: SNMP community mode
+          #               type: str
+          #               choices: ['ro', 'rw']
+          #         user:
+          #           description: Configure a SNMP v3 user
+          #           type: dict
+          #           suboptions:
+          #             name:
+          #               description: SNMP user name
+          #               type: str
+          #             access: &access
+          #               description: Specify an access-list associated with this group
+          #               type: dict
+          #               suboptions:
+          #                 number:
+          #                   description: Access-list number
+          #                   type: int
+          #                 name:
+          #                   description: Access-list name
+          #                   type: str
+          #                 ipv6:
+          #                   description: Specify IPv6 Named Access-List
+          #                   type: str
+          #             auth:
+          #               description: SNMP user authentication parameters
+          #               type: dict
+          #               suboptions:
+          #                 md5:
+          #                   description: Use HMAC MD5 algorithm for authentication
+          #                   type: dict
+          #                   suboptions:
+          #                     password:
+          #                       description: authentication password for user
+          #                       type: str
+          #                     access: *access
+          #                     priv: &priv
+          #                       description: encryption parameters for the user
+          #                       type: dict
+          #                       suboptions:
+          #                         3des:
+          #                           description: Use 168 bit 3DES algorithm for encryption
+          #                           type: dict
+          #                           suboptions:
+          #                             password:
+          #                               description: SNMP user password
+          #                               type: str
+          #                             access: *access
+          #                         des:
+          #                           description: Use 56 bit DES algorithm for encryption
+          #                           type: dict
+          #                           suboptions:
+          #                             password:
+          #                               description: SNMP user password
+          #                               type: str
+          #                             access: *access
+          #                         # aes:
+          #                         #   description: Use AES algorithm for encryption
+          #                         #   type: dict
+          #                         #   suboptions:
+          #                         #     128:
+          #                         #       description: Use 128 bit AES algorithm for encryption
+          #                         #       type: dict
+          #                         #       suboptions:
+          #                         #         password:
+          #                         #           description: privacy password for user
+          #                         #           type: str
+          #                         #         access: *access
+          #                         #     192:
+          #                         #       description: Use 192 bit AES algorithm for encryption
+          #                         #       type: dict
+          #                         #       suboptions:
+          #                         #         password:
+          #                         #           description: privacy password for user
+          #                         #           type: str
+          #                         #         access: *access
+          #                         #     256:
+          #                         #       description: Use 256 bit AES algorithm for encryption
+          #                         #       type: dict
+          #                         #       suboptions:
+          #                         #         password:
+          #                         #           description: privacy password for user
+          #                         #           type: str
+          #                         #         access: *access
+          #                         des56:
+          #                           description: Use 56 bit DES algorithm for encryption
+          #                           type: dict
+          #                           suboptions:
+          #                             password:
+          #                               description: SNMP user password
+          #                               type: str
+          #                             access: *access
+          #                     encrypted:
+          #                       description: Specify passwords as MD5 or SHA digests
+          #                       type: bool
+          #                 sha:
+          #                   description: Use HMAC MD5 algorithm for authentication
+          #                   type: dict
+          #                   suboptions:
+          #                     password:
+          #                       description: SNMP user password
+          #                       type: str
+          #                     access: *access
+          #                     priv: *priv
+          #             credential:
+          #               description: If the user password is already configured and saved
+          #               type: str
+          #             encrypted:
+          #               description: Specifying passwords as MD5 or SHA digests
+          #               type: bool
+          # topology:
+          #   description: Configure a VRF topology
+          #   type: dict
+          #   suboptions:
+          #     base:
+          #       description: Base topology
+          #       type: str
+          #     name:
+          #       description: Topology name
+          #       type: str
+          #     all_interfaces:
+          #       description: Associate a non-base routing topology with all interfaces
+          #       type: bool
+          #     bgp: *bgp01
+          #     export: *export
+          #     import_config: *import01
+          #     maximum: *maximum
+          #     snmp: *snmp
+          #     route_replicate: *route_replicate
+          #     route_replicate_distance: *route_replicate_distance
+          #     route_target: *route_target
+          #     inter_as_hybrid: *inter_as_hybrid
+          #     use_topology:
+          #       description: Configure the unicast topology to be used
+          #       type: dict
+          #       suboptions:
+          #         unicast:
+          #           description: Sub Address Family
+          #           type: dict
+          #           suboptions:
+          #             base:
+          #               description: Base topology
+          #               type: bool
+          #             name:
+          #               description: Topology name
+          #               type: str
   running_config:
     description:
       - This option is used only with state I(parsed).
