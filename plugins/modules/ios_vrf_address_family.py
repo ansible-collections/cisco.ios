@@ -45,7 +45,7 @@ options:
             description: Address Family modifier
             type: str
             choices: ['multicast', 'unicast']
-          bgp:
+          bgp: &bgp01
             description: Commands pertaining to BGP configuration.
             type: dict
             suboptions:
@@ -56,7 +56,7 @@ options:
                   loopback:
                     description: Loopback interface for next-hop
                     type: int
-          export:
+          export: &export
             description: VRF export
             type: dict
             suboptions:
@@ -90,7 +90,7 @@ options:
                       allow_evpn:
                         description: Allow EVPN routes into global table
                         type: bool
-          import_config:
+          import_config: &import01
             description: VRF import
             type: dict
             suboptions:
@@ -124,7 +124,7 @@ options:
                       allow_evpn:
                         description: allow Global->VRF routes into EVPN
                         type: bool
-          maximum:
+          maximum: &maximum
             description: Set a limit to a routing table
             type: dict
             suboptions:
@@ -148,7 +148,7 @@ options:
                   warning_only:
                     description: Only give a warning message if limit is exceeded
                     type: bool
-          inter_as_hybrid:
+          inter_as_hybrid: &inter_as_hybrid
             description: Inter AS hybrid mode
             type: dict
             suboptions:
@@ -192,7 +192,6 @@ options:
 """
 
 EXAMPLES = """
-
 # Using merged
 #
 # Before state:
@@ -792,36 +791,35 @@ EXAMPLES = """
 
 RETURN = """
 before:
-  description: The configuration prior to the model invocation.
-  returned: always
-  type: list
+  description: The configuration prior to the module execution.
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  type: dict
   sample: >
-    The configuration returned will always be in the same format
-     of the parameters above.
+    This output will always be in the same format as the
+    module argspec.
 after:
-  description: The resulting configuration model invocation.
+  description: The resulting configuration after module execution.
   returned: when changed
-  type: list
+  type: dict
   sample: >
-    The configuration returned will always be in the same format
-     of the parameters above.
+    This output will always be in the same format as the
+    module argspec.
 commands:
   description: The set of commands pushed to the remote device.
-  returned: always
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-  - vrf definition  VRF7
-  - address-family ipv4 unicast
-  - export map testing-map
-  - import map import-map
+    - sample command 1
+    - sample command 2
+    - sample command 3
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-  - vrf definition VRF4
-  - address-family ipv4 unicast
-  - export map testing-map
+    - sample command 1
+    - sample command 2
+    - sample command 3
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)

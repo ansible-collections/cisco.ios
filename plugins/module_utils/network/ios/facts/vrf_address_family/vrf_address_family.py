@@ -59,7 +59,9 @@ class Vrf_address_familyFacts(object):
         if not data:
             data = self.get_config(connection)
 
-        address_data = flatten_config(data, "address-family")
+        export_data = flatten_config(data, "export")
+        import_data = flatten_config(export_data, "import")
+        address_data = flatten_config(import_data, "address-family")
         data = flatten_config(address_data, "vrf")
 
         # parse native config using the Vrf_address_family template

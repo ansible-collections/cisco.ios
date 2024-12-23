@@ -95,7 +95,7 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                                     map="import-map",
                                     ipv4=dict(
                                         multicast=dict(prefix=89, map="import-map"),
-                                        unicast=dict(prefix=12, map="ran-map", allow_evpn=True),
+                                        unicast=dict(limit=12, map="ran-map", allow_evpn=True),
                                     ),
                                 ),
                             ),
@@ -121,17 +121,9 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                                 bgp=dict(next_hop=dict(loopback=23)),
                                 export=dict(
                                     map="testing-map",
-                                    ipv4=dict(
-                                        multicast=dict(prefix=345, map="single"),
-                                        unicast=dict(prefix=67, map="test-map", allow_evpn=True),
-                                    ),
                                 ),
                                 import_config=dict(
                                     map="import-map",
-                                    ipv4=dict(
-                                        multicast=dict(prefix=89, map="import-map"),
-                                        unicast=dict(prefix=12, map="ran-map", allow_evpn=True),
-                                    ),
                                 ),
                             ),
                         ],
@@ -141,15 +133,11 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
             ),
         )
         commands = [
-            "vrf definition VRF1",
             "address-family ipv4 unicast",
             "bgp next-hop loopback 23",
-            "import map import-map",
-            "import ipv4 multicast 89 map import-map",
-            "import ipv4 unicast 12 map ran-map allow-evpn",
             "export map testing-map",
-            "export ipv4 multicast 345 map single",
-            "export ipv4 unicast 67 map test-map allow-evpn",
+            "import map import-map",
+            "vrf definition VRF1",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -184,17 +172,9 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                                 bgp=dict(next_hop=dict(loopback=32)),
                                 export=dict(
                                     map="testing-map",
-                                    ipv4=dict(
-                                        multicast=dict(prefix=345, map="replaced"),
-                                        unicast=dict(prefix=67, map="test-map", allow_evpn=True),
-                                    ),
                                 ),
                                 import_config=dict(
                                     map="import-map",
-                                    ipv4=dict(
-                                        multicast=dict(prefix=79, map="import-map"),
-                                        unicast=dict(prefix=12, map="ran-map", allow_evpn=True),
-                                    ),
                                 ),
                             ),
                         ],
@@ -207,15 +187,11 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
             "vrf definition VRF2",
             "address-family ipv4 unicast",
             "bgp next-hop loopback 32",
-            "import map import-map",
-            "import ipv4 multicast 79 map import-map",
-            "import ipv4 unicast 12 map ran-map allow-evpn",
             "export map testing-map",
-            "export ipv4 multicast 345 map replaced",
-            "export ipv4 unicast 67 map test-map allow-evpn",
+            "import map import-map",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        self.assertEqual((result["commands"]), (commands))
 
     def test_ios_vrf_address_family_replaced_idempotent(self):
         """Test the idempotent nature of the ios_vrf_address_family module in replaced state."""
@@ -255,7 +231,7 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                                     map="import-map",
                                     ipv4=dict(
                                         multicast=dict(prefix=79, map="import-map"),
-                                        unicast=dict(prefix=12, map="ran-map", allow_evpn=True),
+                                        unicast=dict(limit=12, map="ran-map", allow_evpn=True),
                                     ),
                                 ),
                             ),
@@ -275,11 +251,7 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
              address-family ipv4 unicast
               bgp next-hop loopback 32
               import map "import-map"
-              import ipv4 multicast 79 map "import-map"
-              import ipv4 unicast 12 map "ran-map" allow-evpn
               export map "testing-map"
-              export ipv4 multicast 345 map "single"
-              export ipv4 unicast 67 map "test-map" allow-evpn
             """,
         )
         self.get_config.return_value = run_cfg
@@ -296,16 +268,9 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                                 bgp=dict(next_hop=dict(loopback=40)),
                                 export=dict(
                                     map="testing-map2",
-                                    ipv4=dict(
-                                        multicast=dict(prefix=35, map="overridden"),
-                                    ),
                                 ),
                                 import_config=dict(
                                     map="import-map1",
-                                    ipv4=dict(
-                                        multicast=dict(prefix=79, map="import-map"),
-                                        unicast=dict(prefix=12, map="ran-map", allow_evpn=True),
-                                    ),
                                 ),
                             ),
                         ],
@@ -315,26 +280,19 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
             ),
         )
         commands = [
-            "vrf definition VRF7",
-            "address-family ipv4 unicast",
-            "bgp next-hop loopback 40",
-            "import map import-map1",
-            "import ipv4 multicast 79 map import-map",
-            "import ipv4 unicast 12 map ran-map allow-evpn",
-            "export map testing-map2",
-            "export ipv4 multicast 35 map overridden",
             "vrf definition VRF2",
             "address-family ipv4 unicast",
             "no bgp next-hop loopback 32",
-            "no import map import-map",
-            "no import ipv4 multicast 79 map import-map",
-            "no import ipv4 unicast 12 map ran-map allow-evpn",
             "no export map testing-map",
-            "no export ipv4 multicast 345 map single",
-            "no export ipv4 unicast 67 map test-map allow-evpn",
+            "no import map import-map",
+            "vrf definition VRF7",
+            "address-family ipv4 unicast",
+            "bgp next-hop loopback 40",
+            "export map testing-map2",
+            "import map import-map1",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        self.assertEqual((result["commands"]), (commands))
 
     def test_ios_vrf_address_family_overridden_idempotent(self):
         """Test the idempotent nature of the ios_vrf_address_family module in overridden state."""
@@ -372,7 +330,7 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                                     map="import-map1",
                                     ipv4=dict(
                                         multicast=dict(prefix=79, map="import-map"),
-                                        unicast=dict(prefix=12, map="ran-map", allow_evpn=True),
+                                        unicast=dict(limit=12, map="ran-map", allow_evpn=True),
                                     ),
                                 ),
                             ),
@@ -392,10 +350,7 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
              address-family ipv4 unicast
               bgp next-hop loopback 40
               import map import-map1
-              import ipv4 multicast 79 map import-map
-              import ipv4 unicast 12 map ran-map allow-evpn
               export map testing-map2
-              export ipv4 multicast 35 map overridden
             """,
         )
         self.get_config.return_value = run_cfg
@@ -443,17 +398,9 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                                 bgp=dict(next_hop=dict(loopback=23)),
                                 export=dict(
                                     map="testing-map",
-                                    ipv4=dict(
-                                        multicast=dict(prefix=345, map="single"),
-                                        unicast=dict(prefix=67, map="test-map", allow_evpn=True),
-                                    ),
                                 ),
                                 import_config=dict(
                                     map="import-map",
-                                    ipv4=dict(
-                                        multicast=dict(prefix=89, map="import-map"),
-                                        unicast=dict(prefix=12, map="ran-map", allow_evpn=True),
-                                    ),
                                 ),
                             ),
                         ],
@@ -466,15 +413,11 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
             "vrf definition VRF1",
             "address-family ipv4 unicast",
             "bgp next-hop loopback 23",
-            "import map import-map",
-            "import ipv4 multicast 89 map import-map",
-            "import ipv4 unicast 12 map ran-map allow-evpn",
             "export map testing-map",
-            "export ipv4 multicast 345 map single",
-            "export ipv4 unicast 67 map test-map allow-evpn",
+            "import map import-map",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+        self.assertEqual((result["rendered"]), (commands))
 
     def test_ios_vrf_address_family_parsed(self):
         """Test the parsed state of the ios_vrf_address_family module."""
@@ -502,12 +445,14 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                         "afi": "ipv4",
                         "safi": "unicast",
                         "import_config": {
+                            "map": "import-map",
                             "ipv4": {
                                 "multicast": {"map": "import-map", "prefix": 89},
-                                "unicast": {"allow_evpn": True, "map": "ran-map", "prefix": 12},
+                                "unicast": {"allow_evpn": True, "map": "ran-map", "limit": 12},
                             },
                         },
                         "export": {
+                            "map": "testing-map",
                             "ipv4": {
                                 "multicast": {"map": "single", "prefix": 345},
                                 "unicast": {"allow_evpn": True, "map": "test-map", "prefix": 67},

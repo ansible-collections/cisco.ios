@@ -19,8 +19,6 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
-# UNIQUE_AFI = "{{ 'address_families_'+ afi + '_' + safi }}"
-
 
 class Vrf_address_familyTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
@@ -51,6 +49,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             "name": "address_family",
             "getval": re.compile(
                 r"""
+                ^vrf\sdefinition\s(?P<name>\S+)
                 (?P<address_families>\s+address-family\s(?P<afi>\S+)\s(?P<safi>\S+))
                 $""", re.VERBOSE,
             ),
@@ -71,6 +70,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             "name": "export.map",
             "getval": re.compile(
                 r"""
+                ^vrf\sdefinition\s(?P<name>\S+)
                 (?P<address_families>\s+address-family\s(?P<afi>\S+)\s(?P<safi>\S+))
                 \s+export\smap\s(?P<export_map>\S+)
                 $""", re.VERBOSE,
@@ -95,6 +95,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             "name": "import_config.map",
             "getval": re.compile(
                 r"""
+                ^vrf\sdefinition\s(?P<name>\S+)
                 (?P<address_families>\s+address-family\s(?P<afi>\S+)\s(?P<safi>\S+))
                 \s+import\smap\s(?P<import_config_map>\S+)
                 $""", re.VERBOSE,
@@ -119,11 +120,12 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             "name": "export.ipv4.multicast",
             "getval": re.compile(
                 r"""
+                ^vrf\sdefinition\s(?P<name>\S+)
                 (?P<address_families>\s+address-family\s(?P<afi>\S+)\s(?P<safi>\S+))
                 \s+export\sipv4\smulticast\s(?P<prefix>\d+)\smap\s(?P<export_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "export ipv4 multicast {{ export.prefix }} map {{ export.map }}",
+            "setval": "export ipv4 multicast {{ export.ipv4.multicast.prefix }} map {{ export.ipv4.multicast.prefix.map }}",
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
@@ -214,7 +216,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+import\sipv4\sunicast\s(?P<limit>\d+)\smap\s(?P<import_map>\S+)\s(?P<allow_evpn>allow-evpn)
                 $""", re.VERBOSE,
             ),
-            "setval": "import ipv4 multicast {{ import.limit }} map {{ import.map }} allow-evpn",
+            "setval": "import ipv4 unicast {{ import.limit }} map {{ import.map }} allow-evpn",
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
@@ -240,6 +242,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             "name": "bgp.next_hop.loopback",
             "getval": re.compile(
                 r"""
+                ^vrf\sdefinition\s(?P<name>\S+)
                 (?P<address_families>\s+address-family\s(?P<afi>\S+)\s(?P<safi>\S+))
                 \s+bgp\snext-hop\sloopback\s(?P<loopback>\d+)
                 $""", re.VERBOSE,
@@ -256,56 +259,6 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                                 "next_hop": {
                                     "loopback": "{{ loopback }}",
                                 },
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "inter_as_hybrid.csc.next_hop",
-            "getval": re.compile(
-                r"""
-                (?P<address_families>\s+address-family\s(?P<afi>\S+)\s(?P<safi>\S+))
-                \s+inter-as-hybrid\scsc\snext-hop\s(?P<inter_as_hybrid_csc_next_hop>\S+)
-                $""", re.VERBOSE,
-            ),
-            "setval": "inter-as-hybrid csc next-hop {{ inter_as_hybrid.csc.next_hop }}",
-            "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    "address_families": {
-                        '{{"address_families_" + afi + "_" + safi }}': {
-                            "afi": "{{ afi }}",
-                            "safi": "{{ safi }}",
-                            "inter_as_hybrid": {
-                                "csc": {
-                                    "next_hop": "{{ inter_as_hybrid_csc_next_hop }}",
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "inter_as_hybrid.next_hop",
-            "getval": re.compile(
-                r"""
-                (?P<address_families>\s+address-family\s(?P<afi>\S+)\s(?P<safi>\S+))
-                \s+inter-as-hybrid\snext-hop\s(?P<inter_as_hybrid_next_hop>\S+)
-                $""", re.VERBOSE,
-            ),
-            "setval": "inter-as-hybrid next-hop {{ inter_as_hybrid.next_hop }}",
-            "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    "address_families": {
-                        '{{"address_families_" + afi + "_" + safi }}': {
-                            "afi": "{{ afi }}",
-                            "safi": "{{ safi }}",
-                            "inter_as_hybrid": {
-                                "next_hop": "{{ inter_as_hybrid_next_hop }}",
                             },
                         },
                     },
