@@ -7,8 +7,4 @@
       - address-family ipv4 unicast
       - bgp next-hop loopback 23
       - import map "import-map"
-      - import ipv4 multicast 89 map "import-map"
-      - import ipv4 unicast 12 map "ran-map" allow-evpn
       - export map "testing-map"
-      - export ipv4 multicast 345 map "single"
-      - export ipv4 unicast 67 map "test-map" allow-evpn
