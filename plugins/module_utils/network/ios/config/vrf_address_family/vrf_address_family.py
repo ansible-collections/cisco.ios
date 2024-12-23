@@ -50,12 +50,13 @@ class Vrf_address_family(ResourceModule):
             "bgp.next_hop.loopback",
             "export.map",
             "import_config.map",
-            "export.ipv4.multicast",
-            "export.ipv4.unicast.allow_evpn",
-            "import_config.ipv4.multicast",
-            "import_config.ipv4.unicast",
-            "inter_as_hybrid.csc.next_hop",
-            "inter_as_hybrid.next_hop",
+            # "export.ipv4.multicast",
+            # "export.ipv4.unicast.allow_evpn",
+            # "import_config.ipv4.multicast",
+            # "import_config.ipv4.unicast",
+            # "inter_as_hybrid.csc.next_hop",
+            # "inter_as_hybrid.next_hop",
+
         ]
 
     def execute_module(self):

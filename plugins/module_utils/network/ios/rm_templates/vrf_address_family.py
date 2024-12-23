@@ -116,128 +116,128 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 },
             },
         },
-        {
-            "name": "export.ipv4.multicast",
-            "getval": re.compile(
-                r"""
-                ^vrf\sdefinition\s(?P<name>\S+)
-                (?P<address_families>\s+address-family\s(?P<afi>\S+)\s(?P<safi>\S+))
-                \s+export\sipv4\smulticast\s(?P<prefix>\d+)\smap\s(?P<export_map>\S+)
-                $""", re.VERBOSE,
-            ),
-            "setval": "export ipv4 multicast {{ export.ipv4.multicast.prefix }} map {{ export.ipv4.multicast.prefix.map }}",
-            "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    "address_families": {
-                        '{{ "address_families_" + afi + "_" + safi }}': {
-                            "afi": "{{ afi }}",
-                            "safi": "{{ safi }}",
-                            "export": {
-                                "ipv4": {
-                                    "multicast": {
-                                        "prefix": "{{ prefix }}",
-                                        "map": "{{ export_map }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "export.ipv4.unicast.allow_evpn",
-            "getval": re.compile(
-                r"""
-                ^vrf\sdefinition\s(?P<name>\S+)
-                (?P<address_families>\s+address-family\s(?P<afi>\S+)\s(?P<safi>\S+))
-                \s+export\sipv4\sunicast\s(?P<prefix>\d+)\smap\s(?P<export_map>\S+)\s(?P<allow_evpn>allow-evpn)
-                $""", re.VERBOSE,
-            ),
-            "setval": "export ipv4 unicast {{ export.prefix }} map {{ export.map }} allow-evpn",
-            "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    "address_families": {
-                        '{{ "address_families_" + afi + "_" + safi }}': {
-                            "afi": "{{ afi }}",
-                            "safi": "{{ safi }}",
-                            "export": {
-                                "ipv4": {
-                                    "unicast": {
-                                        "prefix": "{{ prefix }}",
-                                        "map": "{{ export_map }}",
-                                        "allow_evpn": "{{ true if allow_evpn is defined }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "import_config.ipv4.multicast",
-            "getval": re.compile(
-                r"""
-                ^vrf\sdefinition\s(?P<name>\S+)
-                (?P<address_families>\s+address-family\s(?P<afi>\S+)\s(?P<safi>\S+))
-                \s+import\sipv4\smulticast\s(?P<prefix>\d+)\smap\s(?P<import_map>\S+)
-                $""", re.VERBOSE,
-            ),
-            "setval": "import ipv4 multicast {{ import.prefix }} map {{ import.map }}",
-            "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    "address_families": {
-                        '{{ "address_families_" + afi + "_" + safi }}': {
-                            "afi": "{{ afi }}",
-                            "safi": "{{ safi }}",
-                            "import_config": {
-                                "ipv4": {
-                                    "multicast": {
-                                        "prefix": "{{ prefix }}",
-                                        "map": "{{ import_map }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "import_config.ipv4.unicast",
-            "getval": re.compile(
-                r"""
-                ^vrf\sdefinition\s(?P<name>\S+)
-                (?P<address_families>\s+address-family\s(?P<afi>\S+)\s(?P<safi>\S+))
-                \s+import\sipv4\sunicast\s(?P<limit>\d+)\smap\s(?P<import_map>\S+)\s(?P<allow_evpn>allow-evpn)
-                $""", re.VERBOSE,
-            ),
-            "setval": "import ipv4 unicast {{ import.limit }} map {{ import.map }} allow-evpn",
-            "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    "address_families": {
-                        '{{ "address_families_" + afi + "_" + safi }}': {
-                            "afi": "{{ afi }}",
-                            "safi": "{{ safi }}",
-                            "import_config": {
-                                "ipv4": {
-                                    "unicast": {
-                                        "limit": "{{ limit }}",
-                                        "map": "{{ import_map }}",
-                                        "allow_evpn": "{{ true if allow_evpn is defined }}",
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
+        # {
+        #     "name": "export.ipv4.multicast",
+        #     "getval": re.compile(
+        #         r"""
+        #         ^vrf\sdefinition\s(?P<name>\S+)
+        #         (?P<address_families>\s+address-family\s(?P<afi>\S+)\s(?P<safi>\S+))
+        #         \s+export\sipv4\smulticast\s(?P<prefix>\d+)\smap\s(?P<export_map>\S+)
+        #         $""", re.VERBOSE,
+        #     ),
+        #     "setval": "export ipv4 multicast {{ export.ipv4.multicast.prefix }} map {{ export.ipv4.multicast.prefix.map }}",
+        #     "result": {
+        #         '{{ name }}': {
+        #             'name': '{{ name }}',
+        #             "address_families": {
+        #                 '{{ "address_families_" + afi + "_" + safi }}': {
+        #                     "afi": "{{ afi }}",
+        #                     "safi": "{{ safi }}",
+        #                     "export": {
+        #                         "ipv4": {
+        #                             "multicast": {
+        #                                 "prefix": "{{ prefix }}",
+        #                                 "map": "{{ export_map }}",
+        #                             },
+        #                         },
+        #                     },
+        #                 },
+        #             },
+        #         },
+        #     },
+        # },
+        # {
+        #     "name": "export.ipv4.unicast.allow_evpn",
+        #     "getval": re.compile(
+        #         r"""
+        #         ^vrf\sdefinition\s(?P<name>\S+)
+        #         (?P<address_families>\s+address-family\s(?P<afi>\S+)\s(?P<safi>\S+))
+        #         \s+export\sipv4\sunicast\s(?P<prefix>\d+)\smap\s(?P<export_map>\S+)\s(?P<allow_evpn>allow-evpn)
+        #         $""", re.VERBOSE,
+        #     ),
+        #     "setval": "export ipv4 unicast {{ export.prefix }} map {{ export.map }} allow-evpn",
+        #     "result": {
+        #         '{{ name }}': {
+        #             'name': '{{ name }}',
+        #             "address_families": {
+        #                 '{{ "address_families_" + afi + "_" + safi }}': {
+        #                     "afi": "{{ afi }}",
+        #                     "safi": "{{ safi }}",
+        #                     "export": {
+        #                         "ipv4": {
+        #                             "unicast": {
+        #                                 "prefix": "{{ prefix }}",
+        #                                 "map": "{{ export_map }}",
+        #                                 "allow_evpn": "{{ true if allow_evpn is defined }}",
+        #                             },
+        #                         },
+        #                     },
+        #                 },
+        #             },
+        #         },
+        #     },
+        # },
+        # {
+        #     "name": "import_config.ipv4.multicast",
+        #     "getval": re.compile(
+        #         r"""
+        #         ^vrf\sdefinition\s(?P<name>\S+)
+        #         (?P<address_families>\s+address-family\s(?P<afi>\S+)\s(?P<safi>\S+))
+        #         \s+import\sipv4\smulticast\s(?P<prefix>\d+)\smap\s(?P<import_map>\S+)
+        #         $""", re.VERBOSE,
+        #     ),
+        #     "setval": "import ipv4 multicast {{ import.prefix }} map {{ import.map }}",
+        #     "result": {
+        #         '{{ name }}': {
+        #             'name': '{{ name }}',
+        #             "address_families": {
+        #                 '{{ "address_families_" + afi + "_" + safi }}': {
+        #                     "afi": "{{ afi }}",
+        #                     "safi": "{{ safi }}",
+        #                     "import_config": {
+        #                         "ipv4": {
+        #                             "multicast": {
+        #                                 "prefix": "{{ prefix }}",
+        #                                 "map": "{{ import_map }}",
+        #                             },
+        #                         },
+        #                     },
+        #                 },
+        #             },
+        #         },
+        #     },
+        # },
+        # {
+        #     "name": "import_config.ipv4.unicast",
+        #     "getval": re.compile(
+        #         r"""
+        #         ^vrf\sdefinition\s(?P<name>\S+)
+        #         (?P<address_families>\s+address-family\s(?P<afi>\S+)\s(?P<safi>\S+))
+        #         \s+import\sipv4\sunicast\s(?P<limit>\d+)\smap\s(?P<import_map>\S+)\s(?P<allow_evpn>allow-evpn)
+        #         $""", re.VERBOSE,
+        #     ),
+        #     "setval": "import ipv4 unicast {{ import.limit }} map {{ import.map }} allow-evpn",
+        #     "result": {
+        #         '{{ name }}': {
+        #             'name': '{{ name }}',
+        #             "address_families": {
+        #                 '{{ "address_families_" + afi + "_" + safi }}': {
+        #                     "afi": "{{ afi }}",
+        #                     "safi": "{{ safi }}",
+        #                     "import_config": {
+        #                         "ipv4": {
+        #                             "unicast": {
+        #                                 "limit": "{{ limit }}",
+        #                                 "map": "{{ import_map }}",
+        #                                 "allow_evpn": "{{ true if allow_evpn is defined }}",
+        #                             },
+        #                         },
+        #                     },
+        #                 },
+        #             },
+        #         },
+        #     },
+        # },
         {
             "name": "bgp.next_hop.loopback",
             "getval": re.compile(
