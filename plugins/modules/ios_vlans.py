@@ -77,7 +77,8 @@ options:
         description:
           - Specifies whether VLAN switching should be administratively enabled or disabled.
           - When set to C(enabled), the VLAN interface is administratively shut down, which prevents it from forwarding traffic.
-          - When set to C(disabled), the VLAN interface is administratively enabled by issuing the internal C(no shutdown) command, allowing it to forward traffic.
+          - When set to C(disabled), the VLAN interface is administratively enabled by issuing the internal C(no shutdown) command,
+            allowing it to forward traffic.
           - The operational state of the VLAN depends on both the administrative state (C(shutdown) or C(no shutdown)) and the physical link status.
         type: str
         choices:
