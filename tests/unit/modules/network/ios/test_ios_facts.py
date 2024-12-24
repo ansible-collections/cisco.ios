@@ -205,23 +205,22 @@ class TestIosFactsModule(TestIosModule):
         result = self.execute_module()
         self.assertEqual(
             result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet2/5/5.1874"],
-            {'ipv4': [], 'operstatus': 'deleted'},
+            {"ipv4": [], "operstatus": "deleted"},
         )
         self.assertEqual(
             result["ansible_facts"]["ansible_net_interfaces"]["Tunnel1110"],
             {
-                'bandwidth': None, 
-                'description': None, 
-                'duplex': None, 
-                'ipv4': [
-                    {'address': '10.10.10.2', 'subnet': '30'}
-                ], 
-                'lineprotocol': 'up', 
-                'macaddress': None, 
-                'mediatype': None, 
-                'mtu': None, 
-                'operstatus': 'up', 
-                'type': None
+                "bandwidth": None,
+                "description": None,
+                "duplex": None,
+                "ipv4": [
+                    {"address": "10.10.10.2", "subnet": "30"},
+                ],
+                "lineprotocol": "up",
+                "macaddress": None,
+                "mediatype": None,
+                "mtu": None,
+                "operstatus": "up",
+                "type": None,
             },
         )
-
