@@ -28,6 +28,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
     flatten_config,
 )
 
+# import debugpy
+# debugpy.listen(3000)
+# debugpy.wait_for_client()
+
 
 class Vrf_address_familyFacts(object):
     """ The ios vrf_address_family facts class
@@ -41,6 +45,16 @@ class Vrf_address_familyFacts(object):
         """Get the configuration from the device"""
 
         return connection.get("show running-config | section ^vrf")
+
+    def _flatten_config(self, config):
+        dataLines = config.split("\n")
+        finalConfig = []
+
+        for line in dataLines:
+            if "address-family" in line and "exit-address-family" not in line:
+                finalConfig.append(line)
+
+        return "\n".join(finalConfig)
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """ Populate the facts for Vrf_address_family network resource
@@ -59,13 +73,14 @@ class Vrf_address_familyFacts(object):
         if not data:
             data = self.get_config(connection)
 
-        export_data = flatten_config(data, "export")
-        import_data = flatten_config(export_data, "import")
-        address_data = flatten_config(import_data, "address-family")
+        # export_data = flatten_config(data, "export")
+        # import_data = flatten_config(export_data, "import")
+        address_data = flatten_config(data, "address-family")
         data = flatten_config(address_data, "vrf")
+        finalConfig = self._flatten_config(data)
 
         # parse native config using the Vrf_address_family template
-        vrf_address_family_parser = Vrf_address_familyTemplate(lines=data.splitlines(), module=self._module)
+        vrf_address_family_parser = Vrf_address_familyTemplate(lines=finalConfig.splitlines(), module=self._module)
         obj = vrf_address_family_parser.parse()
         objs = list(obj.values())
 
