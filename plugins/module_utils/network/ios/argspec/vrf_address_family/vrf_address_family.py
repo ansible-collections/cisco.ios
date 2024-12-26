@@ -108,25 +108,6 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                 },
                             },
                         },
-                        "maximum": {
-                            "type": "dict",
-                            "options": {
-                                "routes": {
-                                    "type": "dict",
-                                    "options": {
-                                        "limit": {"type": "int"},
-                                        "threshold": {"type": "int"},
-                                        "reinstall": {
-                                            "type": "dict",
-                                            "options": {
-                                                "threshold_val": {"type": "int"}
-                                            },
-                                        },
-                                        "warning_only": {"type": "bool"},
-                                    },
-                                }
-                            },
-                        },
                         "inter_as_hybrid": {
                             "type": "dict",
                             "options": {
@@ -1143,59 +1124,10 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                 },
                             },
                         },
-                        "route_replicate_distance": {
-                            "type": "dict",
-                            "options": {
-                                "from_config": {
-                                    "type": "dict",
-                                    "options": {
-                                        "multicast": {
-                                            "type": "dict",
-                                            "options": {
-                                                "distance": {"type": "int"},
-                                                "topology": {
-                                                    "type": "dict",
-                                                    "options": {
-                                                        "base": {
-                                                            "type": "dict",
-                                                            "options": {
-                                                                "distance": {
-                                                                    "type": "int"
-                                                                }
-                                                            },
-                                                        }
-                                                    },
-                                                },
-                                            },
-                                        },
-                                        "unicast": {
-                                            "type": "dict",
-                                            "options": {
-                                                "distance": {"type": "int"},
-                                                "topology": {
-                                                    "type": "dict",
-                                                    "options": {
-                                                        "base": {
-                                                            "type": "dict",
-                                                            "options": {
-                                                                "distance": {
-                                                                    "type": "int"
-                                                                }
-                                                            },
-                                                        }
-                                                    },
-                                                },
-                                            },
-                                        },
-                                    },
-                                }
-                            },
-                        },
                         "route_target": {
                             "type": "dict",
                             "options": {
                                 "export": {"type": "str"},
-                                "stitching": {"type": "bool"},
                                 "import_config": {"type": "str"},
                                 "both": {"type": "str"},
                             },

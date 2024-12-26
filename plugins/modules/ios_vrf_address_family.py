@@ -124,30 +124,6 @@ options:
                       allow_evpn:
                         description: allow Global->VRF routes into EVPN
                         type: bool
-          maximum: &maximum
-            description: Set a limit to a routing table
-            type: dict
-            suboptions:
-              routes:
-                description: Maximum number of routes allowed in the routing table
-                type: dict
-                suboptions:
-                  limit:
-                    description: Maximum number of routes allowed
-                    type: int
-                  threshold:
-                    description: Threshold value (%) at which to generate a warning msg
-                    type: int
-                  reinstall:
-                    description: Reinstall previous rejected route due to over maximum route limit
-                    type: dict
-                    suboptions:
-                      threshold_val:
-                        description: Threshold value (%) at which to reinstall routes back to VRF
-                        type: int
-                  warning_only:
-                    description: Only give a warning message if limit is exceeded
-                    type: bool
           inter_as_hybrid: &inter_as_hybrid
             description: Inter AS hybrid mode
             type: dict
@@ -480,40 +456,6 @@ options:
                               ospf: *ospf
                               rip: *rip
                               static: *static
-          route_replicate_distance: &route_replicate_distance
-            description: Route replicate distance
-            type: dict
-            suboptions:
-              from_config:
-                description: Route replicate distance from another VRF
-                type: dict
-                suboptions:
-                  multicast:
-                    description: Multicast SAFI
-                    type: dict
-                    suboptions:
-                      distance:
-                        description: Route replicate distance range
-                        type: int
-                      topology: &id001
-                        description: Specify a Routing Topology
-                        type: dict
-                        suboptions:
-                          base:
-                            description: Base routing topology
-                            type: dict
-                            suboptions:
-                              distance:
-                                description: Route replicate distance range
-                                type: int
-                  unicast:
-                    description: Unicast SAFI
-                    type: dict
-                    suboptions:
-                      distance:
-                        description: Route replicate distance range
-                        type: int
-                      topology: *id001
           route_target: &route_target
             description: Specify Target VPN Extended Communities.
             type: dict
@@ -521,9 +463,6 @@ options:
               export:
                 description: Export Target-VPN community.
                 type: str
-              stitching:
-                description: VXLAN route target set.
-                type: bool
               import_config:
                 description: Export Target-VPN community.
                 type: str

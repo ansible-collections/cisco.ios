@@ -151,7 +151,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+export\sipv4\sunicast\s(?P<prefix>\d+)\smap\s(?P<export_map>\S+)\s(?P<allow_evpn>allow-evpn)
                 $""", re.VERBOSE,
             ),
-            "setval": "export ipv4 unicast {{ export.ipv4.unicast.prefix }} map {{ export.ipv4.unicast.map }} allow-evpn",
+            "setval": "export ipv4 unicast {{ prefix }} map {{ export_map }} allow-evpn",
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
@@ -184,7 +184,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+import\sipv4\smulticast\s(?P<prefix>\d+)\smap\s(?P<import_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "import ipv4 multicast {{ import.ipv4.multicast.prefix }} map {{ import.ipv4.multicast.map }}",
+            "setval": "import ipv4 multicast {{ prefix }} map {{ import_map }}",
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
@@ -216,7 +216,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+import\sipv4\sunicast\s(?P<limit>\d+)\smap\s(?P<import_map>\S+)\s(?P<allow_evpn>allow-evpn)
                 $""", re.VERBOSE,
             ),
-            "setval": "import ipv4 unicast {{ import.ipv4.unicast.limit }} map {{ import.ipv4.unicast.map }} allow-evpn",
+            "setval": "import ipv4 unicast {{ limit }} map {{ import_map }} allow-evpn",
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
@@ -1087,7 +1087,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\svrf\s(?P<vrf_name>\S+)\sunicast\sall\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from vrf {{ route_replicate.from.vrf.vrf_name }} unicast all route-map {{ route_replicate.from.vrf.vrf_name.unicast.all.route_map }}",
+            "setval": "route-replicate from vrf {{ vrf_name }} unicast all route-map {{ route_map }}",
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
@@ -1802,34 +1802,6 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "route_target.export.stitching",
-            "getval": re.compile(
-                r"""
-                ^vrf\sdefinition\s(?P<name>\S+)
-                \saddress-family
-                \s(?P<afi>\S+)
-                (\s(?P<safi>\S+))?
-                \s+route-target\sexport\s(?P<route_target_export>\S+)\sstitching
-                $""", re.VERBOSE,
-            ),
-            "setval": "route-target export {{ route_target.export }} stitching",
-            "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
-                            "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
-                            "route_target": {
-                                "export": "{{ route_target_export }}",
-                                "stitching": "{{ true }}",
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        {
             "name": "route_target.import_config",
             "getval": re.compile(
                 r"""
@@ -1850,34 +1822,6 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                             "safi": "{{ safi if safi is defined else 'unicast' }}",
                             "route_target": {
                                 "import_config": "{{ route_target_import_config }}",
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "route_target.import_config.stitching",
-            "getval": re.compile(
-                r"""
-                ^vrf\sdefinition\s(?P<name>\S+)
-                \saddress-family
-                \s(?P<afi>\S+)
-                (\s(?P<safi>\S+))?
-                \s+route-target\simport\s(?P<route_target_import_config>\S+)\sstitching
-                $""", re.VERBOSE,
-            ),
-            "setval": "route-target import {{ route_target.import_config }} stitching",
-            "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
-                            "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
-                            "route_target": {
-                                "import_config": "{{ route_target_import_config }}",
-                                "stitching": "{{ true }}",
                             },
                         },
                     },

@@ -103,8 +103,6 @@ class Vrf_address_family(ResourceModule):
             "route_replicate.from.vrf.vrf_name.unicast.static.route_map",
             "route_target.export",
             "route_target.import_config",
-            "route_target.import_config.stitching",
-            "route_target.export.stitching"
 
         ]
 

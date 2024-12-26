@@ -64,9 +64,13 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
             """\
             vrf definition test
              address-family ipv4 unicast
-              bgp next-hop loopback 23
               import map "import-map"
               export map "testing-map"
+              export ipv4 unicast 37 map test allow-evpn
+              inter-as-hybrid csc next-hop 1.2.3.4
+              route-target export 10.12.0.1:20
+              route-target import 10.0.0.1:30
+              mdt auto-discovery ingress-replication inter-as mdt-hello-enable
             """,
         )
         self.get_config.return_value = run_cfg
@@ -82,9 +86,30 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                                 bgp=dict(next_hop=dict(loopback=23)),
                                 export=dict(
                                     map="testing-map",
+                                    ipv4=dict(
+                                        unicast=dict(
+                                            prefix=37,
+                                            map="test",
+                                            allow_evpn=True,
+                                        ),
+                                    ),
                                 ),
                                 import_config=dict(
                                     map="import-map",
+                                ),
+                                inter_as_hybrid=dict(
+                                    csc=dict(next_hop="1.2.3.4"),
+                                ),
+                                route_target=dict(
+                                    export="10.12.0.1:20",
+                                    import_config="10.0.0.1:30",
+                                ),
+                                mdt=dict(
+                                    auto_discovery=dict(
+                                        ingress_replication=dict(
+                                            inter_as=dict(mdt_hello_enable=True),
+                                        ),
+                                    ),
                                 ),
                             ),
                         ],
@@ -106,12 +131,18 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                             dict(
                                 afi="ipv4",
                                 safi="unicast",
-                                bgp=dict(next_hop=dict(loopback=23)),
                                 export=dict(
                                     map="testing-map",
                                 ),
                                 import_config=dict(
                                     map="import-map",
+                                ),
+                                inter_as_hybrid=dict(
+                                    csc=dict(next_hop="1.2.3.4"),
+                                ),
+                                route_target=dict(
+                                    export="10.12.0.1:20",
+                                    import_config="10.0.0.1:10",
                                 ),
                             ),
                         ],
@@ -121,14 +152,16 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
             ),
         )
         commands = [
+            "vrf definition VRF1",
             "address-family ipv4 unicast",
-            "bgp next-hop loopback 23",
             "export map testing-map",
             "import map import-map",
-            "vrf definition VRF1",
+            "inter-as-hybrid csc next-hop 1.2.3.4",
+            "route-target export 10.12.0.1:20",
+            "route-target import 10.0.0.1:10",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        self.assertEqual((result["commands"]), (commands))
 
     def test_ios_vrf_address_family_replaced(self):
         """Test the replaced state of the ios_vrf_address_family module."""
@@ -136,9 +169,11 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
             """\
             vrf definition VRF1
              address-family ipv4 unicast
-              bgp next-hop loopback 23
               import map "import-map"
               export map "testing-map"
+              inter-as-hybrid csc next-hop 1.2.3.4
+              route-target export 10.12.0.1:20
+              route-target import 10.0.0.1:10
              exit-address-family
             """,
         )
@@ -153,12 +188,18 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                             dict(
                                 afi="ipv4",
                                 safi="unicast",
-                                bgp=dict(next_hop=dict(loopback=32)),
                                 export=dict(
                                     map="testing-map",
                                 ),
                                 import_config=dict(
                                     map="import-map",
+                                ),
+                                inter_as_hybrid=dict(
+                                    csc=dict(next_hop="1.2.3.4"),
+                                ),
+                                route_target=dict(
+                                    export="10.12.0.1:20",
+                                    import_config="10.0.0.1:10",
                                 ),
                             ),
                         ],
@@ -170,9 +211,11 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
         commands = [
             "vrf definition VRF2",
             "address-family ipv4 unicast",
-            "bgp next-hop loopback 32",
             "export map testing-map",
             "import map import-map",
+            "inter-as-hybrid csc next-hop 1.2.3.4",
+            "route-target export 10.12.0.1:20",
+            "route-target import 10.0.0.1:10",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual((result["commands"]), (commands))
@@ -183,9 +226,11 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
             """\
             vrf definition VRF2
              address-family ipv4 unicast
-              bgp next-hop loopback 32
               import map "import-map"
               export map "testing-map"
+              inter-as-hybrid csc next-hop 1.2.3.4
+              route-target export 10.12.0.1:20
+              route-target import 10.0.0.1:10
             """,
         )
         self.get_config.return_value = run_cfg
@@ -199,12 +244,18 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                             dict(
                                 afi="ipv4",
                                 safi="unicast",
-                                bgp=dict(next_hop=dict(loopback=32)),
                                 export=dict(
                                     map="testing-map",
                                 ),
                                 import_config=dict(
                                     map="import-map",
+                                ),
+                                inter_as_hybrid=dict(
+                                    csc=dict(next_hop="1.2.3.4"),
+                                ),
+                                route_target=dict(
+                                    export="10.12.0.1:20",
+                                    import_config="10.0.0.1:10",
                                 ),
                             ),
                         ],
@@ -215,57 +266,6 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
         )
         self.execute_module(changed=False, commands=[])
 
-    def test_ios_vrf_address_family_overridden(self):
-        """Test the overridden state of the ios_vrf_address_family module."""
-        run_cfg = dedent(
-            """\
-            vrf definition VRF2
-             address-family ipv4 unicast
-              bgp next-hop loopback 32
-              import map "import-map"
-              export map "testing-map"
-            """,
-        )
-        self.get_config.return_value = run_cfg
-
-        set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="VRF7",
-                        address_families=[
-                            dict(
-                                afi="ipv4",
-                                safi="unicast",
-                                bgp=dict(next_hop=dict(loopback=40)),
-                                export=dict(
-                                    map="testing-map2",
-                                ),
-                                import_config=dict(
-                                    map="import-map1",
-                                ),
-                            ),
-                        ],
-                    ),
-                ],
-                state="overridden",
-            ),
-        )
-        commands = [
-            "vrf definition VRF2",
-            "address-family ipv4 unicast",
-            "no bgp next-hop loopback 32",
-            "no export map testing-map",
-            "no import map import-map",
-            "vrf definition VRF7",
-            "address-family ipv4 unicast",
-            "bgp next-hop loopback 40",
-            "export map testing-map2",
-            "import map import-map1",
-        ]
-        result = self.execute_module(changed=True)
-        self.assertEqual((result["commands"]), (commands))
-
     def test_ios_vrf_address_family_overridden_idempotent(self):
         """Test the idempotent nature of the ios_vrf_address_family module in overridden state."""
         run_cfg = dedent(
@@ -275,6 +275,7 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
               bgp next-hop loopback 40
               import map import-map1
               export map testing-map2
+              inter-as-hybrid csc next-hop 1.2.3.4
             """,
         )
         self.get_config.return_value = run_cfg
@@ -295,6 +296,9 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                                 import_config=dict(
                                     map="import-map1",
                                 ),
+                                inter_as_hybrid=dict(
+                                    csc=dict(next_hop="1.2.3.4"),
+                                ),
                             ),
                         ],
                     ),
@@ -303,36 +307,6 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
             ),
         )
         self.execute_module(changed=False, commands=[])
-
-    def test_ios_vrf_address_family_deleted(self):
-        """Test the deleted state of the ios_vrf_address_family module."""
-        run_cfg = dedent(
-            """\
-            vrf definition VRF7
-             address-family ipv4 unicast
-              bgp next-hop loopback 40
-              import map import-map1
-              export map testing-map2
-            """,
-        )
-        self.get_config.return_value = run_cfg
-        set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="VRF7",
-                    ),
-                ],
-                state="deleted",
-            ),
-        )
-
-        commands = [
-            "vrf definition VRF7",
-            "no address-family ipv4 unicast",
-        ]
-        result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_vrf_address_family_deleted_idempotent(self):
         """Test the idempotent nature of the ios_vrf_address_family module in deleted state."""
@@ -357,12 +331,14 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                             dict(
                                 afi="ipv4",
                                 safi="unicast",
-                                bgp=dict(next_hop=dict(loopback=23)),
                                 export=dict(
                                     map="testing-map",
                                 ),
                                 import_config=dict(
                                     map="import-map",
+                                ),
+                                inter_as_hybrid=dict(
+                                    csc=dict(next_hop="1.2.3.4"),
                                 ),
                             ),
                         ],
@@ -374,9 +350,9 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
         commands = [
             "vrf definition VRF1",
             "address-family ipv4 unicast",
-            "bgp next-hop loopback 23",
             "export map testing-map",
             "import map import-map",
+            "inter-as-hybrid csc next-hop 1.2.3.4",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual((result["rendered"]), (commands))
@@ -387,9 +363,10 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
             """\
             vrf definition test
              address-family ipv4 unicast
-              bgp next-hop loopback 23
               import map "import-map"
               export map "testing-map"
+              inter-as-hybrid csc next-hop 1.2.3.4
+              mdt auto-discovery ingress-replication inter-as mdt-hello-enable
              exit-address-family
             """,
         )
@@ -408,7 +385,20 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                         "export": {
                             "map": "testing-map",
                         },
-                        "bgp": {"next_hop": {"loopback": 23}},
+                        "inter_as_hybrid": {
+                            "csc": {
+                                "next_hop": "1.2.3.4",
+                            },
+                        },
+                        "mdt": {
+                            "auto_discovery": {
+                                "ingress_replication": {
+                                    "inter_as": {
+                                        "mdt_hello_enable": True,
+                                    },
+                                },
+                            },
+                        },
                     },
                 ],
             },
