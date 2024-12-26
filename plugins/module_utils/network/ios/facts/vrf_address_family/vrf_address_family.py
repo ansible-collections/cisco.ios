@@ -28,10 +28,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
     flatten_config,
 )
 
-# import debugpy
-# debugpy.listen(3000)
-# debugpy.wait_for_client()
-
 
 class Vrf_address_familyFacts(object):
     """ The ios vrf_address_family facts class
@@ -73,8 +69,6 @@ class Vrf_address_familyFacts(object):
         if not data:
             data = self.get_config(connection)
 
-        # export_data = flatten_config(data, "export")
-        # import_data = flatten_config(export_data, "import")
         address_data = flatten_config(data, "address-family")
         data = flatten_config(address_data, "vrf")
         finalConfig = self._flatten_config(data)
