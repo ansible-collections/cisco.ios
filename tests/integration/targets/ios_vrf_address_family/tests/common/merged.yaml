@@ -12,9 +12,6 @@
             address_families:
               - afi: "ipv4"
                 safi: "unicast"
-                bgp:
-                  next_hop:
-                    loopback: 40
                 export:
                   ipv4:
                     multicast:
@@ -35,6 +32,17 @@
                       limit: 12
                       map: "ran-map"
                   map: "import-map"
+          - name: test2
+            address_families:
+              - afi: "ipv4"
+                safi: "unicast"
+                export:
+                  map: "testing-map1"
+                import_config:
+                  map: "import-map1"
+                inter_as_hybrid:
+                  csc:
+                    next_hop: "1.2.3.4"
       register: result
 
     - name: Assert that correct set of commands were generated

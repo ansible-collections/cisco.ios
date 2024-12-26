@@ -45,9 +45,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            )
                         },
                     },
                 },
@@ -70,9 +74,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "export": {
                                 "map": "{{ export_map }}",
                             },
@@ -97,9 +105,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "import_config": {
                                 "map": "{{ import_config_map }}",
                             },
@@ -119,14 +131,21 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+export\sipv4\smulticast\s(?P<prefix>\d+)\smap\s(?P<export_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "export ipv4 multicast {{ export.ipv4.multicast.prefix }} map {{ export.ipv4.multicast.prefix.map }}",
+            "setval": (
+                "export ipv4 multicast {{ export.ipv4.multicast.prefix }} "
+                "map {{ export.ipv4.multicast.prefix.map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "export": {
                                 "ipv4": {
                                     "multicast": {
@@ -151,20 +170,29 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+export\sipv4\sunicast\s(?P<prefix>\d+)\smap\s(?P<export_map>\S+)\s(?P<allow_evpn>allow-evpn)
                 $""", re.VERBOSE,
             ),
-            "setval": "export ipv4 unicast {{ prefix }} map {{ export_map }} allow-evpn",
+            "setval": (
+                "export ipv4 unicast {{ prefix }} map {{ export_map }} "
+                "allow-evpn"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "export": {
                                 "ipv4": {
                                     "unicast": {
                                         "prefix": "{{ prefix }}",
                                         "map": "{{ export_map }}",
-                                        "allow_evpn": "{{ true if allow_evpn is defined }}",
+                                        "allow_evpn": (
+                                            "{{ true if allow_evpn is defined }}"
+                                        ),
                                     },
                                 },
                             },
@@ -184,14 +212,20 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+import\sipv4\smulticast\s(?P<prefix>\d+)\smap\s(?P<import_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "import ipv4 multicast {{ prefix }} map {{ import_map }}",
+            "setval": (
+                "import ipv4 multicast {{ prefix }} map {{ import_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "import_config": {
                                 "ipv4": {
                                     "multicast": {
@@ -216,20 +250,29 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+import\sipv4\sunicast\s(?P<limit>\d+)\smap\s(?P<import_map>\S+)\s(?P<allow_evpn>allow-evpn)
                 $""", re.VERBOSE,
             ),
-            "setval": "import ipv4 unicast {{ limit }} map {{ import_map }} allow-evpn",
+            "setval": (
+                "import ipv4 unicast {{ limit }} map {{ import_map }} "
+                "allow-evpn"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "import_config": {
                                 "ipv4": {
                                     "unicast": {
                                         "limit": "{{ limit }}",
                                         "map": "{{ import_map }}",
-                                        "allow_evpn": "{{ true if allow_evpn is defined }}",
+                                        "allow_evpn": (
+                                            "{{ true if allow_evpn is defined }}"
+                                        ),
                                     },
                                 },
                             },
@@ -254,9 +297,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "bgp": {
                                 "next_hop": {
                                     "loopback": "{{ loopback }}",
@@ -278,17 +325,25 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+inter-as-hybrid\scsc\snext-hop\s(?P<inter_as_hybrid_csc_next_hop>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "inter-as-hybrid csc next-hop {{ inter_as_hybrid.csc.next_hop }}",
+            "setval": (
+                "inter-as-hybrid csc next-hop "
+                "{{ inter_as_hybrid.csc.next_hop }}"),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "inter_as_hybrid": {
                                 "csc": {
-                                    "next_hop": "{{ inter_as_hybrid_csc_next_hop }}",
+                                    "next_hop": (
+                                        "{{ inter_as_hybrid_csc_next_hop }}"
+                                    ),
                                 },
                             },
                         },
@@ -307,14 +362,20 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+inter-as-hybrid\snext-hop\s(?P<inter_as_hybrid_next_hop>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "inter-as-hybrid next-hop {{ inter_as_hybrid.next_hop }}",
+            "setval": (
+                "inter-as-hybrid next-hop {{ inter_as_hybrid.next_hop }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "inter_as_hybrid": {
                                 "next_hop": "{{ inter_as_hybrid_next_hop }}",
                             },
@@ -324,7 +385,10 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "mdt.auto_discovery.ingress_replication.inter_as.mdt_hello_enable",
+            "name": (
+                "mdt.auto_discovery.ingress_replication.inter_as."
+                "mdt_hello_enable"
+            ),
             "getval": re.compile(
                 r"""
                 ^vrf\sdefinition\s(?P<name>\S+)
@@ -334,14 +398,21 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+mdt\sauto-discovery\singress-replication\sinter-as\smdt-hello-enable
                 $""", re.VERBOSE,
             ),
-            "setval": "mdt auto-discovery ingress-replication inter-as mdt-hello-enable",
+            "setval": (
+                "mdt auto-discovery ingress-replication inter-as "
+                "mdt-hello-enable"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "auto_discovery": {
                                     "ingress_replication": {
@@ -372,9 +443,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "auto_discovery": {
                                     "pim": {
@@ -390,7 +465,10 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "mdt.auto_discovery.pim.inter_as.pim_tlv_announce.mdt_hello_enable",
+            "name": (
+                "mdt.auto_discovery.pim.inter_as.pim_tlv_announce."
+                "mdt_hello_enable"
+            ),
             "getval": re.compile(
                 r"""
                 ^vrf\sdefinition\s(?P<name>\S+)
@@ -400,14 +478,21 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+mdt\sauto-discovery\spim\sinter-as\spim-tlv-announce\smdt-hello-enable
                 $""", re.VERBOSE,
             ),
-            "setval": "mdt auto-discovery pim inter-as pim-tlv-announce mdt-hello-enable",
+            "setval": (
+                "mdt auto-discovery pim inter-as pim-tlv-announce "
+                "mdt-hello-enable"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "auto_discovery": {
                                     "pim": {
@@ -435,14 +520,20 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+mdt\sauto-discovery\singress-replication\smdt-hello-enable
                 $""", re.VERBOSE,
             ),
-            "setval": "mdt auto-discovery ingress-replication mdt-hello-enable",
+            "setval": (
+                "mdt auto-discovery ingress-replication mdt-hello-enable"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "auto_discovery": {
                                     "ingress_replication": {
@@ -471,9 +562,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "auto_discovery": {
                                     "pim": {
@@ -497,14 +592,20 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+mdt\sauto-discovery\spim\spim-tlv-announce\smdt-hello-enable
                 $""", re.VERBOSE,
             ),
-            "setval": "mdt auto-discovery pim pim-tlv-announce mdt-hello-enable",
+            "setval": (
+                "mdt auto-discovery pim pim-tlv-announce mdt-hello-enable"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "auto_discovery": {
                                     "pim": {
@@ -535,9 +636,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "auto_discovery": {
                                     "receiver_site": "{{ true }}",
@@ -559,18 +664,28 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+mdt\sdata\singress-replication\s(?P<mdt_data_ingress_replication_number>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "mdt data ingress-replication {{ mdt.data.ingress_replication.number }}",
+            "setval": (
+                "mdt data ingress-replication "
+                "{{ mdt.data.ingress_replication.number }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "data": {
                                     "ingress_replication": {
-                                        "number": "{{ mdt_data_ingress_replication_number }}",
+                                        "number": (
+                                            "{{ mdt_data_ingress_"
+                                            "replication_number }}"
+                                        ),
                                     },
                                 },
                             },
@@ -595,9 +710,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "data": {
                                     "ingress_replication": {
@@ -621,18 +740,27 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+mdt\sdata\singress-replication\s(?P<mdt_data_ingress_replication_number>\d+)\simmediate-switch
                 $""", re.VERBOSE,
             ),
-            "setval": "mdt data ingress-replication {{ mdt.data.ingress_replication.number }} immediate-switch",
+            "setval": (
+                "mdt data ingress-replication "
+                "{{ mdt.data.ingress_replication.number }} immediate-switch"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "data": {
                                     "ingress_replication": {
-                                        "number": "{{ mdt_data_ingress_replication_number }}",
+                                        "number": (
+                                            "{{ mdt_data_ingress_replication_number }}"
+                                        ),
                                         "immediate_switch": "{{ true }}",
                                     },
                                 },
@@ -658,13 +786,19 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "data": {
                                     "list": {
-                                        "access_list": "{{ mdt_data_list_access_list }}",
+                                        "access_list": (
+                                            "{{ mdt_data_list_access_list }}"
+                                        ),
                                     },
                                 },
                             },
@@ -689,13 +823,19 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "data": {
                                     "list": {
-                                        "access_list_name": "{{ mdt_data_list_access_list_name }}",
+                                        "access_list_name": (
+                                            "{{ mdt_data_list_access_list_name }}"
+                                        ),
                                     },
                                 },
                             },
@@ -720,9 +860,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "data": {
                                     "threshold": "{{ mdt_data_threshold }}",
@@ -749,9 +893,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "default": {
                                     "ingress_replication": "{{ true }}",
@@ -778,9 +926,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "direct": "{{ true }}",
                             },
@@ -805,9 +957,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "log_reuse": "{{ true }}",
                             },
@@ -832,9 +988,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "mode": {
                                     "gre": "{{ true }}",
@@ -861,9 +1021,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "mtu": "{{ mdt_value }}",
                             },
@@ -883,18 +1047,27 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+mdt\soverlay\sbgp\sshared-tree-prune-delay\s(?P<shared_tree_prune_delay>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "mdt overlay bgp shared-tree-prune-delay {{ mdt.overlay.bgp.shared_tree_prune_delay }}",
+            "setval": (
+                "mdt overlay bgp shared-tree-prune-delay "
+                "{{ mdt.overlay.bgp.shared_tree_prune_delay }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "overlay": {
                                     "bgp": {
-                                        "shared_tree_prune_delay": "{{ shared_tree_prune_delay }}",
+                                        "shared_tree_prune_delay": (
+                                            "{{ shared_tree_prune_delay }}"
+                                        ),
                                     },
                                 },
                             },
@@ -914,18 +1087,27 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+mdt\soverlay\sbgp\ssource-tree-prune-delay\s(?P<source_tree_prune_delay>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "mdt overlay bgp source-tree-prune-delay {{ mdt.overlay.bgp.source_tree_prune_delay }}",
+            "setval": (
+                "mdt overlay bgp source-tree-prune-delay "
+                "{{ mdt.overlay.bgp.source_tree_prune_delay }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "overlay": {
                                     "bgp": {
-                                        "source_tree_prune_delay": "{{ source_tree_prune_delay }}",
+                                        "source_tree_prune_delay": (
+                                            "{{ source_tree_prune_delay }}"
+                                        ),
                                     },
                                 },
                             },
@@ -950,9 +1132,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "overlay": {
                                     "use_bgp_spt_only": "{{ true }}",
@@ -979,9 +1165,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "partitioned": {
                                     "ingress_replication": "{{ true }}",
@@ -1008,9 +1198,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "mdt": {
                                 "strict_rpf": {
                                     "interface": "{{ true }}",
@@ -1036,9 +1230,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "protection": {
                                 "local_prefixes": "{{ true }}",
                             },
@@ -1063,9 +1261,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "recursion_policy": {
                                     "destination": "{{ true }}",
@@ -1087,14 +1289,21 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\svrf\s(?P<vrf_name>\S+)\sunicast\sall\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from vrf {{ vrf_name }} unicast all route-map {{ route_map }}",
+            "setval": (
+                "route-replicate from vrf {{ vrf_name }} unicast all "
+                "route-map {{ route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "vrf": {
@@ -1113,7 +1322,9 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "route_replicate.from.vrf.vrf_name.unicast.bgp.asn.route_map",
+            "name": (
+                "route_replicate.from.vrf.vrf_name.unicast.bgp.asn.route_map"
+            ),
             "getval": re.compile(
                 r"""
                 ^vrf\sdefinition\s(?P<name>\S+)
@@ -1123,14 +1334,23 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\svrf\s(?P<vrf_name>\S+)\sunicast\sbgp\s(?P<asn>\d+)\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from vrf {{ route_replicate.from.vrf.vrf_name }} unicast bgp {{ route_replicate.from.vrf.vrf_name.unicast.bgp.asn }} route-map {{ route_replicate.from.vrf.vrf_name.unicast.bgp.asn.route_map }}",
+            "setval": (
+                "route-replicate from vrf {{ route_replicate.from.vrf.vrf_name }} "
+                "unicast all route-map {{ route_replicate.from.vrf.vrf_name.unicast.all.route_map }} "
+                "unicast bgp {{ route_replicate.from.vrf.vrf_name.unicast.bgp.asn }} "
+                "route-map {{ route_replicate.from.vrf.vrf_name.unicast.bgp.asn.route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "vrf": {
@@ -1150,7 +1370,9 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "route_replicate.from.vrf.vrf_name.unicast.connected.route_map",
+            "name": (
+                "route_replicate.from.vrf.vrf_name.unicast.connected.route_map"
+            ),
             "getval": re.compile(
                 r"""
                 ^vrf\sdefinition\s(?P<name>\S+)
@@ -1165,9 +1387,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "vrf": {
@@ -1186,7 +1412,10 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "route_replicate.from.vrf.vrf_name.unicast.eigrp.asn.route_map",
+            "name": (
+                "route_replicate.from.vrf.vrf_name.unicast.eigrp.asn."
+                "route_map"
+            ),
             "getval": re.compile(
                 r"""
                 ^vrf\sdefinition\s(?P<name>\S+)
@@ -1196,14 +1425,22 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\svrf\s(?P<vrf_name>\S+)\sunicast\seigrp\s(?P<asn>\d+)\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from vrf {{ route_replicate.from.vrf.vrf_name }} unicast eigrp {{ route_replicate.from.vrf.vrf_name.unicast.eigrp.asn }} route-map {{ route_replicate.from.vrf.vrf_name.unicast.eigrp.asn.route_map }}",
+            "setval": (
+                "route-replicate from vrf {{ route_replicate.from.vrf.vrf_name }} "
+                "unicast eigrp {{ route_replicate.from.vrf.vrf_name.unicast.eigrp.asn }} "
+                "route-map {{ route_replicate.from.vrf.vrf_name.unicast.eigrp.asn.route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "vrf": {
@@ -1238,9 +1475,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "vrf": {
@@ -1275,9 +1516,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "vrf": {
@@ -1311,9 +1556,13 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "vrf": {
@@ -1332,7 +1581,10 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "route_replicate.from.vrf.vrf_name.unicast.ospf.id.route_map",
+            "name": (
+                "route_replicate.from.vrf.vrf_name.unicast.ospf.id."
+                "route_map"
+            ),
             "getval": re.compile(
                 r"""
                 ^vrf\sdefinition\s(?P<name>\S+)
@@ -1347,16 +1599,22 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "vrf": {
                                         "name": "{{ vrf_name }}",
                                         "unicast": {
                                             "ospf": {
-                                                "process_id": "{{ process_id }}",
+                                                "process_id": (
+                                                    "{{ process_id }}"
+                                                ),
                                                 "route_map": "{{ route_map }}",
                                             },
                                         },
@@ -1379,14 +1637,22 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\svrf\s(?P<vrf_name>\S+)\sunicast\srip\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from vrf {{ route_replicate.from.vrf.vrf_name }} unicast rip route-map {{ route_replicate.from.vrf.vrf_name.unicast.rip.route_map }}",
+            "setval": (
+                "route-replicate from vrf {{ route_replicate.from.vrf.vrf_name }} "
+                "unicast rip route-map {{ route_replicate.from.vrf.vrf_name."
+                "unicast.rip.route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "vrf": {
@@ -1405,7 +1671,9 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "route_replicate.from.vrf.vrf_name.unicast.static.route_map",
+            "name": (
+                "route_replicate.from.vrf.vrf_name.unicast.static.route_map"
+            ),
             "getval": re.compile(
                 r"""
                 ^vrf\sdefinition\s(?P<name>\S+)
@@ -1415,14 +1683,21 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\svrf\s(?P<vrf_name>\S+)\sunicast\sstatic\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from vrf {{ route_replicate.from.vrf.vrf_name }} unicast static route-map {{ route_replicate.from.vrf.vrf_name.unicast.static.route_map }}",
+            "setval": (
+                "route-replicate from vrf {{ route_replicate.from.vrf.vrf_name }} "
+                "unicast static route-map {{ route_replicate.from.vrf.vrf_name.unicast.static.route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "vrf": {
@@ -1451,14 +1726,21 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\sunicast\sall\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from unicast all route-map {{ route_replicate.from.unicast.all.route_map }}",
+            "setval": (
+                "route-replicate from unicast all route-map "
+                "{{ route_replicate.from.unicast.all.route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "unicast": {
@@ -1484,14 +1766,22 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\sunicast\sbgp\s(?P<asn>\d+)\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from unicast bgp {{ route_replicate.from.unicast.bgp.asn }} route-map {{ route_replicate.from.unicast.bgp.asn.route_map }}",
+            "setval": (
+                "route-replicate from unicast bgp "
+                "{{ route_replicate.from.unicast.bgp.asn }} "
+                "route-map {{ route_replicate.from.unicast.bgp.asn.route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "unicast": {
@@ -1518,14 +1808,21 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\sunicast\sconnected\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from unicast connected route-map {{ route_replicate.from.unicast.connected.route_map }}",
+            "setval": (
+                "route-replicate from unicast connected route-map "
+                "{{ route_replicate.from.unicast.connected.route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "unicast": {
@@ -1551,14 +1848,22 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\sunicast\seigrp\s(?P<asn>\d+)\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from unicast eigrp {{ route_replicate.from.unicast.eigrp.asn }} route-map {{ route_replicate.from.unicast.eigrp.asn.route_map }}",
+            "setval": (
+                "route-replicate from unicast eigrp "
+                "{{ route_replicate.from.unicast.eigrp.asn }} "
+                "route-map {{ route_replicate.from.unicast.eigrp.asn.route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "unicast": {
@@ -1585,14 +1890,22 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\sunicast\sisis\s(?P<tag>\S+)\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from unicast isis {{ route_replicate.from.unicast.isis.tag }} route-map {{ route_replicate.from.unicast.isis.route_map }}",
+            "setval": (
+                "route-replicate from unicast isis "
+                "{{ route_replicate.from.unicast.isis.tag }} "
+                "route-map {{ route_replicate.from.unicast.isis.route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "unicast": {
@@ -1619,14 +1932,21 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\sunicast\smobile\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from unicast mobile route-map {{ route_replicate.from.unicast.mobile.route_map }}",
+            "setval": (
+                "route-replicate from unicast mobile route-map "
+                "{{ route_replicate.from.unicast.mobile.route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "unicast": {
@@ -1652,14 +1972,21 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\sunicast\sodr\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from unicast odr route-map {{ route_replicate.from.unicast.odr.route_map }}",
+            "setval": (
+                "route-replicate from unicast odr route-map "
+                "{{ route_replicate.from.unicast.odr.route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "unicast": {
@@ -1685,14 +2012,22 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\sunicast\sospf\s(?P<process_id>\d+)\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from unicast ospf {{ route_replicate.from.unicast.ospf.id }} route-map {{ route_replicate.from.unicast.ospf.id.route_map }}",
+            "setval": (
+                "route-replicate from unicast ospf "
+                "{{ route_replicate.from.unicast.ospf.id }} "
+                "route-map {{ route_replicate.from.unicast.ospf.id.route_map}}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "unicast": {
@@ -1719,14 +2054,21 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\sunicast\srip\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from unicast rip route-map {{ route_replicate.from.unicast.rip.route_map }}",
+            "setval": (
+                "route-replicate from unicast rip route-map "
+                "{{ route_replicate.from.unicast.rip.route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "unicast": {
@@ -1752,14 +2094,21 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\sunicast\sstatic\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from unicast static route-map {{ route_replicate.from.unicast.static.route_map }}",
+            "setval": (
+                "route-replicate from unicast static route-map "
+                "{{ route_replicate.from.unicast.static.route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_replicate": {
                                 "from_config": {
                                     "unicast": {
@@ -1790,11 +2139,47 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_target": {
                                 "export": "{{ route_target_export }}",
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "route_target.export.stitching",
+            "getval": re.compile(
+                r"""
+                ^vrf\sdefinition\s(?P<name>\S+)
+                \saddress-family
+                \s(?P<afi>\S+)
+                (\s(?P<safi>\S+))?
+                \s+route-target\sexport\s(?P<route_target_export>\S+)\sstitching
+                $""", re.VERBOSE,
+            ),
+            "setval": "route-target export {{route_target.export}} stitching",
+            "result": {
+                '{{ name }}': {
+                    'name': '{{ name }}',
+                    "address_families": {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
+                            "afi": "{{ afi }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
+                            "route_target": {
+                                "export": "{{ route_target_export }}",
+                                "stitching": "{{ true }}",
                             },
                         },
                     },
@@ -1817,11 +2202,17 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
                             "route_target": {
-                                "import_config": "{{ route_target_import_config }}",
+                                "import_config": (
+                                    "{{ route_target_import_config }}"
+                                ),
                             },
                         },
                     },

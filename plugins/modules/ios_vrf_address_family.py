@@ -826,36 +826,6 @@ EXAMPLES = """
 # - import ipv4 unicast 12 map "ran-map" allow-evpn
 
 #
-# after:
-# - name: VRF4
-# - name: VRF7
-#   address_families:
-#     - afi: "ipv4"
-#       safi: "unicast"
-#       bgp:
-#         next_hop:
-#           loopback: 89
-#       export:
-#         ipv4:
-#           multicast:
-#             map: "single"
-#             prefix: 345
-#           unicast:
-#             allow_evpn: true
-#             map: "test-map"
-#             prefix: 67
-#         map: "testing-map"
-#       import_config:
-#         ipv4:
-#           multicast:
-#             map: "import-map1"
-#             prefix: 89
-#           unicast:
-#             allow_evpn: true
-#             limit: 12
-#             map: "ran-map"
-#       map: "import-map"
-#
 # After state:
 # -------------
 # RP/0/RP0/CPU0:ios(config)#show running-config vrf
@@ -1102,33 +1072,37 @@ RETURN = """
 before:
   description: The configuration prior to the module execution.
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
-  type: dict
+  type: list
   sample: >
     This output will always be in the same format as the
     module argspec.
 after:
   description: The resulting configuration after module execution.
   returned: when changed
-  type: dict
+  type: list
   sample: >
     This output will always be in the same format as the
     module argspec.
 commands:
   description: The set of commands pushed to the remote device.
-  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - vrf definition test1
+    - address-family ipv4 unicast
+    - bgp next-hop loopback 40
+    - export map "testing-map"
+    - export ipv4 multicast 345 map "testmap"
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - vrf definition test1
+    - address-family ipv4 unicast
+    - bgp next-hop loopback 40
+    - import map "testing-map"
+    - export ipv4 multicast 345 map "testmap"
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)

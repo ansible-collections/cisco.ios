@@ -1,6 +1,6 @@
 ---
 - name: Remove VRF global configurations
-  cisco.iosxr.iosxr_config:
+  cisco.ios.ios_config:
     lines:
       - no vrf definition VRF4
       - no vrf definition VRF6
