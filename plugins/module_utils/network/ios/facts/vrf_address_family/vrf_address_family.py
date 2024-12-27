@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,14 +16,13 @@ based on the configuration.
 """
 
 
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
-    utils,
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
+
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vrf_address_family.vrf_address_family import (
+    Vrf_address_familyArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.vrf_address_family import (
     Vrf_address_familyTemplate,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vrf_address_family.vrf_address_family import (
-    Vrf_address_familyArgs,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     flatten_config,
@@ -30,10 +30,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
 
 
 class Vrf_address_familyFacts(object):
-    """ The ios vrf_address_family facts class
-    """
+    """The ios vrf_address_family facts class"""
 
-    def __init__(self, module, subspec='config', options='options'):
+    def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Vrf_address_familyArgs.argument_spec
 
@@ -53,7 +52,7 @@ class Vrf_address_familyFacts(object):
         return "\n".join(finalConfig)
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Vrf_address_family network resource
+        """Populate the facts for Vrf_address_family network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -74,7 +73,10 @@ class Vrf_address_familyFacts(object):
         finalConfig = self._flatten_config(data)
 
         # parse native config using the Vrf_address_family template
-        vrf_address_family_parser = Vrf_address_familyTemplate(lines=finalConfig.splitlines(), module=self._module)
+        vrf_address_family_parser = Vrf_address_familyTemplate(
+            lines=finalConfig.splitlines(),
+            module=self._module,
+        )
         obj = vrf_address_family_parser.parse()
         objs = list(obj.values())
 
@@ -85,14 +87,18 @@ class Vrf_address_familyFacts(object):
             else:
                 vrf["address_families"] = []
 
-        ansible_facts['ansible_network_resources'].pop('vrf_address_family', None)
+        ansible_facts["ansible_network_resources"].pop("vrf_address_family", None)
 
         params = utils.remove_empties(
-            vrf_address_family_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            vrf_address_family_parser.validate_config(
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
+            ),
         )
 
-        facts['vrf_address_family'] = params.get("config", [])
-        ansible_facts['ansible_network_resources'].update(facts)
+        facts["vrf_address_family"] = params.get("config", [])
+        ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
 

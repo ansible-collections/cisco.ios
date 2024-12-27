@@ -4,7 +4,8 @@
     lines:
       - no vrf definition VRF4
       - no vrf definition VRF6
-      - no vrf definition VRF7
+      - no vrf definition VRF1
       - no vrf definition test
       - no vrf definition test1
+      - no vrf definition test2
   register: result

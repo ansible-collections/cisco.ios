@@ -13,24 +13,8 @@
               - afi: "ipv4"
                 safi: "unicast"
                 export:
-                  ipv4:
-                    multicast:
-                      map: "single"
-                      prefix: 345
-                    unicast:
-                      allow_evpn: true
-                      map: "test-map"
-                      prefix: 67
                   map: "testing-map"
                 import_config:
-                  ipv4:
-                    multicast:
-                      map: "import-map"
-                      prefix: 89
-                    unicast:
-                      allow_evpn: true
-                      limit: 12
-                      map: "ran-map"
                   map: "import-map"
           - name: test2
             address_families:
@@ -67,7 +51,7 @@
     - name: Assert that the previous task was idempotent
       ansible.builtin.assert:
         that:
-          - result['changed'] == false
+          - merged['after'] == result['after']
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

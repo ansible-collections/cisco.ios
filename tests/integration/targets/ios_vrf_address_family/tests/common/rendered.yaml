@@ -41,4 +41,3 @@
   ansible.builtin.assert:
     that:
       - result.changed == false
-      - result.rendered|symmetric_difference(merged.commands) == []

@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,6 +16,7 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
@@ -51,7 +53,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                             "safi": (
                                 "{{ safi if safi is defined else "
                                 "'unicast' }}"
-                            )
+                            ),
                         },
                     },
                 },
@@ -171,7 +173,8 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": (
-                "export ipv4 unicast {{ prefix }} map {{ export_map }} "
+                "export ipv4 unicast {{ export.ipv4.unicast.prefix }} map "
+                "{{ export.ipv4.unicast.map.export_map }} "
                 "allow-evpn"
             ),
             "result": {
@@ -191,7 +194,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                                         "prefix": "{{ prefix }}",
                                         "map": "{{ export_map }}",
                                         "allow_evpn": (
-                                            "{{ true if allow_evpn is defined }}"
+                                            "{{true if allow_evpn is defined}}"
                                         ),
                                     },
                                 },
@@ -271,7 +274,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                                         "limit": "{{ limit }}",
                                         "map": "{{ import_map }}",
                                         "allow_evpn": (
-                                            "{{ true if allow_evpn is defined }}"
+                                            "{{true if allow_evpn is defined}}"
                                         ),
                                     },
                                 },
@@ -327,7 +330,8 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             ),
             "setval": (
                 "inter-as-hybrid csc next-hop "
-                "{{ inter_as_hybrid.csc.next_hop }}"),
+                "{{ inter_as_hybrid.csc.next_hop }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
@@ -498,7 +502,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                                     "pim": {
                                         "inter_as": {
                                             "pim_tlv_announce": {
-                                                "mdt_hello_enable": "{{ true }}",
+                                                "mdt_hello_enable": "{{true}}",
                                             },
                                         },
                                     },
@@ -759,7 +763,8 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                                 "data": {
                                     "ingress_replication": {
                                         "number": (
-                                            "{{ mdt_data_ingress_replication_number }}"
+                                            "{{ mdt_data_ingress_"
+                                            "replication_number }}"
                                         ),
                                         "immediate_switch": "{{ true }}",
                                     },
@@ -834,7 +839,8 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                                 "data": {
                                     "list": {
                                         "access_list_name": (
-                                            "{{ mdt_data_list_access_list_name }}"
+                                            "{{ mdt_data_list_access_list_"
+                                            "name }}"
                                         ),
                                     },
                                 },
@@ -1141,7 +1147,9 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                             ),
                             "mdt": {
                                 "overlay": {
-                                    "use_bgp_spt_only": "{{ true }}",
+                                    "use_bgp": {
+                                        "spt_only": "{{ true }}",
+                                    },
                                 },
                             },
                         },
@@ -1335,10 +1343,9 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": (
-                "route-replicate from vrf {{ route_replicate.from.vrf.vrf_name }} "
-                "unicast all route-map {{ route_replicate.from.vrf.vrf_name.unicast.all.route_map }} "
-                "unicast bgp {{ route_replicate.from.vrf.vrf_name.unicast.bgp.asn }} "
-                "route-map {{ route_replicate.from.vrf.vrf_name.unicast.bgp.asn.route_map }}"
+                "route-replicate from vrf {{ vrf_name }} "
+                "unicast bgp {{ asn }} "
+                "route-map {{ route_map }}"
             ),
             "result": {
                 '{{ name }}': {
@@ -1382,7 +1389,10 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\svrf\s(?P<vrf_name>\S+)\sunicast\sconnected\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from vrf {{ route_replicate.from.vrf.vrf_name }} unicast connected route-map {{ route_replicate.from.vrf.vrf_name.unicast.connected.route_map }}",
+            "setval": (
+                "route-replicate from vrf {{ vrf_name }} unicast connected "
+                "route-map {{ route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
@@ -1426,9 +1436,9 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": (
-                "route-replicate from vrf {{ route_replicate.from.vrf.vrf_name }} "
-                "unicast eigrp {{ route_replicate.from.vrf.vrf_name.unicast.eigrp.asn }} "
-                "route-map {{ route_replicate.from.vrf.vrf_name.unicast.eigrp.asn.route_map }}"
+                "route-replicate from vrf {{ vrf_name }} "
+                "unicast eigrp {{ asn }} "
+                "route-map {{ route_map }}"
             ),
             "result": {
                 '{{ name }}': {
@@ -1470,7 +1480,10 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\svrf\s(?P<vrf_name>\S+)\sunicast\sisis\s(?P<tag>\S+)\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from vrf {{ route_replicate.from.vrf.vrf_name }} unicast isis {{ route_replicate.from.vrf.vrf_name.unicast.isis.tag }} route-map {{ route_replicate.from.vrf.vrf_name.unicast.isis.route_map }}",
+            "setval": (
+                "route-replicate from vrf {{ vrf_name }} unicast isis "
+                "{{ tag }} route-map {{ route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
@@ -1488,7 +1501,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                                         "name": "{{ vrf_name }}",
                                         "unicast": {
                                             "isis": {
-                                                "tag": "{{ tag }}",
+                                                "iso_tag": "{{ tag }}",
                                                 "route_map": "{{ route_map }}",
                                             },
                                         },
@@ -1501,7 +1514,9 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "route_replicate.from.vrf.vrf_name.unicast.mobile.route_map",
+            "name": (
+                "route_replicate.from.vrf.vrf_name.unicast.mobile.route_map"
+            ),
             "getval": re.compile(
                 r"""
                 ^vrf\sdefinition\s(?P<name>\S+)
@@ -1511,7 +1526,10 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\svrf\s(?P<vrf_name>\S+)\sunicast\smobile\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from vrf {{ route_replicate.from.vrf.vrf_name }} unicast mobile route-map {{ route_replicate.from.vrf.vrf_name.unicast.mobile.route_map }}",
+            "setval": (
+                "route-replicate from vrf {{ vrf_name }} unicast mobile "
+                "route-map {{ route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
@@ -1551,7 +1569,10 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\svrf\s(?P<vrf_name>\S+)\sunicast\sodr\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from vrf {{ route_replicate.from.vrf.vrf_name }} unicast odr route-map {{ route_replicate.from.vrf.vrf_name.unicast.odr.route_map }}",
+            "setval": (
+                "route-replicate from vrf {{ vrf_name }} "
+                "unicast odr route-map {{ route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
@@ -1594,7 +1615,11 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s+route-replicate\sfrom\svrf\s(?P<vrf_name>\S+)\sunicast\sospf\s(?P<process_id>\d+)\sroute-map\s(?P<route_map>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-replicate from vrf {{ route_replicate.from.vrf.vrf_name }} unicast ospf {{ route_replicate.from.vrf.vrf_name.unicast.ospf.id }} route-map {{ route_replicate.from.vrf.vrf_name.unicast.ospf.id.route_map }}",
+            "setval": (
+                "route-replicate from vrf {{ vrf_name }} unicast ospf "
+                "{{ process_id }} route-map "
+                "{{ route_map }}"
+            ),
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
@@ -1638,7 +1663,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": (
-                "route-replicate from vrf {{ route_replicate.from.vrf.vrf_name }} "
+                "route-replicate from vrf {{ vrf_name }} "
                 "unicast rip route-map {{ route_replicate.from.vrf.vrf_name."
                 "unicast.rip.route_map }}"
             ),
@@ -1684,8 +1709,8 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": (
-                "route-replicate from vrf {{ route_replicate.from.vrf.vrf_name }} "
-                "unicast static route-map {{ route_replicate.from.vrf.vrf_name.unicast.static.route_map }}"
+                "route-replicate from vrf {{ vrf_name }} "
+                "unicast static route-map {{ route_map }}"
             ),
             "result": {
                 '{{ name }}': {
@@ -1769,7 +1794,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             "setval": (
                 "route-replicate from unicast bgp "
                 "{{ route_replicate.from.unicast.bgp.asn }} "
-                "route-map {{ route_replicate.from.unicast.bgp.asn.route_map }}"
+                "route-map {{ route_map }}"
             ),
             "result": {
                 '{{ name }}': {
@@ -1851,7 +1876,8 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             "setval": (
                 "route-replicate from unicast eigrp "
                 "{{ route_replicate.from.unicast.eigrp.asn }} "
-                "route-map {{ route_replicate.from.unicast.eigrp.asn.route_map }}"
+                "route-map {{ route_replicate.from.unicast.eigrp.asn."
+                "route_map }}"
             ),
             "result": {
                 '{{ name }}': {
@@ -2148,38 +2174,6 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                             ),
                             "route_target": {
                                 "export": "{{ route_target_export }}",
-                            },
-                        },
-                    },
-                },
-            },
-        },
-        {
-            "name": "route_target.export.stitching",
-            "getval": re.compile(
-                r"""
-                ^vrf\sdefinition\s(?P<name>\S+)
-                \saddress-family
-                \s(?P<afi>\S+)
-                (\s(?P<safi>\S+))?
-                \s+route-target\sexport\s(?P<route_target_export>\S+)\sstitching
-                $""", re.VERBOSE,
-            ),
-            "setval": "route-target export {{route_target.export}} stitching",
-            "result": {
-                '{{ name }}': {
-                    'name': '{{ name }}',
-                    "address_families": {
-                        '{{ "address_families_" + afi + '
-                        '("_" + safi if safi is defined else "_unicast") }}': {
-                            "afi": "{{ afi }}",
-                            "safi": (
-                                "{{ safi if safi is defined else "
-                                "'unicast' }}"
-                            ),
-                            "route_target": {
-                                "export": "{{ route_target_export }}",
-                                "stitching": "{{ true }}",
                             },
                         },
                     },
