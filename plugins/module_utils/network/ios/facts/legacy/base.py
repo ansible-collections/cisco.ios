@@ -285,7 +285,12 @@ class Interfaces(FactsBase):
 
     def populate_ipv4_interfaces(self, data):
         for key, value in data.items():
-            self.facts["interfaces"][key]["ipv4"] = list()
+            try:
+                self.facts["interfaces"][key]["ipv4"] = list()
+            except KeyError:
+                self.facts["interfaces"][key] = dict()
+                self.facts["interfaces"][key]["ipv4"] = list()
+                self.parse_deleted_status(key, value)
             primary_address = addresses = []
             primary_address = re.findall(r"Internet address is (.+)$", value, re.M)
             addresses = re.findall(r"Secondary address (.+)$", value, re.M)
@@ -305,6 +310,7 @@ class Interfaces(FactsBase):
             except KeyError:
                 self.facts["interfaces"][key] = dict()
                 self.facts["interfaces"][key]["ipv6"] = list()
+                self.parse_deleted_status(key, value)
             addresses = re.findall(r"\s+(.+), subnet", value, re.M)
             subnets = re.findall(r", subnet is (.+)$", value, re.M)
             for addr, subnet in zip(addresses, subnets):
@@ -369,6 +375,11 @@ class Interfaces(FactsBase):
                     key = match.group(1)
                     parsed[key] = line
         return parsed
+
+    def parse_deleted_status(self, interface, value):
+        status = self.parse_operstatus(value)
+        if status == "deleted":
+            self.facts["interfaces"][interface]["operstatus"] = status
 
     def parse_description(self, data):
         match = re.search(r"Description: (.+)$", data, re.M)
