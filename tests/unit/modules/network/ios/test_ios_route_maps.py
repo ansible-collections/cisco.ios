@@ -821,3 +821,41 @@ class TestIosRouteMapsModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
+
+    def test_ios_route_maps_replaced_acl_removal(self):
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TO_OUT",
+                        entries=[
+                            dict(
+                                sequence=10,
+                                action="permit",
+                                match=dict(
+                                    ip=dict(
+                                        address=dict(
+                                            acls=["185"],
+                                        ),
+                                    ),
+                                ),
+                                set=dict(
+                                    as_path=dict(
+                                        prepend=dict(
+                                            as_number=["1321"],
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            "route-map TO_OUT permit 10",
+            "no match ip address 186",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
