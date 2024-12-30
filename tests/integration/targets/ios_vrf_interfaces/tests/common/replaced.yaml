@@ -1,0 +1,42 @@
+---
+- ansible.builtin.debug:
+    msg: START Replaced ios_vrf_interfaces state for integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Replace provided VRF interfaces configuration
+      register: result
+      cisco.ios.ios_vrf_interfaces: &id001
+        config:
+          - name: GigabitEthernet2
+            vrf_name: vrf_D
+        state: replaced
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - replaced['before'] == result['before']
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - replaced['after'] == result['after']
+
+    - name: Replace provided VRF interfaces configuration (idempotent)
+      register: result
+      cisco.ios.ios_vrf_interfaces: *id001
+
+    - name: Assert that task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
