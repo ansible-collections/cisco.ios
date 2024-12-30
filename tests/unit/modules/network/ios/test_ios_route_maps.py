@@ -575,6 +575,7 @@ class TestIosRouteMapsModule(TestIosModule):
             "match security-group source tag 10 20",
             "match local-preference 105 55",
             "match mpls-label",
+            "no route-map TO_OUT",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -659,6 +660,29 @@ class TestIosRouteMapsModule(TestIosModule):
                         ],
                         route_map="test_1",
                     ),
+                    dict(
+                        route_map="TO_OUT",
+                        entries=[
+                            dict(
+                                sequence=10,
+                                action="permit",
+                                match=dict(
+                                    ip=dict(
+                                        address=dict(
+                                            acls=["185", "186"],
+                                        ),
+                                    ),
+                                ),
+                                set=dict(
+                                    as_path=dict(
+                                        prepend=dict(
+                                            as_number=["1321"],
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
                 ],
                 state="overridden",
             ),
@@ -673,7 +697,10 @@ class TestIosRouteMapsModule(TestIosModule):
 
     def test_ios_route_maps_delete_without_config(self):
         set_module_args(dict(state="deleted"))
-        commands = ["no route-map test_1"]
+        commands = [
+            "no route-map test_1",
+            "no route-map TO_OUT",
+        ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
