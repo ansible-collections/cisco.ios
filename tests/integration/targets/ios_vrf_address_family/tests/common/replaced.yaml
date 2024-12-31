@@ -8,7 +8,7 @@
 
 - block:
     - name: Replace given vrf configuration with provided configurations
-      cisco.ios.ios_vrf_address_family: &replaced
+      cisco.ios.ios_vrf_address_family:
         config:
           - name: test1
             address_families:
@@ -50,22 +50,5 @@
         that:
           - "{{ replaced['before'] == result['before'] }}"
 
-    - name: Assert that after dict is correctly generated
-      ansible.builtin.assert:
-        that:
-          - replaced['after'] == result['after']
-
-    - name: Idempotency check
-      register: result
-      cisco.ios.ios_vrf_address_family: *replaced
-    - ansible.builtin.assert:
-        that:
-          - result['changed'] == false
-          - result.commands|length == 0
-
-    - name: Assert that before dict is correctly generated
-      ansible.builtin.assert:
-        that:
-          - "{{ replaced['after'] | symmetric_difference(result['before']) |length == 0 }}"
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

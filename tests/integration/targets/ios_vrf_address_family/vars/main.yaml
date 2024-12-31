@@ -107,7 +107,7 @@ parsed:
                 allow_evpn: true
                 limit: 56
                 map: "import"
-          inter-as-hybrid:
+          inter_as_hybrid:
             next_hop: "1.2.3.4"
           mdt:
             auto_discovery:

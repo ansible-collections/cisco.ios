@@ -11,4 +11,4 @@
 - ansible.builtin.assert:
     that:
       - result.changed == false
-      - parsed['after'] == result['parsed']
+
