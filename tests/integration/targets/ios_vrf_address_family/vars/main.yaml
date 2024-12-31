@@ -1,0 +1,157 @@
+---
+merged:
+  before: {}
+  commands:
+    - vrf definition test2
+    - address-family ipv4 unicast
+    - export map testing-map1
+    - import map import-map1
+    - inter-as-hybrid csc next-hop 1.2.3.4
+    - vrf definition test1
+    - address-family ipv4 unicast
+    - export map testing-map
+    - import map import-map
+  after:
+    - name: test1
+      address_families:
+        - afi: "ipv4"
+          safi: "unicast"
+    - name: test2
+      address_families:
+        - afi: "ipv4"
+          safi: "unicast"
+          inter_as_hybrid:
+            csc:
+              next_hop: "1.2.3.4"
+
+replaced:
+  before:
+    - name: test1
+      address_families:
+        - afi: "ipv4"
+          safi: "unicast"
+          inter_as_hybrid:
+            next_hop: "1.0.0.0"
+          mdt:
+            auto_discovery:
+              pim:
+                pim_tlv_announce:
+                  mdt_hello_enable: true
+
+  commands:
+    - vrf definition test1
+    - address-family ipv4 unicast
+    - export map testing-map
+    - import map import-map
+    - no inter-as-hybrid next-hop 1.0.0.0
+    - no mdt auto-discovery pim pim-tlv-announce mdt-hello-enable
+
+  after:
+    - name: test1
+      address_families:
+        - afi: "ipv4"
+          safi: "unicast"
+
+overridden:
+  before: {}
+  commands:
+    - vrf definition VRF1
+    - address-family ipv4 unicast
+    - inter-as-hybrid csc next-hop 2.3.4.5
+    - mdt auto-discovery pim pim-tlv-announce mdt-hello-enable
+  after:
+    - name: VRF1
+      address_families:
+        - afi: "ipv4"
+          safi: "unicast"
+          inter_as_hybrid:
+            csc:
+              next_hop: "2.3.4.5"
+          mdt:
+            auto_discovery:
+              pim:
+                pim_tlv_announce:
+                  mdt_hello_enable: true
+
+gathered:
+  after:
+    - name: test1
+      address_families:
+        - afi: "ipv4"
+          safi: "unicast"
+          inter_as_hybrid:
+            next_hop: "1.0.0.0"
+          mdt:
+            auto_discovery:
+              pim:
+                pim_tlv_announce:
+                  mdt_hello_enable: true
+
+parsed:
+  after:
+    - address_families:
+        - afi: "ipv4"
+          bgp:
+            next_hop:
+              loopback: 23
+          export:
+            ipv4:
+              unicast:
+                allow_evpn: true
+                map: "test"
+                prefix: 37
+            map: "testing-map2"
+          import_config:
+            ipv4:
+              unicast:
+                allow_evpn: true
+                limit: 56
+                map: "import"
+          inter_as_hybrid:
+            next_hop: "1.2.3.4"
+          mdt:
+            auto_discovery:
+              pim:
+                pim_tlv_announce:
+                  mdt_hello_enable: true
+              receiver_site: true
+          route_target:
+            export: "10.12.0.1:20"
+            import_config: "10.0.0.1:30"
+          safi: "unicast"
+    - name: test
+
+deleted:
+  before:
+    - name: test1
+      address_families:
+        - afi: "ipv4"
+          safi: "unicast"
+          bgp:
+            next_hop:
+              loopback: 40
+          export:
+            ipv4:
+              multicast:
+                map: "single"
+                prefix: 345
+              unicast:
+                allow_evpn: true
+                map: "test-map"
+                prefix: 67
+            map: "testing-map"
+          import_config:
+            ipv4:
+              multicast:
+                map: "import-map"
+                prefix: 89
+              unicast:
+                allow_evpn: true
+                limit: 12
+                map: "ran-map"
+            map: "import-map"
+  commands:
+    - vrf definition test1
+    - no address-family ipv4 unicast
+  after:
+    - name: test1

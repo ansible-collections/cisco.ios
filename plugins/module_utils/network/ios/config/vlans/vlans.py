@@ -114,10 +114,12 @@ class Vlans(ResourceModule):
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
-        # if state is deleted, empty out wantd and set haved to wantd
-        if self.state == "deleted":
+        # if state is overridden, remove excluded vlans
+        if self.state == "overridden":
+            excluded_vlans = {k: v for k, v in iteritems(haved) if k not in wantd or not wantd}
             haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
-            wantd = {}
+            for k, have in iteritems(excluded_vlans):
+                self.purge(have, resource)
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state in ["deleted", "purged"]:
@@ -164,4 +166,6 @@ class Vlans(ResourceModule):
     def purge(self, have, resource):
         """Handle operation for purged state"""
         if resource == "vlan_configuration":
+            self.commands.append(self._tmplt.render(have, resource, True))
+        elif resource == "vlans":
             self.commands.append(self._tmplt.render(have, resource, True))

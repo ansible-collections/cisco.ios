@@ -1,0 +1,59 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_vrf_address_family overridden integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _populate.yaml
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Override the provided configuration with the existing running configuration
+      cisco.ios.ios_vrf_address_family: &overridden
+        config:
+          - name: VRF1
+            address_families:
+              - afi: "ipv4"
+                safi: "unicast"
+                inter_as_hybrid:
+                  csc:
+                    next_hop: "2.3.4.5"
+                mdt:
+                  auto_discovery:
+                    pim:
+                      pim_tlv_announce:
+                        mdt_hello_enable: true
+        state: overridden
+      register: result
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ overridden['commands'] == result['commands'] }}"
+
+    - name: Assert that before dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - "{{ overridden['before'] == result['before'] }}"
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - "{{ overridden['after'] | symmetric_difference(result['after']) |length == 0 }}"
+
+    - name: Idempotency check
+      cisco.ios.ios_vrf_address_family: *overridden
+      register: result
+
+    - name: Assert that no changes were made
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
+
+    - name: Assert that before dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - "{{ overridden['after'] | symmetric_difference(result['before']) |length == 0 }}"
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
