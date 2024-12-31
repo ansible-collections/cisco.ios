@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_static_routes - Fix gathering facts by properly distinguising routes.

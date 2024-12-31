@@ -1,0 +1,15 @@
+---
+- name: Merge provided configuration with device configuration
+  register: result
+  cisco.ios.ios_config:
+    lines:
+      - vrf definition VRF2
+      - description This is a test VRF for merged state
+      - ipv4 multicast multitopology
+      - ipv6 multicast multitopology
+      - rd 2:3
+      - route-target export 192.0.2.1:400
+      - route-target import 192.0.2.6:400
+      - vnet tag 200
+      - vpn id 2:45
+    save_when: always

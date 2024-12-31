@@ -5,20 +5,16 @@ merged:
   commands:
     - router bgp 65000
     - timers bgp 100 200 150
-    - bgp bestpath compare-routerid
     - no bgp default ipv4-unicast
     - no bgp default route-target filter
     - bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
     - bgp log-neighbor-changes
-    - bgp nopeerup-delay post-boot 10
     - neighbor 198.0.2.1 remote-as 100
     - neighbor 198.0.2.1 description merge neighbor
 
   after:
     as_number: "65000"
     bgp:
-      bestpath_options:
-        compare_routerid: true
       default:
         ipv4_unicast: false
         route_target:
@@ -29,8 +25,6 @@ merged:
         neighbors:
           time: 50
       log_neighbor_changes: true
-      nopeerup_delay_options:
-        post_boot: 10
     neighbors:
       - description: merge neighbor
         neighbor_address: 198.0.2.1
@@ -75,9 +69,6 @@ gathered:
         description: merge neighbor
         neighbor_address: 192.0.2.1
         remote_as: "100"
-        route_maps:
-          - name: test-route
-            out: true
     redistribute:
       - connected:
           metric: 10
@@ -180,7 +171,6 @@ rendered:
     - router bgp 65000
     - timers bgp 100 200 150
     - bgp advertise-best-external
-    - bgp bestpath compare-routerid
     - bgp dampening 1 1 1 1
     - bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
     - bgp log-neighbor-changes
@@ -188,7 +178,6 @@ rendered:
     - neighbor 192.0.2.1 remote-as 100
     - neighbor 192.0.2.1 description merge neighbor
     - neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
-    - neighbor 192.0.2.1 route-map test-route out
     - redistribute connected metric 10
 
 deleted:

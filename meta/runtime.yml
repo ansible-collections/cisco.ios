@@ -23,14 +23,6 @@ plugin_routing:
       redirect: cisco.ios.ios_hostname
     interfaces:
       redirect: cisco.ios.ios_interfaces
-    ios_linkagg:
-      deprecation:
-        removal_date: "2024-06-01"
-        warning_text: See the plugin documentation for more details
-    ios_lldp:
-      deprecation:
-        removal_date: "2024-06-01"
-        warning_text: See the plugin documentation for more details
     l2_interfaces:
       redirect: cisco.ios.ios_l2_interfaces
     l3_interfaces:
@@ -41,16 +33,6 @@ plugin_routing:
       redirect: cisco.ios.ios_lacp_interfaces
     lag_interfaces:
       redirect: cisco.ios.ios_lag_interfaces
-    linkagg:
-      deprecation:
-        removal_date: "2024-06-01"
-        warning_text: See the plugin documentation for more details
-      redirect: cisco.ios.ios_linkagg
-    lldp:
-      deprecation:
-        removal_date: "2024-06-01"
-        warning_text: See the plugin documentation for more details
-      redirect: cisco.ios.ios_lldp
     lldp_global:
       redirect: cisco.ios.ios_lldp_global
     lldp_interfaces:
@@ -81,8 +63,12 @@ plugin_routing:
       redirect: cisco.ios.ios_vlans
     vrf:
       redirect: cisco.ios.ios_vrf
+    vrf_interfaces:
+      redirect: cisco.ios.vrf_interfaces
     vxlan_vtep:
       redirect: cisco.ios.ios_vxlan_vtep
     vrf_address_family:
       redirect: cisco.ios.ios_vrf_address_family
-requires_ansible: ">=2.14.0"
+    vrf_global:
+      redirect: cisco.ios.ios_vrf_global
+requires_ansible: ">=2.15.0"
