@@ -3764,6 +3764,7 @@ Parameters
                 </td>
                 <td>
                         <div>Suppress/Un-Suppress routing updates</div>
+                        <div>Since, set_interface when enabled is not shown in running-config idempotency won&#x27;t be maintained for subsequent playbook runs.</div>
                 </td>
             </tr>
 
