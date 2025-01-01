@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_acls - Fix get_acl_data attribute to resolve parsing errors caused by ARP ACL presence.
