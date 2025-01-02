@@ -75,7 +75,11 @@ options:
         type: bool
       shutdown:
         description:
-          - Shutdown VLAN switching.
+          - Specifies whether VLAN switching should be administratively enabled or disabled.
+          - When set to C(enabled), the VLAN interface is administratively shut down, which prevents it from forwarding traffic.
+          - When set to C(disabled), the VLAN interface is administratively enabled by issuing the internal C(no shutdown) command,
+            allowing it to forward traffic.
+          - The operational state of the VLAN depends on both the administrative state (C(shutdown) or C(no shutdown)) and the physical link status.
         type: str
         choices:
           - enabled
@@ -266,40 +270,152 @@ EXAMPLES = """
 # Before state:
 # -------------
 #
-# vios_l2#show vlan
+# S1#show vlan
+
 # VLAN Name                             Status    Ports
 # ---- -------------------------------- --------- -------------------------------
-# 1    default                          active    Gi0/1, Gi0/2
-# 10   vlan_10                          active
-# 20   vlan_20                          act/lshut
-# 30   vlan_30                          sus/lshut
+# 1    default                          active    Gi0/0, Gi0/1, Gi0/2, Gi0/3
+# 10   Vlan_10                          active
+# 20   Vlan_20                          active
+# 30   Vlan_30                          suspended
+# 44   Vlan_44                          suspended
 # 1002 fddi-default                     act/unsup
 # 1003 token-ring-default               act/unsup
 # 1004 fddinet-default                  act/unsup
 # 1005 trnet-default                    act/unsup
-#
+
 # VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
 # ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
 # 1    enet  100001     1500  -      -      -        -    -        0      0
 # 10   enet  100010     1500  -      -      -        -    -        0      0
 # 20   enet  100020     610   -      -      -        -    -        0      0
 # 30   enet  100030     1500  -      -      -        -    -        0      0
+# 44   enet  100044     1500  -      -      -        -    -        0      0
 # 1002 fddi  101002     1500  -      -      -        -    -        0      0
 # 1003 tr    101003     1500  -      -      -        -    -        0      0
 # 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
 # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
-#
+
 # Remote SPAN VLANs
 # ------------------------------------------------------------------------------
-# 10
+
+
+# Primary Secondary Type              Ports
+# ------- --------- ----------------- ------------------------------------------
+# S1#
+
 
 - name: Override device configuration of all VLANs with provided configuration
   cisco.ios.ios_vlans:
     config:
-      - name: Vlan_10
-        vlan_id: 10
-        mtu: 1000
+      - name: Vlan_2020
+        state: active
+        vlan_id: 20
+        shutdown: disabled
     state: overridden
+
+# Task output:
+# ------------
+
+# after:
+# - mtu: 1500
+#   name: default
+#   shutdown: disabled
+#   state: active
+#   vlan_id: 1
+# - mtu: 1500
+#   name: Vlan_2020
+#   shutdown: disabled
+#   state: active
+#   vlan_id: 20
+# - mtu: 1500
+#   name: fddi-default
+#   shutdown: enabled
+#   state: active
+#   vlan_id: 1002
+# - mtu: 1500
+#   name: token-ring-default
+#   shutdown: enabled
+#   state: active
+#   vlan_id: 1003
+# - mtu: 1500
+#   name: fddinet-default
+#   shutdown: enabled
+#   state: active
+#   vlan_id: 1004
+# - mtu: 1500
+#   name: trnet-default
+#   shutdown: enabled
+#   state: active
+#   vlan_id: 1005
+
+# before:
+# - mtu: 1500
+#   name: default
+#   shutdown: disabled
+#   state: active
+#   vlan_id: 1
+# - mtu: 1500
+#   name: Vlan_10
+#   shutdown: disabled
+#   state: active
+#   vlan_id: 10
+# - mtu: 610
+#   name: Vlan_20
+#   shutdown: disabled
+#   state: active
+#   vlan_id: 20
+# - mtu: 1500
+#   name: Vlan_30
+#   shutdown: disabled
+#   state: suspend
+#   vlan_id: 30
+# - mtu: 1500
+#   name: Vlan_44
+#   shutdown: disabled
+#   state: suspend
+#   vlan_id: 44
+# - mtu: 1500
+#   name: fddi-default
+#   shutdown: enabled
+#   state: active
+#   vlan_id: 1002
+# - mtu: 1500
+#   name: token-ring-default
+#   shutdown: enabled
+#   state: active
+#   vlan_id: 1003
+# - mtu: 1500
+#   name: fddinet-default
+#   shutdown: enabled
+#   state: active
+#   vlan_id: 1004
+# - mtu: 1500
+#   name: trnet-default
+#   shutdown: enabled
+#   state: active
+#   vlan_id: 1005
+
+# commands:
+# - no vlan 1
+# - no vlan 10
+# - no vlan 30
+# - no vlan 44
+# - no vlan 1002
+# - no vlan 1003
+# - no vlan 1004
+# - no vlan 1005
+# - vlan 20
+# - name Vlan_2020
+# - no mtu 610
+# - no vlan configuration 1
+# - no vlan configuration 10
+# - no vlan configuration 30
+# - no vlan configuration 44
+# - no vlan configuration 1002
+# - no vlan configuration 1003
+# - no vlan configuration 1004
+# - no vlan configuration 1005
 
 # After state:
 # ------------
@@ -307,59 +423,177 @@ EXAMPLES = """
 # vios_l2#show vlan
 # VLAN Name                             Status    Ports
 # ---- -------------------------------- --------- -------------------------------
-# 1    default                          active    Gi0/1, Gi0/2
-# 10   Vlan_10                          active
+# 1    default                          active    Gi0/0, Gi0/1, Gi0/2, Gi0/3
+# 20   Vlan_2020                        active
 # 1002 fddi-default                     act/unsup
 # 1003 token-ring-default               act/unsup
 # 1004 fddinet-default                  act/unsup
 # 1005 trnet-default                    act/unsup
-#
+
 # VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
 # ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
 # 1    enet  100001     1500  -      -      -        -    -        0      0
-# 10   enet  100010     1000  -      -      -        -    -        0      0
+# 20   enet  100020     1500  -      -      -        -    -        0      0
 # 1002 fddi  101002     1500  -      -      -        -    -        0      0
 # 1003 tr    101003     1500  -      -      -        -    -        0      0
 # 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
 # 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
 
+# Remote SPAN VLANs
+# ------------------------------------------------------------------------------
 
-# Using overridden
+
+# Primary Secondary Type              Ports
+# ------- --------- ----------------- ------------------------------------------
+
+# Using purged
 
 # Before state:
 # -------------
 #
-# Leaf-01#show run nve | sec ^vlan configuration
-# vlan configuration 101
-#  member evpn-instance 101 vni 10101
-# vlan configuration 102
-#  member evpn-instance 102 vni 10102
-# vlan configuration 201
-#  member evpn-instance 201 vni 10201
-# vlan configuration 901
-#  member vni 50901
+# S1#show vlan
 
-- name: Override device configuration of all VLANs with provided configuration
+# VLAN Name                             Status    Ports
+# ---- -------------------------------- --------- -------------------------------
+# 1    default                          active    Gi0/0, Gi0/1, Gi0/2, Gi0/3
+# 20   Vlan_2020                        active
+# 1002 fddi-default                     act/unsup
+# 1003 token-ring-default               act/unsup
+# 1004 fddinet-default                  act/unsup
+# 1005 trnet-default                    act/unsup
+
+# VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+# ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+# 1    enet  100001     1500  -      -      -        -    -        0      0
+# 20   enet  100020     1500  -      -      -        -    -        0      0
+# 1002 fddi  101002     1500  -      -      -        -    -        0      0
+# 1003 tr    101003     1500  -      -      -        -    -        0      0
+# 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
+# 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
+
+# Remote SPAN VLANs
+# ------------------------------------------------------------------------------
+
+
+# Primary Secondary Type              Ports
+# ------- --------- ----------------- ------------------------------------------
+
+# S1#show running-config | section ^vlan configuration .+
+# vlan configuration 20
+
+
+- name: Purge all vlans configuration
   cisco.ios.ios_vlans:
     config:
-      - vlan_id: 101
-        member:
-          vni: 10102
-          evi: 102
-      - vlan_id: 102
-        member:
-          vni: 10101
-          evi: 101
-    state: overridden
+    state: purged
+
+# Task output:
+# ------------
+
+# after:
+# - mtu: 1500
+#   name: default
+#   shutdown: disabled
+#   state: active
+#   vlan_id: 1
+# - mtu: 1500
+#   name: fddi-default
+#   shutdown: enabled
+#   state: active
+#   vlan_id: 1002
+# - mtu: 1500
+#   name: token-ring-default
+#   shutdown: enabled
+#   state: active
+#   vlan_id: 1003
+# - mtu: 1500
+#   name: fddinet-default
+#   shutdown: enabled
+#   state: active
+#   vlan_id: 1004
+# - mtu: 1500
+#   name: trnet-default
+#   shutdown: enabled
+#   state: active
+#   vlan_id: 1005
+
+# before:
+# - mtu: 1500
+#   name: default
+#   shutdown: disabled
+#   state: active
+#   vlan_id: 1
+# - mtu: 1500
+#   name: Vlan_2020
+#   shutdown: disabled
+#   state: active
+#   vlan_id: 20
+# - mtu: 1500
+#   name: fddi-default
+#   shutdown: enabled
+#   state: active
+#   vlan_id: 1002
+# - mtu: 1500
+#   name: token-ring-default
+#   shutdown: enabled
+#   state: active
+#   vlan_id: 1003
+# - mtu: 1500
+#   name: fddinet-default
+#   shutdown: enabled
+#   state: active
+#   vlan_id: 1004
+# - mtu: 1500
+#   name: trnet-default
+#   shutdown: enabled
+#   state: active
+#   vlan_id: 1005
+
+# commands:
+# - no vlan 1
+# - no vlan 20
+# - no vlan 1002
+# - no vlan 1003
+# - no vlan 1004
+# - no vlan 1005
+# - no vlan configuration 1
+# - no vlan configuration 20
+# - no vlan configuration 1002
+# - no vlan configuration 1003
+# - no vlan configuration 1004
+# - no vlan configuration 1005
 
 # After state:
 # ------------
 #
-# Leaf-01#show run nve | sec ^vlan configuration
-# vlan configuration 101
-#  member evpn-instance 102 vni 10102
-# vlan configuration 102
-#  member evpn-instance 101 vni 10101
+# S1#show vlan
+
+# VLAN Name                             Status    Ports
+# ---- -------------------------------- --------- -------------------------------
+# 1    default                          active    Gi0/0, Gi0/1, Gi0/2, Gi0/3
+# 1002 fddi-default                     act/unsup
+# 1003 token-ring-default               act/unsup
+# 1004 fddinet-default                  act/unsup
+# 1005 trnet-default                    act/unsup
+
+# VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+# ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+# 1    enet  100001     1500  -      -      -        -    -        0      0
+# 1002 fddi  101002     1500  -      -      -        -    -        0      0
+# 1003 tr    101003     1500  -      -      -        -    -        0      0
+# 1004 fdnet 101004     1500  -      -      -        ieee -        0      0
+# 1005 trnet 101005     1500  -      -      -        ibm  -        0      0
+
+# Remote SPAN VLANs
+# ------------------------------------------------------------------------------
+
+
+# Primary Secondary Type              Ports
+# ------- --------- ----------------- ------------------------------------------
+
+# S1#show running-config | section ^vlan configuration .+
+# S1#
+
 
 # Using replaced
 
