@@ -1,4 +1,3 @@
----
 lab:
   description: ""
   notes: ""
@@ -8,37 +7,34 @@ links:
   - id: l0
     n1: n0
     n2: n1
-    i1: i0
-    i2: i1
+    i1: i1
+    i2: i0
     conditioning: {}
-    label: ext-conn-0-port<->cat9000v-uadp-0-GigabitEthernet0/0
+    label: cat8000v-0-GigabitEthernet1<->ext-conn-0-port
 nodes:
   - boot_disk_size: null
     configuration: |2-
-      Building configuration...
-
-      Current configuration : 7446 bytes
-      !
-      ! Last configuration change at 06:46:07 UTC Thu Jan 2 2025
-      !
-      version 17.12
       service timestamps debug datetime msec
       service timestamps log datetime msec
+      platform qfp utilization monitor load 80
       platform punt-keepalive disable-kernel-core
+      platform sslvpn use-pd
+      platform console serial
       !
-      hostname l2cat9k
+      hostname cisco
       !
+      boot-start-marker
+      boot-end-marker
       !
-      vrf definition Mgmt-vrf
-       !
-       address-family ipv4
-       exit-address-family
-       !
-       address-family ipv6
-       exit-address-family
       !
       no aaa new-model
-      switch 1 provision c9kv-uadp-8p
+      !
+      !
+      !
+      !
+      !
+      !
+      !
       !
       !
       !
@@ -49,19 +45,12 @@ nodes:
       !
       !
       login on-success log
-      vtp version 1
       !
       !
+      subscriber templating
       !
+      pae
       !
-      !
-      !
-      crypto pki trustpoint TP-self-signed-1469543359
-       enrollment selfsigned
-       subject-name cn=IOS-Self-Signed-Certificate-1469543359
-       revocation-check none
-       rsakeypair TP-self-signed-1469543359
-       hash sha256
       !
       crypto pki trustpoint SLA-TrustPoint
        enrollment pkcs12
@@ -69,35 +58,6 @@ nodes:
        hash sha256
       !
       !
-      crypto pki certificate chain TP-self-signed-1469543359
-       certificate self-signed 01
-        30820330 30820218 A0030201 02020101 300D0609 2A864886 F70D0101 0B050030
-        31312F30 2D060355 04030C26 494F532D 53656C66 2D536967 6E65642D 43657274
-        69666963 6174652D 31343639 35343333 3539301E 170D3235 30313032 30363130
-        31335A17 0D333530 31303230 36313031 335A3031 312F302D 06035504 030C2649
-        4F532D53 656C662D 5369676E 65642D43 65727469 66696361 74652D31 34363935
-        34333335 39308201 22300D06 092A8648 86F70D01 01010500 0382010F 00308201
-        0A028201 0100C504 738F016E CE3438F6 10989716 CD3735C9 7709CBB6 E272F590
-        E8459315 C2858649 91E1C9AF 2FE44957 69B767E8 5A606D36 93359F31 0385D368
-        2F57137D EACF3125 4E625AB7 6BF43556 4545675A 8308BF70 16282376 DE90644B
-        B4EFD19C 0F7FD4A3 B75CBE0A 0D8EFB95 08384F28 DB5FC705 75A4CD55 7E78ED53
-        0956FECD 0F96DF87 B6E98B7D E8F2EADA B36D5E6E 4E584D7E BFCB8C46 C4D8D321
-        5B461B98 828DC3A5 69B11FA6 B826E7CB A0BE15CD 62180015 E73B1ABE F8043B8B
-        5C5B8813 52E94EB6 1D78C0DD CE91107A 66124858 37DC6B2E A67EA9A3 0BAB42A9
-        6B68C795 264C2A69 5D8942D6 60B978C6 D5819C47 39F3663B 7752FE8A B8D51EFC
-        A501D8B2 DC250203 010001A3 53305130 1D060355 1D0E0416 04146BB3 216AFB7C
-        688744C4 551079B1 467F480D 3BAE301F 0603551D 23041830 1680146B B3216AFB
-        7C688744 C4551079 B1467F48 0D3BAE30 0F060355 1D130101 FF040530 030101FF
-        300D0609 2A864886 F70D0101 0B050003 82010100 21E2BC37 13663963 E1FD681E
-        27169795 1C371EC7 0D342042 9DD8AA5F E8C90AC4 5AE042ED F41CF116 F36EBEA1
-        9939C286 A6F3DFC8 1A9B60E2 8CD0476E 630333D8 EDBF2D12 7F6F5F0A FF9C20D9
-        E73F1EFA E7DD9071 FEE49019 59BD6298 2CA7CFFF E79A2F57 4421BD40 24CBB25F
-        C0951760 F3BE1753 1CA16D18 575B7B9F C49B7AE9 95173A7B F1046F7D 7BF2074D
-        E3DA47DE F11E8E3F C1D2D5CB DA28CD6A A78D5618 53F3E0AA C1189550 E79011C0
-        9BF4F5F8 1F2AFDD5 6C441CCD B95EF718 38278AE2 132E2231 2798B47E CDBEEBA0
-        57A24042 DFB485DD B87279C2 E81E2938 44462011 D641653F 18D382E4 BCB5D99C
-        17435DE9 71088F15 6A800057 154ED63D BCD13E52
-              quit
       crypto pki certificate chain SLA-TrustPoint
        certificate ca 01
         30820321 30820209 A0030201 02020101 300D0609 2A864886 F70D0101 0B050030
@@ -128,62 +88,16 @@ nodes:
         D697DF7F 28
               quit
       !
-      memory free low-watermark processor 74862
       !
+      license udi pid C8000V sn 9EGHOCL6VW2
+      memory free low-watermark processor 201711
       diagnostic bootup level minimal
       !
-      spanning-tree mode rapid-pvst
-      spanning-tree extend system-id
       !
       !
-      !
-      username ansible privilege 15 secret 9 $9$/hX84lUQp7JY..$HNNtdXMgPO4y86AhN6vZVkMdgzwRTUrWsSi5d4eZQGE
+      username ansible privilege 15 secret 9 $9$VslpRow9omMy..$5zvxcxrJqLeDd0qEe.5FANSAeLgz9LLAzMiAjieb/nc
       !
       redundancy
-       mode sso
-      !
-      !
-      !
-      !
-      !
-      !
-      class-map match-any system-cpp-police-topology-control
-        description Topology control
-      class-map match-any system-cpp-police-sw-forward
-        description Sw forwarding, L2 LVX data, LOGGING
-      class-map match-any system-cpp-default
-        description EWLC control, EWLC data, Inter FED
-      class-map match-any system-cpp-police-sys-data
-        description Learning cache ovfl, High Rate App, Exception, EGR Exception, NFL SAMPLED DATA, RPF Failed
-      class-map match-any system-cpp-police-punt-webauth
-        description Punt Webauth
-      class-map match-any system-cpp-police-l2lvx-control
-        description L2 LVX control packets
-      class-map match-any system-cpp-police-forus
-        description Forus Address resolution and Forus traffic
-      class-map match-any system-cpp-police-multicast-end-station
-        description MCAST END STATION
-      class-map match-any system-cpp-police-multicast
-        description Transit Traffic and MCAST Data
-      class-map match-any system-cpp-police-l2-control
-        description L2 control
-      class-map match-any system-cpp-police-dot1x-auth
-        description DOT1X Auth
-      class-map match-any system-cpp-police-data
-        description ICMP redirect, ICMP_GEN and BROADCAST
-      class-map match-any system-cpp-police-stackwise-virt-control
-        description Stackwise Virtual
-      class-map match-any non-client-nrt-class
-      class-map match-any system-cpp-police-routing-control
-        description Routing control and Low Latency
-      class-map match-any system-cpp-police-protocol-snooping
-        description Protocol snooping
-      class-map match-any system-cpp-police-dhcp-snooping
-        description DHCP snooping
-      class-map match-any system-cpp-police-system-critical
-        description System Critical and Gold Pkt
-      !
-      policy-map system-cpp-policy
       !
       !
       !
@@ -192,58 +106,46 @@ nodes:
       !
       !
       !
-      !
-      !
-      !
-      interface GigabitEthernet0/0
-       vrf forwarding Mgmt-vrf
+      interface GigabitEthernet1
        ip address dhcp
        no shutdown
        negotiation auto
       !
-      interface GigabitEthernet1/0/1
-      !
-      interface GigabitEthernet1/0/2
-      !
-      interface GigabitEthernet1/0/3
-      !
-      interface GigabitEthernet1/0/4
-      !
-      interface GigabitEthernet1/0/5
-      !
-      interface GigabitEthernet1/0/6
-      !
-      interface GigabitEthernet1/0/7
-      !
-      interface GigabitEthernet1/0/8
-      !
-      interface Vlan1
+      interface GigabitEthernet2
        no ip address
        shutdown
+       negotiation auto
+      !
+      interface GigabitEthernet3
+       no ip address
+       shutdown
+       negotiation auto
+      !
+      interface GigabitEthernet4
+       no ip address
+       shutdown
+       negotiation auto
       !
       ip forward-protocol nd
-      ip tcp mss 1280
-      ip tcp window-size 212000
-      ip http server
-      ip http authentication local
+      !
+      no ip http server
       ip http secure-server
       ip ssh bulk-mode 131072
       !
       !
       !
       !
+      !
       control-plane
-       service-policy input system-cpp-policy
       !
       !
       line con 0
        stopbits 1
+      line aux 0
       line vty 0 4
-       login
+       login local
        transport input ssh
-      line vty 5 15
-       login
-       transport input ssh
+      !
       !
       !
       !
@@ -255,54 +157,34 @@ nodes:
     cpus: null
     data_volume: null
     hide_links: false
-    id: n1
+    id: n0
     image_definition: null
-    label: cat9000v-uadp-0
-    node_definition: cat9000v-uadp
+    label: cat8000v-0
+    node_definition: cat8000v
     parameters: {}
     ram: null
     tags: []
-    x: 0
-    y: 120
+    x: -120
+    y: 40
     interfaces:
       - id: i0
         label: Loopback0
         type: loopback
       - id: i1
-        label: GigabitEthernet0/0
+        label: GigabitEthernet1
         slot: 0
         type: physical
       - id: i2
-        label: GigabitEthernet1/0/1
+        label: GigabitEthernet2
         slot: 1
         type: physical
       - id: i3
-        label: GigabitEthernet1/0/2
+        label: GigabitEthernet3
         slot: 2
         type: physical
       - id: i4
-        label: GigabitEthernet1/0/3
+        label: GigabitEthernet4
         slot: 3
-        type: physical
-      - id: i5
-        label: GigabitEthernet1/0/4
-        slot: 4
-        type: physical
-      - id: i6
-        label: GigabitEthernet1/0/5
-        slot: 5
-        type: physical
-      - id: i7
-        label: GigabitEthernet1/0/6
-        slot: 6
-        type: physical
-      - id: i8
-        label: GigabitEthernet1/0/7
-        slot: 7
-        type: physical
-      - id: i9
-        label: GigabitEthernet1/0/8
-        slot: 8
         type: physical
   - boot_disk_size: null
     configuration: []
@@ -310,15 +192,15 @@ nodes:
     cpus: null
     data_volume: null
     hide_links: false
-    id: n0
+    id: n1
     image_definition: null
     label: ext-conn-0
     node_definition: external_connector
     parameters: {}
     ram: null
     tags: []
-    x: -360
-    y: 120
+    x: 160
+    y: 0
     interfaces:
       - id: i0
         label: port
