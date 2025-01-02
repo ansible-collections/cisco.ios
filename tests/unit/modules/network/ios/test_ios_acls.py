@@ -188,7 +188,7 @@ class TestIosAclsModule(TestIosModule):
             "ip access-list extended test_pre",
             "20 permit ip any any precedence immediate",
             "ip access-list extended test_service_og",
-            "10 permit object-group test_service_og object-group test_src_network_og object-group test_dst_network_og"
+            "10 permit object-group test_service_og object-group test_src_network_og object-group test_dst_network_og",
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
