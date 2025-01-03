@@ -1,0 +1,7 @@
+---
+bugfixes:
+  - Fixed an issue with VLAN configuration gathering where pre-filled data was blocking proper fetching of dynamic VLAN details. Now VLAN facts are populated correctly for all cases.
+  - Cleaned up unit tests that were passing for the wrong reasons. The updated tests now ensure the right config sections are verified for VLAN configurations.
+  - Added a test to validate the gathered state for VLAN configuration context, improving reliability.
+  - Made improvements to ensure VLAN facts are gathered properly, both for specific configurations and general VLAN settings.
+  

@@ -511,32 +511,32 @@ class TestIosVlansModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
-            "no vlan 1",
-            "no vlan 150",
-            "no vlan 888",
-            "no vlan 1002",
-            "no vlan 1003",
-            "no vlan 1004",
-            "no vlan 1005",
-            "vlan 200",
-            "name test_vlan_200",
-            "state active",
-            "remote-span",
-            "no shutdown",
-            "vlan 123",
-            "name Override_RemoteIsInMyName",
-            "no state active",
-            "no mtu 610",
-            "remote-span",
-            "shutdown",
-            "no vlan configuration 1",
-            "no vlan configuration 150",
-            "no vlan configuration 888",
-            "no vlan configuration 1002",
-            "no vlan configuration 1003",
-            "no vlan configuration 1004",
-            "no vlan configuration 1005",
-        ]
+            'no vlan 1',
+            'no vlan 150',
+            'no vlan 888',
+            'no vlan 1002',
+            'no vlan 1003',
+            'no vlan 1004',
+            'no vlan 1005',
+            'vlan 200',
+            'name test_vlan_200',
+            'state active',
+            'remote-span',
+            'no shutdown',
+            'vlan 123',
+            'name Override_RemoteIsInMyName',
+            'no state active',
+            'no mtu 610',
+            'remote-span',
+            'shutdown',
+            'no vlan configuration 1',
+            'no vlan configuration 150',
+            'no vlan configuration 888',
+            'no vlan configuration 1002',
+            'no vlan configuration 1003',
+            'no vlan configuration 1004',
+            'no vlan configuration 1005'
+            ]
 
         self.assertEqual(result["commands"], commands)
 
@@ -1113,23 +1113,8 @@ class TestIosVlansModule(TestIosModule):
 
     def test_ios_vlans_config_merged_idempotent(self):
         self.mock_l2_device_command.side_effect = True
-        self.mock_execute_show_command_conf.side_effect = dedent(
-            """\
-            vlan configuration 101
-              member evpn-instance 101 vni 10101
-            vlan configuration 102
-              member evpn-instance 102 vni 10102
-            vlan configuration 201
-              member evpn-instance 201 vni 10201
-            vlan configuration 202
-              member evpn-instance 202 vni 10202
-            vlan configuration 901
-              member vni 50901
-            vlan configuration 902
-              member vni 50902
-            """,
-        )
-        self.execute_show_command.return_value = dedent(
+        self.mock_execute_show_command_conf.side_effect = ""
+        self.execute_show_command_conf.return_value = dedent(
             """\
             vlan configuration 101
               member evpn-instance 101 vni 10101
@@ -1164,7 +1149,7 @@ class TestIosVlansModule(TestIosModule):
     def test_ios_vlans_config_overridden(self):
         self.mock_l2_device_command.side_effect = True
         self.mock_execute_show_command_conf.side_effect = ""
-        self.execute_show_command.return_value = dedent(
+        self.execute_show_command_conf.return_value = dedent(
             """\
             vlan configuration 101
               member evpn-instance 101 vni 10101
@@ -1221,7 +1206,7 @@ class TestIosVlansModule(TestIosModule):
     def test_ios_delete_vlans_config_2(self):
         self.mock_l2_device_command.side_effect = True
         self.mock_execute_show_command_conf.side_effect = ""
-        self.execute_show_command.return_value = dedent(
+        self.execute_show_command_conf.return_value = dedent(
             """\
             vlan configuration 101
              member evpn-instance 101 vni 10101
@@ -1252,7 +1237,7 @@ class TestIosVlansModule(TestIosModule):
     def test_ios_purged_vlans_config(self):
         self.mock_l2_device_command.side_effect = True
         self.mock_execute_show_command_conf.side_effect = ""
-        self.execute_show_command.return_value = dedent(
+        self.execute_show_command_conf.return_value = dedent(
             """\
             vlan configuration 101
              member evpn-instance 101 vni 10101
