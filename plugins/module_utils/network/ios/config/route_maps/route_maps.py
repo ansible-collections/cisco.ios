@@ -31,6 +31,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
     Route_mapsTemplate,
 )
 
+# import debugpy
+# debugpy.listen(3000)
+# debugpy.wait_for_client()
 
 class Route_maps(ResourceModule):
     """
@@ -216,35 +219,34 @@ class Route_maps(ResourceModule):
                     have_val = have_v.pop(key, {})
                     if val != have_val:
                         if have_val:
-                            if self.state == "overridden" or self.state == "replaced":
-                                list_type = next(iter(val))
-                                # Get sets of values for comparison
-                                want_values = set(str(v) for v in val[list_type].values())
-                                have_values = (
-                                    set(str(v) for v in have_val[list_type].values())
-                                    if have_val
-                                    else set()
+                            to_remove = set()
+                            to_add = set()
+                            pop_acl_if_empty = False
+                            if have_val.get("acls") and val.get("acls"):
+                                want_acl_values = set(str(v) for v in val["acls"].values())
+                                have_acl_values = set(str(v) for v in have_val["acls"].values())
+                                to_remove = have_acl_values - want_acl_values
+                                to_add = [v for v in want_acl_values if v not in have_acl_values]
+                                pop_acl_if_empty = True
+                            if self.state in ["overridden", "replaced"]:
+                                if to_remove and have_val.get("acls"):
+                                    have_val["acls"] = {f"acl_{v}": v for v in to_remove}
+                                self.compare(
+                                    parsers=parsers,
+                                    want=dict(),
+                                    have={compare_type: {k: {key: have_val}}},
                                 )
-                                # Find values that need to be removed (in have but not in want)
-                                to_remove = have_values - want_values
-                                # Find values that need to be added (in want but not in have)
-                                to_add = want_values - have_values
-                                # Handle removals first
-                                if to_remove:
-                                    diff = {f"acl_{v}": v for v in to_remove}
-                                    self.compare(
-                                        parsers=parsers,
-                                        want=dict(),
-                                        have={compare_type: {k: {key: {list_type: diff}}}},
-                                    )
-                                # Then handle additions
-                                if to_add:
-                                    diff = {f"acl_{v}": v for v in to_add}
-                                    self.compare(
-                                        parsers=parsers,
-                                        want={compare_type: {k: {key: {list_type: diff}}}},
-                                        have=dict(),
-                                    )
+                            if to_add:
+                                val["acls"] = {f"acl_{v}": v for v in to_add}
+                            else:
+                                if pop_acl_if_empty:
+                                    val.pop("acls", None)
+                            if val:
+                                self.compare(
+                                    parsers=parsers,
+                                    want={compare_type: {k: {key: val}}},
+                                    have={compare_type: {k: {key: have_val}}},
+                                )
                         else:
                             self.compare(
                                 parsers=parsers,
