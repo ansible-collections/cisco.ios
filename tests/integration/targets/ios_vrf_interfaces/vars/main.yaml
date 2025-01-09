@@ -15,7 +15,6 @@ merged:
     - vrf forwarding vrf_D
   after:
     - name: "Loopback888"
-    - name: "Loopback999"
     - name: "GigabitEthernet1"
     - name: "GigabitEthernet2"
       vrf_name: "vrf_D"
