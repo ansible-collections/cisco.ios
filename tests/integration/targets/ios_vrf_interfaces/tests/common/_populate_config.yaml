@@ -36,7 +36,7 @@
   cisco.ios.ios_config:
     lines:
       # This exists by default in downstream but not cml
-      - interface Loopback888 #
+      - interface Loopback888
 
 - name: Configure interface loopback 2
   cisco.ios.ios_config:

@@ -23,7 +23,6 @@ merged:
     - name: "GigabitEthernet4"
   before:
     - name: "Loopback888"
-    - name: "Loopback999"
     - name: "GigabitEthernet1"
     - name: "GigabitEthernet2"
     - name: "GigabitEthernet3"

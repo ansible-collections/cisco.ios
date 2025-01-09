@@ -3,6 +3,7 @@
   cisco.ios.ios_config:
     lines:
       - no interface Loopback999
+  ignore_errors: true
 
 - name: Configure interface settings 2
   cisco.ios.ios_config:
