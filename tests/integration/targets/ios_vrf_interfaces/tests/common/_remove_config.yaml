@@ -1,24 +1,14 @@
 ---
-- name: Configure interface settings 1
+- name: Removing interface loopback999
   cisco.ios.ios_config:
     lines:
-    parents: interface GigabitEthernet1
+      - no interface Loopback999
 
 - name: Configure interface settings 2
   cisco.ios.ios_config:
     lines:
       - no vrf forwarding vrf_B
     parents: interface GigabitEthernet2
-
-- name: Configure interface settings 3
-  cisco.ios.ios_config:
-    lines:
-    parents: interface GigabitEthernet3
-
-- name: Configure interface settings 4
-  cisco.ios.ios_config:
-    lines:
-    parents: interface GigabitEthernet4
 
 - name: Remove VRF definition B
   cisco.ios.ios_config:
