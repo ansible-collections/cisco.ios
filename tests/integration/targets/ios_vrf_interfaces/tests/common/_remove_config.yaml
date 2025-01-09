@@ -1,11 +1,54 @@
 ---
-- name: Populate with simple overridden
-  cisco.ios.ios_vrf_interfaces:
-    state: overridden
-    config:
-      - name: GigabitEthernet1
-      - name: GigabitEthernet2
-      - name: GigabitEthernet3
-      - name: GigabitEthernet4
-  vars:
-    ansible_connection: ansible.netcommon.network_cli
+- name: Configure interface settings 1
+  cisco.ios.ios_config:
+    lines:
+    parents: interface GigabitEthernet1
+
+- name: Configure interface settings 2
+  cisco.ios.ios_config:
+    lines:
+      - no vrf forwarding vrf_B
+    parents: interface GigabitEthernet2
+
+- name: Configure interface settings 3
+  cisco.ios.ios_config:
+    lines:
+    parents: interface GigabitEthernet3
+
+- name: Configure interface settings 4
+  cisco.ios.ios_config:
+    lines:
+    parents: interface GigabitEthernet4
+
+- name: Remove VRF definition B
+  cisco.ios.ios_config:
+    lines:
+      - no vrf definition vrf_B
+  retries: 2
+  delay: 10
+
+- name: Wait for
+  ansible.builtin.wait_for:
+    timeout: 2
+
+- name: Remove VRF definition C
+  cisco.ios.ios_config:
+    lines:
+      - no vrf definition vrf_C
+  retries: 2
+  delay: 10
+
+- name: Wait for
+  ansible.builtin.wait_for:
+    timeout: 2
+
+- name: Remove VRF definition D
+  cisco.ios.ios_config:
+    lines:
+      - no vrf definition vrf_D
+  retries: 2
+  delay: 10
+
+- name: Wait for VRF
+  ansible.builtin.wait_for:
+    timeout: 2
