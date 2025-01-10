@@ -5,6 +5,13 @@
 - ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
+    - name: Configure vrf D
+      cisco.ios.ios_config:
+        lines:
+          - vrf definition vrf_D
+      retries: 2
+      delay: 10
+
     - name: Merge provided configuration with device configuration
       register: result
       cisco.ios.ios_vrf_interfaces: &id001

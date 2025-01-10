@@ -1,7 +1,8 @@
 ---
 gathered:
   config:
-    - name: "Loopback24"
+    - name: "Loopback888"
+    - name: "Loopback999"
     - name: "GigabitEthernet1"
     - name: "GigabitEthernet2"
       vrf_name: "vrf_B"
@@ -13,14 +14,14 @@ merged:
     - interface GigabitEthernet2
     - vrf forwarding vrf_D
   after:
-    - name: "Loopback24"
+    - name: "Loopback888"
     - name: "GigabitEthernet1"
     - name: "GigabitEthernet2"
       vrf_name: "vrf_D"
     - name: "GigabitEthernet3"
     - name: "GigabitEthernet4"
   before:
-    - name: "Loopback24"
+    - name: "Loopback888"
     - name: "GigabitEthernet1"
     - name: "GigabitEthernet2"
     - name: "GigabitEthernet3"
@@ -33,14 +34,16 @@ overridden:
     - interface GigabitEthernet4
     - vrf forwarding vrf_C
   after:
-    - name: "Loopback24"
+    - name: "Loopback888"
+    - name: "Loopback999"
     - name: "GigabitEthernet1"
     - name: "GigabitEthernet2"
     - name: "GigabitEthernet3"
     - name: "GigabitEthernet4"
       vrf_name: "vrf_C"
   before:
-    - name: "Loopback24"
+    - name: "Loopback888"
+    - name: "Loopback999"
     - name: "GigabitEthernet1"
     - name: "GigabitEthernet2"
       vrf_name: "vrf_B"
@@ -61,14 +64,16 @@ replaced:
     - interface GigabitEthernet2
     - vrf forwarding vrf_D
   before:
-    - name: "Loopback24"
+    - name: "Loopback888"
+    - name: "Loopback999"
     - name: "GigabitEthernet1"
     - name: "GigabitEthernet2"
       vrf_name: "vrf_B"
     - name: "GigabitEthernet3"
     - name: "GigabitEthernet4"
   after:
-    - name: "Loopback24"
+    - name: "Loopback888"
+    - name: "Loopback999"
     - name: "GigabitEthernet1"
     - name: "GigabitEthernet2"
       vrf_name: "vrf_D"
@@ -80,14 +85,16 @@ deleted:
     - interface GigabitEthernet2
     - no vrf forwarding vrf_B
   before:
-    - name: "Loopback24"
+    - name: "Loopback888"
+    - name: "Loopback999"
     - name: "GigabitEthernet1"
     - name: "GigabitEthernet2"
       vrf_name: "vrf_B"
     - name: "GigabitEthernet3"
     - name: "GigabitEthernet4"
   after:
-    - name: "Loopback24"
+    - name: "Loopback888"
+    - name: "Loopback999"
     - name: "GigabitEthernet1"
     - name: "GigabitEthernet2"
     - name: "GigabitEthernet3"
