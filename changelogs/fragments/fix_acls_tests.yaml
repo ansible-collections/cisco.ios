@@ -1,0 +1,5 @@
+---
+bugfixes:
+  - "ios_route_maps - Fix removal of ACLs logic in replaced state to properly remove unspecified ACLs while leaving specified ones intact."
+trivial:
+  - "Fix ios_facts tests and vrf_interfaces tests."
