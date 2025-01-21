@@ -199,3 +199,28 @@ class TestIosFactsModule(TestIosModule):
             result["ansible_facts"]["ansible_net_neighbors"]["GigabitEthernet3"],
             [{"host": "Rtest", "port": "Gi1", "ip": "10.3.0.3"}],
         )
+
+    def test_ios_facts_interfaces(self):
+        set_module_args(dict(gather_subset="interfaces"))
+        result = self.execute_module()
+        self.assertEqual(
+            result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet2/5/5.1874"],
+            {"ipv4": [], "operstatus": "deleted"},
+        )
+        self.assertEqual(
+            result["ansible_facts"]["ansible_net_interfaces"]["Tunnel1110"],
+            {
+                "bandwidth": None,
+                "description": None,
+                "duplex": None,
+                "ipv4": [
+                    {"address": "10.10.10.2", "subnet": "30"},
+                ],
+                "lineprotocol": "up",
+                "macaddress": None,
+                "mediatype": None,
+                "mtu": None,
+                "operstatus": "up",
+                "type": None,
+            },
+        )

@@ -7,7 +7,7 @@ repos:
       - id: update-docs
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       - id: check-merge-conflict
       - id: check-symlinks
@@ -23,7 +23,7 @@ repos:
       - id: add-trailing-comma
 
   - repo: https://github.com/pycontribs/mirrors-prettier
-    rev: "v3.3.3"
+    rev: "v3.4.2"
     hooks:
       - id: prettier
         entry: env CI=1 bash -c "prettier --list-different . || ec=$? && prettier --loglevel=error --write . && exit $ec"
@@ -41,7 +41,7 @@ repos:
         args: ["--filter-files"]
 
   - repo: https://github.com/psf/black
-    rev: 24.8.0
+    rev: 24.10.0
     hooks:
       - id: black
 

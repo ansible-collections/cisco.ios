@@ -205,6 +205,102 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 },
             },
         },
+        {
+            "name": "maximum_paths.paths",
+            "getval": re.compile(
+                r"""
+                \s\smaximum-paths
+                (\s(?P<paths>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "maximum-paths {{ maximum_paths.paths|string }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_AFI: {"maximum_paths": {"paths": "{{ paths }}"}},
+                },
+            },
+        },
+        {
+            "name": "maximum_paths.eibgp",
+            "getval": re.compile(
+                r"""
+                \s\smaximum-paths\seibgp
+                (\s(?P<eibgp>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "maximum-paths eibgp {{ maximum_paths.eibgp|string }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_AFI: {"maximum_paths": {"eibgp": "{{ eibgp }}"}},
+                },
+            },
+        },
+        {
+            "name": "maximum_paths.ibgp",
+            "getval": re.compile(
+                r"""
+                \s\smaximum-paths\sibgp
+                (\s(?P<ibgp>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "maximum-paths ibgp {{ maximum_paths.ibgp|string }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_AFI: {"maximum_paths": {"ibgp": "{{ ibgp }}"}},
+                },
+            },
+        },
+        {
+            "name": "maximum_secondary_paths.paths",
+            "getval": re.compile(
+                r"""
+                \s\smaximum-secondary-paths
+                (\s(?P<paths>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "maximum-secondary-paths {{ maximum_secondary_paths.paths|string }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_AFI: {"maximum_secondary_paths": {"paths": "{{ paths }}"}},
+                },
+            },
+        },
+        {
+            "name": "maximum_secondary_paths.eibgp",
+            "getval": re.compile(
+                r"""
+                \s\smaximum-secondary-paths\seibgp
+                (\s(?P<eibgp>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "maximum-secondary-paths eibgp {{ maximum_secondary_paths.eibgp|string }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_AFI: {"maximum_secondary_paths": {"eibgp": "{{ eibgp }}"}},
+                },
+            },
+        },
+        {
+            "name": "maximum_secondary_paths.ibgp",
+            "getval": re.compile(
+                r"""
+                \s\smaximum-secondary-paths\sibgp
+                (\s(?P<ibgp>\d+))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "maximum-secondary-paths ibgp {{ maximum_secondary_paths.ibgp|string }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_AFI: {"maximum_secondary_paths": {"ibgp": "{{ ibgp }}"}},
+                },
+            },
+        },
         # bgp starts
         {
             "name": "bgp.additional_paths.select",
@@ -1490,8 +1586,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s\sneighbor\s(?P<neighbor_address>\S+)\spassword
-                \s(?P<encryption>\d+)
-                (\s(?P<pass_key>.$))?
+                (\s(?P<encryption>\d+))
+                (\s(?P<pass_key>.+))?
                 $""",
                 re.VERBOSE,
             ),

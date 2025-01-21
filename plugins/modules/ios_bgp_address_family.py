@@ -98,6 +98,32 @@ options:
           auto_summary:
             description: Enable automatic network number summarization
             type: bool
+          maximum_paths:
+            description: Forward packets over multiple paths
+            type: dict
+            suboptions:
+              paths:
+                description: Number of paths
+                type: int
+              eibgp:
+                description: Both eBGP and iBGP paths as multipath
+                type: int
+              ibgp:
+                description: iBGP-multipath
+                type: int
+          maximum_secondary_paths:
+            description: Maximum secondary paths
+            type: dict
+            suboptions:
+              paths:
+                description: Number of secondary paths
+                type: int
+              eibgp:
+                description: Both eBGP and iBGP paths as secondary multipath
+                type: int
+              ibgp:
+                description: iBGP-secondary-multipath
+                type: int
           bgp:
             description: Configure BGP aggregate entries
             type: dict

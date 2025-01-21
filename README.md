@@ -8,6 +8,16 @@ The Ansible Cisco IOS collection includes a variety of Ansible content to help a
 
 This collection has been tested against Cisco IOS XE Version 17.3 on CML.
 
+## Support
+
+As a Red Hat Ansible [Certified Content](https://catalog.redhat.com/software/search?target_platforms=Red%20Hat%20Ansible%20Automation%20Platform), this collection is entitled to [support](https://access.redhat.com/support/) through [Ansible Automation Platform](https://www.redhat.com/en/technologies/management/ansible) (AAP).
+
+If a support case cannot be opened with Red Hat and the collection has been obtained either from [Galaxy](https://galaxy.ansible.com/ui/) or [GitHub](https://github.com/ansible-collections/cisco.ios), there is community support available at no charge.
+
+You can join us on [#network:ansible.com](https://matrix.to/#/#network:ansible.com) room or the [Ansible Forum Network Working Group](https://forum.ansible.com/g/network-wg).
+
+For more information you can check the communication section below.
+
 ## Communication
 
 * Join the Ansible forum:
@@ -82,7 +92,9 @@ Name | Description
 [cisco.ios.ios_user](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_user_module.rst)|Module to manage the aggregates of local users.
 [cisco.ios.ios_vlans](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vlans_module.rst)|Resource module to configure VLANs.
 [cisco.ios.ios_vrf](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vrf_module.rst)|Module to configure VRF definitions.
+[cisco.ios.ios_vrf_address_family](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vrf_address_family_module.rst)|Resource module to configure VRF definitions.
 [cisco.ios.ios_vrf_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vrf_global_module.rst)|Resource module to configure global VRF definitions.
+[cisco.ios.ios_vrf_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vrf_interfaces_module.rst)|Manages VRF configuration on interfaces.
 [cisco.ios.ios_vxlan_vtep](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vxlan_vtep_module.rst)|Resource module to configure VXLAN VTEP interface.
 
 <!--end collection content-->
@@ -153,10 +165,6 @@ Please read and familiarize yourself with this document.
 <!--Add a link to a changelog.md file or an external docsite to cover this information. -->
 
 Release notes are available [here](https://github.com/ansible-collections/cisco.ios/blob/main/CHANGELOG.rst).
-
-## Roadmap
-
-<!-- Optional. Include the roadmap for this collection, and the proposed release/versioning strategy so users can anticipate the upgrade/update cycle. -->
 
 ## More information
 

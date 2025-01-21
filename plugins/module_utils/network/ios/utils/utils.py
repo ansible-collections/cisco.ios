@@ -214,6 +214,44 @@ def remove_duplicate_interface(commands):
     return set_cmd
 
 
+def flatten_dict(x):
+    result = {}
+    if not isinstance(x, dict):
+        return result
+
+    for key, value in iteritems(x):
+        if isinstance(value, dict):
+            result.update(flatten_dict(value))
+        else:
+            result[key] = value
+
+    return result
+
+
+def flatten_config(data, context):
+    """Flatten different contexts in
+        the running-config for easier parsing.
+    :param data: dict
+    :param context: str
+    :returns: flattened running config
+    """
+    data = data.split("\n")
+    in_cxt = False
+    cur = {}
+
+    for index, x in enumerate(data):
+        cur_indent = len(x) - len(x.lstrip())
+        if x.strip().startswith(context):
+            in_cxt = True
+            cur["context"] = x
+            cur["indent"] = cur_indent
+        elif cur and (cur_indent <= cur["indent"]):
+            in_cxt = False
+        elif in_cxt:
+            data[index] = cur["context"] + " " + x.strip()
+    return "\n".join(data)
+
+
 def validate_ipv4(value, module):
     if value:
         address = value.split("/")
@@ -286,8 +324,10 @@ def normalize_interface(name):
         if_type = "FastEthernet"
     elif name.lower().startswith("fo"):
         if_type = "FortyGigabitEthernet"
-    elif name.lower().startswith("fi"):
+    elif name.lower().startswith("fiv"):
         if_type = "FiveGigabitEthernet"
+    elif name.lower().startswith("fif"):
+        if_type = "FiftyGigabitEthernet"
     elif name.lower().startswith("long"):
         if_type = "LongReachEthernet"
     elif name.lower().startswith("et"):

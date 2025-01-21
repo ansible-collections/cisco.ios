@@ -4,6 +4,57 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v9.1.0
+======
+
+Minor Changes
+-------------
+
+- Added ios_vrf_interfaces resource module,that helps with configuration of vrfs within interface
+- Adds a new module `ios_vrf_address_family` to manage VRFs address families on Cisco IOS devices.
+
+Bugfixes
+--------
+
+- Added a test to validate the gathered state for VLAN configuration context, improving reliability.
+- Cleaned up unit tests that were passing for the wrong reasons. The updated tests now ensure the right config sections are verified for VLAN configurations.
+- Fix overridden state operations to ensure excluded VLANs in the provided configuration are removed, thus overriding the VLAN configuration.
+- Fix purged state operation to enable users to completely remove VLAN configurations.
+- Fixed an issue with VLAN configuration gathering where pre-filled data was blocking proper fetching of dynamic VLAN details. Now VLAN facts are populated correctly for all cases.
+- Fixes an issue with facts gathering failing when an sub interface is in a deleted state.
+- Improve documentation to provide clarity on the "shutdown" variable.
+- Improve unit tests to align with the changes made.
+- Made improvements to ensure VLAN facts are gathered properly, both for specific configurations and general VLAN settings.
+- ios_route_maps - Fix removal of ACLs in replaced state to properly remove unspecified ACLs while leaving specified ones intact.
+- ios_route_maps - Fix removal of ACLs logic in replaced state to properly remove unspecified ACLs while leaving specified ones intact.
+
+v9.0.3
+======
+
+Bugfixes
+--------
+
+- ios_bgp_address_family - fix parsing of password_options while gathering password configuration from appliance.
+- ios_bgp_global - fix parsing of password_options while gathering password configuration from appliance.
+
+Documentation Changes
+---------------------
+
+- Includes a new support related section in the README.
+- Removed the Roadmap section from the README.
+
+v9.0.2
+======
+
+Bugfixes
+--------
+
+- ios_bgp_address_family - Add support for maximum-paths configuration.
+- ios_bgp_address_family - Add support for maximum-secondary-paths configuration.
+- ios_interfaces - Fixes rendering of FiftyGigabitEthernet as it was wrongly rendering FiftyGigabitEthernet as FiveGigabitEthernet.
+- ios_snmp_server - Fixes an issue where enabling the read-only (ro) attribute in communities was not idempotent.
+- ios_static_routes - Fix processing of metric_distance as it was wrongly populated under the forward_router_address attribute.
+
 v9.0.1
 ======
 
