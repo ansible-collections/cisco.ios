@@ -4,6 +4,30 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v9.1.0
+======
+
+Minor Changes
+-------------
+
+- Added ios_vrf_interfaces resource module,that helps with configuration of vrfs within interface
+- Adds a new module `ios_vrf_address_family` to manage VRFs address families on Cisco IOS devices.
+
+Bugfixes
+--------
+
+- Added a test to validate the gathered state for VLAN configuration context, improving reliability.
+- Cleaned up unit tests that were passing for the wrong reasons. The updated tests now ensure the right config sections are verified for VLAN configurations.
+- Fix overridden state operations to ensure excluded VLANs in the provided configuration are removed, thus overriding the VLAN configuration.
+- Fix purged state operation to enable users to completely remove VLAN configurations.
+- Fixed an issue with VLAN configuration gathering where pre-filled data was blocking proper fetching of dynamic VLAN details. Now VLAN facts are populated correctly for all cases.
+- Fixes an issue with facts gathering failing when an sub interface is in a deleted state.
+- Improve documentation to provide clarity on the "shutdown" variable.
+- Improve unit tests to align with the changes made.
+- Made improvements to ensure VLAN facts are gathered properly, both for specific configurations and general VLAN settings.
+- ios_route_maps - Fix removal of ACLs in replaced state to properly remove unspecified ACLs while leaving specified ones intact.
+- ios_route_maps - Fix removal of ACLs logic in replaced state to properly remove unspecified ACLs while leaving specified ones intact.
+
 v9.0.3
 ======
 

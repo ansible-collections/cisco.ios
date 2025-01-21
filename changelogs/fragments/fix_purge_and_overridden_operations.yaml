@@ -1,6 +1,0 @@
----
-bugfixes:
-  - Fix purged state operation to enable users to completely remove VLAN configurations.
-  - Fix overridden state operations to ensure excluded VLANs in the provided configuration are removed, thus overriding the VLAN configuration.
-  - Improve documentation to provide clarity on the "shutdown" variable.
-  - Improve unit tests to align with the changes made.
