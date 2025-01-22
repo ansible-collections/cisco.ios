@@ -42,7 +42,7 @@ class AclsFacts(object):
     def get_acl_data(self, connection):
         # Removed the show access-list
         # Removed the show running-config | include ip(v6)* access-list|remark
-        return connection.get("show running-config | section access-list")
+        return connection.get("show running-config | section 'ip[v6]* access-list'")
 
     def get_acl_names(self, connection):
         # this information is required to scoop out the access lists which has no aces
