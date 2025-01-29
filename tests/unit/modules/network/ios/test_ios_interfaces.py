@@ -683,6 +683,10 @@ class TestIosInterfacesModule(TestIosModule):
                         "description": "Ansible UT for fiftyGigabitEthernet",
                     },
                     {
+                        "name": "FoUrHuNdReDgIgE",
+                        "description": "Ansible UT for FourHundredGigE",
+                    },
+                    {
                         "name": "ethernet1",
                         "description": "Ansible UT Ethernet",
                     },
@@ -757,7 +761,9 @@ class TestIosInterfacesModule(TestIosModule):
             "interface FiftyGigabitEthernet",
             "description Ansible UT for fiftyGigabitEthernet",
             "no shutdown",
-            "interface Ethernet1",
+            "interface FourHundredGigE",
+            "description Ansible UT for FourHundredGigE",
+            "no shutdown", "interface Ethernet1",
             "description Ansible UT Ethernet",
             "no shutdown",
             "interface Vlan10",
