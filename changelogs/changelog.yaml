@@ -1325,3 +1325,10 @@ releases:
       - rm_vrf_interfaces.yaml
       - route_maps_acl_fix.yaml
     release_date: "2025-01-16"
+  9.1.1:
+    changes:
+      bugfixes:
+        - Added support for FourHundredGigE, FiftyGigE and FourHundredGigabitEthernet.
+    fragments:
+      - add_extra_interfaces.yaml
+    release_date: "2025-01-30"

@@ -4,6 +4,14 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v9.1.1
+======
+
+Bugfixes
+--------
+
+- Added support for FourHundredGigE, FiftyGigE and FourHundredGigabitEthernet.
+
 v9.1.0
 ======
 
