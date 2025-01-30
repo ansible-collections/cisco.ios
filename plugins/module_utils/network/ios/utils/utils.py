@@ -323,11 +323,11 @@ def normalize_interface(name):
     elif name.lower().startswith("fa"):
         if_type = "FastEthernet"
     elif name.lower().startswith("fourhundredgige"):
-        return "FourHundredGigE"
+        if_type = "FourHundredGigE"
     elif name.lower().startswith("fiftygige"):
-        return "FiftyGigE"
+        if_type = "FiftyGigE"
     elif name.lower().startswith("fou"):
-        return "FourHundredGigabitEthernet"
+        if_type = "FourHundredGigabitEthernet"
     elif name.lower().startswith("fo"):
         if_type = "FortyGigabitEthernet"
     elif name.lower().startswith("fiv"):
