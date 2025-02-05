@@ -6,3 +6,10 @@
       lldp receive\nlldp transmit\n"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"
+
+- name: Negate GigabitEthernet 4 lldp receive and transmit if merged
+  vars:
+    lines: "interface GigabitEthernet 4\nno lldp receive\nno lldp transmit\n"
+  ansible.netcommon.cli_config:
+    config: "{{ lines }}"
+  when: isMerged is defined and isMerged
