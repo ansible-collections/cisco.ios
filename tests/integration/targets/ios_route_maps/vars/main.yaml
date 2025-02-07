@@ -166,7 +166,7 @@ overridden:
     - set aigp-metric 100
     - set as-path prepend last-as 2
     - route-map test_1 deny 10
-    - no description this is test route
+    - no description
     - description this is override route
     - match ip flowspec dest-pfx test_acl_1 test_acl_2
     - no match ip next-hop prefix-list test_1_new test_2_new
@@ -305,7 +305,7 @@ replaced:
     - set aigp-metric 100
     - set as-path prepend 65111 65111
     - route-map test_1 deny 10
-    - no description this is test route
+    - no description
     - description this is replaced route
     - match ip flowspec dest-pfx test_acl_1 test_acl_2
     - no match ip next-hop prefix-list test_1_new test_2_new
