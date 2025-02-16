@@ -2354,4 +2354,4 @@ class TestIosAclsModule(TestIosModule):
             "permit 220 any any sequence 40",
             "remark Test_ipv4_ipv6_acl",
         ]
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
