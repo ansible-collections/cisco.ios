@@ -2304,7 +2304,6 @@ class TestIosAclsModule(TestIosModule):
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-
     def test_ios_merged_general(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -2326,24 +2325,24 @@ class TestIosAclsModule(TestIosModule):
                                 "aces": [
                                     {
                                         "remarks": [
-                                            "Test_ipv4_ipv6_acl"
-                                        ]
+                                            "Test_ipv4_ipv6_acl",
+                                        ],
                                     },
                                     {
                                         "destination": {
-                                            "any": True
+                                            "any": True,
                                         },
                                         "grant": "permit",
                                         "protocol": 220,
                                         "sequence": 40,
                                         "source": {
-                                            "any": True
-                                        }
-                                    }
-                                ]
-                            }
-                        ]
-                    }
+                                            "any": True,
+                                        },
+                                    },
+                                ],
+                            },
+                        ],
+                    },
                 ],
                 state="merged",
             ),
@@ -2351,8 +2350,8 @@ class TestIosAclsModule(TestIosModule):
 
         result = self.execute_module(changed=True)
         commands = [
-                "ipv6 access-list std_acl_name_test_1",
-                "permit 220 any any sequence 40",
-                "remark Test_ipv4_ipv6_acl"     
-            ]
+            "ipv6 access-list std_acl_name_test_1",
+            "permit 220 any any sequence 40",
+            "remark Test_ipv4_ipv6_acl",
+        ]
         self.assertEqual(result["commands"], commands)
