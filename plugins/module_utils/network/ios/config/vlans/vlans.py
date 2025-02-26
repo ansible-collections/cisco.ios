@@ -165,7 +165,9 @@ class Vlans(ResourceModule):
 
     def purge(self, have, resource):
         """Handle operation for purged state"""
-        if resource == "vlan_configuration":
+        if resource == "vlan_configuration" and any(
+            key in have for key in ["member", "private_vlan.type", "private_vlan.associated"]
+        ):
             self.commands.append(self._tmplt.render(have, resource, True))
         elif resource == "vlans":
             self.commands.append(self._tmplt.render(have, resource, True))
