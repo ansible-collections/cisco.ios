@@ -146,7 +146,10 @@ class Vlans(ResourceModule):
         for the Vlans network resource.
         """
         begin = len(self.commands)
-        self.compare(parsers=self.parsers, want=want, have=have)
+        # Exclude 'mtu' from comparison if deleting VLANs as it is not supported
+        # the command “no mtu 1500” is invalid because 1500 is the default value. We don’t need to explicitly remove the default.
+        filtered_parsers = [p for p in self.parsers if not (self.state == "deleted" and p == "mtu")]
+        self.compare(parsers=filtered_parsers, want=want, have=have)
         if want.get("shutdown") != have.get("shutdown"):
             if want.get("shutdown"):
                 self.addcmd(want, "shutdown", True)
