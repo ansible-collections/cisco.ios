@@ -4,6 +4,15 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v9.1.2
+======
+
+Bugfixes
+--------
+
+- ios_acls - Fixed issue where cisco.ios.ios_acls module failed to process IPv6 ACL remarks, causing unsupported parameter errors.
+- ios_route_maps - Fixes an issue where 'no description value' is an invalid command on the latest devices.
+
 v9.1.1
 ======
 
