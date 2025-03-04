@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_acls - Fixed issue where cisco.ios.ios_acls module failed to process IPv6 ACL remarks, causing unsupported parameter errors.
