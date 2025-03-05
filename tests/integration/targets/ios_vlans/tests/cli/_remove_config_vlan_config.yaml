@@ -9,3 +9,4 @@
       - vlan_id: 901
       - vlan_id: 902
     state: deleted
+  when: ansible_net_version != "15.6(2)T"
