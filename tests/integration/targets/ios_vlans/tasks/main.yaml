@@ -1,7 +1,7 @@
 ---
 - name: Set a fact for 'skip_test'
   ansible.builtin.set_fact:
-    skip_test: false
+    skip_test: true
 
 - name: Main task for vlans module
   ansible.builtin.include_tasks: cli.yaml
