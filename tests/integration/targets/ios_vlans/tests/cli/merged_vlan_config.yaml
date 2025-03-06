@@ -44,4 +44,3 @@
           - result['changed'] == false
   always:
     - ansible.builtin.include_tasks: _remove_config_vlan_config.yaml
-
