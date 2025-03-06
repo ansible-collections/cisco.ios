@@ -5,7 +5,6 @@
 - block:
     - ansible.builtin.include_tasks: _remove_config.yaml
     - ansible.builtin.include_tasks: _populate_config.yaml
-  when: ansible_net_version == "15.6(2)T"
 
 - block:
     - name: Replaces device configuration of listed vlans with provided configuration
@@ -48,6 +47,5 @@
       ansible.builtin.assert:
         that:
           - result['changed'] == false
-  when: ansible_net_version == "15.6(2)T"
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
