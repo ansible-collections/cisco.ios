@@ -7,15 +7,22 @@
   ansible.builtin.ios_command:
     commands:
       - show version
-  register: show_version_output
+      - show vlan brief
+      - show ip route
+  register: device_info
+  ignore_errors: true  # Avoid failure if VLANs or routing are unsupported
 
-- name: Identify if device is Catalyst 9000
+- name: Determine if device supports Layer 2 (VLANs)
   ansible.builtin.set_fact:
-    is_cat9k: "{{ 'CAT9K_IOSXE' in show_version_output.stdout | join(' ') }}"
+    supports_l2: "{{ 'VLAN' in device_info.stdout[1] | default('') }}"
 
-- name: Skip test for Catalyst 9000
+- name: Determine if device supports Layer 3 (Routing)
+  ansible.builtin.set_fact:
+    supports_l3: "{{ 'Gateway of last resort' in device_info.stdout[2] | default('') }}"
+
+- name: Skip test if VLANs are not supported (L2)
   ansible.builtin.meta: end_play
-  when: is_cat9k | default(false)
+  when: not supports_l2
 
 - name: Main task for vlans module
   ansible.builtin.include_tasks: cli.yaml
