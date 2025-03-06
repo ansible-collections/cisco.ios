@@ -1,7 +1,21 @@
 ---
 - name: Set a fact for 'skip_test'
   ansible.builtin.set_fact:
-    skip_test: true
+    skip_test: false
+
+- name: Gather device information
+  ansible.builtin.ios_command:
+    commands:
+      - show version
+  register: show_version_output
+
+- name: Identify if device is Catalyst 9000
+  ansible.builtin.set_fact:
+    is_cat9k: "{{ 'CAT9K_IOSXE' in show_version_output.stdout | join(' ') }}"
+
+- name: Skip test for Catalyst 9000
+  ansible.builtin.meta: end_play
+  when: is_cat9k | default(false)
 
 - name: Main task for vlans module
   ansible.builtin.include_tasks: cli.yaml
