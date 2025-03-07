@@ -4,7 +4,9 @@
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from __future__ import absolute_import, division, print_function
+
 import re
+
 
 __metaclass__ = type
 
@@ -37,7 +39,7 @@ class Logging_globalFacts(object):
         data = connection.get("show running-config | include logging")
         if not data:
             data = connection.get("show logging | include Trap")
-            match = re.search(r'level (\w+)', data)
+            match = re.search(r"level (\w+)", data)
             if match:
                 return "logging trap " + match.group(1)
             else:
