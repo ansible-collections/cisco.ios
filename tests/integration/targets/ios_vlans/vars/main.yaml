@@ -388,15 +388,59 @@ deleted:
       state: active
       vlan_id: 1005
   commands:
-    - no vlan 10
-    - no vlan 20
-    - no vlan 30
+    - vlan 1
+    - no name default
+    - no state active
+    - shutdown
+    - vlan 10
+    - no name VLAN0010
+    - no state active
+    - shutdown
+    - vlan 20
+    - no name VLAN0020
+    - no state active
+    - shutdown
+    - vlan 30
+    - no name VLAN0030
+    - no state active
+    - shutdown
+    - vlan 1002
+    - no name fddi-default
+    - no state active
+    - shutdown
+    - vlan 1003
+    - no name token-ring-default
+    - no state active
+    - shutdown
+    - vlan 1004
+    - no name fddinet-default
+    - no state active
+    - shutdown
+    - vlan 1005
+    - no name trnet-default
+    - no state active
+    - shutdown
   after:
     - mtu: 1500
       name: default
       shutdown: disabled
       state: active
       vlan_id: 1
+    - mtu: 1500
+      name: VLAN0010
+      shutdown: enabled
+      state: active
+      vlan_id: 10
+    - mtu: 1500
+      name: VLAN0020
+      shutdown: enabled
+      state: active
+      vlan_id: 20
+    - mtu: 1500
+      name: VLAN0030
+      shutdown: enabled
+      state: active
+      vlan_id: 30
     - mtu: 1500
       name: fddi-default
       shutdown: enabled
@@ -436,7 +480,6 @@ deleted_vlan_config:
     - no vlan configuration 901
 
   after: []
-
 gathered:
   config:
     - mtu: 1500
@@ -479,7 +522,6 @@ gathered:
       shutdown: enabled
       state: active
       vlan_id: 1005
-
 gathered_vlan_config:
   config:
     - vlan_id: 101
@@ -493,7 +535,6 @@ gathered_vlan_config:
     - vlan_id: 901
       member:
         vni: 50901
-
 parsed:
   config:
     - mtu: 1500
@@ -536,7 +577,6 @@ parsed:
       shutdown: enabled
       state: active
       vlan_id: 1005
-
 parsed_vlan_config:
   config:
     - vlan_id: 101
@@ -561,7 +601,6 @@ parsed_vlan_config:
     - vlan_id: 902
       member:
         vni: 50902
-
 rendered:
   commands:
     - vlan 10
@@ -578,7 +617,6 @@ rendered:
     - name Vlan_30
     - state suspend
     - no shutdown
-
 rendered_vlan_config:
   commands:
     - vlan configuration 101
@@ -587,7 +625,6 @@ rendered_vlan_config:
     - member evpn-instance 102 vni 10102
     - vlan configuration 901
     - member vni 50901
-
 rtt:
   commands:
     - vlan 10
