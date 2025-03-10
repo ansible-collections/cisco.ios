@@ -4,13 +4,13 @@
     skip_test: false
 
 - name: Gather device information
-  ansible.builtin.ios_command:
+  cisco.ios.ios_command:
     commands:
       - show version
       - show vlan brief
       - show ip route
   register: device_info
-  ignore_errors: true # Avoid failure if VLANs or routing are unsupported
+  ignore_errors: true  # Avoid failure if VLANs or routing are unsupported
 
 - name: Determine if device supports Layer 2 (VLANs)
   ansible.builtin.set_fact:
