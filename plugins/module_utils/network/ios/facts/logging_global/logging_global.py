@@ -39,7 +39,7 @@ class Logging_globalFacts(object):
         data = connection.get("show running-config | include logging")
         if "logging trap" not in data:
             trap = connection.get("show logging | include Trap")
-            match = re.search(r'level (\w+)', trap)
+            match = re.search(r"level (\w+)", trap)
             if match:
                 data = "logging trap " + match.group(1) + "\n" + data
         return data
