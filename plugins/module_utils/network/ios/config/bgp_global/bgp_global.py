@@ -456,3 +456,8 @@ class Bgp_global(ResourceModule):
                 _want_nbrs = want.get("neighbors", {})
                 for nbr in _want_nbrs:
                     nbr = self.handle_deprecates(nbr, is_nbr=True)
+        else:
+            if "local_as" in want:
+                if "number" in want["local_as"]:
+                    want["local_as"]["asn"] = str(want["local_as"].pop("number"))
+        return want
