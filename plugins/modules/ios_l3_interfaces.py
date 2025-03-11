@@ -95,6 +95,15 @@ options:
           pool:
             description: IP Address auto-configured from a local DHCP pool.
             type: str
+          redirects:
+            description: Enable sending ICMP Redirect messages.
+            type: bool
+          unreachables:
+            description: Enable sending ICMP Unreachable messages.
+            type: bool
+          mtu:
+            description: Set IP Maximum Transmission Unit.
+            type: int
           source_interface:
             description: Enable IP processing without an explicit address
             type: dict
@@ -168,6 +177,135 @@ options:
               ipv6_sr:
                 description: Set ipv6_sr.
                 type: bool
+      standby_options:
+        description: Group number and group options for standby (HSRP)
+        type: list
+        elements: dict
+        suboptions:
+          group_no:
+            description: Group number
+            type: int
+          follow:
+            description: Enable HSRP BFD
+            tpye: str
+          ip:
+            description: Enable HSRP IPv4 and set the virtual IP address
+            type: dict
+            suboptions:
+              virtual_ip:
+                description: Virtual IP address
+                type: str
+              secondary:
+                description: Make this IP address a secondary virtual IP address
+                tpye: bool
+          ipv6:
+            description: Enable HSRP IPv6
+            type: dict
+            suboptions:
+              virtual_ipv6:
+                description: Virtual IPv6 address
+                type: str
+              autoconfig:
+                description: Obtain address using autoconfiguration
+                tpye: bool
+          mac_address:
+            description: Virtual MAC address
+            type: str
+          name:
+            description: Redundancy name string
+            type: str
+          preempt:
+            description: Overthrow lower priority Active routers
+            type: dict
+            suboptions:
+              set:
+                description: set preempt only
+                type: bool
+              minimum:
+                description: Delay at least this long
+                type: int
+              reload:
+                description: Delay after reload
+                type: int
+              sync:
+                description: Wait for IP redundancy clients
+                type: int
+              delay:
+                description: Wait before preempting
+                type: bool
+          priority:
+            description: Priority level
+            type: int
+          timer:
+            description: Overthrow lower priority Active routers
+            type: dict
+            suboptions:
+              hello_interval:
+                description: Hello interval in seconds
+                type: int
+              hold_time:
+                description: Hold time in seconds
+                type: int
+              msec:
+                description: Specify hello interval in milliseconds
+                type: int
+      standby:
+        description:
+          - Standby options generic, not idempotent when version 1 (HSRP)
+        type: dict
+        suboptions:
+          authentication:
+            description: Authentication
+          bfd:
+            description: Enable HSRP BFD
+          delay:
+            description: HSRP initialisation delay
+            type: dict
+            suboptions:
+              minimum:
+                description: Delay at least this long
+                type: int
+              reload:
+                description: Delay after reload
+                type: int
+          follow:
+            description: Name of HSRP group to follow
+            type: str
+          mac-address:
+            description: Virtual MAC address
+            type: str
+          mac-refresh:
+            description: Refresh MAC cache on switch by periodically sending packet from virtual mac address
+            type: int
+          name:
+            description: Redundancy name string
+            type: str
+          timers:
+            description: Hello and hold timers
+            type: dict
+            suboptions:
+              hello_interval:
+                description: Hello interval in seconds
+                type: int
+              hold_time:
+                description: Hold time in seconds
+                type: int
+              msec:
+                description: Specify hello interval in milliseconds
+                type: int
+          use_bia:
+            description: HSRP uses interface's burned in address (does not work with mac address)
+            type: dict
+            suboptions:
+              set:
+                description: set use-bia only
+                type: bool
+              scope:
+                description: Scope interface option
+                type: bool
+          version:
+            description: HSRP version
+            type: int
   running_config:
     description:
       - This option is used only with state I(parsed).

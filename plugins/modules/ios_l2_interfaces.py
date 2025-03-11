@@ -126,6 +126,153 @@ options:
           - private_vlan_host
           - private_vlan_promiscuous
           - private_vlan_trunk
+      switchport:
+        description:
+          - Set switchport (switchport )
+        type: bool
+      app_interface:
+        description:
+          - Enabling port for Application Hosting (switchport app-interface)
+        type: bool
+      nonegotiate:
+        description:
+          - Device will not engage in negotiation protocol on this interface (switchport nonegotiate)
+        type: bool
+      vepa:
+        description:
+          - Reflective relay configuration (switchport vepa enabled)
+        type: bool
+      host:
+        description:
+          - Set port host (switchport host)
+        type: bool
+      protected:
+        description:
+          - Configure an interface to be a protected port (switchport protected)
+        type: bool
+      block_options:
+        description:
+          - Disable forwarding of unknown uni/multi cast addresses.
+        type: dict
+        suboptions:
+          multicast:
+            description:
+              - Block unknown multicast addresses
+            type: bool
+          unicast:
+            description:
+              - Block unknown unicast addresses
+            type: bool
+      spanning_tree:
+        description:
+          - Spanning tree options
+        type: dict
+        suboptions:
+          bpdufilter:
+            description: Don't send or receive BPDUs on this interface
+            type: dict
+            suboptions:
+              enabled:
+                description:
+                  - Enable BPDU filtering for this interface
+                type: bool
+              disabled:
+                description:
+                  - Disable BPDU filtering for this interface
+                type: bool
+          bpduguard:
+            description: Don't accept BPDUs on this interface
+            type: dict
+            suboptions:
+              enabled:
+                description:
+                  - Enable BPDU guard for this interface
+                type: bool
+              disabled:
+                description:
+                  - Disable BPDU guard for this interface
+                type: bool
+          cost:
+            description: Change an interface's spanning tree port path cost
+            type: int
+          guard:
+            description: Change an interface's spanning tree guard mode
+            type: dict
+            suboptions:
+              loop:
+                description:
+                  - Set guard mode to loop guard on interface
+                type: bool
+              none:
+                description:
+                  - Set guard mode to none
+                type: bool
+              root:
+                description:
+                  - Set guard mode to root guard on interface
+                type: bool
+          link_type:
+            description: Specify a link type for spanning tree protocol use
+            type: dict
+            suboptions:
+              point_to_point:
+                description:
+                  - Consider the interface as point-to-point
+                type: bool
+              shared:
+                description:
+                  - Consider the interface as shared
+                type: bool
+          mst:
+            description: Multiple spanning tree
+            type: dict
+            suboptions:
+              instance_range:
+                description:
+                  - MST instance list, example 0,2-4,6,8-12
+                type: str
+              cost:
+                description:
+                  - <1-200000000>  Change the interface spanning tree path cost for an instance
+                type: str
+              port_priority:
+                description:
+                  - Change the spanning tree port priority for an instance
+                type: int
+          port_priority:
+            description: Change an interface's spanning tree port priority
+            type: int
+          portfast:
+            description: Enable an interface to move directly to forwarding on link up
+            type: dict
+            suboptions:
+              disabled:
+                description:
+                  - Disable portfast for this interface
+                type: bool
+              trunk:
+                description:
+                  - Enable portfast on the interface even in trunk mode
+                type: bool
+          rootguard:
+            description: Enable root guard protection on the interface
+            type: bool
+          vlan:
+            description: VLAN Switch Spanning Tree
+            type: dict
+            suboptions:
+              vlan_range:
+                description:
+                  - MST instance list, example 1,3-5,7,9-11
+                type: str
+              cost:
+                description:
+                  - <1-200000000>  Change the interface spanning tree path cost for an instance
+                type: str
+              port_priority:
+                description:
+                  - Change the spanning tree port priority for an instance
+                type: int
   running_config:
     description:
       - This option is used only with state I(parsed).
