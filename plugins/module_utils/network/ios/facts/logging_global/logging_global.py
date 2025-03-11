@@ -39,9 +39,7 @@ class Logging_globalFacts(object):
         data = connection.get("show running-config | include logging")
         if "logging trap" not in data:
             trap = connection.get("show logging | include Trap")
-            match = re.search(r"level (\w+)", trap)
-            if match:
-                data = "logging trap " + match.group(1) + "\n" + data
+            data = trap + "\n" + data
         return data
 
     def populate_facts(self, connection, ansible_facts, data=None):
