@@ -187,7 +187,7 @@ options:
             type: int
           follow:
             description: Enable HSRP BFD
-            tpye: str
+            type: str
           ip:
             description: Enable HSRP IPv4 and set the virtual IP address
             type: dict
@@ -197,7 +197,7 @@ options:
                 type: str
               secondary:
                 description: Make this IP address a secondary virtual IP address
-                tpye: bool
+                type: bool
           ipv6:
             description: Enable HSRP IPv6
             type: dict
@@ -207,7 +207,7 @@ options:
                 type: str
               autoconfig:
                 description: Obtain address using autoconfiguration
-                tpye: bool
+                type: bool
           mac_address:
             description: Virtual MAC address
             type: str
@@ -254,12 +254,8 @@ options:
           - Standby options generic, not idempotent when version 1 (HSRP)
         type: dict
         suboptions:
-          authentication:
-            description: Authentication
-          bfd:
-            description: Enable HSRP BFD
           delay:
-            description: HSRP initialisation delay
+            description: HSRP initialization delay
             type: dict
             suboptions:
               minimum:
@@ -1031,30 +1027,30 @@ after:
     module argspec.
 commands:
   description: The set of commands pushed to the remote device.
-  returned: when state is I(merged), I(replaced), I(overridden), I(deleted) or I(purged)
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - "ip address 192.168.0.3 255.255.255.0"
-    - "ipv6 address dhcp rapid-commit"
-    - "ipv6 address fd5d:12c9:2201:1::1/64 anycast"
+    - sample command 1
+    - sample command 2
+    - sample command 3
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
-  returned: when state is I(rendered)
+  returned: when I(state) is C(rendered)
   type: list
   sample:
-    - "ipv6 address FD5D:12C9:2201:1::1/64"
-    - "ip address 192.168.0.3 255.255.255.0"
-    - "ip address autoconfig"
+    - sample command 1
+    - sample command 2
+    - sample command 3
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
-  returned: when state is I(gathered)
+  returned: when I(state) is C(gathered)
   type: list
   sample: >
     This output will always be in the same format as the
     module argspec.
 parsed:
   description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
-  returned: when state is I(parsed)
+  returned: when I(state) is C(parsed)
   type: list
   sample: >
     This output will always be in the same format as the

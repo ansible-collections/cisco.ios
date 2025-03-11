@@ -109,19 +109,19 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                     "elements": "dict",
                     "options": {
                         "group_no": {"type": "int"},
-                        "follow": {},
+                        "follow": {"type": "str"},
                         "ip": {
                             "type": "dict",
                             "options": {
                                 "virtual_ip": {"type": "str"},
-                                "secondary": {},
+                                "secondary": {"type": "bool"},
                             },
                         },
                         "ipv6": {
                             "type": "dict",
                             "options": {
                                 "virtual_ipv6": {"type": "str"},
-                                "autoconfig": {},
+                                "autoconfig": {"type": "bool"},
                             },
                         },
                         "mac_address": {"type": "str"},
@@ -150,8 +150,6 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                 "standby": {
                     "type": "dict",
                     "options": {
-                        "authentication": {},
-                        "bfd": {},
                         "delay": {
                             "type": "dict",
                             "options": {
