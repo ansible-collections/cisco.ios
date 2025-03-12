@@ -29,26 +29,103 @@ class Evpn_ethernetTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
-            "name": "key_a",
+            "name": "segment",
             "getval": re.compile(
-                r"""
-                ^key_a\s(?P<key_a>\S+)
-                $""", re.VERBOSE,
+                r"""^l2vpn\sevpn\sethernet-segment
+                    (\s(?P<segment>\S+))
+                    $""",
+                re.VERBOSE,
             ),
-            "setval": "",
+            "setval": "l2vpn evpn ethernet-segment {{ segment }}",
             "result": {
+                "{{ segment }}": {"segment": "{{ segment }}"},
             },
             "shared": True,
         },
         {
-            "name": "key_b",
+            "name": "df_election.wait_time",
             "getval": re.compile(
                 r"""
-                \s+key_b\s(?P<key_b>\S+)
+                \s+df-election\swait-time\s(?P<wait_time>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "",
+            "setval": "df-election wait-time {{ df_election.wait_time }}",
             "result": {
+                "{{ segment }}": {
+                    "df_election": {
+                        "wait_time": "{{ wait_time }}",
+                    },
+                },
+            },
+        },
+        {
+            "name": "df_election.preempt_time",
+            "getval": re.compile(
+                r"""
+                \s+df-election\spreempt-time\s(?P<preempt_time>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "df-election preempt-time {{ df_election.preempt_time }}",
+            "result": {
+                "{{ segment }}": {
+                    "df_election": {
+                        "preempt_time": "{{ preempt_time }}",
+                    },
+                },
+            },
+        },
+        {
+            "name": "redundancy.all_active",
+            "getval": re.compile(
+                r"""
+                \s+redundancy\sall-active
+                $""", re.VERBOSE,
+            ),
+            "setval": "redundancy all-active",
+            "result": {
+                "{{ segment }}": {
+                    "redundancy": {
+                        "all_active": True,
+                    },
+                },
+            },
+        },
+        {
+            "name": "redundancy.single_active",
+            "getval": re.compile(
+                r"""
+                \s+redundancy\ssingle-active
+                $""", re.VERBOSE,
+            ),
+            "setval": "redundancy single-active",
+            "result": {
+                "{{ segment }}": {
+                    "redundancy": {
+                        "single_active": True,
+                    },
+                },
+            },
+        },
+        {
+            "name": "identifier",
+            "getval": re.compile(
+                r"""
+                \s+identifier\stype\s(?P<identifier_type>0|3)
+                (\s(?P<system_mac>system-mac))?
+                (\s(?P<mac_address>.+))
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "identifier type {{ identifier.identifier_type }} "
+            "{% if identifier.identifier_type == '3' %}system-mac "
+            "{{ identifier.mac_address }}{% else %}{{ identifier.mac_address }}{% endif %}",
+            "result": {
+                "{{ segment }}": {
+                    "identifier": {
+                        "identifier_type": "{{ identifier_type }}",
+                        "mac_address": "{{ mac_address }}",
+                    },
+                },
             },
         },
     ]

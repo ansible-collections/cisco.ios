@@ -119,7 +119,184 @@ options:
 """
 
 EXAMPLES = """
+# Using gathered
 
+# Before state:
+# -------------
+#
+# vios#sh running-config | section ^l2vpn evpn ethernet-segment
+#l2vpn evpn ethernet-segment 1
+# identifier type 0 00.00.00.00.00.00.00.00.01
+# redundancy single-active
+#!
+#l2vpn evpn ethernet-segment 2
+# identifier type 0 00.00.00.00.00.00.00.00.02
+# redundancy single-active
+# df-election preempt-time 1
+#!
+#l2vpn evpn ethernet-segment 3
+# identifier type 3 system-mac 00.00.00.00.00.00.00.00.03
+# redundancy single-active
+#!
+#l2vpn evpn ethernet-segment 4
+# identifier type 0 00.00.00.00.00.00.00.00.04
+# redundancy all-active
+# df-election wait-time 1
+#!
+
+- name: Gather facts of evpn ethernet segment
+  cisco.ios.ios_evpn_ethernet:
+    config:
+    state: gathered
+
+# Task Output
+# -----------
+#
+# gathered:
+#- identifier:
+#      identifier_type: '0'
+#      mac_address: 00.00.00.00.00.00.00.00.01
+#  redundancy:
+#      single_active: true
+#  segment: '1'
+#- df_election:
+#      preempt_time: 1
+#  identifier:
+#      identifier_type: '0'
+#      mac_address: 00.00.00.00.00.00.00.00.02
+#  redundancy:
+#      single_active: true
+#  segment: '2'
+#- identifier:
+#      identifier_type: '3'
+#      mac_address: 00.00.00.00.00.00.00.00.03
+#  redundancy:
+#      single_active: true
+#  segment: '3'
+#- df_election:
+#      wait_time: 1
+#  identifier:
+#      identifier_type: '0'
+#      mac_address: 00.00.00.00.00.00.00.00.04
+#  redundancy:
+#      all_active: true
+#  segment: '4'
+
+# Using rendered
+
+- name: Render commands with provided configuration
+  cisco.ios.ios_evpn_ethernet:
+    config:
+      - identifier:
+          identifier_type: '0'
+          mac_address: 00.00.00.00.00.00.00.00.01
+        redundancy:
+          single_active: true
+        segment: '1'
+      - df_election:
+          preempt_time: 1
+        identifier:
+          identifier_type: '0'
+          mac_address: 00.00.00.00.00.00.00.00.02
+        redundancy:
+          single_active: true
+        segment: '2'
+      - identifier:
+          identifier_type: '3'
+          mac_address: 00.00.00.00.00.00.00.00.03
+        redundancy:
+          single_active: true
+        segment: '3'
+      - df_election:
+          wait_time: 1
+        identifier:
+          identifier_type: '0'
+          mac_address: 00.00.00.00.00.00.00.00.04
+        redundancy:
+          all_active: true
+        segment: '4'
+    state: rendered
+
+# Task Output
+# -----------
+#
+#rendered:
+#- l2vpn evpn ethernet-segment 1
+#- redundancy single-active
+#- identifier type 0 00.00.00.00.00.00.00.00.01
+#- l2vpn evpn ethernet-segment 2
+#- df-election preempt-time 1
+#- redundancy single-active
+#- identifier type 0 00.00.00.00.00.00.00.00.02
+#- l2vpn evpn ethernet-segment 3
+#- redundancy single-active
+#- identifier type 3 system-mac 00.00.00.00.00.00.00.00.03
+#- l2vpn evpn ethernet-segment 4
+#- df-election wait-time 1
+#- redundancy all-active
+#- identifier type 0 00.00.00.00.00.00.00.00.04
+
+# Using parsed
+
+# File: parsed.cfg
+# ----------------
+#
+#l2vpn evpn ethernet-segment 1
+# identifier type 0 00.00.00.00.00.00.00.00.01
+# redundancy single-active
+#!
+#l2vpn evpn ethernet-segment 2
+# identifier type 0 00.00.00.00.00.00.00.00.02
+# redundancy single-active
+# df-election preempt-time 1
+#!
+#l2vpn evpn ethernet-segment 3
+# identifier type 3 system-mac 00.00.00.00.00.00.00.00.03
+# redundancy single-active
+#!
+#l2vpn evpn ethernet-segment 4
+# identifier type 0 00.00.00.00.00.00.00.00.04
+# redundancy all-active
+# df-election wait-time 1
+#!
+
+- name: Parse the provided configuration
+  cisco.ios.ios_evpn_ethernet:
+    running_config: "{{ lookup('file', 'ios_ethernet_segment_parsed.cfg') }}"
+    state: parsed
+
+# Task Output
+# -----------
+#
+#parsed:
+#- identifier:
+#      identifier_type: '0'
+#      mac_address: 00.00.00.00.00.00.00.00.01
+#  redundancy:
+#      single_active: true
+#  segment: '1'
+#- df_election:
+#      preempt_time: 1
+#  identifier:
+#      identifier_type: '0'
+#      mac_address: 00.00.00.00.00.00.00.00.02
+#  redundancy:
+#      single_active: true
+#  segment: '2'
+#- identifier:
+#      identifier_type: '3'
+#      mac_address: 00.00.00.00.00.00.00.00.03
+#  redundancy:
+#      single_active: true
+#  segment: '3'
+#- df_election:
+#      wait_time: 1
+#  identifier:
+#      identifier_type: '0'
+#      mac_address: 00.00.00.00.00.00.00.00.04
+#  redundancy:
+#      all_active: true
+#  segment: '4'
 """
 
 RETURN = """

@@ -49,7 +49,14 @@ class Evpn_ethernet(ResourceModule):
             resource="evpn_ethernet",
             tmplt=Evpn_ethernetTemplate(),
         )
-        self.parsers = []
+        self.parsers = [
+            "segment",
+            "df_election.wait_time",
+            "df_election.preempt_time",
+            "redundancy.all_active",
+            "redundancy.single_active",
+            "identifier",
+        ]
 
     def execute_module(self):
         """Execute the module
@@ -66,8 +73,8 @@ class Evpn_ethernet(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
-        wantd = {entry["name"]: entry for entry in self.want}
-        haved = {entry["name"]: entry for entry in self.have}
+        wantd = {entry["segment"]: entry for entry in self.want}
+        haved = {entry["segment"]: entry for entry in self.have}
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":

@@ -37,6 +37,9 @@ class Evpn_ethernetFacts(object):
         self._module = module
         self.argument_spec = Evpn_ethernetArgs.argument_spec
 
+    def get_evpn_ethernet_segment_data(self, connection):
+        return connection.get("show running-config | section ^l2vpn evpn instance .+$")
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Evpn_ethernet network resource
 
@@ -51,7 +54,7 @@ class Evpn_ethernetFacts(object):
         objs = []
 
         if not data:
-            data = connection.get()
+            data = self.get_evpn_ethernet_segment_data(connection)
 
         # parse native config using the Evpn_ethernet template
         evpn_ethernet_parser = Evpn_ethernetTemplate(lines=data.splitlines(), module=self._module)
@@ -63,7 +66,7 @@ class Evpn_ethernetFacts(object):
             evpn_ethernet_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
-        facts["evpn_ethernet"] = params["config"]
+        facts["evpn_ethernet"] = params.get("config")
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
