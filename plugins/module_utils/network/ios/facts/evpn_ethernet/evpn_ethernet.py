@@ -38,7 +38,7 @@ class Evpn_ethernetFacts(object):
         self.argument_spec = Evpn_ethernetArgs.argument_spec
 
     def get_evpn_ethernet_segment_data(self, connection):
-        return connection.get("show running-config | section ^l2vpn evpn instance .+$")
+        return connection.get("show running-config | section ^l2vpn evpn ethernet-segment")
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Evpn_ethernet network resource
