@@ -8,14 +8,14 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 from textwrap import dedent
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_logging_global
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
+from plugins.module_utils.network.ios.facts.logging_global.logging_global import Logging_globalFacts
 
 from .ios_module import TestIosModule
-from unittest.mock import MagicMock
-from plugins.module_utils.network.ios.facts.logging_global.logging_global import Logging_globalFacts
+
 
 class TestIosLoggingGlobalModule(TestIosModule):
     module = ios_logging_global
