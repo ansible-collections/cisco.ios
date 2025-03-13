@@ -355,7 +355,7 @@ Examples
     # gathered:
     #  - identifier:
     #        identifier_type: '0'
-    #        mac_address: 00.00.00.00.00.00.00.00.01
+    #        esi_value: 00.00.00.00.00.00.00.00.01
     #    redundancy:
     #        single_active: true
     #    segment: '1'
@@ -363,13 +363,13 @@ Examples
     #        preempt_time: 1
     #    identifier:
     #        identifier_type: '0'
-    #        mac_address: 00.00.00.00.00.00.00.00.02
+    #        esi_value: 00.00.00.00.00.00.00.00.02
     #    redundancy:
     #        single_active: true
     #    segment: '2'
     #  - identifier:
     #        identifier_type: '3'
-    #        mac_address: 00.00.00.00.00.00.00.00.03
+    #        esi_value: 00.00.00.00.00.00.00.00.03
     #    redundancy:
     #        single_active: true
     #    segment: '3'
@@ -377,7 +377,7 @@ Examples
     #        wait_time: 1
     #    identifier:
     #        identifier_type: '0'
-    #        mac_address: 00.00.00.00.00.00.00.00.04
+    #        esi_value: 00.00.00.00.00.00.00.00.04
     #    redundancy:
     #        all_active: true
     #    segment: '4'
@@ -389,7 +389,7 @@ Examples
         config:
           - identifier:
               identifier_type: '0'
-              mac_address: 00.00.00.00.00.00.00.00.01
+              esi_value: 00.00.00.00.00.00.00.00.01
             redundancy:
               single_active: true
             segment: '1'
@@ -397,13 +397,13 @@ Examples
               preempt_time: 1
             identifier:
               identifier_type: '0'
-              mac_address: 00.00.00.00.00.00.00.00.02
+              esi_value: 00.00.00.00.00.00.00.00.02
             redundancy:
               single_active: true
             segment: '2'
           - identifier:
               identifier_type: '3'
-              mac_address: 00.00.00.00.00.00.00.00.03
+              esi_value: 00.00.00.00.00.00.00.00.03
             redundancy:
               single_active: true
             segment: '3'
@@ -411,7 +411,7 @@ Examples
               wait_time: 1
             identifier:
               identifier_type: '0'
-              mac_address: 00.00.00.00.00.00.00.00.04
+              esi_value: 00.00.00.00.00.00.00.00.04
             redundancy:
               all_active: true
             segment: '4'
@@ -471,7 +471,7 @@ Examples
     # parsed:
     #  - identifier:
     #        identifier_type: '0'
-    #        mac_address: 00.00.00.00.00.00.00.00.01
+    #        esi_value: 00.00.00.00.00.00.00.00.01
     #    redundancy:
     #        single_active: true
     #    segment: '1'
@@ -479,13 +479,13 @@ Examples
     #        preempt_time: 1
     #    identifier:
     #        identifier_type: '0'
-    #        mac_address: 00.00.00.00.00.00.00.00.02
+    #        esi_value: 00.00.00.00.00.00.00.00.02
     #    redundancy:
     #        single_active: true
     #    segment: '2'
     #  - identifier:
     #        identifier_type: '3'
-    #        mac_address: 00.00.00.00.00.00.00.00.03
+    #        esi_value: 00.00.00.00.00.00.00.00.03
     #    redundancy:
     #        single_active: true
     #    segment: '3'
@@ -493,7 +493,7 @@ Examples
     #        wait_time: 1
     #    identifier:
     #        identifier_type: '0'
-    #        mac_address: 00.00.00.00.00.00.00.00.04
+    #        esi_value: 00.00.00.00.00.00.00.00.04
     #    redundancy:
     #        all_active: true
     #    segment: '4'
