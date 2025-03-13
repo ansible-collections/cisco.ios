@@ -50,7 +50,7 @@ class Evpn_ethernetArgs(object):  # pylint: disable=R0903
                     "type": "dict",
                     "options": {
                         "identifier_type": {"type": "str", "choices": ["0", "3"]},
-                        "mac_address": {"type": "str"},
+                        "esi_value": {"type": "str"},
                     },
                 },
                 "redundancy": {

@@ -141,6 +141,23 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>esi_value</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>system mac or 9-octet ESI value in hex</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>identifier_type</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -156,23 +173,6 @@ Parameters
                 <td>
                         <div>Type 0 (arbitrary 9-octet ESI value)</div>
                         <div>Type 3 (MAC-based ESI value)</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="1">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>mac_address</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>system mac or 9-octet ESI value in hex</div>
                 </td>
             </tr>
 
@@ -310,7 +310,7 @@ Notes
 .. note::
    - Tested against Cisco IOSXE Version 17.6 on CML.
    - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
-   - The module examples uses callback plugin (stdout_callback = yaml) to generate task output in yaml format.
+   - The module examples uses callback plugin (callback_result_format=yaml) to generate task output in yaml format.
 
 
 

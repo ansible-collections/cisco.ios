@@ -112,18 +112,18 @@ class Evpn_ethernetTemplate(NetworkTemplate):
                 r"""
                 \s+identifier\stype\s(?P<identifier_type>0|3)
                 (\s(?P<system_mac>system-mac))?
-                (\s(?P<mac_address>.+))
+                (\s(?P<esi_value>.+))
                 $""",
                 re.VERBOSE,
             ),
             "setval": "identifier type {{ identifier.identifier_type }} "
             "{% if identifier.identifier_type == '3' %}system-mac "
-            "{{ identifier.mac_address }}{% else %}{{ identifier.mac_address }}{% endif %}",
+            "{{ identifier.esi_value }}{% else %}{{ identifier.esi_value }}{% endif %}",
             "result": {
                 "{{ segment }}": {
                     "identifier": {
                         "identifier_type": "{{ identifier_type }}",
-                        "mac_address": "{{ mac_address }}",
+                        "esi_value": "{{ esi_value }}",
                     },
                 },
             },

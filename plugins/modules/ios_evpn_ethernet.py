@@ -25,7 +25,7 @@ notes:
   - Tested against Cisco IOSXE Version 17.6 on CML.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
-  - The module examples uses callback plugin (stdout_callback = yaml) to generate task
+  - The module examples uses callback plugin (callback_result_format=yaml) to generate task
     output in yaml format.
 options:
   config:
@@ -63,7 +63,7 @@ options:
             choices:
               - '0'
               - '3'
-          mac_address:
+          esi_value:
             description: system mac or 9-octet ESI value in hex
             type: str
       redundancy:
