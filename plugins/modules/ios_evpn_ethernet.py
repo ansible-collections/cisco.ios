@@ -119,6 +119,636 @@ options:
 """
 
 EXAMPLES = """
+# Using merged
+
+# Before state:
+# -------------
+#
+# vios#sh running-config | section ^l2vpn evpn ethernet-segment
+# l2vpn evpn ethernet-segment 1
+#  identifier type 0 00.00.00.00.00.00.00.00.01
+#  redundancy single-active
+# !
+# l2vpn evpn ethernet-segment 2
+#  identifier type 0 00.00.00.00.00.00.00.00.02
+#  redundancy single-active
+#  df-election preempt-time 1
+# !
+# l2vpn evpn ethernet-segment 3
+#  identifier type 3 system-mac 00.00.00.00.00.00.00.00.03
+#  redundancy single-active
+# !
+# l2vpn evpn ethernet-segment 4
+#  identifier type 0 00.00.00.00.00.00.00.00.04
+#  redundancy all-active
+#  df-election wait-time 1
+# !
+
+- name: Gather facts of evpn ethernet segment
+  cisco.ios.ios_evpn_ethernet:
+    config:
+      - identifier:
+            identifier_type: '0'
+            esi_value: 00.00.00.00.00.00.00.00.01
+        redundancy:
+            single_active: true
+        segment: '1'
+      - df_election:
+            preempt_time: 1
+        identifier:
+            identifier_type: '0'
+            esi_value: 00.00.00.00.00.00.00.00.02
+        redundancy:
+            single_active: true
+        segment: '2'
+      - identifier:
+            identifier_type: '3'
+            esi_value: 00.00.00.00.00.00.00.00.03
+        redundancy:
+            single_active: true
+        segment: '3'
+      - df_election:
+            wait_time: 1
+        identifier:
+            identifier_type: '0'
+            esi_value: 00.00.00.00.00.00.00.00.04
+        redundancy:
+            all_active: true
+        segment: '4'
+      - df_election:
+            wait_time: 1
+        identifier:
+            identifier_type: '0'
+            esi_value: 00.00.00.00.00.00.00.00.05
+        redundancy:
+            all_active: true
+        segment: '5'
+    state: merged
+
+# Task Output
+# -----------
+#
+# before:
+#  - identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.01
+#    redundancy:
+#        single_active: true
+#    segment: '1'
+#  - df_election:
+#        preempt_time: 1
+#    identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.02
+#    redundancy:
+#        single_active: true
+#    segment: '2'
+#  - identifier:
+#        identifier_type: '3'
+#        esi_value: 00.00.00.00.00.00.00.00.03
+#    redundancy:
+#        single_active: true
+#    segment: '3'
+#  - df_election:
+#        wait_time: 1
+#    identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.04
+#    redundancy:
+#        all_active: true
+#    segment: '4'
+# commands:
+# - l2vpn evpn ethernet-segment 5
+# - identifier type 0 00.00.00.00.00.00.00.00.05
+# - redundancy all-active
+# - df-election wait-time 1
+# after:
+#  - identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.01
+#    redundancy:
+#        single_active: true
+#    segment: '1'
+#  - df_election:
+#        preempt_time: 1
+#    identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.02
+#    redundancy:
+#        single_active: true
+#    segment: '2'
+#  - identifier:
+#        identifier_type: '3'
+#        esi_value: 00.00.00.00.00.00.00.00.03
+#    redundancy:
+#        single_active: true
+#    segment: '3'
+#  - df_election:
+#        wait_time: 1
+#    identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.04
+#    redundancy:
+#        all_active: true
+#    segment: '4'
+#  - df_election:
+#        wait_time: 1
+#    identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.05
+#    redundancy:
+#        all_active: true
+#    segment: '5'
+
+# After state:
+# -------------
+#
+# vios#sh running-config | section ^l2vpn evpn ethernet-segment
+# l2vpn evpn ethernet-segment 1
+#  identifier type 0 00.00.00.00.00.00.00.00.01
+#  redundancy single-active
+# !
+# l2vpn evpn ethernet-segment 2
+#  identifier type 0 00.00.00.00.00.00.00.00.02
+#  redundancy single-active
+#  df-election preempt-time 1
+# !
+# l2vpn evpn ethernet-segment 3
+#  identifier type 3 system-mac 00.00.00.00.00.00.00.00.03
+#  redundancy single-active
+# !
+# l2vpn evpn ethernet-segment 4
+#  identifier type 0 00.00.00.00.00.00.00.00.04
+#  redundancy all-active
+#  df-election wait-time 1
+# !
+# l2vpn evpn ethernet-segment 5
+#  identifier type 0 00.00.00.00.00.00.00.00.05
+#  redundancy all-active
+#  df-election wait-time 1
+# !
+
+# Using replaced
+
+# Before state:
+# -------------
+#
+# vios#sh running-config | section ^l2vpn evpn ethernet-segment
+# l2vpn evpn ethernet-segment 1
+#  identifier type 0 00.00.00.00.00.00.00.00.01
+#  redundancy single-active
+# !
+# l2vpn evpn ethernet-segment 2
+#  identifier type 0 00.00.00.00.00.00.00.00.02
+#  redundancy single-active
+#  df-election preempt-time 1
+# !
+# l2vpn evpn ethernet-segment 3
+#  identifier type 3 system-mac 00.00.00.00.00.00.00.00.03
+#  redundancy single-active
+# !
+# l2vpn evpn ethernet-segment 4
+#  identifier type 0 00.00.00.00.00.00.00.00.04
+#  redundancy all-active
+#  df-election wait-time 1
+# !
+
+- name: Gather facts of evpn ethernet segment
+  cisco.ios.ios_evpn_ethernet:
+    config:
+      - df_election:
+            wait_time: 1
+        identifier:
+            identifier_type: '0'
+            esi_value: 00.00.00.00.00.00.00.00.04
+        redundancy:
+            single_active: true
+        segment: '4'
+      - df_election:
+            wait_time: 1
+        identifier:
+            identifier_type: '0'
+            esi_value: 00.00.00.00.00.00.00.00.05
+        redundancy:
+            all_active: true
+        segment: '5'
+    state: replaced
+
+# Task Output
+# -----------
+#
+# before:
+#  - identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.01
+#    redundancy:
+#        single_active: true
+#    segment: '1'
+#  - df_election:
+#        preempt_time: 1
+#    identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.02
+#    redundancy:
+#        single_active: true
+#    segment: '2'
+#  - identifier:
+#        identifier_type: '3'
+#        esi_value: 00.00.00.00.00.00.00.00.03
+#    redundancy:
+#        single_active: true
+#    segment: '3'
+#  - df_election:
+#        wait_time: 1
+#    identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.04
+#    redundancy:
+#        all_active: true
+#    segment: '4'
+# commands:
+# - l2vpn evpn ethernet-segment 4
+# - redundancy single-active
+# - l2vpn evpn ethernet-segment 5
+# - identifier type 0 00.00.00.00.00.00.00.00.05
+# - redundancy all-active
+# - df-election wait-time 1
+# after:
+#  - identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.01
+#    redundancy:
+#        single_active: true
+#    segment: '1'
+#  - df_election:
+#        preempt_time: 1
+#    identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.02
+#    redundancy:
+#        single_active: true
+#    segment: '2'
+#  - identifier:
+#        identifier_type: '3'
+#        esi_value: 00.00.00.00.00.00.00.00.03
+#    redundancy:
+#        single_active: true
+#    segment: '3'
+#  - df_election:
+#        wait_time: 1
+#    identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.04
+#    redundancy:
+#        single_active: true
+#    segment: '4'
+#  - df_election:
+#        wait_time: 1
+#    identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.05
+#    redundancy:
+#        all_active: true
+#    segment: '5'
+
+# After state:
+# -------------
+#
+# vios#sh running-config | section ^l2vpn evpn ethernet-segment
+# l2vpn evpn ethernet-segment 1
+#  identifier type 0 00.00.00.00.00.00.00.00.01
+#  redundancy single-active
+# !
+# l2vpn evpn ethernet-segment 2
+#  identifier type 0 00.00.00.00.00.00.00.00.02
+#  redundancy single-active
+#  df-election preempt-time 1
+# !
+# l2vpn evpn ethernet-segment 3
+#  identifier type 3 system-mac 00.00.00.00.00.00.00.00.03
+#  redundancy single-active
+# !
+# l2vpn evpn ethernet-segment 4
+#  identifier type 0 00.00.00.00.00.00.00.00.04
+#  redundancy single-active
+#  df-election wait-time 1
+# !
+# l2vpn evpn ethernet-segment 5
+#  identifier type 0 00.00.00.00.00.00.00.00.05
+#  redundancy all-active
+#  df-election wait-time 1
+# !
+
+# Using overridden
+
+# Before state:
+# -------------
+#
+# vios#sh running-config | section ^l2vpn evpn ethernet-segment
+# l2vpn evpn ethernet-segment 1
+#  identifier type 0 00.00.00.00.00.00.00.00.01
+#  redundancy single-active
+# !
+# l2vpn evpn ethernet-segment 2
+#  identifier type 0 00.00.00.00.00.00.00.00.02
+#  redundancy single-active
+#  df-election preempt-time 1
+# !
+# l2vpn evpn ethernet-segment 3
+#  identifier type 3 system-mac 00.00.00.00.00.00.00.00.03
+#  redundancy single-active
+# !
+# l2vpn evpn ethernet-segment 4
+#  identifier type 0 00.00.00.00.00.00.00.00.04
+#  redundancy all-active
+#  df-election wait-time 1
+# !
+
+- name: Gather facts of evpn ethernet segment
+  cisco.ios.ios_evpn_ethernet:
+    config:
+      - df_election:
+            wait_time: 1
+        identifier:
+            identifier_type: '0'
+            esi_value: 00.00.00.00.00.00.00.00.04
+        redundancy:
+            single_active: true
+        segment: '4'
+      - df_election:
+            wait_time: 1
+        identifier:
+            identifier_type: '0'
+            esi_value: 00.00.00.00.00.00.00.00.05
+        redundancy:
+            all_active: true
+        segment: '5'
+    state: overridden
+
+# After state:
+# -------------
+#
+# vios#sh running-config | section ^l2vpn evpn ethernet-segment
+# l2vpn evpn ethernet-segment 1
+# !
+# l2vpn evpn ethernet-segment 2
+# !
+# l2vpn evpn ethernet-segment 3
+# !
+# l2vpn evpn ethernet-segment 4
+#  identifier type 0 00.00.00.00.00.00.00.00.04
+#  redundancy single-active
+#  df-election wait-time 1
+# !
+# l2vpn evpn ethernet-segment 5
+#  identifier type 0 00.00.00.00.00.00.00.00.05
+#  redundancy all-active
+#  df-election wait-time 1
+# !
+
+# Using deleted
+
+# Before state:
+# -------------
+#
+# vios#sh running-config | section ^l2vpn evpn ethernet-segment
+# l2vpn evpn ethernet-segment 1
+#  identifier type 0 00.00.00.00.00.00.00.00.01
+#  redundancy single-active
+# !
+# l2vpn evpn ethernet-segment 2
+#  identifier type 0 00.00.00.00.00.00.00.00.02
+#  redundancy single-active
+#  df-election preempt-time 1
+# !
+# l2vpn evpn ethernet-segment 3
+#  identifier type 3 system-mac 00.00.00.00.00.00.00.00.03
+#  redundancy single-active
+# !
+# l2vpn evpn ethernet-segment 4
+#  identifier type 0 00.00.00.00.00.00.00.00.04
+#  redundancy all-active
+#  df-election wait-time 1
+# !
+
+- name: Gather facts of evpn ethernet segment
+  cisco.ios.ios_evpn_ethernet:
+    config:
+      - identifier:
+            identifier_type: '0'
+            esi_value: 00.00.00.00.00.00.00.00.01
+        redundancy:
+            single_active: true
+        segment: '1'
+      - df_election:
+            preempt_time: 1
+        identifier:
+            identifier_type: '0'
+            esi_value: 00.00.00.00.00.00.00.00.02
+        redundancy:
+            single_active: true
+        segment: '2'
+    state: deleted
+
+# Task Output
+# -----------
+#
+# before:
+#  - identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.01
+#    redundancy:
+#        single_active: true
+#    segment: '1'
+#  - df_election:
+#        preempt_time: 1
+#    identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.02
+#    redundancy:
+#        single_active: true
+#    segment: '2'
+#  - identifier:
+#        identifier_type: '3'
+#        esi_value: 00.00.00.00.00.00.00.00.03
+#    redundancy:
+#        single_active: true
+#    segment: '3'
+#  - df_election:
+#        wait_time: 1
+#    identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.04
+#    redundancy:
+#        all_active: true
+#    segment: '4'
+# commands:
+# - l2vpn evpn ethernet-segment 1
+# - no identifier type 0 00.00.00.00.00.00.00.00.01
+# - no redundancy single-active
+# - l2vpn evpn ethernet-segment 2
+# - no identifier type 0 00.00.00.00.00.00.00.00.02
+# - no redundancy single-active
+# - no df-election wait-time 1
+# after:
+#  - segment: '1'
+#  - segment: '2'
+#  - identifier:
+#        identifier_type: '3'
+#        esi_value: 00.00.00.00.00.00.00.00.03
+#    redundancy:
+#        single_active: true
+#    segment: '3'
+#  - df_election:
+#        wait_time: 1
+#    identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.04
+#    redundancy:
+#        all_active: true
+#    segment: '4'
+#  - df_election:
+#        wait_time: 1
+#    identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.05
+#    redundancy:
+#        all_active: true
+#    segment: '5'
+
+# After state:
+# -------------
+#
+# vios#sh running-config | section ^l2vpn evpn ethernet-segment
+# l2vpn evpn ethernet-segment 1
+# !
+# l2vpn evpn ethernet-segment 2
+# !
+# l2vpn evpn ethernet-segment 3
+#  identifier type 3 system-mac 00.00.00.00.00.00.00.00.03
+#  redundancy single-active
+# !
+# l2vpn evpn ethernet-segment 4
+#  identifier type 0 00.00.00.00.00.00.00.00.04
+#  redundancy all-active
+#  df-election wait-time 1
+# !
+# l2vpn evpn ethernet-segment 5
+#  identifier type 0 00.00.00.00.00.00.00.00.05
+#  redundancy all-active
+#  df-election wait-time 1
+# !
+
+# Using purged
+
+# Before state:
+# -------------
+#
+# vios#sh running-config | section ^l2vpn evpn ethernet-segment
+# l2vpn evpn ethernet-segment 1
+#  identifier type 0 00.00.00.00.00.00.00.00.01
+#  redundancy single-active
+# !
+# l2vpn evpn ethernet-segment 2
+#  identifier type 0 00.00.00.00.00.00.00.00.02
+#  redundancy single-active
+#  df-election preempt-time 1
+# !
+# l2vpn evpn ethernet-segment 3
+#  identifier type 3 system-mac 00.00.00.00.00.00.00.00.03
+#  redundancy single-active
+# !
+# l2vpn evpn ethernet-segment 4
+#  identifier type 0 00.00.00.00.00.00.00.00.04
+#  redundancy all-active
+#  df-election wait-time 1
+# !
+
+- name: Gather facts of evpn ethernet segment
+  cisco.ios.ios_evpn_ethernet:
+    config:
+      - segment: '1'
+      - segment: '2'
+    state: purged
+
+# Task Output
+# -----------
+#
+# before:
+#  - identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.01
+#    redundancy:
+#        single_active: true
+#    segment: '1'
+#  - df_election:
+#        preempt_time: 1
+#    identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.02
+#    redundancy:
+#        single_active: true
+#    segment: '2'
+#  - identifier:
+#        identifier_type: '3'
+#        esi_value: 00.00.00.00.00.00.00.00.03
+#    redundancy:
+#        single_active: true
+#    segment: '3'
+#  - df_election:
+#        wait_time: 1
+#    identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.04
+#    redundancy:
+#        all_active: true
+#    segment: '4'
+# commands:
+# - no l2vpn evpn ethernet-segment 1
+# - no l2vpn evpn ethernet-segment 2
+# after:
+#  - identifier:
+#        identifier_type: '3'
+#        esi_value: 00.00.00.00.00.00.00.00.03
+#    redundancy:
+#        single_active: true
+#    segment: '3'
+#  - df_election:
+#        wait_time: 1
+#    identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.04
+#    redundancy:
+#        all_active: true
+#    segment: '4'
+#  - df_election:
+#        wait_time: 1
+#    identifier:
+#        identifier_type: '0'
+#        esi_value: 00.00.00.00.00.00.00.00.05
+#    redundancy:
+#        all_active: true
+#    segment: '5'
+
+# After state:
+# -------------
+#
+# vios#sh running-config | section ^l2vpn evpn ethernet-segment
+# l2vpn evpn ethernet-segment 3
+#  identifier type 3 system-mac 00.00.00.00.00.00.00.00.03
+#  redundancy single-active
+# !
+# l2vpn evpn ethernet-segment 4
+#  identifier type 0 00.00.00.00.00.00.00.00.04
+#  redundancy all-active
+#  df-election wait-time 1
+# !
+# l2vpn evpn ethernet-segment 5
+#  identifier type 0 00.00.00.00.00.00.00.00.05
+#  redundancy all-active
+#  df-election wait-time 1
+# !
+
 # Using gathered
 
 # Before state:
