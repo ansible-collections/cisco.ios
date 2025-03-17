@@ -50,7 +50,6 @@ class Evpn_ethernet(ResourceModule):
             tmplt=Evpn_ethernetTemplate(),
         )
         self.parsers = [
-            "segment",
             "df_election.wait_time",
             "df_election.preempt_time",
             "redundancy.all_active",
@@ -104,7 +103,10 @@ class Evpn_ethernet(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Evpn_ethernet network resource.
         """
+        begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
+        if len(self.commands) != begin:
+            self.commands.insert(begin, self._tmplt.render(want or have, "segment", False))
 
     def purge(self, have):
         """Handle operation for purged state"""

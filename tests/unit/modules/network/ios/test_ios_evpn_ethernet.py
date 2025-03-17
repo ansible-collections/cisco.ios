@@ -236,14 +236,14 @@ class TestIosEvpnEthernetModule(TestIosModule):
                     "identifier type 0 00.00.00.00.00.00.00.00.05",
                 ],
                 "overridden": [
-                    "no l2vpn evpn ethernet-segment 2",
+                    "l2vpn evpn ethernet-segment 2",
                     "no df-election preempt-time 1",
                     "no redundancy single-active",
                     "no identifier type 0 00.00.00.00.00.00.00.00.02",
-                    "no l2vpn evpn ethernet-segment 3",
+                    "l2vpn evpn ethernet-segment 3",
                     "no redundancy single-active",
                     "no identifier type 3 system-mac 00.00.00.00.00.00.00.00.03",
-                    "no l2vpn evpn ethernet-segment 4",
+                    "l2vpn evpn ethernet-segment 4",
                     "no df-election wait-time 1",
                     "no redundancy all-active",
                     "no identifier type 0 00.00.00.00.00.00.00.00.04",
@@ -329,7 +329,7 @@ class TestIosEvpnEthernetModule(TestIosModule):
             result = self.execute_module(changed=True)
             commands = {
                 "deleted": [
-                    "no l2vpn evpn ethernet-segment 1",
+                    "l2vpn evpn ethernet-segment 1",
                     "no redundancy single-active",
                     "no identifier type 0 00.00.00.00.00.00.00.00.01",
                 ],
