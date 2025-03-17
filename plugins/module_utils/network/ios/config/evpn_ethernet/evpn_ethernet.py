@@ -91,8 +91,12 @@ class Evpn_ethernet(ResourceModule):
                 if k not in wantd:
                     self._compare(want={}, have=have)
 
-        for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, {}))
+        if self.state == "purged":
+            for k, have in iteritems(haved):
+                self.purge(have)
+        else:
+            for k, want in iteritems(wantd):
+                self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -101,3 +105,7 @@ class Evpn_ethernet(ResourceModule):
         for the Evpn_ethernet network resource.
         """
         self.compare(parsers=self.parsers, want=want, have=have)
+
+    def purge(self, have):
+        """Handle operation for purged state"""
+        self.commands.append(self._tmplt.render(have, "segment", True))
