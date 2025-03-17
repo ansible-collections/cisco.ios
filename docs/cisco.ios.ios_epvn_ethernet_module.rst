@@ -1256,4 +1256,4 @@ Authors
 ~~~~~~~
 
 - Sagar Paul (@KB-perByte)
-- Jørgen Spange (@jorgenspange)
+- Jorgen Spange (@jorgenspange)

@@ -20,7 +20,7 @@ description: This module manages the L2VPN EVPN Ethernet Segment attributes of C
 version_added: 9.2.0
 author:
   - Sagar Paul (@KB-perByte)
-  - Jørgen Spange (@jorgenspange)
+  - Jorgen Spange (@jorgenspange)
 notes:
   - Tested against Cisco IOSXE Version 17.6 on CML.
   - This module works with connection C(network_cli).
