@@ -60,7 +60,7 @@ replaced:
     - no logging exception 4099
     - logging facility local6
     - no logging monitor warnings
-    - no logging trap informational
+    - logging trap errors
     - no logging userinfo
     - logging host 192.0.2.19
     - no logging host 192.0.2.10
@@ -80,6 +80,7 @@ replaced:
         filtered: true
         stream: 15
       - host: 192.0.2.19
+    trap: errors
 
 overridden:
   commands:
