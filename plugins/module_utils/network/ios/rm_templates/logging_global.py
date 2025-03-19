@@ -770,8 +770,8 @@ class Logging_globalTemplate(NetworkTemplate):
             "name": "trap_include",
             "getval": re.compile(
                 r"""
-                ^Trap\slogging:\slevel\s(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings),\s*  # Match the severity levels
-    (?P<message_lines>\d+)\s+message\slines\slogged$""", re.VERBOSE,
+                ^Trap\slogging:\slevel\s(?P<severity>alerts|critical|debugging|emergencies|errors|informational|notifications|warnings),\s*
+                (?P<message_lines>\d+)\s+message\slines\slogged$""", re.VERBOSE,
             ),
             "setval": "logging trap {{ trap }}",
             "result": {
