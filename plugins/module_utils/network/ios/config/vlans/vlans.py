@@ -49,7 +49,6 @@ class Vlans(ResourceModule):
         self.parsers = [
             "name",
             "state",
-            "mtu",
             "remote_span",
             "private_vlan.type",
             "private_vlan.associated",
