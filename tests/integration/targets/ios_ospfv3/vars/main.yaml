@@ -1,7 +1,6 @@
 ---
 merged:
   before: {}
-
   commands:
     - router ospfv3 1
     - max-metric router-lsa on-startup 110
@@ -85,7 +84,6 @@ deleted:
     - no router ospfv3 200
 
   after: {}
-
 rtt:
   commands:
     - router ospfv3 1

@@ -1,7 +1,6 @@
 ---
 merged:
   before: {}
-
   commands:
     - vrf definition VRF2
     - description This is a test VRF for merged state

@@ -1,7 +1,6 @@
 ---
 merged:
   before: {}
-
   commands:
     - router bgp 65000
     - address-family ipv4 multicast

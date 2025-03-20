@@ -56,7 +56,6 @@ deleted:
   commands:
     - no l2vpn evpn
   after: {}
-
 rendered:
   commands:
     - l2vpn evpn

@@ -436,7 +436,6 @@ deleted_vlan_config:
     - no vlan configuration 901
 
   after: []
-
 gathered:
   config:
     - mtu: 1500

@@ -13,9 +13,6 @@ ansible_connect_timeout: 30
 ansible_connect_retry_timeout: 30
 
 # expected error messages
-stderr_ansible_command_timeout: "ansible_command_timeout can't be greater than
-  commit_confirm_timeout Please adjust and try again"
-std_err_archiving_disabled: "commit_confirm_immediate option set,
-  but archiving not enabled on device. Please set up archiving and try again"
-std_err_rollback_pending: "Existing rollback change already pending.
-  Please resolve by issuing 'configure confirm' or 'configure revert now'"
+stderr_ansible_command_timeout: "ansible_command_timeout can't be greater than commit_confirm_timeout Please adjust and try again"
+std_err_archiving_disabled: "commit_confirm_immediate option set, but archiving not enabled on device. Please set up archiving and try again"
+std_err_rollback_pending: "Existing rollback change already pending. Please resolve by issuing 'configure confirm' or 'configure revert now'"
