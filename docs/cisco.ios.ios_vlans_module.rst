@@ -116,6 +116,8 @@ Parameters
                 <td>
                         <div>VLAN Maximum Transmission Unit.</div>
                         <div>Refer to vendor documentation for valid values.</div>
+                        <div>This option is DEPRECATED use ios_interfaces to configure mtu, this attribute will be removed after 2027-01-01.</div>
+                        <div>mtu is collected as part of facts, but a mtu command wont be fired if the configuration is present in the playbook.</div>
                 </td>
             </tr>
             <tr>

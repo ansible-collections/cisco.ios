@@ -3,4 +3,4 @@
   vars:
     lines: "no vlan 10\nno vlan 20\nno vlan 30\nno vlan 100\n"
   ansible.netcommon.cli_config:
-    config: '{{ lines }}'
+    config: "{{ lines }}"
