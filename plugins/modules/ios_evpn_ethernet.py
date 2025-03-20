@@ -933,7 +933,7 @@ RETURN = """
 before:
   description: The configuration prior to the module execution.
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
-  type: dict
+  type: list
   sample: >
     This output will always be in the same format as the
     module argspec.
