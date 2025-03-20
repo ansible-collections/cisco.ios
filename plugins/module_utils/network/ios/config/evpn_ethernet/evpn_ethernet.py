@@ -18,8 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-# from copy import deepcopy
-
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
@@ -50,12 +48,12 @@ class Evpn_ethernet(ResourceModule):
             tmplt=Evpn_ethernetTemplate(),
         )
         self.parsers = [
-            "df_election.wait_time",
-            "df_election.preempt_time",
             "redundancy.all_active",
             "redundancy.single_active",
             "identifier",
-        ]
+            "df_election.wait_time",
+            "df_election.preempt_time",
+        ]  # mind the order of the parsers
 
     def execute_module(self):
         """Execute the module
@@ -88,7 +86,10 @@ class Evpn_ethernet(ResourceModule):
         if self.state in ["overridden", "deleted"]:
             for k, have in iteritems(haved):
                 if k not in wantd:
-                    self._compare(want={}, have=have)
+                    if self.state == "deleted":
+                        self._compare(want={}, have=have)
+                    else:
+                        self.purge(have)
 
         if self.state == "purged":
             for k, have in iteritems(haved):

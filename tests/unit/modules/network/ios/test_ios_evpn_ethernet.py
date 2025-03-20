@@ -111,16 +111,16 @@ class TestIosEvpnEthernetModule(TestIosModule):
                     "redundancy single-active",
                     "identifier type 0 00.00.00.00.00.00.00.00.01",
                     "l2vpn evpn ethernet-segment 2",
-                    "df-election preempt-time 1",
                     "redundancy single-active",
                     "identifier type 0 00.00.00.00.00.00.00.00.02",
+                    "df-election preempt-time 1",
                     "l2vpn evpn ethernet-segment 3",
                     "redundancy single-active",
                     "identifier type 3 system-mac 00.00.00.00.00.00.00.00.03",
                     "l2vpn evpn ethernet-segment 4",
-                    "df-election wait-time 1",
                     "redundancy all-active",
                     "identifier type 0 00.00.00.00.00.00.00.00.04",
+                    "df-election wait-time 1",
                 ],
                 "gathered": [
                     {
@@ -159,6 +159,7 @@ class TestIosEvpnEthernetModule(TestIosModule):
                     },
                 ],
             }
+
             if state in ["rendered", "gathered"]:
                 self.assertEqual(result[state], commands.get(state))
             else:
@@ -236,24 +237,16 @@ class TestIosEvpnEthernetModule(TestIosModule):
                     "identifier type 0 00.00.00.00.00.00.00.00.05",
                 ],
                 "overridden": [
-                    "l2vpn evpn ethernet-segment 2",
-                    "no df-election preempt-time 1",
-                    "no redundancy single-active",
-                    "no identifier type 0 00.00.00.00.00.00.00.00.02",
-                    "l2vpn evpn ethernet-segment 3",
-                    "no redundancy single-active",
-                    "no identifier type 3 system-mac 00.00.00.00.00.00.00.00.03",
-                    "l2vpn evpn ethernet-segment 4",
-                    "no df-election wait-time 1",
-                    "no redundancy all-active",
-                    "no identifier type 0 00.00.00.00.00.00.00.00.04",
+                    "no l2vpn evpn ethernet-segment 2",
+                    "no l2vpn evpn ethernet-segment 3",
+                    "no l2vpn evpn ethernet-segment 4",
                     "l2vpn evpn ethernet-segment 5",
                     "redundancy all-active",
                     "identifier type 0 00.00.00.00.00.00.00.00.05",
                     "l2vpn evpn ethernet-segment 6",
-                    "df-election preempt-time 10",
                     "redundancy single-active",
                     "identifier type 0 00.00.00.00.00.00.00.00.06",
+                    "df-election preempt-time 10",
                 ],
                 "replaced": [
                     "l2vpn evpn ethernet-segment 5",
@@ -408,3 +401,88 @@ class TestIosEvpnEthernetModule(TestIosModule):
             },
         ]
         self.assertEqual(parsed_list, result["parsed"])
+
+    def test_ios_evpn_ethernet_overridden_only(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            l2vpn evpn ethernet-segment 1
+             identifier type 0 00.00.00.00.00.00.00.00.01
+             redundancy single-active
+            !
+            l2vpn evpn ethernet-segment 2
+             identifier type 0 00.00.00.00.00.00.00.00.02
+             redundancy single-active
+             df-election preempt-time 1
+            !
+            l2vpn evpn ethernet-segment 3
+             identifier type 3 system-mac 00.00.00.00.00.00.00.00.03
+             redundancy single-active
+            !
+            l2vpn evpn ethernet-segment 4
+             identifier type 0 00.00.00.00.00.00.00.00.04
+             redundancy all-active
+             df-election wait-time 1
+            !
+            """,
+        )
+        for state in [
+            "overridden",
+        ]:
+            set_module_args(
+                dict(
+                    config=[
+                        {
+                            "identifier": {
+                                "identifier_type": "0",
+                                "esi_value": "00.00.00.00.00.00.00.00.01",
+                            },
+                            "redundancy": {"single_active": True},
+                            "segment": "1",
+                        },
+                        {
+                            "segment": "2",
+                            "identifier": {
+                                "identifier_type": "0",
+                                "esi_value": "00.00.00.00.00.00.00.00.02",
+                            },
+                            "redundancy": {"single_active": True},
+                            "df_election": {"preempt_time": 5},
+                        },
+                        {
+                            "identifier": {
+                                "identifier_type": "0",
+                                "esi_value": "00.00.00.00.00.00.00.00.05",
+                            },
+                            "redundancy": {"all_active": True},
+                            "segment": "5",
+                        },
+                        {
+                            "df_election": {"preempt_time": 10},
+                            "identifier": {
+                                "identifier_type": "0",
+                                "esi_value": "00.00.00.00.00.00.00.00.06",
+                            },
+                            "redundancy": {"single_active": True},
+                            "segment": "6",
+                        },
+                    ],
+                    state=state,
+                ),
+            )
+            result = self.execute_module(changed=True)
+            commands = {
+                "overridden": [
+                    "no l2vpn evpn ethernet-segment 3",
+                    "no l2vpn evpn ethernet-segment 4",
+                    "l2vpn evpn ethernet-segment 2",
+                    "df-election preempt-time 5",
+                    "l2vpn evpn ethernet-segment 5",
+                    "redundancy all-active",
+                    "identifier type 0 00.00.00.00.00.00.00.00.05",
+                    "l2vpn evpn ethernet-segment 6",
+                    "redundancy single-active",
+                    "identifier type 0 00.00.00.00.00.00.00.00.06",
+                    "df-election preempt-time 10",
+                ],
+            }
+            self.assertEqual(sorted(result["commands"]), sorted(commands.get(state)))

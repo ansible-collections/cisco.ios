@@ -22,7 +22,7 @@ author:
   - Sagar Paul (@KB-perByte)
   - Jorgen Spange (@jorgenspange)
 notes:
-  - Tested against Cisco IOSXE Version 17.6 on CML.
+  - Tested against Cisco IOSXE Version 17.16.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
   - The module examples uses callback plugin (callback_result_format=yaml) to generate task
@@ -489,12 +489,6 @@ EXAMPLES = """
 # -------------
 #
 # vios#sh running-config | section ^l2vpn evpn ethernet-segment
-# l2vpn evpn ethernet-segment 1
-# !
-# l2vpn evpn ethernet-segment 2
-# !
-# l2vpn evpn ethernet-segment 3
-# !
 # l2vpn evpn ethernet-segment 4
 #  identifier type 0 00.00.00.00.00.00.00.00.04
 #  redundancy single-active
