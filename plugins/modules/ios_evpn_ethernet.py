@@ -148,40 +148,40 @@ EXAMPLES = """
   cisco.ios.ios_evpn_ethernet:
     config:
       - identifier:
-            identifier_type: '0'
-            esi_value: 00.00.00.00.00.00.00.00.01
+          identifier_type: '0'
+          esi_value: 00.00.00.00.00.00.00.00.01
         redundancy:
-            single_active: true
+          single_active: true
         segment: '1'
       - df_election:
-            preempt_time: 1
+          preempt_time: 1
         identifier:
-            identifier_type: '0'
-            esi_value: 00.00.00.00.00.00.00.00.02
+          identifier_type: '0'
+          esi_value: 00.00.00.00.00.00.00.00.02
         redundancy:
-            single_active: true
+          single_active: true
         segment: '2'
       - identifier:
-            identifier_type: '3'
-            esi_value: 00.00.00.00.00.00.00.00.03
+          identifier_type: '3'
+          esi_value: 00.00.00.00.00.00.00.00.03
         redundancy:
-            single_active: true
+          single_active: true
         segment: '3'
       - df_election:
-            wait_time: 1
+          wait_time: 1
         identifier:
-            identifier_type: '0'
-            esi_value: 00.00.00.00.00.00.00.00.04
+          identifier_type: '0'
+          esi_value: 00.00.00.00.00.00.00.00.04
         redundancy:
-            all_active: true
+          all_active: true
         segment: '4'
       - df_election:
-            wait_time: 1
+          wait_time: 1
         identifier:
-            identifier_type: '0'
-            esi_value: 00.00.00.00.00.00.00.00.05
+          identifier_type: '0'
+          esi_value: 00.00.00.00.00.00.00.00.05
         redundancy:
-            all_active: true
+          all_active: true
         segment: '5'
     state: merged
 
@@ -317,20 +317,20 @@ EXAMPLES = """
   cisco.ios.ios_evpn_ethernet:
     config:
       - df_election:
-            wait_time: 1
+          wait_time: 1
         identifier:
-            identifier_type: '0'
-            esi_value: 00.00.00.00.00.00.00.00.04
+          identifier_type: '0'
+          esi_value: 00.00.00.00.00.00.00.00.04
         redundancy:
-            single_active: true
+          single_active: true
         segment: '4'
       - df_election:
-            wait_time: 1
+          wait_time: 1
         identifier:
-            identifier_type: '0'
-            esi_value: 00.00.00.00.00.00.00.00.05
+          identifier_type: '0'
+          esi_value: 00.00.00.00.00.00.00.00.05
         redundancy:
-            all_active: true
+          all_active: true
         segment: '5'
     state: replaced
 
@@ -468,20 +468,20 @@ EXAMPLES = """
   cisco.ios.ios_evpn_ethernet:
     config:
       - df_election:
-            wait_time: 1
+          wait_time: 1
         identifier:
-            identifier_type: '0'
-            esi_value: 00.00.00.00.00.00.00.00.04
+          identifier_type: '0'
+          esi_value: 00.00.00.00.00.00.00.00.04
         redundancy:
-            single_active: true
+          single_active: true
         segment: '4'
       - df_election:
-            wait_time: 1
+          wait_time: 1
         identifier:
-            identifier_type: '0'
-            esi_value: 00.00.00.00.00.00.00.00.05
+          identifier_type: '0'
+          esi_value: 00.00.00.00.00.00.00.00.05
         redundancy:
-            all_active: true
+          all_active: true
         segment: '5'
     state: overridden
 
@@ -529,18 +529,18 @@ EXAMPLES = """
   cisco.ios.ios_evpn_ethernet:
     config:
       - identifier:
-            identifier_type: '0'
-            esi_value: 00.00.00.00.00.00.00.00.01
+          identifier_type: '0'
+          esi_value: 00.00.00.00.00.00.00.00.01
         redundancy:
-            single_active: true
+          single_active: true
         segment: '1'
       - df_election:
-            preempt_time: 1
+          preempt_time: 1
         identifier:
-            identifier_type: '0'
-            esi_value: 00.00.00.00.00.00.00.00.02
+          identifier_type: '0'
+          esi_value: 00.00.00.00.00.00.00.00.02
         redundancy:
-            single_active: true
+          single_active: true
         segment: '2'
     state: deleted
 
@@ -549,32 +549,32 @@ EXAMPLES = """
 #
 # before:
 #  - identifier:
-#        identifier_type: '0'
-#        esi_value: 00.00.00.00.00.00.00.00.01
+#      identifier_type: '0'
+#      esi_value: 00.00.00.00.00.00.00.00.01
 #    redundancy:
-#        single_active: true
+#      single_active: true
 #    segment: '1'
 #  - df_election:
-#        preempt_time: 1
+#      preempt_time: 1
 #    identifier:
-#        identifier_type: '0'
-#        esi_value: 00.00.00.00.00.00.00.00.02
+#      identifier_type: '0'
+#      esi_value: 00.00.00.00.00.00.00.00.02
 #    redundancy:
-#        single_active: true
+#      single_active: true
 #    segment: '2'
 #  - identifier:
-#        identifier_type: '3'
-#        esi_value: 00.00.00.00.00.00.00.00.03
+#      identifier_type: '3'
+#      esi_value: 00.00.00.00.00.00.00.00.03
 #    redundancy:
-#        single_active: true
+#      single_active: true
 #    segment: '3'
 #  - df_election:
-#        wait_time: 1
+#      wait_time: 1
 #    identifier:
-#        identifier_type: '0'
-#        esi_value: 00.00.00.00.00.00.00.00.04
+#      identifier_type: '0'
+#      esi_value: 00.00.00.00.00.00.00.00.04
 #    redundancy:
-#        all_active: true
+#      all_active: true
 #    segment: '4'
 # commands:
 # - l2vpn evpn ethernet-segment 1

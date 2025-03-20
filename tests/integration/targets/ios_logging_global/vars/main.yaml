@@ -1,7 +1,6 @@
 ---
 merged:
   before: {}
-
   commands:
     - logging on
     - logging host 192.0.2.13 transport tcp port 514
@@ -128,7 +127,6 @@ deleted:
     - no logging trap errors
     - no logging facility local5
   after: {}
-
 parsed:
   after:
     buffered:
