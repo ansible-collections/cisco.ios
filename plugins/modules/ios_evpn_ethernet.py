@@ -14,7 +14,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
-module: ios_epvn_ethernet
+module: ios_evpn_ethernet
 short_description: Resource module to configure L2VPN EVPN Ethernet Segment.
 description: This module manages the L2VPN EVPN Ethernet Segment attributes of Cisco IOS network devices.
 version_added: 9.2.0
