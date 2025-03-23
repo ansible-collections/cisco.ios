@@ -318,7 +318,6 @@ class TestIosVlansModule(TestIosModule):
             "vlan 123",
             "name Replace_RemoteIsInMyName",
             "no state active",
-            "no mtu 610",
             "remote-span",
             "shutdown",
             "vlan 10",
@@ -526,7 +525,6 @@ class TestIosVlansModule(TestIosModule):
             "vlan 123",
             "name Override_RemoteIsInMyName",
             "no state active",
-            "no mtu 610",
             "remote-span",
             "shutdown",
         ]

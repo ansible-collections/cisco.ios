@@ -307,7 +307,7 @@ overridden:
       vlan_id: 10
     - mtu: 1500
       name: VLAN_40
-      shutdown: disabled
+      shutdown: enabled
       state: active
       vlan_id: 40
     - mtu: 1500
