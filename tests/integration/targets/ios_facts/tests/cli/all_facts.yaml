@@ -32,6 +32,7 @@
       - l2_interfaces
       - vlans
       - lag_interfaces
+      - evpn_ethernet
       - lacp
       - lacp_interfaces
       - lldp_global

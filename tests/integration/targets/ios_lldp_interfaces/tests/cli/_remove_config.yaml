@@ -1,8 +1,8 @@
 ---
 - name: Remove configuration
   vars:
-    lines:
-      "interface GigabitEthernet 1\nno lldp receive\nno lldp transmit\ninterface GigabitEthernet 2\nno lldp receive\nno lldp transmit\ninterface GigabitEthernet\
-      \ 3\nno lldp receive\nno lldp transmit\n"
+    lines: "interface GigabitEthernet 1\nno lldp receive\nno lldp
+      transmit\ninterface GigabitEthernet 2\nno lldp receive\nno lldp transmit\ninterface GigabitEthernet
+      3\nno lldp receive\nno lldp transmit\n"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"
