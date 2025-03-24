@@ -49,7 +49,6 @@ class Vlans(ResourceModule):
         self.parsers = [
             "name",
             "state",
-            "mtu",
             "remote_span",
             "private_vlan.type",
             "private_vlan.associated",
@@ -146,7 +145,9 @@ class Vlans(ResourceModule):
         for the Vlans network resource.
         """
         begin = len(self.commands)
-        self.compare(parsers=self.parsers, want=want, have=have)
+        # Exclude 'mtu' from comparison if deleting VLANs as it is not supported
+        filtered_parsers = [p for p in self.parsers if not (self.state == "deleted" and p == "mtu")]
+        self.compare(parsers=filtered_parsers, want=want, have=have)
         if want.get("shutdown") != have.get("shutdown"):
             if want.get("shutdown"):
                 self.addcmd(want, "shutdown", True)
@@ -165,7 +166,9 @@ class Vlans(ResourceModule):
 
     def purge(self, have, resource):
         """Handle operation for purged state"""
-        if resource == "vlan_configuration":
+        if resource == "vlan_configuration" and any(
+            key in have for key in ["member", "private_vlan.type", "private_vlan.associated"]
+        ):
             self.commands.append(self._tmplt.render(have, resource, True))
         elif resource == "vlans":
             self.commands.append(self._tmplt.render(have, resource, True))

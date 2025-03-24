@@ -206,7 +206,6 @@ deleted:
     - no ipv6 ospf priority 55
     - no ipv6 ospf transmit-delay 45
   after: {}
-
 gathered:
   config:
     # - name: Loopback888
