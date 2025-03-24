@@ -27,4 +27,4 @@
 - name: Main task for vlans module
   ansible.builtin.include_tasks: cli.yaml
   tags:
-    - network_cli
+    - l2_tests
