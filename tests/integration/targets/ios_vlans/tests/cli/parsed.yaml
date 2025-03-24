@@ -14,4 +14,3 @@
         that:
           - result.changed == false
           - parsed['config']|symmetric_difference(result.parsed) == []
-  when: ansible_net_version != "15.6(2)T"
