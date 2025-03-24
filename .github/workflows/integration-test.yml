@@ -12,7 +12,6 @@ on:
       - "plugins/**"
       - "tests/integration/**"
   workflow_dispatch:
-
 jobs:
   safe-to-test:
     if: >-

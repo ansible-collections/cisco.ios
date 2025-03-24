@@ -1,7 +1,6 @@
 ---
 merged:
   before: {}
-
   commands:
     - route-map test_2 deny 10
     - match security-group source tag 10 20

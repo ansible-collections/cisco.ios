@@ -35,13 +35,13 @@
 
     #  see deleted.yml, reason for the idempotent task being commented out
 
-    #- name: Override device configuration of all interfaces with provided configuration (idempotent)
-    #  register: result
-    #  cisco.ios.ios_vlans: *id001
+    #  - name: Override device configuration of all interfaces with provided configuration (idempotent)
+    #    register: result
+    #    cisco.ios.ios_vlans: *id001
 
-    #- name: Assert that task was idempotent
-    #  ansible.builtin.assert:
-    #    that:
-    #      - result['changed'] == false
+    #  - name: Assert that task was idempotent
+    #    ansible.builtin.assert:
+    #      that:
+    #        - result['changed'] == false
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
