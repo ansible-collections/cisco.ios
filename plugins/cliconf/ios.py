@@ -290,8 +290,10 @@ class Cliconf(CliconfBase):
                         if line.has_children:
                             negated_parents.append(line.text)
 
-                        if not any(i in negated_parents for i in line.parents):
+                        if not line.text.strip().startswith("no "):
                             negates += f"no {line}\n"
+                        else:
+                            negates += f"{line}\n"
 
                 diff["config_diff"] += negates
 
