@@ -42,6 +42,328 @@ class L2_interfacesTemplate(NetworkTemplate):
             "shared": True,
         },
         {
+            "name": "switchport",
+            "getval": re.compile(
+                r"""
+                \s+switchport
+                $""", re.VERBOSE,
+            ),
+            "setval": "switchport",
+            "result": {
+                "{{ name }}": {
+                    "switchport": True,
+                },
+            },
+        },
+        {
+            "name": "app_interface",
+            "getval": re.compile(
+                r"""
+                \s+switchport\sapp-interface
+                $""", re.VERBOSE,
+            ),
+            "setval": "switchport app-interface",
+            "result": {
+                "{{ name }}": {
+                    "app_interface": True,
+                },
+            },
+        },
+        {
+            "name": "nonegotiate",
+            "getval": re.compile(
+                r"""
+                \s+switchport\snonegotiate
+                $""", re.VERBOSE,
+            ),
+            "setval": "switchport nonegotiate",
+            "result": {
+                "{{ name }}": {
+                    "nonegotiate": True,
+                },
+            },
+        },
+        {
+            "name": "vepa",
+            "getval": re.compile(
+                r"""
+                \s+switchport\svepa\senabled
+                $""", re.VERBOSE,
+            ),
+            "setval": "switchport vepa enabled",
+            "result": {
+                "{{ name }}": {
+                    "vepa": True,
+                },
+            },
+        },
+        {
+            "name": "host",
+            "getval": re.compile(
+                r"""
+                \s+switchport\shost
+                $""", re.VERBOSE,
+            ),
+            "setval": "switchport host",
+            "result": {
+                "{{ name }}": {
+                    "host": True,
+                },
+            },
+        },
+        {
+            "name": "protected",
+            "getval": re.compile(
+                r"""
+                \s+switchport\sprotected
+                $""", re.VERBOSE,
+            ),
+            "setval": "switchport protected",
+            "result": {
+                "{{ name }}": {
+                    "protected": True,
+                },
+            },
+        },
+        {
+            "name": "block_options.multicast",
+            "getval": re.compile(
+                r"""
+                \s+switchport\sblock\smulticast
+                $""", re.VERBOSE,
+            ),
+            "setval": "switchport block multicast",
+            "result": {
+                "{{ name }}": {
+                    "access": {
+                        "block_options": {
+                            "multicast": True,
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "block_options.unicast",
+            "getval": re.compile(
+                r"""
+                \s+switchport\sblock\sunicast
+                $""", re.VERBOSE,
+            ),
+            "setval": "switchport block unicast",
+            "result": {
+                "{{ name }}": {
+                    "access": {
+                        "block_options": {
+                            "unicast": True,
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "spanning_tree.bpdufilter",
+            "getval": re.compile(
+                r"""
+                \s+spanning-tree\sbpdufilter
+                (\s(?P<enabled>enabled))?
+                (\s(?P<disabled>disabled))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree bpdufilter enabled",
+            "result": {
+                "{{ name }}": {
+                    "spanning_tree": {
+                        "bpdufilter": {
+                            "enabled": "{{ not not enabled }}",
+                            "disabled": "{{ not not disabled }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "spanning_tree.bpduguard",
+            "getval": re.compile(
+                r"""
+                \s+spanning-tree\sbpduguard
+                (\s(?P<enabled>enabled))?
+                (\s(?P<disabled>disabled))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree bpduguard enabled",
+            "result": {
+                "{{ name }}": {
+                    "spanning_tree": {
+                        "bpduguard": {
+                            "enabled": "{{ not not enabled }}",
+                            "disabled": "{{ not not disabled }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "spanning_tree.cost",
+            "getval": re.compile(
+                r"""
+                \s+spanning-tree\scost
+                (\s(?P<enabled>\d+))
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree cost {{ spanning_tree.cost }}",
+            "result": {
+                "{{ name }}": {
+                    "spanning_tree": {
+                        "cost": "{{ enabled }}",
+                    },
+                },
+            },
+        },
+        {
+            "name": "spanning_tree.guard",
+            "getval": re.compile(
+                r"""
+                \s+spanning-tree\sguard
+                (\s(?P<loop>loop))?
+                (\s(?P<none>none))?
+                (\s(?P<root>root))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree guard enabled",
+            "result": {
+                "{{ name }}": {
+                    "spanning_tree": {
+                        "guard": {
+                            "loop": "{{ not not loop }}",
+                            "none": "{{ not not none }}",
+                            "root": "{{ not not root }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "spanning_tree.link_type",
+            "getval": re.compile(
+                r"""
+                \s+spanning-tree\slink-type
+                (\s(?P<point_to_point>point-to-point))?
+                (\s(?P<shared>shared))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree link-type point-to-point",
+            "result": {
+                "{{ name }}": {
+                    "spanning_tree": {
+                        "link_type": {
+                            "point_to_point": "{{ not not point_to_point }}",
+                            "shared": "{{ not not shared }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "spanning_tree.mst",
+            "getval": re.compile(
+                r"""
+                \s+spanning-tree\smst
+                (\s(?P<instance_range>\d+|\d+-\d+))?
+                (\scost\s(?P<cost>\d+))?
+                (\sport-priority\s(?P<port_priority>\d+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree mst point-to-point",
+            "result": {
+                "{{ name }}": {
+                    "spanning_tree": {
+                        "mst": {
+                            "instance_range": "{{ instance_range }}",
+                            "cost": "{{ cost }}",
+                            "port_priority": "{{ port_priority }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "spanning_tree.port_priority",
+            "getval": re.compile(
+                r"""
+                \s+spanning-tree\sport-priority\s(?P<port_priority>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree port-priority {{ port_priority }}",
+            "result": {
+                "{{ name }}": {
+                    "spanning_tree": {
+                        "port_priority": "{{ port_priority }}",
+                    },
+                },
+            },
+        },
+        {
+            "name": "spanning_tree.portfast",
+            "getval": re.compile(
+                r"""
+                \s+spanning-tree\sportfast
+                (\s(?P<disabled>disabled))?
+                (\s(?P<trunk>trunk))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree portfast disabled",
+            "result": {
+                "{{ name }}": {
+                    "spanning_tree": {
+                        "portfast": {
+                            "disabled": "{{ not not disabled }}",
+                            "trunk": "{{ not not trunk }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "spanning_tree.rootguard",
+            "getval": re.compile(
+                r"""
+                \s+spanning-tree\sbpduguard\srootguard
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree rootguard",
+            "result": {
+                "{{ name }}": {
+                    "spanning_tree": {
+                        "rootguard": True,
+                    },
+                },
+            },
+        },
+        {
+            "name": "spanning_tree.vlan",
+            "getval": re.compile(
+                r"""
+                \s+spanning-tree\svlan
+                (\s(?P<instance_range>\d+|\d+-\d+))?
+                (\scost\s(?P<cost>\d+))?
+                (\sport-priority\s(?P<port_priority>\d+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "spanning-tree vlan point-to-point",
+            "result": {
+                "{{ name }}": {
+                    "spanning_tree": {
+                        "vlan": {
+                            "instance_range": "{{ instance_range }}",
+                            "cost": "{{ cost }}",
+                            "port_priority": "{{ port_priority }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
             "name": "access.vlan",
             "getval": re.compile(
                 r"""
