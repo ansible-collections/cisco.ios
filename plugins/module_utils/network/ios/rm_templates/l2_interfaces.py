@@ -42,20 +42,6 @@ class L2_interfacesTemplate(NetworkTemplate):
             "shared": True,
         },
         {
-            "name": "switchport",
-            "getval": re.compile(
-                r"""
-                \s+switchport
-                $""", re.VERBOSE,
-            ),
-            "setval": "switchport",
-            "result": {
-                "{{ name }}": {
-                    "switchport": True,
-                },
-            },
-        },
-        {
             "name": "app_interface",
             "getval": re.compile(
                 r"""

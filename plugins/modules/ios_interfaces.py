@@ -86,10 +86,6 @@ options:
         description:
           - H.H.H  MAC address.
         type: str
-      vrf_forwarding:
-        description:
-          - Vrf forwarding.
-        type: str
       service_policy:
         description:
           - Service policy configuration

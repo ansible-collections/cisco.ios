@@ -82,7 +82,6 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                         "private_vlan_trunk",
                     ],
                 },
-                "switchport": {"type": "bool"},
                 "app_interface": {"type": "bool"},
                 "nonegotiate": {"type": "bool"},
                 "vepa": {"type": "bool"},

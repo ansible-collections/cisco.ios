@@ -126,10 +126,6 @@ options:
           - private_vlan_host
           - private_vlan_promiscuous
           - private_vlan_trunk
-      switchport:
-        description:
-          - Set switchport (switchport )
-        type: bool
       app_interface:
         description:
           - Enabling port for Application Hosting (switchport app-interface)

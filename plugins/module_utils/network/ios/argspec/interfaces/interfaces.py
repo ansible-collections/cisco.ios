@@ -46,7 +46,6 @@ class InterfacesArgs(object):  # pylint: disable=R0903
                 "duplex": {"type": "str", "choices": ["full", "half", "auto"]},
                 "template": {"type": "str"},
                 "mac_address": {"type": "str"},
-                "vrf_forwarding": {"type": "str"},
                 "service_policy": {
                     "type": "dict",
                     "options": {
