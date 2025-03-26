@@ -1337,10 +1337,17 @@ releases:
       bugfixes:
         - ios_acls - Fixed issue where cisco.ios.ios_acls module failed to process IPv6
           ACL remarks, causing unsupported parameter errors.
-        - ios_logging_global - Fixed issue where cisco.ios.logging_global module was
-          not showing idempotent behaviour when trap was set to informational.
         - ios_route_maps - Fixes an issue where 'no description value' is an invalid
           command on the latest devices.
+    fragments:
+      - fix_acls_remark.yaml
+      - fix_ci_upstream.yaml
+    release_date: "2025-03-04"
+  9.2.0:
+    changes:
+      bugfixes:
+        - ios_logging_global - Fixed issue where cisco.ios.logging_global module was
+          not showing idempotent behaviour when trap was set to informational.
         - ios_vlans - Defaut mtu would be captured (1500) and no configuration for mtu
           is allowed via ios_vlans module.
         - ios_vlans - Fixed an issue in the `cisco.ios.ios_vlans` module on Cisco Catalyst
@@ -1358,14 +1365,10 @@ releases:
         - Add ios_evpn_ethernet resource module.
     fragments:
       - evpn_ethernet_module.yaml
-      - fix_acls_remark.yaml
-      - fix_ci_upstream.yaml
       - fix_logging_trap.yaml
       - fix_vlans_deleted.yaml
-    release_date: "2025-03-04"
-  9.2.0:
     modules:
       - description: Resource module to configure L2VPN EVPN Ethernet Segment.
         name: ios_evpn_ethernet
         namespace: ""
-    release_date: "2025-03-26"
+    release_date: "2025-03-27"
