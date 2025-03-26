@@ -4,6 +4,32 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v9.2.0
+======
+
+Minor Changes
+-------------
+
+- Add ios_evpn_ethernet resource module.
+
+Deprecated Features
+-------------------
+
+- ios_vlans - deprecate mtu, please use ios_interfaces to configure mtu to the interface where vlans is applied.
+
+Bugfixes
+--------
+
+- ios_logging_global - Fixed issue where cisco.ios.logging_global module was not showing idempotent behaviour when trap was set to informational.
+- ios_vlans - Defaut mtu would be captured (1500) and no configuration for mtu is allowed via ios_vlans module.
+- ios_vlans - Fixed an issue in the `cisco.ios.ios_vlans` module on Cisco Catalyst 9000 switches where using state:purged generated an incorrect command syntax (`no vlan configuration <vlan_id>` instead of `no vlan <vlan_id>`).
+- ios_vlans - Resolved a failure in the `cisco.ios.ios_vlans` module when using state:deleted, where the module incorrectly attempted to remove VLANs using `no mtu <value>`, causing an invalid input error. The fix ensures that the module does not generate `no mtu` commands during VLAN deletion, aligning with the correct VLAN removal behavior on Catalyst 9000 switches.
+
+New Modules
+-----------
+
+- ios_evpn_ethernet - Resource module to configure L2VPN EVPN Ethernet Segment.
+
 v9.1.2
 ======
 
