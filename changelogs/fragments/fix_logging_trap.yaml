@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_logging_global - Fixed issue where cisco.ios.logging_global module was not showing idempotent behaviour when trap was set to informational.
