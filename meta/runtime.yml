@@ -63,8 +63,12 @@ plugin_routing:
       redirect: cisco.ios.ios_vlans
     vrf:
       redirect: cisco.ios.ios_vrf
+    vrf_interfaces:
+      redirect: cisco.ios.vrf_interfaces
     vxlan_vtep:
       redirect: cisco.ios.ios_vxlan_vtep
+    vrf_address_family:
+      redirect: cisco.ios.ios_vrf_address_family
     vrf_global:
       redirect: cisco.ios.ios_vrf_global
 requires_ansible: ">=2.15.0"

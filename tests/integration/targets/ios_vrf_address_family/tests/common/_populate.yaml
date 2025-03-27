@@ -1,0 +1,39 @@
+---
+- name: Populate VRF configuration
+  register: result
+  cisco.ios.ios_vrf_address_family:
+    config:
+      - name: test1
+        address_families:
+          - afi: "ipv4"
+            safi: "unicast"
+            export:
+              ipv4:
+                multicast:
+                  map: "single"
+                  prefix: 345
+                unicast:
+                  allow_evpn: true
+                  map: "test-map"
+                  prefix: 67
+              map: "testing-map"
+            import_config:
+              ipv4:
+                multicast:
+                  map: "import-map"
+                  prefix: 89
+                unicast:
+                  allow_evpn: true
+                  limit: 12
+                  map: "ran-map"
+              map: "import-map"
+            inter_as_hybrid:
+              csc:
+                next_hop: "1.2.3.4"
+              next_hop: "1.0.0.0"
+            mdt:
+              auto_discovery:
+                pim:
+                  pim_tlv_announce:
+                    mdt_hello_enable: true
+    state: merged

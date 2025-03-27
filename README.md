@@ -65,6 +65,7 @@ Name | Description
 [cisco.ios.ios_bgp_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_bgp_global_module.rst)|Resource module to configure BGP.
 [cisco.ios.ios_command](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_command_module.rst)|Module to run commands on remote devices.
 [cisco.ios.ios_config](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_config_module.rst)|Module to manage configuration sections.
+[cisco.ios.ios_evpn_ethernet](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_evpn_ethernet_module.rst)|Resource module to configure L2VPN EVPN Ethernet Segment.
 [cisco.ios.ios_evpn_evi](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_evpn_evi_module.rst)|Resource module to configure L2VPN EVPN EVI.
 [cisco.ios.ios_evpn_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_evpn_global_module.rst)|Resource module to configure L2VPN EVPN.
 [cisco.ios.ios_facts](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_facts_module.rst)|Module to collect facts from remote devices.
@@ -92,7 +93,9 @@ Name | Description
 [cisco.ios.ios_user](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_user_module.rst)|Module to manage the aggregates of local users.
 [cisco.ios.ios_vlans](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vlans_module.rst)|Resource module to configure VLANs.
 [cisco.ios.ios_vrf](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vrf_module.rst)|Module to configure VRF definitions.
+[cisco.ios.ios_vrf_address_family](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vrf_address_family_module.rst)|Resource module to configure VRF definitions.
 [cisco.ios.ios_vrf_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vrf_global_module.rst)|Resource module to configure global VRF definitions.
+[cisco.ios.ios_vrf_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vrf_interfaces_module.rst)|Manages VRF configuration on interfaces.
 [cisco.ios.ios_vxlan_vtep](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vxlan_vtep_module.rst)|Resource module to configure VXLAN VTEP interface.
 
 <!--end collection content-->

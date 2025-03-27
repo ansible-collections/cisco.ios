@@ -29,6 +29,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_ad
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_global.bgp_global import (
     Bgp_globalFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.evpn_ethernet.evpn_ethernet import (
+    Evpn_ethernetFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.evpn_evi.evpn_evi import (
     Evpn_eviFacts,
 )
@@ -99,8 +102,14 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.vlans import (
     VlansFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vrf_address_family.vrf_address_family import (
+    Vrf_address_familyFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vrf_global.vrf_global import (
     Vrf_globalFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vrf_interfaces.vrf_interfaces import (
+    Vrf_interfacesFacts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vxlan_vtep.vxlan_vtep import (
     Vxlan_vtepFacts,
@@ -141,8 +150,11 @@ FACT_RESOURCE_SUBSETS = dict(
     hostname=HostnameFacts,
     vxlan_vtep=Vxlan_vtepFacts,
     evpn_global=Evpn_globalFacts,
+    evpn_ethernet=Evpn_ethernetFacts,
     evpn_evi=Evpn_eviFacts,
+    vrf_address_family=Vrf_address_familyFacts,
     vrf_global=Vrf_globalFacts,
+    vrf_interfaces=Vrf_interfacesFacts,
 )
 
 

@@ -1,0 +1,43 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_vrf_address_family rendered integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- name: Render provided configuration with device configuration
+  cisco.ios.ios_vrf_address_family:
+    config:
+      - name: test1
+        address_families:
+          - afi: "ipv4"
+            safi: "unicast"
+            bgp:
+              next_hop:
+                loopback: 40
+            export:
+              ipv4:
+                multicast:
+                  map: "single"
+                  prefix: 345
+                unicast:
+                  allow_evpn: true
+                  map: "test-map"
+                  prefix: 67
+              map: "testing-map"
+            import_config:
+              ipv4:
+                multicast:
+                  map: "import-map"
+                  prefix: 89
+                unicast:
+                  allow_evpn: true
+                  limit: 12
+                  map: "ran-map"
+              map: "import-map"
+    state: rendered
+  register: result
+
+- name: Assert that correct set of commands were rendered
+  ansible.builtin.assert:
+    that:
+      - result.changed == false

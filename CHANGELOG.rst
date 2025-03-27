@@ -4,6 +4,73 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v9.2.0
+======
+
+Minor Changes
+-------------
+
+- Add ios_evpn_ethernet resource module.
+
+Deprecated Features
+-------------------
+
+- ios_vlans - deprecate mtu, please use ios_interfaces to configure mtu to the interface where vlans is applied.
+
+Bugfixes
+--------
+
+- ios_logging_global - Fixed issue where cisco.ios.logging_global module was not showing idempotent behaviour when trap was set to informational.
+- ios_vlans - Defaut mtu would be captured (1500) and no configuration for mtu is allowed via ios_vlans module.
+- ios_vlans - Fixed an issue in the `cisco.ios.ios_vlans` module on Cisco Catalyst 9000 switches where using state:purged generated an incorrect command syntax (`no vlan configuration <vlan_id>` instead of `no vlan <vlan_id>`).
+- ios_vlans - Resolved a failure in the `cisco.ios.ios_vlans` module when using state:deleted, where the module incorrectly attempted to remove VLANs using `no mtu <value>`, causing an invalid input error. The fix ensures that the module does not generate `no mtu` commands during VLAN deletion, aligning with the correct VLAN removal behavior on Catalyst 9000 switches.
+
+New Modules
+-----------
+
+- ios_evpn_ethernet - Resource module to configure L2VPN EVPN Ethernet Segment.
+
+v9.1.2
+======
+
+Bugfixes
+--------
+
+- ios_acls - Fixed issue where cisco.ios.ios_acls module failed to process IPv6 ACL remarks, causing unsupported parameter errors.
+- ios_route_maps - Fixes an issue where 'no description value' is an invalid command on the latest devices.
+
+v9.1.1
+======
+
+Bugfixes
+--------
+
+- Added support for FourHundredGigE, FiftyGigE and FourHundredGigabitEthernet.
+
+v9.1.0
+======
+
+Minor Changes
+-------------
+
+- Added ios_vrf_interfaces resource module,that helps with configuration of vrfs within interface
+- Adds a new module `ios_vrf_address_family` to manage VRFs address families on Cisco IOS devices.
+
+Bugfixes
+--------
+
+- Added a test to validate the gathered state for VLAN configuration context, improving reliability.
+- Cleaned up unit tests that were passing for the wrong reasons. The updated tests now ensure the right config sections are verified for VLAN configurations.
+- Fix overridden state operations to ensure excluded VLANs in the provided configuration are removed, thus overriding the VLAN configuration.
+- Fix purged state operation to enable users to completely remove VLAN configurations.
+- Fixed an issue with VLAN configuration gathering where pre-filled data was blocking proper fetching of dynamic VLAN details. Now VLAN facts are populated correctly for all cases.
+- Fixes an issue with facts gathering failing when an sub interface is in a deleted state.
+- Improve documentation to provide clarity on the "shutdown" variable.
+- Improve unit tests to align with the changes made.
+- Made improvements to ensure VLAN facts are gathered properly, both for specific configurations and general VLAN settings.
+- ios_route_maps - Fix removal of ACLs in replaced state to properly remove unspecified ACLs while leaving specified ones intact.
+- ios_route_maps - Fix removal of ACLs logic in replaced state to properly remove unspecified ACLs while leaving specified ones intact.
+
 v9.0.3
 ======
 

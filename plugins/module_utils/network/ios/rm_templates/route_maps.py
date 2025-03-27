@@ -711,6 +711,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "description {{ description }}",
+            "remval": "description",
             "result": {
                 "{{ route_map }}": {
                     "{{ action|d() + '_' + sequence|d() }}": {
