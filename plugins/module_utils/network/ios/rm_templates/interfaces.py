@@ -270,8 +270,8 @@ class InterfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+snmp\strap
-                (\s(?P<ip>ip))?
-                (\s(?P<link_status>link-status))?
+                (\s(?P<ip>ip\sverify\sdrop-rate))?
+                (\s(?P<link_status>link-status\spermit\sduplicates))?
                 (\s(?P<mac_notification_added>mac-notification-added))?
                 (\s(?P<mac_notification_removed>mac-notification-removed))?
                 $""", re.VERBOSE,

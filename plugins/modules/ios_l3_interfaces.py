@@ -101,6 +101,12 @@ options:
           unreachables:
             description: Enable sending ICMP Unreachable messages.
             type: bool
+          helper_address:
+            description: Enable helper_address messages.
+            type: bool
+          proxy_arp:
+            description: Enable proxy_arp.
+            type: bool
           mtu:
             description: Set IP Maximum Transmission Unit.
             type: int

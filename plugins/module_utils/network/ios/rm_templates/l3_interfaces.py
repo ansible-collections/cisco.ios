@@ -192,6 +192,42 @@ class L3_interfacesTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "ipv4.helper_address",
+            "getval": re.compile(
+                r"""
+                \s+ip\shelper-address
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip helper-address",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": [
+                        {
+                            "helper_address": True,
+                        },
+                    ],
+                },
+            },
+        },
+        {
+            "name": "ipv4.proxy_arp",
+            "getval": re.compile(
+                r"""
+                \s+ip\sproxy-arp
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip proxy-arp",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": [
+                        {
+                            "proxy_arp": True,
+                        },
+                    ],
+                },
+            },
+        },
+        {
             "name": "ipv4.dhcp",
             "getval": re.compile(
                 r"""\s+ip\saddress\s

@@ -56,6 +56,8 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                 "hostname": {"type": "str"},
                             },
                         },
+                        "helper_address": {"type": "bool"},
+                        "proxy_arp": {"type": "bool"},
                         "pool": {"type": "str"},
                         "redirects": {"type": "bool"},
                         "unreachables": {"type": "bool"},

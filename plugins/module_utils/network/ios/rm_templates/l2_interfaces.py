@@ -121,10 +121,8 @@ class L2_interfacesTemplate(NetworkTemplate):
             "setval": "switchport block multicast",
             "result": {
                 "{{ name }}": {
-                    "access": {
-                        "block_options": {
-                            "multicast": True,
-                        },
+                    "block_options": {
+                        "multicast": True,
                     },
                 },
             },
@@ -139,10 +137,8 @@ class L2_interfacesTemplate(NetworkTemplate):
             "setval": "switchport block unicast",
             "result": {
                 "{{ name }}": {
-                    "access": {
-                        "block_options": {
-                            "unicast": True,
-                        },
+                    "block_options": {
+                        "unicast": True,
                     },
                 },
             },
@@ -341,7 +337,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                 "{{ name }}": {
                     "spanning_tree": {
                         "vlan": {
-                            "instance_range": "{{ instance_range }}",
+                            "vlan_range": "{{ instance_range }}",
                             "cost": "{{ cost }}",
                             "port_priority": "{{ port_priority }}",
                         },
