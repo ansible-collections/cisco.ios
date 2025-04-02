@@ -48,7 +48,23 @@ class Interfaces(ResourceModule):
             resource="interfaces",
             tmplt=InterfacesTemplate(),
         )
-        self.parsers = ["description", "speed", "mtu", "duplex", "template"]
+        self.parsers = [
+            "description",
+            "speed",
+            "mtu",
+            "duplex",
+            "template" "mac_address",
+            "service_policy.input",
+            "service_policy.output",
+            "service_policy.type_options.access_control",
+            "service_policy.type_options.epbr",
+            "service_policy.type_options.nwpi",
+            "service_policy.type_options.packet_service",
+            "service_policy.type_options.service_chain",
+            "logging",
+            "snmp.ifindex",
+            "snmp.trap",
+        ]
 
     def execute_module(self):
         """Execute the module

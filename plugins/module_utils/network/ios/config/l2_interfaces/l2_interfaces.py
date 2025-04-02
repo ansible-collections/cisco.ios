@@ -60,6 +60,23 @@ class L2_interfaces(ResourceModule):
             "mode",
             "trunk.encapsulation",
             "trunk.native_vlan",
+            "app_interface",
+            "nonegotiate",
+            "vepa",
+            "host",
+            "protected",
+            "block_options.multicast",
+            "block_options.unicast",
+            "spanning_tree.bpdufilter",
+            "spanning_tree.bpduguard",
+            "spanning_tree.cost",
+            "spanning_tree.guard",
+            "spanning_tree.link_type",
+            "spanning_tree.mst",
+            "spanning_tree.port_priority",
+            "spanning_tree.portfast",
+            "spanning_tree.rootguard",
+            "spanning_tree.vlan",
         ]
 
     def execute_module(self):
