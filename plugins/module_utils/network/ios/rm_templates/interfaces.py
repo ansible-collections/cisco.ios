@@ -247,37 +247,113 @@ class InterfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "logging",
+            "name": "logging.trunk_status",
             "getval": re.compile(
                 r"""
-                \s+logging\sevent
-                (\s(?P<bundle_status>bundle-status))?
-                (\s(?P<link_status>link-status))?
-                (\s(?P<nfas_status>nfas-status))?
-                (\s(?P<spanning_tree>spanning-tree))?
-                (\s(?P<status>status))?
-                (\s(?P<subif_link_status>subif-link-status))?
-                (\s(?P<trunk_status>trunk-status))?
+                \s+logging\sevent\strunk-status
                 $""", re.VERBOSE,
             ),
-            "setval": "logging event"
-                      "{{ ' bundle-status' if logging.bundle_status is defined else '' }}"
-                      "{{ ' link-status' if logging.link_status is defined else '' }}"
-                      "{{ ' nfas-status' if  logging.nfas_status is defined else '' }}"
-                      "{{ ' spanning-tree' if  logging.spanning_tree is defined else '' }}"
-                      "{{ ' status' if logging.status is defined else '' }}"
-                      "{{ ' subif-link-status' if  logging.subif_link_status is defined else '' }}"
-                      "{{ ' trunk-status' if  logging.trunk_status is defined else '' }}",
+            "setval": "logging event trunk-status",
             "result": {
                 "{{ name }}": {
                     "logging": {
-                        "bundle_status": "{{ not not bundle_status }}",
-                        "link_status": "{{ not not link_status }}",
-                        "nfas_status": "{{ not not nfas_status }}",
-                        "spanning_tree": "{{ not not spanning_tree }}",
-                        "status": "{{ not not status }}",
-                        "subif_link_status": "{{ not not subif_link_status }}",
-                        "trunk_status": "{{ not not trunk_status }}",
+                        "trunk_status": True,
+                    },
+                },
+            },
+        },
+        {
+            "name": "logging.subif_link_status",
+            "getval": re.compile(
+                r"""
+                \s+logging\sevent\ssubif-link-status
+                $""", re.VERBOSE,
+            ),
+            "setval": "logging event subif-link-status",
+            "result": {
+                "{{ name }}": {
+                    "logging": {
+                        "subif_link_status": True,
+                    },
+                },
+            },
+        },
+        {
+            "name": "logging.status",
+            "getval": re.compile(
+                r"""
+                \s+logging\sevent\sstatus
+                $""", re.VERBOSE,
+            ),
+            "setval": "logging event status",
+            "result": {
+                "{{ name }}": {
+                    "logging": {
+                        "status": True,
+                    },
+                },
+            },
+        },
+        {
+            "name": "logging.spanning_tree",
+            "getval": re.compile(
+                r"""
+                \s+logging\sevent\sspanning-tree
+                $""", re.VERBOSE,
+            ),
+            "setval": "logging event spanning-tree",
+            "result": {
+                "{{ name }}": {
+                    "logging": {
+                        "spanning_tree": True,
+                    },
+                },
+            },
+        },
+        {
+            "name": "logging.nfas_status",
+            "getval": re.compile(
+                r"""
+                \s+logging\sevent\snfas-status
+                $""", re.VERBOSE,
+            ),
+            "setval": "logging event nfas-status",
+            "result": {
+                "{{ name }}": {
+                    "logging": {
+                        "nfas_status": True,
+                    },
+                },
+            },
+        },
+        {
+            "name": "logging.bundle_status",
+            "getval": re.compile(
+                r"""
+                \s+logging\sevent\sbundle-status
+                $""", re.VERBOSE,
+            ),
+            "setval": "logging event bundle-status",
+            "result": {
+                "{{ name }}": {
+                    "logging": {
+                        "bundle_status": True,
+                    },
+                },
+            },
+        },
+        {
+            "name": "logging.link_status",
+            "getval": re.compile(
+                r"""
+                \s+logging\sevent\slink-status
+                $""", re.VERBOSE,
+            ),
+            "setval": "logging event link-status",
+            "result": {
+                "{{ name }}": {
+                    "logging": {
+                        "link_status": True,
                     },
                 },
             },

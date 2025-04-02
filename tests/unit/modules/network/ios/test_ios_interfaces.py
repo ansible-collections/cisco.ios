@@ -557,6 +557,12 @@ class TestIosInterfacesModule(TestIosModule):
                      duplex full
                      negotiation auto
                      ipv6 dhcp server
+                     logging event nfas-status
+                     logging event bundle-status
+                     logging event link-status
+                     logging event subif-link-status
+                     logging event trunk-status
+                     service-policy input policy1
                     interface GigabitEthernet6
                      description Ansible UT interface 6
                      switchport
@@ -578,40 +584,40 @@ class TestIosInterfacesModule(TestIosModule):
                 "mtu": 1500,
                 "enabled": True,
             },
-            {
-                "name": "GigabitEthernet1",
-                "description": "Ansible UT interface 1",
-                "enabled": True,
-            },
+            {"name": "GigabitEthernet1", "description": "Ansible UT interface 1", "enabled": True},
             {
                 "name": "GigabitEthernet3",
                 "description": "Ansible UT interface 3",
                 "enabled": False,
                 "duplex": "auto",
             },
-            {
-                "name": "GigabitEthernet4",
-                "description": "Ansible UT interface 4",
-                "enabled": False,
-            },
+            {"name": "GigabitEthernet4", "description": "Ansible UT interface 4", "enabled": False},
             {
                 "name": "GigabitEthernet5",
                 "description": "Ansible UT interface 5",
                 "duplex": "full",
+                "logging": {
+                    "nfas_status": True,
+                    "bundle_status": True,
+                    "link_status": True,
+                    "subif_link_status": True,
+                    "trunk_status": True,
+                },
+                "service_policy": {"input": "policy1"},
                 "enabled": True,
             },
             {
                 "name": "GigabitEthernet6",
-                "mode": "layer2",
                 "description": "Ansible UT interface 6",
+                "mode": "layer2",
                 "enabled": True,
             },
             {
                 "name": "GigabitEthernet7",
-                "mode": "layer3",
                 "description": "Ansible UT interface 7",
-                "enabled": True,
+                "mode": "layer3",
                 "template": "ANSIBLE",
+                "enabled": True,
             },
         ]
         self.assertEqual(parsed_list, result["parsed"])
@@ -657,6 +663,15 @@ class TestIosInterfacesModule(TestIosModule):
                     {
                         "name": "twentyFiveGigE1",
                         "description": "Ansible UT TwentyFiveGigE",
+                        "logging": {
+                            "nfas_status": True,
+                            "bundle_status": True,
+                            "link_status": True,
+                            "subif_link_status": True,
+                            "trunk_status": True,
+                        },
+                        "service_policy": {"input": "policy1"},
+                        "snmp": {"trap": {"ip": True}},
                     },
                     {
                         "name": "twoGigabitEthernet2",
@@ -742,6 +757,13 @@ class TestIosInterfacesModule(TestIosModule):
             "no shutdown",
             "interface TwentyFiveGigE1",
             "description Ansible UT TwentyFiveGigE",
+            "service-policy input policy1",
+            "logging event trunk-status",
+            "logging event subif-link-status",
+            "logging event nfas-status",
+            "logging event bundle-status",
+            "logging event link-status",
+            "snmp trap ip verify drop-rate",
             "no shutdown",
             "interface TwoGigabitEthernet2",
             "description Ansible UT TwoGigabitEthernet",
