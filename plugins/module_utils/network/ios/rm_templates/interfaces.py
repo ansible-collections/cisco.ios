@@ -130,7 +130,9 @@ class InterfacesTemplate(NetworkTemplate):
                 (\soutput\s(?P<output>\S+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "service-policy type access-control {{ service_policy.type_options.access_control }}",
+            "setval": "service-policy type access-control"
+                      "{{ service_policy.type_options.access_control.input if service_policy.type_options.access_control.input is defined else '' }}"
+                      "{{ service_policy.type_options.access_control.output if service_policy.type_options.access_control.output is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "service_policy": {
@@ -153,7 +155,9 @@ class InterfacesTemplate(NetworkTemplate):
                 (\soutput\s(?P<output>\S+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "service-policy type epbr {{ service_policy.type_options.epbr }}",
+            "setval": "service-policy type epbr"
+                      "{{ service_policy.type_options.epbr.input if service_policy.type_options.epbr.input is defined else '' }}"
+                      "{{ service_policy.type_options.epbr.output if service_policy.type_options.epbr.output is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "service_policy": {
@@ -176,7 +180,9 @@ class InterfacesTemplate(NetworkTemplate):
                 (\soutput\s(?P<output>\S+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "service-policy type nwpi {{ service_policy.type_options.nwpi }}",
+            "setval": "service-policy type nwpi"
+                      "{{ service_policy.type_options.nwpi.input if service_policy.type_options.nwpi.input is defined else '' }}"
+                      "{{ service_policy.type_options.nwpi.output if service_policy.type_options.nwpi.output is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "service_policy": {
@@ -199,7 +205,9 @@ class InterfacesTemplate(NetworkTemplate):
                 (\soutput\s(?P<output>\S+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "service-policy type packet-service {{ service_policy.type_options.packet_service }}",
+            "setval": "service-policy type packet-service"
+                      "{{ service_policy.type_options.packet_service.input if service_policy.type_options.packet_service.input is defined else '' }}"
+                      "{{ service_policy.type_options.packet_service.output if service_policy.type_options.packet_service.output is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "service_policy": {
@@ -222,7 +230,9 @@ class InterfacesTemplate(NetworkTemplate):
                 (\soutput\s(?P<output>\S+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "service-policy type service-chain {{ service_policy.type_options.service_chain }}",
+            "setval": "service-policy type service-chain"
+                      "{{ service_policy.type_options.service_chain.input if service_policy.type_options.service_chain.input is defined else '' }}"
+                      "{{ service_policy.type_options.service_chain.output if service_policy.type_options.service_chain.output is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "service_policy": {
@@ -250,7 +260,14 @@ class InterfacesTemplate(NetworkTemplate):
                 (\s(?P<trunk_status>trunk-status))?
                 $""", re.VERBOSE,
             ),
-            "setval": "logging event {{ service_policy.type_options.service_chain }}",
+            "setval": "logging event"
+                      "{{ ' bundle-status' if logging.bundle_status is defined else '' }}"
+                      "{{ ' link-status' if logging.link_status is defined else '' }}"
+                      "{{ ' nfas-status' if  logging.nfas_status is defined else '' }}"
+                      "{{ ' spanning-tree' if  logging.spanning_tree is defined else '' }}"
+                      "{{ ' status' if logging.status is defined else '' }}"
+                      "{{ ' subif-link-status' if  logging.subif_link_status is defined else '' }}"
+                      "{{ ' trunk-status' if  logging.trunk_status is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "logging": {
@@ -276,7 +293,11 @@ class InterfacesTemplate(NetworkTemplate):
                 (\s(?P<mac_notification_removed>mac-notification-removed))?
                 $""", re.VERBOSE,
             ),
-            "setval": "snmp trap {{ service_policy.type_options.service_chain }}",
+            "setval": "snmp trap"
+                      "{{ ' ip verify drop-rate' if snmp.trap.ip is defined else '' }}"
+                      "{{ ' link-status permit duplicates' if snmp.trap.link_status is defined else '' }}"
+                      "{{ ' mac-notification-added' if snmp.trap.mac_notification_added is defined else '' }}"
+                      "{{ ' mac-notification-removed' if snmp.trap.mac_notification_removed is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "snmp": {
@@ -299,7 +320,9 @@ class InterfacesTemplate(NetworkTemplate):
                 (\s(?P<persist>persist))?
                 $""", re.VERBOSE,
             ),
-            "setval": "snmp ifindex {{ snmp.ifindex }}",
+            "setval": "snmp ifindex"
+                      "{{ ' clear' if snmp.ifindex.clear is defined else '' }}"
+                      "{{ ' persist' if snmp.ifindex.persist is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "snmp": {

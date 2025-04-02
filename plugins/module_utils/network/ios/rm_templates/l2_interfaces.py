@@ -152,7 +152,9 @@ class L2_interfacesTemplate(NetworkTemplate):
                 (\s(?P<disabled>disabled))?
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree bpdufilter enabled",
+            "setval": "spanning-tree bpdufilter"
+                      "{{ ' enabled' if spanning_tree.bpdufilter.enabled|d(False) else ''}}"
+                      "{{ ' disabled' if spanning_tree.bpdufilter.disabled|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
                     "spanning_tree": {
@@ -173,7 +175,9 @@ class L2_interfacesTemplate(NetworkTemplate):
                 (\s(?P<disabled>disabled))?
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree bpduguard enabled",
+            "setval": "spanning-tree bpduguard"
+                      "{{ ' enabled' if spanning_tree.bpduguard.enabled|d(False) else ''}}"
+                      "{{ ' disabled' if spanning_tree.bpduguard.disabled|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
                     "spanning_tree": {
@@ -212,7 +216,10 @@ class L2_interfacesTemplate(NetworkTemplate):
                 (\s(?P<root>root))?
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree guard enabled",
+            "setval": "spanning-tree guard"
+                      "{{ ' loop' if spanning_tree.guard.loop|d(False) else ''}}"
+                      "{{ ' none' if spanning_tree.guard.none|d(False) else ''}}"
+                      "{{ ' root' if spanning_tree.guard.root|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
                     "spanning_tree": {
@@ -234,7 +241,9 @@ class L2_interfacesTemplate(NetworkTemplate):
                 (\s(?P<shared>shared))?
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree link-type point-to-point",
+            "setval": "spanning-tree link-type"
+                      "{{ ' point-to-point' if spanning_tree.link_type.point_to_point|d(False) else ''}}"
+                      "{{ ' shared' if spanning_tree.link_type.shared|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
                     "spanning_tree": {
@@ -256,7 +265,10 @@ class L2_interfacesTemplate(NetworkTemplate):
                 (\sport-priority\s(?P<port_priority>\d+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree mst point-to-point",
+            "setval": "spanning-tree mst"
+                      "{{ ' ' + instance_range if spanning_tree.mst.instance_range else ''}}"
+                      "{{ ' cost ' + cost if spanning_tree.mst.cost else ''}}"
+                      "{{ ' port-priority ' + port_priority if spanning_tree.mst.port_priority else ''}}",
             "result": {
                 "{{ name }}": {
                     "spanning_tree": {
@@ -276,7 +288,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                 \s+spanning-tree\sport-priority\s(?P<port_priority>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree port-priority {{ port_priority }}",
+            "setval": "spanning-tree port-priority {{ spanning_tree.port_priority }}",
             "result": {
                 "{{ name }}": {
                     "spanning_tree": {
@@ -294,7 +306,9 @@ class L2_interfacesTemplate(NetworkTemplate):
                 (\s(?P<trunk>trunk))?
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree portfast disabled",
+            "setval": "spanning-tree portfast"
+                      "{{ ' disabled' if spanning_tree.portfast.disabled|d(False) else ''}}"
+                      "{{ ' trunk' if spanning_tree.portfast.trunk|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
                     "spanning_tree": {
@@ -313,7 +327,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                 \s+spanning-tree\sbpduguard\srootguard
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree rootguard",
+            "setval": "spanning-tree bpduguard rootguard",
             "result": {
                 "{{ name }}": {
                     "spanning_tree": {
@@ -332,7 +346,10 @@ class L2_interfacesTemplate(NetworkTemplate):
                 (\sport-priority\s(?P<port_priority>\d+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "spanning-tree vlan point-to-point",
+            "setval": "spanning-tree vlan"
+                      "{{ ' ' + vlan_range if spanning_tree.vlan.vlan_range else ''}}"
+                      "{{ ' cost ' + cost if spanning_tree.vlan.cost else ''}}"
+                      "{{ ' port-priority ' + port_priority if spanning_tree.vlan.port_priority else ''}}",
             "result": {
                 "{{ name }}": {
                     "spanning_tree": {
