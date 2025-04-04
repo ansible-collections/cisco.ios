@@ -18,19 +18,20 @@ module: ios_hsrp_interfaces
 short_description: Resource module to configure HSRP on interfaces.
 description:
   - This module provides declarative management of HSRP configuration on interface for Cisco IOS devices.
-version_added: 1.0.0
+version_added: 9.3.0
 author:
   - Sagar Paul (@KB-perByte)
 notes:
-  - Tested against Cisco IOSXE Version 17.6 on CML.
+  - Tested against Cisco IOSXE Version 17.16.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
-  - The module examples uses callback plugin (stdout_callback = yaml) to generate task
+  - The module examples uses callback plugin (callback_result_format=yaml) to generate task
     output in yaml format.
 options:
   config:
-    description: A dictionary of HSP configuration options to add to interface
-    type: dict
+    description: A list of HSP configuration options to add to interface
+    type: list
+    elements: dict
     suboptions:
       name:
         description:

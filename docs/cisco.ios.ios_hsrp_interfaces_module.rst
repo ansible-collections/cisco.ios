@@ -8,7 +8,7 @@ cisco.ios.ios_hsrp_interfaces
 **Resource module to configure HSRP on interfaces.**
 
 
-Version added: 1.0.0
+Version added: 9.3.0
 
 .. contents::
    :local:
@@ -39,13 +39,14 @@ Parameters
                     <b>config</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>A dictionary of HSP configuration options to add to interface</div>
+                        <div>A list of HSP configuration options to add to interface</div>
                 </td>
             </tr>
                                 <tr>
@@ -1021,9 +1022,9 @@ Notes
 -----
 
 .. note::
-   - Tested against Cisco IOSXE Version 17.6 on CML.
+   - Tested against Cisco IOSXE Version 17.16.
    - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
-   - The module examples uses callback plugin (stdout_callback = yaml) to generate task output in yaml format.
+   - The module examples uses callback plugin (callback_result_format=yaml) to generate task output in yaml format.
 
 
 
