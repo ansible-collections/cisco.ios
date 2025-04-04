@@ -593,6 +593,27 @@ class TestIosL2InterfacesModule(TestIosModule):
                      switchport trunk encapsulation dot1q
                      switchport trunk pruning vlan 10-15
                      switchport mode private-vlan trunk secondary
+                    interface GigabitEthernet1/0/1
+                     switchport mode access
+                     switchport nonegotiate
+                     switchport protected
+                     switchport block multicast
+                     switchport block unicast
+                     switchport vepa enabled
+                     switchport app-interface
+                     switchport voice vlan 22
+                     snmp trap mac-notification change added
+                     snmp trap mac-notification change removed
+                     snmp trap link-status permit duplicates
+                     spanning-tree portfast
+                     spanning-tree bpdufilter enable
+                     spanning-tree bpduguard disable
+                     spanning-tree link-type point-to-point
+                     spanning-tree vlan 9-11 cost 22
+                     spanning-tree guard root
+                     spanning-tree mst simulate pvst disable
+                     spanning-tree mst 0-1 cost 22
+                     spanning-tree cost 22
                     """,
                 ),
                 state="parsed",
@@ -611,11 +632,7 @@ class TestIosL2InterfacesModule(TestIosModule):
                 },
                 "mode": "trunk",
             },
-            {
-                "name": "TwoGigabitEthernet1/0/1",
-                "mode": "access",
-                "access": {"vlan": 20},
-            },
+            {"name": "TwoGigabitEthernet1/0/1", "mode": "access", "access": {"vlan": 20}},
             {
                 "name": "GigabitEthernet0/3",
                 "trunk": {
@@ -624,6 +641,23 @@ class TestIosL2InterfacesModule(TestIosModule):
                     "pruning_vlans": ["10-15"],
                 },
                 "mode": "private_vlan_trunk",
+            },
+            {
+                "name": "GigabitEthernet1/0/1",
+                "mode": "access",
+                "nonegotiate": True,
+                "protected": True,
+                "block_options": {"multicast": True, "unicast": True},
+                "vepa": True,
+                "app_interface": True,
+                "voice": {"vlan": 22},
+                "spanning_tree": {
+                    "link_type": {"point_to_point": True},
+                    "vlan": {"vlan_range": "9-11", "cost": "22"},
+                    "guard": {"none": False, "root": True},
+                    "mst": {"instance_range": "0-1", "cost": "22"},
+                    "cost": 22,
+                },
             },
         ]
         self.maxDiff = None
@@ -672,6 +706,23 @@ class TestIosL2InterfacesModule(TestIosModule):
                             pruning_vlans=["12-15", "20"],
                         ),
                     ),
+                    dict(
+                        name="GigabitEthernet1/0/1",
+                        mode="access",
+                        nonegotiate=True,
+                        protected=True,
+                        block_options={"multicast": True, "unicast": True},
+                        vepa=True,
+                        app_interface=True,
+                        voice={"vlan": 22},
+                        spanning_tree={
+                            "link_type": {"point_to_point": True},
+                            "vlan": {"vlan_range": "9-11", "cost": "22"},
+                            "guard": {"none": False, "root": True},
+                            "mst": {"instance_range": "0-1", "cost": "22"},
+                            "cost": 22,
+                        },
+                    ),
                 ],
                 state="rendered",
             ),
@@ -687,6 +738,18 @@ class TestIosL2InterfacesModule(TestIosModule):
             "switchport trunk native vlan 20",
             "switchport trunk allowed vlan 10-20,40",
             "switchport trunk pruning vlan 12-15,20",
+            "interface GigabitEthernet1/0/1",
+            "switchport voice vlan 22",
+            "switchport mode access",
+            "switchport app-interface",
+            "switchport nonegotiate",
+            "switchport vepa enabled",
+            "switchport protected",
+            "switchport block multicast",
+            "switchport block unicast",
+            "spanning-tree cost 22",
+            "spanning-tree guard root",
+            "spanning-tree link-type point-to-point",
         ]
         result = self.execute_module(changed=False)
         self.maxDiff = None

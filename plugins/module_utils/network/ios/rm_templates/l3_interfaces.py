@@ -138,6 +138,96 @@ class L3_interfacesTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "ipv4.mtu",
+            "getval": re.compile(
+                r"""
+                \s+ip\smtu\s(?P<mtu>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip mtu {{ ipv4.mtu }}",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": [
+                        {
+                            "mtu": "{{ mtu }}",
+                        },
+                    ],
+                },
+            },
+        },
+        {
+            "name": "ipv4.redirects",
+            "getval": re.compile(
+                r"""
+                \s+ip\sredirects
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip redirects",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": [
+                        {
+                            "redirects": True,
+                        },
+                    ],
+                },
+            },
+        },
+        {
+            "name": "ipv4.unreachables",
+            "getval": re.compile(
+                r"""
+                \s+ip\sunreachables
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip unreachables",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": [
+                        {
+                            "unreachables": True,
+                        },
+                    ],
+                },
+            },
+        },
+        {
+            "name": "ipv4.helper_address",
+            "getval": re.compile(
+                r"""
+                \s+ip\shelper-address
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip helper-address",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": [
+                        {
+                            "helper_address": True,
+                        },
+                    ],
+                },
+            },
+        },
+        {
+            "name": "ipv4.proxy_arp",
+            "getval": re.compile(
+                r"""
+                \s+ip\sproxy-arp
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip proxy-arp",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": [
+                        {
+                            "proxy_arp": True,
+                        },
+                    ],
+                },
+            },
+        },
+        {
             "name": "ipv4.dhcp",
             "getval": re.compile(
                 r"""\s+ip\saddress\s
