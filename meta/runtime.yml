@@ -71,4 +71,4 @@ plugin_routing:
       redirect: cisco.ios.ios_vrf_address_family
     vrf_global:
       redirect: cisco.ios.ios_vrf_global
-requires_ansible: ">=2.15.0"
+requires_ansible: ">=2.16.0"
