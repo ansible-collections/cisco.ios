@@ -40,7 +40,7 @@ options:
         required: true
       bfd:
         description: Enable HSRP BFD
-        type: str
+        type: bool
       delay:
         description: HSRP initialization delay
         type: dict
@@ -91,12 +91,13 @@ options:
         description: HSRP uses interface's burned in address (does not work with mac address)
         type: dict
         suboptions:
-          set:
-            description: Set use-bia only
-            type: bool
           scope:
             description: Scope interface option
-            type: bool
+            type: dict
+            suboptions:
+              interface:
+                description: Use-bia applies to all groups on this interface or sub-interface
+                type: bool
       version:
         description: HSRP version
         type: int
@@ -155,9 +156,6 @@ options:
             description: Overthrow lower priority Active routers
             type: dict
             suboptions:
-              set:
-                description: set preempt only
-                type: bool
               minimum:
                 description: Delay at least this long
                 type: int
@@ -173,7 +171,7 @@ options:
           priority:
             description: Priority level
             type: int
-          timer:
+          timers:
             description: Overthrow lower priority Active routers
             type: dict
             suboptions:
@@ -185,19 +183,26 @@ options:
                 type: int
               msec:
                 description: Specify hello interval in milliseconds
-                type: int
+                type: dict
+                suboptions:
+                  hello_interval:
+                    description: <15-999>  Hello interval in milliseconds
+                    type: int
+                  hold_time:
+                    description: <60-3000>  Hold time in milliseconds
+                    type: int
           track:
             description: Priority tracking
             type: list
             elements: dict
             suboptions:
-              object_no:
+              track_no:
                 description: Track object number
                 type: int
               decrement:
                 description: Priority decrement
                 type: int
-              msec:
+              shutdown:
                 description: Shutdown Group
                 type: bool
   running_config:

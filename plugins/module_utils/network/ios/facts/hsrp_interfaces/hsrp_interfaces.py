@@ -48,7 +48,7 @@ class Hsrp_interfacesFacts(object):
         objs = []
 
         if not data:
-            data = connection.get()
+            data = connection.get('sh running-config | section ^interface')
 
         # parse native config using the Hsrp_interfaces template
         hsrp_interfaces_parser = Hsrp_interfacesTemplate(
