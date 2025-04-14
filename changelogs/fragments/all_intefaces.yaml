@@ -1,5 +1,0 @@
----
-minor_changes:
-  - ios_interfaces - Added service-policy, logging and snmp configuration options for interface.
-  - ios_l2_interfaces - Added a few switchport and spanning-tree configuration options for interface.
-  - ios_l3_interfaces - Added a few ip configuration options for interface.
