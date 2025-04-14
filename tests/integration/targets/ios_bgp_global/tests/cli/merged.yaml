@@ -11,6 +11,7 @@
         config:
           as_number: 65000
           bgp:
+            asnotation: true
             default:
               ipv4_unicast: false
               route_target:
@@ -27,6 +28,22 @@
               remote_as: 100
               shutdown:
                 set: false
+            - neighbor_address: 192.0.2.1
+              remote_as: "500.65083"
+              local_as:
+                asn: "501.65083"
+                no_prepend:
+                  replace_as: true
+                  set: true
+                set: true
+            - neighbor_address: 192.0.2.2
+              remote_as: 500
+              local_as:
+                number: 501
+                no_prepend:
+                  replace_as: true
+                  set: true
+                set: true
           timers:
             keepalive: 100
             holdtime: 200
