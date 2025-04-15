@@ -213,11 +213,11 @@ class TestIosLoggingGlobalModule(TestIosModule):
             "no logging trap errors",
         ]
         playbook["state"] = "deleted"
-        set_module_args(playbook)
-        result = self.execute_module(changed=True)
+        with set_module_args(playbook):
+            result = self.execute_module(changed=True)
 
-        self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(deleted))
+            self.maxDiff = None
+            self.assertEqual(sorted(result["commands"]), sorted(deleted))
 
     def test_ios_logging_global_deleted_list(self):
         self.execute_show_command.return_value = dedent(
@@ -274,11 +274,11 @@ class TestIosLoggingGlobalModule(TestIosModule):
             "no logging source-interface GBit1/0",
             "no logging source-interface CTunnel2",
         ]
-        playbook["state"] = "deleted"
-        set_module_args(playbook)
-        result = self.execute_module(changed=True)
-        self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(deleted))
+        with set_module_args(playbook):
+            playbook["state"] = "deleted"
+            result = self.execute_module(changed=True)
+            self.maxDiff = None
+            self.assertEqual(sorted(result["commands"]), sorted(deleted))
 
     def test_ios_logging_global_overridden(self):
         self.execute_show_command.return_value = dedent(
@@ -367,10 +367,10 @@ class TestIosLoggingGlobalModule(TestIosModule):
             "logging source-interface CTunnel2",
         ]
         playbook["state"] = "overridden"
-        set_module_args(playbook)
-        result = self.execute_module(changed=True)
-        self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(overridden))
+        with set_module_args(playbook):
+            result = self.execute_module(changed=True)
+            self.maxDiff = None
+            self.assertEqual(sorted(result["commands"]), sorted(overridden))
 
     def test_ios_logging_global_overridden_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -391,10 +391,10 @@ class TestIosLoggingGlobalModule(TestIosModule):
         )
         overridden = []
         playbook["state"] = "overridden"
-        set_module_args(playbook)
-        result = self.execute_module(changed=False)
-        self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(overridden))
+        with set_module_args(playbook):
+            result = self.execute_module(changed=False)
+            self.maxDiff = None
+            self.assertEqual(sorted(result["commands"]), sorted(overridden))
 
     def test_ios_logging_global_merged(self):
         self.execute_show_command.return_value = dedent(
@@ -468,14 +468,14 @@ class TestIosLoggingGlobalModule(TestIosModule):
             "logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7384 transport udp sequence-num-session",
         ]
         playbook["state"] = "merged"
-        set_module_args(playbook)
-        result = self.execute_module(changed=True)
+        with set_module_args(playbook):
+            result = self.execute_module(changed=True)
 
-        self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(merged))
+            self.maxDiff = None
+            self.assertEqual(sorted(result["commands"]), sorted(merged))
 
     def test_ios_logging_global_parsed(self):
-        set_module_args(
+        with set_module_args(
             dict(
                 running_config=dedent(
                     """\
@@ -491,20 +491,20 @@ class TestIosLoggingGlobalModule(TestIosModule):
                 ),
                 state="parsed",
             ),
-        )
-        parsed = dict(
-            logging_on="enable",
-            buffered=dict(size=5099, severity="notifications", xml=True),
-            buginf=True,
-            cns_events="warnings",
-            console=dict(severity="critical", xml=True),
-            count=True,
-            delimiter=dict(tcp=True),
-            hosts=[dict(host="172.16.2.15", session_id=dict(text="Test"))],
-        )
-        result = self.execute_module(changed=False)
-        self.maxDiff = None
-        self.assertEqual(sorted(result["parsed"]), sorted(parsed))
+        ):
+            parsed = dict(
+                logging_on="enable",
+                buffered=dict(size=5099, severity="notifications", xml=True),
+                buginf=True,
+                cns_events="warnings",
+                console=dict(severity="critical", xml=True),
+                count=True,
+                delimiter=dict(tcp=True),
+                hosts=[dict(host="172.16.2.15", session_id=dict(text="Test"))],
+            )
+            result = self.execute_module(changed=False)
+            self.maxDiff = None
+            self.assertEqual(sorted(result["parsed"]), sorted(parsed))
 
     def test_ios_logging_global_gathered(self):
         self.execute_show_command.return_value = dedent(
@@ -512,12 +512,12 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging persistent notify
             """,
         )
-        set_module_args(dict(state="gathered"))
-        gathered = dict(persistent=dict(notify=True))
-        result = self.execute_module(changed=False)
+        with set_module_args(dict(state="gathered")):
+            gathered = dict(persistent=dict(notify=True))
+            result = self.execute_module(changed=False)
 
-        self.maxDiff = None
-        self.assertEqual(sorted(result["gathered"]), sorted(gathered))
+            self.maxDiff = None
+            self.assertEqual(sorted(result["gathered"]), sorted(gathered))
 
     def test_ios_logging_global_gathered_host(self):
         self.execute_show_command.return_value = dedent(
@@ -525,23 +525,23 @@ class TestIosLoggingGlobalModule(TestIosModule):
             logging host 172.16.1.1 vrf vpn-1 transport tcp audit
             """,
         )
-        set_module_args(dict(state="gathered"))
-        gathered = dict(
-            hosts=[
-                dict(
-                    hostname="172.16.1.1",
-                    vrf="vpn-1",
-                    transport=dict(tcp=dict(audit=True)),
-                ),
-            ],
-        )
-        result = self.execute_module(changed=False)
+        with set_module_args(dict(state="gathered")):
+            gathered = dict(
+                hosts=[
+                    dict(
+                        hostname="172.16.1.1",
+                        vrf="vpn-1",
+                        transport=dict(tcp=dict(audit=True)),
+                    ),
+                ],
+            )
+            result = self.execute_module(changed=False)
 
-        self.maxDiff = None
-        self.assertEqual(sorted(result["gathered"]), sorted(gathered))
+            self.maxDiff = None
+            self.assertEqual(sorted(result["gathered"]), sorted(gathered))
 
     def test_ios_logging_global_rendered(self):
-        set_module_args(
+        with set_module_args(
             dict(
                 config=dict(
                     rate_limit=dict(console=True, size=2, except_severity="warnings"),
@@ -564,18 +564,18 @@ class TestIosLoggingGlobalModule(TestIosModule):
                 ),
                 state="rendered",
             ),
-        )
-        rendered = [
-            "logging reload message-limit 10 alerts",
-            "logging rate-limit console 2 except warnings",
-            "logging buffered discriminator notifications filtered",
-            "logging persistent url flash0:172.16.0.1 threshold 2 immediate protected notify",
-            "logging queue-limit trap 1000",
-            "logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7364 transport tcp session-id hostname",
-        ]
-        result = self.execute_module(changed=False)
-        self.maxDiff = None
-        self.assertEqual(sorted(result["rendered"]), sorted(rendered))
+        ):
+            rendered = [
+                "logging reload message-limit 10 alerts",
+                "logging rate-limit console 2 except warnings",
+                "logging buffered discriminator notifications filtered",
+                "logging persistent url flash0:172.16.0.1 threshold 2 immediate protected notify",
+                "logging queue-limit trap 1000",
+                "logging host ipv6 2001:0db8:85a3:0000:0000:8a2e:0370:7364 transport tcp session-id hostname",
+            ]
+            result = self.execute_module(changed=False)
+            self.maxDiff = None
+            self.assertEqual(sorted(result["rendered"]), sorted(rendered))
 
     def test_ios_logging_global_deleted_empty(self):
         self.execute_show_command.return_value = dedent(
@@ -606,11 +606,11 @@ class TestIosLoggingGlobalModule(TestIosModule):
             "no logging filter flash:172.16.1.1 1 args Test",
         ]
         playbook["state"] = "deleted"
-        set_module_args(playbook)
-        result = self.execute_module(changed=True)
+        with set_module_args(playbook):
+            result = self.execute_module(changed=True)
 
-        self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(deleted))
+            self.maxDiff = None
+            self.assertEqual(sorted(result["commands"]), sorted(deleted))
 
     def test_ios_logging_global_deleted_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -628,11 +628,11 @@ class TestIosLoggingGlobalModule(TestIosModule):
         playbook = dict(config=dict())
         deleted = []
         playbook["state"] = "deleted"
-        set_module_args(playbook)
-        result = self.execute_module(changed=False)
+        with set_module_args(playbook):
+            result = self.execute_module(changed=False)
 
-        self.maxDiff = None
-        self.assertEqual(result["commands"], deleted)
+            self.maxDiff = None
+            self.assertEqual(result["commands"], deleted)
 
     def test_ios_logging_global_replaced(self):
         self.execute_show_command.return_value = dedent(
@@ -650,11 +650,11 @@ class TestIosLoggingGlobalModule(TestIosModule):
             "logging host 172.16.2.15 session-id string Test",
         ]
         playbook["state"] = "replaced"
-        set_module_args(playbook)
-        result = self.execute_module(changed=True)
+        with set_module_args(playbook):
+            result = self.execute_module(changed=True)
 
-        self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(replaced))
+            self.maxDiff = None
+            self.assertEqual(sorted(result["commands"]), sorted(replaced))
 
     def test_ios_logging_global_replaced_ordering_host(self):
         self.execute_show_command.return_value = dedent(
@@ -700,10 +700,10 @@ class TestIosLoggingGlobalModule(TestIosModule):
             "no logging host 172.16.0.2",
         ]
         playbook["state"] = "replaced"
-        set_module_args(playbook)
-        result = self.execute_module(changed=True)
-        self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(replaced))
+        with set_module_args(playbook):
+            result = self.execute_module(changed=True)
+            self.maxDiff = None
+            self.assertEqual(sorted(result["commands"]), sorted(replaced))
 
     def test_ios_logging_global_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
@@ -714,11 +714,11 @@ class TestIosLoggingGlobalModule(TestIosModule):
         playbook = dict(config=dict(hosts=[dict(hostname="172.16.2.15")]))
         replaced = []
         playbook["state"] = "replaced"
-        set_module_args(playbook)
-        result = self.execute_module(changed=False)
+        with set_module_args(playbook):
+            result = self.execute_module(changed=False)
 
-        self.maxDiff = None
-        self.assertEqual(sorted(result["commands"]), sorted(replaced))
+            self.maxDiff = None
+            self.assertEqual(sorted(result["commands"]), sorted(replaced))
 
     def mock_connection(self):
         """Fixture to provide a mock connection object"""
