@@ -67,13 +67,24 @@ options:
                 type: str
               key_string:
                 description: Set key string
-                type: bool
-              encryption:
-                description: Set encryption 0 (unencrypted/default) or 7 (hidden)
+                type: dict
+                suboptions:
+                  key_type:
+                    description: Type of Key
+                    type: int
+                  password_text:
+                    description: Key string (max: plaintext 64 chars; encrypted 130 chars)
+                    type: str
+              password_text:
+                description: Password text valid for plain text and and key-string
                 type: str
-              time_out:
-                description: Set timeout
-                type: str
+              text:
+                description: Password text valid for plain text
+                type: dict
+                suboptions:
+                  password_text:
+                    description: Password text valid for plain text and and key-string
+                    type: str
           timers:
             description: Adjust redirect timers
             type: dict
@@ -123,6 +134,20 @@ options:
               secondary:
                 description: Make this IP address a secondary virtual IP address
                 type: bool
+          ipv6:
+            description: Enable HSRP IPv6 and set the IP address
+            type: list
+            elements: dict
+            suboptions:
+              virtual_ipv6:
+                description: X:X:X:X::X  IPv6 link-local address
+                type: str
+              virtual_ipv6_prefix:
+                description: X:X:X:X::X/<0-128>  IPv6 prefix
+                type: str
+              autoconfig:
+                description: Obtain address using autoconfiguration
+                type: bool
           mac_address:
             description: Virtual MAC address
             type: str
@@ -142,16 +167,24 @@ options:
                     type: str
                   key_string:
                     description: Set key string
-                    type: bool
-                  encryption:
-                    description: Set encryption 0 (unencrypted/default) or 7 (hidden)
-                    type: str
-                  time_out:
-                    description: Set timeout
-                    type: str
+                    type: dict
+                    suboptions:
+                      key_type:
+                        description: Type of Key
+                        type: int
+                      password_text:
+                        description: Key string (max: plaintext 64 chars; encrypted 130 chars)
+                        type: str
                   password_text:
                     description: Password text valid for plain text and and key-string
                     type: str
+                  text:
+                    description: Password text valid for plain text
+                    type: dict
+                    suboptions:
+                      password_text:
+                        description: Password text valid for plain text and and key-string
+                        type: str
           preempt:
             description: Overthrow lower priority Active routers
             type: dict

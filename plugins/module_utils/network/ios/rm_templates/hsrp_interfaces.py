@@ -126,7 +126,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "setval": "standby bfd",
             "result": {
                 "{{ name }}": {
-                    "bfd": True
+                    "bfd": "{{ True }}"
                 },
             },
         },
@@ -142,28 +142,12 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 "{{ name }}": {
                     "use_bia": {
                         "scope": {
-                            "interface": True
+                            "interface": "{{ True }}"
                         }
                     },
                 },
             },
         },
-        # {
-        #     "name": "use-bia.set",
-        #     "getval": re.compile(
-        #         r"""
-        #         \s+standby\suse-bia\sset
-        #         $""", re.VERBOSE,
-        #     ),
-        #     "setval": "standby use-bia set",
-        #     "result": {
-        #         "{{ name }}": {
-        #             "use_bia": {
-        #                 "set": True,
-        #             },
-        #         },
-        #     },
-        # },
         {
             "name": "standby_version",
             "getval": re.compile(
@@ -297,26 +281,50 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "name": "standby.ip",
             "getval": re.compile(
                 r"""
-                \s+standby\s(?:\s+(?P<group_no>\d+))?\sip
-                (\svirtual_ip\s(?P<virtual_ip>\S+))?
+                \s+standby\s(?:\s+(?P<group_no>\d+))?
+                \s+ip\s+(?P<virtual_ip>\S+) 
                 (\ssecondary\s(?P<has_secondary>\b+))?
                 $""", re.VERBOSE,
             ),
             "setval": "standby"
-                      "{{ ' ' + group_no if standby.ip.group_no else ''}}"
+                      "{{ ' ' + group_no if standby.ip.group_no is not None else ''}}"
                       " ip"
-                      "{{ ' ' + virtual_ip if standby.ip.virtual_ip else ''}}"
+                      "{{ ' ' + virtual_ip if standby.ip.virtual_ip is not None else ''}}"
                       "{{ ' secondary' if standby.ip.has_secondary else ''}}",
             "result": {
                 "standby_groups": {
                     "group_no": "{{ group_no }}",
                     "ip": {
                         "virtual_ip": "{{ virtual_ip }}",
-                        "secondary": "{{ true if has_secondary else false }}",
+                        "secondary": "{{ True if has_secondary else False }}",
                     },
                 },
             },
         },
+        # {
+        #     "name": "standby.ipv6",
+        #     "getval": re.compile(
+        #         r"""
+        #         \s+standby\s(?:\s+(?P<group_no>\d+))?\sip
+        #         (\svirtual_ip\s(?P<virtual_ip>\S+))?
+        #         (\ssecondary\s(?P<has_secondary>\b+))?
+        #         $""", re.VERBOSE,
+        #     ),
+        #     "setval": "standby"
+        #               "{{ ' ' + group_no if standby.ip.group_no is not None else ''}}"
+        #               " ip"
+        #               "{{ ' ' + virtual_ip if standby.ip.virtual_ip is not None else ''}}"
+        #               "{{ ' secondary' if standby.ip.has_secondary else ''}}",
+        #     "result": {
+        #         "standby_groups": {
+        #             "group_no": "{{ group_no }}",
+        #             "ip": {
+        #                 "virtual_ip": "{{ virtual_ip }}",
+        #                 "secondary": "{{ True if has_secondary else False }}",
+        #             },
+        #         },
+        #     },
+        # },
         {
             "name": "standby_mac_address",
             "getval": re.compile(
@@ -327,7 +335,8 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "setval": "standby {{ group_no if group_no is not None else '' }} mac-address {{ mac_address }}",
             "result": {
                 "standby_groups": {
-                "mac_address": "{{ mac_address }}",
+                    "group_no": "{{ group_no }}",
+                    "mac_address": "{{ mac_address }}",
                 }
             },
         },
@@ -426,7 +435,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                         "md5": {
                             "key_string": {
                                 "key_type" : "{{ key_type }}",
-                                "key_string": "{{ key_string }}"
+                                "password_text": "{{ key_string }}"
                             }
                         }
                     }
@@ -460,7 +469,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "result": {
                 "standby_groups": {
                     "redirect": {
-                        "unknown": True
+                        "unknown": "{{ True }}"
                     }
                 }
             },

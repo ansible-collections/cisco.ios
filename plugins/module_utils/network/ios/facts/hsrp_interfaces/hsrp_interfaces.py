@@ -34,6 +34,9 @@ class Hsrp_interfacesFacts(object):
         self._module = module
         self.argument_spec = Hsrp_interfacesArgs.argument_spec
 
+    def get_hsrp_data(self, connection):
+        return connection.get('sh running-config | section ^interface')
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Hsrp_interfaces network resource
 
@@ -48,7 +51,7 @@ class Hsrp_interfacesFacts(object):
         objs = []
 
         if not data:
-            data = connection.get('sh running-config | section ^interface')
+            data = self.get_hsrp_data(connection)
 
         # parse native config using the Hsrp_interfaces template
         hsrp_interfaces_parser = Hsrp_interfacesTemplate(
