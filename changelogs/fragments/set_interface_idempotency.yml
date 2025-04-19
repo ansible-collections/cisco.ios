@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_ospfv2 - Update documentation to clarify that set_interface parameter is not idempotent as it's not shown in running-config during subsequent playbook runs

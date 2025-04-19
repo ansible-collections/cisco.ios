@@ -766,7 +766,9 @@ options:
                 type: dict
                 suboptions:
                   set_interface:
-                    description: Suppress/Un-Suppress routing updates
+                    description:
+                      - Suppress/Un-Suppress routing updates
+                      - Since, set_interface when enabled is not shown in running-config idempotency won't be maintained for subsequent playbook runs.
                     type: bool
                   name:
                     description: Name of interface (GigabitEthernet A/B)
