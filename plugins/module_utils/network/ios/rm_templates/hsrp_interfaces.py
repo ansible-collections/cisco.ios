@@ -39,7 +39,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "result": {
                 "standby_mac_refresh": {
                     "mac_refresh": "{{ mac_refresh_number }}",
-                }
+                },
             },
         },
         {
@@ -53,7 +53,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "result": {
                 "standby_version": {
                     "version": "{{ version }}",
-                }
+                },
             },
         },
         {
@@ -72,7 +72,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 "standby.delay": {
                     "delay": {
                         "minimum": "{{ minimum }}",
-                        "reload": "{{ reload }}"
+                        "reload": "{{ reload }}",
                     },
                 },
             },
@@ -87,7 +87,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "setval": "standby bfd",
             "result": {
                 "standby_bfd": {
-                    "bfd": "{{ True }}"
+                    "bfd": "{{ True }}",
                 },
             },
         },
@@ -103,8 +103,8 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 "use-bia.scope": {
                     "use_bia": {
                         "scope": {
-                            "interface": "{{ True }}"
-                        }
+                            "interface": "{{ True }}",
+                        },
                     },
                 },
             },
@@ -120,7 +120,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "result": {
                 "standby_follow": {
                     "follow": "{{ follow }}",
-                }
+                },
             },
         },
         {
@@ -138,10 +138,10 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                         "timers": {
                             "msec": {
                                 "hello_interval": "{{ hello_interval_millis }}",
-                                "hold_time": "{{ hold_time_millis }}"
-                            }
-                        }
-                    }]
+                                "hold_time": "{{ hold_time_millis }}",
+                            },
+                        },
+                    }],
                 },
             },
         },
@@ -159,20 +159,20 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                         "group_no": "{{ group_no }}",
                         "timers": {
                             "hello_interval": "{{ hello_interval }}",
-                            "hold_time": "{{ hold_time }}"
-                       }
-                    }]
-                }
+                            "hold_time": "{{ hold_time }}",
+                        },
+                    }],
+                },
             },
         },
         {
             "name": "standby_group_follow",
             "getval": re.compile(
                 r"""
-                \s*standby                      
-                (?:\s+(?P<group_no>\d+))     
-                \s+follow\s+                    
-                (?P<follow>.+)                  
+                \s*standby
+                (?:\s+(?P<group_no>\d+))
+                \s+follow\s+
+                (?P<follow>.+)
                 $""", re.VERBOSE,
             ),
             "setval": "standby {{ group_no if group_no is not None else '' }} follow {{ follow }}",
@@ -182,7 +182,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                         "group_no": "{{ group_no }}",
                         "follow": "{{ follow }}",
                     }],
-                }
+                },
             },
         },
         {
@@ -198,8 +198,8 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                     "standby_groups": [{
                         "group_no": "{{ group_no }}",
                         "priority": "{{ priority }}",
-                    }]
-                }
+                    }],
+                },
             },
         },
         {
@@ -229,7 +229,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                             "minimum": "{{ minimum }}",
                             "reload": "{{ reload }}",
                             "sync": "{{ sync }}",
-                        }
+                        },
                     }],
                 },
             },
@@ -258,7 +258,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                             "decrement": "{{ decrement }}",
                             "shutdown": "{{ not not shutdown }}",
                         }],
-                    }]
+                    }],
                 },
             },
         },
@@ -266,7 +266,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "name": "standby.ip",
             "getval": re.compile(
                 r"""
-                \s+standby\s*(?P<group_no>\d+)?\s*ip\s+(?P<virtual_ip>\S+) 
+                \s+standby\s*(?P<group_no>\d+)?\s*ip\s+(?P<virtual_ip>\S+)
                 (\s(?P<secondary>secondary))?
                 $""", re.VERBOSE,
             ),
@@ -283,7 +283,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                             "virtual_ip": "{{ virtual_ip }}",
                             "secondary": "{{ not not secondary }}",
                         }],
-                    }]
+                    }],
                 },
             },
         },
@@ -291,11 +291,11 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "name": "standby.ipv6.link",
             "getval": re.compile(
                 r"""
-                \s*standby                   
-                (?:\s+(?P<group_no>\d+))?     
-                \s+ipv6\s+                 
-                (?P<ipv6_link>[a-fA-F0-9:]+)   
-                $""", re.VERBOSE
+                \s*standby
+                (?:\s+(?P<group_no>\d+))?
+                \s+ipv6\s+
+                (?P<ipv6_link>[a-fA-F0-9:]+)
+                $""", re.VERBOSE,
             ),
             "setval": "standby"
                       "{{ ' ' + group_no if standby.ipv6.link.group_no is not None else ''}}"
@@ -316,11 +316,11 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "name": "standby.ipv6.prefix",
             "getval": re.compile(
                 r"""
-                \s*standby         
-                (?:\s+(?P<group_no>\d+))?      
-                \s+ipv6\s+                 
-                (?P<ipv6_link_prefix>[a-fA-F0-9:]+\/\d+) 
-                $""", re.VERBOSE
+                \s*standby
+                (?:\s+(?P<group_no>\d+))?
+                \s+ipv6\s+
+                (?P<ipv6_link_prefix>[a-fA-F0-9:]+\/\d+)
+                $""", re.VERBOSE,
             ),
             "setval": "standby"
                       "{{ ' ' + group_no if standby.ipv6.prefix.group_no is not None else ''}}"
@@ -341,11 +341,11 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "name": "standby.ipv6.autoconfig",
             "getval": re.compile(
                 r"""
-                \s*standby                     
-                (?:\s+(?P<group_no>\d+))      
-                \s+ipv6                     
-                (?:\s+(?P<autoconfig>autoconfig))? 
-                $""", re.VERBOSE
+                \s*standby
+                (?:\s+(?P<group_no>\d+))
+                \s+ipv6
+                (?:\s+(?P<autoconfig>autoconfig))?
+                $""", re.VERBOSE,
             ),
             "setval": "standby"
                       "{{ ' ' + group_no if standby.ipv6.autoconfig.group_no is not None else ''}}"
@@ -375,8 +375,8 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                     "standby_groups": [{
                         "group_no": "{{ group_no }}",
                         "mac_address": "{{ mac_address }}",
-                    }]
-                }
+                    }],
+                },
             },
         },
         {
@@ -393,7 +393,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                         "group_no": "{{ group_no }}",
                         "group_name": "{{ name }}",
                     }],
-                }
+                },
             },
         },
         # {
@@ -422,11 +422,11 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                         "group_no": "{{ group_no }}",
                         "authentication": {
                             "advertisement": {
-                                "password_text": "{{ password_text }}"
-                            }
-                        }
-                    }]
-                }
+                                "password_text": "{{ password_text }}",
+                            },
+                        },
+                    }],
+                },
             },
         },
         {
@@ -443,11 +443,11 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                         "group_no": "{{ group_no }}",
                         "authentication": {
                             "advertisement": {
-                                "password_text": "{{ password_text if password_text.lower() != 'md5' else ''}}"
-                            }
-                        }
-                    }]
-                }
+                                "password_text": "{{ password_text if password_text.lower() != 'md5' else ''}}",
+                            },
+                        },
+                    }],
+                },
             },
         },
         {
@@ -464,25 +464,25 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                         "group_no": "{{ group_no }}",
                         "authentication": {
                             "advertisement": {
-                                "key_chain": "{{ key_chain }}"
-                            }
-                        }
-                    }]
-                }
+                                "key_chain": "{{ key_chain }}",
+                            },
+                        },
+                    }],
+                },
             },
         },
         {
             "name": "standby_authentication.md5.key_string",
             "getval": re.compile(
                 r"""
-                \s*standby\s+                       
-                (?P<group_no>\d+)\s+                  
-                authentication\s+md5\s+              
-                key-string\s+                       
-                (?P<key_encryption>0|7)\s+          
-                (?P<password>\S+)\s*  
+                \s*standby\s+
+                (?P<group_no>\d+)\s+
+                authentication\s+md5\s+
+                key-string\s+
+                (?P<key_encryption>0|7)\s+
+                (?P<password>\S+)\s*
                 (?:\s*timeout\s+(?P<timeout>\d+))?
-                $""", re.VERBOSE
+                $""", re.VERBOSE,
             ),
             "setval": "standby {{ group_no if group_no is not None else '' }} authentication md5 key-string {{ key_encryption }} {{ password }} {{ 'timeout ' timeout if timeout is not None else '' }}",
             "result": {
@@ -494,24 +494,24 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                                 "key_string": "{{ True }}",
                                 "encryption" : "{{ key_encryption }}",
                                 "password_text": "{{ password }}",
-                                "timeout": "{{ timeout }}"
+                                "timeout": "{{ timeout }}",
                             },
                         },
-                    }]
-                }
+                    }],
+                },
             },
         },
         {
             "name": "standby_authentication.md5.key_string_without_encryption",
             "getval": re.compile(
                 r"""
-                \s*standby\s+                       
-                (?P<group_no>\d+)\s+                  
-                authentication\s+md5\s+              
-                key-string\s+                                
-                (?P<password>\S+)\s*  
+                \s*standby\s+
+                (?P<group_no>\d+)\s+
+                authentication\s+md5\s+
+                key-string\s+
+                (?P<password>\S+)\s*
                 (?:\s*timeout\s+(?P<timeout>\d+))?
-                $""", re.VERBOSE
+                $""", re.VERBOSE,
             ),
             "setval": "standby {{ group_no if group_no is not None else '' }} authentication md5 key-string {{ key_type }} {{ key_string }} {{ 'timeout ' timeout if timeout is not None else '' }}",
             "result": {
@@ -522,11 +522,11 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                             "advertisement": {
                                 "key_string": "{{ True }}",
                                 "password_text": "{{ password }}",
-                                "timeout": "{{ timeout }}"
+                                "timeout": "{{ timeout }}",
                             },
                         },
-                    }]
-                }
+                    }],
+                },
             },
         },
         {
@@ -541,10 +541,10 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 "standby_redirect.timers": {
                     "standby_groups": [{
                         "redirect": {
-                            "timers": "{{ timers }}"
-                        }
-                    }]
-                }
+                            "timers": "{{ timers }}",
+                        },
+                    }],
+                },
             },
         },
         {
@@ -559,10 +559,10 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 "standby_redirect.unknown": {
                     "standby_groups": [{
                         "redirect": {
-                            "unknown": "{{ True }}"
-                        }
-                    }]
-                }
+                            "unknown": "{{ True }}",
+                        },
+                    }],
+                },
             },
         },
         {
@@ -578,26 +578,26 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                     "redirect": {
                         "advertisement": {
                             "authentication": {
-                                "key_chain": "{{ key_chain }}"
-                             }
-                        }
-                    }
-                }
+                                "key_chain": "{{ key_chain }}",
+                            },
+                        },
+                    },
+                },
             },
         },
         {
             "name": "standby_redirect.md5.key_string",
             "getval": re.compile(
                 r"""
-                \s*standby\s+   
-                redirect\s+                    
-                advertisement\s+                  
-                authentication\s+md5\s+              
-                key-string\s+                       
-                (?P<key_encryption>0|7)\s+          
-                (?P<password>\S+)\s*  
+                \s*standby\s+
+                redirect\s+
+                advertisement\s+
+                authentication\s+md5\s+
+                key-string\s+
+                (?P<key_encryption>0|7)\s+
+                (?P<password>\S+)\s*
                 (?:\s*timeout\s+(?P<timeout>\d+))?
-                $""", re.VERBOSE
+                $""", re.VERBOSE,
             ),
             "setval": "standby redirect advertisement authentication md5 key-string {{ key_encryption }} {{ password }} {{ 'timeout ' timeout if timeout is not None else '' }}",
             "result": {
@@ -608,25 +608,25 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                                 "encryption" : "{{ encryption }}",
                                 "key_string": "{{ True }}",
                                 "password_text": "{{ password }}",
-                                "timeout": "{{ timeout }}"
-                            }
-                        }
-                    }
-                }
+                                "timeout": "{{ timeout }}",
+                            },
+                        },
+                    },
+                },
             },
         },
         {
             "name": "standby_redirect.md5.key_string_without_encryption",
             "getval": re.compile(
                 r"""
-                \s*standby\s+   
-                redirect\s+                    
-                advertisement\s+                  
-                authentication\s+md5\s+              
-                key-string\s+                                
-                (?P<password>\S+)\s*  
+                \s*standby\s+
+                redirect\s+
+                advertisement\s+
+                authentication\s+md5\s+
+                key-string\s+
+                (?P<password>\S+)\s*
                 (?:\s*timeout\s+(?P<timeout>\d+))?
-                $""", re.VERBOSE
+                $""", re.VERBOSE,
             ),
             "setval": "standby redirect advertisement authentication md5 key-string {{ password }} {{ 'timeout ' timeout if timeout is not None else '' }}",
             "result": {
@@ -636,11 +636,11 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                             "authentication": {
                                 "key_string": "{{ True }}",
                                 "password_text": "{{ password }}",
-                                "timeout": "{{ timeout }}"
-                            }
-                        }
-                    }
-                }
+                                "timeout": "{{ timeout }}",
+                            },
+                        },
+                    },
+                },
             },
         },
     ]

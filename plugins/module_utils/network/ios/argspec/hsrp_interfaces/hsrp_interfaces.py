@@ -62,7 +62,7 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                                         "time_out": {"type": "str"},
                                         "password_text": {"type": "str"},
                                     },
-                                }
+                                },
                             },
                         },
                         "timers": {
@@ -81,7 +81,7 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                         "scope": {
                             "type": "dict",
                             "options": {"interface": {"type": "bool"}},
-                        }
+                        },
                     },
                 },
                 "version": {"type": "int"},
@@ -124,11 +124,11 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                                         "text": {
                                             "type": "dict",
                                             "options": {
-                                                "password_text": {"type": "str"}
+                                                "password_text": {"type": "str"},
                                             },
                                         },
                                     },
-                                }
+                                },
                             },
                         },
                         "preempt": {
