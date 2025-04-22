@@ -350,10 +350,10 @@ parsed:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.ios.ios.plugins.module_utils.network.ios.argspec.hsrp_interfaces.hsrp_interfaces import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.hsrp_interfaces.hsrp_interfaces import (
     Hsrp_interfacesArgs,
 )
-from ansible_collections.cisco.ios.ios.plugins.module_utils.network.ios.config.hsrp_interfaces.hsrp_interfaces import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.hsrp_interfaces.hsrp_interfaces import (
     Hsrp_interfaces,
 )
 
