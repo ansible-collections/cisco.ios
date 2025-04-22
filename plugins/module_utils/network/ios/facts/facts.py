@@ -114,6 +114,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vrf_in
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vxlan_vtep.vxlan_vtep import (
     Vxlan_vtepFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.hsrp_interfaces.hsrp_interfaces import (
+    Hsrp_interfacesFacts,
+)
 
 
 FACT_LEGACY_SUBSETS = dict(
@@ -155,6 +158,7 @@ FACT_RESOURCE_SUBSETS = dict(
     vrf_address_family=Vrf_address_familyFacts,
     vrf_global=Vrf_globalFacts,
     vrf_interfaces=Vrf_interfacesFacts,
+    hsrp_interfaces=Hsrp_interfacesFacts
 )
 
 

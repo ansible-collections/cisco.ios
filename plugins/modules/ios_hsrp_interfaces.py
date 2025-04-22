@@ -10,23 +10,27 @@ The module file for ios_hsrp_interfaces
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_hsrp_interfaces
 short_description: Resource module to configure HSRP on interfaces.
 description:
-  - This module provides declarative management of HSRP configuration on interface for Cisco IOS devices.
+  - >-
+    This module provides declarative management of HSRP configuration on
+    interface for Cisco IOS devices.
 version_added: 9.3.0
 author:
   - Sagar Paul (@KB-perByte)
+  - Nikhil Bhasin (@nickbhasin)
 notes:
   - Tested against Cisco IOSXE Version 17.16.
-  - This module works with connection C(network_cli).
-    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
-  - The module examples uses callback plugin (callback_result_format=yaml) to generate task
-    output in yaml format.
+  - >-
+    This module works with connection C(network_cli). See
+    U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
+  - >-
+    The module examples uses callback plugin (callback_result_format=yaml) to
+    generate task output in yaml format.
 options:
   config:
     description: A list of HSP configuration options to add to interface
@@ -35,7 +39,9 @@ options:
     suboptions:
       name:
         description:
-          - Full name of the interface excluding any logical unit number, i.e. GigabitEthernet0/1.
+          - >-
+            Full name of the interface excluding any logical unit number, i.e.
+            GigabitEthernet0/1.
         type: str
         required: true
       bfd:
@@ -59,29 +65,27 @@ options:
         type: dict
         suboptions:
           advertisement:
-            description: Redirect advertisement messages (standby redirect advertisement authentication md5)
+            description: >-
+              Redirect advertisement messages (standby redirect advertisement
+              authentication md5)
             type: dict
             suboptions:
-              key_chain:
-                description: Set key chain
-                type: str
-              key_string:
-                description: Set key string
+              authentication:
+                description: Authentication configuration
                 type: dict
                 suboptions:
-                  key_type:
-                    description: Type of Key
-                    type: int
-                  password_text:
-                    description: Key string (max: plaintext 64 chars; encrypted 130 chars)
+                  key_chain:
+                    description: Set key chain
                     type: str
-              password_text:
-                description: Password text valid for plain text and and key-string
-                type: str
-              text:
-                description: Password text valid for plain text
-                type: dict
-                suboptions:
+                  key_string:
+                    description: Set key string
+                    type: bool
+                  encryption:
+                    description: Set encryption 0 (unencrypted/default) or 7 (hidden)
+                    type: str
+                  time_out:
+                    description: Set timeout
+                    type: str
                   password_text:
                     description: Password text valid for plain text and and key-string
                     type: str
@@ -96,10 +100,14 @@ options:
                 description: Passive router holddown interval in seconds
                 type: int
       mac_refresh:
-        description: Refresh MAC cache on switch by periodically sending packet from virtual mac address
+        description: >-
+          Refresh MAC cache on switch by periodically sending packet from
+          virtual mac address
         type: int
       use_bia:
-        description: HSRP uses interface's burned in address (does not work with mac address)
+        description: >-
+          HSRP uses interface's burned in address (does not work with mac
+          address)
         type: dict
         suboptions:
           scope:
@@ -107,7 +115,9 @@ options:
             type: dict
             suboptions:
               interface:
-                description: Use-bia applies to all groups on this interface or sub-interface
+                description: >-
+                  Use-bia applies to all groups on this interface or
+                  sub-interface
                 type: bool
       version:
         description: HSRP version
@@ -139,11 +149,11 @@ options:
             type: list
             elements: dict
             suboptions:
-              virtual_ipv6:
-                description: X:X:X:X::X  IPv6 link-local address
+              ipv6_link:
+                description: 'X:x:X:x::X  IPv6 link-local address'
                 type: str
-              virtual_ipv6_prefix:
-                description: X:X:X:X::X/<0-128>  IPv6 prefix
+              ipv6_prefix:
+                description: 'X:x:X:x::X/<0-128>  IPv6 prefix'
                 type: str
               autoconfig:
                 description: Obtain address using autoconfiguration
@@ -167,14 +177,13 @@ options:
                     type: str
                   key_string:
                     description: Set key string
-                    type: dict
-                    suboptions:
-                      key_type:
-                        description: Type of Key
-                        type: int
-                      password_text:
-                        description: Key string (max: plaintext 64 chars; encrypted 130 chars)
-                        type: str
+                    type: bool
+                  encryption:
+                    description: Set encryption 0 (unencrypted/default) or 7 (hidden)
+                    type: int
+                  time_out:
+                    description: Set timeout
+                    type: str
                   password_text:
                     description: Password text valid for plain text and and key-string
                     type: str
@@ -241,11 +250,15 @@ options:
   running_config:
     description:
       - This option is used only with state I(parsed).
-      - The value of this option should be the output received from the IOS device
-        by executing the command B(show running-config | section ^interface).
-      - The state I(parsed) reads the configuration from C(running_config) option and
-        transforms it into Ansible structured data as per the resource module's argspec
-        and the value is then returned in the I(parsed) key within the result.
+      - >-
+        The value of this option should be the output received from the IOS
+        device by executing the command B(show running-config | section
+        ^interface).
+      - >-
+        The state I(parsed) reads the configuration from C(running_config)
+        option and transforms it into Ansible structured data as per the
+        resource module's argspec and the value is then returned in the
+        I(parsed) key within the result.
     type: str
   state:
     choices:
@@ -259,21 +272,27 @@ options:
     default: merged
     description:
       - The state the configuration should be left in
-      - The states I(rendered), I(gathered) and I(parsed) does not perform any change
-        on the device.
-      - The state I(rendered) will transform the configuration in C(config) option to
-        platform specific CLI commands which will be returned in the I(rendered) key
-        within the result. For state I(rendered) active connection to remote host is
-        not required.
-      - The state I(gathered) will fetch the running configuration from device and transform
-        it into structured data in the format as per the resource module argspec and
-        the value is returned in the I(gathered) key within the result.
-      - The state I(parsed) reads the configuration from C(running_config) option and
-        transforms it into JSON format as per the resource module parameters and the
-        value is returned in the I(parsed) key within the result. The value of C(running_config)
-        option should be the same format as the output of command
-        I(show running-config | section ^interface) executed on device. For state I(parsed) active
+      - >-
+        The states I(rendered), I(gathered) and I(parsed) does not perform any
+        change on the device.
+      - >-
+        The state I(rendered) will transform the configuration in C(config)
+        option to platform specific CLI commands which will be returned in the
+        I(rendered) key within the result. For state I(rendered) active
         connection to remote host is not required.
+      - >-
+        The state I(gathered) will fetch the running configuration from device
+        and transform it into structured data in the format as per the resource
+        module argspec and the value is returned in the I(gathered) key within
+        the result.
+      - >-
+        The state I(parsed) reads the configuration from C(running_config)
+        option and transforms it into JSON format as per the resource module
+        parameters and the value is returned in the I(parsed) key within the
+        result. The value of C(running_config) option should be the same format
+        as the output of command I(show running-config | section ^interface)
+        executed on device. For state I(parsed) active connection to remote host
+        is not required.
     type: str
 """
 
@@ -329,11 +348,10 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.hsrp_interfaces.hsrp_interfaces import (
+from ansible_collections.cisco.ios.ios.plugins.module_utils.network.ios.argspec.hsrp_interfaces.hsrp_interfaces import (
     Hsrp_interfacesArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.hsrp_interfaces.hsrp_interfaces import (
+from ansible_collections.cisco.ios.ios.plugins.module_utils.network.ios.config.hsrp_interfaces.hsrp_interfaces import (
     Hsrp_interfaces,
 )
 
