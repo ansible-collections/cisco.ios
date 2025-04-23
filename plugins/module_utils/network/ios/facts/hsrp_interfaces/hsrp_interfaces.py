@@ -25,6 +25,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.hsrp
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.hsrp_interfaces import (
     Hsrp_interfacesTemplate,
 )
+from collections import defaultdict
 
 
 class Hsrp_interfacesFacts(object):
@@ -59,6 +60,22 @@ class Hsrp_interfacesFacts(object):
             module=self._module,
         )
         objs = list(hsrp_interfaces_parser.parse().values())
+
+
+        def combine_by_group_no(data):
+            combined = defaultdict(dict)
+            for entry in data:
+                group_no = entry.get("group_no")
+                if group_no is not None:
+                    combined[group_no].update(entry)
+            return list(combined.values())
+
+        if objs:
+            for obj in objs:
+                if obj.get("standby_groups"):
+                    standby_groups_data = obj.get("standby_groups")
+                    combined_data = combine_by_group_no(standby_groups_data)
+                    obj["standby_groups"] = combined_data
 
         ansible_facts["ansible_network_resources"].pop("hsrp_interfaces", None)
 
