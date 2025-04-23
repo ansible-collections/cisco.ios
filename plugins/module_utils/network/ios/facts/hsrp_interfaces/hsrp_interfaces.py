@@ -15,6 +15,8 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
+from collections import defaultdict
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
@@ -25,7 +27,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.hsrp
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.hsrp_interfaces import (
     Hsrp_interfacesTemplate,
 )
-from collections import defaultdict
 
 
 class Hsrp_interfacesFacts(object):
@@ -60,7 +61,6 @@ class Hsrp_interfacesFacts(object):
             module=self._module,
         )
         objs = list(hsrp_interfaces_parser.parse().values())
-
 
         def combine_by_group_no(data):
             combined = defaultdict(dict)
