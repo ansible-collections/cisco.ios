@@ -124,16 +124,21 @@ class Interfaces(ResourceModule):
         """
         begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
-        if want.get("enabled") != have.get("enabled"):
-            if want.get("enabled"):
-                self.addcmd(want, "enabled", True)
-            else:
-                if want:
+        want_enabled = want.get("enabled")
+        have_enabled = have.get("enabled")
+        if want_enabled is not None:
+            if want_enabled != have_enabled:
+                if want_enabled is True:
+                    self.addcmd(want, "enabled", True)
+                else:
                     self.addcmd(want, "enabled", False)
-                elif have.get("enabled"):
-                    # handles deleted as want be blank and only
-                    # negates if no shutdown
-                    self.addcmd(have, "enabled", False)
+        elif not want and self.state == "overridden":
+            self.addcmd(have, "enabled", False)
+        elif not want and self.state == "deleted":
+            if have_enabled is False:
+                self.addcmd(have, "enabled", False)
+            elif have_enabled is True:
+                self.addcmd(have, "enabled", True)
         if want.get("mode") != have.get("mode"):
             if want.get("mode") == "layer3":
                 self.addcmd(want, "mode", True)

@@ -48,7 +48,6 @@ options:
           - Set the value to C(true) to administratively enable the interface or C(false)
             to disable it.
         type: bool
-        default: true
       speed:
         description:
           - Interface link speed. Applicable for Ethernet interfaces only.

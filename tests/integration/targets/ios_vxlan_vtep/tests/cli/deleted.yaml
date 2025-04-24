@@ -13,7 +13,9 @@
         config:
           - interface: nve1
         state: deleted
-
+    - name: debug
+      debug:
+        var: result
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
