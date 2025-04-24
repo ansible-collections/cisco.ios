@@ -417,7 +417,7 @@ class TestIosInterfacesModule(TestIosModule):
             "interface GigabitEthernet1",
             "no description Ansible UT interface 1",
             "no source template ANSIBLE",
-            "no shutdown"
+            "no shutdown",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -817,7 +817,7 @@ class TestIosInterfacesModule(TestIosModule):
              shutdown
              duplex auto
              negotiation auto
-            """
+            """,
         )
 
         # ACTION: Define module arguments (configure only description on Gi3, omit 'enabled')
@@ -828,10 +828,10 @@ class TestIosInterfacesModule(TestIosModule):
                         "name": "GigabitEthernet3",
                         "description": "AAP-44541 Test Description",
                         # 'enabled' parameter is deliberately omitted here
-                    }
+                    },
                 ],
                 "state": "merged",
-            }
+            },
         )
 
         # EXPECTED RESULT: Only description command should be generated, no 'no shutdown'
@@ -845,4 +845,4 @@ class TestIosInterfacesModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], expected_commands)
         # Explicitly assert changed is True as well
-        self.assertTrue(result['changed'])
+        self.assertTrue(result["changed"])
