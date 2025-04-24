@@ -1,0 +1,2 @@
+bugfixes:
+  - cisco.ios.ios_interfaces - Improved handling of the `enabled` state to prevent incorrect `shutdown` or `no shutdown` commands during configuration changes.
