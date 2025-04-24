@@ -14,7 +14,6 @@ merged:
         - member: GigabitEthernet3
           mode: passive
       name: Port-channel22
-    
 
 replaced:
   before:
@@ -62,7 +61,6 @@ overridden:
     - members:
         - {}
       name: Port-channel11
-    
 
 deleted:
   before:
@@ -74,7 +72,7 @@ deleted:
         - member: GigabitEthernet3
           mode: active
       name: Port-channel22
-    
+
   commands:
     - interface GigabitEthernet2
     - no channel-group 11 mode active
