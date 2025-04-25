@@ -796,7 +796,6 @@ class TestIosInterfacesModule(TestIosModule):
             "description Ansible UT Serial",
         ]
         result = self.execute_module(changed=False)
-        print(result["rendered"])
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
 
     def test_ios_interfaces_merged_on_shutdown_interface_no_enabled_specified(self):
