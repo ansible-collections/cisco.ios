@@ -135,10 +135,7 @@ class Interfaces(ResourceModule):
         elif not want and self.state == "overridden":
             self.addcmd(have, "enabled", False)
         elif not want and self.state == "deleted":
-            if have_enabled is False:
-                self.addcmd(have, "enabled", False)
-            elif have_enabled is True:
-                self.addcmd(have, "enabled", True)
+            self.addcmd(have, "enabled", False)
         if want.get("mode") != have.get("mode"):
             if want.get("mode") == "layer3":
                 self.addcmd(want, "mode", True)

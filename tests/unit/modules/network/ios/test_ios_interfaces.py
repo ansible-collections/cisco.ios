@@ -417,7 +417,7 @@ class TestIosInterfacesModule(TestIosModule):
             "interface GigabitEthernet1",
             "no description Ansible UT interface 1",
             "no source template ANSIBLE",
-            "no shutdown",
+            "shutdown",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
