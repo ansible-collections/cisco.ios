@@ -155,7 +155,7 @@ deleted:
     - interface GigabitEthernet2
     - no description this is interface1
     - no speed 1000
-    - no shutdown
+    - shutdown
     - interface GigabitEthernet3
     - no description this is interface for testing
     - no speed 1000
@@ -164,7 +164,7 @@ deleted:
     - description: Management interface do not change
       enabled: true
       name: GigabitEthernet1
-    - enabled: true
+    - enabled: false
       name: GigabitEthernet2
       speed: "1000"
     - enabled: false
