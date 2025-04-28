@@ -19,6 +19,8 @@ created.
 """
 
 
+import copy
+
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
@@ -33,7 +35,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.hsrp_interfaces import (
     Hsrp_interfacesTemplate,
 )
-import copy
 
 
 class Hsrp_interfaces(ResourceModule):
@@ -61,9 +62,9 @@ class Hsrp_interfaces(ResourceModule):
             "redirect.md5.key_string_without_encryption",
             "redirect.timers",
         ]
-        self.complex_parsers = ["ip", "track", "ipv6.link", "ipv6.prefix", "ipv6.autoconfig",]
+        self.complex_parsers = ["ip", "track", "ipv6.link", "ipv6.prefix", "ipv6.autoconfig"]
         self.non_complex_parsers = [
-            "priority", 
+            "priority",
             "timers.msec",
             "timers",
             "follow.follow",
@@ -165,8 +166,8 @@ class Hsrp_interfaces(ResourceModule):
 
     def _compare_complex_attrs(self, want, have):
         """Compare list items followed by non list items in standby_groups"""
-        want_standby_group = want.get('standby_groups', {})
-        have_standby_group = have.get('standby_groups', {})
+        want_standby_group = want.get("standby_groups", {})
+        have_standby_group = have.get("standby_groups", {})
         for group_number, wanting_data in want_standby_group.items():
             having_data = have_standby_group.get(group_number, {})
             for _par in self.complex_parsers:
@@ -183,8 +184,12 @@ class Hsrp_interfaces(ResourceModule):
                             having_parser_data.update({"group_no": group_number})
                     wanting_parser_data.update({"group_no": group_number})
                     if having_parser_data != wanting_parser_data:
-                        self.compare(parsers = [_par, ], want={}, have=having_parser_data)
-                    self.compare(parsers=[_par, ], want={_parser:wanting_parser_data}, have={_parser:having_parser_data})
+                        self.compare(parsers=[_par], want={}, have=having_parser_data)
+                    self.compare(
+                        parsers=[_par],
+                        want={_parser: wanting_parser_data},
+                        have={_parser: having_parser_data},
+                    )
 
             for _par in self.non_complex_parsers:
                 _parser = _par
@@ -211,5 +216,5 @@ class Hsrp_interfaces(ResourceModule):
                 else:
                     wantd = {"group_no": group_number, _parser: wantd}
                 if wantd != haved:
-                    self.compare(parsers = [_par, ], want={}, have=haved)
-                self.compare(parsers=[_par, ], want={_parser:wantd}, have={_parser:haved})
+                    self.compare(parsers=[_par], want={}, have=haved)
+                self.compare(parsers=[_par], want={_parser: wantd}, have={_parser: haved})

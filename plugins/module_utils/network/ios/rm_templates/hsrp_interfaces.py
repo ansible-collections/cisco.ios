@@ -551,7 +551,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                         "timers": {
                             "adv_timer": "{{ adv_timer }}",
                             "holddown_timer": "{{ holddown_timer }}",
-                        }
+                        },
                     },
                 },
             },
