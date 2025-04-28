@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_bgp_global - Fixes an issue where the 'number' attribute in 'local_as' parameter failed to parse ASDOT notation, causing a 'float to int' conversion error.
