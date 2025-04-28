@@ -33,6 +33,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.hsrp_interfaces import (
     Hsrp_interfacesTemplate,
 )
+import copy
 
 
 class Hsrp_interfaces(ResourceModule):
@@ -48,7 +49,33 @@ class Hsrp_interfaces(ResourceModule):
             resource="hsrp_interfaces",
             tmplt=Hsrp_interfacesTemplate(),
         )
-        self.parsers = []
+        self.parsers = [
+            "mac_refresh",
+            "version",
+            "delay",
+            "bfd",
+            "use-bia",
+            "follow",
+            "redirect.md5.key_chain",
+            "redirect.md5.key_string",
+            "redirect.md5.key_string_without_encryption",
+            "redirect.timers",
+        ]
+        self.complex_parsers = ["ip", "track", "ipv6.link", "ipv6.prefix", "ipv6.autoconfig",]
+        self.non_complex_parsers = [
+            "priority", 
+            "timers.msec",
+            "timers",
+            "follow.follow",
+            "preempt",
+            "mac_address",
+            "group_name",
+            "authentication.plain_text",
+            "authentication.text",
+            "authentication.md5.key_chain",
+            "authentication.md5.key_string",
+            "authentication.md5.key_string_without_encryption",
+        ]
 
     def execute_module(self):
         """Execute the module
@@ -67,6 +94,9 @@ class Hsrp_interfaces(ResourceModule):
         """
         wantd = {entry["name"]: entry for entry in self.want}
         haved = {entry["name"]: entry for entry in self.have}
+
+        wantd = self.transform_standby_data(wantd)
+        haved = self.transform_standby_data(haved)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -92,4 +122,94 @@ class Hsrp_interfaces(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Hsrp_interfaces network resource.
         """
+        begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
+        self._compare_complex_attrs(want, have)
+        if len(self.commands) != begin:
+            self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
+
+    def transform_standby_data(self, data):
+        def convert_list_to_dict(lst, key_name):
+            return {item[key_name]: item for item in lst if key_name in item}
+
+        result = {}
+
+        for iface_name, iface_data in data.items():
+            iface_result = iface_data.copy()
+            standby_groups = iface_data.get("standby_groups", [])
+            group_dict = {}
+
+            for group in standby_groups:
+                group_no = group.get("group_no")
+                if group_no is None:
+                    continue
+
+                new_group = {}
+
+                for key, value in group.items():
+                    if key == "ip" and isinstance(value, list):
+                        new_group[key] = convert_list_to_dict(value, "virtual_ip")
+                    elif key == "track" and isinstance(value, list):
+                        new_group[key] = convert_list_to_dict(value, "track_no")
+                    elif key == "ipv6" and isinstance(value, list):
+                        new_group[key] = convert_list_to_dict(value, "ipv6")
+                    elif key != "group_no":
+                        new_group[key] = value
+
+                group_dict[group_no] = new_group
+
+            iface_result["standby_groups"] = group_dict
+            result[iface_name] = iface_result
+
+        return result
+
+    def _compare_complex_attrs(self, want, have):
+        """Compare list items followed by non list items in standby_groups"""
+        want_standby_group = want.get('standby_groups', {})
+        have_standby_group = have.get('standby_groups', {})
+        for group_number, wanting_data in want_standby_group.items():
+            having_data = have_standby_group.get(group_number, {})
+            for _par in self.complex_parsers:
+                _parser = _par
+                if len(_parser) >= 4 and _parser[:4] == "ipv6":
+                    _parser = "ipv6"
+                wantd = wanting_data.get(_parser, {})
+                haved = having_data.pop(_parser, {})
+                for key, wanting_parser_data in wantd.items():
+                    having_parser_data = {}
+                    if haved:
+                        having_parser_data = haved.pop(key, {})
+                        if having_parser_data:
+                            having_parser_data.update({"group_no": group_number})
+                    wanting_parser_data.update({"group_no": group_number})
+                    if having_parser_data != wanting_parser_data:
+                        self.compare(parsers = [_par, ], want={}, have=having_parser_data)
+                    self.compare(parsers=[_par, ], want={_parser:wanting_parser_data}, have={_parser:having_parser_data})
+
+            for _par in self.non_complex_parsers:
+                _parser = _par
+                if _parser == "timers.msec":
+                    _parser = "timers"
+                if _parser == "follow.follow":
+                    _parser = "follow"
+                if _parser == "authentication.plain_text":
+                    _parser = "authentication"
+                if _parser == "authentication.md5.key_chain":
+                    _parser = "authentication"
+                if _parser == "authentication.text":
+                    _parser = "authentication"
+                if _parser == "authentication.md5.key_string":
+                    _parser = "authentication_md5_enc"
+                if _parser == "authentication.md5.key_string_without_encryption":
+                    _parser = "authentication"
+                wantd = wanting_data.get(_parser, {})
+                haved = having_data.pop(_parser, {})
+                if haved:
+                    haved.update({"group_no": group_number})
+                if isinstance(wantd, dict):
+                    wantd.update({"group_no": group_number})
+                else:
+                    wantd = {"group_no": group_number, _parser: wantd}
+                if wantd != haved:
+                    self.compare(parsers = [_par, ], want={}, have=haved)
+                self.compare(parsers=[_par, ], want={_parser:wantd}, have={_parser:haved})

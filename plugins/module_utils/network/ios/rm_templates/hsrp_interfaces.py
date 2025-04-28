@@ -48,7 +48,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 \s+standby\smac-refresh\s(?P<mac_refresh_number>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "standby mac-refresh {{ standby_mac_refresh }}",
+            "setval": "standby mac-refresh {{ mac_refresh|string }}",
             "result": {
                 "{{ name }}": {
                     "mac_refresh": "{{ mac_refresh_number }}",
@@ -56,13 +56,13 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby_version",
+            "name": "version",
             "getval": re.compile(
                 r"""
                 \s+standby\sversion\s(?P<version>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "standby version {{ version }}",
+            "setval": "standby version {{ version|string }}",
             "result": {
                 "{{ name }}": {
                     "version": "{{ version }}",
@@ -70,7 +70,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby.delay",
+            "name": "delay",
             "getval": re.compile(
                 r"""
                 \s+standby\sdelay
@@ -79,8 +79,8 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "standby delay"
-                      "{{ ' ' + minimum if standby.delay.minimum is not None else ''}}"
-                      "{{ ' ' + reload if standby.delay.reload is not None else ''}}",
+                      "{{ ' ' + delay.minimum|string if delay.minimum is defined else ''}}"
+                      "{{ ' ' + delay.reload|string if delay.reload is defined else ''}}",
             "result": {
                 "{{ name }}": {
                     "delay": {
@@ -91,7 +91,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby_bfd",
+            "name": "bfd",
             "getval": re.compile(
                 r"""
                 \s+standby\sbfd\s
@@ -105,7 +105,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "use-bia.scope",
+            "name": "use-bia",
             "getval": re.compile(
                 r"""
                 \s+standby\suse-bia\sscope\sinterface
@@ -123,7 +123,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby_follow",
+            "name": "follow",
             "getval": re.compile(
                 r"""
                 \s+standby\sfollow\s(?P<follow>.+)
@@ -137,21 +137,21 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby_timers.msec",
+            "name": "timers.msec",
             "getval": re.compile(
                 r"""
-                \s+standby\s*(?P<group_no>\d+)?\s*timers\smsec\s(?P<hello_interval_millis>\d+)\smsec\s(?P<hold_time_millis>\d+)
+                \s+standby\s*(?P<group_no>\d+)?\s*timers\smsec\s(?P<hello_interval>\d+)\smsec\s(?P<hold_time>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "standby {{ group_no if standby_timers.msec.group_no is not None else '' }} timers msec {{ standby_timers.msec.hello_interval_millis }} msec {{ standby_timers.msec.hold_time_millis }}",
+            "setval": "standby {{ timers.group_no|string if timers.group_no is defined else '' }} timers msec {{ timers.msec.hello_interval|string }} msec {{ timers.msec.hold_time|string }}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
                         "group_no": "{{ group_no }}",
                         "timers": {
                             "msec": {
-                                "hello_interval": "{{ hello_interval_millis }}",
-                                "hold_time": "{{ hold_time_millis }}",
+                                "hello_interval": "{{ hello_interval }}",
+                                "hold_time": "{{ hold_time }}",
                             },
                         },
                     }],
@@ -159,13 +159,13 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby_timers.hello_interval",
+            "name": "timers",
             "getval": re.compile(
                 r"""
                 \s+standby\s*(?P<group_no>\d+)?\s*timers\s(?P<hello_interval>\d+)\s(?P<hold_time>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "standby {{ group_no if group_no is not None else '' }} timers {{ hello_interval }} {{ hold_time }}",
+            "setval": "standby {{ timers.group_no|string if timers.group_no is defined else '' }} timers {{ timers.hello_interval }} {{ timers.hold_time }}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
@@ -179,7 +179,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby_group_follow",
+            "name": "follow.follow",
             "getval": re.compile(
                 r"""
                 \s*standby
@@ -188,7 +188,8 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 (?P<follow>.+)
                 $""", re.VERBOSE,
             ),
-            "setval": "standby {{ group_no if group_no is not None else '' }} follow {{ follow }}",
+            "compval": "follow",
+            "setval": "standby {{ follow.group_no|string if follow.group_no is defined else '' }} follow {{ follow.follow }}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
@@ -199,13 +200,13 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby_priority",
+            "name": "priority",
             "getval": re.compile(
                 r"""
                 \s+standby\s*(?P<group_no>\d+)?\s*priority\s(?P<priority>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "standby {{ group_no if group_no is not None else '' }} priority {{ priority }}",
+            "setval": "standby {{ priority.group_no|string if priority.group_no is defined else '' }} priority {{ priority.priority|string }}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
@@ -216,7 +217,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby.preempt",
+            "name": "preempt",
             "getval": re.compile(
                 r"""
                 \s+standby\s*(?P<group_no>\d+)?\s*preempt
@@ -227,12 +228,12 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "standby"
-                      "{{ ' ' + group_no if standby.preempt.group_no is not None else ''}}"
+                      "{{ ' ' + preempt.group_no|string if preempt.group_no is defined else ''}}"
                       " preempt"
-                      "{{ ' delay' if standby.preempt.delay|d(False) else ''}}"
-                      "{{ ' ' + minimum if standby.preempt.minimum is not None else ''}}"
-                      "{{ ' ' + reload if standby.preempt.reload is not None else ''}}"
-                      "{{ ' ' + sync if standby.preempt.sync is not None else ''}}",
+                      "{{ ' delay' if preempt.delay|d(False) else ''}}"
+                      "{{ ' minimum ' + preempt.minimum|string if preempt.minimum is defined else ''}}"
+                      "{{ ' reload ' + preempt.reload|string if preempt.reload is defined else ''}}"
+                      "{{ ' sync ' + preempt.sync|string if preempt.sync is defined else ''}}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
@@ -248,7 +249,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby.track",
+            "name": "track",
             "getval": re.compile(
                 r"""
                 \s+standby\s*(?P<group_no>\d+)?\s*track\s(?P<track_no>\d+)
@@ -257,11 +258,11 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "standby"
-                      "{{ ' ' + group_no if standby.track.group_no is not None else ''}}"
+                      "{{ ' ' + track.group_no|string if track.group_no is defined else ''}}"
                       " track"
-                      "{{ ' ' + track_no if standby.track.track_no is not None else ''}}"
-                      "{{ ' ' + decrement if standby.track.decrement is not None else ''}}"
-                      "{{ ' shutdown' if standby.track.shutdown|d(False) else ''}}",
+                      "{{ ' ' + track.track_no|string if track.track_no is defined else ''}}"
+                      "{{ ' decrement ' + track.decrement|string if track.decrement is defined else ''}}"
+                      "{{ ' shutdown' if track.shutdown|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
@@ -276,7 +277,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby.ip",
+            "name": "ip",
             "getval": re.compile(
                 r"""
                 \s+standby\s*(?P<group_no>\d+)?\s*ip\s+(?P<virtual_ip>\S+)
@@ -284,10 +285,10 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "standby"
-                      "{{ ' ' + group_no if standby.ip.group_no is not None else ''}}"
+                      "{{ ' ' + ip.group_no|string if ip.group_no is defined else ''}}"
                       " ip"
-                      "{{ ' ' + virtual_ip if standby.ip.virtual_ip is not None else ''}}"
-                      "{{ ' secondary' if standby.ip.secondary|d(False) else ''}}",
+                      "{{ ' ' + ip.virtual_ip if ip.virtual_ip is defined else ''}}"
+                      "{{ ' secondary' if ip.secondary|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
@@ -301,57 +302,57 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby.ipv6.link",
+            "name": "ipv6.link",
             "getval": re.compile(
                 r"""
                 \s*standby
                 (?:\s+(?P<group_no>\d+))?
                 \s+ipv6\s+
-                (?P<ipv6_link>[a-fA-F0-9:]+)
+                (?P<virtual_ipv6>[a-fA-F0-9:]+)
                 $""", re.VERBOSE,
             ),
             "setval": "standby"
-                      "{{ ' ' + group_no if standby.ipv6.link.group_no is not None else ''}}"
+                      "{{ ' ' + ipv6.group_no|string if ipv6.group_no is defined else ''}}"
                       " ipv6"
-                      "{{ ' ' + ipv6_link if standby.ipv6.link.ipv6_link is not None else ''}}",
+                      "{{ ' ' + ipv6.virtual_ipv6 if ipv6.virtual_ipv6 is defined else ''}}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
                         "group_no": "{{ group_no }}",
                         "ipv6": {
-                            "virtual_ipv6": "{{ ipv6_link }}",
+                            "virtual_ipv6": "{{ virtual_ipv6 }}",
                         },
                     }],
                 },
             },
         },
         {
-            "name": "standby.ipv6.prefix",
+            "name": "ipv6.prefix",
             "getval": re.compile(
                 r"""
                 \s*standby
                 (?:\s+(?P<group_no>\d+))?
                 \s+ipv6\s+
-                (?P<ipv6_link_prefix>[a-fA-F0-9:]+\/\d+)
+                (?P<virtual_ipv6_prefix>[a-fA-F0-9:]+\/\d+)
                 $""", re.VERBOSE,
             ),
             "setval": "standby"
-                      "{{ ' ' + group_no if standby.ipv6.prefix.group_no is not None else ''}}"
+                      "{{ ' ' + ipv6.group_no|string if ipv6.group_no is defined else ''}}"
                       " ipv6"
-                      "{{ ' ' + ipv6_link_prefix if standby.ipv6.prefix.ipv6_link_prefix is not None else ''}}",
+                      "{{ ' ' + ipv6.virtual_ipv6_prefix if ipv6.virtual_ipv6_prefix is defined else ''}}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
                         "group_no": "{{ group_no }}",
                         "ipv6": {
-                            "virtual_ipv6_prefix": "{{ ipv6_link_prefix }}",
+                            "virtual_ipv6_prefix": "{{ virtual_ipv6_prefix }}",
                         },
                     }],
                 },
             },
         },
         {
-            "name": "standby.ipv6.autoconfig",
+            "name": "ipv6.autoconfig",
             "getval": re.compile(
                 r"""
                 \s*standby
@@ -361,9 +362,9 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "standby"
-                      "{{ ' ' + group_no if standby.ipv6.autoconfig.group_no is not None else ''}}"
+                      "{{ ' ' + ipv6.group_no|string if ipv6.group_no is defined else ''}}"
                       " ipv6"
-                      "{{ ' autoconfig' if standby.ipv6.autoconfig|d(False) else ''}}",
+                      "{{ ' autoconfig' if ipv6.autoconfig|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
@@ -376,13 +377,13 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby_mac_address",
+            "name": "mac_address",
             "getval": re.compile(
                 r"""
                 \s+standby\s*(?P<group_no>\d+)?\s*mac-address\s(?P<mac_address>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "standby {{ group_no if group_no is not None else '' }} mac-address {{ mac_address }}",
+            "setval": "standby {{ mac_address.group_no|string if mac_address.group_no is defined else '' }} mac-address {{ mac_address.mac_address }}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
@@ -393,30 +394,31 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby_group_name",
+            "name": "group_name",
             "getval": re.compile(
                 r"""
-                \s+standby\s*(?P<group_no>\d+)?\s*name\s+(?P<name>.+)$
+                \s+standby\s*(?P<group_no>\d+)?\s*name\s+(?P<group_name>.+)$
                 """, re.VERBOSE,
             ),
-            "setval": "standby {{ group_no if group_no is not None else '' }} name {{ name }}",
+            "setval": "standby {{ group_name.group_no|string if group_name.group_no is defined else '' }} name {{ group_name.group_name }}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
                         "group_no": "{{ group_no }}",
-                        "group_name": "{{ name }}",
+                        "group_name": "{{ group_name }}",
                     }],
                 },
             },
         },
         {
-            "name": "standby_authentication.plain_text",
+            "name": "authentication.plain_text",
             "getval": re.compile(
                 r"""
                 \s+standby\s*(?P<group_no>\d+)?\s*authentication\stext\s(?P<password_text>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "standby {{ group_no if group_no is not None else '' }} authentication text {{ password_text }}",
+            "compval": "authentication",
+            "setval": "standby {{ authentication.group_no|string if authentication.group_no is defined else '' }} authentication text {{ authentication.advertisement.password_text }}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
@@ -431,13 +433,14 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby_authentication.text",
+            "name": "authentication.text",
             "getval": re.compile(
                 r"""
                 \s+standby\s*(?P<group_no>\d+)?\s*authentication\s(?P<password_text>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "standby {{ group_no if group_no is not None else '' }} authentication {{ ' ' + password_text if standby_authentication.text.password_text.lower() != 'md5' else '' }}",
+            "compval": "authentication",
+            "setval": "standby {{ authentication.group_no|string if authentication.group_no is defined else '' }} authentication {{ ' ' + authentication.advertisement.password_text if authentication.advertisement.password_text.lower() != 'md5' else '' }}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
@@ -452,13 +455,14 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby_authentication.md5.key_chain",
+            "name": "authentication.md5.key_chain",
             "getval": re.compile(
                 r"""
                 \s+standby\s*(?P<group_no>\d+)?\s*authentication\smd5\skey-chain\s(?P<key_chain>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "standby {{ group_no if group_no is not None else '' }} authentication md5 key-chain {{ key_chain }}",
+            "compval": "authentication",
+            "setval": "standby {{ authentication.group_no|string if authentication.group_no is defined else '' }} authentication md5 key-chain {{ authentication.advertisement.key_chain }}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
@@ -473,19 +477,20 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby_authentication.md5.key_string",
+            "name": "authentication.md5.key_string",
             "getval": re.compile(
                 r"""
                 \s*standby\s+
                 (?P<group_no>\d+)\s+
                 authentication\s+md5\s+
                 key-string\s+
-                (?P<key_encryption>0|7)\s+
-                (?P<password>\S+)\s*
-                (?:\s*timeout\s+(?P<timeout>\d+))?
+                (?P<encryption>0|7)\s+
+                (?P<password_text>\S+)\s*
+                (?:\s*timeout\s+(?P<time_out>\d+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "standby {{ group_no if group_no is not None else '' }} authentication md5 key-string {{ key_encryption }} {{ password }} {{ 'timeout ' + timeout if timeout is not None else '' }}",
+            "compval": "authentication",
+            "setval": "standby {{ authentication.group_no|string if authentication.group_no is defined else '' }} authentication md5 key-string {{ authentication.advertisement.encryption|string }} {{ authentication.advertisement.password_text }} {{ 'timeout ' + authentication.advertisement.time_out if authentication.advertisement.time_out is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
@@ -493,9 +498,9 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                         "authentication": {
                             "advertisement": {
                                 "key_string": "{{ True }}",
-                                "encryption" : "{{ key_encryption }}",
-                                "password_text": "{{ password }}",
-                                "timeout": "{{ timeout }}",
+                                "encryption" : "{{ encryption }}",
+                                "password_text": "{{ password_text }}",
+                                "time_out": "{{ time_out }}",
                             },
                         },
                     }],
@@ -503,18 +508,19 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby_authentication.md5.key_string_without_encryption",
+            "name": "authentication.md5.key_string_without_encryption",
             "getval": re.compile(
                 r"""
                 \s*standby\s+
                 (?P<group_no>\d+)\s+
                 authentication\s+md5\s+
                 key-string\s+
-                (?P<password>\S+)\s*
-                (?:\s*timeout\s+(?P<timeout>\d+))?
+                (?P<password_text>\S+)\s*
+                (?:\s*timeout\s+(?P<time_out>\d+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "standby {{ group_no if group_no is not None else '' }} authentication md5 key-string {{ key_type }} {{ key_string }} {{ 'timeout ' + timeout if timeout is not None else '' }}",
+            "compval": "authentication",
+            "setval": "standby {{ authentication.group_no|string if group_no is defined else '' }} authentication md5 key-string {{ authentication.advertisement.password_text }} {{ 'timeout ' + authentication.advertisement.time_out if authentication.advertisement.time_out is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
@@ -522,8 +528,8 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                         "authentication": {
                             "advertisement": {
                                 "key_string": "{{ True }}",
-                                "password_text": "{{ password }}",
-                                "timeout": "{{ timeout }}",
+                                "password_text": "{{ password_text }}",
+                                "time_out": "{{ time_out }}",
                             },
                         },
                     }],
@@ -531,49 +537,34 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby_redirect.timers",
+            "name": "redirect.timers",
             "getval": re.compile(
                 r"""
-                \s+standby\sredirect\stimers\s(?P<timers>\d+)
+                \s+standby\sredirect\stimers\s(?P<adv_timer>\d+)\s(?P<holddown_timer>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "standby redirect timers {{ timers }}",
+            "compval": "redirect",
+            "setval": "standby redirect timers {{ redirect.timers.adv_timer|string }} {{ redirect.timers.holddown_timer|string }}",
             "result": {
                 "{{ name }}": {
-                    "standby_groups": [{
-                        "redirect": {
-                            "timers": "{{ timers }}",
-                        },
-                    }],
+                    "redirect": {
+                        "timers": {
+                            "adv_timer": "{{ adv_timer }}",
+                            "holddown_timer": "{{ holddown_timer }}",
+                        }
+                    },
                 },
             },
         },
         {
-            "name": "standby_redirect.unknown",
-            "getval": re.compile(
-                r"""
-                \s+standby\sredirect\sunknown
-                $""", re.VERBOSE,
-            ),
-            "setval": "standby redirect unknown",
-            "result": {
-                "{{ name }}": {
-                    "standby_groups": [{
-                        "redirect": {
-                            "unknown": "{{ True }}",
-                        },
-                    }],
-                },
-            },
-        },
-        {
-            "name": "standby_redirect.md5.key_chain",
+            "name": "redirect.md5.key_chain",
             "getval": re.compile(
                 r"""
                 \s+standby\sredirect\sadvertisement\sauthentication\smd5\skey-chain\s(?P<key_chain>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "standby redirect advertisement authentication md5 key-chain {{ key_chain }}",
+            "compval": "redirect",
+            "setval": "standby redirect advertisement authentication md5 key-chain {{ redirect.advertisement.authentication.key_chain }}",
             "result": {
                 "{{ name }}": {
                     "redirect": {
@@ -587,7 +578,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby_redirect.md5.key_string",
+            "name": "redirect.md5.key_string",
             "getval": re.compile(
                 r"""
                 \s*standby\s+
@@ -595,12 +586,13 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 advertisement\s+
                 authentication\s+md5\s+
                 key-string\s+
-                (?P<key_encryption>0|7)\s+
-                (?P<password>\S+)\s*
-                (?:\s*timeout\s+(?P<timeout>\d+))?
+                (?P<encryption>0|7)\s+
+                (?P<password_text>\S+)\s*
+                (?:\s*timeout\s+(?P<time_out>\d+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "standby redirect advertisement authentication md5 key-string {{ key_encryption }} {{ password }} {{ 'timeout ' + timeout if timeout is not None else '' }}",
+            "compval": "redirect",
+            "setval": "standby redirect advertisement authentication md5 key-string {{ redirect.advertisement.authentication.encryption|string }} {{ redirect.advertisement.authentication.password_text }} {{ 'timeout ' + redirect.advertisement.authentication.time_out|string if redirect.advertisement.authentication.time_out is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "redirect": {
@@ -608,8 +600,8 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                             "authentication": {
                                 "encryption" : "{{ encryption }}",
                                 "key_string": "{{ True }}",
-                                "password_text": "{{ password }}",
-                                "timeout": "{{ timeout }}",
+                                "password_text": "{{ password_text }}",
+                                "time_out": "{{ time_out }}",
                             },
                         },
                     },
@@ -617,7 +609,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "standby_redirect.md5.key_string_without_encryption",
+            "name": "redirect.md5.key_string_without_encryption",
             "getval": re.compile(
                 r"""
                 \s*standby\s+
@@ -625,19 +617,20 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 advertisement\s+
                 authentication\s+md5\s+
                 key-string\s+
-                (?P<password>\S+)\s*
-                (?:\s*timeout\s+(?P<timeout>\d+))?
+                (?P<password_text>\S+)\s*
+                (?:\s*timeout\s+(?P<time_out>\d+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "standby redirect advertisement authentication md5 key-string {{ password }} {{ 'timeout ' + timeout if timeout is not None else '' }}",
+            "compval": "redirect",
+            "setval": "standby redirect advertisement authentication md5 key-string {{ redirect.advertisement.authentication.password_text }} {{ 'timeout ' + redirect.advertisement.authentication.time_out if redirect.advertisement.authentication.time_out is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "redirect": {
                         "advertisement": {
                             "authentication": {
                                 "key_string": "{{ True }}",
-                                "password_text": "{{ password }}",
-                                "timeout": "{{ timeout }}",
+                                "password_text": "{{ password_text }}",
+                                "time_out": "{{ time_out }}",
                             },
                         },
                     },
