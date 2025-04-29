@@ -96,8 +96,8 @@ class Hsrp_interfaces(ResourceModule):
         wantd = {entry["name"]: entry for entry in self.want}
         haved = {entry["name"]: entry for entry in self.have}
 
-        wantd = self.transform_standby_data(wantd)
-        haved = self.transform_standby_data(haved)
+        wantd = self.convert_list_to_dict(wantd)
+        haved = self.convert_list_to_dict(haved)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -129,8 +129,8 @@ class Hsrp_interfaces(ResourceModule):
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
 
-    def transform_standby_data(self, data):
-        def convert_list_to_dict(lst, key_name):
+    def convert_list_to_dict(self, data):
+        def list_to_dict(lst, key_name):
             return {item[key_name]: item for item in lst if key_name in item}
 
         result = {}
@@ -149,11 +149,11 @@ class Hsrp_interfaces(ResourceModule):
 
                 for key, value in group.items():
                     if key == "ip" and isinstance(value, list):
-                        new_group[key] = convert_list_to_dict(value, "virtual_ip")
+                        new_group[key] = list_to_dict(value, "virtual_ip")
                     elif key == "track" and isinstance(value, list):
-                        new_group[key] = convert_list_to_dict(value, "track_no")
+                        new_group[key] = list_to_dict(value, "track_no")
                     elif key == "ipv6" and isinstance(value, list):
-                        new_group[key] = convert_list_to_dict(value, "ipv6")
+                        new_group[key] = list_to_dict(value, "ipv6")
                     elif key != "group_no":
                         new_group[key] = value
 
