@@ -319,9 +319,9 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 "{{ name }}": {
                     "standby_groups": [{
                         "group_no": "{{ group_no }}",
-                        "ipv6": {
+                        "ipv6": [{
                             "virtual_ipv6": "{{ virtual_ipv6 }}",
-                        },
+                        }],
                     }],
                 },
             },
@@ -344,9 +344,9 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 "{{ name }}": {
                     "standby_groups": [{
                         "group_no": "{{ group_no }}",
-                        "ipv6": {
+                        "ipv6": [{
                             "virtual_ipv6_prefix": "{{ virtual_ipv6_prefix }}",
-                        },
+                        }],
                     }],
                 },
             },
@@ -369,9 +369,9 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 "{{ name }}": {
                     "standby_groups": [{
                         "group_no": "{{ group_no }}",
-                        "ipv6": {
+                        "ipv6": [{
                             "autoconfig": "{{ not not autoconfig }}",
-                        },
+                        }],
                     }],
                 },
             },
@@ -414,11 +414,17 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "name": "authentication.plain_text",
             "getval": re.compile(
                 r"""
-                \s+standby\s*(?P<group_no>\d+)?\s*authentication\stext\s(?P<password_text>\S+)
-                $""", re.VERBOSE,
+                ^\s*standby\s+(?P<group_no>\d+)\s+authentication(?:\s+text)?\s+(?P<password_text>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": (
+                "{% if authentication.advertisement.key_string is not defined%}"
+                "standby {{ authentication.group_no|string }} "
+                "authentication text {{ authentication.advertisement.password_text }}"
+                "{% endif %}"
             ),
             "compval": "authentication",
-            "setval": "standby {{ authentication.group_no|string if authentication.group_no is defined else '' }} authentication text {{ authentication.advertisement.password_text }}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
@@ -433,107 +439,57 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "authentication.text",
+            "name": "authentication.md5",
             "getval": re.compile(
                 r"""
-                \s+standby\s*(?P<group_no>\d+)?\s*authentication\s(?P<password_text>\S+)
-                $""", re.VERBOSE,
+                ^\s*standby\s+(?P<group_no>\d+)\s+authentication\s+md5\s+
+                (?:
+                    key-chain\s+(?P<key_chain>\S+)
+                    |
+                    key-string\s+(?:(?P<encryption>\d+)\s+)?(?P<password_text>\S+)
+                    (?:\s+timeout\s+(?P<time_out>\d+))?
+                )
+                $""",
+                re.VERBOSE,
             ),
             "compval": "authentication",
-            "setval": "standby {{ authentication.group_no|string if authentication.group_no is defined else '' }} authentication {{ ' ' + authentication.advertisement.password_text if authentication.advertisement.password_text.lower() != 'md5' else '' }}",
+            "setval": (
+                "{% if authentication.advertisement.key_string is defined or authentication.advertisement.key_chain is defined %}"
+                "standby {{ authentication.group_no|string }} authentication md5 "
+                "{% if authentication.advertisement.key_chain is defined %}"
+                "key-chain {{ authentication.advertisement.key_chain }}"
+                "{% else %}"
+                "key-string {% if authentication.advertisement.encryption is defined %}"
+                "{{ authentication.advertisement.encryption }} {% endif %}"
+                "{{ authentication.advertisement.password_text }}"
+                "{% if authentication.advertisement.time_out is defined %} "
+                "timeout {{ authentication.advertisement.time_out }}"
+                "{% endif %}"
+                "{% endif %}"
+                "{% endif %}"
+            ),
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
                         "group_no": "{{ group_no }}",
                         "authentication": {
                             "advertisement": {
-                                "password_text": "{{ password_text if password_text.lower() != 'md5' else ''}}",
-                            },
-                        },
-                    }],
-                },
-            },
-        },
-        {
-            "name": "authentication.md5.key_chain",
-            "getval": re.compile(
-                r"""
-                \s+standby\s*(?P<group_no>\d+)?\s*authentication\smd5\skey-chain\s(?P<key_chain>\S+)
-                $""", re.VERBOSE,
-            ),
-            "compval": "authentication",
-            "setval": "standby {{ authentication.group_no|string if authentication.group_no is defined else '' }} authentication md5 key-chain {{ authentication.advertisement.key_chain }}",
-            "result": {
-                "{{ name }}": {
-                    "standby_groups": [{
-                        "group_no": "{{ group_no }}",
-                        "authentication": {
-                            "advertisement": {
+                                "{% if key_chain is defined %}"
                                 "key_chain": "{{ key_chain }}",
-                            },
-                        },
-                    }],
-                },
-            },
-        },
-        {
-            "name": "authentication.md5.key_string",
-            "getval": re.compile(
-                r"""
-                \s*standby\s+
-                (?P<group_no>\d+)\s+
-                authentication\s+md5\s+
-                key-string\s+
-                (?P<encryption>0|7)\s+
-                (?P<password_text>\S+)\s*
-                (?:\s*timeout\s+(?P<time_out>\d+))?
-                $""", re.VERBOSE,
-            ),
-            "compval": "authentication",
-            "setval": "standby {{ authentication.group_no|string if authentication.group_no is defined else '' }} authentication md5 key-string {{ authentication.advertisement.encryption|string }} {{ authentication.advertisement.password_text }} {{ 'timeout ' + authentication.advertisement.time_out if authentication.advertisement.time_out is defined else '' }}",
-            "result": {
-                "{{ name }}": {
-                    "standby_groups": [{
-                        "group_no": "{{ group_no }}",
-                        "authentication": {
-                            "advertisement": {
-                                "key_string": "{{ True }}",
-                                "encryption" : "{{ encryption }}",
-                                "password_text": "{{ password_text }}",
-                                "time_out": "{{ time_out }}",
-                            },
-                        },
-                    }],
-                },
-            },
-        },
-        {
-            "name": "authentication.md5.key_string_without_encryption",
-            "getval": re.compile(
-                r"""
-                \s*standby\s+
-                (?P<group_no>\d+)\s+
-                authentication\s+md5\s+
-                key-string\s+
-                (?P<password_text>\S+)\s*
-                (?:\s*timeout\s+(?P<time_out>\d+))?
-                $""", re.VERBOSE,
-            ),
-            "compval": "authentication",
-            "setval": "standby {{ authentication.group_no|string if group_no is defined else '' }} authentication md5 key-string {{ authentication.advertisement.password_text }} {{ 'timeout ' + authentication.advertisement.time_out if authentication.advertisement.time_out is defined else '' }}",
-            "result": {
-                "{{ name }}": {
-                    "standby_groups": [{
-                        "group_no": "{{ group_no }}",
-                        "authentication": {
-                            "advertisement": {
+                                "{% else %}"
                                 "key_string": "{{ True }}",
                                 "password_text": "{{ password_text }}",
-                                "time_out": "{{ time_out }}",
-                            },
-                        },
-                    }],
-                },
+                                "{% if encryption is defined %}"
+                                "encryption": "{{ encryption }}",
+                                "{% endif %}"
+                                "{% if time_out is defined %}"
+                                "time_out": "{{ time_out }}"
+                                "{% endif %}"
+                                "{% endif %}"
+                            }
+                        }
+                    }]
+                }
             },
         },
         {

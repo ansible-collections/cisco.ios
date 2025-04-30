@@ -72,10 +72,7 @@ class Hsrp_interfaces(ResourceModule):
             "mac_address",
             "group_name",
             "authentication.plain_text",
-            "authentication.text",
-            "authentication.md5.key_chain",
-            "authentication.md5.key_string",
-            "authentication.md5.key_string_without_encryption",
+            "authentication.md5",
         ]
 
     def execute_module(self):
@@ -175,7 +172,7 @@ class Hsrp_interfaces(ResourceModule):
                 if len(_parser) >= 4 and _parser[:4] == "ipv6":
                     _parser = "ipv6"
                 wantd = wanting_data.get(_parser, {})
-                haved = having_data.pop(_parser, {})
+                haved = having_data.get(_parser, {})
                 for key, wanting_parser_data in wantd.items():
                     having_parser_data = {}
                     if haved:
@@ -184,30 +181,27 @@ class Hsrp_interfaces(ResourceModule):
                             having_parser_data.update({"group_no": group_number})
                     wanting_parser_data.update({"group_no": group_number})
                     if having_parser_data and having_parser_data != wanting_parser_data:
-                        self.compare(parsers=[_par], want={}, have={_parser: having_parser_data})
-                    self.compare(
-                        parsers=[_par],
-                        want={_parser: wanting_parser_data},
-                        have={_parser: having_parser_data},
-                    )
-                for key, haved_parser_data in haved.items():
-                    self.compare(parsers=[_par], want={}, have={_parser: haved_parser_data})
+                        self.compare(parsers = [_par, ], want={}, have={_parser:having_parser_data})
+                    self.compare(parsers=[_par, ], want={_parser:wanting_parser_data}, have={_parser:having_parser_data})
+
 
             for _par in self.non_complex_parsers:
                 _parser = _par
                 if _parser == "timers.msec":
                     _parser = "timers"
-                if _parser == "follow.follow":
+                elif _parser == "follow.follow":
                     _parser = "follow"
-                if _parser == "authentication.plain_text":
+                elif _parser == "authentication.plain_text":
                     _parser = "authentication"
-                if _parser == "authentication.md5.key_chain":
+                elif _parser == "authentication.md5.key_chain":
                     _parser = "authentication"
-                if _parser == "authentication.text":
+                elif _parser == "authentication.text":
                     _parser = "authentication"
-                if _parser == "authentication.md5.key_string":
+                elif _parser == "authentication.md5.key_string":
                     _parser = "authentication"
-                if _parser == "authentication.md5.key_string_without_encryption":
+                elif _parser == "authentication.md5.key_string_without_encryption":
+                    _parser = "authentication"
+                elif _parser == "authentication.md5":
                     _parser = "authentication"
                 wantd = wanting_data.get(_parser, {})
                 haved = having_data.pop(_parser, {})
@@ -220,41 +214,33 @@ class Hsrp_interfaces(ResourceModule):
                 else:
                     wantd = {"group_no": group_number, _parser: wantd}
                 if haved and wantd != haved:
-                    self.compare(parsers=[_par], want={}, have={_parser: haved})
-                self.compare(parsers=[_par], want={_parser: wantd}, have={_parser: haved})
-        # Removal of unecessary configs in have
+                    self.compare(parsers = [_par, ], want={}, have={_parser:haved})
+                self.compare(parsers=[_par, ], want={_parser:wantd}, have={_parser:haved})
+        # Removal of unecessary configs in have_standby_group
         for group_number, having_data in have_standby_group.items():
-            for _par in self.complex_parsers:
-                _parser = _par
-                if len(_parser) >= 4 and _parser[:4] == "ipv6":
-                    _parser = "ipv6"
-                wantd = {}
-                haved = having_data.pop(_parser, {})
-                for key, having_parser_data in haved.items():
-                    having_parser_data.update({"group_no": group_number})
-                    self.compare(parsers=[_par], want={}, have={_parser: having_parser_data})
-
-            for _par in self.non_complex_parsers:
-                _parser = _par
-                if _parser == "timers.msec":
-                    _parser = "timers"
-                if _parser == "follow.follow":
-                    _parser = "follow"
-                if _parser == "authentication.plain_text":
-                    _parser = "authentication"
-                if _parser == "authentication.md5.key_chain":
-                    _parser = "authentication"
-                if _parser == "authentication.text":
-                    _parser = "authentication"
-                if _parser == "authentication.md5.key_string":
-                    _parser = "authentication_md5_enc"
-                if _parser == "authentication.md5.key_string_without_encryption":
-                    _parser = "authentication"
-                wantd = wanting_data.get(_parser, {})
-                haved = having_data.pop(_parser, {})
-                if haved:
-                    if isinstance(haved, dict):
-                        haved.update({"group_no": group_number})
-                    else:
-                        haved = {"group_no": group_number, _parser: wantd}
-                    self.compare(parsers=[_par], want={}, have={_parser: haved})
+            if having_data:
+                for _par in self.complex_parsers:
+                    _parser = _par
+                    if len(_parser) >= 4 and _parser[:4] == "ipv6":
+                        _parser = "ipv6"
+                    haved = having_data.pop(_parser, {})
+                    for key, having_parser_data in haved.items():
+                        having_parser_data.update({"group_no": group_number})
+                        self.compare(parsers = [_par, ], want={}, have={_parser:having_parser_data})
+                for _par in self.non_complex_parsers:
+                    _parser = _par
+                    if _parser == "timers.msec":
+                        _parser = "timers"
+                    if _parser == "follow.follow":
+                        _parser = "follow"
+                    if _parser == "authentication.plain_text":
+                        _parser = "authentication"
+                    if _parser == "authentication.md5":
+                        _parser = "authentication"
+                    haved = having_data.pop(_parser, {})
+                    if haved:
+                        if isinstance(haved, dict):
+                            haved.update({"group_no": group_number})
+                        else:
+                            haved = {"group_no": group_number, _parser: haved}
+                        self.compare(parsers = [_par, ], want={}, have={_parser:haved})
