@@ -485,11 +485,11 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                                 "{% if time_out is defined %}"
                                 "time_out": "{{ time_out }}"
                                 "{% endif %}"
-                                "{% endif %}"
-                            }
-                        }
-                    }]
-                }
+                                "{% endif %}",
+                            },
+                        },
+                    }],
+                },
             },
         },
         {

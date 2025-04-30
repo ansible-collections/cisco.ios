@@ -12,12 +12,16 @@ from unittest.mock import MagicMock, patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_hsrp_interfaces
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
-from plugins.module_utils.network.ios.facts.hsrp_interfaces.hsrp_interfaces import Hsrp_interfacesFacts
+from plugins.module_utils.network.ios.facts.hsrp_interfaces.hsrp_interfaces import (
+    Hsrp_interfacesFacts,
+)
 
 from .ios_module import TestIosModule
 
+
 # from ansible.utils.display import Display
 # display = Display()
+
 
 class TestIosHSRPInterfaceModule(TestIosModule):
     module = ios_hsrp_interfaces
@@ -57,9 +61,9 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                         standby_groups=[
                             dict(
                                 ip=[dict(virtual_ip="10.0.0.1", secondary=True)],
-                                group_no=22
-                            )
-                        ]
+                                group_no=22,
+                            ),
+                        ],
                     ),
                 ],
                 state="merged",
@@ -67,7 +71,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
-    
+
     def test_ios_hsrp_interfaces_overridden(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -83,9 +87,9 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                         standby_groups=[
                             dict(
                                 ip=[dict(virtual_ip="10.0.0.1", secondary=True)],
-                                group_no=22
-                            )
-                        ]
+                                group_no=22,
+                            ),
+                        ],
                     ),
                 ],
                 state="overridden",
@@ -104,7 +108,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
         set_module_args(dict(state="deleted"))
         commands = [
             "interface GigabitEthernet4",
-            "no standby 22 ip 10.0.0.1 secondary"
+            "no standby 22 ip 10.0.0.1 secondary",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -124,18 +128,18 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                         standby_groups=[
                             dict(
                                 ip=[dict(virtual_ip="12.0.0.1", secondary=True)],
-                                group_no=22
-                            )
-                        ]
+                                group_no=22,
+                            ),
+                        ],
                     ),
                     dict(
                         name="GigabitEthernet4",
                         standby_groups=[
                             dict(
                                 track=[dict(track_no=20, shutdown=True)],
-                                group_no=22
-                            )
-                        ]
+                                group_no=22,
+                            ),
+                        ],
                     ),
                 ],
                 state="replaced",
@@ -167,15 +171,17 @@ class TestIosHSRPInterfaceModule(TestIosModule):
         parsed_list = [
             {
                 "name": "GigabitEthernet4",
-                "standby_groups":[{
-                    "group_no": 22,
-                    "ip": [
-                        {
-                            "virtual_ip": "10.0.0.1",
-                            "secondary": True
-                        },
-                    ],
-                }]
+                "standby_groups": [
+                    {
+                        "group_no": 22,
+                        "ip": [
+                            {
+                                "virtual_ip": "10.0.0.1",
+                                "secondary": True,
+                            },
+                        ],
+                    }
+                ],
             },
         ]
         self.assertEqual(parsed_list, result["parsed"])
@@ -189,9 +195,9 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                         standby_groups=[
                             dict(
                                 ip=[dict(virtual_ip="12.0.0.1", secondary=True)],
-                                group_no=22
-                            )
-                        ]
+                                group_no=22,
+                            ),
+                        ],
                     ),
                     dict(
                         name="GigabitEthernet4",
@@ -199,9 +205,9 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                             dict(
                                 track=[dict(track_no=20, shutdown=True)],
                                 ip=[dict(virtual_ip="10.0.0.1", secondary=True)],
-                                group_no=22
-                            )
-                        ]
+                                group_no=22,
+                            ),
+                        ],
                     ),
                 ],
                 state="rendered",
@@ -234,18 +240,18 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                         standby_groups=[
                             dict(
                                 ip=[dict(virtual_ip="12.0.0.1", secondary=True)],
-                                group_no=22
-                            )
-                        ]
+                                group_no=22,
+                            ),
+                        ],
                     ),
                     dict(
                         name="GigabitEthernet4",
                         standby_groups=[
                             dict(
                                 track=[dict(track_no=20, shutdown=True)],
-                                group_no=22
-                            )
-                        ]
+                                group_no=22,
+                            ),
+                        ],
                     ),
                 ],
                 state="merged",
@@ -277,18 +283,18 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                         standby_groups=[
                             dict(
                                 ip=[dict(virtual_ip="10.0.0.1", secondary=True)],
-                                group_no=22
-                            )
-                        ]
+                                group_no=22,
+                            ),
+                        ],
                     ),
                     dict(
                         name="GigabitEthernet3",
                         standby_groups=[
                             dict(
                                 priority=5,
-                                group_no=0
-                            )
-                        ]
+                                group_no=0,
+                            ),
+                        ],
                     ),
                 ],
                 state="merged",
@@ -314,10 +320,10 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                         standby_groups=[
                             dict(
                                 ip=[dict(virtual_ip="10.0.0.1", secondary=True)],
-                                group_no=22
-                            )
-                        ]
-                    )
+                                group_no=22,
+                            ),
+                        ],
+                    ),
                 ],
                 state="replaced",
             ),
@@ -349,17 +355,21 @@ class TestIosHSRPInterfaceModule(TestIosModule):
         gathered = [
             {
                 "name": "GigabitEthernet4",
-                "standby_groups": [{
-                    "ip": [{"virtual_ip": "10.0.0.3", "secondary": True}],
-                    "group_no": 7
-                }]
+                "standby_groups": [
+                    {
+                        "ip": [{"virtual_ip": "10.0.0.3", "secondary": True}],
+                        "group_no": 7,
+                    }
+                ],
             },
             {
                 "name": "GigabitEthernet3",
-                "standby_groups": [{
-                    "ip": [{"virtual_ip": "10.0.0.2", "secondary": True}],
-                    "group_no": 10
-                }]
-            }
+                "standby_groups": [
+                    {
+                        "ip": [{"virtual_ip": "10.0.0.2", "secondary": True}],
+                        "group_no": 10,
+                    }
+                ],
+            },
         ]
         self.assertEqual(result["gathered"], gathered)

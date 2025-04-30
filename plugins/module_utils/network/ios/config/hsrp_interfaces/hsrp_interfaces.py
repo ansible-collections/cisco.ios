@@ -181,9 +181,12 @@ class Hsrp_interfaces(ResourceModule):
                             having_parser_data.update({"group_no": group_number})
                     wanting_parser_data.update({"group_no": group_number})
                     if having_parser_data and having_parser_data != wanting_parser_data:
-                        self.compare(parsers = [_par, ], want={}, have={_parser:having_parser_data})
-                    self.compare(parsers=[_par, ], want={_parser:wanting_parser_data}, have={_parser:having_parser_data})
-
+                        self.compare(parsers=[_par], want={}, have={_parser: having_parser_data})
+                    self.compare(
+                        parsers=[_par],
+                        want={_parser: wanting_parser_data},
+                        have={_parser: having_parser_data},
+                    )
 
             for _par in self.non_complex_parsers:
                 _parser = _par
@@ -214,8 +217,8 @@ class Hsrp_interfaces(ResourceModule):
                 else:
                     wantd = {"group_no": group_number, _parser: wantd}
                 if haved and wantd != haved:
-                    self.compare(parsers = [_par, ], want={}, have={_parser:haved})
-                self.compare(parsers=[_par, ], want={_parser:wantd}, have={_parser:haved})
+                    self.compare(parsers=[_par], want={}, have={_parser: haved})
+                self.compare(parsers=[_par], want={_parser: wantd}, have={_parser: haved})
         # Removal of unecessary configs in have_standby_group
         for group_number, having_data in have_standby_group.items():
             if having_data:
@@ -226,7 +229,7 @@ class Hsrp_interfaces(ResourceModule):
                     haved = having_data.pop(_parser, {})
                     for key, having_parser_data in haved.items():
                         having_parser_data.update({"group_no": group_number})
-                        self.compare(parsers = [_par, ], want={}, have={_parser:having_parser_data})
+                        self.compare(parsers=[_par], want={}, have={_parser: having_parser_data})
                 for _par in self.non_complex_parsers:
                     _parser = _par
                     if _parser == "timers.msec":
@@ -243,4 +246,4 @@ class Hsrp_interfaces(ResourceModule):
                             haved.update({"group_no": group_number})
                         else:
                             haved = {"group_no": group_number, _parser: haved}
-                        self.compare(parsers = [_par, ], want={}, have={_parser:haved})
+                        self.compare(parsers=[_par], want={}, have={_parser: haved})
