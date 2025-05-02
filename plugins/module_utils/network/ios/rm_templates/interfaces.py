@@ -39,6 +39,7 @@ class InterfacesTemplate(NetworkTemplate):
             'result': {
                 '{{ name }}': {
                     'name': '{{ name }}',
+                    'enabled': True,
                 },
             },
             'shared': True,
