@@ -240,6 +240,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               neighbor 198.51.100.1 next-hop-self all
               neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
               neighbor 198.51.100.1 route-server-client
+              neighbor 198.51.100.1 as-override split-horizon
               neighbor 198.51.100.1 prefix-list AS65100-PREFIX-OUT out
               neighbor 198.51.100.1 slow-peer detection threshold 150
               neighbor 198.51.100.1 route-map test-out out
@@ -662,6 +663,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               neighbor 198.51.100.1 local-as 20
               neighbor 198.51.100.1 activate
               neighbor 198.51.100.1 next-hop-self all
+              neighbor 198.51.100.1 as-override split-horizon
               neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
               neighbor 198.51.100.1 route-server-client
               neighbor 198.51.100.1 prefix-list AS65100-PREFIX-OUT out
@@ -728,6 +730,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                 dict(
                                     activate=True,
                                     address="198.51.100.1",
+                                    as_override=dict(set=True, split_horizon=True),
                                     aigp=dict(
                                         send=dict(
                                             cost_community=dict(
@@ -963,6 +966,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                 dict(
                                     activate=True,
                                     address="198.51.100.1",
+                                    as_override=dict(set=True, split_horizon=True),
                                     aigp=dict(
                                         send=dict(
                                             cost_community=dict(
@@ -1035,6 +1039,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "neighbor 198.51.100.1 activate",
             "neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive",
             "neighbor 198.51.100.1 route-map test-route out",
+            "neighbor 198.51.100.1 as-override split-horizon",
             "neighbor 198.51.100.1 route-server-client",
             "neighbor 198.51.100.1 slow-peer detection threshold 150",
             "network 198.51.110.10 mask 255.255.255.255 backdoor",
