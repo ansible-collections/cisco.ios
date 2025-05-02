@@ -3,8 +3,6 @@ merged:
   before:
     - name: loopback888
     - name: loopback999
-    - name: Port-channel10
-    - name: Port-channel40
     - name: GigabitEthernet1
     - name: GigabitEthernet2
     - name: GigabitEthernet3
@@ -23,7 +21,6 @@ merged:
     - fast_switchover: true
       max_bundle: 2
       name: Port-channel10
-    - name: Port-channel40
     - name: GigabitEthernet1
     - name: GigabitEthernet2
       port_priority: 30
