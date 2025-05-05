@@ -298,7 +298,614 @@ options:
 """
 
 EXAMPLES = """
+# Using merged
 
+# Before state:
+# -------------
+#
+# Router#show running-config | section ^interface
+# interface Loopback888
+#  no ip address
+# interface Loopback999
+#  no ip address
+# interface GigabitEthernet1
+#  description Management interface do not change
+#  ip address dhcp
+#  negotiation auto
+# interface GigabitEthernet2
+#  no ip address
+#  ip ospf network broadcast
+#  ip ospf resync-timeout 10
+#  ip ospf dead-interval 5
+#  speed 1000
+#  no negotiation auto
+# interface GigabitEthernet3
+#  no ip address
+#  speed 1000
+#  no negotiation auto
+# interface GigabitEthernet4
+#  no ip address
+#  shutdown 
+#  negotiation auto
+
+- name: Merge provided configuration with device configuration
+  cisco.ios.ios_hsrp_interfaces:
+    config:
+      - name: GigabitEthernet3
+          standby_groups:
+            - group_no: 22
+              ip:
+                - virtual_ip: 10.0.0.1
+                  secondary: True
+      - name: GigabitEthernet4
+          standby_groups:
+            - group_no: 0
+              priority: 5
+    state: merged
+
+# Task Output
+# -----------
+#
+# before:
+# - name: GigabitEthernet1
+# - name: GigabitEthernet2
+# - name: GigabitEthernet3
+# - name: GigabitEthernet4
+# - name: Loopback999
+# - name: Loopback888
+# commands:
+# - interface GigabitEthernet3
+# - "standby 22 ip 10.0.0.1 secondary
+# - interface GigabitEthernet4
+# - standby 0 priority 5
+# after:
+#   name: GigabitEthernet1
+#   name: GigabitEthernet2
+#   name: GigabitEthernet3
+#     standby_groups:
+#       - group_no: 22
+#         ip:
+#           - virtual_ip: 192.168.0.2
+#             secondary: True
+# - name: GigabitEthernet4
+#     standby_groups:
+#       - group_no: 0
+#         priority: 5
+# - name: Loopback999
+# - name: Loopback888
+
+# After state:
+# ------------
+#
+# interface Loopback888
+#  no ip address
+# interface Loopback999
+#  no ip address
+# interface GigabitEthernet1
+#  description Management interface do not change
+#  ip address dhcp
+#  negotiation auto
+# interface GigabitEthernet2
+#  no ip address
+#  speed 1000
+#  no negotiation auto
+# interface GigabitEthernet3
+#  no ip address
+#  speed 1000
+#  standby 22 ip 10.0.0.1 secondary
+#  no negotiation auto
+# interface GigabitEthernet4
+#  no ip address
+#  standby 0 priority 5
+#  shutdown 
+#  negotiation auto
+
+
+# Using replaced
+
+# Before state:
+# -------------
+#
+# Router#show running-config | section ^interface
+# interface Loopback888
+#  no ip address
+# interface Loopback999
+#  no ip address
+# interface GigabitEthernet1
+#  description Management interface do not change
+#  ip address dhcp
+#  negotiation auto
+# interface GigabitEthernet2
+#  no ip address
+#  speed 1000
+#  no negotiation auto
+# interface GigabitEthernet3
+#  no ip address
+#  speed 1000
+#  standby 22 ip 10.0.0.1 secondary
+#  no negotiation auto
+# interface GigabitEthernet4
+#  no ip address
+#  standby 0 priority 5
+#  shutdown 
+#  negotiation auto
+
+- name: Replaces device configuration of listed interfaces with provided configuration
+  cisco.ios.ios_hsrp_interfaces:
+    config:
+      - name: GigabitEthernet3
+          standby_groups:
+            - group_no: 22
+              ip:
+                - virtual_ip: 10.0.0.1
+                  secondary: True
+      - name: GigabitEthernet4
+          standby_groups:
+            - group_no: 0
+              priority: 6
+    state: replaced
+
+# Task Output
+# -----------
+#
+# before:
+# - name: GigabitEthernet1
+# - name: GigabitEthernet2
+# - name: GigabitEthernet3
+#     standby_groups:
+#       - group_no: 22
+#         ip:
+#           - virtual_ip: 192.168.0.2
+#             secondary: True
+# - name: GigabitEthernet4
+#     standby_groups:
+#       - group_no: 0
+#         priority: 6
+# - name: Loopback999
+# - name: Loopback888
+# commands:
+# - interface GigabitEthernet3
+# - standby 22 ip 10.0.0.1 secondary
+# - interface GigabitEthernet4
+# - standby 0 priority 5
+# after:
+#   name: GigabitEthernet1
+#   name: GigabitEthernet2
+#   name: GigabitEthernet3
+#     standby_groups:
+#       - group_no: 22
+#         ip:
+#           - virtual_ip: 192.168.0.2
+#             secondary: True
+# - name: GigabitEthernet4
+#     standby_groups:
+#       - group_no: 0
+#         priority: 6
+# - name: Loopback999
+# - name: Loopback888
+
+# After state:
+# ------------
+#
+# interface Loopback888
+#  no ip address
+# interface Loopback999
+#  no ip address
+# interface GigabitEthernet1
+#  description Management interface do not change
+#  ip address dhcp
+#  negotiation auto
+# interface GigabitEthernet2
+#  no ip address
+#  ip ospf network broadcast
+#  ip ospf resync-timeout 10
+#  ip ospf dead-interval 5
+#  speed 1000
+#  no negotiation auto
+# interface GigabitEthernet3
+#  no ip address
+#  standby 22 ip 10.0.0.1 secondary
+#  speed 1000
+#  no negotiation auto
+# interface GigabitEthernet4
+#  description Auto_Cable_Testing_Ansible
+#  no ip address
+#  standby 0 priority 6
+#  shutdown 
+#  negotiation auto
+
+# Using overridden
+
+# Before state:
+# -------------
+#
+# interface Loopback888
+#  no ip address
+# interface Loopback999
+#  no ip address
+# interface GigabitEthernet1
+#  description Management interface do not change
+#  ip address dhcp
+#  negotiation auto
+# interface GigabitEthernet2
+#  no ip address
+#  ip ospf network broadcast
+#  ip ospf resync-timeout 10
+#  ip ospf dead-interval 5
+#  speed 1000
+#  no negotiation auto
+# interface GigabitEthernet3
+#  no ip address
+#  standby 22 ip 10.0.0.1 secondary
+#  speed 1000
+#  no negotiation auto
+# interface GigabitEthernet4
+#  description Auto_Cable_Testing_Ansible
+#  no ip address
+#  standby 0 priority 6
+#  shutdown 
+#  negotiation auto
+
+- name: Override device configuration of all interfaces with provided configuration
+  cisco.ios.ios_hsrp_interfaces:
+    config:
+      - name: GigabitEthernet4
+          standby_groups:
+            - group_no: 0
+              priority: 10
+    state: overridden
+
+# Task Output
+# -----------
+# before:
+# - name: GigabitEthernet1
+# - name: GigabitEthernet2
+# - name: GigabitEthernet3
+#     standby_groups:
+#       - group_no: 22
+#         ip:
+#           - virtual_ip: 192.168.0.2
+#             secondary: True
+# - name: GigabitEthernet4
+#     standby_groups:
+#       - group_no: 0
+#         priority: 6
+# - name: Loopback999
+# - name: Loopback888
+# commands:
+# - interface GigabitEthernet3
+# - no standby 22 ip 10.0.0.1 secondary
+# - interface GigabitEthernet4
+# - no standby 0 priority 6
+# - standby 0 priority 10
+# after:
+# - name: GigabitEthernet1
+# - name: GigabitEthernet2
+# - name: GigabitEthernet3
+# - name: GigabitEthernet4
+#     standby_groups:
+#       - group_no: 0
+#         priority: 10
+# - name: Loopback999
+# - name: Loopback888
+
+# After state:
+# ------------
+#
+# router-ios#show running-config | section ^interface
+# interface Loopback888
+#  no ip address
+# interface Loopback999
+#  no ip address
+# interface GigabitEthernet1
+#  description Management interface do not change
+#  ip address dhcp
+#  negotiation auto
+# interface GigabitEthernet2
+#  no ip address
+#  ip ospf network broadcast
+#  ip ospf resync-timeout 10
+#  ip ospf dead-interval 5
+#  speed 1000
+#  no negotiation auto
+# interface GigabitEthernet3
+#  no ip address
+#  speed 1000
+#  no negotiation auto
+# interface GigabitEthernet4
+#  description Auto_Cable_Testing_Ansible
+#  no ip address
+#  standby 0 priority 10
+#  shutdown 
+#  negotiation auto
+
+# Using deleted
+
+# Before state:
+# -------------
+#
+# router-ios#show running-config | section ^interface
+# interface Loopback888
+#  no ip address
+# interface Loopback999
+#  no ip address
+# interface GigabitEthernet1
+#  description Management interface do not change
+#  ip address dhcp
+#  negotiation auto
+# interface GigabitEthernet2
+#  no ip address
+#  ip ospf network broadcast
+#  ip ospf resync-timeout 10
+#  ip ospf dead-interval 5
+#  speed 1000
+#  no negotiation auto
+# interface GigabitEthernet3
+#  no ip address
+#  speed 1000
+#  no negotiation auto
+# interface GigabitEthernet4
+#  description Auto_Cable_Testing_Ansible
+#  no ip address
+#  standby 0 priority 10
+#  shutdown 
+#  negotiation auto
+
+- name: "Delete attributes of given interfaces (NOTE: This won't delete the interfaces)"
+  cisco.ios.ios_hsrp_interfaces:
+    config:
+      - name: GigabitEthernet4
+    state: deleted
+
+# Task Output
+# -----------
+#
+# before:
+# - name: GigabitEthernet1
+# - name: GigabitEthernet2
+# - name: GigabitEthernet3
+# - name: GigabitEthernet4
+#     standby_groups:
+#       - group_no: 0
+#         priority: 10
+# - name: Loopback999
+# - name: Loopback888
+# commands:
+# - interface GigabitEthernet4
+# - no standby 0 priority 10
+# after:
+#   name: GigabitEthernet1
+# - name: GigabitEthernet2
+# - name: GigabitEthernet3
+# - name: GigabitEthernet4
+# - name: Loopback999
+# - name: Loopback888
+
+# After state:
+# -------------
+#
+# router-ios#show running-config | section ^interface
+# interface Loopback888
+#  no ip address
+# interface Loopback999
+#  no ip address
+# interface GigabitEthernet1
+#  description Management interface do not change
+#  ip address dhcp
+#  negotiation auto
+# interface GigabitEthernet2
+#  no ip address
+#  ip ospf network broadcast
+#  ip ospf resync-timeout 10
+#  ip ospf dead-interval 5
+#  speed 1000
+#  no negotiation auto
+# interface GigabitEthernet3
+#  no ip address
+#  speed 1000
+#  no negotiation auto
+# interface GigabitEthernet4
+#  description Auto_Cable_Testing_Ansible
+#  no ip address
+#  shutdown 
+#  negotiation auto
+
+# Using deleted without config passed, only interface's configuration will be negated
+
+# Before state:
+# -------------
+
+# interface Loopback888
+#  no ip address
+# interface Loopback999
+#  no ip address
+# interface GigabitEthernet1
+#  description Management interface do not change
+#  ip address dhcp
+#  negotiation auto
+# interface GigabitEthernet2
+#  no ip address
+#  speed 1000
+#  no negotiation auto
+# interface GigabitEthernet3
+#  no ip address
+#  speed 1000
+#  standby 22 ip 10.0.0.1 secondary
+#  no negotiation auto
+# interface GigabitEthernet4
+#  no ip address
+#  standby 0 priority 5
+#  shutdown 
+#  negotiation auto
+
+- name: "Delete HSRP config of all interfaces"
+  cisco.ios.ios_hsrp_interfaces:
+    state: deleted
+
+# Task Output
+# -----------
+#
+# before:
+# - name: GigabitEthernet1
+# - name: GigabitEthernet2
+# - name: GigabitEthernet3
+#     standby_groups:
+#       - group_no: 22
+#         ip:
+#           - virtual_ip: 192.168.0.2
+#             secondary: True
+# - name: GigabitEthernet4
+#     standby_groups:
+#       - group_no: 0
+#         priority: 5
+# - name: Loopback999
+# - name: Loopback888
+# commands:
+# - interface GigabitEthernet3
+# - no standby 22 ip 192.168.0.2 secondary
+# - interface GigabitEthernet4
+# - no standby 0 priority 5
+# after:
+# - name: GigabitEthernet1
+# - name: GigabitEthernet2
+# - name: GigabitEthernet3
+# - name: GigabitEthernet3.100
+# - name: GigabitEthernet4
+# - name: Loopback999
+
+# After state:
+# -------------
+#
+# interface Loopback888
+#  no ip address
+# interface Loopback999
+#  no ip address
+# interface GigabitEthernet1
+#  description Management interface do not change
+#  ip address dhcp
+#  negotiation auto
+# interface GigabitEthernet2
+#  no ip address
+#  ip ospf network broadcast
+#  ip ospf resync-timeout 10
+#  ip ospf dead-interval 5
+#  speed 1000
+#  no negotiation auto
+# interface GigabitEthernet3
+#  no ip address
+#  speed 1000
+#  no negotiation auto
+# interface GigabitEthernet4
+#  description Auto_Cable_Testing_Ansible
+#  no ip address
+#  shutdown 
+#  negotiation auto
+
+# Using gathered
+
+# Before state:
+# -------------
+# interface Loopback888
+#  no ip address
+# interface Loopback999
+#  no ip address
+# interface GigabitEthernet1
+#  description Management interface do not change
+#  ip address dhcp
+#  negotiation auto
+# interface GigabitEthernet2
+#  no ip address
+#  speed 1000
+#  no negotiation auto
+# interface GigabitEthernet3
+#  no ip address
+#  speed 1000
+#  standby 22 ip 10.0.0.1 secondary
+#  no negotiation auto
+# interface GigabitEthernet4
+#  no ip address
+#  standby 0 priority 5
+#  shutdown 
+#  negotiation auto
+
+- name: Gather facts for hsrp interfaces
+  cisco.ios.ios_hsrp_interfaces:
+    state: gathered
+
+# Task Output
+# -----------
+#
+# gathered:
+# - name: GigabitEthernet1
+# - name: GigabitEthernet2
+# - name: GigabitEthernet3
+#     standby_groups:
+#       - group_no: 22
+#         ip:
+#           - virtual_ip: 192.168.0.2
+#             secondary: True
+# - name: GigabitEthernet4
+#     standby_groups:
+#       - group_no: 0
+#         priority: 5
+# - name: Loopback999
+# - name: Loopback888
+
+# Using rendered
+
+- name: Render the commands for provided configuration
+  cisco.ios.ios_hsrp_interfaces:
+    config:
+      - name: GigabitEthernet3
+        standby_groups:
+          - group_no: 22
+            ip:
+              - virtual_ip: 192.168.0.2
+                secondary: True
+      - name: GigabitEthernet4
+        standby_groups:
+          - group_no: 0
+            priority: 5
+    state: rendered
+
+# Task Output
+# -----------
+#
+# rendered:
+# - interface GigabitEthernet3
+# - "standby 22 ip 10.0.0.1 secondary
+# - interface GigabitEthernet4
+# - standby 0 priority 5
+
+# Using parsed
+
+# File: parsed.cfg
+# ----------------
+#
+# interface GigabitEthernet3
+#  standby 22 ip 10.0.0.1 secondary
+# interface GigabitEthernet4
+#  standby 0 priority 5
+
+# - name: Parse the provided configuration
+#   cisco.ios.ios_hsrp_interfaces:
+#     running_config: "{{ lookup('file', 'parsed.cfg') }}"
+#     state: parsed
+
+# Task Output
+# -----------
+#
+# parsed:
+# - name: GigabitEthernet3
+#    standby_groups:
+#     - group_no: 22
+#       ip:
+#         - virtual_ip: 192.168.0.2
+#           secondary: True
+# - name: GigabitEthernet4
+#    standby_groups:
+#     - group_no: 0
+#       priority: 5
 """
 
 RETURN = """

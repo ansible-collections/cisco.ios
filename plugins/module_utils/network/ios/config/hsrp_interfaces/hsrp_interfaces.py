@@ -195,17 +195,9 @@ class Hsrp_interfaces(ResourceModule):
                 elif _parser == "follow.follow":
                     _parser = "follow"
                 elif _parser == "authentication.plain_text":
-                    _parser = "authentication"
-                elif _parser == "authentication.md5.key_chain":
-                    _parser = "authentication"
-                elif _parser == "authentication.text":
-                    _parser = "authentication"
-                elif _parser == "authentication.md5.key_string":
-                    _parser = "authentication"
-                elif _parser == "authentication.md5.key_string_without_encryption":
-                    _parser = "authentication"
+                        _parser = "authentication"
                 elif _parser == "authentication.md5":
-                    _parser = "authentication"
+                        _parser = "authentication"
                 wantd = wanting_data.get(_parser, {})
                 haved = having_data.pop(_parser, {})
                 if isinstance(haved, dict):
@@ -234,11 +226,11 @@ class Hsrp_interfaces(ResourceModule):
                     _parser = _par
                     if _parser == "timers.msec":
                         _parser = "timers"
-                    if _parser == "follow.follow":
+                    elif _parser == "follow.follow":
                         _parser = "follow"
-                    if _parser == "authentication.plain_text":
+                    elif _parser == "authentication.plain_text":
                         _parser = "authentication"
-                    if _parser == "authentication.md5":
+                    elif _parser == "authentication.md5":
                         _parser = "authentication"
                     haved = having_data.pop(_parser, {})
                     if haved:

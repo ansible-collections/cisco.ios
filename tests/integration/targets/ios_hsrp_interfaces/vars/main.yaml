@@ -1,0 +1,156 @@
+---
+merged:
+  before:
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
+    - name: GigabitEthernet4
+  commands:
+    - interface GigabitEthernet3
+    - standby 22 ip 10.0.0.1 secondary
+    - interface GigabitEthernet4
+    - standby 0 priority 5
+  after:
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
+      standby_groups:
+        - group_no: 22
+          ip:
+            - virtual_ip: 10.0.0.1
+              secondary: True
+    - name: GigabitEthernet4
+      standby_groups:
+        - group_no: 0
+          priority: 5
+
+replaced:
+  before:
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
+      standby_groups:
+        - group_no: 22
+          ip:
+            - virtual_ip: 10.0.0.1
+              secondary: True
+    - name: GigabitEthernet4
+      standby_groups:
+        - group_no: 0
+          priority: 5
+  commands:
+    - interface GigabitEthernet2
+    - standby 0 priority 5
+  after:
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+      standby_groups:
+        - group_no: 0
+          priority: 5
+    - name: GigabitEthernet3
+      standby_groups:
+        - group_no: 22
+          ip:
+            - virtual_ip: 10.0.0.1
+              secondary: True
+    - name: GigabitEthernet4
+      standby_groups:
+        - group_no: 0
+          priority: 5
+
+overridden:
+  before:
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
+      standby_groups:
+        - group_no: 22
+          ip:
+            - virtual_ip: 10.0.0.1
+              secondary: True
+    - name: GigabitEthernet4
+      standby_groups:
+        - group_no: 0
+          priority: 5
+  commands:
+    - interface GigabitEthernet2
+    - standby 0 priority 5
+    - interface GigabitEthernet3
+    - no standby 22 ip 10.0.0.1 secondary
+    - interface GigabitEthernet4
+    - no standby 0 priority 5
+  after:
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+      standby_groups:
+        - group_no: 0
+          priority: 5
+    - name: GigabitEthernet3
+    - name: GigabitEthernet4
+
+deleted:
+  before:
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
+      standby_groups:
+        - group_no: 22
+          ip:
+            - virtual_ip: 10.0.0.1
+              secondary: True
+    - name: GigabitEthernet4
+      standby_groups:
+        - group_no: 0
+          priority: 5
+  commands:
+    - interface GigabitEthernet3
+    - no standby 22 ip 10.0.0.1 secondary
+    - interface GigabitEthernet4
+    - no standby 0 priority 5
+  after:
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
+    - name: GigabitEthernet4
+
+gathered:
+  config:
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
+      standby_groups:
+        - group_no: 22
+          ip:
+            - virtual_ip: 10.0.0.1
+              secondary: True
+    - name: GigabitEthernet4
+      standby_groups:
+        - group_no: 0
+          priority: 5
+
+parsed:
+  config:
+    - name: GigabitEthernet3
+      standby_groups:
+        - group_no: 22
+          ip:
+            - virtual_ip: 10.0.0.1
+              secondary: True
+    - name: GigabitEthernet4
+      standby_groups:
+        - group_no: 0
+          priority: 5
+
+rtt:
+  commands:
+    - interface GigabitEthernet4
+    - standby 0 priority 6
+    - no standby 0 priority 6
+    - standby 0 priority 5
+
+rendered:
+  commands:
+    - interface GigabitEthernet3
+    - standby 22 ip 10.0.0.1 secondary
+    - interface GigabitEthernet4
+    - standby 0 priority 5
