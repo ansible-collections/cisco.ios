@@ -1,0 +1,3 @@
+---
+major_changes:
+  - ios_hsrp_interfaces - Added support for cisco.ios.hsrp_interfaces module (standby commands).
