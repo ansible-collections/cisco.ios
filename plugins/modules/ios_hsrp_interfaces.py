@@ -325,7 +325,7 @@ EXAMPLES = """
 #  no negotiation auto
 # interface GigabitEthernet4
 #  no ip address
-#  shutdown 
+#  shutdown
 #  negotiation auto
 
 - name: Merge provided configuration with device configuration
@@ -397,7 +397,7 @@ EXAMPLES = """
 # interface GigabitEthernet4
 #  no ip address
 #  standby 0 priority 5
-#  shutdown 
+#  shutdown
 #  negotiation auto
 
 
@@ -427,7 +427,7 @@ EXAMPLES = """
 # interface GigabitEthernet4
 #  no ip address
 #  standby 0 priority 5
-#  shutdown 
+#  shutdown
 #  negotiation auto
 
 - name: Replaces device configuration of listed interfaces with provided configuration
@@ -511,7 +511,7 @@ EXAMPLES = """
 #  description Auto_Cable_Testing_Ansible
 #  no ip address
 #  standby 0 priority 6
-#  shutdown 
+#  shutdown
 #  negotiation auto
 
 # Using overridden
@@ -543,7 +543,7 @@ EXAMPLES = """
 #  description Auto_Cable_Testing_Ansible
 #  no ip address
 #  standby 0 priority 6
-#  shutdown 
+#  shutdown
 #  negotiation auto
 
 - name: Override device configuration of all interfaces with provided configuration
@@ -616,7 +616,7 @@ EXAMPLES = """
 #  description Auto_Cable_Testing_Ansible
 #  no ip address
 #  standby 0 priority 10
-#  shutdown 
+#  shutdown
 #  negotiation auto
 
 # Using deleted
@@ -648,7 +648,7 @@ EXAMPLES = """
 #  description Auto_Cable_Testing_Ansible
 #  no ip address
 #  standby 0 priority 10
-#  shutdown 
+#  shutdown
 #  negotiation auto
 
 - name: "Delete attributes of given interfaces (NOTE: This won't delete the interfaces)"
@@ -707,7 +707,7 @@ EXAMPLES = """
 # interface GigabitEthernet4
 #  description Auto_Cable_Testing_Ansible
 #  no ip address
-#  shutdown 
+#  shutdown
 #  negotiation auto
 
 # Using deleted without config passed, only interface's configuration will be negated
@@ -735,7 +735,7 @@ EXAMPLES = """
 # interface GigabitEthernet4
 #  no ip address
 #  standby 0 priority 5
-#  shutdown 
+#  shutdown
 #  negotiation auto
 
 - name: "Delete HSRP config of all interfaces"
@@ -798,7 +798,7 @@ EXAMPLES = """
 # interface GigabitEthernet4
 #  description Auto_Cable_Testing_Ansible
 #  no ip address
-#  shutdown 
+#  shutdown
 #  negotiation auto
 
 # Using gathered
@@ -825,7 +825,7 @@ EXAMPLES = """
 # interface GigabitEthernet4
 #  no ip address
 #  standby 0 priority 5
-#  shutdown 
+#  shutdown
 #  negotiation auto
 
 - name: Gather facts for hsrp interfaces

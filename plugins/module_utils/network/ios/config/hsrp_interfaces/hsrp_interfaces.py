@@ -195,9 +195,9 @@ class Hsrp_interfaces(ResourceModule):
                 elif _parser == "follow.follow":
                     _parser = "follow"
                 elif _parser == "authentication.plain_text":
-                        _parser = "authentication"
+                    _parser = "authentication"
                 elif _parser == "authentication.md5":
-                        _parser = "authentication"
+                    _parser = "authentication"
                 wantd = wanting_data.get(_parser, {})
                 haved = having_data.pop(_parser, {})
                 if isinstance(haved, dict):

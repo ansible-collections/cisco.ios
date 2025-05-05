@@ -180,7 +180,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                                 "secondary": True,
                             },
                         ],
-                    }
+                    },
                 ],
             },
         ]
@@ -359,7 +359,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                     {
                         "ip": [{"virtual_ip": "10.0.0.3", "secondary": True}],
                         "group_no": 7,
-                    }
+                    },
                 ],
             },
             {
@@ -368,7 +368,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                     {
                         "ip": [{"virtual_ip": "10.0.0.2", "secondary": True}],
                         "group_no": 10,
-                    }
+                    },
                 ],
             },
         ]
