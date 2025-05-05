@@ -18,7 +18,7 @@ merged:
         - group_no: 22
           ip:
             - virtual_ip: 10.0.0.1
-              secondary: True
+              secondary: true
     - name: GigabitEthernet4
       standby_groups:
         - group_no: 0
@@ -33,7 +33,7 @@ replaced:
         - group_no: 22
           ip:
             - virtual_ip: 10.0.0.1
-              secondary: True
+              secondary: true
     - name: GigabitEthernet4
       standby_groups:
         - group_no: 0
@@ -52,7 +52,7 @@ replaced:
         - group_no: 22
           ip:
             - virtual_ip: 10.0.0.1
-              secondary: True
+              secondary: true
     - name: GigabitEthernet4
       standby_groups:
         - group_no: 0
@@ -67,7 +67,7 @@ overridden:
         - group_no: 22
           ip:
             - virtual_ip: 10.0.0.1
-              secondary: True
+              secondary: true
     - name: GigabitEthernet4
       standby_groups:
         - group_no: 0
@@ -97,7 +97,7 @@ deleted:
         - group_no: 22
           ip:
             - virtual_ip: 10.0.0.1
-              secondary: True
+              secondary: true
     - name: GigabitEthernet4
       standby_groups:
         - group_no: 0
@@ -122,7 +122,7 @@ gathered:
         - group_no: 22
           ip:
             - virtual_ip: 10.0.0.1
-              secondary: True
+              secondary: true
     - name: GigabitEthernet4
       standby_groups:
         - group_no: 0
@@ -135,7 +135,7 @@ parsed:
         - group_no: 22
           ip:
             - virtual_ip: 10.0.0.1
-              secondary: True
+              secondary: true
     - name: GigabitEthernet4
       standby_groups:
         - group_no: 0
