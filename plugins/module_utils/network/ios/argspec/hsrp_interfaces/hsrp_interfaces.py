@@ -55,13 +55,18 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "authentication": {
                                     "type": "dict",
-                                    "no_log": True,
                                     "options": {
-                                        "key_chain": {"type": "str"},
+                                        "key_chain": {
+                                            "type": "str",
+                                            "no_log": True,
+                                        },
                                         "key_string": {"type": "bool"},
                                         "encryption": {"type": "str"},
                                         "time_out": {"type": "str"},
-                                        "password_text": {"type": "str"},
+                                        "password_text": {
+                                            "type": "str",
+                                            "no_log": True,
+                                        },
                                     },
                                 },
                             },
@@ -116,17 +121,25 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "advertisement": {
                                     "type": "dict",
-                                    "no_log": True,
                                     "options": {
-                                        "key_chain": {"type": "str"},
+                                        "key_chain": {
+                                            "type": "str",
+                                            "no_log": True,
+                                        },
                                         "key_string": {"type": "bool"},
                                         "encryption": {"type": "int"},
                                         "time_out": {"type": "str"},
-                                        "password_text": {"type": "str"},
+                                        "password_text": {
+                                            "type": "str",
+                                            "no_log": True,
+                                        },
                                         "text": {
                                             "type": "dict",
                                             "options": {
-                                                "password_text": {"type": "str"},
+                                                "password_text": {
+                                                    "type": "str",
+                                                    "no_log": True,
+                                                },
                                             },
                                         },
                                     },

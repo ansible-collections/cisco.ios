@@ -336,7 +336,7 @@ EXAMPLES = """
           - group_no: 22
             ip:
               - virtual_ip: 10.0.0.1
-                secondary: True
+                secondary: true
       - name: GigabitEthernet4
         standby_groups:
           - group_no: 0
@@ -438,7 +438,7 @@ EXAMPLES = """
           - group_no: 22
             ip:
               - virtual_ip: 10.0.0.1
-                secondary: True
+                secondary: true
       - name: GigabitEthernet4
         standby_groups:
           - group_no: 0
@@ -861,7 +861,7 @@ EXAMPLES = """
           - group_no: 22
             ip:
               - virtual_ip: 192.168.0.2
-                secondary: True
+                secondary: true
       - name: GigabitEthernet4
         standby_groups:
           - group_no: 0
