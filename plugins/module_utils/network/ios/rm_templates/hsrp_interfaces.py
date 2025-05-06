@@ -79,8 +79,8 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "standby delay"
-                      "{{ ' ' + delay.minimum|string if delay.minimum is defined else ''}}"
-                      "{{ ' ' + delay.reload|string if delay.reload is defined else ''}}",
+                      "{{ ' minimum ' + delay.minimum|string if delay.minimum is defined else ''}}"
+                      "{{ ' reload ' + delay.reload|string if delay.reload is defined else ''}}",
             "result": {
                 "{{ name }}": {
                     "delay": {
@@ -460,10 +460,12 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 "{% if authentication.advertisement.key_chain is defined %}"
                 "key-chain {{ authentication.advertisement.key_chain }}"
                 "{% else %}"
-                "key-string {% if authentication.advertisement.encryption is defined %}"
-                "{{ authentication.advertisement.encryption }} {% endif %}"
-                "{{ authentication.advertisement.password_text }}"
-                "{% if authentication.advertisement.time_out is defined %} "
+                "key-string "
+                "{% if authentication.advertisement.encryption is defined %}"
+                "{{ authentication.advertisement.encryption }} "
+                "{% endif %}"
+                "{{ authentication.advertisement.password_text }} "
+                "{% if authentication.advertisement.time_out is defined %}"
                 "timeout {{ authentication.advertisement.time_out }}"
                 "{% endif %}"
                 "{% endif %}"
@@ -475,18 +477,11 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                         "group_no": "{{ group_no }}",
                         "authentication": {
                             "advertisement": {
-                                "{% if key_chain is defined %}"
                                 "key_chain": "{{ key_chain }}",
-                                "{% else %}"
-                                "key_string": "{{ True }}",
+                                "key_string": "{{ True if key_chain is not defined else None}}",
                                 "password_text": "{{ password_text }}",
-                                "{% if encryption is defined %}"
                                 "encryption": "{{ encryption }}",
-                                "{% endif %}"
-                                "{% if time_out is defined %}"
                                 "time_out": "{{ time_out }}"
-                                "{% endif %}"
-                                "{% endif %}",
                             },
                         },
                     }],

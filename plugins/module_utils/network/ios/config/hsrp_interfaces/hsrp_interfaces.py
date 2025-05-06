@@ -163,6 +163,7 @@ class Hsrp_interfaces(ResourceModule):
         """Compare list items followed by non list items in standby_groups"""
         want_standby_group = want.get("standby_groups", {})
         have_standby_group = have.get("standby_groups", {})
+        parser_dict = {"timers.msec":"timers", "follow.follow":"follow", "authentication.plain_text":"authentication", "authentication.md5":"authentication"}
         for group_number, wanting_data in want_standby_group.items():
             having_data = have_standby_group.get(group_number, {})
             for _par in self.complex_parsers:
@@ -187,15 +188,7 @@ class Hsrp_interfaces(ResourceModule):
                     )
 
             for _par in self.non_complex_parsers:
-                _parser = _par
-                if _parser == "timers.msec":
-                    _parser = "timers"
-                elif _parser == "follow.follow":
-                    _parser = "follow"
-                elif _parser == "authentication.plain_text":
-                    _parser = "authentication"
-                elif _parser == "authentication.md5":
-                    _parser = "authentication"
+                _parser = parser_dict.get(_par, _par)
                 wantd = wanting_data.get(_parser, {})
                 haved = having_data.pop(_parser, {})
                 if isinstance(haved, dict):
@@ -221,15 +214,7 @@ class Hsrp_interfaces(ResourceModule):
                         having_parser_data.update({"group_no": group_number})
                         self.compare(parsers=[_par], want={}, have={_parser: having_parser_data})
                 for _par in self.non_complex_parsers:
-                    _parser = _par
-                    if _parser == "timers.msec":
-                        _parser = "timers"
-                    elif _parser == "follow.follow":
-                        _parser = "follow"
-                    elif _parser == "authentication.plain_text":
-                        _parser = "authentication"
-                    elif _parser == "authentication.md5":
-                        _parser = "authentication"
+                    _parser = parser_dict.get(_par, _par)
                     haved = having_data.pop(_parser, {})
                     if haved:
                         if isinstance(haved, dict):
