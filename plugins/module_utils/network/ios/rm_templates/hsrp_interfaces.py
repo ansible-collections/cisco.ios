@@ -143,7 +143,8 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 \s+standby\s*(?P<group_no>\d+)?\s*timers\smsec\s(?P<hello_interval>\d+)\smsec\s(?P<hold_time>\d+)
                 $""", re.VERBOSE,
             ),
-            "setval": "standby {{ timers.group_no|string if timers.group_no is defined else '' }} timers msec {{ timers.msec.hello_interval|string }} msec {{ timers.msec.hold_time|string }}",
+            "setval": "standby {{ timers.group_no|string if timers.group_no is defined else '' }} timers msec"
+            " {{ timers.msec.hello_interval|string }} msec {{ timers.msec.hold_time|string }}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
@@ -548,7 +549,9 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "compval": "redirect",
-            "setval": "standby redirect advertisement authentication md5 key-string {{ redirect.advertisement.authentication.encryption|string }} {{ redirect.advertisement.authentication.password_text }} {{ 'timeout ' + redirect.advertisement.authentication.time_out|string if redirect.advertisement.authentication.time_out is defined else '' }}",
+            "setval": "standby redirect advertisement authentication md5 key-string {{ redirect.advertisement.authentication.encryption|string }} "
+            "{{ redirect.advertisement.authentication.password_text }} "
+            "{{ 'timeout ' + redirect.advertisement.authentication.time_out|string if redirect.advertisement.authentication.time_out is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "redirect": {
@@ -578,7 +581,8 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "compval": "redirect",
-            "setval": "standby redirect advertisement authentication md5 key-string {{ redirect.advertisement.authentication.password_text }} {{ 'timeout ' + redirect.advertisement.authentication.time_out if redirect.advertisement.authentication.time_out is defined else '' }}",
+            "setval": "standby redirect advertisement authentication md5 key-string {{ redirect.advertisement.authentication.password_text }} "
+            "{{ 'timeout ' + redirect.advertisement.authentication.time_out if redirect.advertisement.authentication.time_out is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "redirect": {
