@@ -16,7 +16,6 @@ from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_ar
 from .ios_module import TestIosModule
 
 
-
 class TestIosHSRPInterfaceModule(TestIosModule):
     module = ios_hsrp_interfaces
 
