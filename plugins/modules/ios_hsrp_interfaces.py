@@ -332,15 +332,15 @@ EXAMPLES = """
   cisco.ios.ios_hsrp_interfaces:
     config:
       - name: GigabitEthernet3
-          standby_groups:
-            - group_no: 22
-              ip:
-                - virtual_ip: 10.0.0.1
-                  secondary: True
+        standby_groups:
+          - group_no: 22
+            ip:
+              - virtual_ip: 10.0.0.1
+                secondary: True
       - name: GigabitEthernet4
-          standby_groups:
-            - group_no: 0
-              priority: 5
+        standby_groups:
+          - group_no: 0
+            priority: 5
     state: merged
 
 # Task Output
@@ -434,15 +434,15 @@ EXAMPLES = """
   cisco.ios.ios_hsrp_interfaces:
     config:
       - name: GigabitEthernet3
-          standby_groups:
-            - group_no: 22
-              ip:
-                - virtual_ip: 10.0.0.1
-                  secondary: True
+        standby_groups:
+          - group_no: 22
+            ip:
+              - virtual_ip: 10.0.0.1
+                secondary: True
       - name: GigabitEthernet4
-          standby_groups:
-            - group_no: 0
-              priority: 6
+        standby_groups:
+          - group_no: 0
+            priority: 6
     state: replaced
 
 # Task Output
@@ -550,9 +550,9 @@ EXAMPLES = """
   cisco.ios.ios_hsrp_interfaces:
     config:
       - name: GigabitEthernet4
-          standby_groups:
-            - group_no: 0
-              priority: 10
+        standby_groups:
+          - group_no: 0
+            priority: 10
     state: overridden
 
 # Task Output
