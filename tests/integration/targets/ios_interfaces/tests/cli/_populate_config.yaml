@@ -15,7 +15,7 @@
       - no shutdown
     parents: interface GigabitEthernet2
 
-- name: Configure interface settings GigabitEthernet2
+- name: Configure interface settings GigabitEthernet3
   cisco.ios.ios_config:
     lines:
       - description this is interface for testing
@@ -23,3 +23,10 @@
       - speed 1000
       - shutdown
     parents: interface GigabitEthernet3
+
+- name: Configure interface settings GigabitEthernet4
+  cisco.ios.ios_config:
+    lines:
+      - description Auto_Cable_Testing_Ansible
+      - shutdown
+    parents: interface GigabitEthernet4
