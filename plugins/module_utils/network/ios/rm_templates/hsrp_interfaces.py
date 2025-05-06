@@ -481,7 +481,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                                 "key_string": "{{ True if key_chain is not defined else None}}",
                                 "password_text": "{{ password_text }}",
                                 "encryption": "{{ encryption }}",
-                                "time_out": "{{ time_out }}"
+                                "time_out": "{{ time_out }}",
                             },
                         },
                     }],

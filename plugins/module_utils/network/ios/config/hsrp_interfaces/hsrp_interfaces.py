@@ -163,7 +163,12 @@ class Hsrp_interfaces(ResourceModule):
         """Compare list items followed by non list items in standby_groups"""
         want_standby_group = want.get("standby_groups", {})
         have_standby_group = have.get("standby_groups", {})
-        parser_dict = {"timers.msec":"timers", "follow.follow":"follow", "authentication.plain_text":"authentication", "authentication.md5":"authentication"}
+        parser_dict = {
+            "timers.msec": "timers",
+            "follow.follow": "follow",
+            "authentication.plain_text": "authentication",
+            "authentication.md5": "authentication",
+        }
         for group_number, wanting_data in want_standby_group.items():
             having_data = have_standby_group.get(group_number, {})
             for _par in self.complex_parsers:

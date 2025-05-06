@@ -69,15 +69,21 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                         version=7,
                         delay=dict(
                             minimum=30,
-                            reload=40
+                            reload=40,
                         ),
                         use_bia=dict(
                             scope=dict(
-                                interface=True
-                            )
+                                interface=True,
+                            ),
                         ),
                         follow="test",
-                        redirect=dict(advertisement=dict(authentication=dict(key_string=True, password_text="apple", time_out=10))),
+                        redirect=dict(
+                            advertisement=dict(
+                                authentication=dict(
+                                    key_string=True, password_text="apple", time_out=10
+                                )
+                            )
+                        ),
                         standby_groups=[
                             dict(
                                 ip=[dict(virtual_ip="10.0.0.1", secondary=True)],
@@ -88,12 +94,19 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                                     delay=True,
                                     minimum=60,
                                     reload=70,
-                                    sync=90
+                                    sync=90,
                                 ),
                                 track=[dict(track_no=4, decrement=45, shutdown=True)],
                                 mac_address="A:B:C:D",
                                 group_name="sentry",
-                                authentication=dict(advertisement=dict(key_string=True, password_text="apple", encryption=0, time_out=10)),
+                                authentication=dict(
+                                    advertisement=dict(
+                                        key_string=True,
+                                        password_text="apple",
+                                        encryption=0,
+                                        time_out=10,
+                                    )
+                                ),
                                 timers=dict(hello_interval=20, hold_time=30),
                             ),
                         ],
@@ -102,7 +115,11 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                 state="merged",
             ),
         )
-        commands = ['interface GigabitEthernet4', 'standby 22 timers 20 30', 'standby 22 authentication md5 key-string 0 apple timeout 10']
+        commands = [
+            "interface GigabitEthernet4",
+            "standby 22 timers 20 30",
+            "standby 22 authentication md5 key-string 0 apple timeout 10",
+        ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
 
