@@ -55,6 +55,7 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "authentication": {
                                     "type": "dict",
+                                    "no_log": True,
                                     "options": {
                                         "key_chain": {"type": "str"},
                                         "key_string": {"type": "bool"},
@@ -115,6 +116,7 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "advertisement": {
                                     "type": "dict",
+                                    "no_log": True,
                                     "options": {
                                         "key_chain": {"type": "str"},
                                         "key_string": {"type": "bool"},

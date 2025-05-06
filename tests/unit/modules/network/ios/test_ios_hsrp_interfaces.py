@@ -8,19 +8,13 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 from textwrap import dedent
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_hsrp_interfaces
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
-from plugins.module_utils.network.ios.facts.hsrp_interfaces.hsrp_interfaces import (
-    Hsrp_interfacesFacts,
-)
 
 from .ios_module import TestIosModule
 
-
-# from ansible.utils.display import Display
-# display = Display()
 
 
 class TestIosHSRPInterfaceModule(TestIosModule):
