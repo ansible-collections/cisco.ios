@@ -86,7 +86,7 @@ options:
                     type: str
                   time_out:
                     description: Set timeout
-                    type: str
+                    type: int
                   password_text:
                     description: Password text valid for plain text and and key-string
                     type: str
@@ -184,7 +184,7 @@ options:
                     type: int
                   time_out:
                     description: Set timeout
-                    type: str
+                    type: int
                   password_text:
                     description: Password text valid for plain text and and key-string
                     type: str

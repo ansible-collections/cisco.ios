@@ -228,8 +228,8 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 (\ssync\s(?P<sync>\d+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "standby"
-                      "{{ ' ' + preempt.group_no|string if preempt.group_no is defined else ''}}"
+            "setval": "standby "
+                      "{{ preempt.group_no|string if preempt.group_no is defined else ''}}"
                       " preempt"
                       "{{ ' delay' if preempt.delay|d(False) else ''}}"
                       "{{ ' minimum ' + preempt.minimum|string if preempt.minimum is defined else ''}}"
@@ -466,7 +466,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 "{% endif %}"
                 "{{ authentication.advertisement.password_text }} "
                 "{% if authentication.advertisement.time_out is defined %}"
-                "timeout {{ authentication.advertisement.time_out }}"
+                "timeout {{ authentication.advertisement.time_out|string }}"
                 "{% endif %}"
                 "{% endif %}"
                 "{% endif %}"
@@ -577,7 +577,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             ),
             "compval": "redirect",
             "setval": "standby redirect advertisement authentication md5 key-string {{ redirect.advertisement.authentication.password_text }} "
-            "{{ 'timeout ' + redirect.advertisement.authentication.time_out if redirect.advertisement.authentication.time_out is defined else '' }}",
+            "{{ 'timeout ' + redirect.advertisement.authentication.time_out|string if redirect.advertisement.authentication.time_out is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "redirect": {

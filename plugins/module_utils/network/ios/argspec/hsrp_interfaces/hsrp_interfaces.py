@@ -62,7 +62,7 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                                         },
                                         "key_string": {"type": "bool"},
                                         "encryption": {"type": "str"},
-                                        "time_out": {"type": "str"},
+                                        "time_out": {"type": "int"},
                                         "password_text": {
                                             "type": "str",
                                             "no_log": True,
@@ -128,7 +128,7 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                                         },
                                         "key_string": {"type": "bool"},
                                         "encryption": {"type": "int"},
-                                        "time_out": {"type": "str"},
+                                        "time_out": {"type": "int"},
                                         "password_text": {
                                             "type": "str",
                                             "no_log": True,
