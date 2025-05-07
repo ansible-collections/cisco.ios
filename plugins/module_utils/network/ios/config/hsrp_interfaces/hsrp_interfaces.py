@@ -195,7 +195,10 @@ class Hsrp_interfaces(ResourceModule):
             for _par in self.non_complex_parsers:
                 _parser = parser_dict.get(_par, _par)
                 wantd = wanting_data.get(_parser, {})
-                haved = having_data.pop(_parser, {})
+                if _parser == _par:
+                    haved = having_data.pop(_parser, {})
+                else:
+                    haved = having_data.get(_parser, {})
                 if isinstance(haved, dict):
                     haved.update({"group_no": group_number})
                 else:
@@ -207,6 +210,8 @@ class Hsrp_interfaces(ResourceModule):
                 if haved and wantd != haved:
                     self.compare(parsers=[_par], want={}, have={_parser: haved})
                 self.compare(parsers=[_par], want={_parser: wantd}, have={_parser: haved})
+            for key, value in parser_dict.items():
+                haved = having_data.pop(value, {})
         # Removal of unecessary configs in have_standby_group
         for group_number, having_data in have_standby_group.items():
             if having_data:
@@ -220,10 +225,12 @@ class Hsrp_interfaces(ResourceModule):
                         self.compare(parsers=[_par], want={}, have={_parser: having_parser_data})
                 for _par in self.non_complex_parsers:
                     _parser = parser_dict.get(_par, _par)
-                    haved = having_data.pop(_parser, {})
+                    haved = having_data.get(_parser, {})
                     if haved:
                         if isinstance(haved, dict):
                             haved.update({"group_no": group_number})
                         else:
                             haved = {"group_no": group_number, _parser: haved}
                         self.compare(parsers=[_par], want={}, have={_parser: haved})
+                for key, value in parser_dict.items():
+                    haved = having_data.pop(value, {})

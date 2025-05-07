@@ -115,18 +115,26 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                 state="merged",
             ),
         )
-        commands = [
-            "interface GigabitEthernet4",
-            "standby 22 timers 20 30",
-            "standby 22 authentication md5 key-string 0 apple timeout 10",
-        ]
-        result = self.execute_module(changed=True)
+        commands = []
+        result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], commands)
 
     def test_ios_hsrp_interfaces_overridden(self):
         self.execute_show_command.return_value = dedent(
             """\
             interface GigabitEthernet4
+             standby mac-refresh 21
+             standby version 7
+             standby delay minimum 30 reload 40
+             standby use-bia scope interface
+             standby follow test
+             standby redirect advertisement authentication md5 key-string apple timeout 10
+             standby 22 follow test123
+             standby 22 priority 7
+             standby 22 preempt delay minimum 60 reload 70 sync 90
+             standby 22 track 4 decrement 45 shutdown
+             standby 22 mac-address A:B:C:D
+             standby 22 name sentry
              standby 22 ip 10.0.0.1 secondary
             """,
         )
@@ -135,10 +143,40 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                 config=[
                     dict(
                         name="GigabitEthernet4",
+                        mac_refresh=21,
+                        version=7,
+                        delay=dict(
+                            minimum=30,
+                            reload=40,
+                        ),
+                        use_bia=dict(
+                            scope=dict(
+                                interface=True,
+                            ),
+                        ),
+                        follow="test",
+                        redirect=dict(
+                            advertisement=dict(
+                                authentication=dict(
+                                    key_string=True, password_text="apple", time_out=10
+                                )
+                            )
+                        ),
                         standby_groups=[
                             dict(
                                 ip=[dict(virtual_ip="10.0.0.1", secondary=True)],
                                 group_no=22,
+                                follow="test123",
+                                priority=7,
+                                preempt=dict(
+                                    delay=True,
+                                    minimum=60,
+                                    reload=70,
+                                    sync=90,
+                                ),
+                                track=[dict(track_no=4, decrement=45, shutdown=True)],
+                                mac_address="A:B:C:D",
+                                group_name="sentry",
                             ),
                         ],
                     ),
@@ -153,12 +191,38 @@ class TestIosHSRPInterfaceModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             interface GigabitEthernet4
+             standby mac-refresh 21
+             standby version 7
+             standby delay minimum 30 reload 40
+             standby follow test
+             standby redirect advertisement authentication md5 key-string apple timeout 10
+             standby 22 priority 7
+             standby 22 preempt delay minimum 60 reload 70 sync 90
+             standby 22 follow test123
+             standby 22 track 4 decrement 45 shutdown
+             standby 22 mac-address A:B:C:D
+             standby 22 name sentry
+             standby 22 timers 20 30
+             standby 22 authentication md5 key-string 0 apple timeout 10
              standby 22 ip 10.0.0.1 secondary
             """,
         )
         set_module_args(dict(state="deleted"))
         commands = [
             "interface GigabitEthernet4",
+            "no standby mac-refresh 21",
+            "no standby version 7",
+            "no standby delay minimum 30 reload 40",
+            "no standby follow test",
+            "no standby redirect advertisement authentication md5 key-string apple timeout 10",
+            "no standby 22 priority 7",
+            "no standby 22 preempt delay minimum 60 reload 70 sync 90",
+            "no standby 22 follow test123",
+            "no standby 22 track 4 decrement 45 shutdown",
+            "no standby 22 mac-address A:B:C:D",
+            "no standby 22 name sentry",
+            "no standby 22 timers 20 30",
+            "no standby 22 authentication md5 key-string 0 apple timeout 10",
             "no standby 22 ip 10.0.0.1 secondary",
         ]
         result = self.execute_module(changed=True)
@@ -169,6 +233,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
             """\
             interface GigabitEthernet4
              standby 22 ip 10.0.0.1 secondary
+             standby 22 timers 20 30
             """,
         )
         set_module_args(
@@ -189,6 +254,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                             dict(
                                 track=[dict(track_no=20, shutdown=True)],
                                 group_no=22,
+                                timers=dict(hello_interval=40, hold_time=50),
                             ),
                         ],
                     ),
@@ -199,7 +265,9 @@ class TestIosHSRPInterfaceModule(TestIosModule):
         commands = [
             "interface GigabitEthernet4",
             "no standby 22 ip 10.0.0.1 secondary",
+            "no standby 22 timers 20 30",
             "standby 22 track 20 shutdown",
+            "standby 22 timers 40 50",
             "interface GigabitEthernet3",
             "standby 22 ip 12.0.0.1 secondary",
         ]
