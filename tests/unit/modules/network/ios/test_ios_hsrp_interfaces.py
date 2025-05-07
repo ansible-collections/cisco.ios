@@ -80,9 +80,11 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                         redirect=dict(
                             advertisement=dict(
                                 authentication=dict(
-                                    key_string=True, password_text="apple", time_out=10
-                                )
-                            )
+                                    key_string=True,
+                                    password_text="apple",
+                                    time_out=10,
+                                ),
+                            ),
                         ),
                         standby_groups=[
                             dict(
@@ -105,7 +107,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                                         password_text="apple",
                                         encryption=0,
                                         time_out=10,
-                                    )
+                                    ),
                                 ),
                                 timers=dict(hello_interval=20, hold_time=30),
                             ),
@@ -158,9 +160,11 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                         redirect=dict(
                             advertisement=dict(
                                 authentication=dict(
-                                    key_string=True, password_text="apple", time_out=10
-                                )
-                            )
+                                    key_string=True,
+                                    password_text="apple",
+                                    time_out=10,
+                                ),
+                            ),
                         ),
                         standby_groups=[
                             dict(
