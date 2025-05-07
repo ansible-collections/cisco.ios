@@ -311,7 +311,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                 "version": 7,
                 "delay": {
                     "minimum": 30,
-                    "reload": 40
+                    "reload": 40,
                 },
                 "follow": "test",
                 "redirect": {
@@ -319,9 +319,9 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                         "authentication": {
                             "key_string": True,
                             "password_text": "apple",
-                            "time_out": 10
-                        }
-                    }
+                            "time_out": 10,
+                        },
+                    },
                 },
                 "standby_groups": [
                     {
@@ -332,26 +332,28 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                             "delay": True,
                             "minimum": 60,
                             "reload": 70,
-                            "sync": 90
+                            "sync": 90,
                         },
-                        "track": [{
-                            "track_no": 4,
-                            "decrement": 45,
-                            "shutdown": True
-                        }],
+                        "track": [
+                            {
+                                "track_no": 4,
+                                "decrement": 45,
+                                "shutdown": True,
+                            }
+                        ],
                         "mac_address": "A:B:C:D",
                         "group_name": "sentry",
                         "timers": {
                             "hello_interval": 20,
-                            "hold_time": 30
+                            "hold_time": 30,
                         },
                         "authentication": {
                             "advertisement": {
                                 "key_string": True,
                                 "encryption": 0,
                                 "password_text": "apple",
-                                "time_out": 10
-                            }
+                                "time_out": 10,
+                            },
                         },
                         "ip": [
                             {
@@ -381,9 +383,11 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                         redirect=dict(
                             advertisement=dict(
                                 authentication=dict(
-                                    key_string=True, password_text="apple", time_out=10
-                                )
-                            )
+                                    key_string=True,
+                                    password_text="apple",
+                                    time_out=10,
+                                ),
+                            ),
                         ),
                         standby_groups=[
                             dict(
@@ -406,7 +410,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                                         password_text="apple",
                                         encryption=0,
                                         time_out=10,
-                                    )
+                                    ),
                                 ),
                                 timers=dict(hello_interval=20, hold_time=30),
                             ),
@@ -569,7 +573,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
             "no standby 22 mac-address A:B:C:D",
             "no standby 22 name sentry",
             "no standby 22 timers 20 30",
-            "no standby 22 authentication md5 key-string 0 apple timeout 10"
+            "no standby 22 authentication md5 key-string 0 apple timeout 10",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -607,7 +611,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                 "version": 7,
                 "delay": {
                     "minimum": 30,
-                    "reload": 40
+                    "reload": 40,
                 },
                 "follow": "test",
                 "redirect": {
@@ -615,9 +619,9 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                         "authentication": {
                             "key_string": True,
                             "password_text": "apple",
-                            "time_out": 10
-                        }
-                    }
+                            "time_out": 10,
+                        },
+                    },
                 },
                 "standby_groups": [
                     {
@@ -628,26 +632,28 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                             "delay": True,
                             "minimum": 60,
                             "reload": 70,
-                            "sync": 90
+                            "sync": 90,
                         },
-                        "track": [{
-                            "track_no": 4,
-                            "decrement": 45,
-                            "shutdown": True
-                        }],
+                        "track": [
+                            {
+                                "track_no": 4,
+                                "decrement": 45,
+                                "shutdown": True,
+                            }
+                        ],
                         "mac_address": "A:B:C:D",
                         "group_name": "sentry",
                         "timers": {
                             "hello_interval": 20,
-                            "hold_time": 30
+                            "hold_time": 30,
                         },
                         "authentication": {
                             "advertisement": {
                                 "key_string": True,
                                 "encryption": 0,
                                 "password_text": "apple",
-                                "time_out": 10
-                            }
+                                "time_out": 10,
+                            },
                         },
                         "ip": [
                             {
