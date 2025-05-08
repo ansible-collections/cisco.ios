@@ -14,12 +14,7 @@
                 ip:
                   - virtual_ip: 10.0.0.1
                     secondary: true
-                authentication:
-                  advertisement:
-                    key_string: true
-                    encryption: 0
-                    password_text: apple
-                    time_out: 10
+                group_name: sentry
           - name: GigabitEthernet4
             standby_groups:
               - group_no: 0

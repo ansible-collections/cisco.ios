@@ -183,6 +183,6 @@ rendered:
   commands:
     - interface GigabitEthernet3
     - standby 22 ip 10.0.0.1 secondary
-    - standby 22 authentication md5 key-string 0 apple timeout 10
+    - standby 22 name sentry
     - interface GigabitEthernet4
     - standby 0 priority 5
