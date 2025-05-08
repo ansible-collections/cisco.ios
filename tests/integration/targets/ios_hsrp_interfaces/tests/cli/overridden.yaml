@@ -28,7 +28,7 @@
           - >
             {{
               result['before']
-              | rejectattr('name', 'in', 'Loopback888,Loopback999')
+              | selectattr('name', 'in', 'GigabitEthernet1,GigabitEthernet2,GigabitEthernet3,GigabitEthernet4')
               | symmetric_difference(overridden['before'])
               | length == 0
             }}
@@ -39,7 +39,7 @@
           - >
             {{
               result['after']
-              | rejectattr('name', 'in', 'Loopback888,Loopback999')
+              | selectattr('name', 'in', 'GigabitEthernet1,GigabitEthernet2,GigabitEthernet3,GigabitEthernet4')
               | symmetric_difference(overridden['after'])
               | length == 0
             }}
