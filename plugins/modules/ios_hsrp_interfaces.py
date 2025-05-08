@@ -355,7 +355,7 @@ EXAMPLES = """
 # - name: Loopback888
 # commands:
 # - interface GigabitEthernet3
-# - "standby 22 ip 10.0.0.1 secondary
+# - standby 22 ip 10.0.0.1 secondary
 # - interface GigabitEthernet4
 # - standby 0 priority 5
 # after:
@@ -928,17 +928,17 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - standby 22 ip 10.0.0.1 secondary
+    - standby 0 priority 5
+    - standby mac-refresh 21
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - sample command 1
-    - sample command 2
-    - sample command 3
+    - standby 22 ip 10.0.0.1 secondary
+    - standby 0 priority 5
+    - standby mac-refresh 21
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)

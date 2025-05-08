@@ -10,6 +10,7 @@
       cisco.ios.ios_hsrp_interfaces: &id001
         config:
           - name: GigabitEthernet3
+            mac_refresh: 21
             standby_groups:
               - group_no: 22
                 ip:
@@ -19,6 +20,11 @@
             standby_groups:
               - group_no: 0
                 priority: 5
+                preempt:
+                  delay: true
+                  minimum: 60
+                  reload: 70
+                  sync: 90
         state: merged
 
     - name: HSRP_interface merged - assert that correct set of commands were generated
