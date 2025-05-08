@@ -339,7 +339,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                                 "track_no": 4,
                                 "decrement": 45,
                                 "shutdown": True,
-                            }
+                            },
                         ],
                         "mac_address": "A:B:C:D",
                         "group_name": "sentry",
@@ -639,7 +639,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                                 "track_no": 4,
                                 "decrement": 45,
                                 "shutdown": True,
-                            }
+                            },
                         ],
                         "mac_address": "A:B:C:D",
                         "group_name": "sentry",
