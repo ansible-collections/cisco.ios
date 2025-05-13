@@ -33,14 +33,16 @@ def remarks_with_sequence(remarks_data):
 
 def _tmplt_access_list_entries(aces):
     def source_destination_common_config(config_data, command, attr):
+        source_host = config_data.get("source").get("host") or config_data.get("source").get(
+                "address",
+        )
+        source_port_protocol = config_data.get("source").get("port_protocol")
+        any_source_used = False
         if config_data[attr].get("any") and attr == "destination":
             command += " any"
-            source_host = config_data.get("source").get("host") or config_data.get("source").get(
-                "address",
-            )
             source_object = config_data.get("source").get("object_group")
             source_any = config_data.get("source").get("any")
-            if not source_host and not source_any and not source_object:
+            if not source_host and not source_any and not source_object and not source_port_protocol:
                 command += " any"
 
         if config_data[attr].get("address"):
@@ -52,6 +54,14 @@ def _tmplt_access_list_entries(aces):
         if config_data[attr].get("object_group"):
             command += " object-group {object_group}".format(**config_data[attr])
         if config_data[attr].get("port_protocol"):
+            if (
+                    source_port_protocol and 
+                    not source_host and 
+                    config_data.get("source").get("any") and
+                    attr == "source"
+            ):
+                command += " any"
+                any_source_used = True
             if config_data[attr].get("port_protocol").get("range"):
                 command += " range {0} {1}".format(
                     config_data[attr]["port_protocol"]["range"].get("start"),
@@ -64,7 +74,7 @@ def _tmplt_access_list_entries(aces):
                     config_data[attr]["port_protocol"][port_proto_type],
                 )
 
-        if config_data[attr].get("any") and attr == "source":
+        if config_data[attr].get("any") and attr == "source" and not any_source_used:
             command += " any"
         return command
 
