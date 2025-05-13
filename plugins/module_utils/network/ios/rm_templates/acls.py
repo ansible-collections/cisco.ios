@@ -35,7 +35,9 @@ def _tmplt_access_list_entries(aces):
     def source_destination_common_config(config_data, command, attr):
         if config_data[attr].get("any") and attr == "destination":
             command += " any"
-            source_host = config_data.get("source").get("host") or config_data.get("source").get("address")
+            source_host = config_data.get("source").get("host") or config_data.get("source").get(
+                "address"
+            )
             source_object = config_data.get("source").get("object_group")
             source_any = config_data.get("source").get("any")
             if not source_host and not source_any and not source_object:
@@ -287,7 +289,7 @@ class AclsTemplate(NetworkTemplate):
                 },
             },
         },
-        {   
+        {
             "name": "aces_source_dest_any",
             "getval": re.compile(
                 r"""

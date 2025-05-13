@@ -1885,12 +1885,12 @@ class TestIosAclsModule(TestIosModule):
                                 "grant": "deny",
                                 "source": {
                                     "any": True,
-                                    "object_group": "deny-mgmt-ports"
+                                    "object_group": "deny-mgmt-ports",
                                 },
                                 "destination": {
-                                    "any": True
+                                    "any": True,
                                 },
-                            }
+                            },
                         ],
                     },
                 ],
@@ -2373,8 +2373,9 @@ class TestIosAclsModule(TestIosModule):
     def test_ios_parsed_complex_2(self):
         self.execute_show_command_name.return_value = dedent("")
         set_module_args(
-            dict(running_config=dedent(
-                """\
+            dict(
+                running_config=dedent(
+                    """\
                 ip access-list extended CP_Quarantine-v4-in
                     10 permit udp any object-group FAA-Networks eq bootps
                     20 permit object-group BT-ports any object-group AIT-BT-Servers
@@ -2390,151 +2391,150 @@ class TestIosAclsModule(TestIosModule):
                 """,
                 ),
                 state="parsed",
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         parsed_list = [
             {
-            "acls": [
-                {
-                "aces": [
+                "acls": [
                     {
-                    "source": {
-                        "any": True
-                    }, 
-                    "destination": {
-                        "object_group": "FAA-Networks", 
-                        "port_protocol": {
-                        "eq": "bootps"
-                        }
-                    }, 
-                    "protocol": "udp", 
-                    "grant": "permit", 
-                    "sequence": 10
-                    }, 
-                    {
-                    "source": {
-                        "object_group": "BT-ports"
-                    }, 
-                    "destination": {
-                        "any": True, 
-                        "object_group": "AIT-BT-Servers"
-                    }, 
-                    "grant": "permit", 
-                    "sequence": 20
-                    }, 
-                    {
-                    "source": {
-                        "any": True
-                    }, 
-                    "destination": {
-                        "object_group": "CP-Appliances", 
-                        "port_protocol": {
-                        "eq": "443"
-                        }
-                    }, 
-                    "protocol": "tcp", 
-                    "grant": "permit", 
-                    "sequence": 30
-                    }, 
-                    {
-                        "source": {
-                            "any": True,
-                            "object_group": "deny-mgmt-ports"
-                        }, 
-                        "destination": {
-                            "any": True
-                        }, 
-                        "grant": "deny", 
-                        "sequence": 40
-                    }, 
-                    {
-                    "source": {
-                        "object_group": "icmp"
-                    }, 
-                    "destination": {
-                        "any": True, 
-                        "object_group": "IB-Servers"
-                    }, 
-                    "grant": "permit", 
-                    "sequence": 50
-                    }, 
-                    {
-                    "source": {
-                        "object_group": "generic-any-port"
-                    }, 
-                    "destination": {
-                        "any": True, 
-                        "object_group": "IB-Servers"
-                    }, 
-                    "grant": "permit", 
-                    "sequence": 60
-                    }, 
-                    {
-                    "source": {
-                        "object_group": "generic-any-port"
-                    }, 
-                    "destination": {
-                        "any": True, 
-                        "object_group": "AD-Servers"
-                    }, 
-                    "grant": "permit", 
-                    "sequence": 70
-                    }, 
-                    {
-                    "source": {
-                        "object_group": "generic-any-port"
-                    }, 
-                    "destination": {
-                        "any": True, 
-                        "object_group": "CP-Appliances"
-                    }, 
-                    "grant": "permit", 
-                    "sequence": 80
-                    }, 
-                    {
-                    "source": {
-                        "object_group": "generic-any-port"
-                    }, 
-                    "destination": {
-                        "any": True, 
-                        "object_group": "Tanium-Servers"
-                    }, 
-                    "grant": "permit", 
-                    "sequence": 90
-                    }, 
-                    {
-                    "source": {
-                        "object_group": "generic-any-port"
-                    }, 
-                    "destination": {
-                        "any": True, 
-                        "object_group": "SOC-Tenable-Servers"
-                    }, 
-                    "grant": "permit", 
-                    "sequence": 100
-                    }, 
-                    {
-                        "source": {
-                            "any": True
-                        }, 
-                        "destination": {
-                            "any": True
-                        }, 
-                        "protocol": "ip", 
-                        "grant": "deny", 
-                        "sequence": 5000
-                    }
-                ], 
-                "acl_type": "extended", 
-                "name": "CP_Quarantine-v4-in"
-                }
-            ], 
-            "afi": "ipv4"
-            }
+                        "aces": [
+                            {
+                                "source": {
+                                    "any": True,
+                                },
+                                "destination": {
+                                    "object_group": "FAA-Networks",
+                                    "port_protocol": {
+                                        "eq": "bootps",
+                                    },
+                                },
+                                "protocol": "udp",
+                                "grant": "permit",
+                                "sequence": 10,
+                            },
+                            {
+                                "source": {
+                                    "object_group": "BT-ports",
+                                },
+                                "destination": {
+                                    "any": True,
+                                    "object_group": "AIT-BT-Servers",
+                                },
+                                "grant": "permit",
+                                "sequence": 20,
+                            },
+                            {
+                                "source": {
+                                    "any": True,
+                                },
+                                "destination": {
+                                    "object_group": "CP-Appliances",
+                                    "port_protocol": {
+                                        "eq": "443",
+                                    },
+                                },
+                                "protocol": "tcp",
+                                "grant": "permit",
+                                "sequence": 30,
+                            },
+                            {
+                                "source": {
+                                    "any": True,
+                                    "object_group": "deny-mgmt-ports",
+                                },
+                                "destination": {
+                                    "any": True,
+                                },
+                                "grant": "deny",
+                                "sequence": 40,
+                            },
+                            {
+                                "source": {
+                                    "object_group": "icmp",
+                                },
+                                "destination": {
+                                    "any": True,
+                                    "object_group": "IB-Servers",
+                                },
+                                "grant": "permit",
+                                "sequence": 50,
+                            },
+                            {
+                                "source": {
+                                    "object_group": "generic-any-port",
+                                },
+                                "destination": {
+                                    "any": True,
+                                    "object_group": "IB-Servers",
+                                },
+                                "grant": "permit",
+                                "sequence": 60,
+                            },
+                            {
+                                "source": {
+                                    "object_group": "generic-any-port",
+                                },
+                                "destination": {
+                                    "any": True,
+                                    "object_group": "AD-Servers",
+                                },
+                                "grant": "permit",
+                                "sequence": 70,
+                            },
+                            {
+                                "source": {
+                                    "object_group": "generic-any-port",
+                                },
+                                "destination": {
+                                    "any": True,
+                                    "object_group": "CP-Appliances",
+                                },
+                                "grant": "permit",
+                                "sequence": 80,
+                            },
+                            {
+                                "source": {
+                                    "object_group": "generic-any-port",
+                                },
+                                "destination": {
+                                    "any": True,
+                                    "object_group": "Tanium-Servers",
+                                },
+                                "grant": "permit",
+                                "sequence": 90,
+                            },
+                            {
+                                "source": {
+                                    "object_group": "generic-any-port",
+                                },
+                                "destination": {
+                                    "any": True,
+                                    "object_group": "SOC-Tenable-Servers",
+                                },
+                                "grant": "permit",
+                                "sequence": 100,
+                            },
+                            {
+                                "source": {
+                                    "any": True,
+                                },
+                                "destination": {
+                                    "any": True,
+                                },
+                                "protocol": "ip",
+                                "grant": "deny",
+                                "sequence": 5000,
+                            },
+                        ],
+                        "acl_type": "extended",
+                        "name": "CP_Quarantine-v4-in",
+                    },
+                ],
+                "afi": "ipv4",
+            },
         ]
         self.assertEqual(parsed_list, result["parsed"])
-
 
     def test_ios_merged_general_2(self):
         self.execute_show_command.return_value = dedent(
@@ -2573,24 +2573,24 @@ class TestIosAclsModule(TestIosModule):
                                     },
                                     {
                                         "source": {
-                                            "any": True
-                                        }, 
+                                            "any": True,
+                                        },
                                         "destination": {
-                                            "any": True
-                                        }, 
-                                        "protocol": "ip", 
+                                            "any": True,
+                                        },
+                                        "protocol": "ip",
                                         "grant": "deny",
-                                    }, 
+                                    },
                                     {
                                         "source": {
                                             "any": True,
-                                            "object_group": "deny-mgmt-ports"
-                                        }, 
+                                            "object_group": "deny-mgmt-ports",
+                                        },
                                         "destination": {
-                                            "any": True
-                                        }, 
+                                            "any": True,
+                                        },
                                         "grant": "deny",
-                                    }
+                                    },
                                 ],
                             },
                         ],
@@ -2606,6 +2606,6 @@ class TestIosAclsModule(TestIosModule):
             "permit 220 any any sequence 40",
             "remark Test_ipv4_ipv6_acl",
             "deny object-group deny-mgmt-ports any any",
-            "deny ip any any"
+            "deny ip any any",
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
