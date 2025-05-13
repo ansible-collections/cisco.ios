@@ -38,7 +38,6 @@ class TestIosAclsModule(TestIosModule):
             "AclsFacts.get_acl_names",
         )
         self.execute_show_command_name = self.mock_execute_show_command_name_specific.start()
-        self.maxDiff = None
 
     def tearDown(self):
         super(TestIosAclsModule, self).tearDown()
@@ -1359,7 +1358,6 @@ class TestIosAclsModule(TestIosModule):
             ),
         )
         result = self.execute_module(changed=True, sort=True)
-        print(result)
         cmds = [
             "ip access-list extended 110",
             "no 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log testLog",
