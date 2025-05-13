@@ -36,7 +36,7 @@ def _tmplt_access_list_entries(aces):
         if config_data[attr].get("any") and attr == "destination":
             command += " any"
             source_host = config_data.get("source").get("host") or config_data.get("source").get(
-                "address"
+                "address",
             )
             source_object = config_data.get("source").get("object_group")
             source_any = config_data.get("source").get("any")
