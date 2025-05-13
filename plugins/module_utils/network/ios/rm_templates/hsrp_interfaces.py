@@ -552,7 +552,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                     "redirect": {
                         "advertisement": {
                             "authentication": {
-                                "encryption" : "{{ encryption }}",
+                                "encryption": "{{ encryption }}",
                                 "key_string": "{{ True }}",
                                 "password_text": "{{ password_text }}",
                                 "time_out": "{{ time_out }}",
