@@ -34,7 +34,7 @@ def remarks_with_sequence(remarks_data):
 def _tmplt_access_list_entries(aces):
     def source_destination_common_config(config_data, command, attr):
         source_host = config_data.get("source").get("host") or config_data.get("source").get(
-                "address",
+            "address",
         )
         source_port_protocol = config_data.get("source").get("port_protocol")
         any_source_used = False
@@ -42,7 +42,12 @@ def _tmplt_access_list_entries(aces):
             command += " any"
             source_object = config_data.get("source").get("object_group")
             source_any = config_data.get("source").get("any")
-            if not source_host and not source_any and not source_object and not source_port_protocol:
+            if (
+                not source_host
+                and not source_any
+                and not source_object
+                and not source_port_protocol
+            ):
                 command += " any"
 
         if config_data[attr].get("address"):
@@ -55,10 +60,10 @@ def _tmplt_access_list_entries(aces):
             command += " object-group {object_group}".format(**config_data[attr])
         if config_data[attr].get("port_protocol"):
             if (
-                    source_port_protocol and 
-                    not source_host and 
-                    config_data.get("source").get("any") and
-                    attr == "source"
+                source_port_protocol
+                and not source_host
+                and config_data.get("source").get("any")
+                and attr == "source"
             ):
                 command += " any"
                 any_source_used = True
