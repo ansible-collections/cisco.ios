@@ -38,6 +38,7 @@ class TestIosAclsModule(TestIosModule):
             "AclsFacts.get_acl_names",
         )
         self.execute_show_command_name = self.mock_execute_show_command_name_specific.start()
+        self.maxDiff = None
 
     def tearDown(self):
         super(TestIosAclsModule, self).tearDown()
@@ -1358,6 +1359,7 @@ class TestIosAclsModule(TestIosModule):
             ),
         )
         result = self.execute_module(changed=True, sort=True)
+        print(result)
         cmds = [
             "ip access-list extended 110",
             "no 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log testLog",
@@ -1686,6 +1688,7 @@ class TestIosAclsModule(TestIosModule):
                         20 permit tcp host 10.1.1.1 host 10.5.5.5 eq www
                         30 permit icmp any any
                         40 permit udp host 10.6.6.6 10.10.10.0 0.0.0.255 eq domain
+                        50 deny object-group deny-mgmt-ports any any
                     """,
                 ),
                 state="parsed",
@@ -1877,6 +1880,17 @@ class TestIosAclsModule(TestIosModule):
                                     "wildcard_bits": "0.0.0.255",
                                 },
                             },
+                            {
+                                "sequence": 50,
+                                "grant": "deny",
+                                "source": {
+                                    "any": True,
+                                    "object_group": "deny-mgmt-ports"
+                                },
+                                "destination": {
+                                    "any": True
+                                },
+                            }
                         ],
                     },
                 ],
