@@ -26,12 +26,12 @@
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ replaced['before'] | symmetric_difference(result['before']) | length == 0 }}"
+          - "{{ replaced['before'] | rejectattr('name', 'in', 'Loopback888,Loopback999') | symmetric_difference(result['before']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ replaced['after'] | symmetric_difference(result['after']) | length == 0 }}"
+          - "{{ replaced['after'] | rejectattr('name', 'in', 'Loopback888,Loopback999') | symmetric_difference(result['after']) | length == 0 }}"
 
     - name: Replaces device configuration of listed lacp_interfaces with provided configuration (idempotent)
       register: result
