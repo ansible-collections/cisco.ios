@@ -14,7 +14,7 @@
     - name: Assert
       ansible.builtin.assert:
         that:
-          - gathered['config'] | rejectattr('name', 'in', 'Loopback888,Loopback999') | symmetric_difference(result.gathered) == []
+          - gathered['config'] | rejectattr('name', 'in', 'Loopback888,Loopback999,loopback888,loopback999') | symmetric_difference(result.gathered) == []
           - result['changed'] == false
   when: ansible_net_version != "15.6(2)T"
   always:

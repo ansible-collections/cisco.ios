@@ -20,12 +20,12 @@
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ deleted['before'] | rejectattr('name', 'in', 'Loopback888,Loopback999') | symmetric_difference(result['before']) | length == 0 }}"
+          - "{{ deleted['before'] | rejectattr('name', 'in', 'Loopback888,Loopback999,loopback888,loopback999') | symmetric_difference(result['before']) | length == 0 }}"
 
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ deleted['after'] | rejectattr('name', 'in', 'Loopback888,Loopback999') | symmetric_difference(result['after']) | length == 0 }}"
+          - "{{ deleted['after'] | rejectattr('name', 'in', 'Loopback888,Loopback999,loopback888,loopback999') | symmetric_difference(result['after']) | length == 0 }}"
 
     - name: Delete lacp attributes for all configured interfaces (idempotent)
       register: result
