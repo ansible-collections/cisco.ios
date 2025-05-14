@@ -33,17 +33,40 @@ def remarks_with_sequence(remarks_data):
 
 def _tmplt_access_list_entries(aces):
     def source_destination_common_config(config_data, command, attr):
+        source_host = config_data.get("source").get("host") or config_data.get("source").get(
+            "address",
+        )
+        source_port_protocol = config_data.get("source").get("port_protocol")
+        any_source_used = False
+        if config_data[attr].get("any") and attr == "destination":
+            command += " any"
+            source_object = config_data.get("source").get("object_group")
+            source_any = config_data.get("source").get("any")
+            if (
+                not source_host
+                and not source_any
+                and not source_object
+                and not source_port_protocol
+            ):
+                command += " any"
+
         if config_data[attr].get("address"):
             command += " {address}".format(**config_data[attr])
             if config_data[attr].get("wildcard_bits"):
                 command += " {wildcard_bits}".format(**config_data[attr])
-        elif config_data[attr].get("any"):
-            command += " any".format(**config_data[attr])
         elif config_data[attr].get("host"):
             command += " host {host}".format(**config_data[attr])
-        elif config_data[attr].get("object_group"):
+        if config_data[attr].get("object_group"):
             command += " object-group {object_group}".format(**config_data[attr])
         if config_data[attr].get("port_protocol"):
+            if (
+                source_port_protocol
+                and not source_host
+                and config_data.get("source").get("any")
+                and attr == "source"
+            ):
+                command += " any"
+                any_source_used = True
             if config_data[attr].get("port_protocol").get("range"):
                 command += " range {0} {1}".format(
                     config_data[attr]["port_protocol"]["range"].get("start"),
@@ -55,6 +78,9 @@ def _tmplt_access_list_entries(aces):
                     port_proto_type,
                     config_data[attr]["port_protocol"][port_proto_type],
                 )
+
+        if config_data[attr].get("any") and attr == "source" and not any_source_used:
+            command += " any"
         return command
 
     command = ""
@@ -272,6 +298,44 @@ class AclsTemplate(NetworkTemplate):
                                     "any": "{{ not not any }}",
                                 },
                                 "log": {"set": "{{ not not log }}"},
+                            },
+                        ],
+                    },
+                },
+            },
+        },
+        {
+            "name": "aces_source_dest_any",
+            "getval": re.compile(
+                r"""
+                ^\s*((?P<sequence>\d+))?
+                (\s(?P<grant>deny|permit))
+                ((\s*object-group\s(?P<source_obj_grp>\S+))|
+                (\s*host\s(?P<source_host>\S+))|
+                (\s*(?P<ipv6_source_address>\S+/\d+))|
+                (\s*(?P<source_address>(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})\s\S+)))?
+                (\s*(?P<source_any>any))
+                (\s*(?P<dest_any>any))
+                $""",
+                re.VERBOSE,
+            ),
+            "compval": "aces",
+            "result": {
+                "acls": {
+                    "{{ acl_name|d() }}": {
+                        "name": "{{ acl_name }}",
+                        "aces": [
+                            {
+                                "sequence": "{{ sequence }}",
+                                "grant": "{{ grant }}",
+                                "source": {
+                                    "address": "{{ source_address }}",
+                                    "ipv6_address": "{{ ipv6_source_address }}",
+                                    "any": "{{ not not source_any }}",
+                                    "host": "{{ source_host }}",
+                                    "object_group": "{{ source_obj_grp }}",
+                                },
+                                "destination": {"any": "{{ not not dest_any }}"},
                             },
                         ],
                     },
