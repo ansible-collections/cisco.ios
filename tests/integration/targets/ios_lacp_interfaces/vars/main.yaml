@@ -65,7 +65,7 @@ replaced:
 overridden:
   before:
     - name: loopback888
-    # - name: loopback999
+    - name: loopback999
     - fast_switchover: true
       max_bundle: 2
       name: Port-channel10
@@ -89,7 +89,7 @@ overridden:
     - lacp max-bundle 2
   after:
     - name: loopback888
-    # - name: loopback999
+    - name: loopback999
     - name: Port-channel10
     - fast_switchover: true
       max_bundle: 2
