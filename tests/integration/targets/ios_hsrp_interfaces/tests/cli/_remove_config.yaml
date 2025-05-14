@@ -1,0 +1,11 @@
+---
+- name: HSRP_interface - remove configuration
+  vars:
+    lines:
+      "interface GigabitEthernet 3\nno standby 22 ip 10.0.0.1 secondary\nno standby mac-refresh 21\n
+      no standby 22 name sentry\nno standby 22 authentication md5 key-string 0 apple timeout 10\n
+      interface GigabitEthernet 4\nno standby 0 priority 5\n
+      no standby 0 preempt delay minimum 60 reload 70 sync 90\nno standby 0 timers 20 30\nno standby 0 preempt\n
+      interface GigabitEthernet 2\nno standby 0 priority 5\n"
+  ansible.netcommon.cli_config:
+    config: "{{ lines }}"

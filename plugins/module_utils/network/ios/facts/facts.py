@@ -41,6 +41,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.evpn_g
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.hostname.hostname import (
     HostnameFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.hsrp_interfaces.hsrp_interfaces import (
+    Hsrp_interfacesFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.interfaces.interfaces import (
     InterfacesFacts,
 )
@@ -155,6 +158,7 @@ FACT_RESOURCE_SUBSETS = dict(
     vrf_address_family=Vrf_address_familyFacts,
     vrf_global=Vrf_globalFacts,
     vrf_interfaces=Vrf_interfacesFacts,
+    hsrp_interfaces=Hsrp_interfacesFacts,
 )
 
 
