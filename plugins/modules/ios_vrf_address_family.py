@@ -496,7 +496,7 @@ options:
                   stitching:
                     description: Export Target-VPN community.
                     type: bool
-                    
+
   running_config:
     description:
       - This option is used only with state I(parsed).
