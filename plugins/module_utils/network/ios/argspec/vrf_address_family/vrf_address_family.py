@@ -1143,6 +1143,12 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                         "stitching": {"type": "bool"},
                                     },
                                 },
+                                "both": {"type": "list", "elements": "dict",
+                                         "options": {
+                                             "rt_value": {"type": "str"},
+                                             "stitching": {"type": "bool"},
+                                         },
+                                },
                             },
                         },
                     },

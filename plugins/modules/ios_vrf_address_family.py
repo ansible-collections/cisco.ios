@@ -463,13 +463,40 @@ options:
             suboptions:
               export:
                 description: Export Target-VPN community.
-                type: str
+                type: list
+                elements: dict
+                suboptions:
+                  rt_value:
+                    description: Export Target-VPN community.
+                    type: str
+                  stitching:
+                    description: Export Target-VPN community.
+                    type: bool
+
               import_config:
                 description: Export Target-VPN community.
-                type: str
+                type: list
+                elements: dict
+                suboptions:
+                  rt_value:
+                    description: Export Target-VPN community.
+                    type: str
+                  stitching:
+                    description: Export Target-VPN community.
+                    type: bool
+
               both:
                 description: Both export and import Target-VPN community
-                type: str
+                type: list
+                elements: dict
+                suboptions:
+                  rt_value:
+                    description: Export Target-VPN community.
+                    type: str
+                  stitching:
+                    description: Export Target-VPN community.
+                    type: bool
+                    
   running_config:
     description:
       - This option is used only with state I(parsed).
