@@ -126,21 +126,16 @@ class Vrf_address_family(ResourceModule):
         wantd = self._vrf_list_to_dict(wantd)
         haved = self._vrf_list_to_dict(haved)
 
-        # if state is merged, merge want onto have and then compare
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
-        # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
             for vrfk, vrfv in iteritems(haved):
                 for afk, afv in iteritems(vrfv.get("address_families", {})):
                     adrf = wantd.get(vrfk, {}).get("address_families", {})
                     if afk in adrf or not adrf:
-                        self.addcmd(
-                            {"name": vrfk},
-                            "name",
-                            False,
-                        )
+                        self.commands.append(f"vrf definition {vrfk}")
+
                         self.addcmd(
                             {"afi": afv.get("afi"), "safi": afv.get("safi")},
                             "address_family",
@@ -152,11 +147,13 @@ class Vrf_address_family(ResourceModule):
                 for k, have in iteritems(vrfv.get("address_families", {})):
                     wantx = wantd.get(vrfk, {}).get("address_families", {})
                     if k not in wantx:
-                        self.addcmd(
-                            {"name": vrfk},
-                            "name",
-                            False,
-                        )
+                        # self.addcmd(
+                        #     {"name": vrfk},
+                        #     "name",
+                        #     False,
+                        # )
+                        self.commands.append(f"vrf definition {vrfk}")
+
                         self.addcmd(
                             {"afi": have.get("afi"), "safi": have.get("safi")},
                             "address_family",
@@ -192,13 +189,18 @@ class Vrf_address_family(ResourceModule):
             begin = len(self.commands)
             self._compare_single_af(want=afv, have=haafs.get(afk, {}))
             if len(self.commands) != begin:
-                self.commands.insert(begin, f"address-family {afv.get('afi')} {afv.get('safi')}")
+                af_cmd = f"address-family {afv.get('afi')}"
+                if afv.get('safi'):
+                    af_cmd += f" {afv.get('safi')}"
+                self.commands.insert(begin, af_cmd)
 
     def _compare_single_af(self, want, have):
         """Custom handling of single af option
         :params want: the want VRF dictionary
         :params have: the have VRF dictionary
         """
+        if 'route_target' in want:
+            self._compare_route_targets(want, have)
         self.compare(parsers=self.parsers[1:], want=want, have=have)
 
     def _vrf_list_to_dict(self, entry):
@@ -215,3 +217,55 @@ class Vrf_address_family(ResourceModule):
 
         entry = {x["name"]: x for x in entry}
         return entry
+
+    def _compare_route_targets(self, want, have):
+        """Custom handling for route targets lists for all states
+        :params want: the want address family dictionary
+        :params have: the have address family dictionary
+        """
+        want_rt = want.get('route_target', {})
+        have_rt = have.get('route_target', {})
+
+        # Compare export route targets
+        want_exports = want_rt.get('export', [])
+        have_exports = have_rt.get('export', [])
+
+        # For merged/replaced state: Add missing routes from want
+        if self.state in ['merged', 'replaced', 'overridden']:
+            for export_rt in want_exports:
+                if export_rt not in have_exports:
+                    rt_cmd = f"route-target export {export_rt['rt_value']}"
+                    if export_rt.get('stitching'):
+                        rt_cmd += " stitching"
+                    self.commands.append(rt_cmd)
+
+        # For replaced/overridden/deleted state: Remove routes from have that aren't in want
+        if self.state in ['replaced', 'overridden', 'deleted']:
+            for export_rt in have_exports:
+                if self.state == 'deleted' or export_rt not in want_exports:
+                    rt_cmd = f"no route-target export {export_rt['rt_value']}"
+                    if export_rt.get('stitching'):
+                        rt_cmd += " stitching"
+                    self.commands.append(rt_cmd)
+
+        # Compare import route targets
+        want_imports = want_rt.get('import_config', [])
+        have_imports = have_rt.get('import_config', [])
+
+        # For merged/replaced state: Add missing routes from want
+        if self.state in ['merged', 'replaced', 'overridden']:
+            for import_rt in want_imports:
+                if import_rt not in have_imports:
+                    rt_cmd = f"route-target import {import_rt['rt_value']}"
+                    if import_rt.get('stitching'):
+                        rt_cmd += " stitching"
+                    self.commands.append(rt_cmd)
+
+        # For replaced/overridden/deleted state: Remove routes from have that aren't in want
+        if self.state in ['replaced', 'overridden', 'deleted']:
+            for import_rt in have_imports:
+                if self.state == 'deleted' or import_rt not in want_imports:
+                    rt_cmd = f"no route-target import {import_rt['rt_value']}"
+                    if import_rt.get('stitching'):
+                        rt_cmd += " stitching"
+                    self.commands.append(rt_cmd)

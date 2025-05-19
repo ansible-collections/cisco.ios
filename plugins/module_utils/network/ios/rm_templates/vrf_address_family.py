@@ -43,6 +43,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "address-family {{ afi }} {{ safi }}",
+            "remval": "no address-family {{ afi }} {{ safi }}",
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
@@ -2158,28 +2159,31 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \s(?P<afi>\S+)
                 (\s(?P<safi>\S+))?
                 \s+route-target\sexport\s(?P<route_target_export>\S+)
+                (\s(?P<stitching_export>stitching))?
                 $""", re.VERBOSE,
             ),
-            "setval": "route-target export {{ route_target.export }}",
+            "setval": "route-target export {{ rt_value }}{% if stitching %} stitching{% endif %}",
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + '
-                        '("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": (
-                                "{{ safi if safi is defined else "
-                                "'unicast' }}"
-                            ),
+                            "safi": "{{ safi if safi is defined else 'unicast' }}",
                             "route_target": {
-                                "export": "{{ route_target_export }}",
+                                "export": [
+                                    {
+                                        "rt_value": "{{ route_target_export }}",
+                                        "stitching": "{{ True if stitching_export is defined else False }}",
+                                    },
+                                ],
                             },
                         },
                     },
                 },
             },
-        },
+        }
+        ,
         {
             "name": "route_target.import_config",
             "getval": re.compile(
@@ -2188,25 +2192,25 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 \saddress-family
                 \s(?P<afi>\S+)
                 (\s(?P<safi>\S+))?
-                \s+route-target\simport\s(?P<route_target_import_config>\S+)
+                \s+route-target\simport\s(?P<route_target_import>\S+)
+                (\s(?P<stitching_import>stitching))?
                 $""", re.VERBOSE,
             ),
-            "setval": "route-target import {{ route_target.import_config }}",
+            "setval": "route-target import {{ rt_value }}{% if stitching %} stitching{% endif %}",
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',
                     "address_families": {
-                        '{{ "address_families_" + afi + '
-                        '("_" + safi if safi is defined else "_unicast") }}': {
+                        '{{ "address_families_" + afi + ("_" + safi if safi is defined else "_unicast") }}': {
                             "afi": "{{ afi }}",
-                            "safi": (
-                                "{{ safi if safi is defined else "
-                                "'unicast' }}"
-                            ),
+                            "safi": "{{ safi if safi is defined else 'unicast' }}",
                             "route_target": {
-                                "import_config": (
-                                    "{{ route_target_import_config }}"
-                                ),
+                                "import_config": [
+                                    {
+                                        "rt_value": "{{ route_target_import }}",
+                                        "stitching": "{{ True if stitching_import is defined else False }}",
+                                    },
+                                ],
                             },
                         },
                     },
