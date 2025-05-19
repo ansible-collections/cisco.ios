@@ -102,15 +102,16 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                                 ),
                                 route_target=dict(
                                     export=[
-                                        dict(rt_value ="10.12.0.1:20",
-                                        stitching =False,
-                                        )
+                                        dict(
+                                            rt_value="10.12.0.1:20",
+                                            stitching=False,
+                                        ),
                                     ],
                                     import_config=[
                                         dict(
-                                        rt_value="10.0.0.1:30",
-                                        stitching=False,
-                                        )
+                                            rt_value="10.0.0.1:30",
+                                            stitching=False,
+                                        ),
                                     ],
                                 ),
                                 mdt=dict(
@@ -150,17 +151,22 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                                     csc=dict(next_hop="1.2.3.4"),
                                 ),
                                 route_target=dict(
-                                    export=[dict(
-                                        rt_value="10.12.0.1:20",
-                                        stitching=True,
-                                    ),],
-                                    import_config=[dict(
-                                        rt_value="10.0.0.1:10",
-                                        stitching=False,),
+                                    export=[
+                                        dict(
+                                            rt_value="10.12.0.1:20",
+                                            stitching=True,
+                                        ),
+                                    ],
+                                    import_config=[
+                                        dict(
+                                            rt_value="10.0.0.1:10",
+                                            stitching=False,
+                                        ),
                                         dict(
                                             rt_value="10.0.0.1:30",
                                             stitching=True,
-                                        ),],
+                                        ),
+                                    ],
                                 ),
                             ),
                         ],
@@ -180,7 +186,7 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
             "route-target import 10.0.0.1:30 stitching",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted((result["commands"])),sorted( (commands)))
+        self.assertEqual(sorted((result["commands"])), sorted((commands)))
 
     def test_ios_vrf_address_family_replaced(self):
         """Test the replaced state of the ios_vrf_address_family module."""
@@ -219,16 +225,15 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                                 route_target=dict(
                                     export=[
                                         dict(
-                                        rt_value ="10.12.0.1:20",
-                                        stitching=False,
-                                        )
+                                            rt_value="10.12.0.1:20",
+                                            stitching=False,
+                                        ),
                                     ],
-
                                     import_config=[
                                         dict(
-                                        rt_value="10.0.0.1:10",
-                                        stitching=False,
-                                        )
+                                            rt_value="10.0.0.1:10",
+                                            stitching=False,
+                                        ),
                                     ],
                                 ),
                             ),
@@ -248,7 +253,7 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
             "route-target import 10.0.0.1:10",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted((result["commands"])),sorted( (commands)))
+        self.assertEqual(sorted((result["commands"])), sorted((commands)))
 
     def test_ios_vrf_address_family_replaced_idempotent(self):
         """Test the idempotent nature of the ios_vrf_address_family module in replaced state."""
@@ -286,15 +291,15 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                                 route_target=dict(
                                     export=[
                                         dict(
-                                        rt_value="10.12.0.1:20",
-                                        stitching=False,
+                                            rt_value="10.12.0.1:20",
+                                            stitching=False,
                                         ),
                                     ],
                                     import_config=[
                                         dict(
-                                        rt_value="10.0.0.1:10",
-                                        stitching=False,
-                                        )
+                                            rt_value="10.0.0.1:10",
+                                            stitching=False,
+                                        ),
                                     ],
                                 ),
                             ),

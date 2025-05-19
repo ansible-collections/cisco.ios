@@ -1133,7 +1133,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "rt_value": {"type": "str"},
                                         "stitching": {"type": "bool"},
-                                    }
+                                    },
                                 },
                                 "import_config": {
                                     "type": "list",
@@ -1141,7 +1141,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                     "options": {
                                         "rt_value": {"type": "str"},
                                         "stitching": {"type": "bool"},
-                                    }
+                                    },
                                 },
                             },
                         },
