@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_vrf_address_family - Enhance facts gathering to correctly parse the `stitching` attribute for route targets and consistently represent `export`/`import_config` as a list of dictionaries.
