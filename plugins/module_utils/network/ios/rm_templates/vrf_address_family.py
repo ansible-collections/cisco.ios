@@ -2182,8 +2182,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                     },
                 },
             },
-        }
-        ,
+        },
         {
             "name": "route_target.import_config",
             "getval": re.compile(
