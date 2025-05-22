@@ -43,6 +43,16 @@ class Acls(ResourceModule):
             resource="acls",
             tmplt=AclsTemplate(),
         )
+        self.default_acls = [
+            "implicit_deny_v6",
+            "implicit_permit_v6",
+            "preauth_v6",
+            "IP-Adm-V4-Int-ACL-global",
+            "implicit_deny",
+            "implicit_permit",
+            "preauth_v4",
+            "sl_def_acl"
+        ]
 
     def execute_module(self):
         """Execute the module
@@ -90,6 +100,9 @@ class Acls(ResourceModule):
         if self.state in ["overridden", "deleted"]:
             for k, have in iteritems(haved):
                 if k not in wantd:
+                    if self.state == "overridden":
+                        for acl in self.default_acls:
+                            have.get('acls', {}).pop(acl, None)
                     self._compare(want={}, have=have, afi=k)
 
         for k, want in iteritems(wantd):
@@ -147,6 +160,8 @@ class Acls(ResourceModule):
         if self.state in ["overridden", "deleted"]:
             # remove remaining acls lists
             for hname, hval in iteritems(hplists):
+                if self.state == "overridden" and hval in self.default_acls:
+                    continue
                 _cmd = self.acl_name_cmd(hname, afi, hval.get("acl_type", ""))
                 self.commands.append("no " + _cmd)
 
