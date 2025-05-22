@@ -43,6 +43,16 @@ class Acls(ResourceModule):
             resource="acls",
             tmplt=AclsTemplate(),
         )
+        self.default_acls = [
+            "implicit_deny_v6",
+            "implicit_permit_v6",
+            "preauth_v6",
+            "IP-Adm-V4-Int-ACL-global",
+            "implicit_deny",
+            "implicit_permit",
+            "preauth_v4",
+            "sl_def_acl",
+        ]
 
     def execute_module(self):
         """Execute the module
@@ -65,6 +75,10 @@ class Acls(ResourceModule):
             haved = self.list_to_dict(self.have)
         if self.want:
             wantd = self.list_to_dict(self.want)
+
+        for k, have in iteritems(haved):
+            for acl in self.default_acls:
+                have.get("acls", {}).pop(acl, None)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
