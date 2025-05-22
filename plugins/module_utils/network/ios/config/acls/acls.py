@@ -51,7 +51,7 @@ class Acls(ResourceModule):
             "implicit_deny",
             "implicit_permit",
             "preauth_v4",
-            "sl_def_acl"
+            "sl_def_acl",
         ]
 
     def execute_module(self):
@@ -102,7 +102,7 @@ class Acls(ResourceModule):
                 if k not in wantd:
                     if self.state == "overridden":
                         for acl in self.default_acls:
-                            have.get('acls', {}).pop(acl, None)
+                            have.get("acls", {}).pop(acl, None)
                     self._compare(want={}, have=have, afi=k)
 
         for k, want in iteritems(wantd):
