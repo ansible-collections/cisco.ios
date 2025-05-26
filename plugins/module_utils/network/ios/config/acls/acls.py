@@ -76,10 +76,6 @@ class Acls(ResourceModule):
         if self.want:
             wantd = self.list_to_dict(self.want)
 
-        for k, have in iteritems(haved):
-            for acl in self.default_acls:
-                have.get("acls", {}).pop(acl, None)
-
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
@@ -317,6 +313,8 @@ class Acls(ResourceModule):
                 temp_acls = {}
                 if each.get("acls"):
                     for acl in each.get("acls"):  # check each acl for aces
+                        if acl.get("name", None) in self.default_acls:
+                            continue
                         temp_aces = {}
                         if acl.get("aces"):
                             rem_idx = 0  # remarks if defined in an ace
