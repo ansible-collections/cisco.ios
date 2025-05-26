@@ -53,7 +53,7 @@ class Acls(ResourceModule):
                 "implicit_permit",
                 "preauth_v4",
                 "sl_def_acl",
-            ]
+            ],
         )
 
     def execute_module(self):
