@@ -13,7 +13,7 @@
         config:
         state: gathered
 
-    - name: debug 
+    - name: debug
       debug:
         msg: "{{ gathered.after | difference(result.gathered) }}"
 

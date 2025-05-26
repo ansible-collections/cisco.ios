@@ -51,18 +51,18 @@ class Vrf_globalFacts(object):
         inside_address_family = False
 
         for line in lines:
-            if re.match(r'\s+address-family\s+', line):
+            if re.match(r"\s+address-family\s+", line):
                 inside_address_family = True
                 continue
 
-            if re.match(r'\s+exit-address-family', line):
+            if re.match(r"\s+exit-address-family", line):
                 inside_address_family = False
                 continue
 
             if not inside_address_family:
                 filtered_lines.append(line)
 
-        return '\n'.join(filtered_lines)
+        return "\n".join(filtered_lines)
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Vrf_global network resource
