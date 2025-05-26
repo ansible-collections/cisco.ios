@@ -1752,25 +1752,25 @@ EXAMPLES = """
                 ttl:
                   eq: 10
           - name: implicit_deny
-                aces:
-                  - grant: deny
-                    sequence: 10
-                    protocol_options:
-                      tcp:
-                        syn: true
-                    source:
-                      address: 198.51.100.0
-                      wildcard_bits: 0.0.0.255
-                      port_protocol:
-                        eq: telnet
-                    destination:
-                      address: 198.51.110.0
-                      wildcard_bits: 0.0.0.255
-                      port_protocol:
-                        eq: telnet
-                    dscp: ef
-                    ttl:
-                      eq: 10
+            aces:
+              - grant: deny
+                sequence: 10
+                protocol_options:
+                  tcp:
+                    syn: true
+                source:
+                  address: 198.51.100.0
+                  wildcard_bits: 0.0.0.255
+                  port_protocol:
+                    eq: telnet
+                destination:
+                  address: 198.51.110.0
+                  wildcard_bits: 0.0.0.255
+                  port_protocol:
+                    eq: telnet
+                dscp: ef
+                ttl:
+                  eq: 10
     state: overridden
 
 # Task Output
