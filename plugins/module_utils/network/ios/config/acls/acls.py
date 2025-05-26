@@ -43,7 +43,7 @@ class Acls(ResourceModule):
             resource="acls",
             tmplt=AclsTemplate(),
         )
-        self.default_acls = [
+        self.default_acls = set([
             "implicit_deny_v6",
             "implicit_permit_v6",
             "preauth_v6",
@@ -52,7 +52,7 @@ class Acls(ResourceModule):
             "implicit_permit",
             "preauth_v4",
             "sl_def_acl",
-        ]
+        ])
 
     def execute_module(self):
         """Execute the module
