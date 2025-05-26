@@ -24,7 +24,8 @@ notes:
   - Module behavior is not idempotent when sequence for aces are not mentioned
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
-  - Default ACLs don't get updated, replaced or overridden. Added Defaults - implicit_deny_v6, implicit_permit_v6, preauth_v6, IP-Adm-V4-Int-ACL-global, implicit_deny, implicit_permit, preauth_v4, sl_def_acl
+  - Default ACLs don't get updated, replaced or overridden. Added Defaults - implicit_deny_v6,
+    implicit_permit_v6, preauth_v6, IP-Adm-V4-Int-ACL-global, implicit_deny, implicit_permit, preauth_v4, sl_def_acl
 options:
   config:
     description: A list of ACL configuration options.
