@@ -147,11 +147,6 @@ class Vrf_address_family(ResourceModule):
                 for k, have in iteritems(vrfv.get("address_families", {})):
                     wantx = wantd.get(vrfk, {}).get("address_families", {})
                     if k not in wantx:
-                        # self.addcmd(
-                        #     {"name": vrfk},
-                        #     "name",
-                        #     False,
-                        # )
                         self.commands.append(f"vrf definition {vrfk}")
 
                         self.addcmd(
@@ -226,11 +221,9 @@ class Vrf_address_family(ResourceModule):
         want_rt = want.get("route_target", {})
         have_rt = have.get("route_target", {})
 
-        # Compare export route targets
         want_exports = want_rt.get("export", [])
         have_exports = have_rt.get("export", [])
 
-        # For merged/replaced state: Add missing routes from want
         if self.state in ["merged", "replaced", "overridden"]:
             for export_rt in want_exports:
                 if export_rt not in have_exports:
@@ -239,7 +232,6 @@ class Vrf_address_family(ResourceModule):
                         rt_cmd += " stitching"
                     self.commands.append(rt_cmd)
 
-        # For replaced/overridden/deleted state: Remove routes from have that aren't in want
         if self.state in ["replaced", "overridden", "deleted"]:
             for export_rt in have_exports:
                 if self.state == "deleted" or export_rt not in want_exports:
@@ -248,11 +240,9 @@ class Vrf_address_family(ResourceModule):
                         rt_cmd += " stitching"
                     self.commands.append(rt_cmd)
 
-        # Compare import route targets
         want_imports = want_rt.get("import_config", [])
         have_imports = have_rt.get("import_config", [])
 
-        # For merged/replaced state: Add missing routes from want
         if self.state in ["merged", "replaced", "overridden"]:
             for import_rt in want_imports:
                 if import_rt not in have_imports:
@@ -261,7 +251,6 @@ class Vrf_address_family(ResourceModule):
                         rt_cmd += " stitching"
                     self.commands.append(rt_cmd)
 
-        # For replaced/overridden/deleted state: Remove routes from have that aren't in want
         if self.state in ["replaced", "overridden", "deleted"]:
             for import_rt in have_imports:
                 if self.state == "deleted" or import_rt not in want_imports:

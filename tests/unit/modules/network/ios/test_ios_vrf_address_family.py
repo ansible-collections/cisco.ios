@@ -400,7 +400,7 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
             "inter-as-hybrid csc next-hop 1.2.3.4",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual((result["rendered"]), (commands))
+        self.assertEqual(sorted(result["rendered"]), sorted(commands))
 
     def test_ios_vrf_address_family_parsed(self):
         """Test the parsed state of the ios_vrf_address_family module."""

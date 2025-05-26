@@ -77,10 +77,10 @@ gathered:
   after:
     - name: test1
       address_families:
-        - afi: "ipv4"
-          safi: "unicast"
+        - afi: ipv4
+          safi: unicast
           inter_as_hybrid:
-            next_hop: "1.0.0.0"
+            next_hop: 1.0.0.0
           mdt:
             auto_discovery:
               pim:

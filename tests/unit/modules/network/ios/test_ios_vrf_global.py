@@ -233,8 +233,8 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="7:8",
                             route_target=dict(
-                                export="198.51.100.2:500",
-                                import_config="198.51.100.5:400",
+                                export=["198.51.100.2:500"],
+                                import_config=["198.51.100.5:400"]
                             ),
                             vnet=dict(tag=300),
                             vpn=dict(id="2:45"),
@@ -476,7 +476,7 @@ class TestIosVrfGlobalModule(TestIosModule):
                     "ipv4": {"multicast": {"multitopology": True}},
                     "ipv6": {"multicast": {"multitopology": True}},
                     "rd": "2:3",
-                    "route_target": {"export": "192.0.2.0:100", "import_config": "192.0.2.3:300"},
+                    "route_target": {"export": ["192.0.2.0:100"], "import_config": ["192.0.2.3:300"]},
                     "vnet": {"tag": 34},
                     "vpn": {"id": "3:4"},
                 },

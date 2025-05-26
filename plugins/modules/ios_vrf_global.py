@@ -73,13 +73,16 @@ options:
             suboptions:
               export:
                 description: Export target-VPN configuration.
-                type: str
+                type: list
+                elements: str
               import_config:
                 description: Import target-VPN configuration.
-                type: str
+                type: list
+                elements: str
               both:
                 description: Both export and import target-VPN configuration.
-                type: str
+                type: list
+                elements: str
           vnet:
             description: Virtual networking configuration.
             type: dict
@@ -118,7 +121,7 @@ options:
         it into structured data in the format as per the resource module argspec and
         the value is returned in the I(gathered) key within the result.
       - The state I(parsed) reads the configuration from C(running_config) option and
-        transforms it into JSON format as per the resource module parameters and the
+        transforms it into JSON format as per the module parameters and the
         value is returned in the I(parsed) key within the result. The value of C(running_config)
         option should be the same format as the output of command I(show running-config | section vrf).
         connection to remote host is not required.
@@ -266,7 +269,7 @@ EXAMPLES = """
 #     vnet:
 #       tag: 200
 #     vpn:
-#       id: "2:45"
+#       id: "2:45
 #
 # commands:
 # - vrf definition VRF7
