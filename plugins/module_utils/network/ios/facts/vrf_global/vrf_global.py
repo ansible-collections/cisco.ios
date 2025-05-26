@@ -26,7 +26,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
     Vrf_globalTemplate,
 )
 
-import re
+
 class Vrf_globalFacts(object):
     """The ios vrf_global facts class"""
 
