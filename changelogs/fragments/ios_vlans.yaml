@@ -1,1 +1,2 @@
 bugfixes:
+  - cisco.ios.ios_vlans - Fixed errors during VLAN overrides where primary VLANs have private VLAN associations referencing non-existent or higher VLAN IDs, ensuring smoother private VLAN handling and preventing module failures.
