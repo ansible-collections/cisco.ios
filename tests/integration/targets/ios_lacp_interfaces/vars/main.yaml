@@ -1,12 +1,11 @@
 ---
 merged:
   before:
-    - name: loopback888
-    - name: loopback999
     - name: GigabitEthernet1
     - name: GigabitEthernet2
     - name: GigabitEthernet3
     - name: GigabitEthernet4
+    - name: loopback888
   commands:
     - interface GigabitEthernet2
     - lacp port-priority 30
@@ -17,10 +16,9 @@ merged:
     - lacp fast-switchover
   after:
     - name: loopback888
-    - name: loopback999
-    - fast_switchover: true
+    - name: Port-channel10
+      fast_switchover: true
       max_bundle: 2
-      name: Port-channel10
     - name: GigabitEthernet1
     - name: GigabitEthernet2
       port_priority: 30
@@ -31,7 +29,6 @@ merged:
 replaced:
   before:
     - name: loopback888
-    - name: loopback999
     - fast_switchover: true
       max_bundle: 2
       name: Port-channel10
@@ -49,7 +46,6 @@ replaced:
     - lacp fast-switchover
   after:
     - name: loopback888
-    - name: loopback999
     - fast_switchover: true
       max_bundle: 2
       name: Port-channel10
@@ -65,7 +61,6 @@ replaced:
 overridden:
   before:
     - name: loopback888
-    - name: loopback999
     - fast_switchover: true
       max_bundle: 2
       name: Port-channel10
@@ -89,7 +84,6 @@ overridden:
     - lacp max-bundle 2
   after:
     - name: loopback888
-    - name: loopback999
     - name: Port-channel10
     - fast_switchover: true
       max_bundle: 2
@@ -103,7 +97,6 @@ overridden:
 deleted:
   before:
     - name: loopback888
-    - name: loopback999
     - fast_switchover: true
       max_bundle: 2
       name: Port-channel10
@@ -124,7 +117,6 @@ deleted:
     - no lacp max-bundle
   after:
     - name: loopback888
-    - name: loopback999
     - name: Port-channel10
     - name: Port-channel40
     - name: GigabitEthernet1
@@ -135,7 +127,6 @@ deleted:
 gathered:
   config:
     - name: loopback888
-    - name: loopback999
     - fast_switchover: true
       max_bundle: 2
       name: Port-channel10
