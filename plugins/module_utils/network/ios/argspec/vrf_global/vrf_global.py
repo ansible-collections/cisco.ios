@@ -64,8 +64,8 @@ class Vrf_globalArgs(object):  # pylint: disable=R0903
                         "route_target": {
                             "type": "dict",
                             "options": {
-                                "export": {"type": "list", "elements": "str"},
-                                "import_config": {"type": "list", "elements": "str"},
+                                "exports": {"type": "list", "elements": "str"},
+                                "imports": {"type": "list", "elements": "str"},
                                 "both": {"type": "list", "elements": "str"},
                             },
                         },

@@ -101,8 +101,8 @@ class Vrf_address_family(ResourceModule):
             "route_replicate.from.vrf.vrf_name.unicast.ospf.id.route_map",
             "route_replicate.from.vrf.vrf_name.unicast.rip.route_map",
             "route_replicate.from.vrf.vrf_name.unicast.static.route_map",
-            "route_target.export",
-            "route_target.import_config",
+            "route_target.exports",
+            "route_target.imports",
         ]
 
     def execute_module(self):
@@ -221,8 +221,8 @@ class Vrf_address_family(ResourceModule):
         want_rt = want.get("route_target", {})
         have_rt = have.get("route_target", {})
 
-        want_exports = want_rt.get("export", [])
-        have_exports = have_rt.get("export", [])
+        want_exports = want_rt.get("exports", [])
+        have_exports = have_rt.get("exports", [])
 
         if self.state in ["merged", "replaced", "overridden"]:
             for export_rt in want_exports:
@@ -240,8 +240,8 @@ class Vrf_address_family(ResourceModule):
                         rt_cmd += " stitching"
                     self.commands.append(rt_cmd)
 
-        want_imports = want_rt.get("import_config", [])
-        have_imports = have_rt.get("import_config", [])
+        want_imports = want_rt.get("imports", [])
+        have_imports = have_rt.get("imports", [])
 
         if self.state in ["merged", "replaced", "overridden"]:
             for import_rt in want_imports:

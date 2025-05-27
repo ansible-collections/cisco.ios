@@ -127,38 +127,38 @@ class Vrf_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "route_target.export",
+            "name": "route_target.exports",
             "getval": re.compile(
                 r"""
                 \s+route-target\sexport\s(?P<route_target_export>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "{% for item in route_target.export %}route-target export {{ item }}{% endfor %}",
+            "setval": "{% for item in route_target.exports %}route-target export {{ item }}{% endfor %}",
             "result": {
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
                         "route_target": {
-                            "export": "{{ [route_target_export] }}",
+                            "exports": "{{ [route_target_export] }}",
                         },
                     },
                 },
             },
         },
         {
-            "name": "route_target.import_config",
+            "name": "route_target.imports",
             "getval": re.compile(
                 r"""
                 \s+route-target\simport\s(?P<route_target_import_config>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "{% for item in route_target.import_config %}route-target import {{ item }}{% endfor %}",
+            "setval": "{% for item in route_target.imports %}route-target import {{ item }}{% endfor %}",
             "result": {
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
                         "route_target": {
-                            "import_config": "{{ [route_target_import_config] }}",
+                            "imports": "{{ [route_target_import_config] }}",
                         },
                     },
                 },

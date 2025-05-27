@@ -101,13 +101,13 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                                     csc=dict(next_hop="1.2.3.4"),
                                 ),
                                 route_target=dict(
-                                    export=[
+                                    exports=[
                                         dict(
                                             rt_value="10.12.0.1:20",
                                             stitching=False,
                                         ),
                                     ],
-                                    import_config=[
+                                    imports=[
                                         dict(
                                             rt_value="10.0.0.1:30",
                                             stitching=False,
@@ -151,13 +151,13 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                                     csc=dict(next_hop="1.2.3.4"),
                                 ),
                                 route_target=dict(
-                                    export=[
+                                    exports=[
                                         dict(
                                             rt_value="10.12.0.1:20",
                                             stitching=True,
                                         ),
                                     ],
-                                    import_config=[
+                                    imports=[
                                         dict(
                                             rt_value="10.0.0.1:10",
                                             stitching=False,
@@ -223,13 +223,13 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                                     csc=dict(next_hop="1.2.3.4"),
                                 ),
                                 route_target=dict(
-                                    export=[
+                                    exports=[
                                         dict(
                                             rt_value="10.12.0.1:20",
                                             stitching=False,
                                         ),
                                     ],
-                                    import_config=[
+                                    imports=[
                                         dict(
                                             rt_value="10.0.0.1:10",
                                             stitching=False,
@@ -289,13 +289,13 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                                     csc=dict(next_hop="1.2.3.4"),
                                 ),
                                 route_target=dict(
-                                    export=[
+                                    exports=[
                                         dict(
                                             rt_value="10.12.0.1:20",
                                             stitching=False,
                                         ),
                                     ],
-                                    import_config=[
+                                    imports=[
                                         dict(
                                             rt_value="10.0.0.1:10",
                                             stitching=False,

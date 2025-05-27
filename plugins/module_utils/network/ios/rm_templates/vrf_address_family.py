@@ -2151,7 +2151,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "route_target.export",
+            "name": "route_target.exports",
             "getval": re.compile(
                 r"""
                 ^vrf\sdefinition\s(?P<name>\S+)
@@ -2171,7 +2171,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                             "afi": "{{ afi }}",
                             "safi": "{{ safi if safi is defined else 'unicast' }}",
                             "route_target": {
-                                "export": [
+                                "exports": [
                                     {
                                         "rt_value": "{{ route_target_export }}",
                                         "stitching": "{{ True if stitching_export is defined else False }}",
@@ -2184,7 +2184,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "route_target.import_config",
+            "name": "route_target.imports",
             "getval": re.compile(
                 r"""
                 ^vrf\sdefinition\s(?P<name>\S+)
@@ -2204,7 +2204,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                             "afi": "{{ afi }}",
                             "safi": "{{ safi if safi is defined else 'unicast' }}",
                             "route_target": {
-                                "import_config": [
+                                "imports": [
                                     {
                                         "rt_value": "{{ route_target_import }}",
                                         "stitching": "{{ True if stitching_import is defined else False }}",

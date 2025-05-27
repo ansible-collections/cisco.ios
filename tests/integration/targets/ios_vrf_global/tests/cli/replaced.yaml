@@ -21,8 +21,8 @@
                   multitopology: true
               rd: "7:8"
               route_target:
-                export: "198.51.100.2:500"
-                import_config: "198.51.100.5:400"
+                exports: "198.51.100.2:500"
+                imports: "198.51.100.5:400"
               vpn:
                 id: "5:45"
               vnet:

@@ -461,7 +461,7 @@ options:
             description: Specify Target VPN Extended Communities.
             type: dict
             suboptions:
-              export:
+              exports:
                 description: Export Target-VPN community.
                 type: list
                 elements: dict
@@ -473,7 +473,7 @@ options:
                     description: Export Target-VPN community.
                     type: bool
 
-              import_config:
+              imports:
                 description: Export Target-VPN community.
                 type: list
                 elements: dict

@@ -37,10 +37,10 @@
                   pim_tlv_announce:
                     mdt_hello_enable: true
             route_target:
-              export:
+              exports:
                 - rt_value: "10.12.0.1:20"
                   stitching: true
-              import_config:
+              imports:
                 - rt_value: "10.12.0.1:20"
                   stitching: false
 
