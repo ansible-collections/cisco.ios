@@ -99,6 +99,7 @@ overridden:
 deleted:
   before:
     - name: loopback888
+    - name: loopback999
     - fast_switchover: true
       max_bundle: 2
       name: Port-channel10
@@ -119,6 +120,7 @@ deleted:
     - no lacp max-bundle
   after:
     - name: loopback888
+    - name: loopback999
     - name: Port-channel10
     - name: Port-channel40
     - name: GigabitEthernet1
