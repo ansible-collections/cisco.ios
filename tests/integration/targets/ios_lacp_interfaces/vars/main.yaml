@@ -29,6 +29,7 @@ merged:
 replaced:
   before:
     - name: loopback888
+    - name: loopback999
     - fast_switchover: true
       max_bundle: 2
       name: Port-channel10
@@ -46,6 +47,7 @@ replaced:
     - lacp fast-switchover
   after:
     - name: loopback888
+    - name: loopback999
     - fast_switchover: true
       max_bundle: 2
       name: Port-channel10
@@ -131,6 +133,7 @@ deleted:
 gathered:
   config:
     - name: loopback888
+    - name: loopback999
     - fast_switchover: true
       max_bundle: 2
       name: Port-channel10
