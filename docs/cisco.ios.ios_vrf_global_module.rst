@@ -279,7 +279,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>export</b>
+                    <b>exports</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">list</span>
@@ -298,7 +298,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>import_config</b>
+                    <b>imports</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">list</span>
@@ -475,8 +475,8 @@ Examples
                   multitopology: true
               rd: "2:3"
               route_target:
-                export: "192.0.2.0:100"
-                import_config: "192.0.2.3:200"
+                exports: "192.0.2.0:100"
+                imports: "192.0.2.3:200"
               vpn:
                 id: "2:45"
               vnet:
@@ -510,8 +510,8 @@ Examples
     #         multitopology: true
     #     rd: "2:3"
     #     route_target:
-    #       export: "192.0.2.0:100"
-    #       import_config: "192.0.2.3:200"
+    #       exports: "192.0.2.0:100"
+    #       imports: "192.0.2.3:200"
     #     vnet:
     #       tag: 200
     #     vpn:
@@ -561,8 +561,8 @@ Examples
                   multitopology: true
               rd: "7:8"
               route_target:
-                export: "198.51.100.112:500"
-                import_config: "192.0.2.4:400"
+                exports: "198.51.100.112:500"
+                imports: "192.0.2.4:400"
               vpn:
                 id: "5:45"
               vnet:
@@ -583,8 +583,8 @@ Examples
     #         multitopology: true
     #     rd: "2:3"
     #     route_target:
-    #       export: "192.0.2.0:100"
-    #       import_config: "192.0.2.3:200"
+    #       exports: "192.0.2.0:100"
+    #       imports: "192.0.2.3:200"
     #     vnet:
     #       tag: 200
     #     vpn:
@@ -612,8 +612,8 @@ Examples
     #         multitopology: true
     #     rd: "2:3"
     #     route_target:
-    #       export: "192.0.2.0:100"
-    #       import_config: "192.0.2.3:200"
+    #       exports: "192.0.2.0:100"
+    #       imports: "192.0.2.3:200"
     #     vnet:
     #       tag: 200
     #     vpn:
@@ -628,8 +628,8 @@ Examples
     #         multitopology: true
     #     rd: "7:8"
     #     route_target:
-    #       export: "198.51.100.112:500"
-    #       import_config: "192.0.2.4:400"
+    #       exports: "198.51.100.112:500"
+    #       imports: "192.0.2.4:400"
     #     vnet:
     #       tag: 300
     #     vpn:
@@ -697,8 +697,8 @@ Examples
                   multitopology: true
               rd: "6:7"
               route_target:
-                export: "198.51.0.2:400"
-                import_config: "198.51.0.5:200"
+                exports: "198.51.0.2:400"
+                imports: "198.51.0.5:200"
               vpn:
                 id: "4:5"
               vnet:
@@ -719,8 +719,8 @@ Examples
     #         multitopology: true
     #     rd: "2:3"
     #     route_target:
-    #       export: "192.0.2.0:100"
-    #       import_config: "192.0.2.3:200"
+    #       exports: "192.0.2.0:100"
+    #       imports: "192.0.2.3:200"
     #     vnet:
     #       tag: 200
     #     vpn:
@@ -735,8 +735,8 @@ Examples
     #         multitopology: true
     #     rd: "7:8"
     #     route_target:
-    #       export: "198.51.100.112:500"
-    #       import_config: "192.0.2.4:400"
+    #       exports: "198.51.100.112:500"
+    #       imports: "192.0.2.4:400"
     #     vnet:
     #       tag: 300
     #     vpn:
@@ -783,8 +783,8 @@ Examples
     #         multitopology: true
     #     rd: "6:7"
     #     route_target:
-    #       export: "198.51.0.2:400"
-    #       import_config: "198.51.0.5:200"
+    #       exports: "198.51.0.2:400"
+    #       imports: "198.51.0.5:200"
     #     vnet:
     #       tag: 500
     #     vpn:
@@ -849,8 +849,8 @@ Examples
     #         multitopology: true
     #     rd: "6:7"
     #     route_target:
-    #       export: "198.51.0.2:400"
-    #       import_config: "198.51.0.5:200"
+    #       exports: "198.51.0.2:400"
+    #       imports: "198.51.0.5:200"
     #     vnet:
     #       tag: 500
     #     vpn:
@@ -920,8 +920,8 @@ Examples
     #         multitopology: true
     #     rd: "6:7"
     #     route_target:
-    #       export: "198.51.0.2:400"
-    #       import_config: "198.51.0.5:200"
+    #       exports: "198.51.0.2:400"
+    #       imports: "198.51.0.5:200"
     #     vnet:
     #       tag: 500
     #     vpn:
@@ -1002,8 +1002,8 @@ Examples
                   multitopology: true
               rd: "2:3"
               route_target:
-                export: "192.0.2.0:100"
-                import_config: "192.0.2.3:200"
+                exports: "192.0.2.0:100"
+                imports: "192.0.2.3:200"
               vpn:
                 id: "2:45"
               vnet:
@@ -1060,8 +1060,8 @@ Examples
     #           multitopology: true
     #       rd: "2:3"
     #       route_target:
-    #         export: "192.0.2.0:100"
-    #         import_config: "192.0.2.3:200"
+    #         exports: "192.0.2.0:100"
+    #         imports: "192.0.2.3:200"
     #       vnet:
     #         tag: 200
     #       vpn:
@@ -1108,8 +1108,8 @@ Examples
     #           multitopology: true
     #       rd: "192.0.2.0:300"
     #       route_target:
-    #         export: "192.0.2.0:100"
-    #         import_config: "192.0.2.2:300"
+    #         exports: "192.0.2.0:100"
+    #         imports: "192.0.2.2:300"
     #       vnet:
     #         tag: 34
     #       vpn:

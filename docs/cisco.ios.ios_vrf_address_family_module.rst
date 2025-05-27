@@ -6673,7 +6673,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="8">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>export</b>
+                    <b>exports</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">list</span>
@@ -6735,7 +6735,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="8">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>import_config</b>
+                    <b>imports</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">list</span>
