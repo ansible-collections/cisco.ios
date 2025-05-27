@@ -31,8 +31,8 @@ merged:
       enabled: false
       name: GigabitEthernet3
       speed: "1000"
-    - enabled: true # Changed from false
-      name: GigabitEthernet4 # Removed description
+    - enabled: true
+      name: GigabitEthernet4
     - enabled: true
       name: Loopback888
     - enabled: true
