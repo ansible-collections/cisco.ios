@@ -61,11 +61,12 @@ replaced:
 overridden:
   before:
     - name: loopback888
+    - name: loopback999
     - fast_switchover: true
       max_bundle: 2
       name: Port-channel10
-    - name: GigabitEthernet1
     - name: Port-channel40
+    - name: GigabitEthernet1
     - name: GigabitEthernet2
       port_priority: 30
     - name: GigabitEthernet3
@@ -84,6 +85,7 @@ overridden:
     - lacp max-bundle 2
   after:
     - name: loopback888
+    - name: loopback999
     - name: Port-channel10
     - fast_switchover: true
       max_bundle: 2
