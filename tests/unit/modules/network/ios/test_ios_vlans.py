@@ -669,7 +669,7 @@ class TestIosVlansModule(TestIosModule):
                         vlan_id=500,
                         state="active",
                         private_vlan=dict(
-                            type="primary",
+                            type="isolated",
                             associated=[501],
                         ),
                     ),
@@ -689,7 +689,6 @@ class TestIosVlansModule(TestIosModule):
             "no vlan 1",
             "vlan 500",
             "name Primary_VLAN_Updated",
-            "no state active",
             "private-vlan isolated",
             "shutdown",
             "vlan 501",
