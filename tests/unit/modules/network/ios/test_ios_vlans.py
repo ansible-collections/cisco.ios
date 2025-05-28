@@ -668,18 +668,17 @@ class TestIosVlansModule(TestIosModule):
                         name="Primary_VLAN_Updated",
                         vlan_id=500,
                         state="active",
-
                         private_vlan=dict(
                             type="primary",
-                            associated=[501]
-                        )
+                            associated=[501],
+                        ),
                     ),
                     dict(
                         name="Isolated_VLAN_Updated",
                         vlan_id=501,
                         private_vlan=dict(
-                            type="isolated"
-                        )
+                            type="isolated",
+                        ),
                     ),
                 ],
                 state="overridden",
