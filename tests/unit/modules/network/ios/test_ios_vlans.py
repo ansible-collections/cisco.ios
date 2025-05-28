@@ -694,7 +694,7 @@ class TestIosVlansModule(TestIosModule):
             "vlan 501",
             "name Isolated_VLAN_Updated",
             "no state active",
-            "shutdown"
+            "shutdown",
         ]
         print(result["commands"])
         self.assertEqual(result["commands"], commands)
