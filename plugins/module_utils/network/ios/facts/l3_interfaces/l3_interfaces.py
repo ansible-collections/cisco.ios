@@ -97,7 +97,7 @@ class L3_InterfacesFacts(object):
                         helper_list.append(each.get("helper-address")[0])
                         del each["helper-address"]
                 if helper_list:
-                    v["ipv4"].append({"helper-address" : helper_list})
+                    v["ipv4"].append({"helper-address": helper_list})
                 v["ipv4"] = [item for item in v["ipv4"] if item]
             temp.append(v)
         # sorting the dict by interface name

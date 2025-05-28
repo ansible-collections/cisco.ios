@@ -377,8 +377,8 @@ class L3_interfacesTemplate(NetworkTemplate):
                         "helper-address": [{
                             "destination_ip": "{{ destination_ip }}",
                             "global": "{{ not not global }}",
-                            "vrf": "{{ vrf }}"
-                        }]
+                            "vrf": "{{ vrf }}",
+                        }],
                     }],
                 },
             },
