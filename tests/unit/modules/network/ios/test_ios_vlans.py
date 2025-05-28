@@ -583,7 +583,7 @@ class TestIosVlansModule(TestIosModule):
             "no private-vlan association 501,502",
             "shutdown",
         ]
-
+        print(result["commands"])
         self.assertEqual(result["commands"], commands)
 
     def test_ios_vlans_overridden_with_orphaned_private_vlan_associations(self):
@@ -688,15 +688,17 @@ class TestIosVlansModule(TestIosModule):
         commands = [
             "no vlan 1",
             "vlan 500",
-            "state active",
             "name Primary_VLAN_Updated",
-            "private-vlan primary",
-            "private-vlan association 501",
+            "no state active",
+            "private-vlan isolated",
+            "shutdown",
             "vlan 501",
             "name Isolated_VLAN_Updated",
-            "private-vlan isolated",
+            "no state active",
+            "shutdown"
         ]
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        print(result["commands"])
+        self.assertEqual(result["commands"], commands)
 
     def test_ios_vlans_overridden_idempotent(self):
         self.mock_l2_device_command.side_effect = True

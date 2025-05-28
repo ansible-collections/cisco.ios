@@ -119,9 +119,6 @@ class Vlans(ResourceModule):
             haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             for k, have in iteritems(excluded_vlans):
                 self.purge(have, resource)
-            for k in wantd:
-                if k in haved:
-                    haved[k] = {}
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state in ["deleted", "purged"]:
