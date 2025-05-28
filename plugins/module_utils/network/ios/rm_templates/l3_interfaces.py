@@ -192,24 +192,6 @@ class L3_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "ipv4.helper_address",
-            "getval": re.compile(
-                r"""
-                \s+ip\shelper-address
-                $""", re.VERBOSE,
-            ),
-            "setval": "ip helper-address",
-            "result": {
-                "{{ name }}": {
-                    "ipv4": [
-                        {
-                            "helper_address": True,
-                        },
-                    ],
-                },
-            },
-        },
-        {
             "name": "ipv4.proxy_arp",
             "getval": re.compile(
                 r"""
@@ -370,6 +352,34 @@ class L3_interfacesTemplate(NetworkTemplate):
                     "ipv6": [
                         {"enable": True},
                     ],
+                },
+            },
+        },
+        {
+            "name": "ipv4.helper_address",
+            "getval": re.compile(
+                r"""
+                ^\s*ip\s+helper-address
+                (\s(?P<global>global))?
+                (\svrf\s(?P<vrf>\S+))?
+                \s+(?P<destination_ip>\S+)
+                \s*$
+                """,
+                re.VERBOSE,
+            ),
+            "setval": "ip address "
+                      "{{ 'global ' if ipv4.helper_address.global|d(False) else ''}}"
+                      "{{ 'vrf ' + ipv4.helper_address.vrf|string if ipv4.helper_address.vrf is defined else ''}}"
+                      "{{ ipv4.helper_address.destination_ip|string }}",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": [{
+                        "helper-address": [{
+                            "destination_ip": "{{ destination_ip }}",
+                            "global": "{{ not not global }}",
+                            "vrf": "{{ vrf }}"
+                        }]
+                    }],
                 },
             },
         },

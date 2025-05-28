@@ -56,7 +56,14 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                 "hostname": {"type": "str"},
                             },
                         },
-                        "helper_address": {"type": "bool"},
+                        "helper-address": {
+                            "type": "list",
+                            "options": {
+                                "destination_ip": {"type": "str"},
+                                "global": {"type": "bool"},
+                                "vrf": {"type": "str"},
+                            },
+                        },
                         "proxy_arp": {"type": "bool"},
                         "pool": {"type": "str"},
                         "redirects": {"type": "bool"},

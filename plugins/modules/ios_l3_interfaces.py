@@ -92,6 +92,19 @@ options:
               hostname:
                 description: Specify value for hostname option.
                 type: str
+          helper-address:
+            description: Specify a destination address for UDP broadcasts
+            type: list
+            suboptions:
+              destination_ip:
+                description: IP destination address
+                type: str
+              global:
+                description: Helper-address is global
+                type: bool
+              vrf:
+                description: VRF name for helper-address (if different from interface VRF)
+                type: str
           pool:
             description: IP Address auto-configured from a local DHCP pool.
             type: str
@@ -100,9 +113,6 @@ options:
             type: bool
           unreachables:
             description: Enable sending ICMP Unreachable messages.
-            type: bool
-          helper_address:
-            description: Enable helper_address messages.
             type: bool
           proxy_arp:
             description: Enable proxy_arp.
