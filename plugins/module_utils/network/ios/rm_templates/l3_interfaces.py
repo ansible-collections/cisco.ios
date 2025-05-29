@@ -368,9 +368,10 @@ class L3_interfacesTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "ip address "
-                      "{{ 'global ' if ipv4.helper_address.global|d(False) else ''}}"
-                      "{{ 'vrf ' + ipv4.helper_address.vrf|string if ipv4.helper_address.vrf is defined else ''}}"
-                      "{{ ipv4.helper_address.destination_ip|string }}",
+                      "{{ 'global ' if ipv4.global|d(False) else ''}}"
+                      "{{ 'vrf ' + ipv4.vrf|string + ' ' if ipv4.vrf is defined else ''}}"
+                      "{{ ipv4.destination_ip|string }}",
+            "compval": "ipv4",
             "result": {
                 "{{ name }}": {
                     "ipv4": [{

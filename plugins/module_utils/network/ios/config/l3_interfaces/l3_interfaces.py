@@ -139,14 +139,29 @@ class L3_interfaces(ResourceModule):
                     hacl = {}
                 self.validate_ips(afi, want=entry, have=hacl)
 
-                if hacl:
+                if hacl and key != "helper-address":
                     hacls.pop(key, {})
 
-                self.compare(
-                    parsers=self.parsers,
-                    want={afi: entry},
-                    have={afi: hacl},
+                if key == "helper-address":
+                    for k, val in entry.items():
+                        hacl_val = hacl.pop(k, {})
+                        if hacl_val and hacl_val != val:
+                            self.compare(
+                            parsers=self.parsers,
+                            want={},
+                            have={afi: hacl_val},
+                        )
+                        self.compare(
+                        parsers=self.parsers,
+                        want={afi: val},
+                        have={afi: hacl_val},
                 )
+                else:
+                    self.compare(
+                        parsers=self.parsers,
+                        want={afi: entry},
+                        have={afi: hacl},
+                    )
 
             for key, entry in wacls.items():
                 if entry.get("secondary", False) is False:
@@ -167,14 +182,8 @@ class L3_interfaces(ResourceModule):
                         hacl = {}
                 self.validate_ips(afi, want=entry, have=hacl)
 
-                if hacl:
+                if hacl and key != "helper-address":
                     hacls.pop(key, {})
-
-                self.compare(
-                    parsers=self.parsers,
-                    want={afi: entry},
-                    have={afi: hacl},
-                )
 
             # remove remaining items in have for replaced
             # these can be subnets that are no longer used
@@ -182,7 +191,15 @@ class L3_interfaces(ResourceModule):
             # or primary that has moved to secondary
             for key, entry in hacls.items():
                 self.validate_ips(afi, have=entry)
-                self.compare(parsers=self.parsers, want={}, have={afi: entry})
+                if key == "helper-address":
+                    for k, val in entry.items():
+                        self.compare(
+                        parsers=self.parsers,
+                        want={},
+                        have={afi: val},
+                    )      
+                else:
+                    self.compare(parsers=self.parsers, want={}, have={afi: entry})
 
     def validate_ips(self, afi, want=None, have=None):
         if afi == "ipv4" and want:
@@ -196,6 +213,8 @@ class L3_interfaces(ResourceModule):
                 have["address"] = v4_addr_h
 
     def list_to_dict(self, param):
+        def list_to_dict_by_destination_ip(helper_list):
+            return {item["destination_ip"]: item for item in helper_list}
         if param:
             for _k, val in iteritems(param):
                 val["name"] = normalize_interface(val["name"])
@@ -216,7 +235,9 @@ class L3_interfaces(ResourceModule):
                                     },
                                 },
                             )
-                        if not each.get("address"):
+                        elif each.get("helper-address"):
+                            temp["helper-address"] = list_to_dict_by_destination_ip(each.get("helper-address"))
+                        if not each.get("address") and not each.get("helper-address"):
                             temp.update({list(each.keys())[0]: each})
                     val["ipv4"] = temp
                 if "ipv6" in val:
