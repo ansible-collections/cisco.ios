@@ -253,6 +253,7 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
             "route-target import 10.0.0.1:10",
         ]
         result = self.execute_module(changed=True)
+        print(result["commands"])
         self.assertEqual(sorted((result["commands"])), sorted((commands)))
 
     def test_ios_vrf_address_family_replaced_idempotent(self):
