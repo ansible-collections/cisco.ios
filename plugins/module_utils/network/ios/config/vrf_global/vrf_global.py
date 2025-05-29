@@ -118,13 +118,13 @@ class Vrf_global(ResourceModule):
         self.commands.append("no vrf definition {0}".format(have["name"]))
 
     def _handle_deprecates(self, want):
-        if not isinstance(want, dict) or 'vrfs' not in want:
+        if not isinstance(want, dict) or "vrfs" not in want:
             return want
-        for vrf_config in want['vrfs']:
-            if 'route_target' in vrf_config:
-                rt = vrf_config['route_target']
-                if 'exports' in rt and isinstance(rt['exports'], str):
-                    rt['exports'] = [rt['exports']]
-                if 'imports' in rt and isinstance(rt['imports'], str):
-                    rt['imports'] = [rt['imports']]
+        for vrf_config in want["vrfs"]:
+            if "route_target" in vrf_config:
+                rt = vrf_config["route_target"]
+                if "exports" in rt and isinstance(rt["exports"], str):
+                    rt["exports"] = [rt["exports"]]
+                if "imports" in rt and isinstance(rt["imports"], str):
+                    rt["imports"] = [rt["imports"]]
         return want

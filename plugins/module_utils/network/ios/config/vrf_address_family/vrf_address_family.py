@@ -265,16 +265,16 @@ class Vrf_address_family(ResourceModule):
         if not isinstance(want, list):
             return want
         for vrf_config in want:
-            if 'address_families' in vrf_config:
-                for af in vrf_config['address_families']:
-                    if 'route_target' in af:
-                        rt = af['route_target']
+            if "address_families" in vrf_config:
+                for af in vrf_config["address_families"]:
+                    if "route_target" in af:
+                        rt = af["route_target"]
                         new_rt = {}
-                        if 'export' in rt:
-                            export_value = rt['export']
-                            new_rt['exports'] = [{'rt_value': export_value, 'stiching': False}]
-                        if 'import_config' in rt:
-                            import_value = rt['import_config']
-                            new_rt['imports'] = [{'rt_value': import_value, 'stiching': False}]
-                        af['route_target'] = new_rt
+                        if "export" in rt:
+                            export_value = rt["export"]
+                            new_rt["exports"] = [{"rt_value": export_value, "stiching": False}]
+                        if "import_config" in rt:
+                            import_value = rt["import_config"]
+                            new_rt["imports"] = [{"rt_value": import_value, "stiching": False}]
+                        af["route_target"] = new_rt
         return want
