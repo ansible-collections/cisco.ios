@@ -4,6 +4,21 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v10.1.0
+=======
+
+Minor Changes
+-------------
+
+- ios_hsrp_interfaces - Added support for cisco.ios.hsrp_interfaces module (standby commands).
+
+Bugfixes
+--------
+
+- cisco.ios.ios_interfaces - Improved handling of the `enabled` state to prevent incorrect `shutdown` or `no shutdown` commands during configuration changes.
+- ios_acls - Fix issue where commands were not being parsed correctly and incorrect commands were being generated.
+- ios_bgp_address_family - fix configuration of neighbor's as-override split-horizon.
+
 v10.0.0
 =======
 
