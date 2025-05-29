@@ -147,15 +147,15 @@ class L3_interfaces(ResourceModule):
                         hacl_val = hacl.pop(k, {})
                         if hacl_val and hacl_val != val:
                             self.compare(
+                                parsers=self.parsers,
+                                want={},
+                                have={afi: hacl_val},
+                            )
+                        self.compare(
                             parsers=self.parsers,
-                            want={},
+                            want={afi: val},
                             have={afi: hacl_val},
                         )
-                        self.compare(
-                        parsers=self.parsers,
-                        want={afi: val},
-                        have={afi: hacl_val},
-                )
                 else:
                     self.compare(
                         parsers=self.parsers,
@@ -194,10 +194,10 @@ class L3_interfaces(ResourceModule):
                 if key == "helper-address":
                     for k, val in entry.items():
                         self.compare(
-                        parsers=self.parsers,
-                        want={},
-                        have={afi: val},
-                    )      
+                            parsers=self.parsers,
+                            want={},
+                            have={afi: val},
+                        )
                 else:
                     self.compare(parsers=self.parsers, want={}, have={afi: entry})
 
@@ -215,6 +215,7 @@ class L3_interfaces(ResourceModule):
     def list_to_dict(self, param):
         def list_to_dict_by_destination_ip(helper_list):
             return {item["destination_ip"]: item for item in helper_list}
+
         if param:
             for _k, val in iteritems(param):
                 val["name"] = normalize_interface(val["name"])
@@ -236,7 +237,9 @@ class L3_interfaces(ResourceModule):
                                 },
                             )
                         elif each.get("helper-address"):
-                            temp["helper-address"] = list_to_dict_by_destination_ip(each.get("helper-address"))
+                            temp["helper-address"] = list_to_dict_by_destination_ip(
+                                each.get("helper-address")
+                            )
                         if not each.get("address") and not each.get("helper-address"):
                             temp.update({list(each.keys())[0]: each})
                     val["ipv4"] = temp
