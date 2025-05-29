@@ -461,6 +461,21 @@ options:
             description: Specify Target VPN Extended Communities.
             type: dict
             suboptions:
+              export:
+                description:
+                  - This option is DEPRECATED and is replaced with exports which
+                    accepts list of dict input.
+                type: str
+              import_config:
+                description:
+                 - This option is DEPRECATED and is replaced with imports which
+                   accepts list of dict input.
+                type: str
+              both:
+                description:
+                  - This option is DEPRECATED and is replaced with both_options which
+                    accepts list of dict input.
+                type: str
               exports:
                 description: Export Target-VPN community.
                 type: list
@@ -485,7 +500,7 @@ options:
                     description: Export Target-VPN community.
                     type: bool
 
-              both:
+              both_options:
                 description: Both export and import Target-VPN community
                 type: list
                 elements: dict

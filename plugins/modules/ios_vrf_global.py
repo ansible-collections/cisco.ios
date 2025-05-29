@@ -71,15 +71,30 @@ options:
             description: Specify target VPN extended configurations.
             type: dict
             suboptions:
+              export:
+                description:
+                  - This option is DEPRECATED and is replaced with exports which
+                    accepts list as input.
+                type: str
               exports:
                 description: Export target-VPN configuration.
                 type: list
                 elements: str
+              import_config:
+                description:
+                  - This option is DEPRECATED and is replaced with imports which
+                    accepts list as input.
+                type: str
               imports:
                 description: Import target-VPN configuration.
                 type: list
                 elements: str
               both:
+                description:
+                  - This option is DEPRECATED and is replaced with both_options which
+                    accepts list as input.
+                type: str
+              both_options:
                 description: Both export and import target-VPN configuration.
                 type: list
                 elements: str

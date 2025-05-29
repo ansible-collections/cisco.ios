@@ -177,7 +177,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                     '{{ name }}': {
                         'name': '{{ name }}',
                         "route_target": {
-                            "both": "{{ [route_target_both] }}",
+                            "both_options": "{{ [route_target_both] }}",
                         },
                     },
                 },

@@ -1127,6 +1127,9 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                         "route_target": {
                             "type": "dict",
                             "options": {
+                                "export": {"type": "str"},
+                                "import_config": {"type": "str"},
+                                "both": {"type": "str"},
                                 "exports": {
                                     "type": "list",
                                     "elements": "dict",
@@ -1143,7 +1146,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                         "stitching": {"type": "bool"},
                                     },
                                 },
-                                "both": {
+                                "both_options": {
                                     "type": "list",
                                     "elements": "dict",
                                     "options": {
