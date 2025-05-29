@@ -1,3 +1,0 @@
----
-bugfixes:
-  - "ios_bgp_address_family - fix configuration of neighbor's as-override split-horizon."

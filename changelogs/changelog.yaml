@@ -1384,10 +1384,27 @@ releases:
           options for interface.
         - ios_l3_interfaces - Added a few ip configuration options for interface.
       release_summary:
-        "With this release, the minimum required version of `ansible-core`
+        With this release, the minimum required version of `ansible-core`
         for this collection is `2.16.0`. The last version known to be compatible with
-        `ansible-core` versions below `2.16` is v9.2.0."
+        `ansible-core` versions below `2.16` is v9.2.0.
     fragments:
       - all_intefaces.yaml
       - bump216.yml
     release_date: "2025-04-11"
+  10.1.0:
+    changes:
+      bugfixes:
+        - cisco.ios.ios_interfaces - Improved handling of the `enabled` state to prevent
+          incorrect `shutdown` or `no shutdown` commands during configuration changes.
+        - ios_acls - Fix issue where commands were not being parsed correctly and incorrect
+          commands were being generated.
+        - ios_bgp_address_family - fix configuration of neighbor's as-override split-horizon.
+      minor_changes:
+        - ios_hsrp_interfaces - Added support for cisco.ios.hsrp_interfaces module (standby
+          commands).
+    fragments:
+      - bgp_add_fam_qfix.yaml
+      - fix_acls.yml
+      - hsrp_interfaces.yaml
+      - ios_interfaces.yaml
+    release_date: "2025-05-29"
