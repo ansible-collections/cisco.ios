@@ -91,7 +91,7 @@ class TestIosBannerModule(TestIosModule):
         banner_text = "\n\n              _   _   _                 _   _   _\n             | |_| |_| |          Network Test              | |_| |_| |"
         set_module_args(dict(banner="login", text=banner_text, preserve_empty_lines=True))
         expected_commands = [
-            "banner login @\n\n\n              _   _   _                 _   _   _\n             | |_| |_| |          Network Test              | |_| |_| |\n@"
+            "banner login @\n\n\n              _   _   _                 _   _   _\n             | |_| |_| |          Network Test              | |_| |_| |\n@",
         ]
         self.execute_module(changed=True, commands=expected_commands)
 
@@ -100,7 +100,7 @@ class TestIosBannerModule(TestIosModule):
         banner_text = "\n\n     _   _   _          _   _   _\n             | |_| |_| |          Network Test              | |_| |_| |"
         set_module_args(dict(banner="login", text=banner_text))
         expected_commands = [
-            "banner login @\n     _   _   _          _   _   _\n             | |_| |_| |          Network Test              | |_| |_| |\n@"
+            "banner login @\n     _   _   _          _   _   _\n             | |_| |_| |          Network Test              | |_| |_| |\n@",
         ]
         self.execute_module(changed=True, commands=expected_commands)
 
@@ -109,7 +109,7 @@ class TestIosBannerModule(TestIosModule):
         banner_text = "\n\n\n"
         set_module_args(dict(banner="motd", text=banner_text, preserve_empty_lines=True))
         expected_commands = [
-            "banner motd @\n\n\n\n\n@"
+            "banner motd @\n\n\n\n\n@",
         ]
         self.execute_module(changed=True, commands=expected_commands)
 

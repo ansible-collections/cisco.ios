@@ -202,7 +202,7 @@ def main():
         banner=dict(required=True, choices=["login", "motd", "exec", "incoming", "slip-ppp"]),
         multiline_delimiter=dict(default="@"),
         text=dict(),
-        preserve_empty_lines=dict(default=False, type='bool'),
+        preserve_empty_lines=dict(default=False, type="bool"),
         state=dict(default="present", choices=["present", "absent"]),
     )
     required_if = [("state", "present", ("text",))]
