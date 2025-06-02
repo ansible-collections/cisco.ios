@@ -50,7 +50,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                 "global": {"type": "bool"},
                                 "vrf": {"type": "str"},
                             },
-                        }
+                        },
                     },
                 },
                 "ipv4": {

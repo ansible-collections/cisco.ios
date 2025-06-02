@@ -46,7 +46,7 @@ merged:
         - address: 198.51.100.1/24
           secondary: true
           helper-address:
-              destination_ip: 10.0.0.1
+            destination_ip: 10.0.0.1
         - address: 198.51.100.2/24
           helper-address:
             - global: true

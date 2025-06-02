@@ -65,7 +65,7 @@ class L3_interfaces(ResourceModule):
             "helper_addresses_ipv4",
         ]
         self.complex_suboptions_set = set(
-            ["helper_addresses"]
+            ["helper_addresses"],
         )
         self.helper_address_suboptions = ["ipv4"]
         self.gen_parsers = [
@@ -141,14 +141,14 @@ class L3_interfaces(ResourceModule):
                         hacl_val = hacl.pop(k, {})
                         if hacl_val and hacl_val != val:
                             self.compare(
-                            parsers=self.complex_parsers,
-                            want={},
-                            have={value: hacl_val},
-                        )
+                                parsers=self.complex_parsers,
+                                want={},
+                                have={value: hacl_val},
+                            )
                         self.compare(
-                        parsers=self.complex_parsers,
-                        want={value: val},
-                        have={value: hacl_val},
+                            parsers=self.complex_parsers,
+                            want={value: val},
+                            have={value: hacl_val},
                         )
         for suboption in self.complex_suboptions_set:
             complex_dict = have.get(suboption, {})
@@ -156,10 +156,10 @@ class L3_interfaces(ResourceModule):
                 for value in self.helper_address_suboptions:
                     for k, val in complex_dict.get(value, {}).items():
                         self.compare(
-                        parsers=self.complex_parsers,
-                        want={},
-                        have={value: val},
-                        )   
+                            parsers=self.complex_parsers,
+                            want={},
+                            have={value: val},
+                        )
         for afi in ("ipv4", "ipv6"):
             wacls = want.pop(afi, {})
             hacls = have.pop(afi, {})
@@ -203,12 +203,12 @@ class L3_interfaces(ResourceModule):
 
                 if hacl:
                     hacls.pop(key, {})
-                
+
                 self.compare(
-                        parsers=self.parsers,
-                        want={afi: entry},
-                        have={afi: hacl},
-                    )
+                    parsers=self.parsers,
+                    want={afi: entry},
+                    have={afi: hacl},
+                )
 
             # remove remaining items in have for replaced
             # these can be subnets that are no longer used

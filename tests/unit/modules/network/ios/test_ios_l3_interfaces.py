@@ -251,7 +251,7 @@ class TestIosL3InterfacesModule(TestIosModule):
                     {"mtu": 1500},
                     {"unreachables": True},
                     {"proxy_arp": True},
-                    {"helper-address": [{'global': True, 'destination_ip': '10.0.0.1'}]},
+                    {"helper-address": [{"global": True, "destination_ip": "10.0.0.1"}]},
                 ],
             },
         ]
@@ -599,13 +599,13 @@ class TestIosL3InterfacesModule(TestIosModule):
                                     dict(destination_ip="10.0.0.2"),
                                     {"global": True, "destination_ip": "10.0.0.3"},
                                 ],
-                                "mtu": 4
-                            }
+                                "mtu": 4,
+                            },
                         ],
-                    )
+                    ),
                 ],
-            state="overridden",
-            )
+                state="overridden",
+            ),
         )
 
         commands = [
@@ -615,7 +615,7 @@ class TestIosL3InterfacesModule(TestIosModule):
             "ip helper-address 10.0.0.2",
             "ip helper-address global 10.0.0.3",
             "no ip helper-address 10.0.0.3",
-            "ip mtu 4"
+            "ip mtu 4",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
