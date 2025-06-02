@@ -96,6 +96,35 @@ class L3_interfacesTemplate(NetworkTemplate):
             "shared": True,
         },
         {
+            "name": "helper_addresses_ipv4",
+            "getval": re.compile(
+                r"""
+                ^\s*ip\s+helper-address
+                (\s(?P<global>global))?
+                (\svrf\s(?P<vrf>\S+))?
+                \s+(?P<destination_ip>\S+)
+                \s*$
+                """,
+                re.VERBOSE,
+            ),
+            "setval": "ip helper-address "
+                      "{{ 'global ' if ipv4.global|d(False) else ''}}"
+                      "{{ 'vrf ' + ipv4.vrf|string + ' ' if ipv4.vrf is defined else ''}}"
+                      "{{ ipv4.destination_ip|string }}",
+            "compval": "ipv4",
+            "result": {
+                "{{ name }}": {
+                    "helper_addresses": {
+                        "ipv4": [{
+                            "destination_ip": "{{ destination_ip }}",
+                            "global": "{{ not not global }}",
+                            "vrf": "{{ vrf }}",
+                        }],
+                    },
+                },
+            },
+        },
+        {
             "name": "ipv4.address",
             "getval": re.compile(
                 r"""\s+ip\saddress
@@ -352,35 +381,6 @@ class L3_interfacesTemplate(NetworkTemplate):
                     "ipv6": [
                         {"enable": True},
                     ],
-                },
-            },
-        },
-        {
-            "name": "ipv4.helper_address",
-            "getval": re.compile(
-                r"""
-                ^\s*ip\s+helper-address
-                (\s(?P<global>global))?
-                (\svrf\s(?P<vrf>\S+))?
-                \s+(?P<destination_ip>\S+)
-                \s*$
-                """,
-                re.VERBOSE,
-            ),
-            "setval": "ip address "
-                      "{{ 'global ' if ipv4.global|d(False) else ''}}"
-                      "{{ 'vrf ' + ipv4.vrf|string + ' ' if ipv4.vrf is defined else ''}}"
-                      "{{ ipv4.destination_ip|string }}",
-            "compval": "ipv4",
-            "result": {
-                "{{ name }}": {
-                    "ipv4": [{
-                        "helper-address": [{
-                            "destination_ip": "{{ destination_ip }}",
-                            "global": "{{ not not global }}",
-                            "vrf": "{{ vrf }}",
-                        }],
-                    }],
                 },
             },
         },

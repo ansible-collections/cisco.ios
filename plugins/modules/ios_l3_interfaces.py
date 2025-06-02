@@ -48,6 +48,23 @@ options:
         description:
           - Manually set interface MAC address.
         type: str
+      helper_addresses:
+        description: Specify a destination address for UDP broadcasts
+        type: dict
+        suboptions:
+          ipv4:
+            description: List of ipv4 destiantion IPs
+            type: list
+            suboptions:
+              destination_ip:
+                description: IP destination address
+                type: str
+              global:
+                description: Helper-address is global
+                type: bool
+              vrf:
+                description: VRF name for helper-address (if different from interface VRF)
+                type: str
       ipv4:
         description:
           - IPv4 address to be set for the Layer-3 interface mentioned in I(name) option.
@@ -91,19 +108,6 @@ options:
                 type: str
               hostname:
                 description: Specify value for hostname option.
-                type: str
-          helper-address:
-            description: Specify a destination address for UDP broadcasts
-            type: list
-            suboptions:
-              destination_ip:
-                description: IP destination address
-                type: str
-              global:
-                description: Helper-address is global
-                type: bool
-              vrf:
-                description: VRF name for helper-address (if different from interface VRF)
                 type: str
           pool:
             description: IP Address auto-configured from a local DHCP pool.
@@ -921,17 +925,17 @@ commands:
   returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
-    - "ip address 192.168.0.3 255.255.255.0"
-    - "ipv6 address dhcp rapid-commit"
-    - "ipv6 address fd5d:12c9:2201:1::1/64 anycast"
+    - sample command 1
+    - sample command 2
+    - sample command 3
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
   returned: when I(state) is C(rendered)
   type: list
   sample:
-    - "ipv6 address FD5D:12C9:2201:1::1/64"
-    - "ip address 192.168.0.3 255.255.255.0"
-    - "ip address autoconfig"
+    - sample command 1
+    - sample command 2
+    - sample command 3
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)

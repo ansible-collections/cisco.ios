@@ -14,9 +14,6 @@ from __future__ import absolute_import, division, print_function
 
 
 __metaclass__ = type
-# import debugpy
-# debugpy.listen(3000)
-# debugpy.wait_for_client()
 
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
@@ -40,22 +37,6 @@ class L3_InterfacesFacts(object):
         self.argument_spec = L3_interfacesArgs.argument_spec
 
     def get_l3_interfaces_data(self, connection):
-        # data = """interface Vlan10
-        #            description VRF_HQ_XBP_ION
-        #            vrf forwarding VRF_HQ_XBP_ION
-        #            ip address 10.109.28.2 255.255.255.0
-        #            ip helper-address global 10.15.16.7
-        #            ip helper-address global 10.15.16.39
-        #            ip helper-address 10.15.16.7
-        #            ip helper-address 10.15.16.39
-        #            no ip redirects
-        #            ip ospf 136 area 0.0.0.0
-        #            standby 10 ip 10.109.28.1
-        #            standby 10 priority 120
-        #            standby 10 preempt delay minimum 180 reload 180
-        #            standby 10 authentication md5 key-chain HSRP-KEY
-        #        """
-        # return data
         return connection.get("show running-config | section ^interface")
 
     def _set_defaults(self, objs):
@@ -86,19 +67,12 @@ class L3_InterfacesFacts(object):
         objs = utils.remove_empties(objs)
         temp = []
         for k, v in iteritems(objs):
-            helper_list = []
             if v.get("ipv4"):
                 for each in v["ipv4"]:
                     if each.get("netmask"):
                         cidr_val = netmask_to_cidr(each["netmask"])
                         each["address"] = each["address"].strip(" ") + "/" + cidr_val
                         del each["netmask"]
-                    if each.get("helper-address"):
-                        helper_list.append(each.get("helper-address")[0])
-                        del each["helper-address"]
-                if helper_list:
-                    v["ipv4"].append({"helper-address": helper_list})
-                v["ipv4"] = [item for item in v["ipv4"] if item]
             temp.append(v)
         # sorting the dict by interface name
         temp = sorted(temp, key=lambda k, sk="name": k[sk])

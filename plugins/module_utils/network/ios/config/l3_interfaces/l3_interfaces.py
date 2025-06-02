@@ -55,13 +55,19 @@ class L3_interfaces(ResourceModule):
             "ipv4.mtu",
             "ipv4.redirects",
             "ipv4.unreachables",
-            "ipv4.helper_address",
             "ipv4.proxy_arp",
             "ipv6.address",
             "ipv6.autoconfig",
             "ipv6.dhcp",
             "ipv6.enable",
         ]
+        self.complex_parsers = [
+            "helper_addresses_ipv4",
+        ]
+        self.complex_suboptions_set = set(
+            ["helper_addresses"]
+        )
+        self.helper_address_suboptions = ["ipv4"]
         self.gen_parsers = [
             "autostate",
         ]
@@ -126,6 +132,34 @@ class L3_interfaces(ResourceModule):
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
 
     def _compare_lists(self, want, have):
+        for suboption in self.complex_suboptions_set:
+            complex_dict = want.get(suboption, {})
+            if complex_dict:
+                for value in self.helper_address_suboptions:
+                    for k, val in complex_dict.get(value, {}).items():
+                        hacl = have.get(suboption, {}).get(value, {})
+                        hacl_val = hacl.pop(k, {})
+                        if hacl_val and hacl_val != val:
+                            self.compare(
+                            parsers=self.complex_parsers,
+                            want={},
+                            have={value: hacl_val},
+                        )
+                        self.compare(
+                        parsers=self.complex_parsers,
+                        want={value: val},
+                        have={value: hacl_val},
+                        )
+        for suboption in self.complex_suboptions_set:
+            complex_dict = have.get(suboption, {})
+            if complex_dict:
+                for value in self.helper_address_suboptions:
+                    for k, val in complex_dict.get(value, {}).items():
+                        self.compare(
+                        parsers=self.complex_parsers,
+                        want={},
+                        have={value: val},
+                        )   
         for afi in ("ipv4", "ipv6"):
             wacls = want.pop(afi, {})
             hacls = have.pop(afi, {})
@@ -139,29 +173,14 @@ class L3_interfaces(ResourceModule):
                     hacl = {}
                 self.validate_ips(afi, want=entry, have=hacl)
 
-                if hacl and key != "helper-address":
+                if hacl:
                     hacls.pop(key, {})
 
-                if key == "helper-address":
-                    for k, val in entry.items():
-                        hacl_val = hacl.pop(k, {})
-                        if hacl_val and hacl_val != val:
-                            self.compare(
-                                parsers=self.parsers,
-                                want={},
-                                have={afi: hacl_val},
-                            )
-                        self.compare(
-                            parsers=self.parsers,
-                            want={afi: val},
-                            have={afi: hacl_val},
-                        )
-                else:
-                    self.compare(
-                        parsers=self.parsers,
-                        want={afi: entry},
-                        have={afi: hacl},
-                    )
+                self.compare(
+                    parsers=self.parsers,
+                    want={afi: entry},
+                    have={afi: hacl},
+                )
 
             for key, entry in wacls.items():
                 if entry.get("secondary", False) is False:
@@ -182,8 +201,14 @@ class L3_interfaces(ResourceModule):
                         hacl = {}
                 self.validate_ips(afi, want=entry, have=hacl)
 
-                if hacl and key != "helper-address":
+                if hacl:
                     hacls.pop(key, {})
+                
+                self.compare(
+                        parsers=self.parsers,
+                        want={afi: entry},
+                        have={afi: hacl},
+                    )
 
             # remove remaining items in have for replaced
             # these can be subnets that are no longer used
@@ -191,15 +216,7 @@ class L3_interfaces(ResourceModule):
             # or primary that has moved to secondary
             for key, entry in hacls.items():
                 self.validate_ips(afi, have=entry)
-                if key == "helper-address":
-                    for k, val in entry.items():
-                        self.compare(
-                            parsers=self.parsers,
-                            want={},
-                            have={afi: val},
-                        )
-                else:
-                    self.compare(parsers=self.parsers, want={}, have={afi: entry})
+                self.compare(parsers=self.parsers, want={}, have={afi: entry})
 
     def validate_ips(self, afi, want=None, have=None):
         if afi == "ipv4" and want:
@@ -219,6 +236,11 @@ class L3_interfaces(ResourceModule):
         if param:
             for _k, val in iteritems(param):
                 val["name"] = normalize_interface(val["name"])
+                for key in self.complex_suboptions_set:
+                    if key in val:
+                        for value in self.helper_address_suboptions:
+                            if value in val[key]:
+                                val[key][value] = list_to_dict_by_destination_ip(val[key][value])
                 if "ipv4" in val:
                     temp = {}
                     for each in val["ipv4"]:
@@ -236,11 +258,7 @@ class L3_interfaces(ResourceModule):
                                     },
                                 },
                             )
-                        elif each.get("helper-address"):
-                            temp["helper-address"] = list_to_dict_by_destination_ip(
-                                each.get("helper-address")
-                            )
-                        if not each.get("address") and not each.get("helper-address"):
+                        if not each.get("address"):
                             temp.update({list(each.keys())[0]: each})
                     val["ipv4"] = temp
                 if "ipv6" in val:
