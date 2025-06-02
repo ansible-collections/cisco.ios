@@ -233,7 +233,7 @@ class TestIosL3InterfacesModule(TestIosModule):
                       mac-address 0000.0000.0001
                       ip redirects
                       ip mtu 1500
-                      ip helper-address
+                      ip helper-address global 10.0.0.1
                       ip unreachables
                       ip proxy-arp
                     """,
@@ -249,9 +249,9 @@ class TestIosL3InterfacesModule(TestIosModule):
                     {"address": "192.168.0.3/24"},
                     {"redirects": True},
                     {"mtu": 1500},
-                    {"helper_address": True},
                     {"unreachables": True},
                     {"proxy_arp": True},
+                    {"helper-address": [{'global': True, 'destination_ip': '10.0.0.1'}]},
                 ],
             },
         ]
@@ -575,3 +575,47 @@ class TestIosL3InterfacesModule(TestIosModule):
             },
         ]
         self.assertEqual(result["gathered"], gathered)
+
+    def test_ios_l3_interfaces_helper_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             description Configured by Ansible
+             duplex auto
+             speed auto
+             ip helper-address 10.0.0.3
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/1",
+                        ipv4=[
+                            {
+                                "address": "192.168.0.1/24",
+                                "helper-address": [
+                                    dict(vrf="abc", destination_ip="10.0.0.1"),
+                                    dict(destination_ip="10.0.0.2"),
+                                    {"global": True, "destination_ip": "10.0.0.3"},
+                                ],
+                                "mtu": 4
+                            }
+                        ],
+                    )
+                ],
+            state="overridden",
+            )
+        )
+
+        commands = [
+            "interface GigabitEthernet0/1",
+            "ip address 192.168.0.1 255.255.255.0",
+            "ip helper-address vrf abc 10.0.0.1",
+            "ip helper-address 10.0.0.2",
+            "ip helper-address global 10.0.0.3",
+            "no ip helper-address 10.0.0.3",
+            "ip mtu 4"
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))

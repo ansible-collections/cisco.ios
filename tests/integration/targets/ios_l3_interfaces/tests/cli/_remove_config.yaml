@@ -4,7 +4,7 @@
     lines: "interface Loopback 999\nno ip address\ninterface
       GigabitEthernet 2\nno ip address\nno ipv6 address\ninterface GigabitEthernet
       3\nno ip address\nno ipv6
-      address\n"
+      address\nno ip helper-address global 10.0.0.2\nno ip helper-address 10.0.0.1\n"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"
 

@@ -20,7 +20,13 @@
             ipv4:
               - address: 198.51.100.1/24
                 secondary: true
+                helper-address:
+                  - global: true
+                    destination_ip: 10.0.0.2
               - address: 198.51.100.2/24
+                helper-address:
+                  - destination_ip: 10.0.0.1
+                  
             ipv6:
               - address: 2001:db8:0:3::/64
           - name: Vlan901
