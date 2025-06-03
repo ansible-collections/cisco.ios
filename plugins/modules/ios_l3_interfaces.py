@@ -55,6 +55,7 @@ options:
           ipv4:
             description: List of ipv4 destiantion IPs
             type: list
+            elements: dict
             suboptions:
               destination_ip:
                 description: IP destination address

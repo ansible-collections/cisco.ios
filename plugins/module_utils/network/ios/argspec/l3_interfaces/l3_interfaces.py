@@ -45,6 +45,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                     "options": {
                         "ipv4": {
                             "type": "list",
+                            "elements": "dict",
                             "options": {
                                 "destination_ip": {"type": "str"},
                                 "global": {"type": "bool"},
