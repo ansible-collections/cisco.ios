@@ -993,6 +993,11 @@ Examples
               - address: 192.168.0.1/24
                 secondary: true
           - name: GigabitEthernet2
+            helper_addresses:
+              ipv4:
+                - destination_ip: 10.0.0.1
+                - global: true
+                  destination_ip: 10.0.0.2
             ipv4:
               - address: 192.168.0.2/24
           - name: GigabitEthernet3
@@ -1044,6 +1049,11 @@ Examples
     # - ipv4:
     #   - address: 192.168.0.2/24
     #   name: GigabitEthernet2
+    #   helper_addresses:
+    #     ipv4:
+    #       - destination_ip: 10.0.0.1
+    #       - global: true
+    #         destination_ip: 10.0.0.2
     # - ipv6:
     #   - address: FD5D:12C9:2201:1::1/64
     #   name: GigabitEthernet3
@@ -1073,6 +1083,8 @@ Examples
     #  negotiation auto
     # interface GigabitEthernet2
     #  ip address 192.168.0.2 255.255.255.0
+    #  ip helper-address 10.0.0.1
+    #  ip helper-address global 10.0.0.2
     #  shutdown
     #  speed 1000
     #  no negotiation auto
@@ -1110,6 +1122,7 @@ Examples
     #  negotiation auto
     # interface GigabitEthernet2
     #  ip address 192.168.0.2 255.255.255.0
+    #  ip helper-address global 10.0.0.1
     #  shutdown
     #  speed 1000
     #  no negotiation auto
@@ -1130,6 +1143,10 @@ Examples
       cisco.ios.ios_l3_interfaces:
         config:
           - name: GigabitEthernet2
+            helper_addresses:
+              ipv4:
+                - vrf: abc
+                  destination_ip: 10.0.0.1
             ipv4:
               - address: 192.168.2.0/24
           - name: GigabitEthernet3
@@ -1150,6 +1167,10 @@ Examples
     # - ipv4:
     #   - address: 192.168.0.2/24
     #   name: GigabitEthernet2
+    #   helper_addresses:
+    #     ipv4:
+    #       - global: true
+    #         destination_ip: 10.0.0.1
     # - ipv6:
     #   - address: FD5D:12C9:2201:1::1/64
     #   name: GigabitEthernet3
@@ -1160,6 +1181,8 @@ Examples
     # - interface GigabitEthernet2
     # - ip address 192.168.0.3 255.255.255.0
     # - no ip address 192.168.0.2 255.255.255.0
+    # - no ip helper-address global 10.0.0.1
+    # - ip helper-address vrf abc 10.0.0.1
     # - interface GigabitEthernet3
     # - ip address dhcp client-id GigabitEthernet2 hostname test.com
     # - no ipv6 address fd5d:12c9:2201:1::1/64
@@ -1171,6 +1194,10 @@ Examples
     # - ipv4:
     #   - address: 192.168.0.3/24
     #   name: GigabitEthernet2
+    #   helper_addresses:
+    #     ipv4:
+    #       - vrf: abc
+    #         destination_ip: 10.0.0.1
     # - ipv4:
     #   - dhcp:
     #       client_id: GigabitEthernet2

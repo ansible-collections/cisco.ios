@@ -245,7 +245,7 @@ class TestIosL3InterfacesModule(TestIosModule):
         parsed_list = [
             {
                 "name": "GigabitEthernet0/3.100",
-                "helper_addresses": {"ipv4":[{'global': True, 'destination_ip': '10.0.0.1'}]},
+                "helper_addresses": {"ipv4": [{"global": True, "destination_ip": "10.0.0.1"}]},
                 "ipv4": [
                     {"address": "192.168.0.3/24"},
                     {"redirects": True},
@@ -591,18 +591,18 @@ class TestIosL3InterfacesModule(TestIosModule):
                 config=[
                     dict(
                         name="GigabitEthernet0/1",
-                        helper_addresses= {
+                        helper_addresses={
                             "ipv4": [
                                 dict(vrf="abc", destination_ip="10.0.0.1"),
                                 dict(destination_ip="10.0.0.2"),
                                 {"global": True, "destination_ip": "10.0.0.3"},
-                            ]
+                            ],
                         },
                         ipv4=[
                             {
                                 "address": "192.168.0.1/24",
-                                "mtu": 4
-                            }
+                                "mtu": 4,
+                            },
                         ],
                     ),
                 ],
