@@ -71,7 +71,8 @@ class L3_InterfacesFacts(object):
             if v.get("ipv4"):
                 for each in v["ipv4"]:
                     if each.get("netmask"):
-                        cidr_val = netmask_to_cidr(each["netmask"])
+                        each["netmask"].remove("secondary")
+                        cidr_val = netmask_to_cidr(each["netmask"].strip(" ")
                         each["address"] = each["address"].strip(" ") + "/" + cidr_val
                         del each["netmask"]
             temp.append(v)
