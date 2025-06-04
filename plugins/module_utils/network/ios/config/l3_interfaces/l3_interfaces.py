@@ -230,7 +230,9 @@ class L3_interfaces(ResourceModule):
                 helper_addresses_dict = val.get("helper_addresses", {})
                 for value in ["ipv4"]:
                     if value in helper_addresses_dict:
-                        helper_addresses_dict[value] = list_to_dict_by_destination_ip(helper_addresses_dict[value])
+                        helper_addresses_dict[value] = list_to_dict_by_destination_ip(
+                            helper_addresses_dict[value]
+                        )
                 if "ipv4" in val:
                     temp = {}
                     for each in val["ipv4"]:
