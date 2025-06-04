@@ -43,6 +43,18 @@ class Acls(ResourceModule):
             resource="acls",
             tmplt=AclsTemplate(),
         )
+        self.default_acls = set(
+            [
+                "implicit_deny_v6",
+                "implicit_permit_v6",
+                "preauth_v6",
+                "IP-Adm-V4-Int-ACL-global",
+                "implicit_deny",
+                "implicit_permit",
+                "preauth_v4",
+                "sl_def_acl",
+            ],
+        )
 
     def execute_module(self):
         """Execute the module
@@ -303,6 +315,8 @@ class Acls(ResourceModule):
                 temp_acls = {}
                 if each.get("acls"):
                     for acl in each.get("acls"):  # check each acl for aces
+                        if acl.get("name", None) in self.default_acls:
+                            continue
                         temp_aces = {}
                         if acl.get("aces"):
                             rem_idx = 0  # remarks if defined in an ace

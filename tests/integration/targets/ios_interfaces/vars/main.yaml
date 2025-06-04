@@ -1,17 +1,14 @@
----
 merged:
   before:
     - enabled: true
       name: GigabitEthernet1
-      description: Management interface do not change
     - enabled: true
       name: GigabitEthernet2
       speed: "1000"
     - enabled: true
       name: GigabitEthernet3
       speed: "1000"
-    - enabled: false
-      description: "Auto_Cable_Testing_Ansible"
+    - enabled: true
       name: GigabitEthernet4
     - enabled: true
       name: Loopback888
@@ -25,7 +22,6 @@ merged:
     - shutdown
   after:
     - enabled: true
-      description: Management interface do not change
       name: GigabitEthernet1
     - description: Configured and Merged by Ansible-Network
       enabled: true
@@ -35,8 +31,7 @@ merged:
       enabled: false
       name: GigabitEthernet3
       speed: "1000"
-    - enabled: false
-      description: "Auto_Cable_Testing_Ansible"
+    - enabled: true
       name: GigabitEthernet4
     - enabled: true
       name: Loopback888
