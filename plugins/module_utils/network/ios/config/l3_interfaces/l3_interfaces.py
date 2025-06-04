@@ -61,13 +61,6 @@ class L3_interfaces(ResourceModule):
             "ipv6.dhcp",
             "ipv6.enable",
         ]
-        self.complex_parsers = [
-            "helper_addresses_ipv4",
-        ]
-        self.complex_suboptions_set = set(
-            ["helper_addresses"],
-        )
-        self.helper_address_suboptions = ["ipv4"]
         self.gen_parsers = [
             "autostate",
         ]
@@ -132,34 +125,32 @@ class L3_interfaces(ResourceModule):
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
 
     def _compare_lists(self, want, have):
-        for suboption in self.complex_suboptions_set:
-            complex_dict = want.get(suboption, {})
-            if complex_dict:
-                for value in self.helper_address_suboptions:
-                    for k, val in complex_dict.get(value, {}).items():
-                        hacl = have.get(suboption, {}).get(value, {})
-                        hacl_val = hacl.pop(k, {})
-                        if hacl_val and hacl_val != val:
-                            self.compare(
-                                parsers=self.complex_parsers,
-                                want={},
-                                have={value: hacl_val},
-                            )
+        helper_address_dict_wantd = want.get("helper_addresses", {})
+        if helper_address_dict_wantd:
+            for value in ["ipv4"]:
+                for k, val in helper_address_dict_wantd.get(value, {}).items():
+                    hacl = have.get("helper_addresses", {}).get(value, {})
+                    hacl_val = hacl.pop(k, {})
+                    if hacl_val and hacl_val != val:
                         self.compare(
-                            parsers=self.complex_parsers,
-                            want={value: val},
+                            parsers=["helper_addresses_ipv4"],
+                            want={},
                             have={value: hacl_val},
                         )
-        for suboption in self.complex_suboptions_set:
-            complex_dict = have.get(suboption, {})
-            if complex_dict:
-                for value in self.helper_address_suboptions:
-                    for k, val in complex_dict.get(value, {}).items():
-                        self.compare(
-                            parsers=self.complex_parsers,
-                            want={},
-                            have={value: val},
-                        )
+                    self.compare(
+                        parsers=["helper_addresses_ipv4"],
+                        want={value: val},
+                        have={value: hacl_val},
+                    )
+        helper_address_dict_haved = have.get("helper_addresses", {})
+        if helper_address_dict_haved:
+            for value in ["ipv4"]:
+                for k, val in helper_address_dict_haved.get(value, {}).items():
+                    self.compare(
+                        parsers=["helper_addresses_ipv4"],
+                        want={},
+                        have={value: val},
+                    )
         for afi in ("ipv4", "ipv6"):
             wacls = want.pop(afi, {})
             hacls = have.pop(afi, {})
@@ -236,11 +227,10 @@ class L3_interfaces(ResourceModule):
         if param:
             for _k, val in iteritems(param):
                 val["name"] = normalize_interface(val["name"])
-                for key in self.complex_suboptions_set:
-                    if key in val:
-                        for value in self.helper_address_suboptions:
-                            if value in val[key]:
-                                val[key][value] = list_to_dict_by_destination_ip(val[key][value])
+                helper_addresses_dict = val.get("helper_addresses", {})
+                for value in ["ipv4"]:
+                    if value in helper_addresses_dict:
+                        helper_addresses_dict[value] = list_to_dict_by_destination_ip(helper_addresses_dict[value])
                 if "ipv4" in val:
                     temp = {}
                     for each in val["ipv4"]:
