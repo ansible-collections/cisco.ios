@@ -1,0 +1,4 @@
+---
+name: Fix ios_facts and ios_hsrp_interfaces documentation
+tag: PATCH
+description: documented hsrp_interfaces subnet in ios_facts and corrected version information for ios_hsrp_interfaces.
