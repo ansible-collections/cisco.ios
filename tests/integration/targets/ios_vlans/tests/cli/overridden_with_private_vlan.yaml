@@ -6,7 +6,6 @@
     - ansible.builtin.include_tasks: _remove_config.yaml
     - ansible.builtin.include_tasks: _populate_private_vlan_config.yaml
 
-
 - name: Override device configuration that includes private VLANs
   register: result
   cisco.ios.ios_vlans: &id001
