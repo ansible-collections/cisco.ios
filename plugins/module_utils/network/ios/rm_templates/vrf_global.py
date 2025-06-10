@@ -127,38 +127,38 @@ class Vrf_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "route_target.export",
+            "name": "route_target.exports",
             "getval": re.compile(
                 r"""
                 \s+route-target\sexport\s(?P<route_target_export>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-target export {{ route_target.export }}",
+            "setval": "{% for item in route_target.exports %}route-target export {{ item }}{% endfor %}",
             "result": {
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
                         "route_target": {
-                            "export": "{{ route_target_export }}",
+                            "exports": "{{ [route_target_export] }}",
                         },
                     },
                 },
             },
         },
         {
-            "name": "route_target.import_config",
+            "name": "route_target.imports",
             "getval": re.compile(
                 r"""
                 \s+route-target\simport\s(?P<route_target_import_config>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-target import {{ route_target.import_config}}",
+            "setval": "{% for item in route_target.imports %}route-target import {{ item }}{% endfor %}",
             "result": {
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
                         "route_target": {
-                            "import_config": "{{ route_target_import_config }}",
+                            "imports": "{{ [route_target_import_config] }}",
                         },
                     },
                 },
@@ -171,13 +171,13 @@ class Vrf_globalTemplate(NetworkTemplate):
                 \s+route-target\sboth\s(?P<route_target_both>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "route-target both {{ route_target.both }}",
+            "setval": "{% for item in route_target.both %}route-target both {{ item }}{% endfor %}",
             "result": {
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
                         "route_target": {
-                            "both": "{{ route_target_both }}",
+                            "both_options": "{{ [route_target_both] }}",
                         },
                     },
                 },

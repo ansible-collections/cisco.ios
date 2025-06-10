@@ -72,14 +72,32 @@ options:
             type: dict
             suboptions:
               export:
+                description:
+                  - This option is DEPRECATED and is replaced with exports which
+                    accepts list as input.
+                type: str
+              exports:
                 description: Export target-VPN configuration.
-                type: str
+                type: list
+                elements: str
               import_config:
+                description:
+                  - This option is DEPRECATED and is replaced with imports which
+                    accepts list as input.
+                type: str
+              imports:
                 description: Import target-VPN configuration.
-                type: str
+                type: list
+                elements: str
               both:
-                description: Both export and import target-VPN configuration.
+                description:
+                  - This option is DEPRECATED and is replaced with both_options which
+                    accepts list as input.
                 type: str
+              both_options:
+                description: Both export and import target-VPN configuration.
+                type: list
+                elements: str
           vnet:
             description: Virtual networking configuration.
             type: dict
@@ -118,7 +136,7 @@ options:
         it into structured data in the format as per the resource module argspec and
         the value is returned in the I(gathered) key within the result.
       - The state I(parsed) reads the configuration from C(running_config) option and
-        transforms it into JSON format as per the resource module parameters and the
+        transforms it into JSON format as per the module parameters and the
         value is returned in the I(parsed) key within the result. The value of C(running_config)
         option should be the same format as the output of command I(show running-config | section vrf).
         connection to remote host is not required.
@@ -153,8 +171,8 @@ EXAMPLES = """
               multitopology: true
           rd: "2:3"
           route_target:
-            export: "192.0.2.0:100"
-            import_config: "192.0.2.3:200"
+            exports: "192.0.2.0:100"
+            imports: "192.0.2.3:200"
           vpn:
             id: "2:45"
           vnet:
@@ -188,8 +206,8 @@ EXAMPLES = """
 #         multitopology: true
 #     rd: "2:3"
 #     route_target:
-#       export: "192.0.2.0:100"
-#       import_config: "192.0.2.3:200"
+#       exports: "192.0.2.0:100"
+#       imports: "192.0.2.3:200"
 #     vnet:
 #       tag: 200
 #     vpn:
@@ -239,8 +257,8 @@ EXAMPLES = """
               multitopology: true
           rd: "7:8"
           route_target:
-            export: "198.51.100.112:500"
-            import_config: "192.0.2.4:400"
+            exports: "198.51.100.112:500"
+            imports: "192.0.2.4:400"
           vpn:
             id: "5:45"
           vnet:
@@ -261,12 +279,12 @@ EXAMPLES = """
 #         multitopology: true
 #     rd: "2:3"
 #     route_target:
-#       export: "192.0.2.0:100"
-#       import_config: "192.0.2.3:200"
+#       exports: "192.0.2.0:100"
+#       imports: "192.0.2.3:200"
 #     vnet:
 #       tag: 200
 #     vpn:
-#       id: "2:45"
+#       id: "2:45
 #
 # commands:
 # - vrf definition VRF7
@@ -290,8 +308,8 @@ EXAMPLES = """
 #         multitopology: true
 #     rd: "2:3"
 #     route_target:
-#       export: "192.0.2.0:100"
-#       import_config: "192.0.2.3:200"
+#       exports: "192.0.2.0:100"
+#       imports: "192.0.2.3:200"
 #     vnet:
 #       tag: 200
 #     vpn:
@@ -306,8 +324,8 @@ EXAMPLES = """
 #         multitopology: true
 #     rd: "7:8"
 #     route_target:
-#       export: "198.51.100.112:500"
-#       import_config: "192.0.2.4:400"
+#       exports: "198.51.100.112:500"
+#       imports: "192.0.2.4:400"
 #     vnet:
 #       tag: 300
 #     vpn:
@@ -375,8 +393,8 @@ EXAMPLES = """
               multitopology: true
           rd: "6:7"
           route_target:
-            export: "198.51.0.2:400"
-            import_config: "198.51.0.5:200"
+            exports: "198.51.0.2:400"
+            imports: "198.51.0.5:200"
           vpn:
             id: "4:5"
           vnet:
@@ -397,8 +415,8 @@ EXAMPLES = """
 #         multitopology: true
 #     rd: "2:3"
 #     route_target:
-#       export: "192.0.2.0:100"
-#       import_config: "192.0.2.3:200"
+#       exports: "192.0.2.0:100"
+#       imports: "192.0.2.3:200"
 #     vnet:
 #       tag: 200
 #     vpn:
@@ -413,8 +431,8 @@ EXAMPLES = """
 #         multitopology: true
 #     rd: "7:8"
 #     route_target:
-#       export: "198.51.100.112:500"
-#       import_config: "192.0.2.4:400"
+#       exports: "198.51.100.112:500"
+#       imports: "192.0.2.4:400"
 #     vnet:
 #       tag: 300
 #     vpn:
@@ -461,8 +479,8 @@ EXAMPLES = """
 #         multitopology: true
 #     rd: "6:7"
 #     route_target:
-#       export: "198.51.0.2:400"
-#       import_config: "198.51.0.5:200"
+#       exports: "198.51.0.2:400"
+#       imports: "198.51.0.5:200"
 #     vnet:
 #       tag: 500
 #     vpn:
@@ -527,8 +545,8 @@ EXAMPLES = """
 #         multitopology: true
 #     rd: "6:7"
 #     route_target:
-#       export: "198.51.0.2:400"
-#       import_config: "198.51.0.5:200"
+#       exports: "198.51.0.2:400"
+#       imports: "198.51.0.5:200"
 #     vnet:
 #       tag: 500
 #     vpn:
@@ -598,8 +616,8 @@ EXAMPLES = """
 #         multitopology: true
 #     rd: "6:7"
 #     route_target:
-#       export: "198.51.0.2:400"
-#       import_config: "198.51.0.5:200"
+#       exports: "198.51.0.2:400"
+#       imports: "198.51.0.5:200"
 #     vnet:
 #       tag: 500
 #     vpn:
@@ -680,8 +698,8 @@ EXAMPLES = """
               multitopology: true
           rd: "2:3"
           route_target:
-            export: "192.0.2.0:100"
-            import_config: "192.0.2.3:200"
+            exports: "192.0.2.0:100"
+            imports: "192.0.2.3:200"
           vpn:
             id: "2:45"
           vnet:
@@ -738,8 +756,8 @@ EXAMPLES = """
 #           multitopology: true
 #       rd: "2:3"
 #       route_target:
-#         export: "192.0.2.0:100"
-#         import_config: "192.0.2.3:200"
+#         exports: "192.0.2.0:100"
+#         imports: "192.0.2.3:200"
 #       vnet:
 #         tag: 200
 #       vpn:
@@ -786,8 +804,8 @@ EXAMPLES = """
 #           multitopology: true
 #       rd: "192.0.2.0:300"
 #       route_target:
-#         export: "192.0.2.0:100"
-#         import_config: "192.0.2.2:300"
+#         exports: "192.0.2.0:100"
+#         imports: "192.0.2.2:300"
 #       vnet:
 #         tag: 34
 #       vpn:
