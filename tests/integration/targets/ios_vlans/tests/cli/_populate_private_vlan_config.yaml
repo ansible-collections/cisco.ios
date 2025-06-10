@@ -1,0 +1,15 @@
+---
+# This task sets up the initial state described in bug #1184
+- name: "Setup: Configure primary VLAN with an associated private VLAN"
+  vars:
+    # Configuration to create a primary vlan 500 associated with isolated vlan 501
+    config_lines: |
+      vlan 500
+       name Primary_VLAN
+       private-vlan primary
+       private-vlan association 501
+      vlan 501
+       name Isolated_VLAN
+       private-vlan isolated
+  ansible.netcommon.cli_config:
+    config: "{{ config_lines }}"

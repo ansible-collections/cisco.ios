@@ -1,0 +1,36 @@
+---
+- ansible.builtin.debug:
+    msg: "START Overridden test for private VLANs (bug #1184) on connection={{ ansible_connection }}"
+
+- block:
+    - ansible.builtin.include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _populate_private_vlan_config.yaml
+
+
+- name: Override device configuration that includes private VLANs
+  register: result
+  cisco.ios.ios_vlans: &id001
+    config:
+      - name: "Test_VLAN"
+        vlan_id: 500
+      - name: "NEW_VLAN_40"
+        vlan_id: 40
+    state: overridden
+
+- name: Assert that correct set of commands were generated
+  ansible.builtin.assert:
+    that:
+      - "{{ overridden_with_private_vlans['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+# 3. Run the task again to test for idempotency
+- name: Run in overridden state again (idempotency check)
+  register: idempotent_result
+  cisco.ios.ios_vlans: *id001
+
+- name: Assert that task was idempotent
+  ansible.builtin.assert:
+    that:
+      - not idempotent_result.changed
+    msg: "Idempotency check failed. The module should not report changes on the second run."
+
+- ansible.builtin.include_tasks: _remove_config.yaml
