@@ -49,8 +49,8 @@ class Vrf_global(ResourceModule):
             "ipv4.multicast.multitopology",
             "ipv6.multicast.multitopology",
             "rd",
-            "route_target.export",
-            "route_target.import_config",
+            "route_target.exports",
+            "route_target.imports",
             "route_target.both",
             "vnet.tag",
             "vpn.id",
@@ -72,6 +72,7 @@ class Vrf_global(ResourceModule):
         want, have and desired state.
         """
         haved, wantd = dict(), dict()
+        self.want = self._handle_deprecates(self.want)
 
         if self.want:
             for entry in self.want.get("vrfs", []):
@@ -115,3 +116,15 @@ class Vrf_global(ResourceModule):
     def purge(self, have):
         """Purge the VRF configuration"""
         self.commands.append("no vrf definition {0}".format(have["name"]))
+
+    def _handle_deprecates(self, want):
+        if not isinstance(want, dict) or "vrfs" not in want:
+            return want
+        for vrf_config in want["vrfs"]:
+            if "route_target" in vrf_config:
+                rt = vrf_config["route_target"]
+                if "exports" in rt and isinstance(rt["exports"], str):
+                    rt["exports"] = [rt["exports"]]
+                if "imports" in rt and isinstance(rt["imports"], str):
+                    rt["imports"] = [rt["imports"]]
+        return want

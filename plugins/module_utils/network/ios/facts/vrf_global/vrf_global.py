@@ -15,6 +15,7 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
+import re
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
@@ -35,8 +36,34 @@ class Vrf_globalFacts(object):
 
     def get_config(self, connection):
         """Get the configuration from the device"""
+        raw_config = connection.get("show running-config | section ^vrf definition")
+        return self._filter_global_config(raw_config)
 
-        return connection.get("show running-config | section ^vrf")
+    def _filter_global_config(self, config_text):
+        """
+        Filter out address-family specific configuration from VRF config.
+        Only return global VRF configuration lines.
+        """
+        if not config_text:
+            return ""
+
+        lines = config_text.splitlines()
+        filtered_lines = []
+        inside_address_family = False
+
+        for line in lines:
+            if re.match(r"\s+address-family\s+", line):
+                inside_address_family = True
+                continue
+
+            if re.match(r"\s+exit-address-family", line):
+                inside_address_family = False
+                continue
+
+            if not inside_address_family:
+                filtered_lines.append(line)
+
+        return "\n".join(filtered_lines)
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Vrf_global network resource
@@ -58,7 +85,6 @@ class Vrf_globalFacts(object):
         vrf_global_parser = Vrf_globalTemplate(lines=data.splitlines(), module=self._module)
         objs = vrf_global_parser.parse()
 
-        # Convert the dictionary to a list of dictionaries
         objs["vrfs"] = list(objs["vrfs"].values()) if "vrfs" in objs else []
 
         ansible_facts["ansible_network_resources"].pop("vrf_global", None)
