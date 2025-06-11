@@ -38,26 +38,23 @@ class Bgp_address_familyFacts(object):
     def _process_facts(self, objs):
         """makes data as per the facts after data obtained from parsers"""
         addr_fam_facts = {}
-        temp_af = []
+        processed_af_list = []
+        addr_fam_facts["as_number"] = objs.get("as_number")
 
-        addr_fam_facts["as_number"] = objs["as_number"]
         if objs.get("address_family"):
-            for kaf, afs in (objs["address_family"]).items():  # remove unique value from add_fam
-                af = {}
-                for af_key, afs_val in afs.items():
-                    if af_key == "neighbors":
-                        temp_neighbor = []
-                        for tag, neighbor in afs_val.items():  # remove unique value from neighbor
-                            if not neighbor.get("neighbor_address"):
-                                neighbor["neighbor_address"] = tag
-                            temp_neighbor.append(neighbor)
-                        af[af_key] = temp_neighbor
-                    else:
-                        af[af_key] = afs_val
-                temp_af.append(af)
-
-        if temp_af:
-            addr_fam_facts["address_family"] = temp_af
+            for af_dict in objs["address_family"].values():
+                if af_dict.get("afi") in ["ipv4", "ipv6"] and not af_dict.get("safi"):
+                    af_dict["safi"] = "unicast"
+                if "neighbors" in af_dict:
+                    neighbor_list = []
+                    for neighbor_address, neighbor_attributes in af_dict["neighbors"].items():
+                        if not neighbor_attributes.get("neighbor_address"):
+                            neighbor_attributes["neighbor_address"] = neighbor_address
+                        neighbor_list.append(neighbor_attributes)
+                    af_dict["neighbors"] = neighbor_list
+                processed_af_list.append(af_dict)
+        if processed_af_list:
+            addr_fam_facts["address_family"] = processed_af_list
         return addr_fam_facts
 
     def populate_facts(self, connection, ansible_facts, data=None):
