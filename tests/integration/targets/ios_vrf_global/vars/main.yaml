@@ -24,8 +24,8 @@ merged:
             multitopology: true
         rd: "2:3"
         route_target:
-          export: "192.0.2.1:400"
-          import_config: "192.0.2.6:400"
+          exports: ["192.0.2.1:400"]
+          imports: ["192.0.2.6:400"]
         vpn:
           id: "2:45"
         vnet:
@@ -44,8 +44,8 @@ replaced:
             multitopology: true
         rd: "2:3"
         route_target:
-          export: "192.0.2.1:400"
-          import_config: "192.0.2.6:400"
+          exports: ["192.0.2.1:400"]
+          imports: ["192.0.2.6:400"]
         vpn:
           id: "2:45"
         vnet:
@@ -72,8 +72,8 @@ replaced:
             multitopology: true
         rd: "2:3"
         route_target:
-          export: "192.0.2.1:400"
-          import_config: "192.0.2.6:400"
+          exports: ["192.0.2.1:400"]
+          imports: ["192.0.2.6:400"]
         vpn:
           id: "2:45"
         vnet:
@@ -88,8 +88,8 @@ replaced:
             multitopology: true
         rd: "7:8"
         route_target:
-          export: "198.51.100.2:500"
-          import_config: "198.51.100.5:400"
+          exports: ["198.51.100.2:500"]
+          imports: ["198.51.100.5:400"]
         vpn:
           id: "5:45"
         vnet:
@@ -108,8 +108,8 @@ overridden:
             multitopology: true
         rd: "2:3"
         route_target:
-          export: "192.0.2.1:400"
-          import_config: "192.0.2.6:400"
+          exports: ["192.0.2.1:400"]
+          imports: ["192.0.2.6:400"]
         vpn:
           id: "2:45"
         vnet:
@@ -147,8 +147,8 @@ overridden:
             multitopology: true
         rd: "6:7"
         route_target:
-          export: "192.0.2.2:300"
-          import_config: "192.0.2.3:400"
+          exports: ["192.0.2.2:300"]
+          imports: ["192.0.2.3:400"]
         vpn:
           id: "4:5"
         vnet:
@@ -167,8 +167,8 @@ gathered:
             multitopology: true
         rd: "2:3"
         route_target:
-          export: "192.0.2.1:400"
-          import_config: "192.0.2.6:400"
+          exports: ["192.0.2.1:400"]
+          imports: ["192.0.2.6:400"]
         vpn:
           id: "2:45"
         vnet:
@@ -187,8 +187,8 @@ parsed:
             multitopology: true
         rd: "2:3"
         route_target:
-          export: "192.0.2.0:100"
-          import_config: "192.0.2.3:300"
+          exports: ["192.0.2.0:100"]
+          imports: ["192.0.2.3:300"]
         vpn:
           id: "3:4"
         vnet:

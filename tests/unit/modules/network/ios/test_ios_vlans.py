@@ -531,6 +531,174 @@ class TestIosVlansModule(TestIosModule):
 
         self.assertEqual(result["commands"], commands)
 
+    def test_ios_vlans_overridden_with_private_vlans(self):
+        """Test overriding VLANs when private VLANs are present - Issue #1184"""
+        self.mock_l2_device_command.side_effect = True
+        self.mock_execute_show_command_conf.side_effect = ""
+        self.execute_show_command.return_value = dedent(
+            """\
+            VLAN Name                             Status    Ports
+            ---- -------------------------------- --------- -------------------------------
+            1    default                          active    Gi0/1, Gi0/2
+            500  Primary_VLAN                     active
+            501  Isolated_VLAN                    active
+            502  Community_VLAN                   active
+
+            VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+            ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+            1    enet  100001     1500  -      -      -        -    -        0      0
+            500  enet  100500     1500  -      -      -        -    -        0      0
+            501  enet  100501     1500  -      -      -        -    -        0      0
+            502  enet  100502     1500  -      -      -        -    -        0      0
+
+            Remote SPAN VLANs
+            ------------------------------------------------------------------------------
+
+            Primary Secondary Type              Ports
+            ------- --------- ----------------- ------------------------------------------
+            500     501       isolated
+            500     502       community
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Test_VLAN",
+                        vlan_id=500,
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = [
+            "no vlan 1",
+            "no vlan 501",
+            "no vlan 502",
+            "vlan 500",
+            "name Test_VLAN",
+            "no state active",
+            "no private-vlan primary",
+            "no private-vlan association 501,502",
+            "shutdown",
+        ]
+        print(result["commands"])
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_vlans_overridden_with_orphaned_private_vlan_associations(self):
+        """Test overriding VLANs when there are orphaned private VLAN associations - Issue #1184"""
+        self.mock_l2_device_command.side_effect = True
+        self.mock_execute_show_command_conf.side_effect = ""
+        self.execute_show_command.return_value = dedent(
+            """\
+            VLAN Name                             Status    Ports
+            ---- -------------------------------- --------- -------------------------------
+            1    default                          active    Gi0/1, Gi0/2
+            500  Primary_VLAN                     active
+
+            VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+            ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+            1    enet  100001     1500  -      -      -        -    -        0      0
+            500  enet  100500     1500  -      -      -        -    -        0      0
+
+            Remote SPAN VLANs
+            ------------------------------------------------------------------------------
+
+            Primary Secondary Type              Ports
+            ------- --------- ----------------- ------------------------------------------
+            500     501       isolated
+            500     502       community
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Test_VLAN",
+                        vlan_id=500,
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = [
+            "no vlan 1",
+            "vlan 500",
+            "name Test_VLAN",
+            "no state active",
+            "no private-vlan primary",
+            "no private-vlan association 501,502",
+            "shutdown",
+        ]
+
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_vlans_overridden_preserving_private_vlan_config(self):
+        """Test overriding VLANs while preserving private VLAN configuration when explicitly configured"""
+        self.mock_l2_device_command.side_effect = True
+        self.mock_execute_show_command_conf.side_effect = ""
+        self.execute_show_command.return_value = dedent(
+            """\
+            VLAN Name                             Status    Ports
+            ---- -------------------------------- --------- -------------------------------
+            1    default                          active    Gi0/1, Gi0/2
+            500  Primary_VLAN                     active
+            501  Isolated_VLAN                    active
+
+            VLAN Type  SAID       MTU   Parent RingNo BridgeNo Stp  BrdgMode Trans1 Trans2
+            ---- ----- ---------- ----- ------ ------ -------- ---- -------- ------ ------
+            1    enet  100001     1500  -      -      -        -    -        0      0
+            500  enet  100500     1500  -      -      -        -    -        0      0
+            501  enet  100501     1500  -      -      -        -    -        0      0
+
+            Remote SPAN VLANs
+            ------------------------------------------------------------------------------
+
+            Primary Secondary Type              Ports
+            ------- --------- ----------------- ------------------------------------------
+            500     501       isolated
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Primary_VLAN_Updated",
+                        vlan_id=500,
+                        state="active",
+                        private_vlan=dict(
+                            type="isolated",
+                            associated=[501],
+                        ),
+                    ),
+                    dict(
+                        name="Isolated_VLAN_Updated",
+                        vlan_id=501,
+                        private_vlan=dict(
+                            type="isolated",
+                        ),
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = [
+            "no vlan 1",
+            "vlan 500",
+            "name Primary_VLAN_Updated",
+            "private-vlan isolated",
+            "shutdown",
+            "vlan 501",
+            "name Isolated_VLAN_Updated",
+            "no state active",
+            "shutdown",
+        ]
+        print(result["commands"])
+        self.assertEqual(result["commands"], commands)
+
     def test_ios_vlans_overridden_idempotent(self):
         self.mock_l2_device_command.side_effect = True
         self.mock_execute_show_command_conf.side_effect = ""

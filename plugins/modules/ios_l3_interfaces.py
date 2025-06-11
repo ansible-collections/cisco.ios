@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# Copyright 2021 Red Hat
+# Copyright 2025 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -95,6 +95,21 @@ options:
           pool:
             description: IP Address auto-configured from a local DHCP pool.
             type: str
+          redirects:
+            description: Enable sending ICMP Redirect messages.
+            type: bool
+          unreachables:
+            description: Enable sending ICMP Unreachable messages.
+            type: bool
+          helper_address:
+            description: Enable helper_address messages.
+            type: bool
+          proxy_arp:
+            description: Enable proxy_arp.
+            type: bool
+          mtu:
+            description: Set IP Maximum Transmission Unit.
+            type: int
           source_interface:
             description: Enable IP processing without an explicit address
             type: dict
@@ -879,7 +894,7 @@ EXAMPLES = """
 RETURN = """
 before:
   description: The configuration prior to the module execution.
-  returned: when state is I(merged), I(replaced), I(overridden), I(deleted) or I(purged)
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: dict
   sample: >
     This output will always be in the same format as the
@@ -893,7 +908,7 @@ after:
     module argspec.
 commands:
   description: The set of commands pushed to the remote device.
-  returned: when state is I(merged), I(replaced), I(overridden), I(deleted) or I(purged)
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
     - "ip address 192.168.0.3 255.255.255.0"
@@ -901,7 +916,7 @@ commands:
     - "ipv6 address fd5d:12c9:2201:1::1/64 anycast"
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
-  returned: when state is I(rendered)
+  returned: when I(state) is C(rendered)
   type: list
   sample:
     - "ipv6 address FD5D:12C9:2201:1::1/64"
@@ -909,14 +924,14 @@ rendered:
     - "ip address autoconfig"
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
-  returned: when state is I(gathered)
+  returned: when I(state) is C(gathered)
   type: list
   sample: >
     This output will always be in the same format as the
     module argspec.
 parsed:
   description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
-  returned: when state is I(parsed)
+  returned: when I(state) is C(parsed)
   type: list
   sample: >
     This output will always be in the same format as the

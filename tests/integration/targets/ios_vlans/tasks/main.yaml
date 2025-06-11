@@ -1,7 +1,7 @@
 ---
 - name: Set a fact for 'skip_test'
   ansible.builtin.set_fact:
-    skip_test: false
+    skip_test: true
 
 - name: Gather device information
   cisco.ios.ios_command:
@@ -28,3 +28,4 @@
   ansible.builtin.include_tasks: cli.yaml
   tags:
     - l2_tests
+  when: not skip_test

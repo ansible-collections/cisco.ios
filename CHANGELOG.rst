@@ -4,6 +4,41 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v10.1.0
+=======
+
+Minor Changes
+-------------
+
+- ios_hsrp_interfaces - Added support for cisco.ios.hsrp_interfaces module (standby commands).
+
+Bugfixes
+--------
+
+- cisco.ios.ios_interfaces - Improved handling of the `enabled` state to prevent incorrect `shutdown` or `no shutdown` commands during configuration changes.
+- ios_acls - Fix issue where commands were not being parsed correctly and incorrect commands were being generated.
+- ios_bgp_address_family - fix configuration of neighbor's as-override split-horizon.
+
+v10.0.0
+=======
+
+Release Summary
+---------------
+
+With this release, the minimum required version of `ansible-core` for this collection is `2.16.0`. The last version known to be compatible with `ansible-core` versions below `2.16` is v9.2.0.
+
+Major Changes
+-------------
+
+- Bumping `requires_ansible` to `>=2.16.0`, since previous ansible-core versions are EoL now.
+
+Minor Changes
+-------------
+
+- ios_interfaces - Added service-policy, logging and snmp configuration options for interface.
+- ios_l2_interfaces - Added a few switchport and spanning-tree configuration options for interface.
+- ios_l3_interfaces - Added a few ip configuration options for interface.
+
 v9.2.0
 ======
 

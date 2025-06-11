@@ -48,7 +48,30 @@ class Interfaces(ResourceModule):
             resource="interfaces",
             tmplt=InterfacesTemplate(),
         )
-        self.parsers = ["description", "speed", "mtu", "duplex", "template"]
+        self.parsers = [
+            "description",
+            "speed",
+            "mtu",
+            "duplex",
+            "template",
+            "mac_address",
+            "service_policy.input",
+            "service_policy.output",
+            "service_policy.type_options.access_control",
+            "service_policy.type_options.epbr",
+            "service_policy.type_options.nwpi",
+            "service_policy.type_options.packet_service",
+            "service_policy.type_options.service_chain",
+            "logging.trunk_status",
+            "logging.subif_link_status",
+            "logging.status",
+            "logging.spanning_tree",
+            "logging.nfas_status",
+            "logging.bundle_status",
+            "logging.link_status",
+            "snmp.ifindex",
+            "snmp.trap",
+        ]
 
     def execute_module(self):
         """Execute the module
@@ -101,16 +124,19 @@ class Interfaces(ResourceModule):
         """
         begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
-        if want.get("enabled") != have.get("enabled"):
-            if want.get("enabled"):
-                self.addcmd(want, "enabled", True)
-            else:
-                if want:
+        want_enabled = want.get("enabled")
+        have_enabled = have.get("enabled")
+        if want_enabled is not None:
+            if want_enabled != have_enabled:
+                if want_enabled is True:
+                    self.addcmd(want, "enabled", True)
+                else:
                     self.addcmd(want, "enabled", False)
-                elif have.get("enabled"):
-                    # handles deleted as want be blank and only
-                    # negates if no shutdown
-                    self.addcmd(have, "enabled", False)
+        elif not want and self.state == "overridden":
+            self.addcmd(have, "enabled", False)
+        elif not want and self.state == "deleted":
+            if have_enabled:
+                self.addcmd(have, "enabled", False)
         if want.get("mode") != have.get("mode"):
             if want.get("mode") == "layer3":
                 self.addcmd(want, "mode", True)
