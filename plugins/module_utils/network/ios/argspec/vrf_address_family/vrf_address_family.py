@@ -1130,6 +1130,30 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                 "export": {"type": "str"},
                                 "import_config": {"type": "str"},
                                 "both": {"type": "str"},
+                                "exports": {
+                                    "type": "list",
+                                    "elements": "dict",
+                                    "options": {
+                                        "rt_value": {"type": "str"},
+                                        "stitching": {"type": "bool"},
+                                    },
+                                },
+                                "imports": {
+                                    "type": "list",
+                                    "elements": "dict",
+                                    "options": {
+                                        "rt_value": {"type": "str"},
+                                        "stitching": {"type": "bool"},
+                                    },
+                                },
+                                "both_options": {
+                                    "type": "list",
+                                    "elements": "dict",
+                                    "options": {
+                                        "rt_value": {"type": "str"},
+                                        "stitching": {"type": "bool"},
+                                    },
+                                },
                             },
                         },
                     },

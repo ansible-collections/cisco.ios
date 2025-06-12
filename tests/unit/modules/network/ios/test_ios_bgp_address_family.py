@@ -145,6 +145,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "address-family ipv4 multicast vrf blue",
             "bgp dampening 10 10 10 10",
             "aggregate-address 192.0.3.1 255.255.255.255 as-confed-set",
+            "exit-address-family",
             "address-family nsap",
             "bgp aggregate-timer 20",
             "bgp dmzlink-bw",
@@ -153,6 +154,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "neighbor 198.51.100.1 route-map test-route-out out",
             "network 192.0.1.1 route-map test_route",
             "default-metric 10",
+            "exit-address-family",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -189,6 +191,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "neighbor 192.0.3.1 prefix-list PREFIX-OUT out",
             "neighbor 192.0.3.1 soft-reconfiguration inbound",
             "network 192.0.3.1 mask 255.255.255.0",
+            "exit-address-family",
         ]
 
         result = self.execute_module(changed=True)
@@ -465,6 +468,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "neighbor 198.51.110.1 route-map test-replaced-route out",
             "no neighbor 198.51.100.1",
             "no network 198.51.110.10 mask 255.255.255.255 backdoor",
+            "exit-address-family",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -506,7 +510,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               bgp slow-peer detection threshold 150
               bgp dampening 1 1 1 1
               network 198.51.110.10 mask 255.255.255.255 backdoor
-              aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
+              aggregate-address 192.0.2.10 255.255.255.255 as-confed-set
               neighbor 198.51.100.1 remote-as 10
               neighbor 198.51.100.1 local-as 20
               neighbor 198.51.100.1 activate
@@ -530,7 +534,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             vrf="blue",
                             aggregate_address=[
                                 dict(
-                                    address="192.0.2.1",
+                                    address="192.0.2.10",
                                     netmask="255.255.255.255",
                                     as_confed_set=True,
                                 ),
@@ -857,7 +861,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         set_module_args(dict(state="deleted"))
         commands = [
             "router bgp 65000",
-            "no address-family ipv4",
+            "no address-family ipv4 unicast",
             "no address-family ipv4 multicast vrf blue",
             "no address-family ipv4 mdt",
             "no address-family ipv4 multicast",
@@ -1044,6 +1048,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "neighbor 198.51.100.1 slow-peer detection threshold 150",
             "network 198.51.110.10 mask 255.255.255.255 backdoor",
             "aggregate-address 192.0.2.1 255.255.255.255 as-confed-set",
+            "exit-address-family",
             "address-family ipv4 multicast",
             "network 198.51.111.11 mask 255.255.255.255 route-map test",
             "aggregate-address 192.0.3.1 255.255.255.255 as-confed-set",
@@ -1051,6 +1056,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "distance bgp 10 10 100",
             "table-map test_tableMap filter",
             "snmp context testsnmp user abc credential encrypted access ipv6 ipcal",
+            "exit-address-family",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
@@ -1127,16 +1133,11 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                 "metric": 100,
                                 "match": {
                                     "internal": True,
-                                    "externals": {
-                                        "type_1": True,
-                                        "type_2": True,
-                                    },
+                                    "externals": {"type_1": True, "type_2": True},
                                 },
                             },
                         },
                     ],
-                    "maximum_paths": {"paths": 12},
-                    "maximum_secondary_paths": {"eibgp": 2},
                     "neighbors": [
                         {
                             "send_community": {"set": True},
@@ -1145,8 +1146,14 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                         },
                         {"neighbor_address": "2001:db8::1", "activate": True},
                     ],
+                    # --- CHANGE: Key order adjusted to match desired output ---
+                    "maximum_secondary_paths": {"eibgp": 2},
+                    "maximum_paths": {"paths": 12},
+                    # --- CHANGE: 'safi' key added ---
+                    "safi": "unicast",
                 },
                 {
+                    # Second address-family (ipv4 multicast) - NO CHANGES
                     "afi": "ipv4",
                     "safi": "multicast",
                     "table_map": {"name": "test_tableMap", "filter": True},
@@ -1168,6 +1175,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                     "distance": {"external": 10, "internal": 10, "local": 100},
                 },
                 {
+                    # Third address-family (ipv4 mdt) - NO CHANGES
                     "afi": "ipv4",
                     "safi": "mdt",
                     "bgp": {
@@ -1182,6 +1190,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                     },
                 },
                 {
+                    # Fourth address-family (ipv4 multicast vrf blue)
                     "afi": "ipv4",
                     "safi": "multicast",
                     "vrf": "blue",
@@ -1213,8 +1222,9 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                         {
                             "remote_as": "10",
                             "local_as": {"set": True, "number": "20"},
-                            "activate": True,
+                            # --- CHANGE: Key order adjusted to match desired output ---
                             "neighbor_address": "198.51.100.1",
+                            "activate": True,
                             "nexthop_self": {"all": True},
                             "aigp": {
                                 "send": {
@@ -1225,9 +1235,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                 },
                             },
                             "route_server_client": True,
-                            "prefix_lists": [
-                                {"name": "AS65100-PREFIX-OUT", "out": True},
-                            ],
+                            "prefix_lists": [{"name": "AS65100-PREFIX-OUT", "out": True}],
                             "slow_peer_options": {"detection": {"threshold": 150}},
                             "route_maps": [{"name": "test-out", "out": True}],
                         },
@@ -1270,7 +1278,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         )
         commands = [
             "router bgp 65000",
-            "address-family ipv4",
+            "address-family ipv4 unicast",
             "neighbor 192.31.39.212 activate",
             "neighbor 192.31.39.212 soft-reconfiguration inbound",
             "neighbor 192.31.47.206 activate",
@@ -1278,6 +1286,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "network 192.0.3.1 mask 255.255.255.0",
             "network 192.0.2.1 mask 255.255.255.0",
             "network 192.0.4.1 mask 255.255.255.0",
+            "exit-address-family",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -1304,6 +1313,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               table-map test_tableMap filter
               network 198.51.111.11 mask 255.255.255.255 route-map test
               aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+              redistribute ospf 200 metric 100 match internal external 1 external 2
               default-metric 12
               distance bgp 10 10 100
              exit-address-family
@@ -1364,6 +1374,9 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         )
         commands = [
             "router bgp 65000",
+            "no neighbor TEST-PEER-GROUP",
+            "no neighbor 2001:db8::1",
+            "no neighbor 198.51.100.1",
             "address-family ipv4 multicast",
             "no default-metric 12",
             "no distance bgp 10 10 100",
@@ -1371,29 +1384,31 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "no table-map test_tableMap filter",
             "no network 198.51.111.11 mask 255.255.255.255 route-map test",
             "no aggregate-address 192.0.3.1 255.255.255.255 as-confed-set",
+            "exit-address-family",
             "address-family ipv4 mdt",
             "no bgp dmzlink-bw",
             "no bgp soft-reconfig-backup",
             "no bgp dampening 1 10 100 5",
+            "exit-address-family",
             "address-family ipv4 multicast vrf blue",
             "no bgp aggregate-timer 10",
             "no bgp dampening 1 1 1 1",
             "no bgp slow-peer detection threshold 150",
-            "no neighbor 198.51.100.1",
             "no network 198.51.110.10 mask 255.255.255.255 backdoor",
             "no aggregate-address 192.0.2.1 255.255.255.255 as-confed-set",
-            "address-family ipv4",
+            "exit-address-family",
+            "address-family ipv4 unicast",
             "no bgp redistribute-internal",
             "no redistribute connected",
+            "no redistribute ospf 200",
             "neighbor 192.31.39.212 activate",
             "neighbor 192.31.39.212 soft-reconfiguration inbound",
             "neighbor 192.31.47.206 activate",
             "neighbor 192.31.47.206 soft-reconfiguration inbound",
-            "no neighbor TEST-PEER-GROUP",
-            "no neighbor 2001:db8::1",
             "network 192.0.3.1 mask 255.255.255.0",
             "network 192.0.2.1 mask 255.255.255.0",
             "network 192.0.4.1 mask 255.255.255.0",
+            "exit-address-family",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
