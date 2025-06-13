@@ -40,6 +40,20 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                 "name": {"type": "str", "required": True},
                 "autostate": {"type": "bool"},
                 "mac_address": {"type": "str"},
+                "helper_addresses": {
+                    "type": "dict",
+                    "options": {
+                        "ipv4": {
+                            "type": "list",
+                            "elements": "dict",
+                            "options": {
+                                "destination_ip": {"type": "str"},
+                                "global": {"type": "bool"},
+                                "vrf": {"type": "str"},
+                            },
+                        },
+                    },
+                },
                 "ipv4": {
                     "type": "list",
                     "elements": "dict",
@@ -56,7 +70,6 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                                 "hostname": {"type": "str"},
                             },
                         },
-                        "helper_address": {"type": "bool"},
                         "proxy_arp": {"type": "bool"},
                         "pool": {"type": "str"},
                         "redirects": {"type": "bool"},

@@ -48,6 +48,24 @@ options:
         description:
           - Manually set interface MAC address.
         type: str
+      helper_addresses:
+        description: Specify a destination address for UDP broadcasts
+        type: dict
+        suboptions:
+          ipv4:
+            description: List of ipv4 destiantion IPs
+            type: list
+            elements: dict
+            suboptions:
+              destination_ip:
+                description: IP destination address
+                type: str
+              global:
+                description: Helper-address is global
+                type: bool
+              vrf:
+                description: VRF name for helper-address (if different from interface VRF)
+                type: str
       ipv4:
         description:
           - IPv4 address to be set for the Layer-3 interface mentioned in I(name) option.
@@ -100,9 +118,6 @@ options:
             type: bool
           unreachables:
             description: Enable sending ICMP Unreachable messages.
-            type: bool
-          helper_address:
-            description: Enable helper_address messages.
             type: bool
           proxy_arp:
             description: Enable proxy_arp.
@@ -260,6 +275,11 @@ EXAMPLES = """
           - address: 192.168.0.1/24
             secondary: true
       - name: GigabitEthernet2
+        helper_addresses:
+          ipv4:
+            - destination_ip: 10.0.0.1
+            - global: true
+              destination_ip: 10.0.0.2
         ipv4:
           - address: 192.168.0.2/24
       - name: GigabitEthernet3
@@ -311,6 +331,11 @@ EXAMPLES = """
 # - ipv4:
 #   - address: 192.168.0.2/24
 #   name: GigabitEthernet2
+#   helper_addresses:
+#     ipv4:
+#       - destination_ip: 10.0.0.1
+#       - global: true
+#         destination_ip: 10.0.0.2
 # - ipv6:
 #   - address: FD5D:12C9:2201:1::1/64
 #   name: GigabitEthernet3
@@ -340,6 +365,8 @@ EXAMPLES = """
 #  negotiation auto
 # interface GigabitEthernet2
 #  ip address 192.168.0.2 255.255.255.0
+#  ip helper-address 10.0.0.1
+#  ip helper-address global 10.0.0.2
 #  shutdown
 #  speed 1000
 #  no negotiation auto
@@ -377,6 +404,7 @@ EXAMPLES = """
 #  negotiation auto
 # interface GigabitEthernet2
 #  ip address 192.168.0.2 255.255.255.0
+#  ip helper-address global 10.0.0.1
 #  shutdown
 #  speed 1000
 #  no negotiation auto
@@ -397,6 +425,10 @@ EXAMPLES = """
   cisco.ios.ios_l3_interfaces:
     config:
       - name: GigabitEthernet2
+        helper_addresses:
+          ipv4:
+            - vrf: abc
+              destination_ip: 10.0.0.1
         ipv4:
           - address: 192.168.2.0/24
       - name: GigabitEthernet3
@@ -417,6 +449,10 @@ EXAMPLES = """
 # - ipv4:
 #   - address: 192.168.0.2/24
 #   name: GigabitEthernet2
+#   helper_addresses:
+#     ipv4:
+#       - global: true
+#         destination_ip: 10.0.0.1
 # - ipv6:
 #   - address: FD5D:12C9:2201:1::1/64
 #   name: GigabitEthernet3
@@ -427,6 +463,8 @@ EXAMPLES = """
 # - interface GigabitEthernet2
 # - ip address 192.168.0.3 255.255.255.0
 # - no ip address 192.168.0.2 255.255.255.0
+# - no ip helper-address global 10.0.0.1
+# - ip helper-address vrf abc 10.0.0.1
 # - interface GigabitEthernet3
 # - ip address dhcp client-id GigabitEthernet2 hostname test.com
 # - no ipv6 address fd5d:12c9:2201:1::1/64
@@ -438,6 +476,10 @@ EXAMPLES = """
 # - ipv4:
 #   - address: 192.168.0.3/24
 #   name: GigabitEthernet2
+#   helper_addresses:
+#     ipv4:
+#       - vrf: abc
+#         destination_ip: 10.0.0.1
 # - ipv4:
 #   - dhcp:
 #       client_id: GigabitEthernet2
