@@ -10,6 +10,7 @@ The module file for ios_bfd_static_global
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -146,6 +147,7 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bfd_static_global.bfd_static_global import (
     Bfd_static_globalArgs,
 )
