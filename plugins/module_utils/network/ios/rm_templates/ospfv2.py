@@ -715,7 +715,7 @@ class Ospfv2Template(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \sdistance
-                (\s(?P<admin_dist>\S+))
+                (\s(?P<admin_dist>\d+))
                 (\s(?P<source>\S+))?
                 (\s(?P<wildcard>\S+))?
                 (\s(?P<acl>\S+))?
@@ -745,9 +745,9 @@ class Ospfv2Template(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \sdistance\sospf
-                (\sintra-area\s(?P<intra>\d+))
-                (\sinter-area\s(?P<inter>\d+))
-                (\sexternal\s(?P<external>\d+))
+                (\sintra-area\s(?P<intra>\d+))?
+                (\sinter-area\s(?P<inter>\d+))?
+                (\sexternal\s(?P<external>\d+))?
                 $""",
                 re.VERBOSE,
             ),

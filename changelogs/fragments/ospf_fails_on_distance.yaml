@@ -1,0 +1,3 @@
+bugfixes:
+  - cisco.ios.ios_ospfv2 - Fix ospf admin distance parameter and
+    fix other distance specific attributes to be optional.
