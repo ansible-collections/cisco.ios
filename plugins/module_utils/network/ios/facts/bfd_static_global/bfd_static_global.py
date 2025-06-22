@@ -55,7 +55,8 @@ class Bfd_static_globalFacts(object):
 
         # parse native config using the Bfd_static_global template
         bfd_static_global_parser = Bfd_static_globalTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         objs = list(bfd_static_global_parser.parse().values())
 
@@ -63,7 +64,9 @@ class Bfd_static_globalFacts(object):
 
         params = utils.remove_empties(
             bfd_static_global_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
             ),
         )
 
