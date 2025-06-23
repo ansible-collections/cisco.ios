@@ -1381,7 +1381,7 @@ class Ospfv2Template(NetworkTemplate):
                     "{{ pid }}": {
                         "passive_interfaces": {
                             "interface": {
-                                "set_interface": "{{ not no }}",
+                                "set_interface": "{{ False if no is defined else True }}",
                                 "name": ["{{ interface if 'default' not in interface }}"],
                             },
                         },
