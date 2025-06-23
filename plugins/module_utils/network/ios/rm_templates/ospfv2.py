@@ -66,17 +66,21 @@ def _tmplt_ospf_max_metric(config_data):
         command = "max-metric"
         if "router_lsa" in config_data["max_metric"]:
             command += " router-lsa"
-        if "external_lsa" in config_data["max_metric"]:
-            command += " external-lsa {external_lsa}".format(**config_data["max_metric"])
         if "include_stub" in config_data["max_metric"]:
             command += " include-stub"
+        if "set_summary_lsa" in config_data["max_metric"]:
+            command += " summary-lsa"
+        if "summary_lsa" in config_data["max_metric"]:
+            command += " summary-lsa {summary_lsa}".format(**config_data["max_metric"])
+        if "set_external_lsa" in config_data["max_metric"]:
+            command += " external-lsa"
+        if "external_lsa" in config_data["max_metric"]:
+            command += " external-lsa {external_lsa}".format(**config_data["max_metric"])
         if "on_startup" in config_data["max_metric"]:
             if "time" in config_data["max_metric"]["on_startup"]:
                 command += " on-startup {time}".format(**config_data["max_metric"]["on_startup"])
             elif "wait_for_bgp" in config_data["max_metric"]["on_startup"]:
                 command += " on-startup wait-for-bgp"
-        if "summary_lsa" in config_data["max_metric"]:
-            command += " summary-lsa {summary_lsa}".format(**config_data["max_metric"])
         return command
 
 
@@ -1089,10 +1093,12 @@ class Ospfv2Template(NetworkTemplate):
                 \smax-metric
                 (\s(?P<router_lsa>router-lsa))?
                 (\s(?P<include_stub>include-stub))?
+                (\s(?P<summary_lsa_bool>summary-lsa))?
+                (\ssummary-lsa\s(?P<summary_lsa>\d+))?
+                (\s(?P<external_lsa_bool>external-lsa))?
                 (\sexternal-lsa\s(?P<external_lsa>\d+))?
                 (\son-startup\s(?P<startup_time>\d+))?
                 (\son-startup\s(?P<startup_wait>\S+))?
-                (\ssummary-lsa\s(?P<summary_lsa>\d+))?
                 $""",
                 re.VERBOSE,
             ),
@@ -1103,7 +1109,9 @@ class Ospfv2Template(NetworkTemplate):
                         "max_metric": {
                             "router_lsa": "{{ True if router_lsa is defined }}",
                             "external_lsa": "{{ external_lsa }}",
-                            "include_stub": "{{ ignore_count }}",
+                            "set_summary_lsa": "{{ not not summary_lsa_bool }}",
+                            "set_external_lsa": "{{ not not external_lsa_bool }}",
+                            "include_stub": "{{ not not include_stub }}",
                             "on_startup": {
                                 "time": "{{ startup_time }}",
                                 "wait_for_bgp": "{{ True if startup_wait is defined }}",
