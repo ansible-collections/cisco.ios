@@ -6,6 +6,7 @@ merged:
     - name: GigabitEthernet3
     - name: GigabitEthernet4
     - name: loopback888
+    - name: loopback999
   commands:
     - interface GigabitEthernet2
     - lacp port-priority 30
@@ -16,6 +17,7 @@ merged:
     - lacp fast-switchover
   after:
     - name: loopback888
+    - name: loopback999
     - name: Port-channel10
       fast_switchover: true
       max_bundle: 2

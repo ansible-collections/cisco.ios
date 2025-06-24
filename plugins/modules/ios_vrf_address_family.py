@@ -462,14 +462,56 @@ options:
             type: dict
             suboptions:
               export:
-                description: Export Target-VPN community.
+                description:
+                  - This option is DEPRECATED and is replaced with exports which
+                    accepts list of dict input.
                 type: str
               import_config:
-                description: Export Target-VPN community.
+                description:
+                 - This option is DEPRECATED and is replaced with imports which
+                   accepts list of dict input.
                 type: str
               both:
-                description: Both export and import Target-VPN community
+                description:
+                  - This option is DEPRECATED and is replaced with both_options which
+                    accepts list of dict input.
                 type: str
+              exports:
+                description: Export Target-VPN community.
+                type: list
+                elements: dict
+                suboptions:
+                  rt_value:
+                    description: Export Target-VPN community.
+                    type: str
+                  stitching:
+                    description: Export Target-VPN community.
+                    type: bool
+
+              imports:
+                description: Export Target-VPN community.
+                type: list
+                elements: dict
+                suboptions:
+                  rt_value:
+                    description: Export Target-VPN community.
+                    type: str
+                  stitching:
+                    description: Export Target-VPN community.
+                    type: bool
+
+              both_options:
+                description: Both export and import Target-VPN community
+                type: list
+                elements: dict
+                suboptions:
+                  rt_value:
+                    description: Export Target-VPN community.
+                    type: str
+                  stitching:
+                    description: Export Target-VPN community.
+                    type: bool
+
   running_config:
     description:
       - This option is used only with state I(parsed).
