@@ -34,9 +34,6 @@ options:
     type: list
     elements: dict
     suboptions:
-      # ===================================================================
-      # Core Peer Identification Parameters
-      # ===================================================================
       destination_ip:
         description: The destination IPv4 address of the BFD peer. This parameter is always required.
         type: str
@@ -59,10 +56,6 @@ options:
           - For IP-based peers, this generates the syntax C(...<dest_ip> vrf <vrf_name> <src_ip>...).
           - For interface-based peers, this generates C(...vrf <vrf_name> <interface>...).
         type: str
-
-      # ===================================================================
-      # Optional BFD Parameters
-      # ===================================================================
       group_name:
         description:
           - The name of the BFD group to which this peer should be assigned.
