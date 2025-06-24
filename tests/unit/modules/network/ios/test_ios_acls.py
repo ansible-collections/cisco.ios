@@ -2607,3 +2607,98 @@ class TestIosAclsModule(TestIosModule):
             "deny ip any any",
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_default_acls_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            """,
+        )
+        self.execute_show_command_name.return_value = dedent("")
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        afi="ipv4",
+                        acls=[
+                            dict(
+                                name="113",
+                                acl_type="extended",
+                                aces=[
+                                    dict(
+                                        grant="deny",
+                                        protocol_options=dict(tcp=dict(ack="True")),
+                                        source=dict(
+                                            address="198.51.100.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            address="198.51.101.0",
+                                            wildcard_bits="0.0.0.255",
+                                            port_protocol=dict(eq="telnet"),
+                                        ),
+                                        tos=dict(min_monetary_cost=True),
+                                    ),
+                                    dict(
+                                        grant="permit",
+                                        protocol_options=dict(protocol_number=433),
+                                        source=dict(
+                                            address="198.51.101.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            address="198.51.102.0",
+                                            wildcard_bits="0.0.0.255",
+                                            port_protocol=dict(eq="telnet"),
+                                        ),
+                                        log=dict(user_cookie="check"),
+                                        tos=dict(max_throughput=True),
+                                    ),
+                                    dict(
+                                        grant="permit",
+                                        source=dict(
+                                            address="198.51.102.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            address="198.51.103.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        precedence=10,
+                                        tos=dict(normal=True),
+                                    ),
+                                    dict(
+                                        grant="permit",
+                                        source=dict(
+                                            address="198.51.105.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            address="198.51.106.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        time_range=20,
+                                        tos=dict(max_throughput=True),
+                                    ),
+                                ],
+                            ),
+                            dict(
+                                name="implicit_permit",
+                                acl_type="standard",
+                                aces=[dict(remarks=["Another remark here"])],
+                            ),
+                        ],
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = [
+            "ip access-list extended 113",
+            "deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos min-monetary-cost",
+            "permit 198.51.102.0 0.0.0.255 198.51.103.0 0.0.0.255 precedence 10 tos normal",
+            "permit 433 198.51.101.0 0.0.0.255 198.51.102.0 0.0.0.255 eq telnet log check tos max-throughput",
+            "permit 198.51.105.0 0.0.0.255 198.51.106.0 0.0.0.255 time-range 20 tos max-throughput",
+        ]
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
