@@ -216,17 +216,34 @@ class Route_maps(ResourceModule):
                     have_val = have_v.pop(key, {})
                     if val != have_val:
                         if have_val:
-                            if self.state == "overridden" or self.state == "replaced":
+                            to_remove = set()
+                            to_add = set()
+                            pop_acl_if_empty = False
+                            if have_val.get("acls") and val.get("acls"):
+                                want_acl_values = set(str(v) for v in val["acls"].values())
+                                have_acl_values = set(str(v) for v in have_val["acls"].values())
+                                to_remove = have_acl_values - want_acl_values
+                                to_add = [v for v in want_acl_values if v not in have_acl_values]
+                                pop_acl_if_empty = True
+                            if self.state in ["overridden", "replaced"]:
+                                if to_remove and have_val.get("acls"):
+                                    have_val["acls"] = {f"acl_{v}": v for v in to_remove}
                                 self.compare(
                                     parsers=parsers,
                                     want=dict(),
                                     have={compare_type: {k: {key: have_val}}},
                                 )
-                            self.compare(
-                                parsers=parsers,
-                                want={compare_type: {k: {key: val}}},
-                                have={compare_type: {k: {key: have_val}}},
-                            )
+                            if to_add:
+                                val["acls"] = {f"acl_{v}": v for v in to_add}
+                            else:
+                                if pop_acl_if_empty:
+                                    val.pop("acls", None)
+                            if val:
+                                self.compare(
+                                    parsers=parsers,
+                                    want={compare_type: {k: {key: val}}},
+                                    have={compare_type: {k: {key: have_val}}},
+                                )
                         else:
                             self.compare(
                                 parsers=parsers,

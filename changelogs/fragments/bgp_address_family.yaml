@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_bgp_address_family - Refined state handling for `replaced` and `overridden` modes and enhanced address-family parsing to accurately differentiate between types such as unicast, multicast, and others.

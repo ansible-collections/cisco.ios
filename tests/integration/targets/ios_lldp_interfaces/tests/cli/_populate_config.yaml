@@ -1,8 +1,31 @@
 ---
-- name: Populate configuration
-  vars:
+- name: Configure GigabitEthernet1
+  cisco.ios.ios_config:
     lines:
-      "interface GigabitEthernet 1\nlldp receive\nlldp transmit\ninterface GigabitEthernet 2\nlldp receive\nlldp transmit\ninterface GigabitEthernet 3\n\
-      lldp receive\nlldp transmit\n"
+      - lldp receive
+      - lldp transmit
+    parents:
+      - interface GigabitEthernet1
+
+- name: Configure GigabitEthernet2
+  cisco.ios.ios_config:
+    lines:
+      - lldp receive
+      - lldp transmit
+    parents:
+      - interface GigabitEthernet2
+
+- name: Configure GigabitEthernet3
+  cisco.ios.ios_config:
+    lines:
+      - lldp receive
+      - lldp transmit
+    parents:
+      - interface GigabitEthernet3
+
+- name: Negate GigabitEthernet 4 lldp receive and transmit if merged
+  vars:
+    lines: "interface GigabitEthernet 4\nno lldp receive\nno lldp transmit\n"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"
+  when: isMerged is defined and isMerged

@@ -1,4 +1,0 @@
----
-bugfixes:
-  - static_routes - add TenGigabitEthernet as valid interface
-  - bgp_global - fix ebgp_multihop recognnition and hop_count settings

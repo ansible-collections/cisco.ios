@@ -1,0 +1,60 @@
+---
+- name: Configure vrf B
+  cisco.ios.ios_config:
+    lines:
+      - vrf definition vrf_B
+  retries: 2
+  delay: 10
+
+- name: Wait for VRF
+  ansible.builtin.wait_for:
+    timeout: 2
+
+- name: Configure vrf C
+  cisco.ios.ios_config:
+    lines:
+      - vrf definition vrf_C
+  retries: 2
+  delay: 10
+
+- name: Wait for VRF
+  ansible.builtin.wait_for:
+    timeout: 2
+
+- name: Configure vrf D
+  cisco.ios.ios_config:
+    lines:
+      - vrf definition vrf_D
+  retries: 2
+  delay: 10
+
+- name: Wait for VRF
+  ansible.builtin.wait_for:
+    timeout: 2
+
+- name: Configure interface loopback 1
+  cisco.ios.ios_config:
+    lines:
+      # This exists by default in downstream but not cml
+      - interface Loopback888
+
+- name: Configure interface loopback 2
+  cisco.ios.ios_config:
+    lines:
+      - interface Loopback999
+
+- name: Configure interface settings 2
+  cisco.ios.ios_config:
+    lines:
+      - vrf forwarding vrf_B
+    parents: interface GigabitEthernet2
+
+- name: Configure interface settings 3
+  cisco.ios.ios_config:
+    lines:
+      - interface GigabitEthernet3
+
+- name: Configure interface settings 4
+  cisco.ios.ios_config:
+    lines:
+      - interface GigabitEthernet4

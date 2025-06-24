@@ -17,10 +17,16 @@
               - autoconfig:
                   enable: true
           - name: GigabitEthernet3
+            helper_addresses:
+              ipv4:
+                - destination_ip: 10.0.0.1
+                  global: true
+                - destination_ip: 10.0.0.2
             ipv4:
               - address: 198.51.100.1/24
                 secondary: true
               - address: 198.51.100.2/24
+
             ipv6:
               - address: 2001:db8:0:3::/64
           - name: Vlan901
@@ -46,12 +52,24 @@
     - name: L3_interface merged - assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ merged['before'] | symmetric_difference(result['before']) | length == 0 }}"
+          - >
+            {{
+              result['before']
+              | selectattr('name', 'in', 'GigabitEthernet1,GigabitEthernet2,GigabitEthernet3,GigabitEthernet4')
+              | symmetric_difference(merged['before'])
+              | length == 0
+            }}
 
     - name: L3_interface merged - assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ merged['after'] | symmetric_difference(result['after']) | length == 0 }}"
+          - >
+            {{
+              result['after']
+              | rejectattr('name', 'in', 'Loopback888')
+              | symmetric_difference(merged['after'])
+              | length == 0
+            }}
 
     - name: L3_interface merged - merge provided configuration with device configuration (idempotent)
       register: result

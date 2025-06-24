@@ -1,0 +1,13 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_vrf_address_family parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parse externally provided VRF configuration
+  register: result
+  cisco.ios.ios_vrf_address_family:
+    running_config: "{{ lookup('file', './_parsed.cfg') }}"
+    state: parsed
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == false
