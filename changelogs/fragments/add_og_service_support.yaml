@@ -1,0 +1,3 @@
+---
+minor_changes:
+  - Added object-group service support for ios_acls module
