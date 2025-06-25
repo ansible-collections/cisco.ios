@@ -214,6 +214,44 @@ def remove_duplicate_interface(commands):
     return set_cmd
 
 
+def flatten_dict(x):
+    result = {}
+    if not isinstance(x, dict):
+        return result
+
+    for key, value in iteritems(x):
+        if isinstance(value, dict):
+            result.update(flatten_dict(value))
+        else:
+            result[key] = value
+
+    return result
+
+
+def flatten_config(data, context):
+    """Flatten different contexts in
+        the running-config for easier parsing.
+    :param data: dict
+    :param context: str
+    :returns: flattened running config
+    """
+    data = data.split("\n")
+    in_cxt = False
+    cur = {}
+
+    for index, x in enumerate(data):
+        cur_indent = len(x) - len(x.lstrip())
+        if x.strip().startswith(context):
+            in_cxt = True
+            cur["context"] = x
+            cur["indent"] = cur_indent
+        elif cur and (cur_indent <= cur["indent"]):
+            in_cxt = False
+        elif in_cxt:
+            data[index] = cur["context"] + " " + x.strip()
+    return "\n".join(data)
+
+
 def validate_ipv4(value, module):
     if value:
         address = value.split("/")
@@ -284,6 +322,12 @@ def normalize_interface(name):
         if_type = "TenGigabitEthernet"
     elif name.lower().startswith("fa"):
         if_type = "FastEthernet"
+    elif name.lower().startswith("fourhundredgige"):
+        if_type = "FourHundredGigE"
+    elif name.lower().startswith("fiftygige"):
+        if_type = "FiftyGigE"
+    elif name.lower().startswith("fou"):
+        if_type = "FourHundredGigabitEthernet"
     elif name.lower().startswith("fo"):
         if_type = "FortyGigabitEthernet"
     elif name.lower().startswith("fiv"):
@@ -338,6 +382,12 @@ def get_interface_type(interface):
         return "TenGigabitEthernet"
     elif interface.upper().startswith("FA"):
         return "FastEthernet"
+    elif interface.upper().startswith("FOURHUNDREDGIGE"):
+        return "FourHundredGigE"
+    elif interface.upper().startswith("FIFTYGIGE"):
+        return "FiftyGigE"
+    elif interface.upper().startswith("FOU"):
+        return "FourHundredGigabitEthernet"
     elif interface.upper().startswith("FO"):
         return "FortyGigabitEthernet"
     elif interface.upper().startswith("FI"):

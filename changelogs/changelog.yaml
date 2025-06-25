@@ -1288,3 +1288,123 @@ releases:
       - support_section.yml
       - trivial_ignore_files.yaml
     release_date: "2024-10-16"
+  9.1.0:
+    changes:
+      bugfixes:
+        - Added a test to validate the gathered state for VLAN configuration context,
+          improving reliability.
+        - Cleaned up unit tests that were passing for the wrong reasons. The updated
+          tests now ensure the right config sections are verified for VLAN configurations.
+        - Fix overridden state operations to ensure excluded VLANs in the provided configuration
+          are removed, thus overriding the VLAN configuration.
+        - Fix purged state operation to enable users to completely remove VLAN configurations.
+        - Fixed an issue with VLAN configuration gathering where pre-filled data was
+          blocking proper fetching of dynamic VLAN details. Now VLAN facts are populated
+          correctly for all cases.
+        - Fixes an issue with facts gathering failing when an sub interface is in a
+          deleted state.
+        - Improve documentation to provide clarity on the "shutdown" variable.
+        - Improve unit tests to align with the changes made.
+        - Made improvements to ensure VLAN facts are gathered properly, both for specific
+          configurations and general VLAN settings.
+        - ios_route_maps - Fix removal of ACLs in replaced state to properly remove
+          unspecified ACLs while leaving specified ones intact.
+        - ios_route_maps - Fix removal of ACLs logic in replaced state to properly remove
+          unspecified ACLs while leaving specified ones intact.
+      minor_changes:
+        - Added ios_vrf_interfaces resource module,that helps with configuration of
+          vrfs within interface
+        - Adds a new module `ios_vrf_address_family` to manage VRFs address families
+          on Cisco IOS devices.
+    fragments:
+      - add_vrf_address_family.yaml
+      - ana_602_fix_vlan_context_gathering.yaml
+      - fix_acls_tests.yaml
+      - fix_facts_gather.yaml
+      - fix_purge_and_overridden_operations.yaml
+      - rm_vrf_interfaces.yaml
+      - route_maps_acl_fix.yaml
+    release_date: "2025-01-16"
+  9.1.1:
+    changes:
+      bugfixes:
+        - Added support for FourHundredGigE, FiftyGigE and FourHundredGigabitEthernet.
+    fragments:
+      - add_extra_interfaces.yaml
+    release_date: "2025-01-30"
+  9.1.2:
+    changes:
+      bugfixes:
+        - ios_acls - Fixed issue where cisco.ios.ios_acls module failed to process IPv6
+          ACL remarks, causing unsupported parameter errors.
+        - ios_route_maps - Fixes an issue where 'no description value' is an invalid
+          command on the latest devices.
+    fragments:
+      - fix_acls_remark.yaml
+      - fix_ci_upstream.yaml
+    release_date: "2025-03-04"
+  9.2.0:
+    changes:
+      bugfixes:
+        - ios_logging_global - Fixed issue where cisco.ios.logging_global module was
+          not showing idempotent behaviour when trap was set to informational.
+        - ios_vlans - Defaut mtu would be captured (1500) and no configuration for mtu
+          is allowed via ios_vlans module.
+        - ios_vlans - Fixed an issue in the `cisco.ios.ios_vlans` module on Cisco Catalyst
+          9000 switches where using state:purged generated an incorrect command syntax
+          (`no vlan configuration <vlan_id>` instead of `no vlan <vlan_id>`).
+        - ios_vlans - Resolved a failure in the `cisco.ios.ios_vlans` module when using
+          state:deleted, where the module incorrectly attempted to remove VLANs using
+          `no mtu <value>`, causing an invalid input error. The fix ensures that the
+          module does not generate `no mtu` commands during VLAN deletion, aligning
+          with the correct VLAN removal behavior on Catalyst 9000 switches.
+      deprecated_features:
+        - ios_vlans - deprecate mtu, please use ios_interfaces to configure mtu to the
+          interface where vlans is applied.
+      minor_changes:
+        - Add ios_evpn_ethernet resource module.
+    fragments:
+      - evpn_ethernet_module.yaml
+      - fix_logging_trap.yaml
+      - fix_vlans_deleted.yaml
+    modules:
+      - description: Resource module to configure L2VPN EVPN Ethernet Segment.
+        name: ios_evpn_ethernet
+        namespace: ""
+    release_date: "2025-03-27"
+  10.0.0:
+    changes:
+      major_changes:
+        - Bumping `requires_ansible` to `>=2.16.0`, since previous ansible-core versions
+          are EoL now.
+      minor_changes:
+        - ios_interfaces - Added service-policy, logging and snmp configuration options
+          for interface.
+        - ios_l2_interfaces - Added a few switchport and spanning-tree configuration
+          options for interface.
+        - ios_l3_interfaces - Added a few ip configuration options for interface.
+      release_summary:
+        With this release, the minimum required version of `ansible-core`
+        for this collection is `2.16.0`. The last version known to be compatible with
+        `ansible-core` versions below `2.16` is v9.2.0.
+    fragments:
+      - all_intefaces.yaml
+      - bump216.yml
+    release_date: "2025-04-11"
+  10.1.0:
+    changes:
+      bugfixes:
+        - cisco.ios.ios_interfaces - Improved handling of the `enabled` state to prevent
+          incorrect `shutdown` or `no shutdown` commands during configuration changes.
+        - ios_acls - Fix issue where commands were not being parsed correctly and incorrect
+          commands were being generated.
+        - ios_bgp_address_family - fix configuration of neighbor's as-override split-horizon.
+      minor_changes:
+        - ios_hsrp_interfaces - Added support for cisco.ios.hsrp_interfaces module (standby
+          commands).
+    fragments:
+      - bgp_add_fam_qfix.yaml
+      - fix_acls.yml
+      - hsrp_interfaces.yaml
+      - ios_interfaces.yaml
+    release_date: "2025-05-29"

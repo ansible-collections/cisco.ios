@@ -1686,6 +1686,7 @@ class TestIosAclsModule(TestIosModule):
                         20 permit tcp host 10.1.1.1 host 10.5.5.5 eq www
                         30 permit icmp any any
                         40 permit udp host 10.6.6.6 10.10.10.0 0.0.0.255 eq domain
+                        50 deny object-group deny-mgmt-ports any any
                     """,
                 ),
                 state="parsed",
@@ -1875,6 +1876,17 @@ class TestIosAclsModule(TestIosModule):
                                     "address": "10.10.10.0",
                                     "port_protocol": {"eq": "domain"},
                                     "wildcard_bits": "0.0.0.255",
+                                },
+                            },
+                            {
+                                "sequence": 50,
+                                "grant": "deny",
+                                "source": {
+                                    "any": True,
+                                    "object_group": "deny-mgmt-ports",
+                                },
+                                "destination": {
+                                    "any": True,
                                 },
                             },
                         ],
@@ -2301,5 +2313,392 @@ class TestIosAclsModule(TestIosModule):
             "no ip access-list extended 110",
             "no ip access-list extended 123",
             "no ip access-list extended test_acl",
+        ]
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_merged_general(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            ipv6 access-list extended std_acl_name_test_1
+                10 remark std_acl_name_test_1
+                20 permit 220 any any
+            """,
+        )
+        self.execute_show_command_name.return_value = dedent("")
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "afi": "ipv6",
+                        "acls": [
+                            {
+                                "name": "std_acl_name_test_1",
+                                "acl_type": "extended",
+                                "aces": [
+                                    {
+                                        "remarks": [
+                                            "Test_ipv4_ipv6_acl",
+                                        ],
+                                    },
+                                    {
+                                        "destination": {
+                                            "any": True,
+                                        },
+                                        "grant": "permit",
+                                        "protocol": 220,
+                                        "sequence": 40,
+                                        "source": {
+                                            "any": True,
+                                        },
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+                state="merged",
+            ),
+        )
+
+        result = self.execute_module(changed=True)
+        commands = [
+            "ipv6 access-list std_acl_name_test_1",
+            "permit 220 any any sequence 40",
+            "remark Test_ipv4_ipv6_acl",
+        ]
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_parsed_complex_2(self):
+        self.execute_show_command_name.return_value = dedent("")
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                ip access-list extended CP_Quarantine-v4-in
+                    10 permit udp any object-group FAA-Networks eq bootps
+                    20 permit object-group BT-ports any object-group AIT-BT-Servers
+                    30 permit tcp any object-group CP-Appliances eq 443
+                    40 deny object-group deny-mgmt-ports any any
+                    50 permit object-group icmp any object-group IB-Servers
+                    60 permit object-group generic-any-port any object-group IB-Servers
+                    70 permit object-group generic-any-port any object-group AD-Servers
+                    80 permit object-group generic-any-port any object-group CP-Appliances
+                    90 permit object-group generic-any-port any object-group Tanium-Servers
+                    100 permit object-group generic-any-port any object-group SOC-Tenable-Servers
+                    5000 deny ip any any
+                """,
+                ),
+                state="parsed",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        parsed_list = [
+            {
+                "acls": [
+                    {
+                        "aces": [
+                            {
+                                "source": {
+                                    "any": True,
+                                },
+                                "destination": {
+                                    "object_group": "FAA-Networks",
+                                    "port_protocol": {
+                                        "eq": "bootps",
+                                    },
+                                },
+                                "protocol": "udp",
+                                "grant": "permit",
+                                "sequence": 10,
+                            },
+                            {
+                                "source": {
+                                    "object_group": "BT-ports",
+                                },
+                                "destination": {
+                                    "any": True,
+                                    "object_group": "AIT-BT-Servers",
+                                },
+                                "grant": "permit",
+                                "sequence": 20,
+                            },
+                            {
+                                "source": {
+                                    "any": True,
+                                },
+                                "destination": {
+                                    "object_group": "CP-Appliances",
+                                    "port_protocol": {
+                                        "eq": "443",
+                                    },
+                                },
+                                "protocol": "tcp",
+                                "grant": "permit",
+                                "sequence": 30,
+                            },
+                            {
+                                "source": {
+                                    "any": True,
+                                    "object_group": "deny-mgmt-ports",
+                                },
+                                "destination": {
+                                    "any": True,
+                                },
+                                "grant": "deny",
+                                "sequence": 40,
+                            },
+                            {
+                                "source": {
+                                    "object_group": "icmp",
+                                },
+                                "destination": {
+                                    "any": True,
+                                    "object_group": "IB-Servers",
+                                },
+                                "grant": "permit",
+                                "sequence": 50,
+                            },
+                            {
+                                "source": {
+                                    "object_group": "generic-any-port",
+                                },
+                                "destination": {
+                                    "any": True,
+                                    "object_group": "IB-Servers",
+                                },
+                                "grant": "permit",
+                                "sequence": 60,
+                            },
+                            {
+                                "source": {
+                                    "object_group": "generic-any-port",
+                                },
+                                "destination": {
+                                    "any": True,
+                                    "object_group": "AD-Servers",
+                                },
+                                "grant": "permit",
+                                "sequence": 70,
+                            },
+                            {
+                                "source": {
+                                    "object_group": "generic-any-port",
+                                },
+                                "destination": {
+                                    "any": True,
+                                    "object_group": "CP-Appliances",
+                                },
+                                "grant": "permit",
+                                "sequence": 80,
+                            },
+                            {
+                                "source": {
+                                    "object_group": "generic-any-port",
+                                },
+                                "destination": {
+                                    "any": True,
+                                    "object_group": "Tanium-Servers",
+                                },
+                                "grant": "permit",
+                                "sequence": 90,
+                            },
+                            {
+                                "source": {
+                                    "object_group": "generic-any-port",
+                                },
+                                "destination": {
+                                    "any": True,
+                                    "object_group": "SOC-Tenable-Servers",
+                                },
+                                "grant": "permit",
+                                "sequence": 100,
+                            },
+                            {
+                                "source": {
+                                    "any": True,
+                                },
+                                "destination": {
+                                    "any": True,
+                                },
+                                "protocol": "ip",
+                                "grant": "deny",
+                                "sequence": 5000,
+                            },
+                        ],
+                        "acl_type": "extended",
+                        "name": "CP_Quarantine-v4-in",
+                    },
+                ],
+                "afi": "ipv4",
+            },
+        ]
+        self.assertEqual(parsed_list, result["parsed"])
+
+    def test_ios_merged_general_2(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            ipv6 access-list extended std_acl_name_test_1
+                10 remark std_acl_name_test_1
+                20 permit 220 any any
+            """,
+        )
+        self.execute_show_command_name.return_value = dedent("")
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "afi": "ipv6",
+                        "acls": [
+                            {
+                                "name": "std_acl_name_test_1",
+                                "acl_type": "extended",
+                                "aces": [
+                                    {
+                                        "remarks": [
+                                            "Test_ipv4_ipv6_acl",
+                                        ],
+                                    },
+                                    {
+                                        "destination": {
+                                            "any": True,
+                                        },
+                                        "grant": "permit",
+                                        "protocol": 220,
+                                        "sequence": 40,
+                                        "source": {
+                                            "any": True,
+                                        },
+                                    },
+                                    {
+                                        "source": {
+                                            "any": True,
+                                        },
+                                        "destination": {
+                                            "any": True,
+                                        },
+                                        "protocol": "ip",
+                                        "grant": "deny",
+                                    },
+                                    {
+                                        "source": {
+                                            "any": True,
+                                            "object_group": "deny-mgmt-ports",
+                                        },
+                                        "destination": {
+                                            "any": True,
+                                        },
+                                        "grant": "deny",
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+                state="merged",
+            ),
+        )
+
+        result = self.execute_module(changed=True)
+        commands = [
+            "ipv6 access-list std_acl_name_test_1",
+            "permit 220 any any sequence 40",
+            "remark Test_ipv4_ipv6_acl",
+            "deny object-group deny-mgmt-ports any any",
+            "deny ip any any",
+        ]
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_default_acls_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """
+            """,
+        )
+        self.execute_show_command_name.return_value = dedent("")
+
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        afi="ipv4",
+                        acls=[
+                            dict(
+                                name="113",
+                                acl_type="extended",
+                                aces=[
+                                    dict(
+                                        grant="deny",
+                                        protocol_options=dict(tcp=dict(ack="True")),
+                                        source=dict(
+                                            address="198.51.100.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            address="198.51.101.0",
+                                            wildcard_bits="0.0.0.255",
+                                            port_protocol=dict(eq="telnet"),
+                                        ),
+                                        tos=dict(min_monetary_cost=True),
+                                    ),
+                                    dict(
+                                        grant="permit",
+                                        protocol_options=dict(protocol_number=433),
+                                        source=dict(
+                                            address="198.51.101.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            address="198.51.102.0",
+                                            wildcard_bits="0.0.0.255",
+                                            port_protocol=dict(eq="telnet"),
+                                        ),
+                                        log=dict(user_cookie="check"),
+                                        tos=dict(max_throughput=True),
+                                    ),
+                                    dict(
+                                        grant="permit",
+                                        source=dict(
+                                            address="198.51.102.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            address="198.51.103.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        precedence=10,
+                                        tos=dict(normal=True),
+                                    ),
+                                    dict(
+                                        grant="permit",
+                                        source=dict(
+                                            address="198.51.105.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        destination=dict(
+                                            address="198.51.106.0",
+                                            wildcard_bits="0.0.0.255",
+                                        ),
+                                        time_range=20,
+                                        tos=dict(max_throughput=True),
+                                    ),
+                                ],
+                            ),
+                            dict(
+                                name="implicit_permit",
+                                acl_type="standard",
+                                aces=[dict(remarks=["Another remark here"])],
+                            ),
+                        ],
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = [
+            "ip access-list extended 113",
+            "deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos min-monetary-cost",
+            "permit 198.51.102.0 0.0.0.255 198.51.103.0 0.0.0.255 precedence 10 tos normal",
+            "permit 433 198.51.101.0 0.0.0.255 198.51.102.0 0.0.0.255 eq telnet log check tos max-throughput",
+            "permit 198.51.105.0 0.0.0.255 198.51.106.0 0.0.0.255 time-range 20 tos max-throughput",
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))

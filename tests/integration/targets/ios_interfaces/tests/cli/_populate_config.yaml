@@ -1,8 +1,32 @@
 ---
-- name: Populate configuration
-  vars:
+- name: Configure interface settings GigabitEthernet1
+  cisco.ios.ios_config:
     lines:
-      "interface GigabitEthernet 1\ndescription Management interface do not change\ninterface GigabitEthernet 2\ndescription this is interface1\nmtu 1500\nspeed 1000\nno shutdown\ninterface GigabitEthernet 3\ndescription this is interface\
-      \ for testing\nmtu 1500\nspeed 1000\nshutdown\n"
-  ansible.netcommon.cli_config:
-    config: "{{ lines }}"
+      - description Management interface do not change
+    parents: interface GigabitEthernet1
+
+- name: Configure interface settings GigabitEthernet2
+  cisco.ios.ios_config:
+    lines:
+      - description this is interface1
+      - no negotiation auto
+      - mtu 1500
+      - speed 1000
+      - no shutdown
+    parents: interface GigabitEthernet2
+
+- name: Configure interface settings GigabitEthernet3
+  cisco.ios.ios_config:
+    lines:
+      - description this is interface for testing
+      - no negotiation auto
+      - speed 1000
+      - shutdown
+    parents: interface GigabitEthernet3
+
+- name: Configure interface settings GigabitEthernet4
+  cisco.ios.ios_config:
+    lines:
+      - description Auto_Cable_Testing_Ansible
+      - shutdown
+    parents: interface GigabitEthernet4

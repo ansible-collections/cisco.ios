@@ -1,0 +1,8 @@
+---
+- name: HSRP_interface - populate configuration
+  vars:
+    lines:
+      "interface GigabitEthernet 4\nstandby 0 priority 5\nstandby 0 timers 20 30\ninterface GigabitEthernet 3
+      \nstandby 22 ip 10.0.0.1 secondary\nstandby 22 name sentry\n"
+  ansible.netcommon.cli_config:
+    config: "{{ lines }}"

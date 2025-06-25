@@ -32,6 +32,7 @@
       - l2_interfaces
       - vlans
       - lag_interfaces
+      - evpn_ethernet
       - lacp
       - lacp_interfaces
       - lldp_global
@@ -56,6 +57,9 @@
       - service
       - hostname
       - vrf_global
+      - vrf_address_family
+      - vrf_interfaces
+      - hsrp_interfaces
 
 - name: Collect list of available network resources for IOS
   register: result

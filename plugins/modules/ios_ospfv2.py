@@ -594,6 +594,12 @@ options:
               include_stub:
                 description: Set maximum metric for stub links in router-LSAs
                 type: bool
+              set_summary_lsa:
+                description: Set summary-lsa metric with max-metric value without metirc value
+                type: bool
+              set_external_lsa:
+                description: Set external-lsa metric with max-metric value without metirc value
+                type: bool
               on_startup:
                 description: Set maximum metric temporarily after reboot
                 type: dict

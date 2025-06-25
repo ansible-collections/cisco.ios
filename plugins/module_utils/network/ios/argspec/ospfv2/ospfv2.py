@@ -318,6 +318,8 @@ class Ospfv2Args(object):
                             "options": {
                                 "external_lsa": {"type": "int"},
                                 "include_stub": {"type": "bool"},
+                                "set_summary_lsa": {"type": "bool"},
+                                "set_external_lsa": {"type": "bool"},
                                 "on_startup": {
                                     "options": {
                                         "time": {"type": "int"},

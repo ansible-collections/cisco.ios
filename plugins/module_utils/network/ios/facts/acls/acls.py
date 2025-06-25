@@ -235,7 +235,7 @@ class AclsFacts(object):
 
             for each in temp_v6:
                 if each.get("aces"):
-                    # each["aces"] = collect_remarks(each.get("aces"))
+                    each["aces"] = collect_remarks(each.get("aces"))
                     process_protocol_options(each)
 
         objs = []

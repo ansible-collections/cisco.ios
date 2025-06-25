@@ -2,6 +2,5 @@
 - name: Setup
   vars:
     lines: "vlan 10\nvlan 20\nvlan 30\n"
-  when: ansible_net_version != "15.6(2)T"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"

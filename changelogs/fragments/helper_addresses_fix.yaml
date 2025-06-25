@@ -1,0 +1,2 @@
+bugfixes:
+  - cisco.ios.ios_l3_interfaces - Fixed Helper Address command support for l3 interface.

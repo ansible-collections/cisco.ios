@@ -1,7 +1,6 @@
 ---
 merged:
   before: {}
-
   commands:
     - router bgp 65000
     - timers bgp 100 200 150
