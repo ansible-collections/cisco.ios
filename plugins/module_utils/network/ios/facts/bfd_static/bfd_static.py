@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -20,19 +21,19 @@ from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bfd_static import (
-    Bfd_staticTemplate,
-)
+
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bfd_static.bfd_static import (
     Bfd_staticArgs,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bfd_static import (
+    Bfd_staticTemplate,
 )
 
 
 class Bfd_staticFacts(object):
-    """ The ios bfd_static facts class
-    """
+    """The ios bfd_static facts class"""
 
-    def __init__(self, module, subspec='config', options='options'):
+    def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Bfd_staticArgs.argument_spec
 
@@ -41,7 +42,7 @@ class Bfd_staticFacts(object):
         return connection.get("show running-config | include ip route static bfd")
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Bfd_static network resource
+        """Populate the facts for Bfd_static network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -63,14 +64,14 @@ class Bfd_staticFacts(object):
         # Transform parsed data to flat list format for facts
         objs = self._transform_parsed_data(parsed_objs)
 
-        ansible_facts['ansible_network_resources'].pop('bfd_static', None)
+        ansible_facts["ansible_network_resources"].pop("bfd_static", None)
 
         params = utils.remove_empties(
-            bfd_static_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            bfd_static_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
-        facts['bfd_static'] = params.get('config', [])
-        ansible_facts['ansible_network_resources'].update(facts)
+        facts["bfd_static"] = params.get("config", [])
+        ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
 
@@ -82,59 +83,59 @@ class Bfd_staticFacts(object):
             return transformed_routes
 
         for parsed_dict in parsed_data.values():
-            bfd_static_routes = parsed_dict.get('bfd_static_routes', {})
+            bfd_static_routes = parsed_dict.get("bfd_static_routes", {})
 
             # Process VRF routes with next hop
-            for route in bfd_static_routes.get('vrf_routes', []):
+            for route in bfd_static_routes.get("vrf_routes", []):
                 transformed_route = {
-                    'destination': route.get('destination'),
-                    'vrf': route.get('vrf_name'),
-                    'next_hop': route.get('next_hop'),
+                    "destination": route.get("destination"),
+                    "vrf": route.get("vrf_name"),
+                    "next_hop": route.get("next_hop"),
                 }
-                if route.get('group_name'):
-                    transformed_route['group_name'] = route['group_name']
-                if route.get('passive'):
-                    transformed_route['passive'] = route['passive']
-                if route.get('log'):
-                    transformed_route['log'] = route['log']
-                if route.get('unassociate'):
-                    transformed_route['unassociate'] = route['unassociate']
+                if route.get("group_name"):
+                    transformed_route["group_name"] = route["group_name"]
+                if route.get("passive"):
+                    transformed_route["passive"] = route["passive"]
+                if route.get("log"):
+                    transformed_route["log"] = route["log"]
+                if route.get("unassociate"):
+                    transformed_route["unassociate"] = route["unassociate"]
 
                 transformed_routes.append(transformed_route)
-            
+
             # Process VRF routes with source VRF and IP
-            for route in bfd_static_routes.get('vrf_src_routes', []):
+            for route in bfd_static_routes.get("vrf_src_routes", []):
                 transformed_route = {
-                    'destination': route.get('destination'),
-                    'vrf': route.get('vrf_name'),
-                    'source_vrf': route.get('src_vrf'),
-                    'source_ip': route.get('src_ip'),
+                    "destination": route.get("destination"),
+                    "vrf": route.get("vrf_name"),
+                    "source_vrf": route.get("src_vrf"),
+                    "source_ip": route.get("src_ip"),
                 }
-                if route.get('group_name'):
-                    transformed_route['group_name'] = route['group_name']
-                if route.get('passive'):
-                    transformed_route['passive'] = route['passive']
-                if route.get('log'):
-                    transformed_route['log'] = route['log']
-                if route.get('unassociate'):
-                    transformed_route['unassociate'] = route['unassociate']
+                if route.get("group_name"):
+                    transformed_route["group_name"] = route["group_name"]
+                if route.get("passive"):
+                    transformed_route["passive"] = route["passive"]
+                if route.get("log"):
+                    transformed_route["log"] = route["log"]
+                if route.get("unassociate"):
+                    transformed_route["unassociate"] = route["unassociate"]
 
                 transformed_routes.append(transformed_route)
-            
+
             # Process interface routes
-            for route in bfd_static_routes.get('interface_routes', []):
+            for route in bfd_static_routes.get("interface_routes", []):
                 transformed_route = {
-                    'destination': route.get('destination'),
-                    'interface': route.get('interface'),
+                    "destination": route.get("destination"),
+                    "interface": route.get("interface"),
                 }
-                if route.get('group_name'):
-                    transformed_route['group_name'] = route['group_name']
-                if route.get('passive'):
-                    transformed_route['passive'] = route['passive']
-                if route.get('log'):
-                    transformed_route['log'] = route['log']
-                if route.get('unassociate'):
-                    transformed_route['unassociate'] = route['unassociate']
+                if route.get("group_name"):
+                    transformed_route["group_name"] = route["group_name"]
+                if route.get("passive"):
+                    transformed_route["passive"] = route["passive"]
+                if route.get("log"):
+                    transformed_route["log"] = route["log"]
+                if route.get("unassociate"):
+                    transformed_route["unassociate"] = route["unassociate"]
 
                 transformed_routes.append(transformed_route)
 

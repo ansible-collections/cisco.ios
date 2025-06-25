@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,9 +16,11 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
+
 
 class Bfd_staticTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
@@ -31,7 +34,8 @@ class Bfd_staticTemplate(NetworkTemplate):
                         r"""
                         ip\sroute\sstatic\sbfd\svrf\s(?P<vrf_name>\S+)\s(?P<destination>\S+)\s(?P<next_hop>\S+)
                         (\s(group\s(?P<group_name>\S+)|(?P<passive>passive)|(?P<log>log)|(?P<unassociate>unassociate)))*
-                        $""", re.VERBOSE),
+                        $""", re.VERBOSE,
+                    ),
                     "setval": "ip route static bfd vrf {{ vrf_name }} {{ destination }} {{ next_hop }}"
                             "{{ ' group ' + group_name if group_name is defined }}"
                             "{{ ' passive' if passive is defined }}"
@@ -47,12 +51,12 @@ class Bfd_staticTemplate(NetworkTemplate):
                                     "group_name": "{{ group_name if group_name is defined }}",
                                     "passive": "{{ True if passive is defined else False }}",
                                     "log": "{{ True if log is defined else False }}",
-                                    "unassociate": "{{ True if unassociate is defined else False }}"
-                                }
-                            ]
-                        }
+                                    "unassociate": "{{ True if unassociate is defined else False }}",
+                                },
+                            ],
+                        },
                     },
-                    "shared": True
+                    "shared": True,
                 },
                 {
                     "name": "bfd_static_vrf_src",
@@ -60,7 +64,8 @@ class Bfd_staticTemplate(NetworkTemplate):
                         r"""
                         ^ip\sroute\sstatic\sbfd\svrf\s(?P<vrf_name>\S+)\s(?P<destination>\S+)\svrf\s(?P<src_vrf>\S+)\s(?P<src_ip>\S+)
                         (\s(group\s(?P<group_name>\S+)|(?P<passive>passive)|(?P<log>log)|(?P<unassociate>unassociate)))*
-                        $""", re.VERBOSE),
+                        $""", re.VERBOSE,
+                    ),
                     "setval": "ip route static bfd vrf {{ vrf_name }} {{ destination }} vrf {{ src_vrf }} {{ src_ip }}"
                             "{{ ' group ' + group_name if group_name is defined }}"
                             "{{ ' passive' if passive is defined }}"
@@ -77,12 +82,12 @@ class Bfd_staticTemplate(NetworkTemplate):
                                     "group_name": "{{ group_name if group_name is defined }}",
                                     "passive": "{{ True if passive is defined else False }}",
                                     "log": "{{ True if log is defined else False }}",
-                                    "unassociate": "{{ True if unassociate is defined else False }}"
-                                }
-                            ]
-                        }
+                                    "unassociate": "{{ True if unassociate is defined else False }}",
+                                },
+                            ],
+                        },
                     },
-                    "shared": True
+                    "shared": True,
                 },
                 {
                     "name": "bfd_static_interface",
@@ -90,7 +95,8 @@ class Bfd_staticTemplate(NetworkTemplate):
                         r"""
                         ^ip\sroute\sstatic\sbfd\s(?P<interface>\S+)\s(?P<destination>\S+)
                         (\s(group\s(?P<group_name>\S+)|(?P<passive>passive)|(?P<log>log)|(?P<unassociate>unassociate)))*
-                        $""", re.VERBOSE),
+                        $""", re.VERBOSE,
+                    ),
                     "setval": "ip route static bfd {{ interface }} {{ destination }}"
                             "{{ ' group ' + group_name if group_name is defined }}"
                             "{{ ' passive' if passive is defined }}"
@@ -105,13 +111,13 @@ class Bfd_staticTemplate(NetworkTemplate):
                                     "group_name": "{{ group_name if group_name is defined }}",
                                     "passive": "{{ True if passive is defined else False }}",
                                     "log": "{{ True if log is defined else False }}",
-                                    "unassociate": "{{ True if unassociate is defined else False }}"
-                                }
-                            ]
-                        }
+                                    "unassociate": "{{ True if unassociate is defined else False }}",
+                                },
+                            ],
+                        },
                     },
-                    "shared": True
+                    "shared": True,
                 },
-                
-            ]
+
+    ]
     # fmt: on

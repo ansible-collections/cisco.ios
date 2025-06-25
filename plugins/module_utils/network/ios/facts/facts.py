@@ -23,6 +23,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acl_in
     Acl_interfacesFacts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls import AclsFacts
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bfd_static.bfd_static import (
+    Bfd_staticFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_address_family.bgp_address_family import (
     Bgp_address_familyFacts,
 )
@@ -117,9 +120,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vrf_in
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vxlan_vtep.vxlan_vtep import (
     Vxlan_vtepFacts,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bfd_static.bfd_static import (
-    Bfd_staticFacts,
-)
+
 
 FACT_LEGACY_SUBSETS = dict(
     default=Default,
