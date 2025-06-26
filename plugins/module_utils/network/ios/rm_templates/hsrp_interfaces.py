@@ -228,9 +228,16 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 (\ssync\s(?P<sync>\d+))?
                 $""", re.VERBOSE,
             ),
-            "setval": "standby "
+            "remval": "standby "
                       "{{ preempt.group_no|string if preempt.group_no is defined else ''}}"
                       " preempt",
+            "setval": "standby "
+                      "{{ preempt.group_no|string if preempt.group_no is defined else ''}}"
+                      " preempt"
+                      "{{ ' delay' if preempt.delay|d(False) else ''}}"
+                      "{{ ' minimum ' + preempt.minimum|string if preempt.minimum is defined else ''}}"
+                      "{{ ' reload ' + preempt.reload|string if preempt.reload is defined else ''}}"
+                      "{{ ' sync ' + preempt.sync|string if preempt.sync is defined else ''}}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
