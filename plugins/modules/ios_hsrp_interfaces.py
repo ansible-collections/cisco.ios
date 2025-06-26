@@ -199,6 +199,9 @@ options:
             description: Overthrow lower priority Active routers
             type: dict
             suboptions:
+              enabled:
+                description: Enables preempt, drives the lone `standby <grp_no> preempt` command
+                type: bool
               minimum:
                 description: Delay at least this long
                 type: int
