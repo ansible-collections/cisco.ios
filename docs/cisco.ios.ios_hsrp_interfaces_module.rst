@@ -8,7 +8,7 @@ cisco.ios.ios_hsrp_interfaces
 **Resource module to configure HSRP on interfaces.**
 
 
-Version added: 9.3.0
+Version added: 10.1.0
 
 .. contents::
    :local:
