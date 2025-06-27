@@ -1,0 +1,3 @@
+---
+trivial:
+  - update test-requirements.txt to include typing-extensions
