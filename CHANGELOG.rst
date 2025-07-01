@@ -4,6 +4,21 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v10.1.1
+=======
+
+Bugfixes
+--------
+
+- cisco.ios.ios_acls - Added default acls to not get updated/removed in any state.
+- cisco.ios.ios_hsrp_interfaces - Fix module operation around the preempt attributes, also addressed issues around command ordering.
+- cisco.ios.ios_l3_interfaces - Fixed Helper Address command support for l3 interface.
+- cisco.ios.ios_ospfv2 - Fix ospf admin distance parameter and fix other distance specific attributes to be optional.
+- cisco.ios.ios_vlans - Fixed errors during VLAN overrides where primary VLANs have private VLAN associations referencing non-existent or higher VLAN IDs, ensuring smoother private VLAN handling and preventing module failures.
+- ios_bgp_address_family - Refined state handling for `replaced` and `overridden` modes and enhanced address-family parsing to accurately differentiate between types such as unicast, multicast, and others.
+- ios_static_routes - Add missing interface names in parser
+- ios_vrf_address_family - Added support for parsing the `stitching` attribute under route targets when gathering facts. Enhanced handling of `import_config` and `export` and renamed them to `imports` and `exports` to consistently represent them as lists of dictionaries during fact collection.
+
 v10.1.0
 =======
 
