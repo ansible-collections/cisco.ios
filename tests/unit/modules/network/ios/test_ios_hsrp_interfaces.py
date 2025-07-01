@@ -121,7 +121,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], commands)
 
-    def test_ios_hsrp_interfaces_overridden(self):
+    def test_ios_hsrp_interfaces_overridden_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
             interface GigabitEthernet4
@@ -173,6 +173,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                                 follow="test123",
                                 priority=7,
                                 preempt=dict(
+                                    enabled=True,
                                     delay=True,
                                     minimum=60,
                                     reload=70,
@@ -220,7 +221,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
             "no standby follow test",
             "no standby redirect advertisement authentication md5 key-string apple timeout 10",
             "no standby 22 priority 7",
-            "no standby 22 preempt delay minimum 60 reload 70 sync 90",
+            "no standby 22 preempt",
             "no standby 22 follow test123",
             "no standby 22 track 4 decrement 45 shutdown",
             "no standby 22 mac-address A:B:C:D",
@@ -269,7 +270,6 @@ class TestIosHSRPInterfaceModule(TestIosModule):
         commands = [
             "interface GigabitEthernet4",
             "no standby 22 ip 10.0.0.1 secondary",
-            "no standby 22 timers 20 30",
             "standby 22 track 20 shutdown",
             "standby 22 timers 40 50",
             "interface GigabitEthernet3",
@@ -329,6 +329,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                         "follow": "test123",
                         "priority": 7,
                         "preempt": {
+                            "enabled": True,
                             "delay": True,
                             "minimum": 60,
                             "reload": 70,
@@ -559,21 +560,14 @@ class TestIosHSRPInterfaceModule(TestIosModule):
         )
         commands = [
             "interface GigabitEthernet4",
-            "standby 22 ip 10.0.0.3 secondary",
-            "no standby 22 ip 10.0.0.1 secondary",
             "no standby mac-refresh 21",
             "no standby version 7",
             "no standby delay minimum 30 reload 40",
             "no standby follow test",
             "no standby redirect advertisement authentication md5 key-string apple timeout 10",
-            "no standby 22 follow test123",
-            "no standby 22 priority 7",
-            "no standby 22 preempt delay minimum 60 reload 70 sync 90",
+            "standby 22 ip 10.0.0.3 secondary",
             "no standby 22 track 4 decrement 45 shutdown",
-            "no standby 22 mac-address A:B:C:D",
-            "no standby 22 name sentry",
-            "no standby 22 timers 20 30",
-            "no standby 22 authentication md5 key-string 0 apple timeout 10",
+            "no standby 22 ip 10.0.0.1 secondary",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -629,6 +623,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                         "follow": "test123",
                         "priority": 7,
                         "preempt": {
+                            "enabled": True,
                             "delay": True,
                             "minimum": 60,
                             "reload": 70,
