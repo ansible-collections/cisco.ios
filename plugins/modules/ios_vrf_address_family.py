@@ -157,6 +157,9 @@ options:
                             description: Enable PIM Hellos over MDT interface
                             type: bool
                       mdt_hello_enable: *mdt_hello_enable
+                  mldp:
+                    description: Use MLDP for MDT auto-discovery.
+                    type: bool
                   pim:
                     description: BGP auto-discovery for PIM
                     type: dict
@@ -201,6 +204,13 @@ options:
                             description: IP Named Extended Access list
                             type: str
                   list: *list
+                  mpls:
+                    description: Configure MPLS for data MDT
+                    type: dict
+                    suboptions:
+                      mldp:
+                        description: Use MLDP for MPLS data MDT
+                        type: int
                   threshold:
                     description: MDT switching threshold
                     type: int
@@ -245,6 +255,9 @@ options:
                     description: Use BGP for MDT overlay signaling
                     type: dict
                     suboptions:
+                      set:
+                        description: Enable the use of BGP for MDT overlay.
+                        type: bool
                       spt_only:
                         description: Enable SPT-only ASM mode
                         type: bool
@@ -255,6 +268,13 @@ options:
                   ingress_replication:
                     description: Use Ingress-Replication for the partitioned MDT
                     type: bool
+                  mldp:
+                    description: Use MLDP for the partitioned MDT.
+                    type: dict
+                    suboptions:
+                      p2mp:
+                        description: Enable P2MP for partitioned MLDP MDT.
+                        type: bool
               strict_rpf:
                 description: Enable strict RPF check
                 type: dict
