@@ -214,9 +214,9 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                         "mpls": {
                                             "type": "dict",
                                             "options": {
-                                                "mldp": {"type": "int"}
-                                            }
-                                        }
+                                                "mldp": {"type": "int"},
+                                            },
+                                        },
                                     },
                                 },
                                 "default": {
@@ -262,8 +262,8 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                         "mldp": {
                                             "type": "dict",
                                             "options": {
-                                                "p2mp": {"type": "bool"}
-                                            }
+                                                "p2mp": {"type": "bool"},
+                                            },
                                         },
                                     },
                                 },
