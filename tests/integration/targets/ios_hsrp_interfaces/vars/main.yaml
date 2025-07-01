@@ -177,7 +177,6 @@ parsed:
 rtt:
   commands:
     - interface GigabitEthernet4
-    - no standby 0 priority 5
     - standby 0 priority 6
 
 rendered:

@@ -1,6 +1,7 @@
 merged:
   before:
-    - enabled: true
+    - description: Management interface do not change
+      enabled: true
       name: GigabitEthernet1
     - enabled: true
       name: GigabitEthernet2
