@@ -21,6 +21,7 @@
               - group_no: 0
                 priority: 5
                 preempt:
+                  enabled: true
                   delay: true
                   minimum: 60
                   reload: 70

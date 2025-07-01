@@ -1,6 +1,7 @@
 merged:
   before:
-    - enabled: true
+    - description: Management interface do not change
+      enabled: true
       name: GigabitEthernet1
     - enabled: true
       name: GigabitEthernet2
@@ -21,7 +22,8 @@ merged:
     - description 04j
     - shutdown
   after:
-    - enabled: true
+    - description: Management interface do not change
+      enabled: true
       name: GigabitEthernet1
     - description: Configured and Merged by Ansible-Network
       enabled: true

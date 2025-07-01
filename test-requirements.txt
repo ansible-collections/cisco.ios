@@ -7,4 +7,3 @@ yamllint
 pytest-ansible
 pytest-xdist
 pytest-cov
-typing-extensions
