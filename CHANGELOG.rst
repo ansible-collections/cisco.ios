@@ -19,6 +19,11 @@ Bugfixes
 - ios_static_routes - Add missing interface names in parser
 - ios_vrf_address_family - Added support for parsing the `stitching` attribute under route targets when gathering facts. Enhanced handling of `import_config` and `export` and renamed them to `imports` and `exports` to consistently represent them as lists of dictionaries during fact collection.
 
+Documentation Changes
+---------------------
+
+- ios_hsrp_interfaces - Corrected the version_added information and enhanced the documentation for subnet-related parameters.
+
 v10.1.0
 =======
 
