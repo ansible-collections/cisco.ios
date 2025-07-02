@@ -4,6 +4,14 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v10.1.2
+=======
+
+Documentation Changes
+---------------------
+
+- ios_hsrp_interfaces - Corrected the version_added information and enhanced the documentation for subnet-related parameters.
+
 v10.1.1
 =======
 
