@@ -103,6 +103,11 @@ class Vrf_address_family(ResourceModule):
             "route_replicate.from.vrf.vrf_name.unicast.static.route_map",
             "route_target.exports",
             "route_target.imports",
+            "mdt.auto_discovery.mldp",
+            "mdt.data.mpls.mldp",
+            "mdt.partitioned.mldp.p2mp",
+            "mdt.overlay.use_bgp",
+            "mdt.strict_rpf.interface",
         ]
 
     def execute_module(self):

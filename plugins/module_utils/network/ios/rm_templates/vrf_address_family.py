@@ -626,6 +626,39 @@ class Vrf_address_familyTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "mdt.auto_discovery.mldp",
+            "getval": re.compile(
+                r"""
+                ^vrf\sdefinition\s(?P<name>\S+)
+                \saddress-family
+                \s(?P<afi>\S+)
+                (\s(?P<safi>\S+))?
+                \s+mdt\sauto-discovery\smldp
+                $""", re.VERBOSE,
+            ),
+            "setval": "mdt auto-discovery mldp",
+            "result": {
+                '{{ name }}': {
+                    'name': '{{ name }}',
+                    "address_families": {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
+                            "afi": "{{ afi }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
+                            "mdt": {
+                                "auto_discovery": {
+                                    "mldp": "{{ true }}",
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
             "name": "mdt.auto_discovery.receiver_site",
             "getval": re.compile(
                 r"""
@@ -768,6 +801,43 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                                             "replication_number }}"
                                         ),
                                         "immediate_switch": "{{ true }}",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "mdt.data.mpls.mldp",
+            "getval": re.compile(
+                r"""
+                ^vrf\sdefinition\s(?P<name>\S+)
+                \saddress-family
+                \s(?P<afi>\S+)
+                (\s(?P<safi>\S+))?
+                \s+mdt\sdata\smpls\smldp\s(?P<mldp_val>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "mdt data mpls mldp {{ mdt.data.mpls.mldp }}",
+            "result": {
+                '{{ name }}': {
+                    'name': '{{ name }}',
+                    "address_families": {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
+                            "afi": "{{ afi }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
+                            "mdt": {
+                                "data": {
+                                    "mpls": {
+                                        "mldp": (
+                                            "{{ mldp_val }}"
+                                        ),
                                     },
                                 },
                             },
@@ -1150,6 +1220,76 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                                 "overlay": {
                                     "use_bgp": {
                                         "spt_only": "{{ true }}",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "mdt.overlay.use_bgp",
+            "getval": re.compile(
+                r"""
+                ^vrf\sdefinition\s(?P<name>\S+)
+                \saddress-family
+                \s(?P<afi>\S+)
+                (\s(?P<safi>\S+))?
+                \s+mdt\soverlay\suse-bgp
+                $""", re.VERBOSE,
+            ),
+            "setval": "mdt overlay use-bgp",
+            "result": {
+                '{{ name }}': {
+                    'name': '{{ name }}',
+                    "address_families": {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
+                            "afi": "{{ afi }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
+                            "mdt": {
+                                "overlay": {
+                                    "use_bgp": {
+                                        "set": "{{ true }}",  # Following the send_community pattern
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "mdt.partitioned.mldp.p2mp",
+            "getval": re.compile(
+                r"""
+                ^vrf\sdefinition\s(?P<name>\S+)
+                \saddress-family
+                \s(?P<afi>\S+)
+                (\s(?P<safi>\S+))?
+                \s+mdt\spartitioned\smldp\sp2mp
+                $""", re.VERBOSE,
+            ),
+            "setval": "mdt partitioned mldp p2mp",
+            "result": {
+                '{{ name }}': {
+                    'name': '{{ name }}',
+                    "address_families": {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
+                            "afi": "{{ afi }}",
+                            "safi": (
+                                "{{ safi if safi is defined else "
+                                "'unicast' }}"
+                            ),
+                            "mdt": {
+                                "partitioned": {
+                                    "mldp": {
+                                        "p2mp": "{{ true }}",
                                     },
                                 },
                             },
@@ -2210,6 +2350,34 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                                         "stitching": "{{ True if stitching_import is defined else False }}",
                                     },
                                 ],
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "mdt.strict_rpf.interface",
+            "getval": re.compile(
+                r"""
+                ^vrf\sdefinition\s(?P<name>\S+)
+                \saddress-family
+                \s(?P<afi>\S+)
+                (\s(?P<safi>\S+))?
+                \s+mdt\sstrict-rpf\sinterface
+                $""", re.VERBOSE,
+            ),
+            "setval": "mdt strict-rpf interface",
+            "result": {
+                '{{ name }}': {
+                    'name': '{{ name }}',
+                    "address_families": {
+                        '{{ "address_families_" + afi + '
+                        '("_" + safi if safi is defined else "_unicast") }}': {
+                            "afi": "{{ afi }}",
+                            "safi": "{{ safi if safi is defined else 'unicast' }}",
+                            "mdt": {
+                                "strict_rpf": {"interface": "{{ true }}"},
                             },
                         },
                     },
