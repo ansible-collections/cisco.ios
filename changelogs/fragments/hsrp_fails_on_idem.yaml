@@ -1,3 +1,0 @@
-bugfixes:
-  - cisco.ios.ios_hsrp_interfaces - Fix module operation around the preempt attributes,
-    also addressed issues around command ordering.
