@@ -477,7 +477,7 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
                 "address_families": [
                     {
                         "afi": "ipv4",
-                        "safi": "unicast",  # This is the default when not specified
+                        "safi": "unicast",
                         "mdt": {
                             "auto_discovery": {"mldp": True},
                             "strict_rpf": {"interface": True},
