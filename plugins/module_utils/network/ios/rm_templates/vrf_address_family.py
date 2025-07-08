@@ -1254,7 +1254,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                             "mdt": {
                                 "overlay": {
                                     "use_bgp": {
-                                        "set": "{{ true }}",  # Following the send_community pattern
+                                        "set": "{{ true }}",
                                     },
                                 },
                             },
