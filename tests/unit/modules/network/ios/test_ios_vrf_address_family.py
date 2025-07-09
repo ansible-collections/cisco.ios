@@ -451,3 +451,186 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
         ]
 
         self.assertEqual(parsed_list, result["parsed"])
+
+    def test_ios_vrf_address_family_parsed_mdt_bug(self):
+        """Test parsing of various MDT configurations reported in a bug."""
+        run_cfg = dedent(
+            """\
+            vrf definition DNB_Multicast_mottak
+             rd 201627:3814
+             !
+             address-family ipv4
+              mdt auto-discovery mldp
+              mdt strict-rpf interface
+              mdt partitioned mldp p2mp
+              mdt data mpls mldp 255
+              mdt overlay use-bgp
+             exit-address-family
+            !
+            """,
+        )
+        set_module_args(dict(running_config=run_cfg, state="parsed"))
+        result = self.execute_module(changed=False)
+        expected_parsed = [
+            {
+                "name": "DNB_Multicast_mottak",
+                "address_families": [
+                    {
+                        "afi": "ipv4",
+                        "safi": "unicast",
+                        "mdt": {
+                            "auto_discovery": {"mldp": True},
+                            "strict_rpf": {"interface": True},
+                            "partitioned": {"mldp": {"p2mp": True}},
+                            "data": {"mpls": {"mldp": 255}},
+                            "overlay": {"use_bgp": {"set": True}},
+                        },
+                    },
+                ],
+            },
+        ]
+        self.assertEqual(result["parsed"], expected_parsed)
+
+    def test_ios_vrf_address_family_merged_mdt(self):
+        """Test adding a new MDT config to an existing VRF AF in merged state."""
+        run_cfg = dedent(
+            """\
+            vrf definition DNB_Multicast_mottak
+             rd 201627:3814
+             !
+             address-family ipv4
+              mdt strict-rpf interface
+              mdt data mpls mldp 255
+             exit-address-family
+            !
+            """,
+        )
+        self.get_config.return_value = run_cfg
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "DNB_Multicast_mottak",
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "safi": "unicast",
+                                "mdt": {
+                                    "strict_rpf": {"interface": True},
+                                    "data": {"mpls": {"mldp": 255}},
+                                    "log_reuse": True,
+                                },
+                            },
+                        ],
+                    },
+                ],
+                state="merged",
+            ),
+        )
+        expected_commands = [
+            "vrf definition DNB_Multicast_mottak",
+            "address-family ipv4 unicast",
+            "mdt log-reuse",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], expected_commands)
+
+    def test_ios_vrf_address_family_replaced_mdt(self):
+        """Test replacing MDT config on an existing VRF AF in replaced state."""
+        run_cfg = dedent(
+            """\
+            vrf definition DNB_Multicast_mottak
+             rd 201627:3814
+             !
+             address-family ipv4
+              mdt auto-discovery mldp
+              mdt overlay use-bgp
+             exit-address-family
+            !
+            """,
+        )
+        self.get_config.return_value = run_cfg
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "DNB_Multicast_mottak",
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "safi": "unicast",
+                                "mdt": {
+                                    "data": {"mpls": {"mldp": 100}},
+                                    "strict_rpf": {"interface": True},
+                                },
+                            },
+                        ],
+                    },
+                ],
+                state="replaced",
+            ),
+        )
+        expected_commands = [
+            "vrf definition DNB_Multicast_mottak",
+            "address-family ipv4 unicast",
+            "no mdt auto-discovery mldp",
+            "no mdt overlay use-bgp",
+            "mdt data mpls mldp 100",
+            "mdt strict-rpf interface",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(expected_commands))
+
+    def test_ios_vrf_address_family_overridden_mdt(self):
+        """Test overriding MDT config on an existing VRF AF in overridden state."""
+        run_cfg = dedent(
+            """\
+            vrf definition DNB_Multicast_mottak
+             rd 201627:3814
+             !
+             address-family ipv4
+              mdt auto-discovery mldp
+              mdt strict-rpf interface
+              mdt partitioned mldp p2mp
+              mdt data mpls mldp 255
+              mdt overlay use-bgp
+             exit-address-family
+            !
+            """,
+        )
+        self.get_config.return_value = run_cfg
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "DNB_Multicast_mottak",
+                        "address_families": [
+                            {
+                                "afi": "ipv4",
+                                "safi": "unicast",
+                                "mdt": {
+                                    "log_reuse": True,
+                                },
+                            },
+                        ],
+                    },
+                ],
+                state="overridden",
+            ),
+        )
+
+        expected_commands = [
+            "vrf definition DNB_Multicast_mottak",
+            "address-family ipv4 unicast",
+            "no mdt auto-discovery mldp",
+            "no mdt strict-rpf interface",
+            "no mdt partitioned mldp p2mp",
+            "no mdt data mpls mldp 255",
+            "no mdt overlay use-bgp",
+            "mdt log-reuse",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(expected_commands))
