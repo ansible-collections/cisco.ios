@@ -75,7 +75,9 @@ class Service(ResourceModule):
             "slave_log",
             "tcp_keepalives_in",
             "tcp_keepalives_out",
+            "tcp_small_servers",
             "telnet_zeroidle",
+            "udp_small_servers",
             "unsupported_transceiver",
         ]
 
@@ -138,9 +140,9 @@ class Service(ResourceModule):
         for key, wanting in iteritems(i_want):
             haveing = i_have.pop(key, {})
             if wanting != haveing:
-                self.addcmd(wanting, "timestamps")
+                self.addcmd(wanting, key + "_timestamps", False)
         for key, haveing in iteritems(i_have):
-            self.addcmd(haveing, "timestamps", negate=True)
+            self.addcmd(haveing, key + "_timestamps", negate=True)
 
     def _service_list_to_dict(self, data):
         """Convert all list of dicts to dicts of dicts"""

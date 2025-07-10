@@ -32,7 +32,7 @@
           message_counter:
             - log
             - syslog
-          trap: errors
+          trap: informational
           userinfo: true
           logging_on: enable
           exception: 4099
@@ -56,6 +56,25 @@
       ansible.builtin.assert:
         that:
           - merged['after'] == result['after']
+
+    - name: Test - [merged] merge buffered severity with device configuration (idempotent)
+      cisco.ios.ios_logging_global: &id001
+        config:
+          buffered:
+            severity: debugging
+            size: 5099
+            xml: true
+
+    - name: Test - [merged] merge console severity with device configuration (idempotent)
+      register: resultdeb
+      cisco.ios.ios_logging_global: *id001
+
+    - name: Test - [merged] assert that debugging value is not idempotent
+      ansible.builtin.assert:
+        that:
+          - resultdeb['changed'] == true
+          - "'logging buffered xml 5099 debugging' in resultdeb['commands']"
+          - resultdeb["before"]["buffered"] == resultdeb["after"]["buffered"]
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

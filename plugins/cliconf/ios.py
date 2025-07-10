@@ -180,6 +180,13 @@ class Cliconf(CliconfBase):
 
         return self.send_command(cmd)
 
+    @enable_mode
+    def restore(self, filename=None, path=""):
+        if not filename:
+            raise ValueError("'file_name' value is required for restore")
+        cmd = f"configure replace {path}{filename} force"
+        return self.send_command(cmd)
+
     def get_diff(
         self,
         candidate=None,

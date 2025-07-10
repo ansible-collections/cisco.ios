@@ -1,0 +1,26 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_hsrp_interfaces gathered integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: HSRP_interface gathered - gather the provided configuration
+      register: result
+      cisco.ios.ios_hsrp_interfaces:
+        config:
+        state: gathered
+
+    - name: HSRP_interface gathered - assert
+      ansible.builtin.assert:
+        that:
+          - >
+            {{
+              result.gathered
+              | selectattr('name', 'in', 'GigabitEthernet1,GigabitEthernet2,GigabitEthernet3,GigabitEthernet4')
+              | symmetric_difference(gathered['config'])
+              | length == 0
+            }}
+          - result['changed'] == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

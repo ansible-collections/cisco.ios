@@ -8,13 +8,34 @@ The Ansible Cisco IOS collection includes a variety of Ansible content to help a
 
 This collection has been tested against Cisco IOS XE Version 17.3 on CML.
 
+## Support
+
+As a Red Hat Ansible [Certified Content](https://catalog.redhat.com/software/search?target_platforms=Red%20Hat%20Ansible%20Automation%20Platform), this collection is entitled to [support](https://access.redhat.com/support/) through [Ansible Automation Platform](https://www.redhat.com/en/technologies/management/ansible) (AAP).
+
+If a support case cannot be opened with Red Hat and the collection has been obtained either from [Galaxy](https://galaxy.ansible.com/ui/) or [GitHub](https://github.com/ansible-collections/cisco.ios), there is community support available at no charge.
+
+You can join us on [#network:ansible.com](https://matrix.to/#/#network:ansible.com) room or the [Ansible Forum Network Working Group](https://forum.ansible.com/g/network-wg).
+
+For more information you can check the communication section below.
+
+## Communication
+
+* Join the Ansible forum:
+  * [Get Help](https://forum.ansible.com/c/help/6): get help or help others.
+  * [Posts tagged with 'network'](https://forum.ansible.com/tag/network): subscribe to participate in collection-related conversations.
+  * [Ansible Network Automation Working Group](https://forum.ansible.com/g/network-wg/): by joining the team you will automatically get subscribed to the posts tagged with [network](https://forum.ansible.com/tags/network).
+  * [Social Spaces](https://forum.ansible.com/c/chat/4): gather and interact with fellow enthusiasts.
+  * [News & Announcements](https://forum.ansible.com/c/news/5): track project-wide announcements including social events.
+
+* The Ansible [Bullhorn newsletter](https://docs.ansible.com/ansible/devel/community/communication.html#the-bullhorn): used to announce releases and important changes.
+
+For more information about communication, see the [Ansible communication guide](https://docs.ansible.com/ansible/devel/community/communication.html).
+
 <!--start requires_ansible-->
 ## Ansible version compatibility
 
-This collection has been tested against following Ansible versions: **>=2.14.0**.
+This collection has been tested against the following Ansible versions: **>=2.16.0**.
 
-For collections that support Ansible 2.9, please ensure you update your `network_os` to use the
-fully qualified collection name (for example, `cisco.ios.ios`).
 Plugins and modules within a collection may be tested with only specific Ansible versions.
 A collection may contain metadata that identifies these versions.
 PEP440 is the schema used to describe the versions of Ansible.
@@ -42,18 +63,18 @@ Name | Description
 [cisco.ios.ios_bgp_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_bgp_global_module.rst)|Resource module to configure BGP.
 [cisco.ios.ios_command](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_command_module.rst)|Module to run commands on remote devices.
 [cisco.ios.ios_config](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_config_module.rst)|Module to manage configuration sections.
+[cisco.ios.ios_evpn_ethernet](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_evpn_ethernet_module.rst)|Resource module to configure L2VPN EVPN Ethernet Segment.
 [cisco.ios.ios_evpn_evi](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_evpn_evi_module.rst)|Resource module to configure L2VPN EVPN EVI.
 [cisco.ios.ios_evpn_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_evpn_global_module.rst)|Resource module to configure L2VPN EVPN.
 [cisco.ios.ios_facts](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_facts_module.rst)|Module to collect facts from remote devices.
 [cisco.ios.ios_hostname](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_hostname_module.rst)|Resource module to configure hostname.
+[cisco.ios.ios_hsrp_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_hsrp_interfaces_module.rst)|Resource module to configure HSRP on interfaces.
 [cisco.ios.ios_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_interfaces_module.rst)|Resource module to configure interfaces.
 [cisco.ios.ios_l2_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_l2_interfaces_module.rst)|Resource module to configure L2 interfaces.
 [cisco.ios.ios_l3_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_l3_interfaces_module.rst)|Resource module to configure L3 interfaces.
 [cisco.ios.ios_lacp](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lacp_module.rst)|Resource module to configure LACP.
 [cisco.ios.ios_lacp_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lacp_interfaces_module.rst)|Resource module to configure LACP interfaces.
 [cisco.ios.ios_lag_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lag_interfaces_module.rst)|Resource module to configure LAG interfaces.
-[cisco.ios.ios_linkagg](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_linkagg_module.rst)|Module to configure link aggregation groups.
-[cisco.ios.ios_lldp](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lldp_module.rst)|(deprecated, removed after 2024-06-01) Manage LLDP configuration on Cisco IOS network devices.
 [cisco.ios.ios_lldp_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lldp_global_module.rst)|Resource module to configure LLDP.
 [cisco.ios.ios_lldp_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lldp_interfaces_module.rst)|Resource module to configure LLDP interfaces.
 [cisco.ios.ios_logging_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_logging_global_module.rst)|Resource module to configure logging.
@@ -72,6 +93,9 @@ Name | Description
 [cisco.ios.ios_user](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_user_module.rst)|Module to manage the aggregates of local users.
 [cisco.ios.ios_vlans](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vlans_module.rst)|Resource module to configure VLANs.
 [cisco.ios.ios_vrf](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vrf_module.rst)|Module to configure VRF definitions.
+[cisco.ios.ios_vrf_address_family](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vrf_address_family_module.rst)|Resource module to configure VRF definitions.
+[cisco.ios.ios_vrf_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vrf_global_module.rst)|Resource module to configure global VRF definitions.
+[cisco.ios.ios_vrf_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vrf_interfaces_module.rst)|Manages VRF configuration on interfaces.
 [cisco.ios.ios_vxlan_vtep](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vxlan_vtep_module.rst)|Resource module to configure VXLAN VTEP interface.
 
 <!--end collection content-->
@@ -142,10 +166,6 @@ Please read and familiarize yourself with this document.
 <!--Add a link to a changelog.md file or an external docsite to cover this information. -->
 
 Release notes are available [here](https://github.com/ansible-collections/cisco.ios/blob/main/CHANGELOG.rst).
-
-## Roadmap
-
-<!-- Optional. Include the roadmap for this collection, and the proposed release/versioning strategy so users can anticipate the upgrade/update cycle. -->
 
 ## More information
 

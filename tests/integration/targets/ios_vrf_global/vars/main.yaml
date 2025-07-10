@@ -1,0 +1,232 @@
+---
+merged:
+  before: {}
+  commands:
+    - vrf definition VRF2
+    - description This is a test VRF for merged state
+    - ipv4 multicast multitopology
+    - ipv6 multicast multitopology
+    - rd 2:3
+    - route-target export 192.0.2.1:400
+    - route-target import 192.0.2.6:400
+    - vnet tag 200
+    - vpn id 2:45
+
+  after:
+    vrfs:
+      - name: VRF2
+        description: This is a test VRF for merged state
+        ipv4:
+          multicast:
+            multitopology: true
+        ipv6:
+          multicast:
+            multitopology: true
+        rd: "2:3"
+        route_target:
+          exports: ["192.0.2.1:400"]
+          imports: ["192.0.2.6:400"]
+        vpn:
+          id: "2:45"
+        vnet:
+          tag: 200
+
+replaced:
+  before:
+    vrfs:
+      - name: VRF2
+        description: This is a test VRF for merged state
+        ipv4:
+          multicast:
+            multitopology: true
+        ipv6:
+          multicast:
+            multitopology: true
+        rd: "2:3"
+        route_target:
+          exports: ["192.0.2.1:400"]
+          imports: ["192.0.2.6:400"]
+        vpn:
+          id: "2:45"
+        vnet:
+          tag: 200
+  commands:
+    - vrf definition VRF7
+    - description VRF7 description
+    - ipv4 multicast multitopology
+    - ipv6 multicast multitopology
+    - rd 7:8
+    - route-target export 198.51.100.2:500
+    - route-target import 198.51.100.5:400
+    - vnet tag 300
+    - vpn id 5:45
+  after:
+    vrfs:
+      - name: VRF2
+        description: This is a test VRF for merged state
+        ipv4:
+          multicast:
+            multitopology: true
+        ipv6:
+          multicast:
+            multitopology: true
+        rd: "2:3"
+        route_target:
+          exports: ["192.0.2.1:400"]
+          imports: ["192.0.2.6:400"]
+        vpn:
+          id: "2:45"
+        vnet:
+          tag: 200
+      - name: VRF7
+        description: VRF7 description
+        ipv4:
+          multicast:
+            multitopology: true
+        ipv6:
+          multicast:
+            multitopology: true
+        rd: "7:8"
+        route_target:
+          exports: ["198.51.100.2:500"]
+          imports: ["198.51.100.5:400"]
+        vpn:
+          id: "5:45"
+        vnet:
+          tag: 300
+
+overridden:
+  before:
+    vrfs:
+      - name: VRF2
+        description: This is a test VRF for merged state
+        ipv4:
+          multicast:
+            multitopology: true
+        ipv6:
+          multicast:
+            multitopology: true
+        rd: "2:3"
+        route_target:
+          exports: ["192.0.2.1:400"]
+          imports: ["192.0.2.6:400"]
+        vpn:
+          id: "2:45"
+        vnet:
+          tag: 200
+
+  commands:
+    - vrf definition VRF2
+    - no description This is a test VRF for merged state
+    - no ipv4 multicast multitopology
+    - no ipv6 multicast multitopology
+    - no rd 2:3
+    - no route-target export 192.0.2.1:400
+    - no route-target import 192.0.2.6:400
+    - no vnet tag 200
+    - no vpn id 2:45
+    - vrf definition VRF6
+    - description VRF6 description
+    - ipv4 multicast multitopology
+    - ipv6 multicast multitopology
+    - rd 6:7
+    - route-target export 192.0.2.2:300
+    - route-target import 192.0.2.3:400
+    - vnet tag 500
+    - vpn id 4:5
+  after:
+    vrfs:
+      - name: VRF2
+      - name: VRF6
+        description: VRF6 description
+        ipv4:
+          multicast:
+            multitopology: true
+        ipv6:
+          multicast:
+            multitopology: true
+        rd: "6:7"
+        route_target:
+          exports: ["192.0.2.2:300"]
+          imports: ["192.0.2.3:400"]
+        vpn:
+          id: "4:5"
+        vnet:
+          tag: 500
+
+gathered:
+  after:
+    vrfs:
+      - name: VRF2
+        description: This is a test VRF for merged state
+        ipv4:
+          multicast:
+            multitopology: true
+        ipv6:
+          multicast:
+            multitopology: true
+        rd: "2:3"
+        route_target:
+          exports: ["192.0.2.1:400"]
+          imports: ["192.0.2.6:400"]
+        vpn:
+          id: "2:45"
+        vnet:
+          tag: 200
+
+parsed:
+  after:
+    vrfs:
+      - name: test
+        description: This is test VRF
+        ipv4:
+          multicast:
+            multitopology: true
+        ipv6:
+          multicast:
+            multitopology: true
+        rd: "2:3"
+        route_target:
+          exports: ["192.0.2.0:100"]
+          imports: ["192.0.2.3:300"]
+        vpn:
+          id: "3:4"
+        vnet:
+          tag: 34
+
+deleted:
+  commands:
+    - vrf definition VRF2
+    - no description This is a test VRF for merged state
+    - no ipv4 multicast multitopology
+    - no ipv6 multicast multitopology
+    - no rd 2:3
+    - no route-target export 192.0.2.1:400
+    - no route-target import 192.0.2.6:400
+    - no vnet tag 200
+    - no vpn id 2:45
+
+  after:
+    vrfs:
+      - name: VRF2
+
+rtt:
+  commands:
+    - vrf definition VRF2
+    - no description This is a test VRF for merged state
+    - no ipv4 multicast multitopology
+    - no ipv6 multicast multitopology
+    - no rd 2:3
+    - no route-target export 192.0.2.1:400
+    - no route-target import 192.0.2.6:400
+    - no vnet tag 200
+    - no vpn id 2:45
+    - vrf definition VRF6
+    - description VRF6 description
+    - ipv4 multicast multitopology
+    - ipv6 multicast multitopology
+    - rd 6:7
+    - route-target export 192.0.2.2:300
+    - route-target import 192.0.2.3:400
+    - vnet tag 500
+    - vpn id 4:5

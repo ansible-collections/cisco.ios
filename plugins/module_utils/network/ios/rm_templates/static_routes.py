@@ -37,7 +37,7 @@ class Static_routesTemplate(NetworkTemplate):
                 (\svrf\s(?P<vrf>\S+))?
                 (\s(?P<dest>\S+))
                 (\s(?P<netmask>\S+))
-                (\s(?P<interface>(ACR|ATM-ACR|Analysis-Module|AppNav-Compress|AppNav-UnCompress|Async|Auto-Template|BD-VIF|BDI|BVI|Bluetooth|CDMA-Ix|CEM-ACR|CEM-PG|CTunnel|Container|Dialer|EsconPhy|Ethernet-Internal|Fcpa|Filter|Filtergroup|GigabitEthernet|IMA-ACR|LongReachEthernet|Loopback|Lspvif|MFR|Multilink|NVI|Null|PROTECTION_GROUP|Port-channel|Portgroup|Pos-channel|SBC|SDH_ACR|SERIAL-ACR|SONET_ACR|SSLVPN-VIF|SYSCLOCK|Serial-PG|Service-Engine|TLS-VIF|Tunnel|VPN|Vif|Vir-cem-ACR|Virtual-PPP|Virtual-TokenRing)\S+))?
+                (\s(?P<interface>(ACR|ATM-ACR|Analysis-Module|AppNav-Compress|AppNav-UnCompress|Async|Auto-Template|BD-VIF|BDI|BVI|Bluetooth|CDMA-Ix|CEM-ACR|CEM-PG|CTunnel|Container|Dialer|EsconPhy|Ethernet-Internal|FastEthernet|Fcpa|Filter|Filtergroup|FiveGigabitEthernet|FortyGigabitEthernet|GigabitEthernet|HundredGigE|IMA-ACR|LongReachEthernet|Loopback|Lspvif|MFR|Multilink|NVI|Null|PROTECTION_GROUP|Port-channel|Portgroup|Pos-channel|SBC|SDH_ACR|SERIAL-ACR|SONET_ACR|SSLVPN-VIF|SYSCLOCK|Serial|Serial-PG|Service-Engine|TenGigabitEthernet|TLS-VIF|Tunnel|TwentyFiveGigE|TwoGigabitEthernet|VPN|Vif|Vir-cem-ACR|Virtual-PPP|Virtual-TokenRing|Vlan)\S+))?
                 (\s(?P<forward_router_address>(?!multicast|dhcp|global|tag|track|permanent|name)\S+))?
                 (\s(?P<distance_metric>\d+))?
                 (\stag\s(?P<tag>\d+))?
@@ -64,7 +64,7 @@ class Static_routesTemplate(NetworkTemplate):
             "{{ (' dhcp' ) if ipv4.dhcp|d(False) else '' }}"
             "{{ (' global' ) if ipv4.global|d(False) else '' }}",
             "result": {
-                "{{ dest }}_{{ vrf|d() }}_{{ topology|d() }}_ipv4": [
+                "{{ dest }}_{{ netmask }}_{{ vrf|d() }}_{{ topology|d() }}_ipv4": [
                     {
                         "_vrf": "{{ vrf }}",
                         "_topology": "{{ topology }}",
@@ -93,7 +93,7 @@ class Static_routesTemplate(NetworkTemplate):
                 (\stopology\s(?P<topology>\S+))?
                 (\svrf\s(?P<vrf>\S+))?
                 (\s(?P<dest>\S+))
-                (\s(?P<interface>(ACR|ATM-ACR|Analysis-Module|AppNav-Compress|AppNav-UnCompress|Async|Auto-Template|BD-VIF|BDI|BVI|Bluetooth|CDMA-Ix|CEM-ACR|CEM-PG|CTunnel|Container|Dialer|EsconPhy|Ethernet-Internal|Fcpa|Filter|Filtergroup|GigabitEthernet|IMA-ACR|LongReachEthernet|Loopback|Lspvif|MFR|Multilink|NVI|Null|PROTECTION_GROUP|Port-channel|Portgroup|Pos-channel|SBC|SDH_ACR|SERIAL-ACR|SONET_ACR|SSLVPN-VIF|SYSCLOCK|Serial-PG|Service-Engine|TLS-VIF|Tunnel|VPN|Vif|Vir-cem-ACR|Virtual-PPP|Virtual-TokenRing)\S+))?
+                (\s(?P<interface>(ACR|ATM-ACR|Analysis-Module|AppNav-Compress|AppNav-UnCompress|Async|Auto-Template|BD-VIF|BDI|BVI|Bluetooth|CDMA-Ix|CEM-ACR|CEM-PG|CTunnel|Container|Dialer|EsconPhy|Ethernet-Internal|FastEthernet|Fcpa|Filter|Filtergroup|FiveGigabitEthernet|FortyGigabitEthernet|GigabitEthernet|HundredGigE|IMA-ACR|LongReachEthernet|Loopback|Lspvif|MFR|Multilink|NVI|Null|PROTECTION_GROUP|Port-channel|Portgroup|Pos-channel|SBC|SDH_ACR|SERIAL-ACR|SONET_ACR|SSLVPN-VIF|SYSCLOCK|Serial|Serial-PG|Service-Engine|TenGigabitEthernet|TLS-VIF|Tunnel|TwentyFiveGigE|TwoGigabitEthernet|VPN|Vif|Vir-cem-ACR|Virtual-PPP|Virtual-TokenRing|Vlan)\S+))?
                 (\s(?P<forward_router_address>(?!multicast|unicast|tag|track|permanent|name)\S+))?
                 (\s(?P<distance_metric>\d+))?
                 (\s(?P<multicast>multicast))?

@@ -1,33 +1,31 @@
 ---
 merged:
   before: {}
-
   commands:
     - router bgp 65000
-    - address-family l2vpn evpn
-    - neighbor 198.51.100.1 activate
-    - neighbor 198.51.100.1 inherit peer-policy LEAF-EVPN-PEER-POLICY
-    - address-family ipv4 vrf green
-    - advertise l2vpn evpn
-    - redistribute connected
-    - redistribute static
+    - address-family ipv4 unicast
+    - maximum-paths 12
+    - maximum-secondary-paths eibgp 2
+    - redistribute connected metric 10
+    - redistribute ospf 124
+    - redistribute ospf 123 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar
+    - redistribute ospfv3 123 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar
+    - exit-address-family
+    - address-family ipv4 mdt
+    - bgp dmzlink-bw
+    - bgp soft-reconfig-backup
+    - bgp dampening 1 10 100 5
+    - exit-address-family
     - address-family ipv4 multicast
     - default-metric 12
     - distance bgp 10 10 100
     - table-map test_tableMap filter
     - network 198.51.111.11 mask 255.255.255.255 route-map test
     - aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
-    - address-family ipv4 mdt
-    - bgp dmzlink-bw
-    - bgp soft-reconfig-backup
-    - bgp dampening 1 10 100 5
-    - address-family ipv6
+    - exit-address-family
+    - address-family ipv6 unicast
     - redistribute ospf 124 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar include-connected
-    - address-family ipv4
-    - redistribute connected metric 10
-    - redistribute ospf 123 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar
-    - redistribute ospf 124
-    - redistribute ospfv3 123 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar
+    - exit-address-family
 
   after:
     address_family:
@@ -126,35 +124,38 @@ merged:
 overridden:
   commands:
     - router bgp 65000
+    - no neighbor 10.1.1.1
     - address-family ipv4 mdt
     - no bgp dmzlink-bw
     - no bgp soft-reconfig-backup
     - no bgp dampening 1 10 100 5
-    - address-family ipv6
+    - exit-address-family
+    - address-family ipv6 unicast
     - no redistribute ospf 124
-    - address-family ipv4
+    - exit-address-family
+    - address-family ipv4 unicast
     - no redistribute connected
     - no redistribute ospf 123
     - redistribute ospf 123 metric 15 match external 1 nssa-external 2 route-map foo
     - no redistribute ospf 124
     - no redistribute ospfv3 123
     - redistribute ospfv3 123 metric 15 match internal external 2 nssa-external 1 route-map foo
+    - exit-address-family
     - address-family ipv4 multicast
     - no default-metric 12
     - no distance bgp 10 10 100
     - no table-map test_tableMap filter
-    - bgp aggregate-timer 10
     - bgp dampening 10 10 100 50
-    - bgp slow-peer detection threshold 150
-    - network 198.51.110.10 mask 255.255.255.255 backdoor
+    - neighbor 10.1.1.2 activate
     - no network 198.51.111.11 mask 255.255.255.255 route-map test
-    - aggregate-address 192.0.2.1 255.255.255.255 as-confed-set
     - no aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+    - exit-address-family
     - address-family ipv6 multicast
     - bgp aggregate-timer 10
     - bgp dampening 10 10 10 10
     - bgp slow-peer detection threshold 200
     - network 2001:DB8:0:3::/64 route-map test_ipv6
+    - exit-address-family
 
   after:
     address_family:
@@ -223,24 +224,25 @@ overridden:
 replaced:
   commands:
     - router bgp 65000
-    - address-family ipv4
+    - no neighbor 10.1.1.1
+    - address-family ipv4 unicast
     - no redistribute connected
     - no redistribute ospf 123
     - redistribute ospf 123 metric 15 match external 1 nssa-external 2 route-map foo
     - no redistribute ospf 124
     - no redistribute ospfv3 123
     - redistribute ospfv3 123 metric 15 match internal external 2 nssa-external 1 route-map foo
+    - exit-address-family
     - address-family ipv4 multicast
     - no default-metric 12
     - no distance bgp 10 10 100
     - no table-map test_tableMap filter
-    - bgp aggregate-timer 10
-    - bgp dampening 10 10 10 10
-    - bgp slow-peer detection threshold 200
+    - no bgp dampening 1 1 1 1
+    - neighbor 10.1.1.3 activate
     - network 192.0.2.1 mask 255.255.255.255 route-map test
     - no network 198.51.111.11 mask 255.255.255.255 route-map test
     - no aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
-
+    - exit-address-family
   after:
     address_family:
       - afi: ipv4
@@ -305,15 +307,41 @@ replaced:
               metric: 10
               route_map: bar
               include_connected: true
-    as_number: "65000"
 
 deleted:
   commands:
     - router bgp 65000
     - no address-family ipv4 multicast
     - no address-family ipv4 mdt
-    - no address-family ipv4
-    - no address-family ipv6
+    - no address-family ipv4 unicast
+    - no address-family ipv6 unicast
+
+rendered:
+  commands:
+    - router bgp 65000
+    - address-family ipv4 unicast
+    - maximum-paths 12
+    - maximum-secondary-paths eibgp 2
+    - redistribute connected metric 10
+    - redistribute ospf 124
+    - redistribute ospf 123 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar
+    - redistribute ospfv3 123 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar
+    - exit-address-family
+    - address-family ipv4 multicast
+    - default-metric 12
+    - distance bgp 10 10 100
+    - table-map test_tableMap filter
+    - network 198.51.111.11 mask 255.255.255.255 route-map test
+    - aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+    - exit-address-family
+    - address-family ipv4 mdt
+    - bgp dmzlink-bw
+    - bgp soft-reconfig-backup
+    - bgp dampening 1 10 100 5
+    - exit-address-family
+    - address-family ipv6 unicast
+    - redistribute ospf 124 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar include-connected
+    - exit-address-family
 
 deleted_all:
   after:
@@ -334,4 +362,5 @@ parsed:
           - address: 192.0.2.0
           - address: 192.0.3.0
           - address: 192.0.4.0
+        safi: unicast
     as_number: "65536"

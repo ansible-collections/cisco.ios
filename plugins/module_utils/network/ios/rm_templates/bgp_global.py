@@ -152,7 +152,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \saddress\s(?P<host>\S+)\s
-                (\sport-number(?P<port>\d+))
+                (\sport-number\s(?P<port>\d+))
                 $""",
                 re.VERBOSE,
             ),
@@ -399,55 +399,6 @@ class Bgp_globalTemplate(NetworkTemplate):
                     },
                 ],
             },
-        },
-        {
-            "name": "route_server_context.name",
-            "getval": re.compile(
-                r"""
-                \sroute-server_context
-                (\s(?P<name>\S+))?
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "route-server-context {{ route_server_context.name }}",
-            "result": {"route_server_context": {"name": "{{ name }}"}},
-        },
-        {
-            "name": "route_server_context.address_family",
-            "getval": re.compile(
-                r"""
-                \sroute-server_context\saddress-family
-                (\s(?P<afi>ipv4|ipv6))?
-                (\s(?P<modifier>multicast|unicast))?
-                (\simport-map\s(?P<import_map>\S+))?
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "address-family"
-            "{{ (' ' + route_server_context.address_family.afi) if route_server_context.address_family.afi is defined else '' }}"
-            "{{ (' ' + route_server_context.address_family.modifier) if route_server_context.address_family.modifier is defined else '' }}"
-            "{{ (' import-map ' + route_server_context.address_family.import_map) if route_server_context.address_family.import_map is defined else '' }}",
-            "result": {
-                "route_server_context": {
-                    "address_family": {
-                        "afi": "{{ afi }}",
-                        "modifier": "{{ modifier }}",
-                        "import_map": "{{ import_map }}",
-                    },
-                },
-            },
-        },
-        {
-            "name": "route_server_context.description",
-            "getval": re.compile(
-                r"""
-                \sroute-server_context\sdescription
-                (\s(?P<description>.+$))?
-                """,
-                re.VERBOSE,
-            ),
-            "setval": "description {{ route_server_context.description }}",
-            "result": {"route_server_context": {"description": "'{{ description }}'"}},
         },
         {
             "name": "synchronization",
@@ -1511,13 +1462,13 @@ class Bgp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \sneighbor\s(?P<neighbor_address>\S+)
-                \s(?P<enable>ebgp_multihop)
+                \s(?P<enable>ebgp-multihop)
                 (\s(?P<hop_count>\d+))?
                 $""",
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} ebgp-multihop"
-            "{{ (' ' + hop_count|string) if hop_count is defined else '' }}",
+            "{{ (' ' + ebgp_multihop.hop_count|string) if ebgp_multihop.hop_count is defined else '' }}",
             "result": {
                 "neighbors": {
                     "{{ neighbor_address }}": {
@@ -1691,7 +1642,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 r"""
                 \sneighbor\s(?P<neighbor_address>\S+)\spassword
                 \s(?P<encryption>\d+)
-                (\s(?P<pass_key>.$))?
+                (\s(?P<pass_key>.+))?
                 $""",
                 re.VERBOSE,
             ),
@@ -2411,34 +2362,6 @@ class Bgp_globalTemplate(NetworkTemplate):
                     "{{ neighbor_address }}": {
                         "neighbor_address": "{{ neighbor_address }}",
                         "default-originate": {"route_map": "{{ route_map }}"},
-                    },
-                },
-            },
-        },
-        {
-            "name": "distribute_list",
-            "getval": re.compile(
-                r"""
-                \sneighbor\s(?P<neighbor_address>\S+)\sdistribute-list
-                (\s(?P<acl>\S+))
-                (\s(?P<in>in))?
-                (\s(?P<out>out))?
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }} distribute-list"
-            "{{ (' ' + distribute_list.acl) if distribute_list.acl is defined else '' }}"
-            "{{ (' in') if distribute_list.in|d(False) else '' }}"
-            "{{ (' out') if distribute_list.out|d(False) else '' }}",
-            "result": {
-                "neighbors": {
-                    "{{ neighbor_address }}": {
-                        "neighbor_address": "{{ neighbor_address }}",
-                        "distribute_list": {
-                            "acl": "{{ acl }}",
-                            "in": "{{ not not in }}",
-                            "out": "{{ not not out }}",
-                        },
                     },
                 },
             },

@@ -1,0 +1,55 @@
+---
+- ansible.builtin.debug:
+    msg: START Overridden ios_hsrp_interfaces state for integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: HSRP_interface overridden - override device configuration of all interfaces with provided configuration
+      register: result
+      cisco.ios.ios_hsrp_interfaces: &id001
+        config:
+          - name: GigabitEthernet2
+            standby_groups:
+              - group_no: 0
+                priority: 5
+        state: overridden
+
+    - name: HSRP_interface overridden - assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ overridden['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: HSRP_interface overridden - assert that before dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - >
+            {{
+              result['before']
+              | selectattr('name', 'in', 'GigabitEthernet1,GigabitEthernet2,GigabitEthernet3,GigabitEthernet4')
+              | symmetric_difference(overridden['before'])
+              | length == 0
+            }}
+
+    - name: HSRP_interface overridden - assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - >
+            {{
+              result['after']
+              | selectattr('name', 'in', 'GigabitEthernet1,GigabitEthernet2,GigabitEthernet3,GigabitEthernet4')
+              | symmetric_difference(overridden['after'])
+              | length == 0
+            }}
+
+    - name: HSRP_interface overridden - override device configuration of all interfaces with provided configuration (idempotent)
+      register: result
+      cisco.ios.ios_hsrp_interfaces: *id001
+    - name: HSRP_interface overridden - assert that task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

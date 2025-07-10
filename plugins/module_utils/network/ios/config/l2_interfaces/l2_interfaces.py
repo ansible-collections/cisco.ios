@@ -31,6 +31,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
     L2_interfacesTemplate,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+    generate_switchport_trunk,
     normalize_interface,
     vlan_list_to_range,
     vlan_range_to_list,
@@ -59,6 +60,23 @@ class L2_interfaces(ResourceModule):
             "mode",
             "trunk.encapsulation",
             "trunk.native_vlan",
+            "app_interface",
+            "nonegotiate",
+            "vepa",
+            "host",
+            "protected",
+            "block_options.multicast",
+            "block_options.unicast",
+            "spanning_tree.bpdufilter",
+            "spanning_tree.bpduguard",
+            "spanning_tree.cost",
+            "spanning_tree.guard",
+            "spanning_tree.link_type",
+            "spanning_tree.mst",
+            "spanning_tree.port_priority",
+            "spanning_tree.portfast",
+            "spanning_tree.rootguard",
+            "spanning_tree.vlan",
         ]
 
     def execute_module(self):
@@ -136,11 +154,10 @@ class L2_interfaces(ResourceModule):
                         ),
                     )
             if self.state != "deleted" and cmd_always:  # add configuration needed
-                add = "add " if have.get("trunk", {}).get(vlan, []) else ""
-                self.commands.append(
-                    "switchport trunk {0} vlan {1}{2}".format(
+                self.commands.extend(
+                    generate_switchport_trunk(
                         vlan.split("_", maxsplit=1)[0],
-                        add,
+                        have.get("trunk", {}).get(vlan, []),
                         vlan_list_to_range(sorted(cmd_always)),
                     ),
                 )

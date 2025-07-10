@@ -19,8 +19,9 @@
       - result.ansible_facts.ansible_net_memfree_mb > 1
       - result.ansible_facts.ansible_net_memtotal_mb > 1
 
-- ansible.builtin.assert:
-    that: "{{ my_var.value.spacetotal_kb }} > {{ my_var.value.spacefree_kb }}"
+- name: Assert that free spacee is less than total space
+  ansible.builtin.assert:
+    that: "my_var.value.spacetotal_kb > my_var.value.spacefree_kb"
   loop: "{{ lookup('dict', result.ansible_facts.ansible_net_filesystems_info, wantlist=True) }}"
   loop_control:
     loop_var: my_var
@@ -31,6 +32,7 @@
       - l2_interfaces
       - vlans
       - lag_interfaces
+      - evpn_ethernet
       - lacp
       - lacp_interfaces
       - lldp_global
@@ -54,6 +56,10 @@
       - ntp_global
       - service
       - hostname
+      - vrf_global
+      - vrf_address_family
+      - vrf_interfaces
+      - hsrp_interfaces
 
 - name: Collect list of available network resources for IOS
   register: result

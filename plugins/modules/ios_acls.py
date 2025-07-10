@@ -24,6 +24,8 @@ notes:
   - Module behavior is not idempotent when sequence for aces are not mentioned
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
+  - Default ACLs don't get updated, replaced or overridden. Added Defaults - implicit_deny_v6,
+    implicit_permit_v6, preauth_v6, IP-Adm-V4-Int-ACL-global, implicit_deny, implicit_permit, preauth_v4, sl_def_acl
 options:
   config:
     description: A list of ACL configuration options.
@@ -90,12 +92,6 @@ options:
                 type: str
               evaluate:
                 description: Evaluate an access list
-                type: str
-              fragments:
-                description:
-                  - Check non-initial fragments.
-                  - This option is DEPRECATED and is replaced with enable_fragments which
-                    accepts bool as input this attribute will be removed after 2024-01-01.
                 type: str
               enable_fragments:
                 description: Enable non-initial fragments.
@@ -1737,6 +1733,26 @@ EXAMPLES = """
                 ttl:
                   eq: 10
           - name: 150
+            aces:
+              - grant: deny
+                sequence: 10
+                protocol_options:
+                  tcp:
+                    syn: true
+                source:
+                  address: 198.51.100.0
+                  wildcard_bits: 0.0.0.255
+                  port_protocol:
+                    eq: telnet
+                destination:
+                  address: 198.51.110.0
+                  wildcard_bits: 0.0.0.255
+                  port_protocol:
+                    eq: telnet
+                dscp: ef
+                ttl:
+                  eq: 10
+          - name: implicit_deny
             aces:
               - grant: deny
                 sequence: 10

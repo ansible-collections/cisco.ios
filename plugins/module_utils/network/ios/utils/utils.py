@@ -214,6 +214,44 @@ def remove_duplicate_interface(commands):
     return set_cmd
 
 
+def flatten_dict(x):
+    result = {}
+    if not isinstance(x, dict):
+        return result
+
+    for key, value in iteritems(x):
+        if isinstance(value, dict):
+            result.update(flatten_dict(value))
+        else:
+            result[key] = value
+
+    return result
+
+
+def flatten_config(data, context):
+    """Flatten different contexts in
+        the running-config for easier parsing.
+    :param data: dict
+    :param context: str
+    :returns: flattened running config
+    """
+    data = data.split("\n")
+    in_cxt = False
+    cur = {}
+
+    for index, x in enumerate(data):
+        cur_indent = len(x) - len(x.lstrip())
+        if x.strip().startswith(context):
+            in_cxt = True
+            cur["context"] = x
+            cur["indent"] = cur_indent
+        elif cur and (cur_indent <= cur["indent"]):
+            in_cxt = False
+        elif in_cxt:
+            data[index] = cur["context"] + " " + x.strip()
+    return "\n".join(data)
+
+
 def validate_ipv4(value, module):
     if value:
         address = value.split("/")
@@ -284,10 +322,18 @@ def normalize_interface(name):
         if_type = "TenGigabitEthernet"
     elif name.lower().startswith("fa"):
         if_type = "FastEthernet"
+    elif name.lower().startswith("fourhundredgige"):
+        if_type = "FourHundredGigE"
+    elif name.lower().startswith("fiftygige"):
+        if_type = "FiftyGigE"
+    elif name.lower().startswith("fou"):
+        if_type = "FourHundredGigabitEthernet"
     elif name.lower().startswith("fo"):
         if_type = "FortyGigabitEthernet"
-    elif name.lower().startswith("fi"):
+    elif name.lower().startswith("fiv"):
         if_type = "FiveGigabitEthernet"
+    elif name.lower().startswith("fif"):
+        if_type = "FiftyGigabitEthernet"
     elif name.lower().startswith("long"):
         if_type = "LongReachEthernet"
     elif name.lower().startswith("et"):
@@ -336,6 +382,12 @@ def get_interface_type(interface):
         return "TenGigabitEthernet"
     elif interface.upper().startswith("FA"):
         return "FastEthernet"
+    elif interface.upper().startswith("FOURHUNDREDGIGE"):
+        return "FourHundredGigE"
+    elif interface.upper().startswith("FIFTYGIGE"):
+        return "FiftyGigE"
+    elif interface.upper().startswith("FOU"):
+        return "FourHundredGigabitEthernet"
     elif interface.upper().startswith("FO"):
         return "FortyGigabitEthernet"
     elif interface.upper().startswith("FI"):
@@ -422,3 +474,35 @@ def sort_dict(dictionary):
         else:
             sorted_dict[key] = value
     return sorted_dict
+
+
+def generate_switchport_trunk(type, add, vlans_range):
+    """
+    Generates a list of switchport commands based on the trunk type and VLANs range.
+    Ensures that the length of VLANs lexeme in a command does not exceed 220 characters.
+    """
+
+    def append_command():
+        command_prefix = f"switchport trunk {type} vlan "
+        if add or commands:
+            command_prefix += "add "
+        commands.append(command_prefix + ",".join(current_chunk))
+
+    commands = []
+    current_chunk = []
+    current_length = 0
+
+    for vrange in vlans_range.split(","):
+        next_addition = vrange if not current_chunk else "," + vrange
+        if current_length + len(next_addition) <= 220:
+            current_chunk.append(vrange)
+            current_length += len(next_addition)
+        else:
+            append_command()
+            current_chunk = [vrange]
+            current_length = len(vrange)
+
+    if current_chunk:
+        append_command()
+
+    return commands

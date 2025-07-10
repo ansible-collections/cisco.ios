@@ -57,7 +57,7 @@ options:
         Possible values for this argument include all and the resources like interfaces,
         vlans etc. Can specify a list of values to include a larger subset. Values can
         also be used with an initial C(!) to specify that a specific subset should
-        not be collected. Valid subsets are 'bgp_global', 'l3_interfaces', 'lag_interfaces',
+        not be collected. Valid subsets are 'hsrp_interfaces', 'bgp_global', 'l3_interfaces', 'lag_interfaces',
         'ntp_global', 'acls', 'hostname', 'interfaces', 'lldp_interfaces', 'logging_global',
         'ospf_interfaces', 'ospfv2', 'prefix_lists', 'static_routes', 'acl_interfaces',
         'all', 'bgp_address_family', 'l2_interfaces', 'lacp', 'lacp_interfaces', 'lldp_global',
@@ -177,11 +177,11 @@ ansible_net_filesystems_info:
   returned: when hardware is configured
   type: dict
 ansible_net_memfree_mb:
-  description: The available free memory on the remote device in Mb
+  description: The available free memory on the remote device in MiB
   returned: when hardware is configured
   type: int
 ansible_net_memtotal_mb:
-  description: The total memory on the remote device in Mb
+  description: The total memory on the remote device in MiB
   returned: when hardware is configured
   type: int
 ansible_net_cpu_utilization:

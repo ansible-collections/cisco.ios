@@ -43,6 +43,18 @@ class Acls(ResourceModule):
             resource="acls",
             tmplt=AclsTemplate(),
         )
+        self.default_acls = set(
+            [
+                "implicit_deny_v6",
+                "implicit_permit_v6",
+                "preauth_v6",
+                "IP-Adm-V4-Int-ACL-global",
+                "implicit_deny",
+                "implicit_permit",
+                "preauth_v4",
+                "sl_def_acl",
+            ],
+        )
 
     def execute_module(self):
         """Execute the module
@@ -303,6 +315,8 @@ class Acls(ResourceModule):
                 temp_acls = {}
                 if each.get("acls"):
                     for acl in each.get("acls"):  # check each acl for aces
+                        if acl.get("name", None) in self.default_acls:
+                            continue
                         temp_aces = {}
                         if acl.get("aces"):
                             rem_idx = 0  # remarks if defined in an ace
@@ -323,7 +337,7 @@ class Acls(ResourceModule):
                                         ace.get("destination", {}).get("port_protocol", {}).items()
                                     ):
                                         ace["destination"]["port_protocol"][k] = (
-                                            self.port_protocl_no_to_protocol(v)
+                                            self.port_protocl_no_to_protocol(v, ace.get("protocol"))
                                         )
                                 if acl.get("acl_type") == "standard":
                                     for ks in list(ace.keys()):
@@ -376,7 +390,7 @@ class Acls(ResourceModule):
                 temp.update({each["afi"]: {"acls": temp_acls}})
             return temp
 
-    def port_protocl_no_to_protocol(self, num):
+    def port_protocl_no_to_protocol(self, num, protocol):
         map_protocol = {
             "179": "bgp",
             "19": "chargen",
@@ -414,4 +428,6 @@ class Acls(ResourceModule):
             "43": "whois",
             "80": "www",
         }  # NOTE - "514": "syslog" duplicate value device renders "cmd"
+        if protocol == "udp" and num in ["135"]:
+            return num
         return map_protocol.get(num, num)
