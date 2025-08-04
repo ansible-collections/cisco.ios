@@ -228,6 +228,9 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 (\ssync\s(?P<sync>\d+))?
                 $""", re.VERBOSE,
             ),
+            "remval": "standby "
+                      "{{ preempt.group_no|string if preempt.group_no is defined else ''}}"
+                      " preempt",
             "setval": "standby "
                       "{{ preempt.group_no|string if preempt.group_no is defined else ''}}"
                       " preempt"
@@ -240,6 +243,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                     "standby_groups": [{
                         "group_no": "{{ group_no }}",
                         "preempt": {
+                            "enabled": True,
                             "delay": "{{ not not delay }}",
                             "minimum": "{{ minimum }}",
                             "reload": "{{ reload }}",

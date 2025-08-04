@@ -8,7 +8,7 @@ cisco.ios.ios_hsrp_interfaces
 **Resource module to configure HSRP on interfaces.**
 
 
-Version added: 9.3.0
+Version added: 10.1.0
 
 .. contents::
    :local:
@@ -810,6 +810,28 @@ Parameters
                 </td>
                 <td>
                         <div>Wait before preempting</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>enabled</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enables preempt, drives the lone `standby &lt;grp_no&gt; preempt` command</div>
                 </td>
             </tr>
             <tr>

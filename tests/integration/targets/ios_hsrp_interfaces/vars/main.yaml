@@ -27,6 +27,7 @@ merged:
         - group_no: 0
           priority: 5
           preempt:
+            enabled: true
             delay: true
             minimum: 60
             reload: 70
@@ -176,7 +177,6 @@ parsed:
 rtt:
   commands:
     - interface GigabitEthernet4
-    - no standby 0 priority 5
     - standby 0 priority 6
 
 rendered:

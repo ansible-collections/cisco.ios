@@ -20,7 +20,7 @@ description:
   - >-
     This module provides declarative management of HSRP configuration on
     interface for Cisco IOS devices.
-version_added: 9.3.0
+version_added: 10.1.0
 author:
   - Sagar Paul (@KB-perByte)
   - Nikhil Bhasin (@nickbhasin)
@@ -199,6 +199,9 @@ options:
             description: Overthrow lower priority Active routers
             type: dict
             suboptions:
+              enabled:
+                description: Enables preempt, drives the lone `standby <grp_no> preempt` command
+                type: bool
               minimum:
                 description: Delay at least this long
                 type: int

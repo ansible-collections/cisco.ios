@@ -60,7 +60,7 @@ class Hsrp_interfaces(ResourceModule):
             "redirect.md5.key_string_without_encryption",
             "redirect.timers",
         ]
-        self.complex_parsers = ["ip", "track", "ipv6.link", "ipv6.prefix", "ipv6.autoconfig"]
+        self.complex_parsers = ["track", "ipv6.link", "ipv6.prefix", "ipv6.autoconfig", "ip"]
         self.non_complex_parsers = [
             "priority",
             "timers.msec",
@@ -209,8 +209,8 @@ class Hsrp_interfaces(ResourceModule):
                         wantd.update({"group_no": group_number})
                     else:
                         wantd = {"group_no": group_number, _parser: wantd}
-                if haved and wantd != haved:
-                    self.compare(parsers=[_par], want={}, have={_parser: haved})
+                # if haved and wantd != haved:
+                #    self.compare(parsers=[_par], want={}, have={_parser: haved})
                 if wantd:
                     self.compare(parsers=[_par], want={_parser: wantd}, have={_parser: haved})
             for key, value in parser_dict.items():

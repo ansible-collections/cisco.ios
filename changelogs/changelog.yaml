@@ -200,6 +200,79 @@ releases:
         name: ios_bgp_global
         namespace: ""
     release_date: "2021-01-29"
+  10.0.0:
+    changes:
+      major_changes:
+        - Bumping `requires_ansible` to `>=2.16.0`, since previous ansible-core versions
+          are EoL now.
+      minor_changes:
+        - ios_interfaces - Added service-policy, logging and snmp configuration options
+          for interface.
+        - ios_l2_interfaces - Added a few switchport and spanning-tree configuration
+          options for interface.
+        - ios_l3_interfaces - Added a few ip configuration options for interface.
+      release_summary:
+        With this release, the minimum required version of `ansible-core`
+        for this collection is `2.16.0`. The last version known to be compatible with
+        `ansible-core` versions below `2.16` is v9.2.0.
+    fragments:
+      - all_intefaces.yaml
+      - bump216.yml
+    release_date: "2025-04-11"
+  10.1.0:
+    changes:
+      bugfixes:
+        - cisco.ios.ios_interfaces - Improved handling of the `enabled` state to prevent
+          incorrect `shutdown` or `no shutdown` commands during configuration changes.
+        - ios_acls - Fix issue where commands were not being parsed correctly and incorrect
+          commands were being generated.
+        - ios_bgp_address_family - fix configuration of neighbor's as-override split-horizon.
+      minor_changes:
+        - ios_hsrp_interfaces - Added support for cisco.ios.hsrp_interfaces module (standby
+          commands).
+    fragments:
+      - bgp_add_fam_qfix.yaml
+      - fix_acls.yml
+      - hsrp_interfaces.yaml
+      - ios_interfaces.yaml
+    release_date: "2025-05-29"
+  10.1.1:
+    changes:
+      bugfixes:
+        - cisco.ios.ios_acls - Added default acls to not get updated/removed in any
+          state.
+        - cisco.ios.ios_hsrp_interfaces - Fix module operation around the preempt attributes,
+          also addressed issues around command ordering.
+        - cisco.ios.ios_l3_interfaces - Fixed Helper Address command support for l3
+          interface.
+        - cisco.ios.ios_ospfv2 - Fix ospf admin distance parameter and fix other distance
+          specific attributes to be optional.
+        - cisco.ios.ios_vlans - Fixed errors during VLAN overrides where primary VLANs
+          have private VLAN associations referencing non-existent or higher VLAN IDs,
+          ensuring smoother private VLAN handling and preventing module failures.
+        - ios_bgp_address_family - Refined state handling for `replaced` and `overridden`
+          modes and enhanced address-family parsing to accurately differentiate between
+          types such as unicast, multicast, and others.
+        - ios_static_routes - Add missing interface names in parser
+        - ios_vrf_address_family - Added support for parsing the `stitching` attribute
+          under route targets when gathering facts. Enhanced handling of `import_config`
+          and `export` and renamed them to `imports` and `exports` to consistently represent
+          them as lists of dictionaries during fact collection.
+      doc_changes:
+        - ios_hsrp_interfaces - Corrected the version_added information and enhanced
+          the documentation for subnet-related parameters.
+    fragments:
+      - 1198-fix-docs-hsrp_interfaces.yml
+      - add_default_acls.yaml
+      - bgp_address_family.yaml
+      - fix_ci.yaml
+      - helper_addresses_fix.yaml
+      - hsrp_fails_on_idem.yaml
+      - ios_vlans.yaml
+      - ios_vrf_address_family.yaml
+      - ospf_fails_on_distance.yaml
+      - static_routes_missing_interface_names.yml
+    release_date: "2025-07-01"
   2.0.0:
     changes:
       bugfixes:
@@ -1372,39 +1445,3 @@ releases:
         name: ios_evpn_ethernet
         namespace: ""
     release_date: "2025-03-27"
-  10.0.0:
-    changes:
-      major_changes:
-        - Bumping `requires_ansible` to `>=2.16.0`, since previous ansible-core versions
-          are EoL now.
-      minor_changes:
-        - ios_interfaces - Added service-policy, logging and snmp configuration options
-          for interface.
-        - ios_l2_interfaces - Added a few switchport and spanning-tree configuration
-          options for interface.
-        - ios_l3_interfaces - Added a few ip configuration options for interface.
-      release_summary:
-        With this release, the minimum required version of `ansible-core`
-        for this collection is `2.16.0`. The last version known to be compatible with
-        `ansible-core` versions below `2.16` is v9.2.0.
-    fragments:
-      - all_intefaces.yaml
-      - bump216.yml
-    release_date: "2025-04-11"
-  10.1.0:
-    changes:
-      bugfixes:
-        - cisco.ios.ios_interfaces - Improved handling of the `enabled` state to prevent
-          incorrect `shutdown` or `no shutdown` commands during configuration changes.
-        - ios_acls - Fix issue where commands were not being parsed correctly and incorrect
-          commands were being generated.
-        - ios_bgp_address_family - fix configuration of neighbor's as-override split-horizon.
-      minor_changes:
-        - ios_hsrp_interfaces - Added support for cisco.ios.hsrp_interfaces module (standby
-          commands).
-    fragments:
-      - bgp_add_fam_qfix.yaml
-      - fix_acls.yml
-      - hsrp_interfaces.yaml
-      - ios_interfaces.yaml
-    release_date: "2025-05-29"
