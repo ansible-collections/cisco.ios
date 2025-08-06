@@ -195,8 +195,10 @@ class VlansFacts(object):
             if vlan_conf_data:  # if any vlan configuration data is pending add it to facts
                 for vlanid, conf in vlan_conf_data.items():
                     objs.append(conf)
-
         if objs:
+            # Exclude reserved VLANs.
+            objs = [v for v in objs if v.get("vlan_id") not in [1002, 1003, 1004, 1005]]
+
             facts["vlans"] = []
             params = utils.validate_config(self.argument_spec, {"config": objs})
 

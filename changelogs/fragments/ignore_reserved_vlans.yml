@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_vlans - exclude reserved VLANs 1002-1005 when gathering facts.
