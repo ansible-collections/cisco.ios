@@ -31,6 +31,7 @@ class Bgp_globalFacts(object):
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Bgp_globalArgs.argument_spec
+        a = 1
 
     def get_bgp_global_data(self, connection):
         return connection.get("show running-config | section ^router bgp")
