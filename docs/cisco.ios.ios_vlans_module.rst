@@ -511,6 +511,26 @@ Examples
     #   shutdown: disabled
     #   state: active
     #   vlan_id: 20
+    # - mtu: 1500
+    #   name: fddi-default
+    #   shutdown: enabled
+    #   state: active
+    #   vlan_id: 1002
+    # - mtu: 1500
+    #   name: token-ring-default
+    #   shutdown: enabled
+    #   state: active
+    #   vlan_id: 1003
+    # - mtu: 1500
+    #   name: fddinet-default
+    #   shutdown: enabled
+    #   state: active
+    #   vlan_id: 1004
+    # - mtu: 1500
+    #   name: trnet-default
+    #   shutdown: enabled
+    #   state: active
+    #   vlan_id: 1005
 
     # before:
     # - mtu: 1500
@@ -538,11 +558,36 @@ Examples
     #   shutdown: disabled
     #   state: suspend
     #   vlan_id: 44
+    # - mtu: 1500
+    #   name: fddi-default
+    #   shutdown: enabled
+    #   state: active
+    #   vlan_id: 1002
+    # - mtu: 1500
+    #   name: token-ring-default
+    #   shutdown: enabled
+    #   state: active
+    #   vlan_id: 1003
+    # - mtu: 1500
+    #   name: fddinet-default
+    #   shutdown: enabled
+    #   state: active
+    #   vlan_id: 1004
+    # - mtu: 1500
+    #   name: trnet-default
+    #   shutdown: enabled
+    #   state: active
+    #   vlan_id: 1005
 
     # commands:
+    # - no vlan 1
     # - no vlan 10
     # - no vlan 30
     # - no vlan 44
+    # - no vlan 1002
+    # - no vlan 1003
+    # - no vlan 1004
+    # - no vlan 1005
     # - vlan 20
     # - name Vlan_2020
     # - no mtu 610
@@ -550,6 +595,10 @@ Examples
     # - no vlan configuration 10
     # - no vlan configuration 30
     # - no vlan configuration 44
+    # - no vlan configuration 1002
+    # - no vlan configuration 1003
+    # - no vlan configuration 1004
+    # - no vlan configuration 1005
 
     # After state:
     # ------------
@@ -630,6 +679,26 @@ Examples
     #   shutdown: disabled
     #   state: active
     #   vlan_id: 1
+    # - mtu: 1500
+    #   name: fddi-default
+    #   shutdown: enabled
+    #   state: active
+    #   vlan_id: 1002
+    # - mtu: 1500
+    #   name: token-ring-default
+    #   shutdown: enabled
+    #   state: active
+    #   vlan_id: 1003
+    # - mtu: 1500
+    #   name: fddinet-default
+    #   shutdown: enabled
+    #   state: active
+    #   vlan_id: 1004
+    # - mtu: 1500
+    #   name: trnet-default
+    #   shutdown: enabled
+    #   state: active
+    #   vlan_id: 1005
 
     # before:
     # - mtu: 1500
@@ -642,11 +711,40 @@ Examples
     #   shutdown: disabled
     #   state: active
     #   vlan_id: 20
+    # - mtu: 1500
+    #   name: fddi-default
+    #   shutdown: enabled
+    #   state: active
+    #   vlan_id: 1002
+    # - mtu: 1500
+    #   name: token-ring-default
+    #   shutdown: enabled
+    #   state: active
+    #   vlan_id: 1003
+    # - mtu: 1500
+    #   name: fddinet-default
+    #   shutdown: enabled
+    #   state: active
+    #   vlan_id: 1004
+    # - mtu: 1500
+    #   name: trnet-default
+    #   shutdown: enabled
+    #   state: active
+    #   vlan_id: 1005
 
     # commands:
+    # - no vlan 1
     # - no vlan 20
+    # - no vlan 1002
+    # - no vlan 1003
+    # - no vlan 1004
+    # - no vlan 1005
     # - no vlan configuration 1
     # - no vlan configuration 20
+    # - no vlan configuration 1002
+    # - no vlan configuration 1003
+    # - no vlan configuration 1004
+    # - no vlan configuration 1005
 
     # After state:
     # ------------
@@ -1159,6 +1257,34 @@ Examples
     #             "shutdown": "enabled",
     #             "state": "suspend",
     #             "vlan_id": 30
+    #         },
+    #         {
+    #             "mtu": 1500,
+    #             "name": "fddi-default",
+    #             "shutdown": "enabled",
+    #             "state": "active",
+    #             "vlan_id": 1002
+    #         },
+    #         {
+    #             "mtu": 1500,
+    #             "name": "token-ring-default",
+    #             "shutdown": "enabled",
+    #             "state": "active",
+    #             "vlan_id": 1003
+    #         },
+    #         {
+    #             "mtu": 1500,
+    #             "name": "fddinet-default",
+    #             "shutdown": "enabled",
+    #             "state": "active",
+    #             "vlan_id": 1004
+    #         },
+    #         {
+    #             "mtu": 1500,
+    #             "name": "trnet-default",
+    #             "shutdown": "enabled",
+    #             "state": "active",
+    #             "vlan_id": 1005
     #         }
     #     ]
 
@@ -1295,6 +1421,34 @@ Examples
     #         "shutdown": "disabled",
     #         "mtu": 1500,
     #     },
+    #     {
+    #         "name": "fddi-default",
+    #         "vlan_id": 1002,
+    #         "state": "active",
+    #         "shutdown": "enabled",
+    #         "mtu": 1500,
+    #     },
+    #     {
+    #         "name": "trcrf-default",
+    #         "vlan_id": 1003,
+    #         "state": "active",
+    #         "shutdown": "enabled",
+    #         "mtu": 4472,
+    #     },
+    #     {
+    #         "name": "fddinet-default",
+    #         "vlan_id": 1004,
+    #         "state": "active",
+    #         "shutdown": "enabled",
+    #         "mtu": 1500,
+    #     },
+    #     {
+    #         "name": "trbrf-default",
+    #         "vlan_id": 1005,
+    #         "state": "active",
+    #         "shutdown": "enabled",
+    #         "mtu": 4472,
+    #     },
     #     {"vlan_id": 102, "member": {"evi": 102, "vni": 10102}},
     #     {"vlan_id": 901, "member": {"vni": 50901}},
     # ]
@@ -1426,7 +1580,6 @@ Status
 Authors
 ~~~~~~~
 
-- Jørn Ivar Holland (@jiholland)
 - Sumit Jaiswal (@justjais)
 - Sagar Paul (@KB-perByte)
 - Padmini Priyadarshini Sivaraj (@PadminiSivaraj)
