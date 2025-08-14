@@ -4,6 +4,14 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v11.0.0
+=======
+
+Bugfixes
+--------
+
+- ios_vrf_address_family - fixed an issue where the module failed to gather `mdt` configuration options.
+
 v10.1.1
 =======
 
