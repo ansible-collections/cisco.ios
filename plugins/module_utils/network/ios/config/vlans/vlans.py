@@ -118,6 +118,9 @@ class Vlans(ResourceModule):
             excluded_vlans = {k: v for k, v in iteritems(haved) if k not in wantd or not wantd}
             haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             for k, have in iteritems(excluded_vlans):
+                # Skip reserved VLANs 1002–1005
+                if int(k) in [1002, 1003, 1004, 1005]:
+                    continue
                 self.purge(have, resource)
 
         # if state is deleted, empty out wantd and set haved to wantd
