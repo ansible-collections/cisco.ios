@@ -26,6 +26,7 @@ jobs:
   # TODO: Add a step to wait for tests to run
 
   lab_destroy:
+    needs: lab_create
     uses: ansible/ansible-content-actions/.github/workflows/cml_lab_destroy.yaml@main
       # lab_title_override: "Optional custom lab title"
     secrets:
