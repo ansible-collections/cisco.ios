@@ -11,6 +11,23 @@ annotations:
     x2: -320.0
     y2: 240.0
     z_index: 0
+  - border_color: '#00000000'
+    border_style: ''
+    color: '#808080FF'
+    rotation: 0
+    text_bold: true
+    text_content: |-
+      CISCO.IOS AUTOMATED LAB
+        FOR UPSTREAM TESTS
+    text_font: sans-serif
+    text_italic: false
+    text_size: 22
+    text_unit: pt
+    thickness: 1
+    type: text
+    x1: -1120.0
+    y1: 40.0
+    z_index: 1
 nodes:
   - boot_disk_size: null
     configuration: &conf |-
