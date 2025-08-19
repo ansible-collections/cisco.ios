@@ -27,8 +27,6 @@ jobs:
 
   lab_destroy:
     uses: ansible/ansible-content-actions/.github/workflows/cml_lab_destroy.yaml@main
-    with:
-      topology_path: tests/integration/labs/multi.yaml
       # lab_title_override: "Optional custom lab title"
     secrets:
       virl_host: ${{ secrets.VIRL_HOST }}
