@@ -13,7 +13,7 @@ on:
       - "tests/integration/**"
   workflow_dispatch:
 jobs:
-  lab_create:
+  lab-create:
     uses: ansible/ansible-content-actions/.github/workflows/cml_lab_create.yaml@main
     with:
       topology_path: tests/integration/labs/multi.yaml
@@ -23,10 +23,19 @@ jobs:
       virl_username: ${{ secrets.VIRL_USERNAME }} # optional; defaults to admin
       virl_password: ${{ secrets.VIRL_PASSWORD }}
 
-  # TODO: Add a step to wait for tests to run
+  integration-tests:
+    needs: lab-create
+    strategy:
+      fail-fast: true
+      matrix:
+        ansible_version: ["stable-2.18", "stable-2.19", "milestone", "devel"]
+    uses: ansible/ansible-content-actions/.github/workflows/network_simple.yaml@main
+    with:
+      ansible_version: ${{ matrix.ansible_version }}
+      lab_nodes: ${{ needs.lab-create.outputs.lab_nodes_json }}
 
-  lab_destroy:
-    needs: lab_create
+  lab-destroy:
+    needs: lab-create
     uses: ansible/ansible-content-actions/.github/workflows/cml_lab_destroy.yaml@main
       # lab_title_override: "Optional custom lab title"
     secrets:
