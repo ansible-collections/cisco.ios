@@ -1,5 +1,19 @@
+---
+name: Integration-simple
+on:
+  pull_request_target:
+    branches: [main]
+    types:
+      - labeled
+      - opened
+      - reopened
+      - synchronize
+    paths:
+      - "plugins/**"
+      - "tests/integration/**"
+  workflow_dispatch:
 jobs:
-  cml-wait:
+  cml-boot:
     uses: ansible/ansible-content-actions/.github/workflows/cml_wait.yaml@main
     with:
       topology_path: tests/integration/labs/multi.yaml
