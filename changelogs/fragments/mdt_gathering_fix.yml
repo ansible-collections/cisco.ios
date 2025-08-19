@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_vrf_address_family - fixed an issue where the module failed to gather `mdt` configuration options.
