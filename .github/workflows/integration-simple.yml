@@ -35,7 +35,7 @@ jobs:
       lab_nodes: ${{ needs.lab-create.outputs.lab_nodes_json }}
 
   lab-destroy:
-    needs: lab-create
+    needs: integration-tests
     uses: ansible/ansible-content-actions/.github/workflows/cml_lab_destroy.yaml@main
       # lab_title_override: "Optional custom lab title"
     secrets:
