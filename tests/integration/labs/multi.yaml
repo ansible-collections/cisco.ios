@@ -176,7 +176,7 @@ nodes:
     hide_links: false
     id: n0
     image_definition: null
-    label: ios_core_devel
+    label: devel
     node_definition: cat8000v
     parameters: {}
     ram: null
@@ -211,7 +211,7 @@ nodes:
     hide_links: false
     id: n1
     image_definition: null
-    label: ios_core_milestone
+    label: milestone
     node_definition: cat8000v
     parameters: {}
     ram: null
@@ -246,7 +246,7 @@ nodes:
     hide_links: false
     id: n2
     image_definition: null
-    label: ios_core_2_18
+    label: stable-2.18
     node_definition: cat8000v
     parameters: {}
     ram: null
@@ -281,7 +281,7 @@ nodes:
     hide_links: false
     id: n3
     image_definition: null
-    label: ios_core_2_16
+    label: stable-2.16
     node_definition: cat8000v
     parameters: {}
     ram: null
@@ -316,7 +316,7 @@ nodes:
     hide_links: false
     id: n4
     image_definition: null
-    label: ios_core_2_19
+    label: stable-2.19
     node_definition: cat8000v
     parameters: {}
     ram: null
@@ -425,35 +425,35 @@ links:
     i1: i1
     i2: i1
     conditioning: {}
-    label: unmanaged-switch-0-port1<->ios_core_devel-GigabitEthernet1
+    label: unmanaged-switch-0-port1<->devel-GigabitEthernet1
   - id: l2
     n1: n5
     n2: n1
     i1: i2
     i2: i1
     conditioning: {}
-    label: unmanaged-switch-0-port2<->ios_core_milestone-GigabitEthernet1
+    label: unmanaged-switch-0-port2<->milestone-GigabitEthernet1
   - id: l3
     n1: n5
     n2: n2
     i1: i3
     i2: i1
     conditioning: {}
-    label: unmanaged-switch-0-port3<->ios_core_2_18-GigabitEthernet1
+    label: unmanaged-switch-0-port3<->stable-2.18-GigabitEthernet1
   - id: l4
     n1: n5
     n2: n3
     i1: i4
     i2: i1
     conditioning: {}
-    label: unmanaged-switch-0-port4<->ios_core_2_16-GigabitEthernet1
+    label: unmanaged-switch-0-port4<->stable-2.16-GigabitEthernet1
   - id: l5
     n1: n5
     n2: n4
     i1: i5
     i2: i1
     conditioning: {}
-    label: unmanaged-switch-0-port5<->ios_core_2_19-GigabitEthernet1
+    label: unmanaged-switch-0-port5<->stable-2.19-GigabitEthernet1
 lab:
   description: 'Upstream test lab for cisco.ios'
   notes: 'Upstream test lab for cisco.ios'

@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        ansible_version: ["stable-2.18", "stable-2.19", "milestone", "devel"]
+        ansible_version: ["stable-2.16", "stable-2.18", "stable-2.19", "milestone", "devel"]
     uses: ansible/ansible-content-actions/.github/workflows/network_simple.yaml@main
     with:
       ansible_version: ${{ matrix.ansible_version }}
