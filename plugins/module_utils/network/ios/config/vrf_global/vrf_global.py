@@ -166,8 +166,8 @@ class Vrf_global(ResourceModule):
         for vrf_config in want["vrfs"]:
             if "route_target" in vrf_config:
                 rt = vrf_config["route_target"]
-                if "exports" in rt and isinstance(rt.get("exports"), str):
+                if "exports" in rt and isinstance(rt["exports"], str):
                     rt["exports"] = [rt["exports"]]
-                if "imports" in rt and isinstance(rt.get("imports"), str):
+                if "imports" in rt and isinstance(rt["imports"], str):
                     rt["imports"] = [rt["imports"]]
         return want
