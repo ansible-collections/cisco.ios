@@ -20,8 +20,12 @@
                   multitopology: true
               rd: "6:7"
               route_target:
-                exports: "192.0.2.2:300"
-                imports: "192.0.2.3:400"
+                exports:
+                  - "198.51.100.5:400"
+                  - "198.51.100.2:401"
+                imports:
+                  - "198.51.100.5:400"
+                  - "198.51.100.2:401"
               vpn:
                 id: "4:5"
               vnet:
