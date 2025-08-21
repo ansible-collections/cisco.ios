@@ -253,8 +253,16 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="7:8",
                             route_target=dict(
-                                exports=["198.51.100.2:500", "198.51.100.2:501", "198.51.100.2:502"],
-                                imports=["198.51.100.5:400", "198.51.100.5:401", "198.51.100.5:402"],
+                                exports=[
+                                    "198.51.100.2:500",
+                                    "198.51.100.2:501",
+                                    "198.51.100.2:502",
+                                ],
+                                imports=[
+                                    "198.51.100.5:400",
+                                    "198.51.100.5:401",
+                                    "198.51.100.5:402",
+                                ],
                             ),
                             vnet=dict(tag=300),
                             vpn=dict(id="2:45"),
@@ -339,8 +347,16 @@ class TestIosVrfGlobalModule(TestIosModule):
                             ipv6=dict(multicast=dict(multitopology=True)),
                             rd="7:8",
                             route_target=dict(
-                                exports=["198.51.100.2:500", "198.51.100.2:501", "198.51.100.2:502"],
-                                imports=["198.51.100.5:400", "198.51.100.5:401", "198.51.100.5:402"],
+                                exports=[
+                                    "198.51.100.2:500",
+                                    "198.51.100.2:501",
+                                    "198.51.100.2:502",
+                                ],
+                                imports=[
+                                    "198.51.100.5:400",
+                                    "198.51.100.5:401",
+                                    "198.51.100.5:402",
+                                ],
                             ),
                             vnet=dict(tag=300),
                             vpn=dict(id="2:45"),
