@@ -2316,3 +2316,33 @@ class TestIosStaticRoutesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_static_route_gathered_interface_with_metric_only(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            ip route 198.12.4.20 255.255.255.252 Null0 254
+            """,
+        )
+        set_module_args(dict(state="gathered"))
+        expected_gathered = [
+            {
+                "address_families": [
+                    {
+                        "afi": "ipv4",
+                        "routes": [
+                            {
+                                "dest": "198.12.4.20/30",
+                                "next_hops": [
+                                    {
+                                        "interface": "Null0",
+                                        "distance_metric": 254,
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], expected_gathered)
