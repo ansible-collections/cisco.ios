@@ -1,4 +1,3 @@
 ---
 minor_fixes:
   - ios_static_routes - Fix parsing of static routes with interface and distance in gathered state
-

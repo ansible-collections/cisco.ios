@@ -2318,12 +2318,13 @@ class TestIosStaticRoutesModule(TestIosModule):
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
         # THIS IS THE NEW, MISSING TEST CASE
+
     def test_ios_static_route_gathered_interface_with_metric_only(self):
         # This test checks the specific configuration that causes ANA-883
         self.execute_show_command.return_value = dedent(
             """\
             ip route 198.12.4.20 255.255.255.252 Null0 254
-            """
+            """,
         )
         set_module_args(dict(state="gathered"))
         expected_gathered = [
@@ -2338,13 +2339,13 @@ class TestIosStaticRoutesModule(TestIosModule):
                                     {
                                         "interface": "Null0",
                                         "distance_metric": 254,
-                                    }
+                                    },
                                 ],
-                            }
+                            },
                         ],
-                    }
-                ]
-            }
+                    },
+                ],
+            },
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], expected_gathered)
