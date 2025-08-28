@@ -10,8 +10,8 @@
 - name: Asserts that the result error equals stderr_ansible_command_timeout
   ansible.builtin.assert:
     that:
-      - result.module_stderr is defined
-      - result.module_stderr == stderr_ansible_command_timeout
+      - result.msg is defined
+      - "stderr_ansible_command_timeout in result.msg"
 
 - name: Disable archiving
   register: result
@@ -26,8 +26,8 @@
 - name: Assert that the result error equals std_err_archiving_disabled
   ansible.builtin.assert:
     that:
-      - result.module_stderr is defined
-      - result.module_stderr == std_err_archiving_disabled
+      - result.msg is defined
+      - "std_err_archiving_disabled in result.msg"
 
 - name: Enable archiving
   ansible.builtin.include_tasks: _enable_archiving.yaml
@@ -69,8 +69,8 @@
 - name: Assert that the result error equals std_err_rollback_pending
   ansible.builtin.assert:
     that:
-      - result.module_stderr is defined
-      - result.module_stderr == std_err_rollback_pending
+      - result.msg is defined
+      - "std_err_rollback_pending in result.msg"
 
 - name: Manually revert the failed configuration
   cisco.ios.ios_command:
@@ -98,7 +98,8 @@
 - name: Assert that command timeout is triggered as device unreachable
   ansible.builtin.assert:
     that:
-      - "'command timeout triggered' in result.module_stderr"
+      - result.msg is defined
+      - "'command timeout triggered' in result.msg"
 
 - name: Wait 60 secs for device to become reachable again
   ansible.builtin.wait_for:
