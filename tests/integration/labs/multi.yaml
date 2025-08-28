@@ -1,7 +1,7 @@
 annotations:
-  - border_color: '#808080FF'
-    border_style: ''
-    color: '#FFFFFFFF'
+  - border_color: "#808080FF"
+    border_style: ""
+    color: "#FFFFFFFF"
     line_end: null
     line_start: null
     thickness: 1
@@ -11,9 +11,9 @@ annotations:
     x2: -320.0
     y2: 240.0
     z_index: 0
-  - border_color: '#00000000'
-    border_style: ''
-    color: '#808080FF'
+  - border_color: "#00000000"
+    border_style: ""
+    color: "#808080FF"
     rotation: 0
     text_bold: true
     text_content: |-
@@ -455,7 +455,7 @@ links:
     conditioning: {}
     label: unmanaged-switch-0-port5<->stable-2.19-GigabitEthernet1
 lab:
-  description: 'Upstream test lab for cisco.ios'
-  notes: 'Upstream test lab for cisco.ios'
+  description: "Upstream test lab for cisco.ios"
+  notes: "Upstream test lab for cisco.ios"
   title: cisco.ios.ios-wip
   version: 0.2.2
