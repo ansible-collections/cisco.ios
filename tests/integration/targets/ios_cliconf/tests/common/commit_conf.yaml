@@ -1,17 +1,18 @@
 ---
 - ansible.builtin.debug:
-    msg: START ios_cliconf integration tests on connection={{ ansible_connection }}
+    msg: "START ios_cliconf integration tests on connection={{ ansible_connection }}"
 
 - name: Tests command_timeout greater than commit_confirmed
+  register: result
   ansible.builtin.include_tasks: _test_config.yaml
   vars:
     ansible_command_timeout: 61
 
-- name: Asserts that the result error equals stderr_ansible_command_timeout
+- name: Assert that the result error equals stderr_ansible_command_timeout
   ansible.builtin.assert:
     that:
-      - result.msg is defined
-      - "stderr_ansible_command_timeout in result.msg"
+      - result is failed
+      - stderr_ansible_command_timeout in result.msg
 
 - name: Disable archiving
   register: result
@@ -21,13 +22,14 @@
   ignore_errors: true
 
 - name: Test archiving disabled
+  register: result
   ansible.builtin.include_tasks: _test_config.yaml
 
 - name: Assert that the result error equals std_err_archiving_disabled
   ansible.builtin.assert:
     that:
-      - result.msg is defined
-      - "std_err_archiving_disabled in result.msg"
+      - result is failed
+      - std_err_archiving_disabled in result.msg
 
 - name: Enable archiving
   ansible.builtin.include_tasks: _enable_archiving.yaml
@@ -43,7 +45,7 @@
 
 - name: Verify hostname
   register: get_hostname
-  ios_command:
+  cisco.ios.ios_command:
     commands:
       - "show running-config | section hostname"
 
@@ -53,6 +55,7 @@
       - "'testAppliance' in get_hostname.stdout[0]"
 
 - name: Push failed configuration
+  register: result
   cisco.ios.ios_config:
     lines:
       - banner motd &I will be rolled back&
@@ -69,8 +72,8 @@
 - name: Assert that the result error equals std_err_rollback_pending
   ansible.builtin.assert:
     that:
-      - result.msg is defined
-      - "std_err_rollback_pending in result.msg"
+      - result is failed
+      - std_err_rollback_pending in result.msg
 
 - name: Manually revert the failed configuration
   cisco.ios.ios_command:
@@ -82,15 +85,15 @@
   cisco.ios.ios_interfaces:
     state: merged
     config:
-      - name: "{{interface_name}}"
+      - name: "{{ interface_name }}"
         description: this is the start description
 
-- name: Test rollback operation. Device will become unreachable
+- name: Test rollback operation (device will become unreachable)
   register: result
   cisco.ios.ios_interfaces:
     state: merged
     config:
-      - name: "{{interface_name}}"
+      - name: "{{ interface_name }}"
         description: this should be rolled back
         enabled: false
   ignore_errors: true
@@ -98,8 +101,8 @@
 - name: Assert that command timeout is triggered as device unreachable
   ansible.builtin.assert:
     that:
-      - result.msg is defined
-      - "'command timeout triggered' in result.msg"
+      - result is failed
+      - "'timeout' in result.msg"
 
 - name: Wait 60 secs for device to become reachable again
   ansible.builtin.wait_for:
@@ -107,9 +110,9 @@
 
 - name: Verify rollback operation
   register: get_desc
-  ios_command:
+  cisco.ios.ios_command:
     commands:
-      - "show interfaces {{interface_name}} | include Description"
+      - "show interfaces {{ interface_name }} | include Description"
 
 - name: Assert that the description equals the start description
   ansible.builtin.assert:
@@ -118,7 +121,7 @@
 
 - name: Verify hostname again
   register: get_hostname_again
-  ios_command:
+  cisco.ios.ios_command:
     commands:
       - "show running-config | section hostname"
 
