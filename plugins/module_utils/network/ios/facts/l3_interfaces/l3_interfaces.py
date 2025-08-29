@@ -16,7 +16,6 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l3_interfaces.l3_interfaces import (
@@ -67,7 +66,7 @@ class L3_InterfacesFacts(object):
 
         objs = utils.remove_empties(objs)
         temp = []
-        for k, v in iteritems(objs):
+        for k, v in objs.items():
             if v.get("ipv4"):
                 for each in v["ipv4"]:
                     if each.get("netmask"):
