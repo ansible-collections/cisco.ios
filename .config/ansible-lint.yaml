@@ -1,0 +1,3 @@
+---
+skip_list:
+  - ansible-bad-import-from
