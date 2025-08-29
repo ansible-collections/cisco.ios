@@ -7,6 +7,7 @@
   ansible.builtin.include_tasks: _test_config.yaml
   vars:
     ansible_command_timeout: 61
+  ignore_errors: true # Important: ignore errors so the next task can assert the failure
 
 - name: Assert that the result error equals stderr_ansible_command_timeout
   ansible.builtin.assert:
@@ -24,6 +25,7 @@
 - name: Test archiving disabled
   register: result
   ansible.builtin.include_tasks: _test_config.yaml
+  ignore_errors: true
 
 - name: Assert that the result error equals std_err_archiving_disabled
   ansible.builtin.assert:
