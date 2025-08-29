@@ -423,7 +423,7 @@ def get_ranges(data):
     Returns a generator object that yields lists of
     consecutive integers from a list of integers.
     """
-    for _k, group in groupby(data, lambda t, c=count(): int(t) - next(c)):
+    for k, group in groupby(data, lambda t, c=count(): int(t) - next(c)):
         yield list(group)
 
 

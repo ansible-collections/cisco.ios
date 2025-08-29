@@ -18,7 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -79,12 +78,12 @@ class Evpn_ethernet(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
             wantd = {}
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 if k not in wantd:
                     if self.state == "deleted":
                         self._compare(want={}, have=have)
@@ -92,10 +91,10 @@ class Evpn_ethernet(ResourceModule):
                         self.purge(have)
 
         if self.state == "purged":
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 self.purge(have)
         else:
-            for k, want in iteritems(wantd):
+            for k, want in wantd.items():
                 self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):

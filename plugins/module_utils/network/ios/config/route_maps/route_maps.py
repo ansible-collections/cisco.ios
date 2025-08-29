@@ -18,7 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -84,17 +83,17 @@ class Route_maps(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
             wantd = {}
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 if k not in wantd:
                     route_map_cmd = "no route-map {route_map}".format(**have)
                     self.commands.append(route_map_cmd)
 
-        for k, want in iteritems(wantd):
+        for k, want in wantd.items():
             self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
@@ -110,7 +109,7 @@ class Route_maps(ResourceModule):
         if want.get("entries"):
             cmd_len = len(self.commands)
             if have.get("entries"):
-                for k, v in iteritems(want["entries"]):
+                for k, v in want["entries"].items():
                     have_entry = have["entries"].pop(k, {})
                     if want["entries"][k] != have_entry:
                         # description gets merged with existing description, so explicit delete is required
@@ -146,7 +145,7 @@ class Route_maps(ResourceModule):
                         self.commands.insert(cmd_len, route_map_cmd)
                         cmd_len = len(self.commands)
             else:
-                for k, v in iteritems(want["entries"]):
+                for k, v in want["entries"].items():
                     self.compare(parsers=self.parsers, want=want["entries"][k], have=dict())
                     want_match = v.get("match")
                     if want_match:
@@ -165,7 +164,7 @@ class Route_maps(ResourceModule):
 
         if (self.state == "replaced" or self.state == "overridden") and have.get("entries"):
             cmd_len = len(self.commands)
-            for k, v in iteritems(have["entries"]):
+            for k, v in have["entries"].items():
                 route_map_cmd = "no route-map {route_map}".format(**have)
                 if have["entries"][k].get("action"):
                     route_map_cmd += " {action}".format(**have["entries"][k])
@@ -179,7 +178,7 @@ class Route_maps(ResourceModule):
             "{0}.ip".format(compare_type),
             "{0}.ipv6".format(compare_type),
         ]
-        for k, v in iteritems(want):
+        for k, v in want.items():
             have_v = have.pop(k, {})
             if v != have_v and k not in ["ip", "ipv6", "action", "sequence", "community"]:
                 if have_v:
@@ -212,7 +211,7 @@ class Route_maps(ResourceModule):
                     self.compare(parsers=parsers, want={compare_type: {k: v}}, have=dict())
 
             if k in ["ip", "ipv6"]:
-                for key, val in iteritems(v):
+                for key, val in v.items():
                     have_val = have_v.pop(key, {})
                     if val != have_val:
                         if have_val:
@@ -251,7 +250,7 @@ class Route_maps(ResourceModule):
                                 have=dict(),
                             )
                 if (self.state == "overridden" or self.state == "replaced") and have_v:
-                    for key, val in iteritems(have_v):
+                    for key, val in have_v.items():
                         self.compare(
                             parsers=parsers,
                             want=dict(),
@@ -259,9 +258,9 @@ class Route_maps(ResourceModule):
                         )
 
         if have and (self.state == "replaced" or self.state == "overridden"):
-            for k, v in iteritems(have):
+            for k, v in have.items():
                 if k in ["ip", "ipv6"]:
-                    for key, val in iteritems(v):
+                    for key, val in v.items():
                         if key and val:
                             self.compare(
                                 parsers=parsers,
@@ -280,7 +279,7 @@ class Route_maps(ResourceModule):
                     temp.update({key + "_" + str(each): each})
                 return dict(sorted(temp.items(), key=lambda x: x[1]))
 
-            for key, val in iteritems(param):
+            for key, val in param.items():
                 temp_entries = dict()
                 if val.get("entries"):
                     for every in val["entries"]:
