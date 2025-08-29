@@ -13,7 +13,7 @@
   ansible.builtin.assert:
     that:
       - result is failed
-      - stderr_ansible_command_timeout in result.msg
+      - "'ansible_command_timeout can' in result.msg"
 
 - name: Disable archiving
   register: result
