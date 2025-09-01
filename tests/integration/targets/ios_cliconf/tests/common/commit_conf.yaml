@@ -1,6 +1,6 @@
 ---
 - ansible.builtin.debug:
-    msg: "START ios_cliconf integration tests on connection={{ ansible_connection }}"
+    msg: "START ios_cliconf  mycheckout-revert integration tests on connection={{ ansible_connection }}"
 
 - name: Tests command_timeout greater than commit_confirmed
   register: result
