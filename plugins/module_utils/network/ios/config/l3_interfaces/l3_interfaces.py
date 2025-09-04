@@ -15,7 +15,6 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -225,7 +224,7 @@ class L3_interfaces(ResourceModule):
             return {item["destination_ip"]: item for item in helper_list}
 
         if param:
-            for _k, val in iteritems(param):
+            for k, val in param.items():
                 val["name"] = normalize_interface(val["name"])
                 helper_addresses_dict = val.get("helper_addresses", {})
                 for value in ["ipv4"]:

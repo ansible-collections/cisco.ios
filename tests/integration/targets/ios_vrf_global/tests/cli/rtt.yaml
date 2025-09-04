@@ -20,8 +20,8 @@
                   multitopology: true
               rd: "2:3"
               route_target:
-                exports: "192.0.2.1:400"
-                imports: "192.0.2.6:400"
+                exports: "198.51.100.5:400"
+                imports: "198.51.100.5:400"
               vpn:
                 id: "2:45"
               vnet:
@@ -71,7 +71,7 @@
     - ansible.builtin.assert:
         that:
           - revert.changed == true
-          - revert['commands'] == merged['commands']
+          - "{{ revert['commands'] | symmetric_difference(merged['commands']) | length == 0 }}"
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

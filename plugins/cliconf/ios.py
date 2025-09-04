@@ -143,7 +143,6 @@ import time
 from ansible.errors import AnsibleConnectionFailure
 from ansible.module_utils._text import to_text
 from ansible.module_utils.common._collections_compat import Mapping
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     NetworkConfig,
     dumps,
@@ -502,7 +501,7 @@ class Cliconf(CliconfBase):
         results = []
         requests = []
         if commit:
-            for key, value in iteritems(banners_obj):
+            for key, value in banners_obj.items():
                 key += " %s" % multiline_delimiter
                 self.send_command("config terminal", sendonly=True)
                 for cmd in [key, value, multiline_delimiter]:
@@ -602,7 +601,7 @@ class Cliconf(CliconfBase):
 
     def _diff_banners(self, want, have):
         candidate = {}
-        for key, value in iteritems(want):
+        for key, value in want.items():
             if value != have.get(key):
                 candidate[key] = value
         return candidate

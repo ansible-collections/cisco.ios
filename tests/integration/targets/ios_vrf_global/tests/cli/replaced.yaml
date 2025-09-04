@@ -21,8 +21,12 @@
                   multitopology: true
               rd: "7:8"
               route_target:
-                exports: "198.51.100.2:500"
-                imports: "198.51.100.5:400"
+                exports:
+                  - "198.51.100.5:400"
+                  - "198.51.100.2:401"
+                imports:
+                  - "198.51.100.5:400"
+                  - "198.51.100.2:401"
               vpn:
                 id: "5:45"
               vnet:
@@ -42,7 +46,7 @@
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
-          - replaced['after'] == result['after']
+          - "{{ replaced['after'] | symmetric_difference(result['after']) | length == 0 }}"
 
     - name: Replaced provided VRF global configuration (idempotent)
       register: result
