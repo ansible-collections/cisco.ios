@@ -1,3 +1,4 @@
+#
 # -*- coding: utf-8 -*-
 # Copyright 2024 Red Hat
 # GNU General Public License v3.0+
@@ -17,7 +18,8 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from ansible.module_utils.six import iteritems
+from copy import deepcopy
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -49,9 +51,6 @@ class Vrf_global(ResourceModule):
             "ipv4.multicast.multitopology",
             "ipv6.multicast.multitopology",
             "rd",
-            "route_target.exports",
-            "route_target.imports",
-            "route_target.both",
             "vnet.tag",
             "vpn.id",
         ]
@@ -88,19 +87,19 @@ class Vrf_global(ResourceModule):
 
         # if state is deleted, limit the have to anything in want & set want to nothing
         if self.state == "deleted":
-            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
             wantd = {}
 
         if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 if k not in wantd:
                     self._compare(want={}, have=have)
 
         if self.state == "purged":
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 self.purge(have)
 
-        for k, want in iteritems(wantd):
+        for k, want in wantd.items():
             self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
@@ -109,9 +108,52 @@ class Vrf_global(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Vrf_global network resource.
         """
-        if want != have:
-            self.addcmd(want or have, "name", False)
-            self.compare(self.parsers, want, have)
+        wanted = deepcopy(want)
+        haved = deepcopy(have)
+
+        rt_want = wanted.get("route_target", {})
+        if rt_want:
+            if rt_want.get("exports"):
+                rt_want["exports"].sort()
+            if rt_want.get("imports"):
+                rt_want["imports"].sort()
+
+        rt_have = haved.get("route_target", {})
+        if rt_have:
+            if rt_have.get("exports"):
+                rt_have["exports"].sort()
+            if rt_have.get("imports"):
+                rt_have["imports"].sort()
+
+        if wanted == haved:
+            return
+
+        self.addcmd(want or have, "name", False)
+        self.compare(self.parsers, want, have)
+        self._compare_route_targets(want, have)
+
+    def _compare_route_targets(self, want, have):
+        """Specialized comparison for route-target lists using set logic."""
+        rt_want = want.get("route_target", {}) or {}
+        rt_have = have.get("route_target", {}) or {}
+
+        # Compare Exports
+        want_exports = set(rt_want.get("exports") or [])
+        have_exports = set(rt_have.get("exports") or [])
+
+        for item in want_exports - have_exports:
+            self.addcmd({"item": item}, "route_target.exports", negate=False)
+        for item in have_exports - want_exports:
+            self.addcmd({"item": item}, "route_target.exports", negate=True)
+
+        # Compare Imports
+        want_imports = set(rt_want.get("imports") or [])
+        have_imports = set(rt_have.get("imports") or [])
+
+        for item in want_imports - have_imports:
+            self.addcmd({"item": item}, "route_target.imports", negate=False)
+        for item in have_imports - want_imports:
+            self.addcmd({"item": item}, "route_target.imports", negate=True)
 
     def purge(self, have):
         """Purge the VRF configuration"""

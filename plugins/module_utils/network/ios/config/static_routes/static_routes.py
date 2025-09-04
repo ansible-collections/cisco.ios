@@ -18,7 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -89,12 +88,12 @@ class Static_routes(ResourceModule):
             if self.state == "merged":
                 wantd = dict_merge(haved, wantd)
 
-            for k, want in iteritems(wantd):
+            for k, want in wantd.items():
                 self._compare_top_level_keys(want=want, have=haved.pop(k, {}))
 
             # if self.state in ["overridden", "deleted"]:
             if (self.state == "deleted" and not wantd) or self.state == "overridden":
-                for k, have in iteritems(haved):
+                for k, have in haved.items():
                     self._compare_top_level_keys(want={}, have=have)
 
     def _compare_top_level_keys(self, want, have):
@@ -103,7 +102,7 @@ class Static_routes(ResourceModule):
             _have = {}
             for addf in ["ipv4", "ipv6"]:
                 _temp_sr = {}
-                for k, ha in iteritems(have.get(addf, {})):
+                for k, ha in have.get(addf, {}).items():
                     if k in want.get(addf, {}):  # or not want.get(addf)
                         _temp_sr[k] = ha
                     if _temp_sr:

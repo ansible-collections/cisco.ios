@@ -21,8 +21,6 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 from unittest.mock import patch
 
-from ansible.module_utils.six import assertCountEqual
-
 from ansible_collections.cisco.ios.plugins.modules import ios_facts
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
@@ -171,13 +169,11 @@ class TestIosFactsModule(TestIosModule):
     def test_ios_facts_neighbors(self):
         set_module_args(dict(gather_subset="interfaces"))
         result = self.execute_module()
-        assertCountEqual(
-            self,
+        self.assertCountEqual(
             result["ansible_facts"]["ansible_net_neighbors"].keys(),
             ["GigabitEthernet1", "GigabitEthernet3"],
         )
-        assertCountEqual(
-            self,
+        self.assertCountEqual(
             result["ansible_facts"]["ansible_net_neighbors"]["GigabitEthernet1"],
             [
                 {
@@ -194,8 +190,7 @@ class TestIosFactsModule(TestIosModule):
                 },
             ],
         )
-        assertCountEqual(
-            self,
+        self.assertCountEqual(
             result["ansible_facts"]["ansible_net_neighbors"]["GigabitEthernet3"],
             [{"host": "Rtest", "port": "Gi1", "ip": "10.3.0.3"}],
         )
