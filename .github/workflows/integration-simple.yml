@@ -23,7 +23,7 @@ jobs:
       virl_username: ${{ secrets.VIRL_USERNAME }}
       virl_password: ${{ secrets.VIRL_PASSWORD }}
 
-  integration-tests:
+  integration-tests-libssh:
     needs: lab-create
     strategy:
       fail-fast: true
@@ -34,9 +34,21 @@ jobs:
       ansible_version: ${{ matrix.ansible_version }}
       lab_nodes: ${{ needs.lab-create.outputs.lab_nodes_json }}
 
+  integration-tests-paramiko:
+    needs: lab-create
+    strategy:
+      fail-fast: true
+      matrix:
+        ansible_version: ["stable-2.16", "stable-2.18", "stable-2.19", "milestone", "devel"]
+    uses: ansible/ansible-content-actions/.github/workflows/cml_network_integration.yaml@main
+    with:
+      ansible_version: ${{ matrix.ansible_version }}
+      lab_nodes: ${{ needs.lab-create.outputs.lab_nodes_json }}
+      cli_ssh_type: paramiko
+
   lab-destroy:
     if: ${{ always() }}
-    needs: integration-tests
+    needs: [integration-tests-libssh, integration-tests-paramiko]
     uses: ansible/ansible-content-actions/.github/workflows/cml_lab_destroy.yaml@main
     secrets:
       virl_host: ${{ secrets.VIRL_HOST }}
