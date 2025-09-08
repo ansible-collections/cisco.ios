@@ -20,7 +20,6 @@ created.
 from copy import deepcopy
 
 from ansible.module_utils._text import to_text
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -117,7 +116,7 @@ class Logging_global(ResourceModule):
         for _par in self.list_parsers:
             i_want = want.get(_par, {})
             i_have = have.get(_par, {})
-            for key, wanting in iteritems(i_want):
+            for key, wanting in i_want.items():
                 _parser = _par
                 if wanting.get("transport") and _parser == "hosts":
                     _parser = "hosts.transport"
@@ -126,7 +125,7 @@ class Logging_global(ResourceModule):
                     if haveing and self.state in ["overridden", "replaced"]:
                         self.addcmd(haveing, _parser, negate=True)
                     self.addcmd(wanting, _parser)
-            for key, haveing in iteritems(i_have):
+            for key, haveing in i_have.items():
                 _parser = _par
                 if haveing.get("transport") and _parser == "hosts":
                     _parser = "hosts.transport"
@@ -137,13 +136,13 @@ class Logging_global(ResourceModule):
         for _par in self.complex_parsers:
             i_want = want.get(_par, {})
             i_have = have.get(_par, {})
-            for key, wanting in iteritems(i_want):
+            for key, wanting in i_want.items():
                 haveing = i_have.pop(key, {})
                 if wanting != haveing:
                     if haveing and self.state in ["overridden", "replaced"]:
                         self.addcmd(haveing, _par, negate=True)
                     self.addcmd(wanting, _par)
-            for key, haveing in iteritems(i_have):
+            for key, haveing in i_have.items():
                 self.addcmd(haveing, _par, negate=True)
 
     def list_to_dict(self, data):

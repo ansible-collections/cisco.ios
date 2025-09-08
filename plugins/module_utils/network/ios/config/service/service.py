@@ -17,7 +17,6 @@ __metaclass__ = type
 
 from copy import deepcopy
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -137,11 +136,11 @@ class Service(ResourceModule):
         """Compare list of dict"""
         i_want = want.get("timestamps", {})
         i_have = have.get("timestamps", {})
-        for key, wanting in iteritems(i_want):
+        for key, wanting in i_want.items():
             haveing = i_have.pop(key, {})
             if wanting != haveing:
                 self.addcmd(wanting, key + "_timestamps", False)
-        for key, haveing in iteritems(i_have):
+        for key, haveing in i_have.items():
             self.addcmd(haveing, key + "_timestamps", negate=True)
 
     def _service_list_to_dict(self, data):
