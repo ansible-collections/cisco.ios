@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: https://github.com/ansible-network/collection_prep
-    rev: 1.1.2
+    rev: da78082ea59b03ad16cd7dbee267f53e8ff50bb5
     hooks:
       # - id: autoversion # removed as being handled by GHA push and release drafter
       - id: update-docs
