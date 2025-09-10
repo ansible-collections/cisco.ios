@@ -149,3 +149,25 @@ class TestIosPingModule(TestIosModule):
             "failed": True,
         }
         self.assertEqual(result, mock_res)
+
+    def test_ios_ping_state_absent_pass(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            Type escape sequence to abort.
+            ending 2, 100-byte ICMP Echos to 8.8.8.8, timeout is 2 seconds:
+            !
+            Success rate is 90 percent (2/2), round-trip min/avg/max = 25/25/25 ms
+            """,
+        )
+        set_module_args(dict(count=2, dest="8.8.8.8", state="absent"))
+        result = self.execute_module(failed=True)
+        mock_res = {
+            "msg": "Ping succeeded unexpectedly",
+            "commands": "ping ip 8.8.8.8 repeat 2",
+            "packet_loss": "10%",
+            "packets_rx": 2,
+            "packets_tx": 2,
+            "rtt": {"min": 25, "avg": 25, "max": 25},
+            "failed": True,
+        }
+        self.assertEqual(result, mock_res)
