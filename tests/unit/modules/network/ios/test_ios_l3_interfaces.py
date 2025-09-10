@@ -245,6 +245,7 @@ class TestIosL3InterfacesModule(TestIosModule):
         parsed_list = [
             {
                 "name": "GigabitEthernet0/3.100",
+                "mac_address": "0000.0000.0001",
                 "helper_addresses": {"ipv4": [{"global": True, "destination_ip": "10.0.0.1"}]},
                 "ipv4": [
                     {"address": "192.168.0.3/24"},
@@ -307,6 +308,30 @@ class TestIosL3InterfacesModule(TestIosModule):
             "ip address 192.168.0.5 255.255.255.0",
         ]
 
+        result = self.execute_module(changed=False)
+        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+
+    # --- NEW TEST CASE ADDED HERE ---
+    def test_ios_l3_interfaces_mac_address_rendered(self):
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Vlan101",
+                        mac_address="dead.beef.f00d",
+                        ipv4=[dict(address="203.0.113.1/24")],
+                        ipv6=[dict(address="2001:db8::1/64")],
+                    ),
+                ],
+                state="rendered",
+            ),
+        )
+        commands = [
+            "interface Vlan101",
+            "mac-address dead.beef.f00d",
+            "ip address 203.0.113.1 255.255.255.0",
+            "ipv6 address 2001:db8::1/64",
+        ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
 

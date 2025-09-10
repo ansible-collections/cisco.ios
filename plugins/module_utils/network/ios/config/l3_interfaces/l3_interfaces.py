@@ -46,7 +46,6 @@ class L3_interfaces(ResourceModule):
             tmplt=L3_interfacesTemplate(),
         )
         self.parsers = [
-            "mac_address",
             "ipv4.address",
             "ipv4.pool",
             "ipv4.dhcp",
@@ -62,6 +61,8 @@ class L3_interfaces(ResourceModule):
         ]
         self.gen_parsers = [
             "autostate",
+            "mac_address",
+
         ]
 
     def execute_module(self):
