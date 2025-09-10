@@ -62,7 +62,6 @@ class L3_interfaces(ResourceModule):
         self.gen_parsers = [
             "autostate",
             "mac_address",
-
         ]
 
     def execute_module(self):
