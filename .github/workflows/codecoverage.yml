@@ -1,5 +1,5 @@
 ---
-name: "Code coverage"
+name: "Code Coverage 🎯"
 
 on: # yamllint disable-line rule:truthy
   push:

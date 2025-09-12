@@ -1,5 +1,5 @@
 ---
-name: "Release collection"
+name: "Release collection 🚀"
 on: # yamllint disable-line rule:truthy
   release:
     types: [published]

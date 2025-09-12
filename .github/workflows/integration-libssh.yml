@@ -1,5 +1,5 @@
 ---
-name: Integration tests with CML - libssh
+name: "Integration tests with CML - libssh 💻"
 on:
   pull_request_target:
     branches: [main]
