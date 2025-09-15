@@ -385,13 +385,13 @@ def check_args(module, warnings):
             module.fail_json(msg="multiline_delimiter value can only be a single character")
 
 
-def edit_config_or_macro(connection, commands):
+def edit_config_or_macro(connection, commands, config_lines):
     # only catch the macro configuration command,
     # not negated 'no' variation.
     if commands[0].startswith("macro name"):
         connection.edit_macro(candidate=commands)
     else:
-        connection.edit_config(candidate=commands)
+        connection.edit_config(candidate=config_lines)
 
 
 def get_candidate_config(module):
@@ -399,9 +399,13 @@ def get_candidate_config(module):
     if module.params["src"]:
         candidate = module.params["src"]
     elif module.params["lines"]:
+        lines= []
+        for item in module.params["lines"]:
+            if item.get('line'): 
+                lines.append(item.get('line'))
         candidate_obj = NetworkConfig(indent=1)
         parents = module.params["parents"] or list()
-        candidate_obj.add(module.params["lines"], parents=parents)
+        candidate_obj.add(lines=lines, parents=parents)
         candidate = dumps(candidate_obj, "raw")
     return candidate
 
@@ -429,9 +433,14 @@ def save_config(module, result):
 def main():
     """main entry point for module execution"""
     backup_spec = dict(filename=dict(), dir_path=dict(type="path"))
+    line_spec = dict(
+                      line=dict(type="str",required=False), 
+                      prompt=dict(type="str", required=False), 
+                      answer=dict(type="str", required=False),
+                    )
     argument_spec = dict(
         src=dict(type="str"),
-        lines=dict(aliases=["commands"], type="list", elements="str"),
+        lines=dict(aliases=["commands"], type="list", elements="dict", options=line_spec),
         parents=dict(type="list", elements="str"),
         before=dict(type="list", elements="str"),
         after=dict(type="list", elements="str"),
@@ -505,9 +514,14 @@ def main():
 
             # send the configuration commands to the device and merge
             # them with the current running config
-            if not module.check_mode:
+            if not module.check_mode: 
                 if commands:
-                    edit_config_or_macro(connection, commands)
+                    config_lines = []
+                    for item in module.params["lines"]:
+                        for command in commands:
+                            if command == item.get('line'):
+                                config_lines.append(item)
+                    edit_config_or_macro(connection, commands ,config_lines)
                 if banner_diff:
                     connection.edit_banner(
                         candidate=json.dumps(banner_diff),
