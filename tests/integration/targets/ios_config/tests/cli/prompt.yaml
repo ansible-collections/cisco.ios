@@ -16,9 +16,10 @@
       - line: access-session authentication attributes filter-spec include list mylist
       - line: access-session accounting attributes filter-spec include list mylist
         prompt: "Do you wish to continue\\? \\[yes]:"
-        answer:  "yes"
+        answer: "yes"
     save_when: "changed"
     
 - ansible.builtin.assert:
     that:
-      - result.changed == true    
+      - result.changed == true  
+      

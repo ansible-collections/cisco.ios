@@ -336,9 +336,8 @@ EXAMPLES = """
       - line: access-session authentication attributes filter-spec include list test_filter
       - line: access-session accounting attributes filter-spec include list test_filter
         prompt: "Do you wish to continue[yes]:"
-        answer:  "yes"
-    save_when: "changed"
-     
+        answer: "yes"
+    save_when: "changed"   
 # Example ios_template.j2
 # ip access-list extended test
 #  permit ip host 192.0.2.1 any log
