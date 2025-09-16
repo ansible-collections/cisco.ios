@@ -335,7 +335,7 @@ EXAMPLES = """
     lines:
       - line: access-session authentication attributes filter-spec include list test_filter
       - line: access-session accounting attributes filter-spec include list test_filter
-        prompt: "Do you wish to continue\\? \\[yes]:"
+        prompt: "Do you wish to continue[yes]:"
         answer:  "yes"
     save_when: "changed"
      
@@ -546,23 +546,26 @@ def main():
             if not module.check_mode: 
                 if commands:
                     config_lines = []
-                    for item in module.params["lines"]:
-                        if isinstance(item,dict):
-                            for command in commands:
-                                if command in module.params["before"]: 
-                                    before_commands = { "line" : comamnd } #add before commands as dictonary type to config lines
-                                    config_lines[:0].append(before_commands)
-                                if comamnd in module.params["parents"]:
-                                    parent_lines = { "line" : comamnd }
-                                    config_lines.append(parent_lines)   
-                                if command == item.get('line'):
-                                    config_lines.append(item)
-                                if command in module.params["after"]:
-                                    after_lines = {"line" : command}
-                                    config_lines.extend(after_lines)    
-                            edit_config_or_macro(connection, commands, config_lines)
-                        else:
-                            edit_config_or_macro(connection, commands, config_lines)    
+                    if module.params["lines"]:
+                        for item in module.params["lines"]:
+                            if isinstance(item,dict):
+                                for command in commands:
+                                    if  module.params["before"] and comamnd in module.params["before"]: 
+                                        before_commands = { "line" : comamnd } #add before commands as dictonary type to config lines
+                                        config_lines[:0].append(before_commands)
+                                    if module.params["parents"] and command in module.params["parents"]:
+                                        parent_lines = { "line" : comamnd }
+                                        config_lines.append(parent_lines)   
+                                    if command == item.get('line'):
+                                        config_lines.append(item)
+                                    if module.params["after"]and command in module.params["after"]:
+                                        after_lines = {"line" : command}
+                                        config_lines.extend(after_lines)    
+                                edit_config_or_macro(connection, commands, config_lines)
+                            else:
+                                edit_config_or_macro(connection, commands, config_lines)   
+                    elif  module.params["src"]:
+                        edit_config_or_macro(connection, commands, config_lines)                           
                 if banner_diff:
                     connection.edit_banner(
                         candidate=json.dumps(banner_diff),
