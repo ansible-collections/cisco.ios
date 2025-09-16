@@ -212,7 +212,7 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=string</span>
+                         / <span style="color: purple">elements=raw</span>
                     </div>
                 </td>
                 <td>
@@ -458,6 +458,14 @@ Examples
           filename: backup.cfg
           dir_path: /home/user
 
+    - name: Configure Access Session Attributes while handlening prompt
+      cisco.ios.ios_config:
+        lines:
+          - line: access-session authentication attributes filter-spec include list test_filter
+          - line: access-session accounting attributes filter-spec include list test_filter
+            prompt: "Do you wish to continue[yes]:"
+            answer: "yes"
+        save_when: "changed"
     # Example ios_template.j2
     # ip access-list extended test
     #  permit ip host 192.0.2.1 any log
