@@ -19,6 +19,7 @@
             ipv6:
               - autoconfig:
                   enable: true
+            mac_address: "0011.2233.4455"
           - name: GigabitEthernet3
             ipv4:
               - address: 198.51.100.1/24
