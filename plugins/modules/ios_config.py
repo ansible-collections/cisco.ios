@@ -551,8 +551,17 @@ def main():
                     for item in module.params["lines"]:
                         if isinstance(item,dict):
                             for command in commands:
+                                if command in module.params["before"]: 
+                                    before_commands = { "line" : comamnd } #add before commands as dictonary type to config lines
+                                    config_lines[:0].append(before_commands)
+                                if comamnd in module.params["parents"]:
+                                    parent_lines = { "line" : comamnd }
+                                    config_lines.append(parent_lines)   
                                 if command == item.get('line'):
                                     config_lines.append(item)
+                                if command in module.params["after"]:
+                                    after_lines = {"line" : command}
+                                    config_lines.extend(after_lines)    
                             edit_config_or_macro(connection, commands, config_lines)
                         else:
                             edit_config_or_macro(connection, commands, config_lines)    
