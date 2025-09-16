@@ -314,9 +314,42 @@ class Cliconf(CliconfBase):
             self.send_command(f"configure terminal revert timer {commit_timeout}")
         else:
             self.send_command("configure terminal")
-
+    
     @enable_mode
     def edit_config(self, candidate=None, commit=True, replace=None, comment=None):
+        resp = {}
+        operations = self.get_device_operations()
+        self.check_edit_config_capability(operations, candidate, commit, replace, comment)
+
+        results = []
+        requests = []
+        # commit confirm specific attributes
+        commit_confirm = self.get_option("commit_confirm_immediate")
+        if commit:
+            self.configure()
+            for line in to_list(candidate):
+                if not isinstance(line, Mapping):
+                    line = {"command": line}
+
+                cmd = line["command"]
+                if cmd != "end" and cmd[0] != "!":
+                    results.append(self.send_command(**line))
+                    requests.append(cmd)
+
+            self.send_command("end")
+            if commit_confirm:
+                self.send_command("configure confirm")
+
+        else:
+            raise ValueError("check mode is not supported")
+
+        resp["request"] = requests
+        resp["response"] = results
+        return resp
+        
+
+    @enable_mode
+    def edit_config_with_prompt(self, candidate=None, commit=True, replace=None, comment=None):
         resp = {}
         operations = self.get_device_operations()
         self.check_edit_config_capability(operations, candidate, commit, replace, comment)
@@ -346,6 +379,8 @@ class Cliconf(CliconfBase):
         resp["request"] = requests
         resp["response"] = results
         return resp
+
+
 
     def edit_macro(self, candidate=None, commit=True, replace=None, comment=None):
         """

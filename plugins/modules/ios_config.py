@@ -16,6 +16,7 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 from __future__ import absolute_import, division, print_function
+import traceback
 
 
 __metaclass__ = type
@@ -385,13 +386,16 @@ def check_args(module, warnings):
             module.fail_json(msg="multiline_delimiter value can only be a single character")
 
 
-def edit_config_or_macro(connection, commands, config_lines):
+def edit_config_or_macro(connection, commands, config_prompt_lines):
     # only catch the macro configuration command,
     # not negated 'no' variation.
     if commands[0].startswith("macro name"):
         connection.edit_macro(candidate=commands)
     else:
-        connection.edit_config(candidate=config_lines)
+        if config_prompt_lines:
+            connection.edit_config_with_prompt(candidate=config_prompt_lines)
+        else:
+            connection.edit_config(candidate=commands)    
 
 
 def get_candidate_config(module):
@@ -401,8 +405,11 @@ def get_candidate_config(module):
     elif module.params["lines"]:
         lines= []
         for item in module.params["lines"]:
-            if item.get('line'): 
-                lines.append(item.get('line'))
+            if isinstance(item,dict):
+                if item.get('line'): 
+                    lines.append(item.get('line'))
+            else:
+                lines.append(item)        
         candidate_obj = NetworkConfig(indent=1)
         parents = module.params["parents"] or list()
         candidate_obj.add(lines=lines, parents=parents)
@@ -440,7 +447,7 @@ def main():
                     )
     argument_spec = dict(
         src=dict(type="str"),
-        lines=dict(aliases=["commands"], type="list", elements="dict", options=line_spec),
+        lines=dict(aliases=["commands"], type="list", elements="raw", options=line_spec),
         parents=dict(type="list", elements="str"),
         before=dict(type="list", elements="str"),
         after=dict(type="list", elements="str"),
@@ -499,6 +506,7 @@ def main():
                 diff_replace=replace,
             )
         except ConnectionError as exc:
+            traceback.print_exc()
             module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
         config_diff = response["config_diff"]
         banner_diff = response["banner_diff"]
@@ -518,10 +526,13 @@ def main():
                 if commands:
                     config_lines = []
                     for item in module.params["lines"]:
-                        for command in commands:
-                            if command == item.get('line'):
-                                config_lines.append(item)
-                    edit_config_or_macro(connection, commands ,config_lines)
+                        if isinstance(item,dict):
+                            for command in commands:
+                                if command == item.get('line'):
+                                    config_lines.append(item)
+                            edit_config_or_macro(connection, commands, config_lines)
+                        else:
+                            edit_config_or_macro(connection, commands, config_lines)    
                 if banner_diff:
                     connection.edit_banner(
                         candidate=json.dumps(banner_diff),
