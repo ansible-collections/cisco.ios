@@ -48,7 +48,21 @@ options:
         idempotency and correct diff. Be sure to note the configuration command syntax as
         some commands are automatically modified by the device config parser.
     type: list
-    elements: str
+    elements: raw
+    options:
+      line:
+        required: false
+        type: str
+        description: use to specify config lines when options are required to declare,works sames as lines 
+      prompt:
+        required: false
+        type: str
+        description: prompt message to handle while editng configurations on device in configration mode
+      answer:
+        required: false
+        type: str
+        description: answer to send to device in order to handle prompt on device in configration mode
+
     aliases:
       - commands
   parents:
@@ -317,6 +331,15 @@ EXAMPLES = """
       filename: backup.cfg
       dir_path: /home/user
 
+- name: Configure Access Session Attributes while handlening prompt
+  cisco.ios.ios_config:
+    lines:
+      - line: access-session authentication attributes filter-spec include list test_filter
+      - line: access-session accounting attributes filter-spec include list test_filter
+        prompt: "Do you wish to continue\\? \\[yes]:"
+        answer:  "yes"
+    save_when: "changed"
+     
 # Example ios_template.j2
 # ip access-list extended test
 #  permit ip host 192.0.2.1 any log
