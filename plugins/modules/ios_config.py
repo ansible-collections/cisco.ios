@@ -16,7 +16,6 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 from __future__ import absolute_import, division, print_function
-import traceback
 
 
 __metaclass__ = type
@@ -529,7 +528,6 @@ def main():
                 diff_replace=replace,
             )
         except ConnectionError as exc:
-            traceback.print_exc()
             module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
         config_diff = response["config_diff"]
         banner_diff = response["banner_diff"]
