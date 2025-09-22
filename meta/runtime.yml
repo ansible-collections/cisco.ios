@@ -57,6 +57,8 @@ plugin_routing:
       redirect: cisco.ios.ios_static_routes
     system:
       redirect: cisco.ios.ios_system
+    spanning_tree:
+      redirect: cisco.ios.ios_spanning_tree
     user:
       redirect: cisco.ios.ios_user
     vlans:
