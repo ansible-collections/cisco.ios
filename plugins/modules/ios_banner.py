@@ -132,7 +132,7 @@ def map_obj_to_commands(updates, module):
         if want["text"] and (want["text"].rstrip("\n") != haved):
             banner_cmd = "banner %s" % module.params["banner"]
             banner_cmd += " {0}\n".format(multiline_delimiter)
-            banner_cmd += want["text"].strip("\n")
+            banner_cmd += want["text"].rstrip("\n")
             banner_cmd += "\n{0}".format(multiline_delimiter)
             commands.append(banner_cmd)
     return commands
