@@ -1425,7 +1425,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               aggregate-address 2001:DB8:2::/48 as-set
               neighbor 2001:db8::1 activate
             exit-address-family
-            """
+            """,
         )
 
         set_module_args(
@@ -1439,7 +1439,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             aggregate_addresses=[
                                 dict(
                                     address="2001:db8:cd::/48",
-                                    summary_only=True
+                                    summary_only=True,
                                 ),
                             ],
                             neighbors=[
@@ -1447,14 +1447,14 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     neighbor_address="2001:db8::2",
                                     activate=True,
                                     remote_as=65003,
-                                    description="New-IPv6-Neighbor"
-                                )
-                            ]
-                        )
+                                    description="New-IPv6-Neighbor",
+                                ),
+                            ],
+                        ),
                     ],
                 ),
                 state="replaced",
-            )
+            ),
         )
 
         commands = [
@@ -1485,7 +1485,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               neighbor 2001:db8::1 remote-as 65002
               neighbor 2001:db8::1 activate
              exit-address-family
-            """
+            """,
         )
 
         set_module_args(
@@ -1499,7 +1499,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             aggregate_addresses=[
                                 dict(
                                     address="2001:DB8:2222::/48",
-                                    summary_only=True
+                                    summary_only=True,
                                 ),
                             ],
                             neighbors=[
@@ -1507,12 +1507,12 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     neighbor_address="2001:db8::2",
                                     activate=True,
                                     remote_as=65003,
-                                )
+                                ),
                             ],
                             networks=[
-                                dict(address="2001:DB8:FEED::/64")
-                            ]
-                        )
+                                dict(address="2001:DB8:FEED::/64"),
+                            ],
+                        ),
                     ],
                 ),
                 state="merged",
@@ -1548,7 +1548,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               neighbor 2001:db8::OLD remote-as 65002
               neighbor 2001:db8::OLD activate
              exit-address-family
-            """
+            """,
         )
 
         set_module_args(
@@ -1562,7 +1562,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                             aggregate_addresses=[
                                 dict(
                                     address="2001:DB8:NEW::/48",
-                                    summary_only=True
+                                    summary_only=True,
                                 ),
                             ],
                             neighbors=[
@@ -1570,9 +1570,9 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     neighbor_address="2001:db8::NEW",
                                     activate=True,
                                     remote_as=65003,
-                                )
-                            ]
-                        )
+                                ),
+                            ],
+                        ),
                     ],
                 ),
                 state="overridden",
