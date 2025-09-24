@@ -1509,7 +1509,6 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     remote_as=65003,
                                 )
                             ],
-                            # Add a new network statement
                             networks=[
                                 dict(address="2001:DB8:FEED::/64")
                             ]
@@ -1556,8 +1555,6 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             dict(
                 config=dict(
                     as_number="65000",
-                    # The desired config only specifies the ipv6 address family.
-                    # The ipv4 AF should be left alone.
                     address_family=[
                         dict(
                             afi="ipv6",
