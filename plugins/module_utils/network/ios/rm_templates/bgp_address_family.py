@@ -90,8 +90,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "aggregate-address "
-            "{{ address }} {{ netmask }}"
+            "setval": "aggregate-address {{ address }}"
+            "{{ (' ' + netmask) if netmask is defined and ':' not in address else '' }}"
             "{{ ' as-set' if as_set|d(False) else ''}}"
             "{{ ' summary-only' if summary_only|d(False) else ''}}"
             "{{ ' as-confed-set' if as_confed_set|d(False) else ''}}"
