@@ -106,9 +106,9 @@
       - result is failed
       - "'timeout' in result.msg"
 
-- name: Wait 60 secs for device to become reachable again
+- name: Wait 120 secs for device to become reachable again
   ansible.builtin.wait_for:
-    timeout: 60
+    timeout: 120
 
 - name: Verify rollback operation
   register: get_desc
