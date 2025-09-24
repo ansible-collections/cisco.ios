@@ -1531,7 +1531,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
 
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
-    
+
     def test_ios_bgp_address_family_ipv6_overridden(self):
         """Test IPv6 BGP configuration - overridden state"""
         self.execute_show_command.return_value = dedent(
