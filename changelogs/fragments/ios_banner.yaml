@@ -1,0 +1,3 @@
+---
+minor_changes:
+  - Add preserve_empty_lines parameter to ios_banner module to retain intentional empty lines in banner text, improving support for ASCII art banners.
