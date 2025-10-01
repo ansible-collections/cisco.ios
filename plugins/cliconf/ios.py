@@ -360,13 +360,13 @@ class Cliconf(CliconfBase):
         if commit:
             self.configure()
             for item_dict in candidate:
-                line = item_dict.get('line')
+                config_line = item_dict.get('config_line')
                 prompt = item_dict.get('prompt')
                 answer = item_dict.get('answer')
 
-                if line != "end" and line[0] != "!":
-                    results.append(self.send_command(command=line, prompt=prompt, answer=answer))
-                    requests.append(line)
+                if config_line != "end" and config_line[0] != "!":
+                    results.append(self.send_command(command=config_line, prompt=prompt, answer=answer))
+                    requests.append(config_line)
 
             self.send_command("end")
             if commit_confirm:

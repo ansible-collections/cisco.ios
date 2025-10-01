@@ -49,7 +49,7 @@ options:
     type: list
     elements: raw
     options:
-      line:
+      config_line:
         required: false
         type: str
         description: use to specify config lines when options are required to declare,works sames as lines 
@@ -239,7 +239,7 @@ options:
     type: dict
 """
 
-EXAMPLES = """
+EXAMPLES = """""
 - name: Configure top level configuration
   cisco.ios.ios_config:
     lines: hostname {{ inventory_hostname }}
@@ -333,11 +333,46 @@ EXAMPLES = """
 - name: Configure Access Session Attributes while handlening prompt
   cisco.ios.ios_config:
     lines:
-      - line: access-session authentication attributes filter-spec include list test_filter
-      - line: access-session accounting attributes filter-spec include list test_filter
+      - config_line: access-session authentication attributes filter-spec include list test_filter
+      - config_line: access-session accounting attributes filter-spec include list test_filter
         prompt: "Do you wish to continue[yes]:"
         answer: "yes"
     save_when: "changed"   
+
+# Task Output :
+# --------
+# 
+# banners: {}
+#  commands:
+#  - access-session authentication attributes filter-spec include list mylist
+#  - access-session accounting attributes filter-spec include list mylist
+#  invocation:
+#    module_args:
+#      after: null
+#     backup: false
+#      backup_options: null
+#      before: null
+#      defaults: false
+#      diff_against: null
+#      diff_ignore_lines: null
+#      intended_config: null
+#      lines:
+#      - config_line: access-session authentication attributes filter-spec include list mylist
+#      - answer: 'yes'
+#        config_line: access-session accounting attributes filter-spec include list mylist
+#        prompt: 'Do you wish to continue\? \[yes]:'
+#      match: line
+#      multiline_delimiter: '@'
+#      parents: null
+#      replace: line
+#      running_config: null
+#      save_when: changed
+#      src: null
+#  updates:
+#  - access-session authentication attributes filter-spec include list mylist
+#  - access-session accounting attributes filter-spec include list mylist    
+
+
 # Example ios_template.j2
 # ip access-list extended test
 #  permit ip host 192.0.2.1 any log
@@ -427,8 +462,8 @@ def get_candidate_config(module):
         lines= []
         for item in module.params["lines"]:
             if isinstance(item,dict):
-                if item.get('line'): 
-                    lines.append(item.get('line'))
+                if item.get('config_line'): 
+                    lines.append(item.get('config_line'))
             else:
                 lines.append(item)        
         candidate_obj = NetworkConfig(indent=1)
@@ -462,7 +497,7 @@ def main():
     """main entry point for module execution"""
     backup_spec = dict(filename=dict(), dir_path=dict(type="path"))
     line_spec = dict(
-                      line=dict(type="str",required=False), 
+                      config_line=dict(type="str",required=False), 
                       prompt=dict(type="str", required=False), 
                       answer=dict(type="str", required=False),
                     )
@@ -544,27 +579,27 @@ def main():
             # them with the current running config
             if not module.check_mode: 
                 if commands:
-                    config_lines = []
+                    configs = []
                     if module.params["lines"]:
                         for item in module.params["lines"]:
                             if isinstance(item,dict):
                                 for command in commands:
                                     if  module.params["before"] and comamnd in module.params["before"]: 
-                                        before_commands = { "line" : comamnd } #add before commands as dictonary type to config lines
-                                        config_lines[:0].append(before_commands)
+                                        before_commands = { "config_line" : comamnd } #add before commands as dictonary type to config lines
+                                        configs[:0].append(before_commands)
                                     if module.params["parents"] and command in module.params["parents"]:
-                                        parent_lines = { "line" : comamnd }
-                                        config_lines.append(parent_lines)   
-                                    if command == item.get('line'):
-                                        config_lines.append(item)
+                                        parent_lines = { "config_line" : comamnd }
+                                        configs.append(parent_lines)   
+                                    if command == item.get('config_line'):
+                                        configs.append(item)
                                     if module.params["after"]and command in module.params["after"]:
-                                        after_lines = {"line" : command}
-                                        config_lines.extend(after_lines)    
-                                edit_config_or_macro(connection, commands, config_lines)
+                                        after_lines = {"config_line" : command}
+                                        configs.extend(after_lines)    
+                                edit_config_or_macro(connection, commands, configs)
                             else:
-                                edit_config_or_macro(connection, commands, config_lines)   
+                                edit_config_or_macro(connection, commands, configs)   
                     elif  module.params["src"]:
-                        edit_config_or_macro(connection, commands, config_lines)                           
+                        edit_config_or_macro(connection, commands, configs)                           
                 if banner_diff:
                     connection.edit_banner(
                         candidate=json.dumps(banner_diff),
