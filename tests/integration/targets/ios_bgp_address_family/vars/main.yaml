@@ -24,6 +24,8 @@ merged:
     - aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
     - exit-address-family
     - address-family ipv6 unicast
+    - aggregate-address 2001:DB8:1234::/48 summary-only
+    - aggregate-address 2001:DB8:5678::/48 as-confed-set
     - redistribute ospf 124 metric 10 match internal external 1 external 2 nssa-external 1 nssa-external 2 route-map bar include-connected
     - exit-address-family
 
@@ -76,6 +78,10 @@ merged:
               metric: 10
               process_id: 123
               route_map: bar
+        maximum_paths:
+          paths: 12
+        maximum_secondary_paths:
+          eibgp: 2
       - afi: ipv4
         aggregate_addresses:
           - address: 192.0.3.1
@@ -105,6 +111,11 @@ merged:
           soft_reconfig_backup: true
         safi: mdt
       - afi: ipv6
+        aggregate_addresses:
+          - address: 2001:DB8:1234::/48
+            summary_only: true
+          - address: 2001:DB8:5678::/48
+            as_confed_set: true
         redistribute:
           - ospf:
               include_connected: true
@@ -243,6 +254,10 @@ replaced:
     - no network 198.51.111.11 mask 255.255.255.255 route-map test
     - no aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
     - exit-address-family
+    - address-family ipv6 unicast
+    - aggregate-address 2001:DB8:1234::/48 as-set
+    - no redistribute ospf 124
+    - exit-address-family
   after:
     address_family:
       - afi: ipv4
@@ -307,6 +322,11 @@ replaced:
               metric: 10
               route_map: bar
               include_connected: true
+      - afi: "ipv6"
+        safi: "unicast"
+        aggregate_addresses:
+          - address: "2001:DB8:1234::/48"
+            as_set: true
 
 deleted:
   commands:
@@ -363,4 +383,11 @@ parsed:
           - address: 192.0.3.0
           - address: 192.0.4.0
         safi: unicast
+      - afi: ipv6
+        safi: unicast
+        aggregate_addresses:
+          - address: 2001:DB8:1234::/48
+            summary_only: true
+          - address: 2001:DB8:5678::/48
+            as_confed_set: true
     as_number: "65536"

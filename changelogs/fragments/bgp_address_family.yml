@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Fixed an issue where configuration within an address family (ipv6) was ignored by the parser.

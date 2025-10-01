@@ -1412,3 +1412,183 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_bgp_address_family_ipv6_replaced(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp log-neighbor-changes
+             neighbor 2001:db8::1 remote-as 65002
+             !
+             address-family ipv6 unicast
+              aggregate-address 2001:DB8:1234::/48 summary-only
+              aggregate-address 2001:DB8:2::/48 as-set
+              neighbor 2001:db8::1 activate
+            exit-address-family
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    address_family=[
+                        dict(
+                            afi="ipv6",
+                            safi="unicast",
+                            aggregate_addresses=[
+                                dict(
+                                    address="2001:db8:cd::/48",
+                                    summary_only=True,
+                                ),
+                            ],
+                            neighbors=[
+                                dict(
+                                    neighbor_address="2001:db8::2",
+                                    activate=True,
+                                    remote_as=65003,
+                                    description="New-IPv6-Neighbor",
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                state="replaced",
+            ),
+        )
+
+        commands = [
+            "router bgp 65000",
+            "address-family ipv6 unicast",
+            "aggregate-address 2001:db8:cd::/48 summary-only",
+            "neighbor 2001:db8::2 activate",
+            "neighbor 2001:db8::2 remote-as 65003",
+            "neighbor 2001:db8::2 description New-IPv6-Neighbor",
+            "no aggregate-address 2001:DB8:2::/48 as-set",
+            "no aggregate-address 2001:DB8:1234::/48 summary-only",
+            "no neighbor 2001:db8::1",
+            "exit-address-family",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_bgp_address_family_ipv6_merged(self):
+        """Test IPv6 BGP configuration - merged state"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp log-neighbor-changes
+             !
+             address-family ipv6 unicast
+              aggregate-address 2001:DB8:1111::/48 as-set
+              neighbor 2001:db8::1 remote-as 65002
+              neighbor 2001:db8::1 activate
+             exit-address-family
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    address_family=[
+                        dict(
+                            afi="ipv6",
+                            safi="unicast",
+                            aggregate_addresses=[
+                                dict(
+                                    address="2001:DB8:2222::/48",
+                                    summary_only=True,
+                                ),
+                            ],
+                            neighbors=[
+                                dict(
+                                    neighbor_address="2001:db8::2",
+                                    activate=True,
+                                    remote_as=65003,
+                                ),
+                            ],
+                            networks=[
+                                dict(address="2001:DB8:FEED::/64"),
+                            ],
+                        ),
+                    ],
+                ),
+                state="merged",
+            ),
+        )
+
+        commands = [
+            "router bgp 65000",
+            "address-family ipv6 unicast",
+            "aggregate-address 2001:DB8:2222::/48 summary-only",
+            "neighbor 2001:db8::2 remote-as 65003",
+            "neighbor 2001:db8::2 activate",
+            "network 2001:DB8:FEED::/64",
+            "exit-address-family",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_bgp_address_family_ipv6_overridden(self):
+        """Test IPv6 BGP configuration - overridden state"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             !
+             address-family ipv4 unicast
+              neighbor 192.0.2.1 remote-as 65001
+              neighbor 192.0.2.1 activate
+             exit-address-family
+             !
+             address-family ipv6 unicast
+              aggregate-address 2001:DB8:OLD::/48 as-set
+              neighbor 2001:db8::OLD remote-as 65002
+              neighbor 2001:db8::OLD activate
+             exit-address-family
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    address_family=[
+                        dict(
+                            afi="ipv6",
+                            safi="unicast",
+                            aggregate_addresses=[
+                                dict(
+                                    address="2001:DB8:NEW::/48",
+                                    summary_only=True,
+                                ),
+                            ],
+                            neighbors=[
+                                dict(
+                                    neighbor_address="2001:db8::NEW",
+                                    activate=True,
+                                    remote_as=65003,
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                state="overridden",
+            ),
+        )
+        commands = [
+            "router bgp 65000",
+            "no neighbor 192.0.2.1",
+            "address-family ipv6 unicast",
+            "no aggregate-address 2001:DB8:OLD::/48 as-set",
+            "no neighbor 2001:db8::OLD",
+            "aggregate-address 2001:DB8:NEW::/48 summary-only",
+            "neighbor 2001:db8::NEW remote-as 65003",
+            "neighbor 2001:db8::NEW activate",
+            "exit-address-family",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))

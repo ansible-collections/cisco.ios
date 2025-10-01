@@ -80,7 +80,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 r"""
                 \s\saggregate-address
                 (\s(?P<address>\S+))?
-                (\s(?P<netmask>\S+))?
+                (\s(?P<netmask>\d+\.\d+\.\d+\.\d+))?
                 (\s(?P<as_set>as-set))?
                 (\s(?P<summary_only>summary-only))?
                 (\s(?P<as_confed_set>as-confed-set))?
@@ -90,8 +90,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "aggregate-address "
-            "{{ address }} {{ netmask }}"
+            "setval": "aggregate-address {{ address }}"
+            "{{ (' ' + netmask) if netmask is defined and ':' not in address else '' }}"
             "{{ ' as-set' if as_set|d(False) else ''}}"
             "{{ ' summary-only' if summary_only|d(False) else ''}}"
             "{{ ' as-confed-set' if as_confed_set|d(False) else ''}}"
