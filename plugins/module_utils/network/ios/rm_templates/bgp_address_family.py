@@ -80,7 +80,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 r"""
                 \s\saggregate-address
                 (\s(?P<address>\S+))?
-                (\s(?P<netmask>(?!as-set|summary-only|as-confed-set|advertise-map|attribute-map|suppress-map)\d+\.\d+\.\d+\.\d+))?
+                (\s(?P<netmask>\d+\.\d+\.\d+\.\d+))?
                 (\s(?P<as_set>as-set))?
                 (\s(?P<summary_only>summary-only))?
                 (\s(?P<as_confed_set>as-confed-set))?
