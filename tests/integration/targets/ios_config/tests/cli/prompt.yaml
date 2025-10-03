@@ -18,8 +18,7 @@
         prompt: "Do you wish to continue? [yes]:"
         answer: "yes"
     save_when: "changed"
-    
+
 - ansible.builtin.assert:
     that:
-      - result.changed == true  
-      
+      - result.changed == true

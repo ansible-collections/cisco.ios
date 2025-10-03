@@ -314,7 +314,7 @@ class Cliconf(CliconfBase):
             self.send_command(f"configure terminal revert timer {commit_timeout}")
         else:
             self.send_command("configure terminal")
-    
+
     @enable_mode
     def edit_config(self, candidate=None, commit=True, replace=None, comment=None):
         resp = {}
@@ -346,7 +346,7 @@ class Cliconf(CliconfBase):
         resp["request"] = requests
         resp["response"] = results
         return resp
-        
+                
     @enable_mode
     def edit_config_with_prompt(self, candidate=None, commit=True, replace=None, comment=None):
         resp = {}

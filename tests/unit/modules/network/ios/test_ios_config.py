@@ -197,7 +197,7 @@ class TestIosConfigModule(TestIosModule):
         self.execute_module(changed=True, commands=commands)
 
     def test_ios_config_prompt(self):
-        lines = [{ 
+        lines = [{
               "config_line" : "access-session accounting attributes filter-spec include list myVLANList",
               "prompt" : "Do you wish to continue\\? \\[yes]:",
               "answer" : "yes"
@@ -216,8 +216,8 @@ class TestIosConfigModule(TestIosModule):
 
         commands = ["access-session accounting attributes filter-spec include list myVLANList"]
         self.execute_module(changed=True, commands=commands)
-        
-         
+
+       
 
     def test_ios_config_replace_block(self):
         lines = ["description test string", "test string"]
