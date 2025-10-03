@@ -202,7 +202,7 @@ class TestIosConfigModule(TestIosModule):
                 "config_line": "access-session accounting attributes filter-spec include list myVLANList",
                 "prompt": "Do you wish to continue\\? \\[yes]:",
                 "answer": "yes",
-            }
+            },
         ]
         set_module_args(dict(lines=lines, save_when="changed"))
         module = MagicMock()

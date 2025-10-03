@@ -366,7 +366,7 @@ class Cliconf(CliconfBase):
 
                 if config_line != "end" and config_line[0] != "!":
                     results.append(
-                        self.send_command(command=config_line, prompt=prompt, answer=answer)
+                        self.send_command(command=config_line, prompt=prompt, answer=answer),
                     )
                     requests.append(config_line)
 

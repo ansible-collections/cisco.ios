@@ -589,7 +589,7 @@ def main():
                                         and command in module.params["before"]
                                     ):
                                         before_commands = {
-                                            "config_line": command
+                                            "config_line": command,
                                         }  # add before commands as dictonary type to config lines
                                         configs[:0].append(before_commands)
                                     if (
