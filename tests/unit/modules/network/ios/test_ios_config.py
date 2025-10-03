@@ -197,27 +197,27 @@ class TestIosConfigModule(TestIosModule):
         self.execute_module(changed=True, commands=commands)
 
     def test_ios_config_prompt(self):
-        lines = [{
-              "config_line" : "access-session accounting attributes filter-spec include list myVLANList",
-              "prompt" : "Do you wish to continue\\? \\[yes]:",
-              "answer" : "yes"
-              }]
+        lines = [
+            {
+                "config_line": "access-session accounting attributes filter-spec include list myVLANList",
+                "prompt": "Do you wish to continue\\? \\[yes]:",
+                "answer": "yes",
+            }
+        ]
         set_module_args(dict(lines=lines, save_when="changed"))
         module = MagicMock()
-        module.params = {"lines": lines , "src": None, "parents": None}
+        module.params = {"lines": lines, "src": None, "parents": None}
         candidate_config = ios_config.get_candidate_config(module)
 
         self.conn.get_diff = MagicMock(
             return_value=self.cliconf_obj.get_diff(
                 candidate_config,
-                self.running_config
+                self.running_config,
             ),
         )
 
         commands = ["access-session accounting attributes filter-spec include list myVLANList"]
         self.execute_module(changed=True, commands=commands)
-
-       
 
     def test_ios_config_replace_block(self):
         lines = ["description test string", "test string"]

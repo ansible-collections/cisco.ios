@@ -52,7 +52,7 @@ options:
       config_line:
         required: false
         type: str
-        description: use to specify config lines when options are required to declare,works sames as lines 
+        description: use to specify config lines when options are required to declare,works sames as lines
       prompt:
         required: false
         type: str
@@ -337,7 +337,7 @@ EXAMPLES = """
       - config_line: access-session accounting attributes filter-spec include list test_filter
         prompt: "Do you wish to continue? [yes]:"
         answer: "yes"
-    save_when: "changed"   
+    save_when: "changed"
 
 # Task Output :
 # --------
@@ -370,7 +370,7 @@ EXAMPLES = """
 #      src: null
 #  updates:
 #  - access-session authentication attributes filter-spec include list mylist
-#  - access-session accounting attributes filter-spec include list mylist   
+#  - access-session accounting attributes filter-spec include list mylist
 
 
 # Example ios_template.j2
@@ -459,11 +459,11 @@ def get_candidate_config(module):
     if module.params["src"]:
         candidate = module.params["src"]
     elif module.params["lines"]:
-        lines= []
+        lines = []
         for item in module.params["lines"]:
-            if isinstance(item,dict):
-                if item.get('config_line'):
-                    lines.append(item.get('config_line'))
+            if isinstance(item, dict):
+                if item.get("config_line"):
+                    lines.append(item.get("config_line"))
             else:
                 lines.append(item)
         candidate_obj = NetworkConfig(indent=1)
@@ -497,10 +497,10 @@ def main():
     """main entry point for module execution"""
     backup_spec = dict(filename=dict(), dir_path=dict(type="path"))
     line_spec = dict(
-                      config_line=dict(type="str",required=False),
-                      prompt=dict(type="str", required=False),
-                      answer=dict(type="str", required=False),
-                    )
+        config_line=dict(type="str", required=False),
+        prompt=dict(type="str", required=False),
+        answer=dict(type="str", required=False),
+    )
     argument_spec = dict(
         src=dict(type="str"),
         lines=dict(aliases=["commands"], type="list", elements="raw", options=line_spec),
@@ -582,24 +582,32 @@ def main():
                     configs = []
                     if module.params["lines"]:
                         for item in module.params["lines"]:
-                            if isinstance(item,dict):
+                            if isinstance(item, dict):
                                 for command in commands:
-                                    if  module.params["before"] and command in module.params["before"]:
-                                        before_commands = { "config_line" : command } #add before commands as dictonary type to config lines
+                                    if (
+                                        module.params["before"]
+                                        and command in module.params["before"]
+                                    ):
+                                        before_commands = {
+                                            "config_line": command
+                                        }  # add before commands as dictonary type to config lines
                                         configs[:0].append(before_commands)
-                                    if module.params["parents"] and command in module.params["parents"]:
-                                        parent_lines = { "config_line" : command }
-                                        configs.append(parent_lines) 
-                                    if command == item.get('config_line'):
+                                    if (
+                                        module.params["parents"]
+                                        and command in module.params["parents"]
+                                    ):
+                                        parent_lines = {"config_line": command}
+                                        configs.append(parent_lines)
+                                    if command == item.get("config_line"):
                                         configs.append(item)
-                                    if module.params["after"]and command in module.params["after"]:
-                                        after_lines = {"config_line" : command}
-                                        configs.extend(after_lines)  
+                                    if module.params["after"] and command in module.params["after"]:
+                                        after_lines = {"config_line": command}
+                                        configs.extend(after_lines)
                                 edit_config_or_macro(connection, commands, configs)
                             else:
-                                edit_config_or_macro(connection, commands, configs)  
-                    elif  module.params["src"]:
-                        edit_config_or_macro(connection, commands, configs)                         
+                                edit_config_or_macro(connection, commands, configs)
+                    elif module.params["src"]:
+                        edit_config_or_macro(connection, commands, configs)
                 if banner_diff:
                     connection.edit_banner(
                         candidate=json.dumps(banner_diff),

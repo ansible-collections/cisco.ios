@@ -346,7 +346,7 @@ class Cliconf(CliconfBase):
         resp["request"] = requests
         resp["response"] = results
         return resp
-                
+
     @enable_mode
     def edit_config_with_prompt(self, candidate=None, commit=True, replace=None, comment=None):
         resp = {}
@@ -360,12 +360,14 @@ class Cliconf(CliconfBase):
         if commit:
             self.configure()
             for item_dict in candidate:
-                config_line = item_dict.get('config_line')
-                prompt = item_dict.get('prompt')
-                answer = item_dict.get('answer')
+                config_line = item_dict.get("config_line")
+                prompt = item_dict.get("prompt")
+                answer = item_dict.get("answer")
 
                 if config_line != "end" and config_line[0] != "!":
-                    results.append(self.send_command(command=config_line, prompt=prompt, answer=answer))
+                    results.append(
+                        self.send_command(command=config_line, prompt=prompt, answer=answer)
+                    )
                     requests.append(config_line)
 
             self.send_command("end")
@@ -378,8 +380,6 @@ class Cliconf(CliconfBase):
         resp["request"] = requests
         resp["response"] = results
         return resp
-
-
 
     def edit_macro(self, candidate=None, commit=True, replace=None, comment=None):
         """
