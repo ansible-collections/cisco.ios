@@ -15,7 +15,7 @@
     lines:
       - config_line: access-session authentication attributes filter-spec include list mylist
       - config_line: access-session accounting attributes filter-spec include list mylist
-        prompt: "Do you wish to continue? [yes]:"
+        prompt: "Do you wish to continue\\? \\[yes]:"
         answer: "yes"
     save_when: "changed"
 
