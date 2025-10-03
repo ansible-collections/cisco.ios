@@ -239,7 +239,7 @@ options:
     type: dict
 """
 
-EXAMPLES = """""
+EXAMPLES = """
 - name: Configure top level configuration
   cisco.ios.ios_config:
     lines: hostname {{ inventory_hostname }}
@@ -360,7 +360,7 @@ EXAMPLES = """""
 #      - config_line: access-session authentication attributes filter-spec include list mylist
 #      - answer: 'yes'
 #        config_line: access-session accounting attributes filter-spec include list mylist
-#        prompt: 'Do you wish to continue\? \[yes]:'
+#        prompt: 'Do you wish to continue\?\[yes]:'
 #      match: line
 #      multiline_delimiter: '@'
 #      parents: null
