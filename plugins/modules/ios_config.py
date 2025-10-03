@@ -48,7 +48,7 @@ options:
         some commands are automatically modified by the device config parser.
     type: list
     elements: raw
-    options:
+    suboptions:
       config_line:
         required: false
         type: str
