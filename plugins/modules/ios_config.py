@@ -335,7 +335,7 @@ EXAMPLES = """
     lines:
       - config_line: access-session authentication attributes filter-spec include list test_filter
       - config_line: access-session accounting attributes filter-spec include list test_filter
-        prompt: "Do you wish to continue[yes]:"
+        prompt: "Do you wish to continue\\? \\[yes]:"
         answer: "yes"
     save_when: "changed"   
 
@@ -358,9 +358,9 @@ EXAMPLES = """
 #      intended_config: null
 #      lines:
 #      - config_line: access-session authentication attributes filter-spec include list mylist
-#      - answer: 'yes'
+#      - answer: "yes"
 #        config_line: access-session accounting attributes filter-spec include list mylist
-#        prompt: 'Do you wish to continue\?\[yes]:'
+#        prompt: "Do you wish to continue\\? \\[yes]:"
 #      match: line
 #      multiline_delimiter: '@'
 #      parents: null
