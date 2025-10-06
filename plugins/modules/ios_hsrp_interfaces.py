@@ -147,18 +147,16 @@ options:
                 type: bool
           ipv6:
             description: Enable HSRP IPv6 and set the IP address
-            type: list
-            elements: dict
+            type: dict
+            elements: str
             suboptions:
-              link_local_address:
-                description: 'X:x:X:x::X  IPv6 link-local address'
-                type: str
-              prefix:
-                description: 'X:x:X:x::X/<0-128>  IPv6 prefix'
-                type: str
               autoconfig:
                 description: Obtain address using autoconfiguration
                 type: bool
+              addresses:
+                description: IPv6 link-local address or IPv6 prefix
+                type: list
+                elements: str
           mac_address:
             description: Virtual MAC address
             type: str

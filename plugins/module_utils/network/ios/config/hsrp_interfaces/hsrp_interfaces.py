@@ -19,8 +19,6 @@ created.
 """
 
 
-import q
-
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -62,7 +60,6 @@ class Hsrp_interfaces(ResourceModule):
             "redirect.timers",
         ]
         self.complex_parsers = ["track", "ip"]
-        self.ipv6_parsers = ["link_local_address", "prefix", "autoconfig"]
         self.non_complex_parsers = [
             "priority",
             "timers.msec",
@@ -92,10 +89,10 @@ class Hsrp_interfaces(ResourceModule):
         """
         wantd = {entry["name"]: entry for entry in self.want}
         haved = {entry["name"]: entry for entry in self.have}
-        q(wantd)
+
         wantd = self.convert_list_to_dict(wantd)
         haved = self.convert_list_to_dict(haved)
-        q(wantd)
+
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
@@ -130,9 +127,6 @@ class Hsrp_interfaces(ResourceModule):
         def list_to_dict(lst, key_name):
             return {item[key_name]: item for item in lst if key_name in item}
 
-        def list_to_dict_ipv6(lst, key_name, sub_key_name):
-            return {item.get(key_name, "") + item.get(sub_key_name, ""): item for item in lst}
-
         result = {}
 
         for iface_name, iface_data in data.items():
@@ -152,8 +146,6 @@ class Hsrp_interfaces(ResourceModule):
                         new_group[key] = list_to_dict(value, "virtual_ip")
                     elif key == "track" and isinstance(value, list):
                         new_group[key] = list_to_dict(value, "track_no")
-                    elif key == "ipv6" and isinstance(value, list):
-                        new_group[key] = list_to_dict_ipv6(value, "prefix", "link_local_address")
                     elif key != "group_no":
                         new_group[key] = value
 
@@ -176,7 +168,7 @@ class Hsrp_interfaces(ResourceModule):
         }
         for group_number, wanting_data in want_standby_group.items():
             having_data = have_standby_group.get(group_number, {})
-            q(wanting_data)
+
             for _parser in self.complex_parsers:
                 wantd = wanting_data.get(_parser, {})
                 haved = having_data.get(_parser, {})
@@ -198,18 +190,24 @@ class Hsrp_interfaces(ResourceModule):
             if wanting_data.get("ipv6"):
                 wantd_ipv6 = wanting_data.pop("ipv6", {})
                 haved_ipv6 = wanting_data.pop("ipv6", {})
+                # this is to preserve the order in which ipv6 addresses are applied to the device
+                is_ipv6_idempotent = False
+                dt_want = {w_add: w_add for w_add in wantd_ipv6.get("addresses", {})}
+                dt_have = {h_add: h_add for h_add in haved_ipv6.get("addresses", {})}
+                if dt_want == dt_have:
+                    is_ipv6_idempotent = True
+
                 for key, w_ipv6 in wantd_ipv6.items():
-                    q(w_ipv6)
-                    h_ipv6 = {}
-                    if haved_ipv6:
-                        h_ipv6 = haved_ipv6.pop(key, {})
-                        if h_ipv6:
-                            h_ipv6.update({"group_no": group_number})
-                    w_ipv6.update({"group_no": group_number})
-                    q(w_ipv6)
-                    if h_ipv6 and h_ipv6 != w_ipv6:
-                        self.compare(parsers=self.ipv6_parsers, want={}, have=h_ipv6)
-                    self.compare(parsers=self.ipv6_parsers, want=w_ipv6, have=h_ipv6)
+                    if key == "addresses" and not is_ipv6_idempotent:
+                        if self.state != "merged" and haved_ipv6.get("addresses"):
+                            self.commands.append(f"no standby {group_number} ipv6")
+                        for addr in w_ipv6:
+                            self.commands.append(f"standby {group_number} ipv6 {addr}")
+                    if key == "autoconfig":
+                        if w_ipv6 is True and not haved_ipv6.get("autoconfig", False):
+                            self.commands.append(f"standby {group_number} ipv6 autoconfig")
+                        else:
+                            self.commands.append(f"no standby {group_number} ipv6 autoconfig")
 
             for _par in self.non_complex_parsers:
                 _parser = parser_dict.get(_par, _par)
@@ -238,10 +236,7 @@ class Hsrp_interfaces(ResourceModule):
         # Removal of unecessary configs in have_standby_group
         for group_number, having_data in have_standby_group.items():
             if having_data:
-                for _par in self.complex_parsers:
-                    _parser = _par
-                    if len(_parser) >= 4 and _parser[:4] == "ipv6":
-                        _parser = "ipv6"
+                for _parser in self.complex_parsers:
                     haved = having_data.pop(_parser, {})
                     for key, having_parser_data in haved.items():
                         having_parser_data.update({"group_no": group_number})

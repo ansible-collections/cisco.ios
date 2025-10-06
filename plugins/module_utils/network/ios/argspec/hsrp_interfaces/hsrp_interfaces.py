@@ -109,11 +109,12 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                             },
                         },
                         "ipv6": {
-                            "type": "list",
-                            "elements": "dict",
+                            "type": "dict",
                             "options": {
-                                "link_local_address": {"type": "str"},
-                                "prefix": {"type": "str"},
+                                "addresses": {
+                                    "type": "list",
+                                    "elements": "str",
+                                },
                                 "autoconfig": {"type": "bool"},
                             },
                         },

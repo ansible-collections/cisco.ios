@@ -687,8 +687,8 @@ Parameters
                     <b>ipv6</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=dictionary</span>
+                        <span style="color: purple">dictionary</span>
+                         / <span style="color: purple">elements=string</span>
                     </div>
                 </td>
                 <td>
@@ -698,6 +698,25 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>addresses</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>IPv6 link-local address or IPv6 prefix</div>
+                </td>
+            </tr>
+            <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -717,42 +736,6 @@ Parameters
                 </td>
                 <td>
                         <div>Obtain address using autoconfiguration</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>link_local_address</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>X:x:X:x::X  IPv6 link-local address</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>prefix</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>X:x:X:x::X/&lt;0-128&gt;  IPv6 prefix</div>
                 </td>
             </tr>
 

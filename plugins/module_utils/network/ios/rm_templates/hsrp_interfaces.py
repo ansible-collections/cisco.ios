@@ -307,56 +307,6 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "link_local_address",
-            "getval": re.compile(
-                r"""
-                \s+standby
-                (\s(?P<group_no>\d+))
-                \sipv6
-                (\s(?P<link_local_address>[a-fA-F0-9:]+))
-                $""", re.VERBOSE,
-            ),
-            "setval": "standby"
-                      "{{ ' ' + group_no|string if group_no is defined else ''}}"
-                      " ipv6"
-                      "{{ ' ' + link_local_address if link_local_address is defined else ''}}",
-            "result": {
-                "{{ name }}": {
-                    "standby_groups": [{
-                        "group_no": "{{ group_no }}",
-                        "ipv6": [{
-                            "link_local_address": "{{ link_local_address }}",
-                        }],
-                    }],
-                },
-            },
-        },
-        {
-            "name": "prefix",
-            "getval": re.compile(
-                r"""
-                \s*standby
-                (?:\s+(?P<group_no>\d+))?
-                \s+ipv6\s+
-                (?P<prefix>[a-fA-F0-9:]+\/\d+)
-                $""", re.VERBOSE,
-            ),
-            "setval": "standby"
-                      "{{ ' ' + group_no|string if group_no is defined else ''}}"
-                      " ipv6"
-                      "{{ ' ' + prefix if prefix is defined else ''}}",
-            "result": {
-                "{{ name }}": {
-                    "standby_groups": [{
-                        "group_no": "{{ group_no }}",
-                        "ipv6": [{
-                            "prefix": "{{ prefix }}",
-                        }],
-                    }],
-                },
-            },
-        },
-        {
             "name": "autoconfig",
             "getval": re.compile(
                 r"""
@@ -374,10 +324,37 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 "{{ name }}": {
                     "standby_groups": [{
                         "group_no": "{{ group_no }}",
-                        "ipv6": [{
+                        "ipv6": {
                             "autoconfig": "{{ not not autoconfig }}",
-                        }],
+                        },
                     }],
+                },
+            },
+        },
+        {
+            "name": "address",
+            "getval": re.compile(
+                r"""
+                \s+standby
+                (\s(?P<group_no>\d+))
+                \sipv6
+                (\s(?P<address>\S+))
+                $""", re.VERBOSE,
+            ),
+            "setval": "standby"
+                      "{{ ' ' + group_no|string if group_no is defined else ''}}"
+                      " ipv6"
+                      "{{ ' ' + address if address is defined else ''}}",
+            "result": {
+                "{{ name }}": {
+                    "standby_groups": [
+                        {
+                            "group_no": "{{ group_no }}",
+                            "process_ipv6": True,
+                            "ipv6_address{{ address }}": "{{ address }}",
+                            "address": "{{ address }}",
+                        },
+                    ],
                 },
             },
         },
