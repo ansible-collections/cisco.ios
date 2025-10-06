@@ -347,6 +347,40 @@ class Cliconf(CliconfBase):
         resp["response"] = results
         return resp
 
+    @enable_mode
+    def edit_config_with_prompt(self, candidate=None, commit=True, replace=None, comment=None):
+        resp = {}
+        operations = self.get_device_operations()
+        self.check_edit_config_capability(operations, candidate, commit, replace, comment)
+
+        results = []
+        requests = []
+        # commit confirm specific attributes
+        commit_confirm = self.get_option("commit_confirm_immediate")
+        if commit:
+            self.configure()
+            for item_dict in candidate:
+                config_line = item_dict.get("config_line")
+                prompt = item_dict.get("prompt")
+                answer = item_dict.get("answer")
+
+                if config_line != "end" and config_line[0] != "!":
+                    results.append(
+                        self.send_command(command=config_line, prompt=prompt, answer=answer),
+                    )
+                    requests.append(config_line)
+
+            self.send_command("end")
+            if commit_confirm:
+                self.send_command("configure confirm")
+
+        else:
+            raise ValueError("check mode is not supported")
+
+        resp["request"] = requests
+        resp["response"] = results
+        return resp
+
     def edit_macro(self, candidate=None, commit=True, replace=None, comment=None):
         """
         ios_config:
