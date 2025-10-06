@@ -19,6 +19,8 @@ created.
 """
 
 
+import q
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -32,7 +34,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.hsrp_interfaces import (
     Hsrp_interfacesTemplate,
 )
-import q
+
 
 class Hsrp_interfaces(ResourceModule):
     """
@@ -93,7 +95,7 @@ class Hsrp_interfaces(ResourceModule):
         q(wantd)
         wantd = self.convert_list_to_dict(wantd)
         haved = self.convert_list_to_dict(haved)
-        q(wantd)    
+        q(wantd)
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
@@ -208,7 +210,7 @@ class Hsrp_interfaces(ResourceModule):
                     if h_ipv6 and h_ipv6 != w_ipv6:
                         self.compare(parsers=self.ipv6_parsers, want={}, have=h_ipv6)
                     self.compare(parsers=self.ipv6_parsers, want=w_ipv6, have=h_ipv6)
-                    
+
             for _par in self.non_complex_parsers:
                 _parser = parser_dict.get(_par, _par)
                 wantd = wanting_data.get(_parser, {})
@@ -232,8 +234,7 @@ class Hsrp_interfaces(ResourceModule):
                     self.compare(parsers=[_par], want={_parser: wantd}, have={_parser: haved})
             for key, value in parser_dict.items():
                 haved = having_data.pop(value, {})
-                
-                
+
         # Removal of unecessary configs in have_standby_group
         for group_number, having_data in have_standby_group.items():
             if having_data:
