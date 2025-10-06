@@ -112,8 +112,8 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                             "type": "list",
                             "elements": "dict",
                             "options": {
-                                "ipv6_link": {"type": "str"},
-                                "ipv6_prefix": {"type": "str"},
+                                "link_local_address": {"type": "str"},
+                                "prefix": {"type": "str"},
                                 "autoconfig": {"type": "bool"},
                             },
                         },

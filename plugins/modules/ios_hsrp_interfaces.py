@@ -150,10 +150,10 @@ options:
             type: list
             elements: dict
             suboptions:
-              ipv6_link:
+              link_local_address:
                 description: 'X:x:X:x::X  IPv6 link-local address'
                 type: str
-              ipv6_prefix:
+              prefix:
                 description: 'X:x:X:x::X/<0-128>  IPv6 prefix'
                 type: str
               autoconfig:

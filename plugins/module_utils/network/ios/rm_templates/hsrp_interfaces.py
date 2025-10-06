@@ -307,69 +307,69 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "ipv6.link",
+            "name": "link_local_address",
             "getval": re.compile(
                 r"""
-                \s*standby
-                (?:\s+(?P<group_no>\d+))?
-                \s+ipv6\s+
-                (?P<virtual_ipv6>[a-fA-F0-9:]+)
+                \s+standby
+                (\s(?P<group_no>\d+))
+                \sipv6
+                (\s(?P<link_local_address>[a-fA-F0-9:]+))
                 $""", re.VERBOSE,
             ),
             "setval": "standby"
-                      "{{ ' ' + ipv6.group_no|string if ipv6.group_no is defined else ''}}"
+                      "{{ ' ' + group_no|string if group_no is defined else ''}}"
                       " ipv6"
-                      "{{ ' ' + ipv6.virtual_ipv6 if ipv6.virtual_ipv6 is defined else ''}}",
+                      "{{ ' ' + link_local_address if link_local_address is defined else ''}}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
                         "group_no": "{{ group_no }}",
                         "ipv6": [{
-                            "virtual_ipv6": "{{ virtual_ipv6 }}",
+                            "link_local_address": "{{ link_local_address }}",
                         }],
                     }],
                 },
             },
         },
         {
-            "name": "ipv6.prefix",
+            "name": "prefix",
             "getval": re.compile(
                 r"""
                 \s*standby
                 (?:\s+(?P<group_no>\d+))?
                 \s+ipv6\s+
-                (?P<virtual_ipv6_prefix>[a-fA-F0-9:]+\/\d+)
+                (?P<prefix>[a-fA-F0-9:]+\/\d+)
                 $""", re.VERBOSE,
             ),
             "setval": "standby"
-                      "{{ ' ' + ipv6.group_no|string if ipv6.group_no is defined else ''}}"
+                      "{{ ' ' + group_no|string if group_no is defined else ''}}"
                       " ipv6"
-                      "{{ ' ' + ipv6.virtual_ipv6_prefix if ipv6.virtual_ipv6_prefix is defined else ''}}",
+                      "{{ ' ' + prefix if prefix is defined else ''}}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
                         "group_no": "{{ group_no }}",
                         "ipv6": [{
-                            "virtual_ipv6_prefix": "{{ virtual_ipv6_prefix }}",
+                            "prefix": "{{ prefix }}",
                         }],
                     }],
                 },
             },
         },
         {
-            "name": "ipv6.autoconfig",
+            "name": "autoconfig",
             "getval": re.compile(
                 r"""
                 \s*standby
                 (?:\s+(?P<group_no>\d+))
                 \s+ipv6
-                (?:\s+(?P<autoconfig>autoconfig))?
+                (?:\s+(?P<autoconfig>autoconfig))
                 $""", re.VERBOSE,
             ),
             "setval": "standby"
-                      "{{ ' ' + ipv6.group_no|string if ipv6.group_no is defined else ''}}"
+                      "{{ ' ' + group_no|string if group_no is defined else ''}}"
                       " ipv6"
-                      "{{ ' autoconfig' if ipv6.autoconfig|d(False) else ''}}",
+                      "{{ ' autoconfig' if autoconfig|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
                     "standby_groups": [{
