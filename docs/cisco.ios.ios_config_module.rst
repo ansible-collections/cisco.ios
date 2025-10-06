@@ -212,7 +212,7 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=string</span>
+                         / <span style="color: purple">elements=raw</span>
                     </div>
                 </td>
                 <td>
@@ -222,6 +222,55 @@ Parameters
                         <div style="font-size: small; color: darkgreen"><br/>aliases: commands</div>
                 </td>
             </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>answer</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>answer to send to device in order to handle prompt on device in configration mode</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>config_line</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>use to specify config lines when options are required to declare,works sames as lines</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>prompt</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>prompt message to handle while editng configurations on device in configration mode</div>
+                </td>
+            </tr>
+
             <tr>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -457,6 +506,49 @@ Examples
         backup_options:
           filename: backup.cfg
           dir_path: /home/user
+
+    - name: Configure Access Session Attributes while handlening prompt
+      cisco.ios.ios_config:
+        lines:
+          - config_line: access-session authentication attributes filter-spec include list test_filter
+          - config_line: access-session accounting attributes filter-spec include list test_filter
+            prompt: "Do you wish to continue? [yes]:"
+            answer: "yes"
+        save_when: "changed"
+
+    # Task Output :
+    # --------
+    #
+    # banners: {}
+    #  commands:
+    #  - access-session authentication attributes filter-spec include list mylist
+    #  - access-session accounting attributes filter-spec include list mylist
+    #  invocation:
+    #    module_args:
+    #      after: null
+    #     backup: false
+    #      backup_options: null
+    #      before: null
+    #      defaults: false
+    #      diff_against: null
+    #      diff_ignore_lines: null
+    #      intended_config: null
+    #      lines:
+    #      - config_line: access-session authentication attributes filter-spec include list mylist
+    #      - answer: "yes"
+    #        config_line: access-session accounting attributes filter-spec include list mylist
+    #        prompt: "Do you wish to continue? [yes]:"
+    #      match: line
+    #      multiline_delimiter: '@'
+    #      parents: null
+    #      replace: line
+    #      running_config: null
+    #      save_when: changed
+    #      src: null
+    #  updates:
+    #  - access-session authentication attributes filter-spec include list mylist
+    #  - access-session accounting attributes filter-spec include list mylist
+
 
     # Example ios_template.j2
     # ip access-list extended test
