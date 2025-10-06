@@ -57,6 +57,7 @@ class L2_interfaces(ResourceModule):
             "voice.vlan_tag",
             "voice.vlan_name",
             "mode",
+            "private_vlan",
             "trunk.encapsulation",
             "trunk.native_vlan",
             "app_interface",
