@@ -1,3 +1,0 @@
----
-bugfixes:
-  - cisco.ios.ios_vrf_global - fixed issue preventing idempotent configuration of multiple import/export route-targets for a VRF.
