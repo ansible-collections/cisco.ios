@@ -1208,6 +1208,7 @@ Notes
    - Tested against Cisco IOSXE Version 17.16.
    - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
    - The module examples uses callback plugin (callback_result_format=yaml) to generate task output in yaml format.
+   - For idempotency, the module consieders that version defaults to 1 as it is implied by the applaince and not available in the running-config. Priority defaults to 100 if not specified in the configuration.
 
 
 
