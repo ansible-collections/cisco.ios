@@ -1,18 +1,14 @@
-.. Created with antsibull-docs 2.21.0
+.. _cisco.ios.ios_vlans_module:
 
-cisco.ios.ios_vlans module -- Resource module to configure VLANs.
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-This module is part of the `cisco.ios collection <https://galaxy.ansible.com/ui/repo/published/cisco/ios/>`_ (version 11.1.0).
+*******************
+cisco.ios.ios_vlans
+*******************
 
-It is not included in ``ansible-core``.
-To check whether it is installed, run ``ansible-galaxy collection list``.
+**Resource module to configure VLANs.**
 
-To install it, use: :code:`ansible\-galaxy collection install cisco.ios`.
 
-To use it in a playbook, specify: ``cisco.ios.ios_vlans``.
-
-New in cisco.ios 1.0.0
+Version added: 1.0.0
 
 .. contents::
    :local:
@@ -21,12 +17,7 @@ New in cisco.ios 1.0.0
 
 Synopsis
 --------
-
 - This module provides declarative management of VLANs on Cisco IOS network devices.
-
-
-
-
 
 
 
@@ -36,294 +27,312 @@ Parameters
 
 .. raw:: html
 
-  <table style="width: 100%;">
-  <thead>
-    <tr>
-    <th colspan="3"><p>Parameter</p></th>
-    <th><p>Comments</p></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td colspan="3" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config"></div>
-      <p style="display: inline;"><strong>config</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">list</span>
-        / <span style="color: purple;">elements=dictionary</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>A dictionary of VLANs options</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/member"></div>
-      <p style="display: inline;"><strong>member</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/member" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">dictionary</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Members of VLAN</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/member/evi"></div>
-      <p style="display: inline;"><strong>evi</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/member/evi" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">integer</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Ethernet Virtual Private Network (EVPN)</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/member/vni"></div>
-      <p style="display: inline;"><strong>vni</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/member/vni" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">integer</span>
-        / <span style="color: red;">required</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>VXLAN vni</p>
-    </td>
-  </tr>
+    <table  border=0 cellpadding=0 class="documentation-table">
+        <tr>
+            <th colspan="3">Parameter</th>
+            <th>Choices/<font color="blue">Defaults</font></th>
+            <th width="100%">Comments</th>
+        </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>config</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>A dictionary of VLANs options</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>member</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Members of VLAN</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>evi</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Ethernet Virtual Private Network (EVPN)</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vni</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>VXLAN vni</div>
+                </td>
+            </tr>
 
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/mtu"></div>
-      <p style="display: inline;"><strong>mtu</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/mtu" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">integer</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>VLAN Maximum Transmission Unit.</p>
-      <p>Refer to vendor documentation for valid values.</p>
-      <p>This option is DEPRECATED use ios_interfaces to configure mtu, this attribute will be removed after 2027-01-01.</p>
-      <p>mtu is collected as part of facts, but a mtu command wont be fired if the configuration is present in the playbook.</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/name"></div>
-      <p style="display: inline;"><strong>name</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/name" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Ascii name of the VLAN.</p>
-      <p>NOTE, <em>name</em> should not be named/appended with <em>default</em> as it is reserved for device default vlans.</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/private_vlan"></div>
-      <p style="display: inline;"><strong>private_vlan</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/private_vlan" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">dictionary</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Options for private vlan configuration.</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/private_vlan/associated"></div>
-      <p style="display: inline;"><strong>associated</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/private_vlan/associated" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">list</span>
-        / <span style="color: purple;">elements=integer</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>List of private VLANs associated with the primary . Only works with `type: primary`.</p>
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/private_vlan/type"></div>
-      <p style="display: inline;"><strong>type</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/private_vlan/type" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Private VLAN type</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>&#34;primary&#34;</code></p></li>
-        <li><p><code>&#34;isolated&#34;</code></p></li>
-        <li><p><code>&#34;community&#34;</code></p></li>
-      </ul>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mtu</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>VLAN Maximum Transmission Unit.</div>
+                        <div>Refer to vendor documentation for valid values.</div>
+                        <div>This option is DEPRECATED use ios_interfaces to configure mtu, this attribute will be removed after 2027-01-01.</div>
+                        <div>mtu is collected as part of facts, but a mtu command wont be fired if the configuration is present in the playbook.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>name</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Ascii name of the VLAN.</div>
+                        <div>NOTE, <em>name</em> should not be named/appended with <em>default</em> as it is reserved for device default vlans.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>private_vlan</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Options for private vlan configuration.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>associated</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>List of private VLANs associated with the primary . Only works with `type: primary`.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>type</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>primary</li>
+                                    <li>isolated</li>
+                                    <li>community</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Private VLAN type</div>
+                </td>
+            </tr>
 
-    </td>
-  </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>remote_span</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Configure as Remote SPAN VLAN</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>shutdown</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>enabled</li>
+                                    <li>disabled</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Specifies whether VLAN switching should be administratively enabled or disabled.</div>
+                        <div>When set to <code>enabled</code>, the VLAN interface is administratively shut down, which prevents it from forwarding traffic.</div>
+                        <div>When set to <code>disabled</code>, the VLAN interface is administratively enabled by issuing the internal <code>no shutdown</code> command, allowing it to forward traffic.</div>
+                        <div>The operational state of the VLAN depends on both the administrative state (<code>shutdown</code> or <code>no shutdown</code>) and the physical link status.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>state</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>active</li>
+                                    <li>suspend</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Operational state of the VLAN</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>vlan_id</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>ID of the VLAN. Range 1-4094</div>
+                </td>
+            </tr>
 
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/remote_span"></div>
-      <p style="display: inline;"><strong>remote_span</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/remote_span" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">boolean</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Configure as Remote SPAN VLAN</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>false</code></p></li>
-        <li><p><code>true</code></p></li>
-      </ul>
-
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/shutdown"></div>
-      <p style="display: inline;"><strong>shutdown</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/shutdown" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Specifies whether VLAN switching should be administratively enabled or disabled.</p>
-      <p>When set to <code class='docutils literal notranslate'>enabled</code>, the VLAN interface is administratively shut down, which prevents it from forwarding traffic.</p>
-      <p>When set to <code class='docutils literal notranslate'>disabled</code>, the VLAN interface is administratively enabled by issuing the internal <code class='docutils literal notranslate'>no shutdown</code> command, allowing it to forward traffic.</p>
-      <p>The operational state of the VLAN depends on both the administrative state (<code class='docutils literal notranslate'>shutdown</code> or <code class='docutils literal notranslate'>no shutdown</code>) and the physical link status.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>&#34;enabled&#34;</code></p></li>
-        <li><p><code>&#34;disabled&#34;</code></p></li>
-      </ul>
-
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/state"></div>
-      <p style="display: inline;"><strong>state</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/state" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Operational state of the VLAN</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code>&#34;active&#34;</code></p></li>
-        <li><p><code>&#34;suspend&#34;</code></p></li>
-      </ul>
-
-    </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td colspan="2" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-config/vlan_id"></div>
-      <p style="display: inline;"><strong>vlan_id</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-config/vlan_id" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">integer</span>
-        / <span style="color: red;">required</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>ID of the VLAN. Range 1-4094</p>
-    </td>
-  </tr>
-
-  <tr>
-    <td colspan="3" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-running_config"></div>
-      <p style="display: inline;"><strong>running_config</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-running_config" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>This option is used only with state <em>parsed</em>.</p>
-      <p>The value of this option should be the output received from the IOS device by executing the command <b>show vlan</b>.</p>
-      <p>The state <em>parsed</em> reads the configuration from <code class='docutils literal notranslate'>running_config</code> option and transforms it into Ansible structured data as per the resource module&#x27;s argspec and the value is then returned in the <em>parsed</em> key within the result.</p>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="3" valign="top">
-      <div class="ansibleOptionAnchor" id="parameter-state"></div>
-      <p style="display: inline;"><strong>state</strong></p>
-      <a class="ansibleOptionLink" href="#parameter-state" title="Permalink to this option"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>The state the configuration should be left in</p>
-      <p>The states <em>rendered</em>, <em>gathered</em> and <em>parsed</em> does not perform any change on the device.</p>
-      <p>The state <em>rendered</em> will transform the configuration in <code class='docutils literal notranslate'>config</code> option to platform specific CLI commands which will be returned in the <em>rendered</em> key within the result. For state <em>rendered</em> active connection to remote host is not required.</p>
-      <p>The state <em>gathered</em> will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the <em>gathered</em> key within the result.</p>
-      <p>The state <em>parsed</em> reads the configuration from <code class='docutils literal notranslate'>running_config</code> option and transforms it into JSON format as per the resource module parameters and the value is returned in the <em>parsed</em> key within the result. The value of <code class='docutils literal notranslate'>running_config</code> option should be the same format as the output of commands <em>show vlan</em> and <em>show running-config | sec ^vlan configuration .+</em> executed on device. For state <em>parsed</em> active connection to remote host is not required.</p>
-      <p style="margin-top: 8px;"><b">Choices:</b></p>
-      <ul>
-        <li><p><code style="color: blue;"><b>&#34;merged&#34;</b></code> <span style="color: blue;">← (default)</span></p></li>
-        <li><p><code>&#34;replaced&#34;</code></p></li>
-        <li><p><code>&#34;overridden&#34;</code></p></li>
-        <li><p><code>&#34;deleted&#34;</code></p></li>
-        <li><p><code>&#34;rendered&#34;</code></p></li>
-        <li><p><code>&#34;gathered&#34;</code></p></li>
-        <li><p><code>&#34;purged&#34;</code></p></li>
-        <li><p><code>&#34;parsed&#34;</code></p></li>
-      </ul>
-
-    </td>
-  </tr>
-  </tbody>
-  </table>
-
-
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>running_config</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>This option is used only with state <em>parsed</em>.</div>
+                        <div>The value of this option should be the output received from the IOS device by executing the command <b>show vlan</b>.</div>
+                        <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into Ansible structured data as per the resource module&#x27;s argspec and the value is then returned in the <em>parsed</em> key within the result.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>state</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>merged</b>&nbsp;&larr;</div></li>
+                                    <li>replaced</li>
+                                    <li>overridden</li>
+                                    <li>deleted</li>
+                                    <li>rendered</li>
+                                    <li>gathered</li>
+                                    <li>purged</li>
+                                    <li>parsed</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>The state the configuration should be left in</div>
+                        <div>The states <em>rendered</em>, <em>gathered</em> and <em>parsed</em> does not perform any change on the device.</div>
+                        <div>The state <em>rendered</em> will transform the configuration in <code>config</code> option to platform specific CLI commands which will be returned in the <em>rendered</em> key within the result. For state <em>rendered</em> active connection to remote host is not required.</div>
+                        <div>The state <em>gathered</em> will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the <em>gathered</em> key within the result.</div>
+                        <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into JSON format as per the resource module parameters and the value is returned in the <em>parsed</em> key within the result. The value of <code>running_config</code> option should be the same format as the output of commands <em>show vlan</em> and <em>show running-config | sec ^vlan configuration .+</em> executed on device. For state <em>parsed</em> active connection to remote host is not required.</div>
+                </td>
+            </tr>
+    </table>
+    <br/>
 
 
 Notes
 -----
 
-- Tested against Cisco IOS\-XE device with Version 17.13.01 on Cat9k on CML.
-- Starting from v2.5.0, this module will fail when run against Cisco IOS devices that do not support VLANs. The offline states (\ :literal:`rendered` and :literal:`parsed`\ ) will work as expected.
-- This module works with connection :literal:`network\_cli`. See \ `https://docs.ansible.com/ansible/latest/network/user\_guide/platform\_ios.html <https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html>`__
+.. note::
+   - Tested against Cisco IOS-XE device with Version 17.13.01 on Cat9k on CML.
+   - Starting from v2.5.0, this module will fail when run against Cisco IOS devices that do not support VLANs. The offline states (``rendered`` and ``parsed``) will work as expected.
+   - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
+
 
 
 Examples
@@ -1442,119 +1451,126 @@ Examples
 
 
 
-
 Return Values
 -------------
-The following are the fields unique to this module:
+Common return values are documented `here <https://docs.ansible.com/ansible/latest/reference_appendices/common_return_values.html#common-return-values>`_, the following are the fields unique to this module:
 
 .. raw:: html
 
-  <table style="width: 100%;">
-  <thead>
-    <tr>
-    <th><p>Key</p></th>
-    <th><p>Description</p></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="return-after"></div>
-      <p style="display: inline;"><strong>after</strong></p>
-      <a class="ansibleOptionLink" href="#return-after" title="Permalink to this return value"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">dictionary</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>The resulting configuration after module execution.</p>
-      <p style="margin-top: 8px;"><b>Returned:</b> when changed</p>
-      <p style="margin-top: 8px; color: blue; word-wrap: break-word; word-break: break-all;"><b style="color: black;">Sample:</b> <code>&#34;This output will always be in the same format as the module argspec.\n&#34;</code></p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="return-before"></div>
-      <p style="display: inline;"><strong>before</strong></p>
-      <a class="ansibleOptionLink" href="#return-before" title="Permalink to this return value"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">dictionary</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>The configuration prior to the module execution.</p>
-      <p style="margin-top: 8px;"><b>Returned:</b> when <em>state</em> is <code class='docutils literal notranslate'>merged</code>, <code class='docutils literal notranslate'>replaced</code>, <code class='docutils literal notranslate'>overridden</code>, <code class='docutils literal notranslate'>deleted</code> or <code class='docutils literal notranslate'>purged</code></p>
-      <p style="margin-top: 8px; color: blue; word-wrap: break-word; word-break: break-all;"><b style="color: black;">Sample:</b> <code>&#34;This output will always be in the same format as the module argspec.\n&#34;</code></p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="return-commands"></div>
-      <p style="display: inline;"><strong>commands</strong></p>
-      <a class="ansibleOptionLink" href="#return-commands" title="Permalink to this return value"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">list</span>
-        / <span style="color: purple;">elements=string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>The set of commands pushed to the remote device.</p>
-      <p style="margin-top: 8px;"><b>Returned:</b> when <em>state</em> is <code class='docutils literal notranslate'>merged</code>, <code class='docutils literal notranslate'>replaced</code>, <code class='docutils literal notranslate'>overridden</code>, <code class='docutils literal notranslate'>deleted</code> or <code class='docutils literal notranslate'>purged</code></p>
-      <p style="margin-top: 8px; color: blue; word-wrap: break-word; word-break: break-all;"><b style="color: black;">Sample:</b> <code>[&#34;vlan configuration 202&#34;, &#34;state active&#34;, &#34;remote-span&#34;]</code></p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="return-gathered"></div>
-      <p style="display: inline;"><strong>gathered</strong></p>
-      <a class="ansibleOptionLink" href="#return-gathered" title="Permalink to this return value"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">list</span>
-        / <span style="color: purple;">elements=string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>Facts about the network resource gathered from the remote device as structured data.</p>
-      <p style="margin-top: 8px;"><b>Returned:</b> when <em>state</em> is <code class='docutils literal notranslate'>gathered</code></p>
-      <p style="margin-top: 8px; color: blue; word-wrap: break-word; word-break: break-all;"><b style="color: black;">Sample:</b> <code>[&#34;This output will always be in the same format as the module argspec.\n&#34;]</code></p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="return-parsed"></div>
-      <p style="display: inline;"><strong>parsed</strong></p>
-      <a class="ansibleOptionLink" href="#return-parsed" title="Permalink to this return value"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">list</span>
-        / <span style="color: purple;">elements=string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>The device native config provided in <em>running_config</em> option parsed into structured data as per module argspec.</p>
-      <p style="margin-top: 8px;"><b>Returned:</b> when <em>state</em> is <code class='docutils literal notranslate'>parsed</code></p>
-      <p style="margin-top: 8px; color: blue; word-wrap: break-word; word-break: break-all;"><b style="color: black;">Sample:</b> <code>[&#34;This output will always be in the same format as the module argspec.\n&#34;]</code></p>
-    </td>
-  </tr>
-  <tr>
-    <td valign="top">
-      <div class="ansibleOptionAnchor" id="return-rendered"></div>
-      <p style="display: inline;"><strong>rendered</strong></p>
-      <a class="ansibleOptionLink" href="#return-rendered" title="Permalink to this return value"></a>
-      <p style="font-size: small; margin-bottom: 0;">
-        <span style="color: purple;">list</span>
-        / <span style="color: purple;">elements=string</span>
-      </p>
-    </td>
-    <td valign="top">
-      <p>The provided configuration in the task rendered in device-native format (offline).</p>
-      <p style="margin-top: 8px;"><b>Returned:</b> when <em>state</em> is <code class='docutils literal notranslate'>rendered</code></p>
-      <p style="margin-top: 8px; color: blue; word-wrap: break-word; word-break: break-all;"><b style="color: black;">Sample:</b> <code>[&#34;vlan configuration 202&#34;, &#34;member evpn-instance 202 vni 10202&#34;, &#34;vlan 200&#34;]</code></p>
-    </td>
-  </tr>
-  </tbody>
-  </table>
+    <table border=0 cellpadding=0 class="documentation-table">
+        <tr>
+            <th colspan="1">Key</th>
+            <th>Returned</th>
+            <th width="100%">Description</th>
+        </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>after</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when changed</td>
+                <td>
+                            <div>The resulting configuration after module execution.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>before</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
+                <td>
+                            <div>The configuration prior to the module execution.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>commands</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
+                <td>
+                            <div>The set of commands pushed to the remote device.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;vlan configuration 202&#x27;, &#x27;state active&#x27;, &#x27;remote-span&#x27;]</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>gathered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>gathered</code></td>
+                <td>
+                            <div>Facts about the network resource gathered from the remote device as structured data.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>parsed</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>parsed</code></td>
+                <td>
+                            <div>The device native config provided in <em>running_config</em> option parsed into structured data as per module argspec.</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">This output will always be in the same format as the module argspec.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="return-"></div>
+                    <b>rendered</b>
+                    <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
+                    <div style="font-size: small">
+                      <span style="color: purple">list</span>
+                    </div>
+                </td>
+                <td>when <em>state</em> is <code>rendered</code></td>
+                <td>
+                            <div>The provided configuration in the task rendered in device-native format (offline).</div>
+                    <br/>
+                        <div style="font-size: smaller"><b>Sample:</b></div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;vlan configuration 202&#x27;, &#x27;member evpn-instance 202 vni 10202&#x27;, &#x27;vlan 200&#x27;]</div>
+                </td>
+            </tr>
+    </table>
+    <br/><br/>
 
 
+Status
+------
 
 
 Authors
@@ -1563,10 +1579,3 @@ Authors
 - Sumit Jaiswal (@justjais)
 - Sagar Paul (@KB-perByte)
 - Padmini Priyadarshini Sivaraj (@PadminiSivaraj)
-
-
-Collection links
-~~~~~~~~~~~~~~~~
-
-* `Issue Tracker <https://github.com/ansible\-collections/cisco.ios/issues>`__
-* `Repository (Sources) <https://github.com/ansible\-collections/cisco.ios>`__
