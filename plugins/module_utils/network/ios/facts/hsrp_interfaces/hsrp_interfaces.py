@@ -82,10 +82,10 @@ class Hsrp_interfacesFacts(object):
 
         if objs:
             for obj in objs:
-                if not obj.get("version"):
-                    # Default to version 1 if not specified, idempotent behavior
-                    obj["version"] = 1
                 if obj.get("standby_groups"):
+                    if not obj.get("version"):
+                        # Default to version 1 if not specified, idempotent behavior
+                        obj["version"] = 1
                     standby_groups_data = obj.get("standby_groups")
                     combined_data = combine_by_group_no(standby_groups_data)
 
