@@ -64,17 +64,31 @@ class Hsrp_interfacesFacts(object):
 
         def combine_by_group_no(data):
             combined = defaultdict(dict)
+            ipv6_addresses = []
             for entry in data:
+                if entry.get("process_ipv6", {}):
+                    ipv6_addresses.append(entry.pop("address"))
+                    del entry
+                    continue
                 group_no = entry.get("group_no")
                 if group_no is not None:
                     combined[group_no].update(entry)
+            if ipv6_addresses:
+                combined[group_no]["ipv6"]["addresses"] = ipv6_addresses
+            # Default to priority to 100 if not specified, idempotent behavior
+            if not combined[group_no].get("priority"):
+                combined[group_no]["priority"] = 100
             return list(combined.values())
 
         if objs:
             for obj in objs:
                 if obj.get("standby_groups"):
+                    if not obj.get("version"):
+                        # Default to version 1 if not specified, idempotent behavior
+                        obj["version"] = 1
                     standby_groups_data = obj.get("standby_groups")
                     combined_data = combine_by_group_no(standby_groups_data)
+
                     obj["standby_groups"] = combined_data
 
         ansible_facts["ansible_network_resources"].pop("hsrp_interfaces", None)
