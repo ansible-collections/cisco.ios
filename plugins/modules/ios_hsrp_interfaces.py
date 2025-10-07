@@ -152,7 +152,6 @@ options:
           ipv6:
             description: Enable HSRP IPv6 and set the IP address
             type: dict
-            elements: str
             suboptions:
               autoconfig:
                 description: Obtain address using autoconfiguration
