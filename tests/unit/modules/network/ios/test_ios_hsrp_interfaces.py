@@ -274,6 +274,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
             "standby 22 track 20 shutdown",
             "standby 22 timers 40 50",
             "interface GigabitEthernet3",
+            "standby version 1",
             "standby 22 ip 12.0.0.1 secondary",
         ]
         result = self.execute_module(changed=True)
