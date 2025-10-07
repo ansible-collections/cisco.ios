@@ -27,6 +27,8 @@ plugin_routing:
       redirect: cisco.ios.ios_l2_interfaces
     l3_interfaces:
       redirect: cisco.ios.ios_l3_interfaces
+    hsrp_interfaces:
+      redirect: cisco.ios.ios_hsrp_interfaces
     lacp:
       redirect: cisco.ios.ios_lacp
     lacp_interfaces:
