@@ -485,16 +485,16 @@ class L2_interfacesTemplate(NetworkTemplate):
                 (\s(?P<secondary_vlan_id>\S+))?
                 \s*$""", re.VERBOSE,
             ),
-            "setval": "switchport private-vlan "
-            "{{ 'association ' if private_vlan.association|d(False) else '' }}"
-            "{{ 'host-association ' if private_vlan.host_association|d(False) else '' }}"
-            "{{ 'mapping ' if private_vlan.mapping|d(False) else '' }}"
-            "{{ 'host ' if private_vlan.host|d(False) else '' }}"
-            "{{ private_vlan.primary_range|string + ' ' if private_vlan.primary_range is defined else ''}}"
-            "{{ private_vlan.secondary_range|string + ' ' if private_vlan.secondary_range is defined else ''}}"
-            "{{ 'add ' if private_vlan.add|d(False) else '' }}"
-            "{{ 'remove ' if private_vlan.remove|d(False) else '' }}"
-            "{{ private_vlan.secondary_vlan_id if private_vlan.secondary_vlan_id is defined else ''}}",
+            "setval": "switchport private-vlan"
+            "{{ ' association' if private_vlan.association|d(False) else '' }}"
+            "{{ ' host-association' if private_vlan.host_association|d(False) else '' }}"
+            "{{ ' mapping' if private_vlan.mapping|d(False) else '' }}"
+            "{{ ' host' if private_vlan.host|d(False) else '' }}"
+            "{{ ' ' + private_vlan.primary_range|string if private_vlan.primary_range is defined else ''}}"
+            "{{ ' ' + private_vlan.secondary_range|string if private_vlan.secondary_range is defined else ''}}"
+            "{{ ' add' if private_vlan.add|d(False) else '' }}"
+            "{{ ' remove' if private_vlan.remove|d(False) else '' }}"
+            "{{ ' ' + private_vlan.secondary_vlan_id if private_vlan.secondary_vlan_id is defined else ''}}",
             "result": {
                 "{{ name }}": {
                     "private_vlan": {
