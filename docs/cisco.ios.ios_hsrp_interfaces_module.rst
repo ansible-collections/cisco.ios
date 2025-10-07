@@ -687,8 +687,7 @@ Parameters
                     <b>ipv6</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=dictionary</span>
+                        <span style="color: purple">dictionary</span>
                     </div>
                 </td>
                 <td>
@@ -698,6 +697,25 @@ Parameters
                 </td>
             </tr>
                                 <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>addresses</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>IPv6 link-local address or IPv6 prefix</div>
+                </td>
+            </tr>
+            <tr>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
                     <td class="elbow-placeholder"></td>
@@ -717,42 +735,6 @@ Parameters
                 </td>
                 <td>
                         <div>Obtain address using autoconfiguration</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>ipv6_link</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>X:x:X:x::X  IPv6 link-local address</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>ipv6_prefix</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>X:x:X:x::X/&lt;0-128&gt;  IPv6 prefix</div>
                 </td>
             </tr>
 
@@ -1225,6 +1207,7 @@ Notes
    - Tested against Cisco IOSXE Version 17.16.
    - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
    - The module examples uses callback plugin (callback_result_format=yaml) to generate task output in yaml format.
+   - For idempotency, the module consieders that version defaults to 1 as it is implied by the applaince and not available in the running-config. Priority defaults to 100 if not specified in the configuration.
 
 
 

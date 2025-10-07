@@ -32,6 +32,10 @@ notes:
   - >-
     The module examples uses callback plugin (callback_result_format=yaml) to
     generate task output in yaml format.
+  - >-
+    For idempotency, the module consieders that version defaults to 1 as it is implied
+    by the applaince and not available in the running-config.
+    Priority defaults to 100 if not specified in the configuration.
 options:
   config:
     description: A list of HSP configuration options to add to interface
@@ -147,18 +151,15 @@ options:
                 type: bool
           ipv6:
             description: Enable HSRP IPv6 and set the IP address
-            type: list
-            elements: dict
+            type: dict
             suboptions:
-              ipv6_link:
-                description: 'X:x:X:x::X  IPv6 link-local address'
-                type: str
-              ipv6_prefix:
-                description: 'X:x:X:x::X/<0-128>  IPv6 prefix'
-                type: str
               autoconfig:
                 description: Obtain address using autoconfiguration
                 type: bool
+              addresses:
+                description: IPv6 link-local address or IPv6 prefix
+                type: list
+                elements: str
           mac_address:
             description: Virtual MAC address
             type: str
