@@ -117,6 +117,7 @@ class Vlans(ResourceModule):
             excluded_vlans = {k: v for k, v in haved.items() if k not in wantd or not wantd}
             haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
             for k, have in excluded_vlans.items():
+                # Skip reserved VLANs 1002–1005
                 if int(k) in [1002, 1003, 1004, 1005]:
                     continue
                 self.purge(have, resource)
