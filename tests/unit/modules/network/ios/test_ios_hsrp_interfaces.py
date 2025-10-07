@@ -559,7 +559,10 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                             dict(
                                 ip=[dict(virtual_ip="10.0.0.3", secondary=True)],
                                 group_no=22,
-                                ipv6={"addresses": ["2xxx:Dx8:1:1::1/64", "Fxxx:1:x:1xx4::1/64"], "autoconfig": True},
+                                ipv6={
+                                    "addresses": ["2xxx:Dx8:1:1::1/64", "Fxxx:1:x:1xx4::1/64"],
+                                    "autoconfig": True,
+                                },
                             ),
                         ],
                     ),
