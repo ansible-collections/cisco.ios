@@ -1,0 +1,5 @@
+---
+bugfixes:
+  - ios_hsrp_interfaces - Fixed operation for ipv6 standby configuration.
+  - ios_hsrp_interfaces - Device defaults version to 1 if standby_groups is present but version is not configured.
+    and module would also consider priority as 100 if not configured, to maintain idempotency.

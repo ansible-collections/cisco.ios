@@ -32,6 +32,10 @@ notes:
   - >-
     The module examples uses callback plugin (callback_result_format=yaml) to
     generate task output in yaml format.
+  - >-
+    For idempotency, the module consieders that version defaults to 1 as it is implied
+    by the applaince and not available in the running-config.
+    Priority defaults to 100 if not specified in the configuration.
 options:
   config:
     description: A list of HSP configuration options to add to interface

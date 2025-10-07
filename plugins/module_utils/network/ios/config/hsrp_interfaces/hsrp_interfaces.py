@@ -109,7 +109,7 @@ class Hsrp_interfaces(ResourceModule):
                     self._compare(want={}, have=have)
 
         for k, want in wantd.items():
-            if not want.get("version"):
+            if not want.get("version") and want.get("standby_groups"):
                 # Default to version 1 if not specified, idempotent behavior
                 want["version"] = 1
             self._compare(want=want, have=haved.pop(k, {}))
