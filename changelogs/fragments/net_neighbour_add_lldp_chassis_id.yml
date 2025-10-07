@@ -1,3 +1,0 @@
----
-minor_changes:
-  - ios_facts - Add chassis_id value to ansible_net_neighbors dictionary for lldp neighbours.

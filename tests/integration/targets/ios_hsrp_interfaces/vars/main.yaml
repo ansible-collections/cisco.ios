@@ -9,7 +9,9 @@ merged:
     - interface GigabitEthernet3
     - standby 22 ip 10.0.0.1 secondary
     - standby mac-refresh 21
+    - standby version 1
     - interface GigabitEthernet4
+    - standby version 1
     - standby 0 priority 5
     - standby 0 preempt delay minimum 60 reload 70 sync 90
   after:
@@ -17,12 +19,15 @@ merged:
     - name: GigabitEthernet2
     - name: GigabitEthernet3
       mac_refresh: 21
+      version: 1
       standby_groups:
         - group_no: 22
+          priority: 100
           ip:
             - virtual_ip: 10.0.0.1
               secondary: true
     - name: GigabitEthernet4
+      version: 1
       standby_groups:
         - group_no: 0
           priority: 5
@@ -38,13 +43,16 @@ replaced:
     - name: GigabitEthernet1
     - name: GigabitEthernet2
     - name: GigabitEthernet3
+      version: 1
       standby_groups:
         - group_no: 22
+          priority: 100
           ip:
             - virtual_ip: 10.0.0.1
               secondary: true
           group_name: sentry
     - name: GigabitEthernet4
+      version: 1
       standby_groups:
         - group_no: 0
           priority: 5
@@ -53,21 +61,26 @@ replaced:
             hold_time: 30
   commands:
     - interface GigabitEthernet2
+    - standby version 1
     - standby 0 priority 5
   after:
     - name: GigabitEthernet1
     - name: GigabitEthernet2
+      version: 1
       standby_groups:
         - group_no: 0
           priority: 5
     - name: GigabitEthernet3
+      version: 1
       standby_groups:
         - group_no: 22
+          priority: 100
           ip:
             - virtual_ip: 10.0.0.1
               secondary: true
           group_name: sentry
     - name: GigabitEthernet4
+      version: 1
       standby_groups:
         - group_no: 0
           priority: 5
@@ -80,13 +93,16 @@ overridden:
     - name: GigabitEthernet1
     - name: GigabitEthernet2
     - name: GigabitEthernet3
+      version: 1
       standby_groups:
         - group_no: 22
+          priority: 100
           ip:
             - virtual_ip: 10.0.0.1
               secondary: true
           group_name: sentry
     - name: GigabitEthernet4
+      version: 1
       standby_groups:
         - group_no: 0
           priority: 5
@@ -94,17 +110,22 @@ overridden:
             hello_interval: 20
             hold_time: 30
   commands:
-    - interface GigabitEthernet2
-    - standby 0 priority 5
     - interface GigabitEthernet3
+    - no standby version 1
     - no standby 22 ip 10.0.0.1 secondary
+    - no standby 22 priority 100
     - no standby 22 name sentry
     - interface GigabitEthernet4
+    - no standby version 1
     - no standby 0 priority 5
     - no standby 0 timers 20 30
+    - interface GigabitEthernet2
+    - standby version 1
+    - standby 0 priority 5
   after:
     - name: GigabitEthernet1
     - name: GigabitEthernet2
+      version: 1
       standby_groups:
         - group_no: 0
           priority: 5
@@ -116,13 +137,16 @@ deleted:
     - name: GigabitEthernet1
     - name: GigabitEthernet2
     - name: GigabitEthernet3
+      version: 1
       standby_groups:
         - group_no: 22
           ip:
             - virtual_ip: 10.0.0.1
               secondary: true
+          priority: 100
           group_name: sentry
     - name: GigabitEthernet4
+      version: 1
       standby_groups:
         - group_no: 0
           priority: 5
@@ -131,9 +155,12 @@ deleted:
             hold_time: 30
   commands:
     - interface GigabitEthernet3
+    - no standby version 1
     - no standby 22 ip 10.0.0.1 secondary
     - no standby 22 name sentry
+    - no standby 22 priority 100
     - interface GigabitEthernet4
+    - no standby version 1
     - no standby 0 priority 5
     - no standby 0 timers 20 30
   after:
@@ -147,13 +174,16 @@ gathered:
     - name: GigabitEthernet1
     - name: GigabitEthernet2
     - name: GigabitEthernet3
+      version: 1
       standby_groups:
         - group_no: 22
+          priority: 100
           ip:
             - virtual_ip: 10.0.0.1
               secondary: true
           group_name: sentry
     - name: GigabitEthernet4
+      version: 1
       standby_groups:
         - group_no: 0
           priority: 5
@@ -164,12 +194,15 @@ gathered:
 parsed:
   config:
     - name: GigabitEthernet3
+      version: 1
       standby_groups:
         - group_no: 22
+          priority: 100
           ip:
             - virtual_ip: 10.0.0.1
               secondary: true
     - name: GigabitEthernet4
+      version: 1
       standby_groups:
         - group_no: 0
           priority: 5
@@ -182,7 +215,9 @@ rtt:
 rendered:
   commands:
     - interface GigabitEthernet3
+    - standby version 1
     - standby 22 ip 10.0.0.1 secondary
     - standby 22 name sentry
     - interface GigabitEthernet4
+    - standby version 1
     - standby 0 priority 5
