@@ -236,6 +236,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
     def test_ios_hsrp_interfaces_replaced(self):
         self.execute_show_command.return_value = dedent(
             """\
+            interface GigabitEthernet3
             interface GigabitEthernet4
              standby 22 ip 10.0.0.1 secondary
              standby 22 timers 20 30
@@ -527,7 +528,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
             """\
             interface GigabitEthernet4
              standby mac-refresh 21
-             standby version 7
+             standby version 2
              standby delay minimum 30 reload 40
              standby follow test
              standby redirect advertisement authentication md5 key-string apple timeout 10
@@ -540,6 +541,13 @@ class TestIosHSRPInterfaceModule(TestIosModule):
              standby 22 timers 20 30
              standby 22 authentication md5 key-string 0 apple timeout 10
              standby 22 ip 10.0.0.1 secondary
+             standby 70 ipv6 autoconfig
+             standby 70 ipv6 2xxx:Dx8:1:1::1/64
+             standby 70 ipv6 Fxxx:1:x:1xx4::1/64
+             standby 70 priority 110
+             standby 70 preempt
+             standby 70 track 1 decrement 10
+             standby 70 track 101 decrement 50
             """,
         )
         set_module_args(
@@ -551,6 +559,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                             dict(
                                 ip=[dict(virtual_ip="10.0.0.3", secondary=True)],
                                 group_no=22,
+                                ipv6={"addresses": ["2xxx:Dx8:1:1::1/64", "Fxxx:1:x:1xx4::1/64"], "autoconfig": True},
                             ),
                         ],
                     ),
@@ -561,13 +570,20 @@ class TestIosHSRPInterfaceModule(TestIosModule):
         commands = [
             "interface GigabitEthernet4",
             "no standby mac-refresh 21",
-            "no standby version 7",
+            "standby version 1",
             "no standby delay minimum 30 reload 40",
             "no standby follow test",
             "no standby redirect advertisement authentication md5 key-string apple timeout 10",
             "standby 22 ip 10.0.0.3 secondary",
             "no standby 22 track 4 decrement 45 shutdown",
             "no standby 22 ip 10.0.0.1 secondary",
+            "no standby 70 ipv6",
+            "no standby 70 preempt",
+            "no standby 70 priority 110",
+            "no standby 70 track 101 decrement 50",
+            "standby 22 ipv6 2xxx:Dx8:1:1::1/64",
+            "standby 22 ipv6 Fxxx:1:x:1xx4::1/64",
+            "standby 22 ipv6 autoconfig",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))

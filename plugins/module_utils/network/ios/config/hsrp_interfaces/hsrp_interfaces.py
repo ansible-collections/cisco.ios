@@ -109,6 +109,9 @@ class Hsrp_interfaces(ResourceModule):
                     self._compare(want={}, have=have)
 
         for k, want in wantd.items():
+            if not want.get("version"):
+                # Default to version 1 if not specified, idempotent behavior
+                want["version"] = 1
             self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
@@ -168,6 +171,9 @@ class Hsrp_interfaces(ResourceModule):
         }
         for group_number, wanting_data in want_standby_group.items():
             having_data = have_standby_group.get(group_number, {})
+            if having_data.get("priority") == 100:
+                # Default to priority to 100 if not specified, idempotent behavior
+                wanting_data["priority"] = 100
 
             for _parser in self.complex_parsers:
                 wantd = wanting_data.get(_parser, {})
@@ -189,7 +195,7 @@ class Hsrp_interfaces(ResourceModule):
 
             if wanting_data.get("ipv6"):
                 wantd_ipv6 = wanting_data.pop("ipv6", {})
-                haved_ipv6 = wanting_data.pop("ipv6", {})
+                haved_ipv6 = having_data.pop("ipv6", {})
                 # this is to preserve the order in which ipv6 addresses are applied to the device
                 is_ipv6_idempotent = False
                 dt_want = {w_add: w_add for w_add in wantd_ipv6.get("addresses", {})}
@@ -226,9 +232,6 @@ class Hsrp_interfaces(ResourceModule):
                         wantd.update({"group_no": group_number})
                     else:
                         wantd = {"group_no": group_number, _parser: wantd}
-                # if haved and wantd != haved:
-                #    self.compare(parsers=[_par], want={}, have={_parser: haved})
-                if wantd:
                     self.compare(parsers=[_par], want={_parser: wantd}, have={_parser: haved})
             for key, value in parser_dict.items():
                 haved = having_data.pop(value, {})
@@ -236,11 +239,15 @@ class Hsrp_interfaces(ResourceModule):
         # Removal of unecessary configs in have_standby_group
         for group_number, having_data in have_standby_group.items():
             if having_data:
+                if having_data.get("ipv6"):
+                    haved_ipv6 = having_data.pop("ipv6", {})
+                    if haved_ipv6.get("addresses") or haved_ipv6.get("autoconfig", False):
+                        self.commands.append(f"no standby {group_number} ipv6")
                 for _parser in self.complex_parsers:
                     haved = having_data.pop(_parser, {})
                     for key, having_parser_data in haved.items():
                         having_parser_data.update({"group_no": group_number})
-                        self.compare(parsers=[_par], want={}, have={_parser: having_parser_data})
+                        self.compare(parsers=[_parser], want={}, have={_parser: having_parser_data})
                 for _par in self.non_complex_parsers:
                     _parser = parser_dict.get(_par, _par)
                     if _parser == _par:
