@@ -4,7 +4,8 @@
     lines:
       "interface GigabitEthernet 2\nno switchport access vlan\nno switchport
       trunk encapsulation\nno switchport trunk native vlan\nno switchport trunk allowed
-      vlan\nno switchport trunk pruning vlan\nno switchport mode\nno
+      vlan\nno switchport trunk pruning vlan\nno switchport mode\n
+      no switchport private-vlan association host 2000 2500\nno
       switchport voice vlan\ninterface GigabitEthernet 3\nno switchport access vlan\nno switchport
       trunk encapsulation\nno switchport trunk native vlan\nno switchport
       trunk allowed vlan\nno switchport trunk pruning vlan\nno switchport mode\nno switchport
