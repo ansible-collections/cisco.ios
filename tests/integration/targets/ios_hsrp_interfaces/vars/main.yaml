@@ -288,10 +288,10 @@ overridden:
     - interface Vlan70
     - no standby 10 preempt
     - standby 10 ip 10.0.10.3 secondary
-    - no standby ip 10.0.10.2 secondary
+    - no standby 10 ip 10.0.10.2 secondary
     - standby 20 follow MASTER_GROUP_NEW
     - standby 20 ipv6 2001:db8:20::1/64
-    - no standby ipv6 2001:DB8:20::1/64
+    - no standby 20 ipv6 2001:DB8:20::1/64
   after:
     - name: GigabitEthernet1
     - name: GigabitEthernet2
@@ -318,8 +318,6 @@ overridden:
           group_no: 10
           ip:
             - secondary: true
-              virtual_ip: 10.0.10.2
-            - secondary: true
               virtual_ip: 10.0.10.3
           priority: 110
           track:
@@ -329,8 +327,6 @@ overridden:
           group_name: IPV6_GROUP
           group_no: 20
           ipv6:
-            addresses:
-              - 2001:DB8:20::1/64
             autoconfig: true
           mac_address: 0000.0000.0014
           priority: 120

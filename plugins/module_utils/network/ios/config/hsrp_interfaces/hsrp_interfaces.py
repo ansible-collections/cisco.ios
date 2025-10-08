@@ -172,6 +172,7 @@ class Hsrp_interfaces(ResourceModule):
                         )
                 # remove extra ip or track
                 for hkey, hentry in standby_have.get(x, {}).items():
+                    hentry.update({"group_no": grp_no})
                     self.compare(parsers=self.complex_list_parsers, want={}, have={x: hentry})
 
         # remove group via numbers
