@@ -45,7 +45,7 @@ class Hsrp_interfacesFacts(object):
         for obj in objs:
             standby_options_config = []
             interface_conf = {}
-            
+
             for k, v in obj.items():
                 if k.startswith("group_"):
                     v.update({"group_no": int(k.split("_")[1])})

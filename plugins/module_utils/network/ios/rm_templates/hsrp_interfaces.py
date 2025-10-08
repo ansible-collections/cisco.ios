@@ -305,7 +305,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "result": {
                 "{{ name }}": {
                     "group_{{ grp_no|string }}": {
-                        "ipv6": {"addresses": ["{{ address }}",]},
+                        "ipv6": {"addresses": ["{{ address }}"]},
                     },
                 },
             },
