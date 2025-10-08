@@ -62,9 +62,6 @@ options:
           reload:
             description: Delay after reload
             type: int
-      follow:
-        description: Name of HSRP group to follow
-        type: str
       redirect:
         description: Redirect configuration
         type: dict
@@ -116,21 +113,26 @@ options:
         type: dict
         suboptions:
           scope:
-            description: Scope interface option
-            type: dict
-            suboptions:
-              interface:
-                description: >-
-                  Use-bia applies to all groups on this interface or
-                  sub-interface
-                type: bool
+            description: >-
+              Use-bia applies to all groups on this interface or
+              sub-interface
+            type: bool
+          set:
+            description: Set use-bia
+            type: bool
       version:
         description: HSRP version
         type: int
-      standby_groups:
+        default: 1
+        choices:
+          - 1
+          - 2
+      standby_options:
         description: Group number and group options for standby (HSRP)
         type: list
         elements: dict
+        aliases:
+          - standby_groups
         suboptions:
           group_no:
             description: Group number
@@ -170,32 +172,21 @@ options:
             description: Authentication configuration
             type: dict
             suboptions:
-              advertisement:
-                description: Redirect advertisement messages (standby redirect advertisement authentication md5)
-                type: dict
-                suboptions:
-                  key_chain:
-                    description: Set key chain
-                    type: str
-                  key_string:
-                    description: Set key string
-                    type: bool
-                  encryption:
-                    description: Set encryption 0 (unencrypted/default) or 7 (hidden)
-                    type: int
-                  time_out:
-                    description: Set timeout
-                    type: int
-                  password_text:
-                    description: Password text valid for plain text and and key-string
-                    type: str
-                  text:
-                    description: Password text valid for plain text
-                    type: dict
-                    suboptions:
-                      password_text:
-                        description: Password text valid for plain text and and key-string
-                        type: str
+              key_chain:
+                description: Set key chain
+                type: str
+              key_string:
+                description: Set key string
+                type: str
+              encryption:
+                description: Set encryption 0 (unencrypted/default) or 7 (hidden)
+                type: int
+              time_out:
+                description: Set timeout
+                type: int
+              password_text:
+                description: Password text valid for plain text and and key-string
+                type: str
           preempt:
             description: Overthrow lower priority Active routers
             type: dict
@@ -218,6 +209,7 @@ options:
           priority:
             description: Priority level
             type: int
+            default: 100
           timers:
             description: Overthrow lower priority Active routers
             type: dict
