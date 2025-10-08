@@ -23,6 +23,7 @@ version_added: 1.0.0
 author:
   - Sagar Paul (@KB-petByte)
   - Sumit Jaiswal (@justjais)
+  - Nikhil Bhasin (@nickbhasin)
 notes:
   - Tested against Cisco IOSv Version 15.2 on CML.
   - This module works with connection C(network_cli).
@@ -126,6 +127,47 @@ options:
           - private_vlan_host
           - private_vlan_promiscuous
           - private_vlan_trunk
+      private_vlan:
+        description:
+          - Set the private VLAN configuration.
+        type: dict
+        suboptions:
+          association:
+            description:
+              - Set the private VLAN association.
+            type: bool
+          host_association:
+            description:
+              - Set the private VLAN host association.
+            type: bool
+          mapping:
+            description:
+              - Set the private VLAN promiscuous mapping.
+            type: bool
+          host:
+            description:
+              - Set the private VLAN host association.
+            type: bool
+          primary_range:
+            description:
+              - Primary extended/normal range VLAN ID of the private VLAN promiscuous port mapping.
+            type: int
+          secondary_range:
+            description:
+              - Secondary extended/normal range VLAN ID of the private VLAN promiscuous port mapping.
+            type: int
+          add:
+            description:
+              - Add a VLAN to private VLAN list.
+            type: bool
+          remove:
+            description:
+              - Remove a VLAN from private VLAN list.
+            type: bool
+          secondary_vlan_id:
+            description:
+              - Secondary VLAN IDs of the private VLAN promiscuous port mapping.
+            type: str
       app_interface:
         description:
           - Enabling port for Application Hosting (switchport app-interface)

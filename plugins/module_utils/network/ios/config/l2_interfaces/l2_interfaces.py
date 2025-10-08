@@ -59,6 +59,7 @@ class L2_interfaces(ResourceModule):
             "trunk.encapsulation",
             "mode",
             "trunk.native_vlan",
+            "private_vlan",
             "app_interface",
             "nonegotiate",
             "vepa",
