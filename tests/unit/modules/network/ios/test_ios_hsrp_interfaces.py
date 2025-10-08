@@ -326,6 +326,8 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                     track_no: 10
             version: 2
           - name: GigabitEthernet3
+            use_bia: 
+              set: true
             standby_options:
               - group_no: 1
                 ip:
@@ -484,6 +486,8 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                     track_no: 10
             version: 2
           - name: GigabitEthernet3
+            use_bia: 
+              set: true
             standby_options:
               - group_no: 1
                 ip:
@@ -517,12 +521,15 @@ class TestIosHSRPInterfaceModule(TestIosModule):
             "no standby redirect advertisement authentication md5 key-chain HSRP_CHAIN",
             "no standby 10",
             "no standby 20",
+            "no standby version 2",
             "interface Vlan100",
             "no standby version 2",
             "no standby delay minimum 100 reload 200",
             "no standby 5",
+            "no standby version 2",
             "interface GigabitEthernet3",
             "no standby version 1",
+            "no standby use-bia",
             "no standby 1",
             "interface GigabitEthernet2",
             "no standby version 1",
@@ -691,7 +698,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
             "standby 30 name PRIMARY_GROUP",
             "standby 30 preempt delay minimum 100 reload 50 sync 30",
             "standby 30 priority 110",
-            "standby 30 authentication md5 key-string 7 ",
+            "standby 30 authentication md5 key-string 7 0123456789ABCDEF",
             "standby 30 ip 10.0.10.1",
             "standby 30 ip 10.0.10.2 secondary",
             "standby 30 ip 10.0.10.3 secondary",
@@ -701,6 +708,8 @@ class TestIosHSRPInterfaceModule(TestIosModule):
             "no standby ipv6 2001:db8:10::1/64",
             "no standby ipv6 2001:db8:20::1/64",
             "no standby 10",
+            "interface GigabitEthernet3",
+            "no standby use-bia",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -854,13 +863,14 @@ class TestIosHSRPInterfaceModule(TestIosModule):
             "interface GigabitEthernet3",
             "no standby version 1",
             "no standby 1",
+            "no standby use-bia",
             "interface Vlan70",
             "standby 30 follow MASTER_GROUP",
             "standby 30 mac-address 0000.0c07.ac0a",
             "standby 30 name PRIMARY_GROUP",
             "standby 30 preempt delay minimum 100 reload 50 sync 30",
             "standby 30 priority 110",
-            "standby 30 authentication md5 key-string 7 ",
+            "standby 30 authentication md5 key-string 7 0123456789ABCDEF",
             "standby 30 ip 10.0.10.1",
             "standby 30 ip 10.0.10.2 secondary",
             "standby 30 ip 10.0.10.3 secondary",
@@ -992,6 +1002,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
             },
             {
                 "name": "GigabitEthernet3",
+                "use_bia": {"set": True},
                 "standby_options": [
                     {"ip": [{"virtual_ip": "172.16.1.1"}], "priority": 100, "group_no": 1},
                 ],
@@ -1019,7 +1030,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
             "standby 10 name PRIMARY_GROUP",
             "standby 10 preempt delay minimum 100 reload 50 sync 30",
             "standby 10 priority 110",
-            "standby 10 authentication md5 key-string 7 ",
+            "standby 10 authentication md5 key-string 7 0123456789ABCDEF",
             "standby 10 ip 10.0.10.1",
             "standby 10 track 1 decrement 20",
             "standby 20 follow MASTER_GROUP",
@@ -1038,9 +1049,84 @@ class TestIosHSRPInterfaceModule(TestIosModule):
             "standby 5 ip 192.168.1.1",
             "standby 5 track 10 decrement 30",
             "interface GigabitEthernet3",
+            "standby use-bia scope interface",
             "standby version 1",
             "standby 1 priority 100",
             "standby 1 ip 172.16.1.1",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
+
+    def test_ios_hsrp_interfaces_version_delete_end_create_first(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Vlan70
+             no ip address
+             standby mac-refresh 45
+             standby redirect timers 10 55
+             standby delay minimum 5555 reload 556
+             standby redirect advertisement authentication md5 key-chain HSRP_CHAIN
+             standby version 2
+             standby 10 ip 10.0.10.1
+             standby 10 ip 10.0.10.2 secondary
+             standby 10 ip 10.0.10.3 secondary
+             standby 10 track 1 decrement 20
+             standby 20 ipv6 2001:db8:10::1/64
+             standby 20 ipv6 autoconfig
+             standby 20 follow MASTER_GROUP
+             standby 20 priority 120
+            !
+            """,
+        )
+        yaml_string = """
+        config:
+          - delay:
+              minimum: 100
+              reload: 200
+            name: Vlan100
+            standby_options:
+              - authentication:
+                  password_text: hello_secret
+                group_name: BACKUP_GROUP
+                group_no: 5
+                ip:
+                  - virtual_ip: 192.168.1.1
+                preempt:
+                  enabled: true
+                priority: 150
+                timers:
+                  hello_interval: 5
+                  hold_time: 15
+                track:
+                  - decrement: 30
+                    track_no: 10
+            version: 2
+        """
+        set_module_args(
+            dict(
+                yaml.safe_load(yaml_string),
+                state="overridden",
+            ),
+        )
+        commands = [
+            "interface Vlan70",
+            "no standby version 2",
+            "no standby delay minimum 5555 reload 556",
+            "no standby mac-refresh 45",
+            "no standby redirect timers 10 55",
+            "no standby redirect advertisement authentication md5 key-chain HSRP_CHAIN",
+            "no standby 10",
+            "no standby 20",
+            "no standby version 2",
+            "interface Vlan100",
+            "standby version 2",
+            "standby delay minimum 100 reload 200",
+            "standby 5 name BACKUP_GROUP",
+            "standby 5 preempt",
+            "standby 5 priority 150",
+            "standby 5 authentication hello_secret",
+            "standby 5 ip 192.168.1.1",
+            "standby 5 track 10 decrement 30",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))

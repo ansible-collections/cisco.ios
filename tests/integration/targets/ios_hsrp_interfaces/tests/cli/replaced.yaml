@@ -11,10 +11,46 @@
       register: result
       cisco.ios.ios_hsrp_interfaces: &id001
         config:
-          - name: GigabitEthernet2
-            standby_groups:
-              - group_no: 0
-                priority: 5
+          - delay:
+              minimum: 5555
+              reload: 556
+            mac_refresh: 45
+            name: Vlan70
+            redirect:
+              advertisement:
+                authentication:
+                  key_chain: HSRP_CHAIN
+              timers:
+                adv_timer: 10
+                holddown_timer: 55
+            standby_options:
+              - authentication:
+                  encryption: 7
+                  key_string: 0123456789ABCDEF
+                follow: MASTER_GROUP
+                group_name: PRIMARY_GROUP
+                group_no: 10
+                ip:
+                  - secondary: true
+                    virtual_ip: 10.0.10.3
+                priority: 110
+                timers:
+                  hold_time: 250
+                  msec:
+                    hello_interval: 200
+                track:
+                  - decrement: 20
+                    track_no: 1
+              - follow: MASTER_GROUP_NEW
+                group_name: IPV6_GROUP
+                group_no: 20
+                ipv6:
+                  addresses:
+                    - '2001:db8:20::1/64'
+                  autoconfig: true
+                mac_address: 0000.0000.0014
+                priority: 120
+            version: 2
         state: replaced
 
     - name: HSRP_interface replaced - assert that correct set of commands were generated

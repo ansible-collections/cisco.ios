@@ -131,7 +131,7 @@ class Hsrp_interfaces(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Hsrp_interfaces network resource.
         """
-        begin = len(self.commands)
+        begin_count = len(self.commands)
 
         self.handle_defaults(want, have)
         self.compare(parsers=self.parsers, want=want, have=have)
@@ -139,8 +139,15 @@ class Hsrp_interfaces(ResourceModule):
             want.get("standby_options", {}),
             have.get("standby_options", {}),
         )
-        if len(self.commands) != begin:
-            self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
+
+        end_count = len(self.commands)
+        if end_count != begin_count:
+            # standby version when configured shall be at the first but when removed shall be at last
+            # TODO cleanup the first negation command
+            if "no standby version 2" in self.commands[begin_count:end_count]:
+                self.commands.append("no standby version 2")
+
+            self.commands.insert(begin_count, self._tmplt.render(want or have, "name", False))
 
     def _compare_complex_attrs(self, want_group, have_group):
         for grp_no, standby_want in want_group.items():

@@ -107,15 +107,18 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "name": "use_bia",
             "getval": re.compile(
                 r"""
-                \s+standby\suse-bia\sscope\sinterface
+                \s+standby\suse-bia
+                (\s(?P<bia>\sscope\sinterface))?
                 $""", re.VERBOSE,
             ),
-            "setval": "standby use-bia scope interface",
+            "remval": "standby use-bia",
+            "setval": "standby use-bia"
+            "{{ ' scope interface' if use_bia.scope|d(False) is defined else ''}}",
             "result": {
                 "{{ name }}": {
                     "use_bia": {
                         "set": True,
-                        "scope": True,
+                        "scope": "{{ not not bia }}",
                     },
                 },
             },
@@ -159,7 +162,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "standby {{ group_no|string if group_no is defined else '' }} follow {{ follow }}",
-            "result":  {
+            "result": {
                 "{{ name }}": {
                     "group_{{ grp_no|string }}": {
                         "follow": "{{ description }}",
@@ -357,9 +360,14 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "setval": "standby"
             "{{ ' ' + group_no|string if group_no is defined else ''}}"
             " authentication"
-            "{{ (' ' + authentication.password_text|string) if authentication.password_text is defined else '' }}"
-            "{{ (' md5 key-chain ' + authentication.key_chain|string) if authentication.key_chain is defined else '' }}"
-            "{{ (' md5 key-string ' + (authentication.encryption|string + ' ') if authentication.encryption is defined else '' + authentication.key_string|string) if authentication.key_string is defined else '' }}",
+            "{{ (' ' + authentication.password_text|string) "
+            "if authentication.password_text is defined else '' }}"
+            "{{ (' md5 key-chain ' + authentication.key_chain|string) "
+            "if authentication.key_chain is defined else '' }}"
+            "{{ (' md5 key-string ' + authentication.encryption|string + ' ' + authentication.key_string) "
+            "if authentication.key_string is defined and authentication.encryption is defined "
+            "else (' md5 key-string ' + authentication.key_string) "
+            "if authentication.key_string is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "group_{{ grp_no|string }}": {
