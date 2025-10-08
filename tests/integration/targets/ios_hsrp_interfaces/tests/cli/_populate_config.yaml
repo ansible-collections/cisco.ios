@@ -1,8 +1,7 @@
 ---
 - name: HSRP_interface - populate configuration
   vars:
-    lines:
-      "interface Vlan70\ndescription for test\ninterface Vlan100
+    lines: "interface Vlan70\ndescription for test\ninterface Vlan100
       \ndescription for test\n"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"
@@ -52,7 +51,7 @@
             group_no: 20
             ipv6:
               addresses:
-                - '2001:db8:20::1/64'
+                - "2001:db8:20::1/64"
               autoconfig: true
             mac_address: 0000.0000.0014
             priority: 120

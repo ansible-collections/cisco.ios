@@ -326,7 +326,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                     track_no: 10
             version: 2
           - name: GigabitEthernet3
-            use_bia: 
+            use_bia:
               set: true
             standby_options:
               - group_no: 1
@@ -486,7 +486,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                     track_no: 10
             version: 2
           - name: GigabitEthernet3
-            use_bia: 
+            use_bia:
               set: true
             standby_options:
               - group_no: 1

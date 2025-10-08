@@ -403,7 +403,7 @@ EXAMPLES = """
                 virtual_ip: 172.16.2.1
             priority: 100
         version: 1
-          
+
 
 # Task Output
 # -----------
@@ -537,25 +537,25 @@ EXAMPLES = """
 # interface GigabitEthernet1
 #  ip address dhcp
 #  negotiation auto
-# !         
+# !
 # interface GigabitEthernet2
 #  no ip address
 #  standby 2 ip 172.16.2.1 secondary
 #  standby 2 authentication md5 key-chain AUTH_CHAIN
-#  shutdown 
+#  shutdown
 #  negotiation auto
-# !         
+# !
 # interface GigabitEthernet3
 #  no ip address
 #  standby 1 ip 172.16.1.1
-#  shutdown 
+#  shutdown
 #  negotiation auto
-# !         
+# !
 # interface GigabitEthernet4
 #  no ip address
-#  shutdown 
+#  shutdown
 #  negotiation auto
-# !         
+# !
 # interface Vlan70
 #  description for test
 #  no ip address
@@ -577,7 +577,7 @@ EXAMPLES = """
 #  standby 20 priority 120
 #  standby 20 name IPV6_GROUP
 #  standby 20 mac-address 0000.0000.0014
-# !         
+# !
 # interface Vlan100
 #  description for test
 #  no ip address
@@ -588,7 +588,7 @@ EXAMPLES = """
 #  standby 5 preempt
 #  standby 5 name BACKUP_GROUP
 #  standby 5 track 10 decrement 30
-# !      
+# !
 
 
 # Using replaced
@@ -818,25 +818,25 @@ EXAMPLES = """
 # interface GigabitEthernet1
 #  ip address dhcp
 #  negotiation auto
-# !         
+# !
 # interface GigabitEthernet2
 #  no ip address
 #  standby 2 ip 172.16.2.1 secondary
 #  standby 2 authentication md5 key-chain AUTH_CHAIN
-#  shutdown 
+#  shutdown
 #  negotiation auto
-# !         
+# !
 # interface GigabitEthernet3
 #  no ip address
 #  standby 1 ip 172.16.1.1
-#  shutdown 
+#  shutdown
 #  negotiation auto
-# !         
+# !
 # interface GigabitEthernet4
 #  no ip address
-#  shutdown 
+#  shutdown
 #  negotiation auto
-# !         
+# !
 # interface Vlan70
 #  description for test
 #  no ip address
@@ -858,7 +858,7 @@ EXAMPLES = """
 #  standby 20 priority 120
 #  standby 20 name IPV6_GROUP
 #  standby 20 mac-address 0000.0000.0014
-# !         
+# !
 # interface Vlan100
 #  description for test
 #  no ip address
@@ -987,34 +987,34 @@ EXAMPLES = """
 # -------------
 #
 # router-ios#show running-config | section ^interface
-# !         
+# !
 # interface GigabitEthernet1
 #  ip address dhcp
 #  negotiation auto
-# !         
+# !
 # interface GigabitEthernet2
 #  no ip address
-#  shutdown 
+#  shutdown
 #  negotiation auto
-# !         
+# !
 # interface GigabitEthernet3
 #  no ip address
-#  shutdown 
+#  shutdown
 #  negotiation auto
-# !         
+# !
 # interface GigabitEthernet4
 #  no ip address
-#  shutdown 
+#  shutdown
 #  negotiation auto
-# !         
+# !
 # interface Vlan70
 #  description for test
 #  no ip address
-# !         
+# !
 # interface Vlan100
 #  description for test
 #  no ip address
-# !  
+# !
 
 # Using gathered
 
@@ -1024,25 +1024,25 @@ EXAMPLES = """
 # interface GigabitEthernet1
 #  ip address dhcp
 #  negotiation auto
-# !         
+# !
 # interface GigabitEthernet2
 #  no ip address
 #  standby 2 ip 172.16.2.1 secondary
 #  standby 2 authentication md5 key-chain AUTH_CHAIN
-#  shutdown 
+#  shutdown
 #  negotiation auto
-# !         
+# !
 # interface GigabitEthernet3
 #  no ip address
 #  standby 1 ip 172.16.1.1
-#  shutdown 
+#  shutdown
 #  negotiation auto
-# !         
+# !
 # interface GigabitEthernet4
 #  no ip address
-#  shutdown 
+#  shutdown
 #  negotiation auto
-# !         
+# !
 # interface Vlan70
 #  description for test
 #  no ip address
@@ -1064,7 +1064,7 @@ EXAMPLES = """
 #  standby 20 priority 120
 #  standby 20 name IPV6_GROUP
 #  standby 20 mac-address 0000.0000.0014
-# !         
+# !
 # interface Vlan100
 #  description for test
 #  no ip address

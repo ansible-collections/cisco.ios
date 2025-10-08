@@ -5,7 +5,6 @@
 
 - name: HSRP_interface - remove created test interfaces
   vars:
-    lines:
-      "no interface Vlan100\nno interface Vlan70\n"
+    lines: "no interface Vlan100\nno interface Vlan70\n"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"
