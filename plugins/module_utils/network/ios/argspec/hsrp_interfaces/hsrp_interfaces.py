@@ -90,7 +90,7 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                         "set": {"type": "bool"},
                     },
                 },
-                "version": {"type": "int", "default": "1", "choices": [1, 2]},
+                "version": {"type": "int", "choices": [1, 2]},
                 "standby_options": {
                     "type": "list",
                     "elements": "dict",

@@ -10,6 +10,8 @@ __metaclass__ = type
 from textwrap import dedent
 from unittest.mock import patch
 
+import yaml
+
 from ansible_collections.cisco.ios.plugins.modules import ios_hsrp_interfaces
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
@@ -42,265 +44,891 @@ class TestIosHSRPInterfaceModule(TestIosModule):
     def test_ios_hsrp_interfaces_merged(self):
         self.execute_show_command.return_value = dedent(
             """\
-            interface GigabitEthernet4
-             standby mac-refresh 21
-             standby version 7
-             standby delay minimum 30 reload 40
-             standby use-bia scope interface
-             standby follow test
-             standby redirect advertisement authentication md5 key-string apple timeout 10
-             standby 22 follow test123
-             standby 22 priority 7
-             standby 22 preempt delay minimum 60 reload 70 sync 90
-             standby 22 track 4 decrement 45 shutdown
-             standby 22 mac-address A:B:C:D
-             standby 22 name sentry
-             standby 22 timers 20 30
-             standby 22 authentication md5 key-string 0 apple timeout 10
-             standby 22 ip 10.0.0.1 secondary
+            interface Vlan70
+             no ip address
+             standby mac-refresh 45
+             standby redirect timers 10 55
+             standby delay minimum 5555 reload 556
+             standby redirect advertisement authentication md5 key-chain HSRP_CHAIN
+             standby version 2
+             standby 10 ip 10.0.10.1
+             standby 10 follow MASTER_GROUP
+             standby 10 timers msec 200 250
+             standby 10 priority 110
+             standby 10 preempt delay minimum 100 reload 50 sync 30
+             standby 10 authentication md5 key-string 7 0123456789ABCDEF
+             standby 10 name PRIMARY_GROUP
+             standby 10 mac-address 0000.0c07.ac0a
+             standby 10 track 1 decrement 20
+             standby 10 track 2 shutdown
+             standby 20 ipv6 2001:db8:10::1/64
+             standby 20 priority 120
+             standby 20 name IPV6_GROUP
+             standby 20 mac-address 0000.0c07.ac14
+            !
+            interface Vlan100
+             no ip address
+             standby bfd
+             standby delay minimum 100 reload 200
+             standby version 2
+             standby 5 ip 192.168.1.1
+             standby 5 authentication hello_secret
+             standby 5 name BACKUP_GROUP
+             standby 5 track 10 decrement 30
+            !
+            interface GigabitEthernet3
+             standby use-bia
+             standby 1 ip 172.16.1.1
+             standby 1 priority 100
+            !
+            interface GigabitEthernet2
+             standby follow VLAN70_GROUP
+             standby 2 ip 172.16.2.1 secondary
+             standby 2 authentication md5 key-chain AUTH_CHAIN
             """,
         )
         set_module_args(
             dict(
                 config=[
-                    dict(
-                        name="GigabitEthernet4",
-                        mac_refresh=21,
-                        version=7,
-                        delay=dict(
-                            minimum=30,
-                            reload=40,
-                        ),
-                        use_bia=dict(
-                            scope=dict(
-                                interface=True,
-                            ),
-                        ),
-                        follow="test",
-                        redirect=dict(
-                            advertisement=dict(
-                                authentication=dict(
-                                    key_string=True,
-                                    password_text="apple",
-                                    time_out=10,
-                                ),
-                            ),
-                        ),
-                        standby_groups=[
-                            dict(
-                                ip=[dict(virtual_ip="10.0.0.1", secondary=True)],
-                                group_no=22,
-                                follow="test123",
-                                priority=7,
-                                preempt=dict(
-                                    delay=True,
-                                    minimum=60,
-                                    reload=70,
-                                    sync=90,
-                                ),
-                                track=[dict(track_no=4, decrement=45, shutdown=True)],
-                                mac_address="A:B:C:D",
-                                group_name="sentry",
-                                authentication=dict(
-                                    advertisement=dict(
-                                        key_string=True,
-                                        password_text="apple",
-                                        encryption=0,
-                                        time_out=10,
-                                    ),
-                                ),
-                                timers=dict(hello_interval=20, hold_time=30),
-                            ),
+                    {
+                        "name": "Vlan70",
+                        "delay": {"minimum": 5555, "reload": 556},
+                        "mac_refresh": 45,
+                        "redirect": {
+                            "advertisement": {"authentication": {"key_chain": "HSRP_CHAIN"}},
+                            "timers": {"adv_timer": 10, "holddown_timer": 55},
+                        },
+                        "version": 2,
+                        "standby_groups": [
+                            {
+                                "group_no": 10,
+                                "ip": [
+                                    {"virtual_ip": "10.0.10.1"},
+                                    {"virtual_ip": "10.0.10.2", "secondary": True},
+                                    {"virtual_ip": "10.0.10.3", "secondary": True},
+                                ],
+                                "follow": "MASTER_GROUP",
+                                "group_name": "PRIMARY_GROUP",
+                                "authentication": {
+                                    "key_string": "0123456789ABCDEF",
+                                    "encryption": 7,
+                                },
+                                "mac_address": "0000.0c07.ac0a",
+                                "preempt": {
+                                    "enabled": True,
+                                    "delay": True,
+                                    "minimum": 100,
+                                    "reload": 50,
+                                    "sync": 30,
+                                },
+                                "priority": 110,
+                                "timers": {"msec": {"hello_interval": 200}, "hold_time": 250},
+                                "track": [
+                                    {"track_no": 1, "decrement": 20},
+                                    {"track_no": 2, "shutdown": True},
+                                ],
+                            },
+                            {
+                                "group_no": 20,
+                                "ipv6": {
+                                    "addresses": ["2001:db8:20::1/64", "2001:db8:10::1/64"],
+                                    "autoconfig": True,
+                                },
+                                "follow": "MASTER_GROUP",
+                                "group_name": "IPV6_GROUP",
+                                "mac_address": "0000.0c07.ac14",
+                                "priority": 120,
+                            },
                         ],
-                    ),
+                    },
+                    {
+                        "name": "Vlan100",
+                        "delay": {"minimum": 100, "reload": 200},
+                        "version": 2,
+                        "standby_groups": [
+                            {
+                                "group_no": 5,
+                                "ip": [{"virtual_ip": "192.168.1.1"}],
+                                "authentication": {"password_text": "hello_secret"},
+                                "group_name": "BACKUP_GROUP",
+                                "preempt": {"enabled": True},
+                                "priority": 150,
+                                "timers": {"hello_interval": 5, "hold_time": 15},
+                                "track": [{"track_no": 10, "decrement": 30}],
+                            },
+                        ],
+                    },
+                    {
+                        "name": "GigabitEthernet3",
+                        "version": 1,
+                        "standby_groups": [
+                            {"group_no": 1, "ip": [{"virtual_ip": "172.16.1.1"}], "priority": 100},
+                        ],
+                    },
+                    {
+                        "name": "GigabitEthernet2",
+                        "version": 1,
+                        "standby_groups": [
+                            {
+                                "group_no": 2,
+                                "ip": [{"virtual_ip": "172.16.2.1", "secondary": True}],
+                                "authentication": {"key_chain": "AUTH_CHAIN"},
+                                "priority": 100,
+                            },
+                        ],
+                    },
                 ],
                 state="merged",
             ),
         )
-        commands = []
-        result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], commands)
+        commands = [
+            "interface Vlan70",
+            "standby 10 ip 10.0.10.3 secondary",
+            "standby 10 ip 10.0.10.2 secondary",
+            "standby 20 follow MASTER_GROUP",
+            "standby 20 ipv6 autoconfig",
+            "standby 20 ipv6 2001:db8:20::1/64",
+            "interface Vlan100",
+            "standby 5 preempt",
+            "standby 5 priority 150",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-    def test_ios_hsrp_interfaces_overridden_idempotent(self):
+    def test_ios_hsrp_interfaces_action_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
-            interface GigabitEthernet4
-             standby mac-refresh 21
-             standby version 7
-             standby delay minimum 30 reload 40
-             standby use-bia scope interface
-             standby follow test
-             standby redirect advertisement authentication md5 key-string apple timeout 10
-             standby 22 follow test123
-             standby 22 priority 7
-             standby 22 preempt delay minimum 60 reload 70 sync 90
-             standby 22 track 4 decrement 45 shutdown
-             standby 22 mac-address A:B:C:D
-             standby 22 name sentry
-             standby 22 ip 10.0.0.1 secondary
+            interface Vlan70
+             no ip address
+             standby mac-refresh 45
+             standby redirect timers 10 55
+             standby delay minimum 5555 reload 556
+             standby redirect advertisement authentication md5 key-chain HSRP_CHAIN
+             standby version 2
+             standby 10 ip 10.0.10.1
+             standby 10 ip 10.0.10.2 secondary
+             standby 10 ip 10.0.10.3 secondary
+             standby 10 follow MASTER_GROUP
+             standby 10 timers msec 200 250
+             standby 10 priority 110
+             standby 10 preempt delay minimum 100 reload 50 sync 30
+             standby 10 authentication md5 key-string 7 0123456789ABCDEF
+             standby 10 name PRIMARY_GROUP
+             standby 10 mac-address 0000.0c07.ac0a
+             standby 10 track 1 decrement 20
+             standby 10 track 2 shutdown
+             standby 20 ipv6 2001:db8:10::1/64
+             standby 20 ipv6 2001:db8:20::1/64
+             standby 20 ipv6 autoconfig
+             standby 20 follow MASTER_GROUP
+             standby 20 priority 120
+             standby 20 name IPV6_GROUP
+             standby 20 mac-address 0000.0c07.ac14
+            !
+            interface Vlan100
+             no ip address
+             standby bfd
+             standby delay minimum 100 reload 200
+             standby version 2
+             standby 5 ip 192.168.1.1
+             standby 5 timers 5 15
+             standby 5 priority 150
+             standby 5 preempt
+             standby 5 authentication hello_secret
+             standby 5 name BACKUP_GROUP
+             standby 5 track 10 decrement 30
+            !
+            interface GigabitEthernet3
+             standby use-bia
+             standby 1 ip 172.16.1.1
+             standby 1 priority 100
+            !
+            interface GigabitEthernet2
+             standby follow VLAN70_GROUP
+             standby 2 ip 172.16.2.1 secondary
+             standby 2 authentication md5 key-chain AUTH_CHAIN
             """,
         )
-        set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="GigabitEthernet4",
-                        mac_refresh=21,
-                        version=7,
-                        delay=dict(
-                            minimum=30,
-                            reload=40,
-                        ),
-                        use_bia=dict(
-                            scope=dict(
-                                interface=True,
-                            ),
-                        ),
-                        follow="test",
-                        redirect=dict(
-                            advertisement=dict(
-                                authentication=dict(
-                                    key_string=True,
-                                    password_text="apple",
-                                    time_out=10,
-                                ),
-                            ),
-                        ),
-                        standby_groups=[
-                            dict(
-                                ip=[dict(virtual_ip="10.0.0.1", secondary=True)],
-                                group_no=22,
-                                follow="test123",
-                                priority=7,
-                                preempt=dict(
-                                    enabled=True,
-                                    delay=True,
-                                    minimum=60,
-                                    reload=70,
-                                    sync=90,
-                                ),
-                                track=[dict(track_no=4, decrement=45, shutdown=True)],
-                                mac_address="A:B:C:D",
-                                group_name="sentry",
-                            ),
-                        ],
-                    ),
-                ],
-                state="overridden",
-            ),
-        )
-        result = self.execute_module(changed=False)
-        self.assertEqual(result["commands"], [])
+        yaml_string = """
+        config:
+          - delay:
+              minimum: 5555
+              reload: 556
+            mac_refresh: 45
+            name: Vlan70
+            redirect:
+              advertisement:
+                authentication:
+                  key_chain: HSRP_CHAIN
+              timers:
+                adv_timer: 10
+                holddown_timer: 55
+            standby_options:
+              - authentication:
+                  encryption: 7
+                  key_string: 0123456789ABCDEF
+                follow: MASTER_GROUP
+                group_name: PRIMARY_GROUP
+                group_no: 10
+                ip:
+                  - virtual_ip: 10.0.10.1
+                  - secondary: true
+                    virtual_ip: 10.0.10.2
+                  - secondary: true
+                    virtual_ip: 10.0.10.3
+                mac_address: 0000.0c07.ac0a
+                preempt:
+                  delay: true
+                  enabled: true
+                  minimum: 100
+                  reload: 50
+                  sync: 30
+                priority: 110
+                timers:
+                  hold_time: 250
+                  msec:
+                    hello_interval: 200
+                track:
+                  - decrement: 20
+                    track_no: 1
+                  - shutdown: true
+                    track_no: 2
+              - follow: MASTER_GROUP
+                group_name: IPV6_GROUP
+                group_no: 20
+                ipv6:
+                  addresses:
+                    - '2001:db8:20::1/64'
+                    - '2001:db8:10::1/64'
+                  autoconfig: true
+                mac_address: 0000.0c07.ac14
+                priority: 120
+            version: 2
+          - delay:
+              minimum: 100
+              reload: 200
+            name: Vlan100
+            standby_options:
+              - authentication:
+                  password_text: hello_secret
+                group_name: BACKUP_GROUP
+                group_no: 5
+                ip:
+                  - virtual_ip: 192.168.1.1
+                preempt:
+                  enabled: true
+                priority: 150
+                timers:
+                  hello_interval: 5
+                  hold_time: 15
+                track:
+                  - decrement: 30
+                    track_no: 10
+            version: 2
+          - name: GigabitEthernet3
+            standby_options:
+              - group_no: 1
+                ip:
+                  - virtual_ip: 172.16.1.1
+                priority: 100
+            version: 1
+          - name: GigabitEthernet2
+            standby_options:
+              - authentication:
+                  key_chain: AUTH_CHAIN
+                group_no: 2
+                ip:
+                  - secondary: true
+                    virtual_ip: 172.16.2.1
+                priority: 100
+            version: 1
+        """
+        for action_state in ["merged", "overridden", "replaced"]:
+            set_module_args(
+                dict(
+                    yaml.safe_load(yaml_string),
+                    state=action_state,
+                ),
+            )
+            result = self.execute_module(changed=False)
+            self.assertEqual(result["commands"], [])
 
     def test_ios_hsrp_interfaces_deleted(self):
         self.execute_show_command.return_value = dedent(
             """\
-            interface GigabitEthernet4
-             standby mac-refresh 21
-             standby version 7
-             standby delay minimum 30 reload 40
-             standby follow test
-             standby redirect advertisement authentication md5 key-string apple timeout 10
-             standby 22 priority 7
-             standby 22 preempt delay minimum 60 reload 70 sync 90
-             standby 22 follow test123
-             standby 22 track 4 decrement 45 shutdown
-             standby 22 mac-address A:B:C:D
-             standby 22 name sentry
-             standby 22 timers 20 30
-             standby 22 authentication md5 key-string 0 apple timeout 10
-             standby 22 ip 10.0.0.1 secondary
+            interface Vlan70
+             no ip address
+             standby mac-refresh 45
+             standby redirect timers 10 55
+             standby delay minimum 5555 reload 556
+             standby redirect advertisement authentication md5 key-chain HSRP_CHAIN
+             standby version 2
+             standby 10 ip 10.0.10.1
+             standby 10 ip 10.0.10.2 secondary
+             standby 10 ip 10.0.10.3 secondary
+             standby 10 follow MASTER_GROUP
+             standby 10 timers msec 200 250
+             standby 10 priority 110
+             standby 10 preempt delay minimum 100 reload 50 sync 30
+             standby 10 authentication md5 key-string 7 0123456789ABCDEF
+             standby 10 name PRIMARY_GROUP
+             standby 10 mac-address 0000.0c07.ac0a
+             standby 10 track 1 decrement 20
+             standby 10 track 2 shutdown
+             standby 20 ipv6 2001:db8:10::1/64
+             standby 20 ipv6 2001:db8:20::1/64
+             standby 20 ipv6 autoconfig
+             standby 20 follow MASTER_GROUP
+             standby 20 priority 120
+             standby 20 name IPV6_GROUP
+             standby 20 mac-address 0000.0c07.ac14
+            !
+            interface Vlan100
+             no ip address
+             standby bfd
+             standby delay minimum 100 reload 200
+             standby version 2
+             standby 5 ip 192.168.1.1
+             standby 5 timers 5 15
+             standby 5 priority 150
+             standby 5 preempt
+             standby 5 authentication hello_secret
+             standby 5 name BACKUP_GROUP
+             standby 5 track 10 decrement 30
+            !
+            interface GigabitEthernet3
+             standby use-bia
+             standby 1 ip 172.16.1.1
+             standby 1 priority 100
+            !
+            interface GigabitEthernet2
+             standby follow VLAN70_GROUP
+             standby 2 ip 172.16.2.1 secondary
+             standby 2 authentication md5 key-chain AUTH_CHAIN
             """,
         )
-        set_module_args(dict(state="deleted"))
+        yaml_string = """
+        config:
+          - delay:
+              minimum: 5555
+              reload: 556
+            mac_refresh: 45
+            name: Vlan70
+            redirect:
+              advertisement:
+                authentication:
+                  key_chain: HSRP_CHAIN
+              timers:
+                adv_timer: 10
+                holddown_timer: 55
+            standby_options:
+              - authentication:
+                  encryption: 7
+                  key_string: 0123456789ABCDEF
+                follow: MASTER_GROUP
+                group_name: PRIMARY_GROUP
+                group_no: 10
+                ip:
+                  - virtual_ip: 10.0.10.1
+                  - secondary: true
+                    virtual_ip: 10.0.10.2
+                  - secondary: true
+                    virtual_ip: 10.0.10.3
+                mac_address: 0000.0c07.ac0a
+                preempt:
+                  delay: true
+                  enabled: true
+                  minimum: 100
+                  reload: 50
+                  sync: 30
+                priority: 110
+                timers:
+                  hold_time: 250
+                  msec:
+                    hello_interval: 200
+                track:
+                  - decrement: 20
+                    track_no: 1
+                  - shutdown: true
+                    track_no: 2
+              - follow: MASTER_GROUP
+                group_name: IPV6_GROUP
+                group_no: 20
+                ipv6:
+                  addresses:
+                    - '2001:db8:20::1/64'
+                    - '2001:db8:10::1/64'
+                  autoconfig: true
+                mac_address: 0000.0c07.ac14
+                priority: 120
+            version: 2
+          - delay:
+              minimum: 100
+              reload: 200
+            name: Vlan100
+            standby_options:
+              - authentication:
+                  password_text: hello_secret
+                group_name: BACKUP_GROUP
+                group_no: 5
+                ip:
+                  - virtual_ip: 192.168.1.1
+                preempt:
+                  enabled: true
+                priority: 150
+                timers:
+                  hello_interval: 5
+                  hold_time: 15
+                track:
+                  - decrement: 30
+                    track_no: 10
+            version: 2
+          - name: GigabitEthernet3
+            standby_options:
+              - group_no: 1
+                ip:
+                  - virtual_ip: 172.16.1.1
+                priority: 100
+            version: 1
+          - name: GigabitEthernet2
+            standby_options:
+              - authentication:
+                  key_chain: AUTH_CHAIN
+                group_no: 2
+                ip:
+                  - secondary: true
+                    virtual_ip: 172.16.2.1
+                priority: 100
+            version: 1
+        """
+
+        set_module_args(
+            dict(
+                yaml.safe_load(yaml_string),
+                state="deleted",
+            ),
+        )
         commands = [
-            "interface GigabitEthernet4",
-            "no standby mac-refresh 21",
-            "no standby version 7",
-            "no standby delay minimum 30 reload 40",
-            "no standby follow test",
-            "no standby redirect advertisement authentication md5 key-string apple timeout 10",
-            "no standby 22 priority 7",
-            "no standby 22 preempt",
-            "no standby 22 follow test123",
-            "no standby 22 track 4 decrement 45 shutdown",
-            "no standby 22 mac-address A:B:C:D",
-            "no standby 22 name sentry",
-            "no standby 22 timers 20 30",
-            "no standby 22 authentication md5 key-string 0 apple timeout 10",
-            "no standby 22 ip 10.0.0.1 secondary",
+            "interface Vlan70",
+            "no standby version 2",
+            "no standby delay minimum 5555 reload 556",
+            "no standby mac-refresh 45",
+            "no standby redirect timers 10 55",
+            "no standby redirect advertisement authentication md5 key-chain HSRP_CHAIN",
+            "no standby 10",
+            "no standby 20",
+            "interface Vlan100",
+            "no standby version 2",
+            "no standby delay minimum 100 reload 200",
+            "no standby 5",
+            "interface GigabitEthernet3",
+            "no standby version 1",
+            "no standby 1",
+            "interface GigabitEthernet2",
+            "no standby version 1",
+            "no standby 2",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        self.assertEqual(result["commands"], commands)
 
     def test_ios_hsrp_interfaces_replaced(self):
         self.execute_show_command.return_value = dedent(
             """\
+            interface Vlan70
+             no ip address
+             standby mac-refresh 45
+             standby redirect timers 10 55
+             standby delay minimum 5555 reload 556
+             standby redirect advertisement authentication md5 key-chain HSRP_CHAIN
+             standby version 2
+             standby 10 ip 10.0.10.1
+             standby 10 ip 10.0.10.2 secondary
+             standby 10 ip 10.0.10.3 secondary
+             standby 10 follow MASTER_GROUP
+             standby 10 timers msec 200 250
+             standby 10 priority 110
+             standby 10 preempt delay minimum 100 reload 50 sync 30
+             standby 10 authentication md5 key-string 7 0123456789ABCDEF
+             standby 10 name PRIMARY_GROUP
+             standby 10 mac-address 0000.0c07.ac0a
+             standby 10 track 1 decrement 20
+             standby 10 track 2 shutdown
+             standby 20 ipv6 2001:db8:10::1/64
+             standby 20 ipv6 2001:db8:20::1/64
+             standby 20 ipv6 autoconfig
+             standby 20 follow MASTER_GROUP
+             standby 20 priority 120
+             standby 20 name IPV6_GROUP
+             standby 20 mac-address 0000.0c07.ac14
+            !
+            interface Vlan100
+             no ip address
+             standby bfd
+             standby delay minimum 100 reload 200
+             standby version 2
+             standby 5 ip 192.168.1.1
+             standby 5 timers 5 15
+             standby 5 priority 150
+             standby 5 preempt
+             standby 5 authentication hello_secret
+             standby 5 name BACKUP_GROUP
+             standby 5 track 10 decrement 30
+            !
             interface GigabitEthernet3
-            interface GigabitEthernet4
-             standby 22 ip 10.0.0.1 secondary
-             standby 22 timers 20 30
+             standby use-bia
+             standby 1 ip 172.16.1.1
+             standby 1 priority 100
+            !
+            interface GigabitEthernet2
+             standby follow VLAN70_GROUP
+             standby 2 ip 172.16.2.1 secondary
+             standby 2 authentication md5 key-chain AUTH_CHAIN
             """,
         )
+        yaml_string = """
+        config:
+          - delay:
+              minimum: 5555
+              reload: 556
+            mac_refresh: 45
+            name: Vlan70
+            redirect:
+              advertisement:
+                authentication:
+                  key_chain: HSRP_CHAIN
+              timers:
+                adv_timer: 10
+                holddown_timer: 55
+            standby_options:
+              - authentication:
+                  encryption: 7
+                  key_string: 0123456789ABCDEF
+                follow: MASTER_GROUP
+                group_name: PRIMARY_GROUP
+                group_no: 30
+                ip:
+                  - virtual_ip: 10.0.10.1
+                  - secondary: true
+                    virtual_ip: 10.0.10.2
+                  - secondary: true
+                    virtual_ip: 10.0.10.3
+                mac_address: 0000.0c07.ac0a
+                preempt:
+                  delay: true
+                  enabled: true
+                  minimum: 100
+                  reload: 50
+                  sync: 30
+                priority: 110
+                timers:
+                  hold_time: 250
+                  msec:
+                    hello_interval: 200
+                track:
+                  - decrement: 20
+                    track_no: 1
+                  - shutdown: true
+                    track_no: 2
+              - follow: MASTER_GROUP
+                group_name: IPV6_GROUP
+                group_no: 20
+                ipv6:
+                  addresses:
+                    - '2001:db8:30::1/64'
+                  autoconfig: true
+                mac_address: 0000.0c07.ac14
+                priority: 120
+            version: 2
+          - delay:
+              minimum: 100
+              reload: 200
+            name: Vlan100
+            standby_options:
+              - authentication:
+                  password_text: hello_secret
+                group_name: BACKUP_GROUP
+                group_no: 5
+                ip:
+                  - virtual_ip: 192.168.1.1
+                preempt:
+                  enabled: true
+                priority: 150
+                timers:
+                  hello_interval: 5
+                  hold_time: 15
+                track:
+                  - decrement: 30
+                    track_no: 10
+            version: 2
+          - name: GigabitEthernet3
+            standby_options:
+              - group_no: 1
+                ip:
+                  - virtual_ip: 172.16.1.1
+                priority: 100
+            version: 1
+          - name: GigabitEthernet2
+            standby_options:
+              - authentication:
+                  key_chain: AUTH_CHAIN
+                group_no: 2
+                ip:
+                  - secondary: true
+                    virtual_ip: 172.16.2.1
+                priority: 100
+            version: 1
+        """
         set_module_args(
             dict(
-                config=[
-                    dict(
-                        name="GigabitEthernet3",
-                        standby_groups=[
-                            dict(
-                                ip=[dict(virtual_ip="12.0.0.1", secondary=True)],
-                                group_no=22,
-                            ),
-                        ],
-                    ),
-                    dict(
-                        name="GigabitEthernet4",
-                        standby_groups=[
-                            dict(
-                                track=[dict(track_no=20, shutdown=True)],
-                                group_no=22,
-                                timers=dict(hello_interval=40, hold_time=50),
-                            ),
-                        ],
-                    ),
-                ],
+                yaml.safe_load(yaml_string),
                 state="replaced",
             ),
         )
         commands = [
-            "interface GigabitEthernet4",
-            "no standby 22 ip 10.0.0.1 secondary",
-            "standby 22 track 20 shutdown",
-            "standby 22 timers 40 50",
-            "interface GigabitEthernet3",
-            "standby version 1",
-            "standby 22 ip 12.0.0.1 secondary",
+            "interface Vlan70",
+            "standby 30 follow MASTER_GROUP",
+            "standby 30 mac-address 0000.0c07.ac0a",
+            "standby 30 name PRIMARY_GROUP",
+            "standby 30 preempt delay minimum 100 reload 50 sync 30",
+            "standby 30 priority 110",
+            "standby 30 authentication md5 key-string 7 ",
+            "standby 30 ip 10.0.10.1",
+            "standby 30 ip 10.0.10.2 secondary",
+            "standby 30 ip 10.0.10.3 secondary",
+            "standby 30 track 1 decrement 20",
+            "standby 30 track 2 shutdown",
+            "standby 20 ipv6 2001:db8:30::1/64",
+            "no standby ipv6 2001:db8:10::1/64",
+            "no standby ipv6 2001:db8:20::1/64",
+            "no standby 10",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-    def test_ios_hsrp_interfaces_parsed(self):
+    def test_ios_hsrp_interfaces_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Vlan70
+             no ip address
+             standby mac-refresh 45
+             standby redirect timers 10 55
+             standby delay minimum 5555 reload 556
+             standby redirect advertisement authentication md5 key-chain HSRP_CHAIN
+             standby version 2
+             standby 10 ip 10.0.10.1
+             standby 10 ip 10.0.10.2 secondary
+             standby 10 ip 10.0.10.3 secondary
+             standby 10 follow MASTER_GROUP
+             standby 10 timers msec 200 250
+             standby 10 priority 110
+             standby 10 preempt delay minimum 100 reload 50 sync 30
+             standby 10 authentication md5 key-string 7 0123456789ABCDEF
+             standby 10 name PRIMARY_GROUP
+             standby 10 mac-address 0000.0c07.ac0a
+             standby 10 track 1 decrement 20
+             standby 10 track 2 shutdown
+             standby 20 ipv6 2001:db8:10::1/64
+             standby 20 ipv6 2001:db8:20::1/64
+             standby 20 ipv6 autoconfig
+             standby 20 follow MASTER_GROUP
+             standby 20 priority 120
+             standby 20 name IPV6_GROUP
+             standby 20 mac-address 0000.0c07.ac14
+            !
+            interface Vlan100
+             no ip address
+             standby bfd
+             standby delay minimum 100 reload 200
+             standby version 2
+             standby 5 ip 192.168.1.1
+             standby 5 timers 5 15
+             standby 5 priority 150
+             standby 5 preempt
+             standby 5 authentication hello_secret
+             standby 5 name BACKUP_GROUP
+             standby 5 track 10 decrement 30
+            !
+            interface GigabitEthernet3
+             standby use-bia
+             standby 1 ip 172.16.1.1
+             standby 1 priority 100
+            !
+            interface GigabitEthernet4
+             description Test interface
+            !
+            """,
+        )
+        yaml_string = """
+        config:
+          - delay:
+              minimum: 5555
+              reload: 556
+            mac_refresh: 45
+            name: Vlan70
+            redirect:
+              advertisement:
+                authentication:
+                  key_chain: HSRP_CHAIN
+              timers:
+                adv_timer: 10
+                holddown_timer: 55
+            standby_options:
+              - authentication:
+                  encryption: 7
+                  key_string: 0123456789ABCDEF
+                follow: MASTER_GROUP
+                group_name: PRIMARY_GROUP
+                group_no: 30
+                ip:
+                  - virtual_ip: 10.0.10.1
+                  - secondary: true
+                    virtual_ip: 10.0.10.2
+                  - secondary: true
+                    virtual_ip: 10.0.10.3
+                mac_address: 0000.0c07.ac0a
+                preempt:
+                  delay: true
+                  enabled: true
+                  minimum: 100
+                  reload: 50
+                  sync: 30
+                priority: 110
+                timers:
+                  hold_time: 250
+                  msec:
+                    hello_interval: 200
+                track:
+                  - decrement: 20
+                    track_no: 1
+                  - shutdown: true
+                    track_no: 2
+              - follow: MASTER_GROUP
+                group_name: IPV6_GROUP
+                group_no: 20
+                ipv6:
+                  addresses:
+                    - '2001:db8:30::1/64'
+                  autoconfig: true
+                mac_address: 0000.0c07.ac14
+                priority: 120
+            version: 2
+          - delay:
+              minimum: 100
+              reload: 200
+            name: Vlan100
+            standby_options:
+              - authentication:
+                  password_text: hello_secret
+                group_name: BACKUP_GROUP
+                group_no: 5
+                ip:
+                  - virtual_ip: 192.168.1.1
+                preempt:
+                  enabled: true
+                priority: 150
+                timers:
+                  hello_interval: 5
+                  hold_time: 15
+                track:
+                  - decrement: 30
+                    track_no: 10
+            version: 2
+          - name: GigabitEthernet2
+            standby_options:
+              - authentication:
+                  key_chain: AUTH_CHAIN
+                group_no: 2
+                ip:
+                  - secondary: true
+                    virtual_ip: 172.16.2.1
+                priority: 100
+            version: 1
+        """
+        set_module_args(
+            dict(
+                yaml.safe_load(yaml_string),
+                state="overridden",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet3",
+            "no standby version 1",
+            "no standby 1",
+            "interface Vlan70",
+            "standby 30 follow MASTER_GROUP",
+            "standby 30 mac-address 0000.0c07.ac0a",
+            "standby 30 name PRIMARY_GROUP",
+            "standby 30 preempt delay minimum 100 reload 50 sync 30",
+            "standby 30 priority 110",
+            "standby 30 authentication md5 key-string 7 ",
+            "standby 30 ip 10.0.10.1",
+            "standby 30 ip 10.0.10.2 secondary",
+            "standby 30 ip 10.0.10.3 secondary",
+            "standby 30 track 1 decrement 20",
+            "standby 30 track 2 shutdown",
+            "standby 20 ipv6 2001:db8:30::1/64",
+            "no standby ipv6 2001:db8:10::1/64",
+            "no standby ipv6 2001:db8:20::1/64",
+            "no standby 10",
+            "interface GigabitEthernet2",
+            "standby version 1",
+            "standby 2 priority 100",
+            "standby 2 authentication md5 key-chain AUTH_CHAIN",
+            "standby 2 ip 172.16.2.1 secondary",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_hsrp_interfaces_parsed_rendered(self):
         set_module_args(
             dict(
                 running_config=dedent(
                     """\
-                    interface GigabitEthernet4
-                     standby mac-refresh 21
-                     standby version 7
-                     standby delay minimum 30 reload 40
-                     standby follow test
-                     standby redirect advertisement authentication md5 key-string apple timeout 10
-                     standby 22 follow test123
-                     standby 22 priority 7
-                     standby 22 preempt delay minimum 60 reload 70 sync 90
-                     standby 22 track 4 decrement 45 shutdown
-                     standby 22 mac-address A:B:C:D
-                     standby 22 name sentry
-                     standby 22 timers 20 30
-                     standby 22 authentication md5 key-string 0 apple timeout 10
-                     standby 22 ip 10.0.0.1 secondary
-                    """,
+                interface Vlan70
+                 no ip address
+                 standby mac-refresh 45
+                 standby redirect timers 10 55
+                 standby delay minimum 5555 reload 556
+                 standby redirect advertisement authentication md5 key-chain HSRP_CHAIN
+                 standby version 2
+                 standby 10 ip 10.0.10.1
+                 standby 10 follow MASTER_GROUP
+                 standby 10 timers msec 200 250
+                 standby 10 priority 110
+                 standby 10 preempt delay minimum 100 reload 50 sync 30
+                 standby 10 authentication md5 key-string 7 0123456789ABCDEF
+                 standby 10 name PRIMARY_GROUP
+                 standby 10 mac-address 0000.0c07.ac0a
+                 standby 10 track 1 decrement 20
+                 standby 20 ipv6 2001:db8:10::1/64
+                 standby 20 ipv6 autoconfig
+                 standby 20 follow MASTER_GROUP
+                 standby 20 priority 120
+                 standby 20 name IPV6_GROUP
+                 standby 20 mac-address 0000.0c07.ac14
+                !
+                interface Vlan100
+                 no ip address
+                 standby bfd
+                 standby delay minimum 100 reload 200
+                 standby version 2
+                 standby 5 ip 192.168.1.1
+                 standby 5 timers 5 15
+                 standby 5 priority 150
+                 standby 5 preempt
+                 standby 5 authentication hello_secret
+                 standby 5 name BACKUP_GROUP
+                 standby 5 track 10 decrement 30
+                !
+                interface GigabitEthernet3
+                 standby use-bia
+                 standby 1 ip 172.16.1.1
+                 standby 1 priority 100
+                !
+                interface GigabitEthernet4
+                 description Test interface
+                !
+                """,
                 ),
                 state="parsed",
             ),
@@ -308,376 +936,111 @@ class TestIosHSRPInterfaceModule(TestIosModule):
         result = self.execute_module(changed=False)
         parsed_list = [
             {
-                "name": "GigabitEthernet4",
-                "mac_refresh": 21,
-                "version": 7,
-                "delay": {
-                    "minimum": 30,
-                    "reload": 40,
-                },
-                "follow": "test",
+                "name": "Vlan70",
+                "mac_refresh": 45,
                 "redirect": {
-                    "advertisement": {
-                        "authentication": {
-                            "key_string": True,
-                            "password_text": "apple",
-                            "time_out": 10,
-                        },
-                    },
+                    "timers": {"adv_timer": 10, "holddown_timer": 55},
+                    "advertisement": {"authentication": {"key_chain": "HSRP_CHAIN"}},
                 },
-                "standby_groups": [
+                "delay": {"minimum": 5555, "reload": 556},
+                "version": 2,
+                "standby_options": [
                     {
-                        "group_no": 22,
-                        "follow": "test123",
-                        "priority": 7,
+                        "ip": [{"virtual_ip": "10.0.10.1"}],
+                        "follow": "MASTER_GROUP",
+                        "timers": {"hold_time": 250, "msec": {"hello_interval": 200}},
+                        "priority": 110,
                         "preempt": {
                             "enabled": True,
                             "delay": True,
-                            "minimum": 60,
-                            "reload": 70,
-                            "sync": 90,
+                            "minimum": 100,
+                            "reload": 50,
+                            "sync": 30,
                         },
-                        "track": [
-                            {
-                                "track_no": 4,
-                                "decrement": 45,
-                                "shutdown": True,
-                            },
-                        ],
-                        "mac_address": "A:B:C:D",
-                        "group_name": "sentry",
-                        "timers": {
-                            "hello_interval": 20,
-                            "hold_time": 30,
-                        },
-                        "authentication": {
-                            "advertisement": {
-                                "key_string": True,
-                                "encryption": 0,
-                                "password_text": "apple",
-                                "time_out": 10,
-                            },
-                        },
-                        "ip": [
-                            {
-                                "virtual_ip": "10.0.0.1",
-                                "secondary": True,
-                            },
-                        ],
+                        "authentication": {"key_string": "0123456789ABCDEF", "encryption": 7},
+                        "group_name": "PRIMARY_GROUP",
+                        "mac_address": "0000.0c07.ac0a",
+                        "track": [{"track_no": 1, "decrement": 20}],
+                        "group_no": 10,
+                    },
+                    {
+                        "ipv6": {"addresses": ["2001:db8:10::1/64"], "autoconfig": True},
+                        "follow": "MASTER_GROUP",
+                        "priority": 120,
+                        "group_name": "IPV6_GROUP",
+                        "mac_address": "0000.0c07.ac14",
+                        "group_no": 20,
                     },
                 ],
             },
+            {
+                "name": "Vlan100",
+                "delay": {"minimum": 100, "reload": 200},
+                "version": 2,
+                "standby_options": [
+                    {
+                        "ip": [{"virtual_ip": "192.168.1.1"}],
+                        "timers": {"hello_interval": 5, "hold_time": 15},
+                        "priority": 150,
+                        "preempt": {"enabled": True},
+                        "authentication": {"password_text": "hello_secret"},
+                        "group_name": "BACKUP_GROUP",
+                        "track": [{"track_no": 10, "decrement": 30}],
+                        "group_no": 5,
+                    },
+                ],
+            },
+            {
+                "name": "GigabitEthernet3",
+                "standby_options": [
+                    {"ip": [{"virtual_ip": "172.16.1.1"}], "priority": 100, "group_no": 1},
+                ],
+            },
+            {"name": "GigabitEthernet4"},
         ]
         self.assertEqual(parsed_list, result["parsed"])
 
-    def test_ios_hsrp_interfaces_rendered(self):
+        # Re-run module to test rendered operation
         set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="GigabitEthernet3",
-                        mac_refresh=21,
-                        version=7,
-                        delay=dict(
-                            minimum=30,
-                            reload=40,
-                        ),
-                        follow="test",
-                        redirect=dict(
-                            advertisement=dict(
-                                authentication=dict(
-                                    key_string=True,
-                                    password_text="apple",
-                                    time_out=10,
-                                ),
-                            ),
-                        ),
-                        standby_groups=[
-                            dict(
-                                ip=[dict(virtual_ip="10.0.0.1", secondary=True)],
-                                group_no=22,
-                                follow="test123",
-                                priority=7,
-                                preempt=dict(
-                                    delay=True,
-                                    minimum=60,
-                                    reload=70,
-                                    sync=90,
-                                ),
-                                track=[dict(track_no=4, decrement=45, shutdown=True)],
-                                mac_address="A:B:C:D",
-                                group_name="sentry",
-                                authentication=dict(
-                                    advertisement=dict(
-                                        key_string=True,
-                                        password_text="apple",
-                                        encryption=0,
-                                        time_out=10,
-                                    ),
-                                ),
-                                timers=dict(hello_interval=20, hold_time=30),
-                            ),
-                        ],
-                    ),
-                ],
-                state="rendered",
-            ),
+            {
+                "config": parsed_list,
+                "state": "rendered",
+            },
         )
         commands = [
+            "interface Vlan70",
+            "standby version 2",
+            "standby delay minimum 5555 reload 556",
+            "standby mac-refresh 45",
+            "standby redirect timers 10 55",
+            "standby redirect advertisement authentication md5 key-chain HSRP_CHAIN",
+            "standby 10 follow MASTER_GROUP",
+            "standby 10 mac-address 0000.0c07.ac0a",
+            "standby 10 name PRIMARY_GROUP",
+            "standby 10 preempt delay minimum 100 reload 50 sync 30",
+            "standby 10 priority 110",
+            "standby 10 authentication md5 key-string 7 ",
+            "standby 10 ip 10.0.10.1",
+            "standby 10 track 1 decrement 20",
+            "standby 20 follow MASTER_GROUP",
+            "standby 20 mac-address 0000.0c07.ac14",
+            "standby 20 name IPV6_GROUP",
+            "standby 20 priority 120",
+            "standby 20 ipv6 autoconfig",
+            "standby 20 ipv6 2001:db8:10::1/64",
+            "interface Vlan100",
+            "standby version 2",
+            "standby delay minimum 100 reload 200",
+            "standby 5 name BACKUP_GROUP",
+            "standby 5 preempt",
+            "standby 5 priority 150",
+            "standby 5 authentication hello_secret",
+            "standby 5 ip 192.168.1.1",
+            "standby 5 track 10 decrement 30",
             "interface GigabitEthernet3",
-            "standby mac-refresh 21",
-            "standby version 7",
-            "standby delay minimum 30 reload 40",
-            "standby follow test",
-            "standby redirect advertisement authentication md5 key-string apple timeout 10",
-            "standby 22 follow test123",
-            "standby 22 priority 7",
-            "standby 22 preempt delay minimum 60 reload 70 sync 90",
-            "standby 22 track 4 decrement 45 shutdown",
-            "standby 22 mac-address A:B:C:D",
-            "standby 22 name sentry",
-            "standby 22 timers 20 30",
-            "standby 22 authentication md5 key-string 0 apple timeout 10",
-            "standby 22 ip 10.0.0.1 secondary",
+            "standby version 1",
+            "standby 1 priority 100",
+            "standby 1 ip 172.16.1.1",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
-
-    def test_ios_hsrp_interfaces_merged_common_ip(self):
-        self.execute_show_command.return_value = dedent(
-            """\
-            interface GigabitEthernet4
-             standby 22 ip 10.0.0.1 secondary
-            interface GigabitEthernet3
-             standby 0 priority 5
-            """,
-        )
-        set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="GigabitEthernet3",
-                        standby_groups=[
-                            dict(
-                                ip=[dict(virtual_ip="12.0.0.1", secondary=True)],
-                                group_no=22,
-                            ),
-                        ],
-                    ),
-                    dict(
-                        name="GigabitEthernet4",
-                        standby_groups=[
-                            dict(
-                                track=[dict(track_no=20, shutdown=True)],
-                                group_no=22,
-                            ),
-                        ],
-                    ),
-                ],
-                state="merged",
-            ),
-        )
-        commands = [
-            "interface GigabitEthernet4",
-            "standby 22 track 20 shutdown",
-            "interface GigabitEthernet3",
-            "standby 22 ip 12.0.0.1 secondary",
-        ]
-        result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
-
-    def test_ios_hsrp_interfaces_merged_idempotent(self):
-        self.execute_show_command.return_value = dedent(
-            """\
-            interface GigabitEthernet4
-             standby 22 ip 10.0.0.1 secondary
-            interface GigabitEthernet3
-             standby 0 priority 5
-            """,
-        )
-        set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="GigabitEthernet4",
-                        standby_groups=[
-                            dict(
-                                ip=[dict(virtual_ip="10.0.0.1", secondary=True)],
-                                group_no=22,
-                            ),
-                        ],
-                    ),
-                    dict(
-                        name="GigabitEthernet3",
-                        standby_groups=[
-                            dict(
-                                priority=5,
-                                group_no=0,
-                            ),
-                        ],
-                    ),
-                ],
-                state="merged",
-            ),
-        )
-        commands = []
-        result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
-
-    def test_ios_hsrp_interfaces_primary_replaced(self):
-        self.execute_show_command.return_value = dedent(
-            """\
-            interface GigabitEthernet4
-             standby mac-refresh 21
-             standby version 2
-             standby delay minimum 30 reload 40
-             standby follow test
-             standby redirect advertisement authentication md5 key-string apple timeout 10
-             standby 22 follow test123
-             standby 22 priority 7
-             standby 22 preempt delay minimum 60 reload 70 sync 90
-             standby 22 track 4 decrement 45 shutdown
-             standby 22 mac-address A:B:C:D
-             standby 22 name sentry
-             standby 22 timers 20 30
-             standby 22 authentication md5 key-string 0 apple timeout 10
-             standby 22 ip 10.0.0.1 secondary
-             standby 70 ipv6 autoconfig
-             standby 70 ipv6 2xxx:Dx8:1:1::1/64
-             standby 70 ipv6 Fxxx:1:x:1xx4::1/64
-             standby 70 priority 110
-             standby 70 preempt
-             standby 70 track 1 decrement 10
-             standby 70 track 101 decrement 50
-            """,
-        )
-        set_module_args(
-            dict(
-                config=[
-                    dict(
-                        name="GigabitEthernet4",
-                        standby_groups=[
-                            dict(
-                                ip=[dict(virtual_ip="10.0.0.3", secondary=True)],
-                                group_no=22,
-                                ipv6={
-                                    "addresses": ["2xxx:Dx8:1:1::1/64", "Fxxx:1:x:1xx4::1/64"],
-                                    "autoconfig": True,
-                                },
-                            ),
-                        ],
-                    ),
-                ],
-                state="replaced",
-            ),
-        )
-        commands = [
-            "interface GigabitEthernet4",
-            "no standby mac-refresh 21",
-            "standby version 1",
-            "no standby delay minimum 30 reload 40",
-            "no standby follow test",
-            "no standby redirect advertisement authentication md5 key-string apple timeout 10",
-            "standby 22 ip 10.0.0.3 secondary",
-            "no standby 22 track 4 decrement 45 shutdown",
-            "no standby 22 ip 10.0.0.1 secondary",
-            "no standby 70 ipv6",
-            "no standby 70 preempt",
-            "no standby 70 priority 110",
-            "no standby 70 track 101 decrement 50",
-            "standby 22 ipv6 2xxx:Dx8:1:1::1/64",
-            "standby 22 ipv6 Fxxx:1:x:1xx4::1/64",
-            "standby 22 ipv6 autoconfig",
-        ]
-        result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
-
-    def test_ios_hsrp_interfaces_gathered(self):
-        self.execute_show_command.return_value = dedent(
-            """\
-            interface GigabitEthernet4
-             standby mac-refresh 21
-             standby version 7
-             standby delay minimum 30 reload 40
-             standby follow test
-             standby redirect advertisement authentication md5 key-string apple timeout 10
-             standby 22 follow test123
-             standby 22 priority 7
-             standby 22 preempt delay minimum 60 reload 70 sync 90
-             standby 22 track 4 decrement 45 shutdown
-             standby 22 mac-address A:B:C:D
-             standby 22 name sentry
-             standby 22 timers 20 30
-             standby 22 authentication md5 key-string 0 apple timeout 10
-             standby 22 ip 10.0.0.1 secondary
-            """,
-        )
-        set_module_args(
-            dict(
-                state="gathered",
-            ),
-        )
-        result = self.execute_module(changed=False)
-        gathered = [
-            {
-                "name": "GigabitEthernet4",
-                "mac_refresh": 21,
-                "version": 7,
-                "delay": {
-                    "minimum": 30,
-                    "reload": 40,
-                },
-                "follow": "test",
-                "redirect": {
-                    "advertisement": {
-                        "authentication": {
-                            "key_string": True,
-                            "password_text": "apple",
-                            "time_out": 10,
-                        },
-                    },
-                },
-                "standby_groups": [
-                    {
-                        "group_no": 22,
-                        "follow": "test123",
-                        "priority": 7,
-                        "preempt": {
-                            "enabled": True,
-                            "delay": True,
-                            "minimum": 60,
-                            "reload": 70,
-                            "sync": 90,
-                        },
-                        "track": [
-                            {
-                                "track_no": 4,
-                                "decrement": 45,
-                                "shutdown": True,
-                            },
-                        ],
-                        "mac_address": "A:B:C:D",
-                        "group_name": "sentry",
-                        "timers": {
-                            "hello_interval": 20,
-                            "hold_time": 30,
-                        },
-                        "authentication": {
-                            "advertisement": {
-                                "key_string": True,
-                                "encryption": 0,
-                                "password_text": "apple",
-                                "time_out": 10,
-                            },
-                        },
-                        "ip": [
-                            {
-                                "virtual_ip": "10.0.0.1",
-                                "secondary": True,
-                            },
-                        ],
-                    },
-                ],
-            },
-        ]
-        self.assertEqual(result["gathered"], gathered)

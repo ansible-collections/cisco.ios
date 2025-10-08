@@ -123,7 +123,6 @@ options:
       version:
         description: HSRP version
         type: int
-        default: 1
         choices:
           - 1
           - 2

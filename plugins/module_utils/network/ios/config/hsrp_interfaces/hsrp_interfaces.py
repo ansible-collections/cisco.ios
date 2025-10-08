@@ -79,10 +79,10 @@ class Hsrp_interfaces(ResourceModule):
         :returns: The result from module execution
         """
         if self.state not in ["parsed", "gathered"]:
-            import debugpy
+            # import debugpy
 
-            debugpy.listen(3000)
-            debugpy.wait_for_client()
+            # debugpy.listen(3000)
+            # debugpy.wait_for_client()
             self.generate_commands()
             self.run_commands()
         return self.result
@@ -132,6 +132,8 @@ class Hsrp_interfaces(ResourceModule):
         for the Hsrp_interfaces network resource.
         """
         begin = len(self.commands)
+
+        self.handle_defaults(want, have)
         self.compare(parsers=self.parsers, want=want, have=have)
         self._compare_complex_attrs(
             want.get("standby_options", {}),
@@ -167,7 +169,13 @@ class Hsrp_interfaces(ResourceModule):
 
         # remove group via numbers
         for not_req_grp in have_group.values():
-            self.commands.append(self._tmplt.render(not_req_grp, "group_no", True))
+            self.commands.append(f"no standby {not_req_grp.get('group_no')}")
+
+    def handle_defaults(self, want, have):
+        if not want.get("version") and want.get("standby_options"):
+            want["version"] = 1
+        if not have.get("version") and have.get("standby_options"):
+            have["version"] = 1
 
     def list_to_dict(self, param):
         if param:
