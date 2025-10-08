@@ -16,6 +16,11 @@
               vlan: 30
             voice:
               vlan: 40
+            private_vlan:
+              association: true
+              host: true
+              primary_range: 2000
+              secondary_range: 2500
           - name: GigabitEthernet3
             trunk:
               allowed_vlans: 15-20,40

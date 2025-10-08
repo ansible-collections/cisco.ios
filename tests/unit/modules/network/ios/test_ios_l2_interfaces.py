@@ -87,6 +87,12 @@ class TestIosL2InterfacesModule(TestIosModule):
                         mode="access",
                         name="TwoGigabitEthernet1/0/1",
                         trunk=dict(pruning_vlans=["9-19", "20"]),
+                        private_vlan={
+                            "association": True,
+                            "host": True,
+                            "primary_range": 2000,
+                            "secondary_range": 2500,
+                        },
                     ),
                 ],
                 state="merged",
@@ -102,6 +108,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             "switchport trunk allowed vlan add 60",
             "switchport trunk pruning vlan add 9,11-15",
             "interface TwoGigabitEthernet1/0/1",
+            "switchport private-vlan association host 2000 2500",
             "switchport trunk pruning vlan 9-20",
         ]
         result = self.execute_module(changed=True)
@@ -353,6 +360,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             interface TwoGigabitEthernet1/0/1
              switchport mode access
              switchport access vlan 20
+             switchport private-vlan association mapping 2000 remove abc
             interface GigabitEthernet0/3
              switchport trunk allowed vlan 11,59,67,75,77,81,100,400-408,411-413,415,418
              switchport trunk allowed vlan add 461,674,675,696,931,935,951,952,973,974,979
@@ -382,6 +390,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             "interface TwoGigabitEthernet1/0/1",
             "no switchport access vlan",
             "no switchport mode",
+            "no switchport private-vlan association mapping 2000 remove abc",
             "interface GigabitEthernet0/3",
             "no switchport mode",
             "no switchport trunk encapsulation",
@@ -722,6 +731,47 @@ class TestIosL2InterfacesModule(TestIosModule):
                             "mst": {"instance_range": "0-1", "cost": "22"},
                             "cost": 22,
                         },
+                        private_vlan={
+                            "association": True,
+                            "host": True,
+                            "primary_range": 2000,
+                            "secondary_range": 2500,
+                        },
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/2",
+                        private_vlan={
+                            "association": True,
+                            "mapping": True,
+                            "primary_range": 2000,
+                            "secondary_vlan_id": "xyz",
+                        },
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/3",
+                        private_vlan={
+                            "host_association": True,
+                            "primary_range": 2000,
+                            "secondary_range": 2500,
+                        },
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/4",
+                        private_vlan={
+                            "mapping": True,
+                            "primary_range": 2000,
+                            "add": True,
+                            "secondary_vlan_id": "xyz",
+                        },
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/5",
+                        private_vlan={
+                            "mapping": True,
+                            "primary_range": 2000,
+                            "remove": True,
+                            "secondary_vlan_id": "xyz",
+                        },
                     ),
                 ],
                 state="rendered",
@@ -741,6 +791,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             "interface GigabitEthernet1/0/1",
             "switchport voice vlan 22",
             "switchport mode access",
+            "switchport private-vlan association host 2000 2500",
             "switchport app-interface",
             "switchport nonegotiate",
             "switchport vepa enabled",
@@ -750,6 +801,14 @@ class TestIosL2InterfacesModule(TestIosModule):
             "spanning-tree cost 22",
             "spanning-tree guard root",
             "spanning-tree link-type point-to-point",
+            "interface GigabitEthernet1/0/2",
+            "switchport private-vlan association mapping 2000 xyz",
+            "interface GigabitEthernet1/0/3",
+            "switchport private-vlan host-association 2000 2500",
+            "interface GigabitEthernet1/0/4",
+            "switchport private-vlan mapping 2000 add xyz",
+            "interface GigabitEthernet1/0/5",
+            "switchport private-vlan mapping 2000 remove xyz",
         ]
         result = self.execute_module(changed=False)
         self.maxDiff = None
