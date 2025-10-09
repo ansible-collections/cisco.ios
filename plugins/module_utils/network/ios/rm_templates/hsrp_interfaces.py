@@ -136,8 +136,14 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
             "setval": "standby"
             "{{ ' ' + group_no|string if group_no is defined else ''}}"
             " timers"
-            "{{ (' msec ' + timer.msec.hello_interval|string) if timer.msec.hello_interval is defined else (' ' + timer.hello_interval|string) if timer.hello_interval is defined else '' }}"
-            "{{ (' msec ' + timer.msec.hold_time|string) if timer.msec.hold_time is defined else (' ' + timer.hold_time|string) if timer.hold_time is defined else '' }}",
+            "{{ (' msec ' + timer.msec.hello_interval|string) "
+            "if timer.msec.hello_interval is defined "
+            "else (' ' + timer.hello_interval|string) "
+            "if timer.hello_interval is defined else '' }}"
+            "{{ (' msec ' + timer.msec.hold_time|string) "
+            "if timer.msec.hold_time is defined "
+            "else (' ' + timer.hold_time|string) "
+            "if timer.hold_time is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "group_{{ grp_no|string }}": {
@@ -414,8 +420,13 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "standby redirect advertisement authentication"
-            "{{ (' md5 key-chain ' + redirect.advertisement.authentication.key_chain|string) if redirect.advertisement.authentication.key_chain is defined else '' }}"
-            "{{ (' md5 key-string ' + (redirect.advertisement.authentication.encryption|string + ' ') if redirect.advertisement.authentication.encryption is defined else '' + redirect.advertisement.authentication.key_string|string) if redirect.advertisement.authentication.key_string is defined else '' }}",
+            "{{ (' md5 key-chain ' + redirect.advertisement.authentication.key_chain|string) "
+            "if redirect.advertisement.authentication.key_chain is defined else '' }}"
+            "{{ (' md5 key-string ' + "
+            "(redirect.advertisement.authentication.encryption|string + ' ') "
+            "if redirect.advertisement.authentication.encryption is defined else '' "
+            "+ redirect.advertisement.authentication.key_string|string) "
+            "if redirect.advertisement.authentication.key_string is defined else '' }}",
             "result": {
                 "{{ name }}": {
                     "redirect": {

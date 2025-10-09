@@ -2012,95 +2012,95 @@ Examples
     - name: Render the commands for provided configuration
       cisco.ios.ios_hsrp_interfaces:
         config:
-        -   delay:
-                minimum: 5555
-                reload: 556
+          - delay:
+              minimum: 5555
+              reload: 556
             mac_refresh: 45
             name: Vlan70
             redirect:
-                advertisement:
-                    authentication:
-                        key_chain: HSRP_CHAIN
-                timers:
-                    adv_timer: 10
-                    holddown_timer: 55
+              advertisement:
+                authentication:
+                  key_chain: HSRP_CHAIN
+              timers:
+                adv_timer: 10
+                holddown_timer: 55
             standby_options:
-            -   authentication:
-                    encryption: 7
-                    key_string: 0123456789ABCDEF
+              - authentication:
+                  encryption: 7
+                  key_string: 0123456789ABCDEF
                 follow: MASTER_GROUP
                 group_name: PRIMARY_GROUP
                 group_no: 10
                 ip:
-                -   virtual_ip: 10.0.10.1
-                -   secondary: true
+                  - virtual_ip: 10.0.10.1
+                  - secondary: true
                     virtual_ip: 10.0.10.2
-                -   secondary: true
+                  - secondary: true
                     virtual_ip: 10.0.10.3
                 mac_address: 0000.0c07.ac0a
                 preempt:
-                    delay: true
-                    enabled: true
-                    minimum: 100
-                    reload: 50
-                    sync: 30
+                  delay: true
+                  enabled: true
+                  minimum: 100
+                  reload: 50
+                  sync: 30
                 priority: 110
                 timers:
-                    hold_time: 250
-                    msec:
-                        hello_interval: 200
+                  hold_time: 250
+                  msec:
+                    hello_interval: 200
                 track:
-                -   decrement: 20
+                  - decrement: 20
                     track_no: 1
-                -   shutdown: true
+                  - shutdown: true
                     track_no: 2
-            -   follow: MASTER_GROUP
+              - follow: MASTER_GROUP
                 group_name: IPV6_GROUP
                 group_no: 20
                 ipv6:
-                    addresses:
+                  addresses:
                     - 2001:db8:10::1/64
                     - 2001:db8:20::1/64
-                    autoconfig: true
+                  autoconfig: true
                 mac_address: 0000.0c07.ac14
                 priority: 120
             version: 2
-        -   delay:
-                minimum: 100
-                reload: 200
+          - delay:
+              minimum: 100
+              reload: 200
             name: Vlan100
             standby_options:
-            -   authentication:
-                    password_text: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+              - authentication:
+                  password_text: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
                 group_name: BACKUP_GROUP
                 group_no: 5
                 ip:
-                -   virtual_ip: 192.168.1.1
+                  - virtual_ip: 192.168.1.1
                 preempt:
-                    enabled: true
+                  enabled: true
                 priority: 150
                 timers:
-                    hello_interval: 5
-                    hold_time: 15
+                  hello_interval: 5
+                  hold_time: 15
                 track:
-                -   decrement: 30
+                  - decrement: 30
                     track_no: 10
             version: 2
-        -   name: GigabitEthernet3
+          - name: GigabitEthernet3
             standby_options:
-            -   group_no: 1
+              - group_no: 1
                 ip:
-                -   virtual_ip: 172.16.1.1
+                  - virtual_ip: 172.16.1.1
                 priority: 100
             use_bia:
-                set: true
-        -   name: GigabitEthernet2
+              set: true
+          - name: GigabitEthernet2
             standby_options:
-            -   authentication:
-                    key_chain: AUTH_CHAIN
+              - authentication:
+                  key_chain: AUTH_CHAIN
                 group_no: 2
                 ip:
-                -   secondary: true
+                  - secondary: true
                     virtual_ip: 172.16.2.1
                 priority: 100
         state: rendered
