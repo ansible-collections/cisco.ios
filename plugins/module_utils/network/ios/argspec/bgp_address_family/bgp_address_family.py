@@ -399,7 +399,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                     "no_log": False,
                                     "options": {
                                         "encryption": {"type": "int"},
-                                        "pass_key": {"type": "str", "no_log": False},
+                                        "pass_key": {"type": "str", "no_log": True},
                                     },
                                 },
                                 "path_attribute": {
