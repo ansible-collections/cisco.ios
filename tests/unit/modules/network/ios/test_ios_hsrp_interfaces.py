@@ -997,14 +997,14 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                         "group_name": "BACKUP_GROUP",
                         "track": [{"track_no": 10, "decrement": 30}],
                         "group_no": 5,
-                    }
+                    },
                 ],
             },
             {
                 "name": "GigabitEthernet3",
                 "use_bia": {"set": True},
                 "standby_options": [
-                    {"ip": [{"virtual_ip": "172.16.1.1"}], "priority": 100, "group_no": 1}
+                    {"ip": [{"virtual_ip": "172.16.1.1"}], "priority": 100, "group_no": 1},
                 ],
             },
             {"name": "GigabitEthernet4"},

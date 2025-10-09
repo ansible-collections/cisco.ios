@@ -12,4 +12,3 @@
       - name: Vlan100
         description: "Test interfaces"
     state: purged
-
