@@ -1614,7 +1614,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "neighbor_address": UNIQUE_NEIB_ADD,
                                 "password_options": {
                                     "encryption": "{{ encryption }}",
-                                    "pass_key": "{{ pass_key }}",
+                                    "pass_key": "pass_{{ pass_key }}",
                                 },
                             },
                         },
