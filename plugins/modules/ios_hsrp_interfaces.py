@@ -81,7 +81,7 @@ options:
                     type: str
                   key_string:
                     description: Set key string
-                    type: bool
+                    type: str
                   encryption:
                     description: Set encryption 0 (unencrypted/default) or 7 (hidden)
                     type: str
