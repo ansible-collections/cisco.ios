@@ -187,7 +187,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
             "standby 10 ip 10.0.10.2 secondary",
             "standby 20 follow MASTER_GROUP",
             "standby 20 ipv6 autoconfig",
-            "standby 20 ipv6 2001:db8:20::1/64",
+            "standby 20 ipv6 2001:DB8:20::1/64",
             "interface Vlan100",
             "standby 5 preempt",
             "standby 5 priority 150",
@@ -704,9 +704,9 @@ class TestIosHSRPInterfaceModule(TestIosModule):
             "standby 30 ip 10.0.10.3 secondary",
             "standby 30 track 1 decrement 20",
             "standby 30 track 2 shutdown",
-            "standby 20 ipv6 2001:db8:30::1/64",
-            "no standby 20 ipv6 2001:db8:10::1/64",
-            "no standby 20 ipv6 2001:db8:20::1/64",
+            "standby 20 ipv6 2001:DB8:30::1/64",
+            "no standby 20 ipv6 2001:DB8:10::1/64",
+            "no standby 20 ipv6 2001:DB8:20::1/64",
             "no standby 10",
             "interface GigabitEthernet3",
             "no standby use-bia",
@@ -876,9 +876,9 @@ class TestIosHSRPInterfaceModule(TestIosModule):
             "standby 30 ip 10.0.10.3 secondary",
             "standby 30 track 1 decrement 20",
             "standby 30 track 2 shutdown",
-            "standby 20 ipv6 2001:db8:30::1/64",
-            "no standby 20 ipv6 2001:db8:10::1/64",
-            "no standby 20 ipv6 2001:db8:20::1/64",
+            "standby 20 ipv6 2001:DB8:30::1/64",
+            "no standby 20 ipv6 2001:DB8:10::1/64",
+            "no standby 20 ipv6 2001:DB8:20::1/64",
             "no standby 10",
             "interface GigabitEthernet2",
             "standby version 1",
@@ -997,14 +997,14 @@ class TestIosHSRPInterfaceModule(TestIosModule):
                         "group_name": "BACKUP_GROUP",
                         "track": [{"track_no": 10, "decrement": 30}],
                         "group_no": 5,
-                    },
+                    }
                 ],
             },
             {
                 "name": "GigabitEthernet3",
                 "use_bia": {"set": True},
                 "standby_options": [
-                    {"ip": [{"virtual_ip": "172.16.1.1"}], "priority": 100, "group_no": 1},
+                    {"ip": [{"virtual_ip": "172.16.1.1"}], "priority": 100, "group_no": 1}
                 ],
             },
             {"name": "GigabitEthernet4"},
@@ -1038,7 +1038,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
             "standby 20 name IPV6_GROUP",
             "standby 20 priority 120",
             "standby 20 ipv6 autoconfig",
-            "standby 20 ipv6 2001:db8:10::1/64",
+            "standby 20 ipv6 2001:DB8:10::1/64",
             "interface Vlan100",
             "standby version 2",
             "standby delay minimum 100 reload 200",
@@ -1049,8 +1049,8 @@ class TestIosHSRPInterfaceModule(TestIosModule):
             "standby 5 ip 192.168.1.1",
             "standby 5 track 10 decrement 30",
             "interface GigabitEthernet3",
-            "standby use-bia scope interface",
             "standby version 1",
+            "standby use-bia scope interface",
             "standby 1 priority 100",
             "standby 1 ip 172.16.1.1",
         ]
@@ -1071,7 +1071,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
              standby 10 ip 10.0.10.2 secondary
              standby 10 ip 10.0.10.3 secondary
              standby 10 track 1 decrement 20
-             standby 20 ipv6 2001:db8:10::1/64
+             standby 20 ipv6 2001:DB8:10::1/64
              standby 20 ipv6 autoconfig
              standby 20 follow MASTER_GROUP
              standby 20 priority 120

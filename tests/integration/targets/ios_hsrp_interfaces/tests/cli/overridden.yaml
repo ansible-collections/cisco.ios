@@ -46,7 +46,7 @@
                 group_no: 20
                 ipv6:
                   addresses:
-                    - "2001:db8:20::1/64"
+                    - "2001:DB8:20::1/64"
                   autoconfig: true
                 mac_address: 0000.0000.0014
                 priority: 120

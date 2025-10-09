@@ -170,7 +170,7 @@ class Hsrp_interfaces(ResourceModule):
                             want={x: wentry},
                             have={x: hentry},
                         )
-                # remove extra ip or track
+                # remove extra ip/v6 or track
                 for hkey, hentry in standby_have.get(x, {}).items():
                     hentry.update({"group_no": grp_no})
                     self.compare(parsers=self.complex_list_parsers, want={}, have={x: hentry})
@@ -199,7 +199,7 @@ class Hsrp_interfaces(ResourceModule):
                     temp_ipv6 = {}
                     if standby_grp.get("ipv6"):
                         for ip6s in standby_grp.get("ipv6").get("addresses", {}):
-                            temp_ipv6[ip6s] = {"address": ip6s}
+                            temp_ipv6[ip6s.upper()] = {"address": ip6s.upper()}
                         standby_grp["ipv6_addr"] = temp_ipv6
                     temp_track = {}
                     if standby_grp.get("track"):

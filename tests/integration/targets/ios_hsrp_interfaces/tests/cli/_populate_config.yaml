@@ -1,12 +1,15 @@
 ---
-- name: HSRP_interface - populate configuration
-  vars:
-    lines: "interface Vlan70\ndescription for test\ninterface Vlan100
-      \ndescription for test\n"
-  ansible.netcommon.cli_config:
-    config: "{{ lines }}"
+- name: POPULATE - Create VLANs to populate standby configuration
+  register: result
+  cisco.ios.ios_interfaces:
+    config:
+      - name: Vlan70
+        description: "Test interfaces"
+      - name: Vlan100
+        description: "Test interfaces"
+    state: merged
 
-- name: Populate the device with HSRP interface configuration
+- name: POPULATE - Populate the device with HSRP interface configuration
   cisco.ios.hsrp_interfaces:
     state: replaced
     config:
@@ -51,7 +54,7 @@
             group_no: 20
             ipv6:
               addresses:
-                - "2001:db8:20::1/64"
+                - "2001:DB8:20::1/64"
               autoconfig: true
             mac_address: 0000.0000.0014
             priority: 120
