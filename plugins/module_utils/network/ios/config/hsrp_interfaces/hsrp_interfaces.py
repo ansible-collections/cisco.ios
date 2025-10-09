@@ -79,10 +79,6 @@ class Hsrp_interfaces(ResourceModule):
         :returns: The result from module execution
         """
         if self.state not in ["parsed", "gathered"]:
-            # import debugpy
-
-            # debugpy.listen(3000)
-            # debugpy.wait_for_client()
             self.generate_commands()
             self.run_commands()
         return self.result
