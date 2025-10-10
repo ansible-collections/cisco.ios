@@ -56,8 +56,8 @@ class L2_interfaces(ResourceModule):
             "voice.vlan",
             "voice.vlan_tag",
             "voice.vlan_name",
-            "mode",
             "trunk.encapsulation",
+            "mode",
             "trunk.native_vlan",
             "private_vlan",
             "app_interface",
@@ -125,7 +125,24 @@ class L2_interfaces(ResourceModule):
         for the L2_interfaces network resource.
         """
         begin = len(self.commands)
-        self.compare(parsers=self.parsers, want=want, have=have)
+        parsers = list(self.parsers)
+        have_mode = have.get("mode", "")
+        want_mode = want.get("mode", "")
+        have_encap = have.get("trunk", {}).get("encapsulation")
+        want_encap = want.get("trunk", {}).get("encapsulation")
+
+        reverse_order = False
+        if self.state in ["deleted", "purged"]:
+            reverse_order = True
+        elif self.state in ["replaced", "overridden"]:
+            if have_mode == "trunk" and (want_mode != "trunk" or have_encap != want_encap):
+                reverse_order = True
+
+        if reverse_order:
+            parsers.remove("trunk.encapsulation")
+            parsers.insert(parsers.index("mode") + 1, "trunk.encapsulation")
+
+        self.compare(parsers=parsers, want=want, have=have)
         self.compare_list(want, have)
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))

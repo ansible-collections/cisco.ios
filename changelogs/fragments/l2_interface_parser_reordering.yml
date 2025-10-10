@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - cisco.ios.ios_l2_interfaces - Moved mode parser to below the trunk parsers.
