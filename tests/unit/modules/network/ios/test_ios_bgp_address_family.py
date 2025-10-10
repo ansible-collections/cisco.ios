@@ -177,7 +177,8 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     soft_reconfiguration=True,
                                     prefix_list=dict(name="PREFIX-OUT", out=True),
                                     password_options=dict(
-                                        encryption=7, pass_key="021E015232511520495706"
+                                        encryption=7,
+                                        pass_key="021E015232511520495706",
                                     ),
                                 ),
                             ],
