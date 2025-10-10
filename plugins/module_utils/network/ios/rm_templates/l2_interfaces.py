@@ -470,6 +470,48 @@ class L2_interfacesTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "private_vlan",
+            "getval": re.compile(
+                r"""
+                ^\sswitchport\sprivate-vlan
+                (\s(?P<association>association))?
+                (\s(?P<host_association>host-association))?
+                (\s(?P<host>host))?
+                (\s(?P<mapping>mapping))?
+                (\s(?P<primary_range>\d+))?
+                (\s(?P<secondary_range>\d+))?
+                (\s(?P<add>add))?
+                (\s(?P<remove>remove))?
+                (\s(?P<secondary_vlan_id>\S+))?
+                \s*$""", re.VERBOSE,
+            ),
+            "setval": "switchport private-vlan"
+            "{{ ' association' if private_vlan.association|d(False) else '' }}"
+            "{{ ' host-association' if private_vlan.host_association|d(False) else '' }}"
+            "{{ ' mapping' if private_vlan.mapping|d(False) else '' }}"
+            "{{ ' host' if private_vlan.host|d(False) else '' }}"
+            "{{ ' ' + private_vlan.primary_range|string if private_vlan.primary_range is defined else ''}}"
+            "{{ ' ' + private_vlan.secondary_range|string if private_vlan.secondary_range is defined else ''}}"
+            "{{ ' add' if private_vlan.add|d(False) else '' }}"
+            "{{ ' remove' if private_vlan.remove|d(False) else '' }}"
+            "{{ ' ' + private_vlan.secondary_vlan_id if private_vlan.secondary_vlan_id is defined else ''}}",
+            "result": {
+                "{{ name }}": {
+                    "private_vlan": {
+                        "association": "{{ not not association }}",
+                        "host_association": "{{ not not host_association }}",
+                        "mapping": "{{ not not mapping }}",
+                        "host": "{{ not not host }}",
+                        "primary_range": "{{ primary_range }}",
+                        "secondary_range": "{{ secondary_range }}",
+                        "add": "{{ not not add }}",
+                        "remove": "{{ not not remove }}",
+                        "secondary_vlan_id": "{{ secondary_vlan_id }}",
+                    },
+                },
+            },
+        },
+        {
             "name": "trunk.allowed_vlans",
             "getval": re.compile(
                 r"""

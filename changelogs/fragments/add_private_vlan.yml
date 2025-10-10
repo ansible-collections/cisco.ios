@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - cisco.ios.ios_l2_interfaces - Add private-vlan support to switchport.

@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - cisco.ios.ios_bgp_address_family - Encrypted strings as password are not evaluated rather treated as string forcefully.
