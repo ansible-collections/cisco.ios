@@ -81,6 +81,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
               neighbor 198.51.100.1 local-as 20
               neighbor 198.51.100.1 activate
               neighbor 198.51.100.1 next-hop-self all
+              neighbor 198.51.100.1 password 7 021E015232511520495706
               neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
               neighbor 198.51.100.1 route-server-client
               neighbor 198.51.100.1 prefix-list AS65100-PREFIX-OUT out
@@ -175,6 +176,10 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                     remote_as=65001,
                                     soft_reconfiguration=True,
                                     prefix_list=dict(name="PREFIX-OUT", out=True),
+                                    password_options=dict(
+                                        encryption=7,
+                                        pass_key="021E015232511520495706",
+                                    ),
                                 ),
                             ],
                             network=[dict(address="192.0.3.1", mask="255.255.255.0")],
@@ -188,6 +193,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             "router bgp 65000",
             "address-family ipv4 unicast vrf blue",
             "neighbor 192.0.3.1 remote-as 65001",
+            "neighbor 192.0.3.1 password 7 021E015232511520495706",
             "neighbor 192.0.3.1 prefix-list PREFIX-OUT out",
             "neighbor 192.0.3.1 soft-reconfiguration inbound",
             "network 192.0.3.1 mask 255.255.255.0",
@@ -1107,6 +1113,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                       neighbor 198.51.100.1 local-as 20
                       neighbor 198.51.100.1 activate
                       neighbor 198.51.100.1 next-hop-self all
+                      neighbor 198.51.100.1 password 7 021E015232511520495706
                       neighbor 198.51.100.1 aigp send cost-community 100 poi igp-cost transitive
                       neighbor 198.51.100.1 route-server-client
                       neighbor 198.51.100.1 prefix-list AS65100-PREFIX-OUT out
@@ -1233,6 +1240,10 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                                         "poi": {"igp_cost": True, "transitive": True},
                                     },
                                 },
+                            },
+                            "password_options": {
+                                "encryption": 7,
+                                "pass_key": "021E015232511520495706",
                             },
                             "route_server_client": True,
                             "prefix_lists": [{"name": "AS65100-PREFIX-OUT", "out": True}],
