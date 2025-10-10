@@ -1100,3 +1100,212 @@ class TestIosL2InterfacesModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.maxDiff = None
         self.assertEqual(result["commands"], commands)
+
+    def test_ios_l2_interfaces_deleted_trunk(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             switchport mode access
+             switchport access vlan 10
+            interface GigabitEthernet0/2
+             switchport trunk allowed vlan 10-20,40
+             switchport trunk encapsulation dot1q
+             switchport trunk native vlan 10
+             switchport trunk pruning vlan 10,20
+             switchport mode trunk
+            interface TwoGigabitEthernet1/0/1
+             switchport mode access
+             switchport access vlan 20
+            interface GigabitEthernet0/3
+             switchport trunk allowed vlan 11,59,67,75,77,81,100,400-408,411-413,415,418
+             switchport trunk allowed vlan add 461,674,675,696,931,935,951,952,973,974,979
+             switchport trunk allowed vlan add 982,986,988,993
+             switchport trunk encapsulation dot1q
+             switchport trunk pruning vlan 10-15
+             switchport mode trunk
+            """,
+        )
+        set_module_args(dict(config=[dict(name="GigabitEthernet0/2")], state="deleted"))
+        commands = [
+            "interface GigabitEthernet0/2",
+            "no switchport mode",
+            "no switchport trunk allowed vlan",
+            "no switchport trunk encapsulation",
+            "no switchport trunk native vlan",
+            "no switchport trunk pruning vlan",
+        ]
+        self.maxDiff = None
+        self.execute_module(changed=True, commands=commands)
+
+    def test_ios_l2_interfaces_replaced_trunk(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             switchport mode access
+             switchport access vlan 10
+            interface GigabitEthernet0/2
+            interface TwoGigabitEthernet1/0/1
+             switchport mode access
+             switchport access vlan 20
+            interface GigabitEthernet0/3
+             switchport trunk allowed vlan 11,59,67,75,77,81,100,400-408,411-413,415,418
+             switchport trunk allowed vlan add 461,674,675,696,931,935,951,952,973,974,979
+             switchport trunk allowed vlan add 982,986,988,993
+             switchport trunk encapsulation dot1q
+             switchport trunk pruning vlan 10-15
+             switchport mode trunk
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/2",
+                        trunk=dict(
+                            allowed_vlans=["20-25", "40"],
+                            encapsulation="isl",
+                            native_vlan=20,
+                            pruning_vlans=["10"],
+                        ),
+                        mode="trunk",
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            'interface GigabitEthernet0/2',
+            'switchport trunk encapsulation isl',
+            'switchport mode trunk',
+            'switchport trunk native vlan 20',
+            'switchport trunk allowed vlan 20-25,40',
+            'switchport trunk pruning vlan 10'
+        ]
+        result = self.execute_module(changed=True)
+        self.maxDiff = None
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_l2_interfaces_replaced_trunk_reverse(self):
+            self.execute_show_command.return_value = dedent(
+                """\
+                interface GigabitEthernet0/1
+                 switchport mode access
+                 switchport access vlan 10
+                interface GigabitEthernet0/2
+                 switchport mode trunk
+                interface TwoGigabitEthernet1/0/1
+                 switchport mode access
+                 switchport access vlan 20
+                interface GigabitEthernet0/3
+                 switchport trunk allowed vlan 11,59,67,75,77,81,100,400-408,411-413,415,418
+                 switchport trunk allowed vlan add 461,674,675,696,931,935,951,952,973,974,979
+                 switchport trunk allowed vlan add 982,986,988,993
+                 switchport trunk encapsulation dot1q
+                 switchport trunk pruning vlan 10-15
+                 switchport mode trunk
+                """,
+            )
+            set_module_args(
+                dict(
+                    config=[
+                        dict(
+                            name="GigabitEthernet0/2",
+                            trunk=dict(
+                                allowed_vlans=["20-25", "40"],
+                                encapsulation="isl",
+                                native_vlan=20,
+                                pruning_vlans=["10"],
+                            ),
+                        ),
+                    ],
+                    state="replaced",
+                ),
+            )
+            commands = [
+                'interface GigabitEthernet0/2',
+                'no switchport mode',
+                'switchport trunk encapsulation isl',
+                'switchport trunk native vlan 20',
+                'switchport trunk allowed vlan 20-25,40',
+                'switchport trunk pruning vlan 10'
+            ]
+            result = self.execute_module(changed=True)
+            self.maxDiff = None
+            self.assertEqual(result["commands"], commands)
+
+    def test_ios_l2_interfaces_merged_trunk(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             switchport mode access
+             switchport access vlan 10
+            interface GigabitEthernet0/2
+             switchport trunk allowed vlan 10-20,40
+             switchport trunk encapsulation dot1q
+             switchport trunk native vlan 10
+             switchport trunk pruning vlan 10,20
+             switchport mode access
+            interface TwoGigabitEthernet1/0/1
+             switchport mode access
+             switchport access vlan 20
+            interface GigabitEthernet0/3
+             switchport trunk allowed vlan 11,59,67,75,77,81,100,400-408,411-413,415,418
+             switchport trunk allowed vlan add 461,674,675,696,931,935,951,952,973,974,979
+             switchport trunk allowed vlan add 982,986,988,993
+             switchport trunk encapsulation dot1q
+             switchport trunk pruning vlan 10-15
+             switchport mode trunk
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        access=dict(vlan=20),
+                        mode="access",
+                        name="GigabitEthernet0/1",
+                        voice=dict(vlan=40),
+                    ),
+                    dict(
+                        mode="trunk",
+                        name="GigabitEthernet0/2",
+                        trunk=dict(
+                            allowed_vlans=["60"],
+                            encapsulation="isl",
+                            native_vlan=20,
+                            pruning_vlans=["9-15", "20"],
+                        ),
+                    ),
+                    dict(
+                        access=dict(vlan=20),
+                        mode="access",
+                        name="TwoGigabitEthernet1/0/1",
+                        trunk=dict(pruning_vlans=["9-19", "20"]),
+                        private_vlan={
+                            "association": True,
+                            "host": True,
+                            "primary_range": 2000,
+                            "secondary_range": 2500,
+                        },
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/1",
+            "switchport access vlan 20",
+            "switchport voice vlan 40",
+            "interface GigabitEthernet0/2",
+            "switchport trunk encapsulation isl",
+            "switchport mode trunk",
+            "switchport trunk native vlan 20",
+            "switchport trunk allowed vlan add 60",
+            "switchport trunk pruning vlan add 9,11-15",
+            "interface TwoGigabitEthernet1/0/1",
+            "switchport private-vlan association host 2000 2500",
+            "switchport trunk pruning vlan 9-20",
+        ]
+        result = self.execute_module(changed=True)
+        self.maxDiff = None
+        self.assertEqual(result["commands"], commands)
