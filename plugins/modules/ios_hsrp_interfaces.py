@@ -62,9 +62,6 @@ options:
           reload:
             description: Delay after reload
             type: int
-      follow:
-        description: Name of HSRP group to follow
-        type: str
       redirect:
         description: Redirect configuration
         type: dict
@@ -84,7 +81,7 @@ options:
                     type: str
                   key_string:
                     description: Set key string
-                    type: bool
+                    type: str
                   encryption:
                     description: Set encryption 0 (unencrypted/default) or 7 (hidden)
                     type: str
@@ -116,21 +113,25 @@ options:
         type: dict
         suboptions:
           scope:
-            description: Scope interface option
-            type: dict
-            suboptions:
-              interface:
-                description: >-
-                  Use-bia applies to all groups on this interface or
-                  sub-interface
-                type: bool
+            description: >-
+              Use-bia applies to all groups on this interface or
+              sub-interface
+            type: bool
+          set:
+            description: Set use-bia
+            type: bool
       version:
         description: HSRP version
         type: int
-      standby_groups:
+        choices:
+          - 1
+          - 2
+      standby_options:
         description: Group number and group options for standby (HSRP)
         type: list
         elements: dict
+        aliases:
+          - standby_groups
         suboptions:
           group_no:
             description: Group number
@@ -170,32 +171,21 @@ options:
             description: Authentication configuration
             type: dict
             suboptions:
-              advertisement:
-                description: Redirect advertisement messages (standby redirect advertisement authentication md5)
-                type: dict
-                suboptions:
-                  key_chain:
-                    description: Set key chain
-                    type: str
-                  key_string:
-                    description: Set key string
-                    type: bool
-                  encryption:
-                    description: Set encryption 0 (unencrypted/default) or 7 (hidden)
-                    type: int
-                  time_out:
-                    description: Set timeout
-                    type: int
-                  password_text:
-                    description: Password text valid for plain text and and key-string
-                    type: str
-                  text:
-                    description: Password text valid for plain text
-                    type: dict
-                    suboptions:
-                      password_text:
-                        description: Password text valid for plain text and and key-string
-                        type: str
+              key_chain:
+                description: Set key chain
+                type: str
+              key_string:
+                description: Set key string
+                type: str
+              encryption:
+                description: Set encryption 0 (unencrypted/default) or 7 (hidden)
+                type: int
+              time_out:
+                description: Set timeout
+                type: int
+              password_text:
+                description: Password text valid for plain text and and key-string
+                type: str
           preempt:
             description: Overthrow lower priority Active routers
             type: dict
@@ -218,6 +208,7 @@ options:
           priority:
             description: Priority level
             type: int
+            default: 100
           timers:
             description: Overthrow lower priority Active routers
             type: dict
@@ -308,19 +299,12 @@ EXAMPLES = """
 # -------------
 #
 # Router#show running-config | section ^interface
-# interface Loopback888
-#  no ip address
-# interface Loopback999
-#  no ip address
 # interface GigabitEthernet1
 #  description Management interface do not change
 #  ip address dhcp
 #  negotiation auto
 # interface GigabitEthernet2
 #  no ip address
-#  ip ospf network broadcast
-#  ip ospf resync-timeout 10
-#  ip ospf dead-interval 5
 #  speed 1000
 #  no negotiation auto
 # interface GigabitEthernet3
@@ -329,80 +313,282 @@ EXAMPLES = """
 #  no negotiation auto
 # interface GigabitEthernet4
 #  no ip address
-#  shutdown
-#  negotiation auto
 
-- name: Merge provided configuration with device configuration
-  cisco.ios.ios_hsrp_interfaces:
-    config:
-      - name: GigabitEthernet3
-        standby_groups:
-          - group_no: 22
-            ip:
-              - virtual_ip: 10.0.0.1
-                secondary: true
-      - name: GigabitEthernet4
-        standby_groups:
-          - group_no: 0
-            priority: 5
+
+- name: Populate the device with HSRP interface configuration
+  cisco.ios.hsrp_interfaces:
     state: merged
+    config:
+      - delay:
+          minimum: 5555
+          reload: 556
+        mac_refresh: 45
+        name: Vlan70
+        redirect:
+          advertisement:
+            authentication:
+              key_chain: HSRP_CHAIN
+          timers:
+            adv_timer: 10
+            holddown_timer: 55
+        standby_options:
+          - authentication:
+              encryption: 7
+              key_string: 0123456789ABCDEF
+            follow: MASTER_GROUP
+            group_name: PRIMARY_GROUP
+            group_no: 10
+            ip:
+              - secondary: true
+                virtual_ip: 10.0.10.2
+            preempt:
+              delay: true
+              enabled: true
+              minimum: 100
+              reload: 50
+              sync: 30
+            priority: 110
+            timers:
+              hold_time: 250
+              msec:
+                hello_interval: 200
+            track:
+              - decrement: 20
+                track_no: 1
+          - follow: MASTER_GROUP
+            group_name: IPV6_GROUP
+            group_no: 20
+            ipv6:
+              addresses:
+                - '2001:db8:20::1/64'
+              autoconfig: true
+            mac_address: 0000.0000.0014
+            priority: 120
+        version: 2
+      - delay:
+          minimum: 100
+          reload: 200
+        name: Vlan100
+        standby_options:
+          - authentication:
+              password_text: hello_secret
+            group_name: BACKUP_GROUP
+            group_no: 5
+            ip:
+              - virtual_ip: 192.168.1.1
+            preempt:
+              enabled: true
+            priority: 150
+            timers:
+              hello_interval: 5
+              hold_time: 15
+            track:
+              - decrement: 30
+                track_no: 10
+        version: 2
+      - name: GigabitEthernet3
+        standby_options:
+          - group_no: 1
+            ip:
+              - virtual_ip: 172.16.1.1
+            priority: 100
+        version: 1
+      - name: GigabitEthernet2
+        standby_options:
+          - authentication:
+              key_chain: AUTH_CHAIN
+            group_no: 2
+            ip:
+              - secondary: true
+                virtual_ip: 172.16.2.1
+            priority: 100
+        version: 1
+
 
 # Task Output
 # -----------
 #
 # before:
-# - name: GigabitEthernet1
-# - name: GigabitEthernet2
-# - name: GigabitEthernet3
-# - name: GigabitEthernet4
-# - name: Loopback999
-# - name: Loopback888
+# -   name: GigabitEthernet1
+# -   name: GigabitEthernet2
+# -   name: GigabitEthernet3
+# -   name: GigabitEthernet4
+# -   name: Vlan70
+# -   name: Vlan100
 # commands:
+# - interface Vlan70
+# - standby version 2
+# - standby delay minimum 5555 reload 556
+# - standby mac-refresh 45
+# - standby redirect timers 10 55
+# - standby redirect advertisement authentication md5 key-chain HSRP_CHAIN
+# - standby 10 follow MASTER_GROUP
+# - standby 10 name PRIMARY_GROUP
+# - standby 10 preempt delay minimum 100 reload 50 sync 30
+# - standby 10 priority 110
+# - standby 10 authentication md5 key-string 7 0123456789ABCDEF
+# - standby 10 ip 10.0.10.2 secondary
+# - standby 10 track 1 decrement 20
+# - standby 20 follow MASTER_GROUP
+# - standby 20 mac-address 0000.0000.0014
+# - standby 20 name IPV6_GROUP
+# - standby 20 priority 120
+# - standby 20 ipv6 autoconfig
+# - standby 20 ipv6 2001:db8:20::1/64
+# - interface Vlan100
+# - standby version 2
+# - standby delay minimum 100 reload 200
+# - standby 5 name BACKUP_GROUP
+# - standby 5 preempt
+# - standby 5 priority 150
+# - standby 5 authentication ********
+# - standby 5 ip 192.168.1.1
+# - standby 5 track 10 decrement 30
 # - interface GigabitEthernet3
-# - standby 22 ip 10.0.0.1 secondary
-# - interface GigabitEthernet4
-# - standby 0 priority 5
+# - standby version 1
+# - standby 1 priority 100
+# - standby 1 ip 172.16.1.1
+# - interface GigabitEthernet2
+# - standby version 1
+# - standby 2 priority 100
+# - standby 2 authentication md5 key-chain AUTH_CHAIN
+# - standby 2 ip 172.16.2.1 secondary
 # after:
-#   name: GigabitEthernet1
-#   name: GigabitEthernet2
-#   name: GigabitEthernet3
-#     standby_groups:
-#       - group_no: 22
+# -   name: GigabitEthernet1
+# -   name: GigabitEthernet2
+#     standby_options:
+#     -   authentication:
+#             key_chain: AUTH_CHAIN
+#         group_no: 2
 #         ip:
-#           - virtual_ip: 192.168.0.2
-#             secondary: True
-# - name: GigabitEthernet4
-#     standby_groups:
-#       - group_no: 0
-#         priority: 5
-# - name: Loopback999
-# - name: Loopback888
+#         -   secondary: true
+#             virtual_ip: 172.16.2.1
+#         priority: 100
+# -   name: GigabitEthernet3
+#     standby_options:
+#     -   group_no: 1
+#         ip:
+#         -   virtual_ip: 172.16.1.1
+#         priority: 100
+# -   name: GigabitEthernet4
+# -   delay:
+#         minimum: 5555
+#         reload: 556
+#     mac_refresh: 45
+#     name: Vlan70
+#     redirect:
+#         advertisement:
+#             authentication:
+#                 key_chain: HSRP_CHAIN
+#         timers:
+#             adv_timer: 10
+#             holddown_timer: 55
+#     standby_options:
+#     -   authentication:
+#             encryption: 7
+#             key_string: 0123456789ABCDEF
+#         follow: MASTER_GROUP
+#         group_name: PRIMARY_GROUP
+#         group_no: 10
+#         ip:
+#         -   secondary: true
+#             virtual_ip: 10.0.10.2
+#         preempt:
+#             delay: true
+#             enabled: true
+#             minimum: 100
+#             reload: 50
+#             sync: 30
+#         priority: 110
+#         track:
+#         -   decrement: 20
+#             track_no: 1
+#     -   follow: MASTER_GROUP
+#         group_name: IPV6_GROUP
+#         group_no: 20
+#         ipv6:
+#             addresses:
+#             - 2001:DB8:20::1/64
+#             autoconfig: true
+#         mac_address: 0000.0000.0014
+#         priority: 120
+#     version: 2
+# -   delay:
+#         minimum: 100
+#         reload: 200
+#     name: Vlan100
+#     standby_options:
+#     -   group_name: BACKUP_GROUP
+#         group_no: 5
+#         ip:
+#         -   virtual_ip: 192.168.1.1
+#         preempt:
+#             enabled: true
+#         priority: 150
+#         track:
+#         -   decrement: 30
+#             track_no: 10
+#     version: 2
 
 # After state:
 # ------------
 #
-# interface Loopback888
-#  no ip address
-# interface Loopback999
-#  no ip address
+# Router#show running-config | section ^interface
 # interface GigabitEthernet1
-#  description Management interface do not change
 #  ip address dhcp
 #  negotiation auto
+# !
 # interface GigabitEthernet2
 #  no ip address
-#  speed 1000
-#  no negotiation auto
-# interface GigabitEthernet3
-#  no ip address
-#  speed 1000
-#  standby 22 ip 10.0.0.1 secondary
-#  no negotiation auto
-# interface GigabitEthernet4
-#  no ip address
-#  standby 0 priority 5
+#  standby 2 ip 172.16.2.1 secondary
+#  standby 2 authentication md5 key-chain AUTH_CHAIN
 #  shutdown
 #  negotiation auto
+# !
+# interface GigabitEthernet3
+#  no ip address
+#  standby 1 ip 172.16.1.1
+#  shutdown
+#  negotiation auto
+# !
+# interface GigabitEthernet4
+#  no ip address
+#  shutdown
+#  negotiation auto
+# !
+# interface Vlan70
+#  description for test
+#  no ip address
+#  standby mac-refresh 45
+#  standby redirect timers 10 55
+#  standby delay minimum 5555 reload 556
+#  standby redirect advertisement authentication md5 key-chain HSRP_CHAIN
+#  standby version 2
+#  standby 10 ip 10.0.10.2 secondary
+#  standby 10 follow MASTER_GROUP
+#  standby 10 priority 110
+#  standby 10 preempt delay minimum 100 reload 50 sync 30
+#  standby 10 authentication md5 key-string 7 0123456789ABCDEF
+#  standby 10 name PRIMARY_GROUP
+#  standby 10 track 1 decrement 20
+#  standby 20 ipv6 autoconfig
+#  standby 20 ipv6 2001:DB8:20::1/64
+#  standby 20 follow MASTER_GROUP
+#  standby 20 priority 120
+#  standby 20 name IPV6_GROUP
+#  standby 20 mac-address 0000.0000.0014
+# !
+# interface Vlan100
+#  description for test
+#  no ip address
+#  standby delay minimum 100 reload 200
+#  standby version 2
+#  standby 5 ip 192.168.1.1
+#  standby 5 priority 150
+#  standby 5 preempt
+#  standby 5 name BACKUP_GROUP
+#  standby 5 track 10 decrement 30
+# !
 
 
 # Using replaced
@@ -629,208 +815,266 @@ EXAMPLES = """
 # -------------
 #
 # router-ios#show running-config | section ^interface
-# interface Loopback888
-#  no ip address
-# interface Loopback999
-#  no ip address
 # interface GigabitEthernet1
-#  description Management interface do not change
 #  ip address dhcp
 #  negotiation auto
+# !
 # interface GigabitEthernet2
 #  no ip address
-#  ip ospf network broadcast
-#  ip ospf resync-timeout 10
-#  ip ospf dead-interval 5
-#  speed 1000
-#  no negotiation auto
-# interface GigabitEthernet3
-#  no ip address
-#  speed 1000
-#  no negotiation auto
-# interface GigabitEthernet4
-#  description Auto_Cable_Testing_Ansible
-#  no ip address
-#  standby 0 priority 10
+#  standby 2 ip 172.16.2.1 secondary
+#  standby 2 authentication md5 key-chain AUTH_CHAIN
 #  shutdown
 #  negotiation auto
+# !
+# interface GigabitEthernet3
+#  no ip address
+#  standby 1 ip 172.16.1.1
+#  shutdown
+#  negotiation auto
+# !
+# interface GigabitEthernet4
+#  no ip address
+#  shutdown
+#  negotiation auto
+# !
+# interface Vlan70
+#  description for test
+#  no ip address
+#  standby mac-refresh 45
+#  standby redirect timers 10 55
+#  standby delay minimum 5555 reload 556
+#  standby redirect advertisement authentication md5 key-chain HSRP_CHAIN
+#  standby version 2
+#  standby 10 ip 10.0.10.2 secondary
+#  standby 10 follow MASTER_GROUP
+#  standby 10 priority 110
+#  standby 10 preempt delay minimum 100 reload 50 sync 30
+#  standby 10 authentication md5 key-string 7 0123456789ABCDEF
+#  standby 10 name PRIMARY_GROUP
+#  standby 10 track 1 decrement 20
+#  standby 20 ipv6 autoconfig
+#  standby 20 ipv6 2001:DB8:20::1/64
+#  standby 20 follow MASTER_GROUP
+#  standby 20 priority 120
+#  standby 20 name IPV6_GROUP
+#  standby 20 mac-address 0000.0000.0014
+# !
+# interface Vlan100
+#  description for test
+#  no ip address
+#  standby delay minimum 100 reload 200
+#  standby version 2
+#  standby 5 ip 192.168.1.1
+#  standby 5 priority 150
+#  standby 5 preempt
+#  standby 5 name BACKUP_GROUP
+#  standby 5 track 10 decrement 30
+
 
 - name: "Delete attributes of given interfaces (NOTE: This won't delete the interfaces)"
   cisco.ios.ios_hsrp_interfaces:
-    config:
-      - name: GigabitEthernet4
     state: deleted
 
 # Task Output
 # -----------
 #
 # before:
-# - name: GigabitEthernet1
-# - name: GigabitEthernet2
-# - name: GigabitEthernet3
-# - name: GigabitEthernet4
-#     standby_groups:
-#       - group_no: 0
-#         priority: 10
-# - name: Loopback999
-# - name: Loopback888
+# -   name: GigabitEthernet1
+# -   name: GigabitEthernet2
+#     standby_options:
+#     -   authentication:
+#             key_chain: AUTH_CHAIN
+#         group_no: 2
+#         ip:
+#         -   secondary: true
+#             virtual_ip: 172.16.2.1
+#         priority: 100
+# -   name: GigabitEthernet3
+#     standby_options:
+#     -   group_no: 1
+#         ip:
+#         -   virtual_ip: 172.16.1.1
+#         priority: 100
+# -   name: GigabitEthernet4
+# -   delay:
+#         minimum: 5555
+#         reload: 556
+#     mac_refresh: 45
+#     name: Vlan70
+#     redirect:
+#         advertisement:
+#             authentication:
+#                 key_chain: HSRP_CHAIN
+#         timers:
+#             adv_timer: 10
+#             holddown_timer: 55
+#     standby_options:
+#     -   authentication:
+#             encryption: 7
+#             key_string: 0123456789ABCDEF
+#         follow: MASTER_GROUP
+#         group_name: PRIMARY_GROUP
+#         group_no: 10
+#         ip:
+#         -   secondary: true
+#             virtual_ip: 10.0.10.2
+#         preempt:
+#             delay: true
+#             enabled: true
+#             minimum: 100
+#             reload: 50
+#             sync: 30
+#         priority: 110
+#         track:
+#         -   decrement: 20
+#             track_no: 1
+#     -   follow: MASTER_GROUP
+#         group_name: IPV6_GROUP
+#         group_no: 20
+#         ipv6:
+#             addresses:
+#             - 2001:DB8:20::1/64
+#             autoconfig: true
+#         mac_address: 0000.0000.0014
+#         priority: 120
+#     version: 2
+# -   delay:
+#         minimum: 100
+#         reload: 200
+#     name: Vlan100
+#     standby_options:
+#     -   group_name: BACKUP_GROUP
+#         group_no: 5
+#         ip:
+#         -   virtual_ip: 192.168.1.1
+#         preempt:
+#             enabled: true
+#         priority: 150
+#         track:
+#         -   decrement: 30
+#             track_no: 10
+#     version: 2
 # commands:
-# - interface GigabitEthernet4
-# - no standby 0 priority 10
+# - interface GigabitEthernet2
+# - no standby version 1
+# - no standby 2
+# - interface GigabitEthernet3
+# - no standby version 1
+# - no standby 1
+# - interface Vlan70
+# - no standby version 2
+# - no standby delay minimum 5555 reload 556
+# - no standby mac-refresh 45
+# - no standby redirect timers 10 55
+# - no standby redirect advertisement authentication md5 key-chain HSRP_CHAIN
+# - no standby 10
+# - no standby 20
+# - no standby version 2
+# - interface Vlan100
+# - no standby version 2
+# - no standby delay minimum 100 reload 200
+# - no standby 5
+# - no standby version 2
 # after:
-#   name: GigabitEthernet1
-# - name: GigabitEthernet2
-# - name: GigabitEthernet3
-# - name: GigabitEthernet4
-# - name: Loopback999
-# - name: Loopback888
+# -   name: GigabitEthernet1
+# -   name: GigabitEthernet2
+# -   name: GigabitEthernet3
+# -   name: GigabitEthernet4
+# -   name: Vlan70
+# -   name: Vlan100
 
 # After state:
 # -------------
 #
 # router-ios#show running-config | section ^interface
-# interface Loopback888
-#  no ip address
-# interface Loopback999
-#  no ip address
+# !
 # interface GigabitEthernet1
-#  description Management interface do not change
 #  ip address dhcp
 #  negotiation auto
+# !
 # interface GigabitEthernet2
-#  no ip address
-#  ip ospf network broadcast
-#  ip ospf resync-timeout 10
-#  ip ospf dead-interval 5
-#  speed 1000
-#  no negotiation auto
-# interface GigabitEthernet3
-#  no ip address
-#  speed 1000
-#  no negotiation auto
-# interface GigabitEthernet4
-#  description Auto_Cable_Testing_Ansible
 #  no ip address
 #  shutdown
 #  negotiation auto
-
-# Using deleted without config passed, only interface's configuration will be negated
-
-# Before state:
-# -------------
-
-# interface Loopback888
-#  no ip address
-# interface Loopback999
-#  no ip address
-# interface GigabitEthernet1
-#  description Management interface do not change
-#  ip address dhcp
-#  negotiation auto
-# interface GigabitEthernet2
-#  no ip address
-#  speed 1000
-#  no negotiation auto
+# !
 # interface GigabitEthernet3
-#  no ip address
-#  speed 1000
-#  standby 22 ip 10.0.0.1 secondary
-#  no negotiation auto
-# interface GigabitEthernet4
-#  no ip address
-#  standby 0 priority 5
-#  shutdown
-#  negotiation auto
-
-- name: "Delete HSRP config of all interfaces"
-  cisco.ios.ios_hsrp_interfaces:
-    state: deleted
-
-# Task Output
-# -----------
-#
-# before:
-# - name: GigabitEthernet1
-# - name: GigabitEthernet2
-# - name: GigabitEthernet3
-#     standby_groups:
-#       - group_no: 22
-#         ip:
-#           - virtual_ip: 192.168.0.2
-#             secondary: True
-# - name: GigabitEthernet4
-#     standby_groups:
-#       - group_no: 0
-#         priority: 5
-# - name: Loopback999
-# - name: Loopback888
-# commands:
-# - interface GigabitEthernet3
-# - no standby 22 ip 192.168.0.2 secondary
-# - interface GigabitEthernet4
-# - no standby 0 priority 5
-# after:
-# - name: GigabitEthernet1
-# - name: GigabitEthernet2
-# - name: GigabitEthernet3
-# - name: GigabitEthernet3.100
-# - name: GigabitEthernet4
-# - name: Loopback999
-
-# After state:
-# -------------
-#
-# interface Loopback888
-#  no ip address
-# interface Loopback999
-#  no ip address
-# interface GigabitEthernet1
-#  description Management interface do not change
-#  ip address dhcp
-#  negotiation auto
-# interface GigabitEthernet2
-#  no ip address
-#  ip ospf network broadcast
-#  ip ospf resync-timeout 10
-#  ip ospf dead-interval 5
-#  speed 1000
-#  no negotiation auto
-# interface GigabitEthernet3
-#  no ip address
-#  speed 1000
-#  no negotiation auto
-# interface GigabitEthernet4
-#  description Auto_Cable_Testing_Ansible
 #  no ip address
 #  shutdown
 #  negotiation auto
+# !
+# interface GigabitEthernet4
+#  no ip address
+#  shutdown
+#  negotiation auto
+# !
+# interface Vlan70
+#  description for test
+#  no ip address
+# !
+# interface Vlan100
+#  description for test
+#  no ip address
+# !
 
 # Using gathered
 
 # Before state:
 # -------------
-# interface Loopback888
-#  no ip address
-# interface Loopback999
-#  no ip address
+# router-ios#show running-config | section ^interface
 # interface GigabitEthernet1
-#  description Management interface do not change
 #  ip address dhcp
 #  negotiation auto
+# !
 # interface GigabitEthernet2
 #  no ip address
-#  speed 1000
-#  no negotiation auto
-# interface GigabitEthernet3
-#  no ip address
-#  speed 1000
-#  standby 22 ip 10.0.0.1 secondary
-#  no negotiation auto
-# interface GigabitEthernet4
-#  no ip address
-#  standby 0 priority 5
+#  standby 2 ip 172.16.2.1 secondary
+#  standby 2 authentication md5 key-chain AUTH_CHAIN
 #  shutdown
 #  negotiation auto
+# !
+# interface GigabitEthernet3
+#  no ip address
+#  standby 1 ip 172.16.1.1
+#  shutdown
+#  negotiation auto
+# !
+# interface GigabitEthernet4
+#  no ip address
+#  shutdown
+#  negotiation auto
+# !
+# interface Vlan70
+#  description for test
+#  no ip address
+#  standby mac-refresh 45
+#  standby redirect timers 10 55
+#  standby delay minimum 5555 reload 556
+#  standby redirect advertisement authentication md5 key-chain HSRP_CHAIN
+#  standby version 2
+#  standby 10 ip 10.0.10.2 secondary
+#  standby 10 follow MASTER_GROUP
+#  standby 10 priority 110
+#  standby 10 preempt delay minimum 100 reload 50 sync 30
+#  standby 10 authentication md5 key-string 7 0123456789ABCDEF
+#  standby 10 name PRIMARY_GROUP
+#  standby 10 track 1 decrement 20
+#  standby 20 ipv6 autoconfig
+#  standby 20 ipv6 2001:DB8:20::1/64
+#  standby 20 follow MASTER_GROUP
+#  standby 20 priority 120
+#  standby 20 name IPV6_GROUP
+#  standby 20 mac-address 0000.0000.0014
+# !
+# interface Vlan100
+#  description for test
+#  no ip address
+#  standby delay minimum 100 reload 200
+#  standby version 2
+#  standby 5 ip 192.168.1.1
+#  standby 5 priority 150
+#  standby 5 preempt
+#  standby 5 name BACKUP_GROUP
+#  standby 5 track 10 decrement 30
 
 - name: Gather facts for hsrp interfaces
   cisco.ios.ios_hsrp_interfaces:
@@ -840,56 +1084,282 @@ EXAMPLES = """
 # -----------
 #
 # gathered:
-# - name: GigabitEthernet1
-# - name: GigabitEthernet2
-# - name: GigabitEthernet3
-#     standby_groups:
-#       - group_no: 22
+# -   name: GigabitEthernet1
+# -   name: GigabitEthernet2
+#     standby_options:
+#     -   authentication:
+#             key_chain: AUTH_CHAIN
+#         group_no: 2
 #         ip:
-#           - virtual_ip: 192.168.0.2
-#             secondary: True
-# - name: GigabitEthernet4
-#     standby_groups:
-#       - group_no: 0
-#         priority: 5
-# - name: Loopback999
-# - name: Loopback888
+#         -   secondary: true
+#             virtual_ip: 172.16.2.1
+#         priority: 100
+# -   name: GigabitEthernet3
+#     standby_options:
+#     -   group_no: 1
+#         ip:
+#         -   virtual_ip: 172.16.1.1
+#         priority: 100
+# -   name: GigabitEthernet4
+# -   delay:
+#         minimum: 5555
+#         reload: 556
+#     mac_refresh: 45
+#     name: Vlan70
+#     redirect:
+#         advertisement:
+#             authentication:
+#                 key_chain: HSRP_CHAIN
+#         timers:
+#             adv_timer: 10
+#             holddown_timer: 55
+#     standby_options:
+#     -   authentication:
+#             encryption: 7
+#             key_string: 0123456789ABCDEF
+#         follow: MASTER_GROUP
+#         group_name: PRIMARY_GROUP
+#         group_no: 10
+#         ip:
+#         -   secondary: true
+#             virtual_ip: 10.0.10.2
+#         preempt:
+#             delay: true
+#             enabled: true
+#             minimum: 100
+#             reload: 50
+#             sync: 30
+#         priority: 110
+#         track:
+#         -   decrement: 20
+#             track_no: 1
+#     -   follow: MASTER_GROUP
+#         group_name: IPV6_GROUP
+#         group_no: 20
+#         ipv6:
+#             addresses:
+#             - 2001:DB8:20::1/64
+#             autoconfig: true
+#         mac_address: 0000.0000.0014
+#         priority: 120
+#     version: 2
+# -   delay:
+#         minimum: 100
+#         reload: 200
+#     name: Vlan100
+#     standby_options:
+#     -   group_name: BACKUP_GROUP
+#         group_no: 5
+#         ip:
+#         -   virtual_ip: 192.168.1.1
+#         preempt:
+#             enabled: true
+#         priority: 150
+#         track:
+#         -   decrement: 30
+#             track_no: 10
+#     version: 2
 
 # Using rendered
 
 - name: Render the commands for provided configuration
   cisco.ios.ios_hsrp_interfaces:
     config:
-      - name: GigabitEthernet3
-        standby_groups:
-          - group_no: 22
+      - delay:
+          minimum: 5555
+          reload: 556
+        mac_refresh: 45
+        name: Vlan70
+        redirect:
+          advertisement:
+            authentication:
+              key_chain: HSRP_CHAIN
+          timers:
+            adv_timer: 10
+            holddown_timer: 55
+        standby_options:
+          - authentication:
+              encryption: 7
+              key_string: 0123456789ABCDEF
+            follow: MASTER_GROUP
+            group_name: PRIMARY_GROUP
+            group_no: 10
             ip:
-              - virtual_ip: 192.168.0.2
-                secondary: true
-      - name: GigabitEthernet4
-        standby_groups:
-          - group_no: 0
-            priority: 5
+              - virtual_ip: 10.0.10.1
+              - secondary: true
+                virtual_ip: 10.0.10.2
+              - secondary: true
+                virtual_ip: 10.0.10.3
+            mac_address: 0000.0c07.ac0a
+            preempt:
+              delay: true
+              enabled: true
+              minimum: 100
+              reload: 50
+              sync: 30
+            priority: 110
+            timers:
+              hold_time: 250
+              msec:
+                hello_interval: 200
+            track:
+              - decrement: 20
+                track_no: 1
+              - shutdown: true
+                track_no: 2
+          - follow: MASTER_GROUP
+            group_name: IPV6_GROUP
+            group_no: 20
+            ipv6:
+              addresses:
+                - 2001:db8:10::1/64
+                - 2001:db8:20::1/64
+              autoconfig: true
+            mac_address: 0000.0c07.ac14
+            priority: 120
+        version: 2
+      - delay:
+          minimum: 100
+          reload: 200
+        name: Vlan100
+        standby_options:
+          - authentication:
+              password_text: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+            group_name: BACKUP_GROUP
+            group_no: 5
+            ip:
+              - virtual_ip: 192.168.1.1
+            preempt:
+              enabled: true
+            priority: 150
+            timers:
+              hello_interval: 5
+              hold_time: 15
+            track:
+              - decrement: 30
+                track_no: 10
+        version: 2
+      - name: GigabitEthernet3
+        standby_options:
+          - group_no: 1
+            ip:
+              - virtual_ip: 172.16.1.1
+            priority: 100
+        use_bia:
+          set: true
+      - name: GigabitEthernet2
+        standby_options:
+          - authentication:
+              key_chain: AUTH_CHAIN
+            group_no: 2
+            ip:
+              - secondary: true
+                virtual_ip: 172.16.2.1
+            priority: 100
     state: rendered
 
 # Task Output
 # -----------
 #
 # rendered:
+# - interface Vlan70
+# - standby version 2
+# - standby delay minimum 5555 reload 556
+# - standby mac-refresh 45
+# - standby redirect timers 10 55
+# - standby redirect advertisement authentication md5 key-chain HSRP_CHAIN
+# - standby 10 follow MASTER_GROUP
+# - standby 10 mac-address 0000.0c07.ac0a
+# - standby 10 name PRIMARY_GROUP
+# - standby 10 preempt delay minimum 100 reload 50 sync 30
+# - standby 10 priority 110
+# - standby 10 authentication md5 key-string 7 0123456789ABCDEF
+# - standby 10 ip 10.0.10.1
+# - standby 10 ip 10.0.10.2 secondary
+# - standby 10 ip 10.0.10.3 secondary
+# - standby 10 track 1 decrement 20
+# - standby 10 track 2 shutdown
+# - standby 20 follow MASTER_GROUP
+# - standby 20 mac-address 0000.0c07.ac14
+# - standby 20 name IPV6_GROUP
+# - standby 20 priority 120
+# - standby 20 ipv6 autoconfig
+# - standby 20 ipv6 2001:db8:10::1/64
+# - standby 20 ipv6 2001:db8:20::1/64
+# - interface Vlan100
+# - standby version 2
+# - standby delay minimum 100 reload 200
+# - standby 5 name BACKUP_GROUP
+# - standby 5 preempt
+# - standby 5 priority 150
+# - standby 5 authentication ********
+# - standby 5 ip 192.168.1.1
+# - standby 5 track 10 decrement 30
 # - interface GigabitEthernet3
-# - "standby 22 ip 10.0.0.1 secondary
-# - interface GigabitEthernet4
-# - standby 0 priority 5
+# - standby version 1
+# - standby use-bia scope interface
+# - standby 1 priority 100
+# - standby 1 ip 172.16.1.1
+# - interface GigabitEthernet2
+# - standby version 1
+# - standby 2 priority 100
+# - standby 2 authentication md5 key-chain AUTH_CHAIN
+# - standby 2 ip 172.16.2.1 secondary
 
 # Using parsed
 
 # File: parsed.cfg
 # ----------------
 #
+# interface Vlan70
+#  no ip address
+#  standby mac-refresh 45
+#  standby redirect timers 10 55
+#  standby delay minimum 5555 reload 556
+#  standby redirect advertisement authentication md5 key-chain HSRP_CHAIN
+#  standby version 2
+#  standby 10 ip 10.0.10.1
+#  standby 10 ip 10.0.10.2 secondary
+#  standby 10 ip 10.0.10.3 secondary
+#  standby 10 follow MASTER_GROUP
+#  standby 10 timers msec 200 250
+#  standby 10 priority 110
+#  standby 10 preempt delay minimum 100 reload 50 sync 30
+#  standby 10 authentication md5 key-string 7 0123456789ABCDEF
+#  standby 10 name PRIMARY_GROUP
+#  standby 10 mac-address 0000.0c07.ac0a
+#  standby 10 track 1 decrement 20
+#  standby 10 track 2 shutdown
+#  standby 20 ipv6 2001:db8:10::1/64
+#  standby 20 ipv6 2001:db8:20::1/64
+#  standby 20 ipv6 autoconfig
+#  standby 20 follow MASTER_GROUP
+#  standby 20 priority 120
+#  standby 20 name IPV6_GROUP
+#  standby 20 mac-address 0000.0c07.ac14
+
+# interface Vlan100
+#  no ip address
+#  standby bfd
+#  standby delay minimum 100 reload 200
+#  standby version 2
+#  standby 5 ip 192.168.1.1
+#  standby 5 timers 5 15
+#  standby 5 priority 150
+#  standby 5 preempt
+#  standby 5 authentication hello_secret
+#  standby 5 name BACKUP_GROUP
+#  standby 5 track 10 decrement 30
+
 # interface GigabitEthernet3
-#  standby 22 ip 10.0.0.1 secondary
-# interface GigabitEthernet4
-#  standby 0 priority 5
+#  standby use-bia
+#  standby 1 ip 172.16.1.1
+#  standby 1 priority 100
+
+# interface GigabitEthernet2
+#  standby follow VLAN70_GROUP
+#  standby 2 ip 172.16.2.1 secondary
+#  standby 2 authentication md5 key-chain AUTH_CHAIN
 
 # - name: Parse the provided configuration
 #   cisco.ios.ios_hsrp_interfaces:
@@ -900,16 +1370,97 @@ EXAMPLES = """
 # -----------
 #
 # parsed:
-# - name: GigabitEthernet3
-#    standby_groups:
-#     - group_no: 22
-#       ip:
-#         - virtual_ip: 192.168.0.2
-#           secondary: True
-# - name: GigabitEthernet4
-#    standby_groups:
-#     - group_no: 0
-#       priority: 5
+# -   delay:
+#         minimum: 5555
+#         reload: 556
+#     mac_refresh: 45
+#     name: Vlan70
+#     redirect:
+#         advertisement:
+#             authentication:
+#                 key_chain: HSRP_CHAIN
+#         timers:
+#             adv_timer: 10
+#             holddown_timer: 55
+#     standby_options:
+#     -   authentication:
+#             encryption: 7
+#             key_string: 0123456789ABCDEF
+#         follow: MASTER_GROUP
+#         group_name: PRIMARY_GROUP
+#         group_no: 10
+#         ip:
+#         -   virtual_ip: 10.0.10.1
+#         -   secondary: true
+#             virtual_ip: 10.0.10.2
+#         -   secondary: true
+#             virtual_ip: 10.0.10.3
+#         mac_address: 0000.0c07.ac0a
+#         preempt:
+#             delay: true
+#             enabled: true
+#             minimum: 100
+#             reload: 50
+#             sync: 30
+#         priority: 110
+#         timers:
+#             hold_time: 250
+#             msec:
+#                 hello_interval: 200
+#         track:
+#         -   decrement: 20
+#             track_no: 1
+#         -   shutdown: true
+#             track_no: 2
+#     -   follow: MASTER_GROUP
+#         group_name: IPV6_GROUP
+#         group_no: 20
+#         ipv6:
+#             addresses:
+#             - 2001:db8:10::1/64
+#             - 2001:db8:20::1/64
+#             autoconfig: true
+#         mac_address: 0000.0c07.ac14
+#         priority: 120
+#     version: 2
+# -   delay:
+#         minimum: 100
+#         reload: 200
+#     name: Vlan100
+#     standby_options:
+#     -   authentication:
+#             password_text: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+#         group_name: BACKUP_GROUP
+#         group_no: 5
+#         ip:
+#         -   virtual_ip: 192.168.1.1
+#         preempt:
+#             enabled: true
+#         priority: 150
+#         timers:
+#             hello_interval: 5
+#             hold_time: 15
+#         track:
+#         -   decrement: 30
+#             track_no: 10
+#     version: 2
+# -   name: GigabitEthernet3
+#     standby_options:
+#     -   group_no: 1
+#         ip:
+#         -   virtual_ip: 172.16.1.1
+#         priority: 100
+#     use_bia:
+#         set: true
+# -   name: GigabitEthernet2
+#     standby_options:
+#     -   authentication:
+#             key_chain: AUTH_CHAIN
+#         group_no: 2
+#         ip:
+#         -   secondary: true
+#             virtual_ip: 172.16.2.1
+#         priority: 100
 """
 
 RETURN = """
