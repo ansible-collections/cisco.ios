@@ -4,6 +4,28 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v11.1.1
+=======
+
+Bugfixes
+--------
+
+- cisco.ios.ios_bgp_address_family - Encrypted strings as password are not evaluated rather treated as string forcefully.
+- cisco.ios.ios_hsrp_interfaces - Fixed default values for version and priority.
+- cisco.ios.ios_hsrp_interfaces - Fixed overridden state to be idempotent with ipv6 configuration.
+- cisco.ios.ios_hsrp_interfaces - Fixed parsers to group HSRP configuration and optimize parsing time.
+- cisco.ios.ios_hsrp_interfaces - Fixed removal of HSRP configuration when state is deleted, replaced, overridden.
+- cisco.ios.ios_hsrp_interfaces - Fixed rendered output for standby redirect advertisement authentication key-chain.
+- cisco.ios.ios_hsrp_interfaces - Fixed rendered output for standby redirect advertisement authentication key-string with encryption.
+- cisco.ios.ios_hsrp_interfaces - Fixed rendered output for standby redirect advertisement authentication.
+- cisco.ios.ios_hsrp_interfaces - Handle operation of list attributes like ipv6, ip, track.
+- cisco.ios.ios_l2_interfaces - Add private-vlan support to switchport.
+
+Documentation Changes
+---------------------
+
+- Updated documentation for cisco.ios.ios_hsrp_interfaces module, with examples for all parameters.
+
 v11.1.0
 =======
 
