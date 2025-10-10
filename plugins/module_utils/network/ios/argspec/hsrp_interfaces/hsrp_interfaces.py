@@ -54,6 +54,7 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "authentication": {
                                     "type": "dict",
+                                    "no_log": False,
                                     "options": {
                                         "key_chain": {
                                             "type": "str",
@@ -61,11 +62,11 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                                         },
                                         "key_string": {
                                             "type": "str",
-                                            "no_log": False,
+                                            "no_log": True,
                                         },
                                         "encryption": {
                                             "type": "str",
-                                            "no_log": True,
+                                            "no_log": False,
                                         },
                                         "time_out": {"type": "int"},
                                         "password_text": {

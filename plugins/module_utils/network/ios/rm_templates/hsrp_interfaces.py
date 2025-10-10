@@ -380,7 +380,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                         "authentication": {
                             "key_chain": "{{ key_chain }}",
                             "key_string": "{{ key_string }}",
-                            "encryption": "{{ encryption }}",
+                            "encryption": "{{ encryption|string }}",
                             "password_text": "{{ password_text }}",
                             "time_out": "{{ timeout }}",
                         },
