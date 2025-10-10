@@ -1174,20 +1174,20 @@ class TestIosL2InterfacesModule(TestIosModule):
             ),
         )
         commands = [
-            'interface GigabitEthernet0/2',
-            'switchport trunk encapsulation isl',
-            'switchport mode trunk',
-            'switchport trunk native vlan 20',
-            'switchport trunk allowed vlan 20-25,40',
-            'switchport trunk pruning vlan 10'
+            "interface GigabitEthernet0/2",
+            "switchport trunk encapsulation isl",
+            "switchport mode trunk",
+            "switchport trunk native vlan 20",
+            "switchport trunk allowed vlan 20-25,40",
+            "switchport trunk pruning vlan 10",
         ]
         result = self.execute_module(changed=True)
         self.maxDiff = None
         self.assertEqual(result["commands"], commands)
 
     def test_ios_l2_interfaces_replaced_trunk_reverse(self):
-            self.execute_show_command.return_value = dedent(
-                """\
+        self.execute_show_command.return_value = dedent(
+            """\
                 interface GigabitEthernet0/1
                  switchport mode access
                  switchport access vlan 10
@@ -1204,34 +1204,34 @@ class TestIosL2InterfacesModule(TestIosModule):
                  switchport trunk pruning vlan 10-15
                  switchport mode trunk
                 """,
-            )
-            set_module_args(
-                dict(
-                    config=[
-                        dict(
-                            name="GigabitEthernet0/2",
-                            trunk=dict(
-                                allowed_vlans=["20-25", "40"],
-                                encapsulation="isl",
-                                native_vlan=20,
-                                pruning_vlans=["10"],
-                            ),
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/2",
+                        trunk=dict(
+                            allowed_vlans=["20-25", "40"],
+                            encapsulation="isl",
+                            native_vlan=20,
+                            pruning_vlans=["10"],
                         ),
-                    ],
-                    state="replaced",
-                ),
-            )
-            commands = [
-                'interface GigabitEthernet0/2',
-                'no switchport mode',
-                'switchport trunk encapsulation isl',
-                'switchport trunk native vlan 20',
-                'switchport trunk allowed vlan 20-25,40',
-                'switchport trunk pruning vlan 10'
-            ]
-            result = self.execute_module(changed=True)
-            self.maxDiff = None
-            self.assertEqual(result["commands"], commands)
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/2",
+            "no switchport mode",
+            "switchport trunk encapsulation isl",
+            "switchport trunk native vlan 20",
+            "switchport trunk allowed vlan 20-25,40",
+            "switchport trunk pruning vlan 10",
+        ]
+        result = self.execute_module(changed=True)
+        self.maxDiff = None
+        self.assertEqual(result["commands"], commands)
 
     def test_ios_l2_interfaces_merged_trunk(self):
         self.execute_show_command.return_value = dedent(
