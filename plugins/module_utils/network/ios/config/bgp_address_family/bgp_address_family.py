@@ -386,14 +386,6 @@ class Bgp_address_family(ResourceModule):
                             neib["remote_as"] = str(neib.get("remote_as"))
                         if neib.get("local_as") and neib.get("local_as", {}).get("number"):
                             neib["local_as"]["number"] = str(neib["local_as"]["number"])
-                        if neib.get("password_options", {}).get("pass_key"):
-                            neib["password_options"]["pass_key"] = (
-                                neib.get("password_options", {}).get("pass_key").split("_")[1]
-                                if neib.get("password_options", {})
-                                .get("pass_key")
-                                .startswith("pass_")
-                                else neib.get("password_options", {}).get("pass_key")
-                            )
                         # make dict neighbors dict
                         tmp[neib[p_key[k]]] = neib
                     _af["neighbors"] = tmp
