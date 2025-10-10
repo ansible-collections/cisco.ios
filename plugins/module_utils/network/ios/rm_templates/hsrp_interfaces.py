@@ -379,7 +379,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                     "group_{{ grp_no|string }}": {
                         "authentication": {
                             "key_chain": "{{ key_chain }}",
-                            "key_string": "{{ key_string }}",
+                            "key_string": "'{{ key_string }}'",
                             "encryption": "{{ encryption|string }}",
                             "password_text": "{{ password_text }}",
                             "time_out": "{{ timeout }}",
@@ -433,7 +433,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                         "advertisement": {
                             "authentication": {
                                 "key_chain": "{{ key_chain }}",
-                                "key_string": "{{ key_string }}",
+                                "key_string": "'{{ key_string }}'",
                                 "encryption": "{{ encryption }}",
                                 "time_out": "{{ timeout }}",
                             },
