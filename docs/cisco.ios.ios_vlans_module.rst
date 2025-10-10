@@ -584,10 +584,6 @@ Examples
     # - no vlan 10
     # - no vlan 30
     # - no vlan 44
-    # - no vlan 1002
-    # - no vlan 1003
-    # - no vlan 1004
-    # - no vlan 1005
     # - vlan 20
     # - name Vlan_2020
     # - no mtu 610
