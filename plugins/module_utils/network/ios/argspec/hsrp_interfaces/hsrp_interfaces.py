@@ -46,7 +46,6 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                         "reload": {"type": "int"},
                     },
                 },
-                "follow": {"type": "str"},
                 "redirect": {
                     "type": "dict",
                     "options": {
@@ -55,15 +54,19 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "authentication": {
                                     "type": "dict",
+                                    "no_log": False,
                                     "options": {
                                         "key_chain": {
                                             "type": "str",
                                             "no_log": False,
                                         },
-                                        "key_string": {"type": "bool"},
-                                        "encryption": {
+                                        "key_string": {
                                             "type": "str",
                                             "no_log": True,
+                                        },
+                                        "encryption": {
+                                            "type": "str",
+                                            "no_log": False,
                                         },
                                         "time_out": {"type": "int"},
                                         "password_text": {
@@ -87,16 +90,15 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                 "use_bia": {
                     "type": "dict",
                     "options": {
-                        "scope": {
-                            "type": "dict",
-                            "options": {"interface": {"type": "bool"}},
-                        },
+                        "scope": {"type": "bool"},
+                        "set": {"type": "bool"},
                     },
                 },
-                "version": {"type": "int"},
-                "standby_groups": {
+                "version": {"type": "int", "choices": [1, 2]},
+                "standby_options": {
                     "type": "list",
                     "elements": "dict",
+                    "aliases": ["standby_groups"],
                     "options": {
                         "group_no": {"type": "int"},
                         "follow": {"type": "str"},
@@ -123,30 +125,19 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                         "authentication": {
                             "type": "dict",
                             "options": {
-                                "advertisement": {
-                                    "type": "dict",
-                                    "options": {
-                                        "key_chain": {
-                                            "type": "str",
-                                            "no_log": False,
-                                        },
-                                        "key_string": {"type": "bool"},
-                                        "encryption": {"type": "int"},
-                                        "time_out": {"type": "int"},
-                                        "password_text": {
-                                            "type": "str",
-                                            "no_log": True,
-                                        },
-                                        "text": {
-                                            "type": "dict",
-                                            "options": {
-                                                "password_text": {
-                                                    "type": "str",
-                                                    "no_log": True,
-                                                },
-                                            },
-                                        },
-                                    },
+                                "key_chain": {
+                                    "type": "str",
+                                    "no_log": False,
+                                },
+                                "key_string": {
+                                    "type": "str",
+                                    "no_log": False,
+                                },
+                                "encryption": {"type": "int"},
+                                "time_out": {"type": "int"},
+                                "password_text": {
+                                    "type": "str",
+                                    "no_log": True,
                                 },
                             },
                         },
@@ -160,7 +151,7 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                                 "delay": {"type": "bool"},
                             },
                         },
-                        "priority": {"type": "int"},
+                        "priority": {"type": "int", "default": "100"},
                         "timers": {
                             "type": "dict",
                             "options": {
