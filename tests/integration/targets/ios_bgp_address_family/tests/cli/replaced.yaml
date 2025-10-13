@@ -53,6 +53,11 @@
                 - address: 192.0.2.1
                   mask: 255.255.255.255
                   route_map: test
+            - afi: ipv6
+              safi: unicast
+              aggregate_addresses:
+                - address: "2001:DB8:1234::/48" # This aggregate will be removed
+                  as_set: true
         state: replaced
 
     - name: Assert that correct set of commands were generated

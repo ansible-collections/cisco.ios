@@ -4,6 +4,46 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v11.1.1
+=======
+
+Bugfixes
+--------
+
+- cisco.ios.ios_bgp_address_family - Encrypted strings as password are not evaluated rather treated as string forcefully.
+- cisco.ios.ios_hsrp_interfaces - Fixed default values for version and priority.
+- cisco.ios.ios_hsrp_interfaces - Fixed overridden state to be idempotent with ipv6 configuration.
+- cisco.ios.ios_hsrp_interfaces - Fixed parsers to group HSRP configuration and optimize parsing time.
+- cisco.ios.ios_hsrp_interfaces - Fixed removal of HSRP configuration when state is deleted, replaced, overridden.
+- cisco.ios.ios_hsrp_interfaces - Fixed rendered output for standby redirect advertisement authentication key-chain.
+- cisco.ios.ios_hsrp_interfaces - Fixed rendered output for standby redirect advertisement authentication key-string with encryption.
+- cisco.ios.ios_hsrp_interfaces - Fixed rendered output for standby redirect advertisement authentication.
+- cisco.ios.ios_hsrp_interfaces - Handle operation of list attributes like ipv6, ip, track.
+- cisco.ios.ios_l2_interfaces - Add private-vlan support to switchport.
+
+Documentation Changes
+---------------------
+
+- Updated documentation for cisco.ios.ios_hsrp_interfaces module, with examples for all parameters.
+
+v11.1.0
+=======
+
+Minor Changes
+-------------
+
+- ios_config - added answering prompt functionality while working in config mode on ios device
+- ios_facts - Add chassis_id value to ansible_net_neighbors dictionary for lldp neighbours.
+
+Bugfixes
+--------
+
+- Fixed an issue where configuration within an address family (ipv6) was ignored by the parser.
+- cisco.ios.ios_vrf_global - fixed issue preventing idempotent configuration of multiple import/export route-targets for a VRF.
+- ios_hsrp_interfaces - Device defaults version to 1 if standby_groups is present but version is not configured. and module would also consider priority as 100 if not configured, to maintain idempotency.
+- ios_hsrp_interfaces - Fixed operation for ipv6 standby configuration.
+- ios_static_routes - Fix parsing of static routes with interface and distance in gathered state
+
 v11.0.0
 =======
 

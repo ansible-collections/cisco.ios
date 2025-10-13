@@ -91,6 +91,11 @@
                 soft_reconfig_backup: true
               safi: mdt
             - afi: ipv6
+              aggregate_addresses:
+                - address: 2001:DB8:1234::/48
+                  summary_only: true
+                - address: 2001:DB8:5678::/48
+                  as_confed_set: true
               redistribute:
                 - ospf:
                     process_id: 124
@@ -126,6 +131,12 @@
     - name: Merge provided configuration with device configuration (idempotent)
       register: result
       cisco.ios.ios_bgp_address_family: *id001
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result.commands|length == 0
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

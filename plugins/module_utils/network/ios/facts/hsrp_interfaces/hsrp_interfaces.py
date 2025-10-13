@@ -15,8 +15,6 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from collections import defaultdict
-
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
@@ -37,7 +35,27 @@ class Hsrp_interfacesFacts(object):
         self.argument_spec = Hsrp_interfacesArgs.argument_spec
 
     def get_hsrp_data(self, connection):
-        return connection.get("sh running-config | section ^interface")
+        return connection.get("show running-config | section ^interface")
+
+    def handle_grp_options(self, objs):
+
+        hsrp_objs = []
+        for obj in objs:
+            standby_options_config = []
+            interface_conf = {}
+
+            for k, v in obj.items():
+                if k.startswith("group_"):
+                    v.update({"group_no": int(k.split("_")[1])})
+                    standby_options_config.append(v)
+                else:
+                    interface_conf[k] = v
+
+            if standby_options_config:
+                interface_conf["standby_options"] = standby_options_config
+
+            hsrp_objs.append(interface_conf)
+        return hsrp_objs
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Hsrp_interfaces network resource
@@ -62,32 +80,18 @@ class Hsrp_interfacesFacts(object):
         )
         objs = list(hsrp_interfaces_parser.parse().values())
 
-        def combine_by_group_no(data):
-            combined = defaultdict(dict)
-            for entry in data:
-                group_no = entry.get("group_no")
-                if group_no is not None:
-                    combined[group_no].update(entry)
-            return list(combined.values())
-
-        if objs:
-            for obj in objs:
-                if obj.get("standby_groups"):
-                    standby_groups_data = obj.get("standby_groups")
-                    combined_data = combine_by_group_no(standby_groups_data)
-                    obj["standby_groups"] = combined_data
+        hsrp_objs = self.handle_grp_options(objs)
 
         ansible_facts["ansible_network_resources"].pop("hsrp_interfaces", None)
-
         params = utils.remove_empties(
             hsrp_interfaces_parser.validate_config(
                 self.argument_spec,
-                {"config": objs},
+                {"config": hsrp_objs},
                 redact=True,
             ),
         )
 
-        facts["hsrp_interfaces"] = params["config"]
+        facts["hsrp_interfaces"] = params.get("config", [])
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts
