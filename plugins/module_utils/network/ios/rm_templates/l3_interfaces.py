@@ -74,7 +74,7 @@ class L3_interfacesTemplate(NetworkTemplate):
         {
             "name": "mac_address",
             "getval": re.compile(
-                r"""^mac-address
+                r"""\s+mac-address
                     (\s(?P<mac_address>\S+))
                     $""",
                 re.VERBOSE,
