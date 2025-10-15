@@ -21,7 +21,8 @@
                 priority: 5
         state: rendered
 
-    - ansible.builtin.assert:
+    - name: Assert rendered commands
+      ansible.builtin.assert:
         that:
           - result.changed == false
           - result.rendered|symmetric_difference(rendered.commands) == []

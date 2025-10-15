@@ -315,6 +315,35 @@ releases:
       - net_neighbour_add_lldp_chassis_id.yml
       - static_routes.yml
     release_date: "2025-10-07"
+  11.1.1:
+    changes:
+      bugfixes:
+        - cisco.ios.ios_bgp_address_family - Encrypted strings as password are not evaluated
+          rather treated as string forcefully.
+        - cisco.ios.ios_hsrp_interfaces - Fixed default values for version and priority.
+        - cisco.ios.ios_hsrp_interfaces - Fixed overridden state to be idempotent with
+          ipv6 configuration.
+        - cisco.ios.ios_hsrp_interfaces - Fixed parsers to group HSRP configuration
+          and optimize parsing time.
+        - cisco.ios.ios_hsrp_interfaces - Fixed removal of HSRP configuration when state
+          is deleted, replaced, overridden.
+        - cisco.ios.ios_hsrp_interfaces - Fixed rendered output for standby redirect
+          advertisement authentication key-chain.
+        - cisco.ios.ios_hsrp_interfaces - Fixed rendered output for standby redirect
+          advertisement authentication key-string with encryption.
+        - cisco.ios.ios_hsrp_interfaces - Fixed rendered output for standby redirect
+          advertisement authentication.
+        - cisco.ios.ios_hsrp_interfaces - Handle operation of list attributes like ipv6,
+          ip, track.
+        - cisco.ios.ios_l2_interfaces - Add private-vlan support to switchport.
+      doc_changes:
+        - Updated documentation for cisco.ios.ios_hsrp_interfaces module, with examples
+          for all parameters.
+    fragments:
+      - add_private_vlan.yml
+      - ios_bgp_add_fam_inf.yml
+      - redo_hsrp.yml
+    release_date: "2025-10-10"
   2.0.0:
     changes:
       bugfixes:

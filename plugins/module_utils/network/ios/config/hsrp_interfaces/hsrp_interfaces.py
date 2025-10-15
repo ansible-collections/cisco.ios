@@ -48,28 +48,28 @@ class Hsrp_interfaces(ResourceModule):
             tmplt=Hsrp_interfacesTemplate(),
         )
         self.parsers = [
-            "mac_refresh",
+            "bfd",
             "version",
             "delay",
-            "bfd",
-            "use-bia",
-            "follow",
-            "redirect.md5.key_chain",
-            "redirect.md5.key_string",
-            "redirect.md5.key_string_without_encryption",
+            "mac_refresh",
+            "use_bia",
             "redirect.timers",
+            "redirect.advertisement.authentication",
         ]
-        self.complex_parsers = ["track", "ip"]
-        self.non_complex_parsers = [
-            "priority",
-            "timers.msec",
-            "timers",
-            "follow.follow",
-            "preempt",
+        self.complex_parsers = [
+            "follow",
             "mac_address",
             "group_name",
-            "authentication.plain_text",
-            "authentication.md5",
+            "preempt",
+            "priority",
+            "timers",
+            "authentication",
+            "ipv6.autoconfig",
+        ]
+        self.complex_list_parsers = [
+            "ip",
+            "ipv6_addr",
+            "track",
         ]
 
     def execute_module(self):
@@ -87,11 +87,21 @@ class Hsrp_interfaces(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
-        wantd = {entry["name"]: entry for entry in self.want}
-        haved = {entry["name"]: entry for entry in self.have}
+        if self.want:
+            wantd = {}
+            for each in self.want:
+                wantd.update({each["name"]: each})
+        else:
+            wantd = {}
+        if self.have:
+            haved = {}
+            for each in self.have:
+                haved.update({each["name"]: each})
+        else:
+            haved = {}
 
-        wantd = self.convert_list_to_dict(wantd)
-        haved = self.convert_list_to_dict(haved)
+        for each in wantd, haved:
+            self.list_to_dict(each)
 
         # if state is merged, merge want onto have and then compare
         if self.state == "merged":
@@ -109,9 +119,6 @@ class Hsrp_interfaces(ResourceModule):
                     self._compare(want={}, have=have)
 
         for k, want in wantd.items():
-            if not want.get("version") and want.get("standby_groups"):
-                # Default to version 1 if not specified, idempotent behavior
-                want["version"] = 1
             self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
@@ -120,145 +127,82 @@ class Hsrp_interfaces(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Hsrp_interfaces network resource.
         """
-        begin = len(self.commands)
+        begin_count = len(self.commands)
+
+        self.handle_defaults(want, have)
         self.compare(parsers=self.parsers, want=want, have=have)
-        self._compare_complex_attrs(want, have)
-        if len(self.commands) != begin:
-            self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
+        self._compare_complex_attrs(
+            want.get("standby_options", {}),
+            have.get("standby_options", {}),
+        )
 
-    def convert_list_to_dict(self, data):
-        def list_to_dict(lst, key_name):
-            return {item[key_name]: item for item in lst if key_name in item}
+        end_count = len(self.commands)
+        if end_count != begin_count:
+            # standby version when configured shall be at the first but when removed shall be at last
+            # TODO cleanup the first negation command
+            if "no standby version 2" in self.commands[begin_count:end_count]:
+                self.commands.append("no standby version 2")
 
-        result = {}
+            self.commands.insert(begin_count, self._tmplt.render(want or have, "name", False))
 
-        for iface_name, iface_data in data.items():
-            iface_result = iface_data.copy()
-            standby_groups = iface_data.get("standby_groups", [])
-            group_dict = {}
+    def _compare_complex_attrs(self, want_group, have_group):
+        for grp_no, standby_want in want_group.items():
+            standby_have = have_group.pop(grp_no, {})
 
-            for group in standby_groups:
-                group_no = group.get("group_no")
-                if group_no is None:
-                    continue
+            # compare non list attributes directly
+            self.compare(parsers=self.complex_parsers, want=standby_want, have=standby_have)
+            # compare list attributes directly
+            for x in self.complex_list_parsers:
+                for wkey, wentry in standby_want.get(x, {}).items():
+                    hentry = standby_have.get(x, {}).pop(wkey, {})
+                    if wentry != hentry:
+                        if wkey == "autoconfig":
+                            continue
+                        wentry.update({"group_no": grp_no})
+                        if hentry:
+                            hentry.update({"group_no": grp_no})
+                        self.compare(
+                            parsers=self.complex_list_parsers,
+                            want={x: wentry},
+                            have={x: hentry},
+                        )
+                # remove extra ip/v6 or track
+                for hkey, hentry in standby_have.get(x, {}).items():
+                    hentry.update({"group_no": grp_no})
+                    self.compare(parsers=self.complex_list_parsers, want={}, have={x: hentry})
 
-                new_group = {}
+        # remove group via numbers
+        for not_req_grp in have_group.values():
+            self.commands.append(f"no standby {not_req_grp.get('group_no')}")
 
-                for key, value in group.items():
-                    if key == "ip" and isinstance(value, list):
-                        new_group[key] = list_to_dict(value, "virtual_ip")
-                    elif key == "track" and isinstance(value, list):
-                        new_group[key] = list_to_dict(value, "track_no")
-                    elif key != "group_no":
-                        new_group[key] = value
+    def handle_defaults(self, want, have):
+        if not want.get("version") and want.get("standby_options"):
+            want["version"] = 1
+        if not have.get("version") and have.get("standby_options"):
+            have["version"] = 1
 
-                group_dict[group_no] = new_group
+    def list_to_dict(self, param):
+        if param:
+            for _k, val in param.items():
+                temp_standby_grp = {}
 
-            iface_result["standby_groups"] = group_dict
-            result[iface_name] = iface_result
+                for standby_grp in val.get("standby_options", {}):
+                    temp_ip = {}
+                    if standby_grp.get("ip"):
+                        for ips in standby_grp.get("ip", {}):
+                            temp_ip[ips.get("virtual_ip")] = ips
+                        standby_grp["ip"] = temp_ip
+                    temp_ipv6 = {}
+                    if standby_grp.get("ipv6"):
+                        for ip6s in standby_grp.get("ipv6").get("addresses", {}):
+                            temp_ipv6[ip6s.upper()] = {"address": ip6s.upper()}
+                        standby_grp["ipv6_addr"] = temp_ipv6
+                    temp_track = {}
+                    if standby_grp.get("track"):
+                        for trk in standby_grp.get("track", {}):
+                            temp_track[trk.get("track_no")] = trk
+                        standby_grp["track"] = temp_track
+                    temp_standby_grp[standby_grp.get("group_no")] = standby_grp
 
-        return result
-
-    def _compare_complex_attrs(self, want, have):
-        """Compare list items followed by non list items in standby_groups"""
-        want_standby_group = want.get("standby_groups", {})
-        have_standby_group = have.get("standby_groups", {})
-        parser_dict = {
-            "timers.msec": "timers",
-            "follow.follow": "follow",
-            "authentication.plain_text": "authentication",
-            "authentication.md5": "authentication",
-        }
-        for group_number, wanting_data in want_standby_group.items():
-            having_data = have_standby_group.get(group_number, {})
-            if having_data.get("priority") == 100:
-                # Default to priority to 100 if not specified, idempotent behavior
-                wanting_data["priority"] = 100
-
-            for _parser in self.complex_parsers:
-                wantd = wanting_data.get(_parser, {})
-                haved = having_data.get(_parser, {})
-                for key, wanting_parser_data in wantd.items():
-                    having_parser_data = {}
-                    if haved:
-                        having_parser_data = haved.pop(key, {})
-                        if having_parser_data:
-                            having_parser_data.update({"group_no": group_number})
-                    wanting_parser_data.update({"group_no": group_number})
-                    if having_parser_data and having_parser_data != wanting_parser_data:
-                        self.compare(parsers=[_parser], want={}, have={_parser: having_parser_data})
-                    self.compare(
-                        parsers=[_parser],
-                        want={_parser: wanting_parser_data},
-                        have={_parser: having_parser_data},
-                    )
-
-            if wanting_data.get("ipv6"):
-                wantd_ipv6 = wanting_data.pop("ipv6", {})
-                haved_ipv6 = having_data.pop("ipv6", {})
-                # this is to preserve the order in which ipv6 addresses are applied to the device
-                is_ipv6_idempotent = False
-                dt_want = {w_add: w_add for w_add in wantd_ipv6.get("addresses", {})}
-                dt_have = {h_add: h_add for h_add in haved_ipv6.get("addresses", {})}
-                if dt_want == dt_have:
-                    is_ipv6_idempotent = True
-
-                for key, w_ipv6 in wantd_ipv6.items():
-                    if key == "addresses" and not is_ipv6_idempotent:
-                        if self.state != "merged" and haved_ipv6.get("addresses"):
-                            self.commands.append(f"no standby {group_number} ipv6")
-                        for addr in w_ipv6:
-                            self.commands.append(f"standby {group_number} ipv6 {addr}")
-                    if key == "autoconfig":
-                        if w_ipv6 is True and not haved_ipv6.get("autoconfig", False):
-                            self.commands.append(f"standby {group_number} ipv6 autoconfig")
-                        else:
-                            self.commands.append(f"no standby {group_number} ipv6 autoconfig")
-
-            for _par in self.non_complex_parsers:
-                _parser = parser_dict.get(_par, _par)
-                wantd = wanting_data.get(_parser, {})
-                if _parser == _par:
-                    haved = having_data.pop(_parser, {})
-                else:
-                    haved = having_data.get(_parser, {})
-                if haved:
-                    if isinstance(haved, dict):
-                        haved.update({"group_no": group_number})
-                    else:
-                        haved = {"group_no": group_number, _parser: haved}
-                if wantd:
-                    if isinstance(wantd, dict):
-                        wantd.update({"group_no": group_number})
-                    else:
-                        wantd = {"group_no": group_number, _parser: wantd}
-                    self.compare(parsers=[_par], want={_parser: wantd}, have={_parser: haved})
-            for key, value in parser_dict.items():
-                haved = having_data.pop(value, {})
-
-        # Removal of unecessary configs in have_standby_group
-        for group_number, having_data in have_standby_group.items():
-            if having_data:
-                if having_data.get("ipv6"):
-                    haved_ipv6 = having_data.pop("ipv6", {})
-                    if haved_ipv6.get("addresses") or haved_ipv6.get("autoconfig", False):
-                        self.commands.append(f"no standby {group_number} ipv6")
-                for _parser in self.complex_parsers:
-                    haved = having_data.pop(_parser, {})
-                    for key, having_parser_data in haved.items():
-                        having_parser_data.update({"group_no": group_number})
-                        self.compare(parsers=[_parser], want={}, have={_parser: having_parser_data})
-                for _par in self.non_complex_parsers:
-                    _parser = parser_dict.get(_par, _par)
-                    if _parser == _par:
-                        haved = having_data.pop(_parser, {})
-                    else:
-                        haved = having_data.get(_parser, {})
-                    if haved:
-                        if isinstance(haved, dict):
-                            haved.update({"group_no": group_number})
-                        else:
-                            haved = {"group_no": group_number, _parser: haved}
-                        self.compare(parsers=[_par], want={}, have={_parser: haved})
-                for key, value in parser_dict.items():
-                    haved = having_data.pop(value, {})
+                if val.get("standby_options", {}):
+                    val["standby_options"] = temp_standby_grp
