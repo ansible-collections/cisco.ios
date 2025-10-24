@@ -56,6 +56,8 @@ class TestIosAclsModule(TestIosModule):
                 sequence 10 deny tcp any eq www any eq telnet ack dscp af11
             ip access-list extended test_pre
                 10 permit ip any any precedence internet
+            ip access-list extended test_service_og
+                20 deny object-group test_service_og object-group test_src_network_og any
             """,
         )
         self.execute_show_command_name.return_value = dedent(
@@ -147,6 +149,26 @@ class TestIosAclsModule(TestIosModule):
                                     ),
                                 ],
                             ),
+                            dict(
+                                acl_type="extended",
+                                name="test_service_og",
+                                aces=[
+                                    dict(
+                                        sequence=10,
+                                        grant="permit",
+                                        service_object_group="test_service_og",
+                                        source=dict(object_group="test_src_network_og"),
+                                        destination=dict(object_group="test_dst_network_og"),
+                                    ),
+                                    dict(
+                                        sequence=20,
+                                        grant="deny",
+                                        service_object_group="test_service_og",
+                                        source=dict(object_group="test_src_network_og"),
+                                        destination=dict(any=True),
+                                    ),
+                                ],
+                            ),
                         ],
                     ),
                 ],
@@ -165,6 +187,8 @@ class TestIosAclsModule(TestIosModule):
             "deny ip any any log-input test_logInput",
             "ip access-list extended test_pre",
             "20 permit ip any any precedence immediate",
+            "ip access-list extended test_service_og",
+            "10 permit object-group test_service_og object-group test_src_network_og object-group test_dst_network_og",
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
@@ -698,6 +722,8 @@ class TestIosAclsModule(TestIosModule):
                 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
+                40 permit object-group test_service_og object-group test_src_network_og object-group test_dst_network_og
+                50 deny object-group test_service_og object-group test_src_network_og any
             ipv6 access-list R1_TRAFFIC
                 sequence 10 deny tcp any eq www any eq telnet ack dscp af11
             ip access-list extended test_pre
@@ -768,6 +794,20 @@ class TestIosAclsModule(TestIosModule):
                                         "destination": {"any": True},
                                         "dscp": "ef",
                                         "ttl": {"eq": 10},
+                                    },
+                                    {
+                                        "sequence": 40,
+                                        "grant": "permit",
+                                        "service_object_group": "test_service_og",
+                                        "source": {"object_group": "test_src_network_og"},
+                                        "destination": {"object_group": "test_dst_network_og"},
+                                    },
+                                    {
+                                        "sequence": 50,
+                                        "grant": "deny",
+                                        "service_object_group": "test_service_og",
+                                        "source": {"object_group": "test_src_network_og"},
+                                        "destination": {"any": True},
                                     },
                                 ],
                             },

@@ -104,6 +104,8 @@ def _tmplt_access_list_entries(aces):
                 )
         elif aces.get("protocol"):
             command += " {protocol}".format(**aces)
+        if aces.get("service_object_group"):
+            command += " object-group {service_object_group}".format(**aces)
         if aces.get("source"):
             command = source_destination_common_config(aces, command, "source")
         if aces.get("destination"):
@@ -350,6 +352,7 @@ class AclsTemplate(NetworkTemplate):
                         (\s(?P<grant>deny|permit))
                         (\sevaluate\s(?P<evaluate>\S+))?
                         (\s(?P<protocol_num>\d+)\s)?
+                        (\sobject-group\s(?P<service_obj_grp>\S+))?
                         (\s*(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipinip|ipv6|ip|nos|ospf|pcp|pim|sctp|tcp|ip|udp))?
                         ((\s*(?P<source_any>any))|
                         (\s*object-group\s(?P<source_obj_grp>\S+))|
@@ -404,6 +407,7 @@ class AclsTemplate(NetworkTemplate):
                                 "protocol": "{{ protocol }}",
                                 "protocol_number": "{{ protocol_num }}",
                                 "icmp_igmp_tcp_protocol": "{{ icmp_igmp_tcp_protocol }}",
+                                "service_object_group": "{{ service_obj_grp }}",
                                 "source": {
                                     "address": "{{ source_address }}",
                                     "ipv6_address": "{{ ipv6_source_address }}",

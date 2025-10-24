@@ -479,6 +479,10 @@ options:
                   - Sequence Number for the Access Control Entry(ACE).
                   - Refer to vendor documentation for valid values.
                 type: int
+              service_object_group:
+                description:
+                  - Service object-group for destination port.
+                type: str
               source:
                 description: Specify the packet source.
                 suboptions:
