@@ -133,17 +133,12 @@ class AclsFacts(object):
             def factor_source_dest(ace, typ):
                 temp = ace.get(typ, {})
                 if temp.get("address"):
-                    _temp_addr = temp.get("address", "")
-                    ace[typ]["address"] = _temp_addr.split(" ")[0]
-                    ace[typ]["wildcard_bits"] = _temp_addr.split(" ")[1]
-                if temp.get("ipv6_address"):
-                    _temp_addr = temp.get("ipv6_address", "")
-                    if len(_temp_addr.split(" ")) == 2:
-                        ipv6_add = ace[typ].pop("ipv6_address")
-                        ace[typ]["address"] = ipv6_add.split(" ")[0]
-                        ace[typ]["wildcard_bits"] = ipv6_add.split(" ")[1]
-                    else:
-                        ace[typ]["address"] = ace[typ].pop("ipv6_address")
+                    ace[typ]["address"] = temp.get("address")
+                    ace[typ]["wildcard_bits"] = temp.get("wildcard_bits")
+
+                elif temp.get("ipv6_address"):
+                    ace[typ]["address"] = temp.pop("ipv6_address")
+                    ace[typ]["wildcard_bits"] = temp.get("wildcard_bits")
 
             def process_protocol_options(each):
                 for each_ace in each.get("aces"):

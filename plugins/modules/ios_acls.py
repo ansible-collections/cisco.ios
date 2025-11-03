@@ -77,10 +77,10 @@ options:
                         suboptions:
                           end:
                             description: Specify the end of the port range.
-                            type: int
+                            type: str
                           start:
                             description: Specify the start of the port range.
-                            type: int
+                            type: str
                         type: dict
                     type: dict
                   wildcard_bits:
@@ -516,10 +516,10 @@ options:
                         suboptions:
                           end:
                             description: Specify the end of the port range.
-                            type: int
+                            type: str
                           start:
                             description: Specify the start of the port range.
-                            type: int
+                            type: str
                         type: dict
                     type: dict
                   wildcard_bits:
