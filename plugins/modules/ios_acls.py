@@ -17,6 +17,7 @@ DOCUMENTATION = """
 author:
   - Sumit Jaiswal (@justjais)
   - Sagar Paul (@KB-perByte)
+  - Nikhil Bhasin (@nickbhasin)
 description: This module configures and manages the named or numbered ACLs on IOS platforms.
 module: ios_acls
 notes:
