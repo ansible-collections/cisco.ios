@@ -153,48 +153,6 @@ def _tmplt_access_list_entries(aces):
             command += " {0}".format(proto_option)
     return command
 
-def build_protocol_options(protocol, flags):
-    """
-    Build protocol_options dict for ACL entries for icmp and igmp.
-    """
-
-    icmp_type_map = {
-        "0": "echo-reply",
-        "3": "unreachable",
-        "4": "source-quench",
-        "5": "redirect",
-        "8": "echo",
-        "11": "time-exceeded",
-        "12": "parameter-problem",
-        "13": "timestamp-request",
-        "14": "timestamp-reply",
-        "17": "address-mask-request",
-        "18": "address-mask-reply",
-    }
-
-    igmp_type_map = {
-        "1": "host-query",
-        "2": "v1host-report",
-        "3": "dvmrp",
-        "4": "pim",
-        "5": "trace",
-        "6": "v2host-report",
-        "7": "v2leave-group",
-        "8": "mtrace-route",
-        "9": "mtrace-resp",
-        "10": "v3host-report",
-    }
-
-    if protocol == "icmp":
-        mapped_flag = icmp_type_map.get(flags, flags)
-        return {"icmp": {mapped_flag: True}}
-
-    elif protocol == "igmp":
-        mapped_flag = igmp_type_map.get(flags, flags)
-        return {"igmp": {mapped_flag: True}}
-
-    return {}
-
 class AclsTemplate(NetworkTemplate):
     def __init__(self, lines=None):
         super(AclsTemplate, self).__init__(lines=lines, tmplt=self)
@@ -389,36 +347,37 @@ class AclsTemplate(NetworkTemplate):
             "name": "aces",
             "getval": re.compile(
                 r"""^\s*((?P<sequence>\d+))?
-                        (\ssequence\s(?P<sequence_ipv6>\d+))?
                         (\s(?P<grant>deny|permit))
                         (\sevaluate\s(?P<evaluate>\S+))?
                         (\s(?P<protocol_num>\d+)\s)?
                         (\s*(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipinip|ipv6|ip|nos|ospf|pcp|pim|sctp|tcp|udp))?
-                        (\s*(?P<source_any>any)|
-                        \s*object-group\s(?P<source_obj_grp>\S+)|
-                        \s*host\s(?P<source_host>\S+)|
-                        \s*(?P<ipv6_source_address>\S+(?:/\d+)?)
-                        (?:\s+(?P<source_wildcard_v6>\S+))?|
-                        \s*(?P<source_address>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))
-                        (?:\s+(?P<source_wildcard>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)))?)                        
+                        (?:(\s*(?P<source_any>any))|
+                        (\s*object-group\s(?P<source_obj_grp>\S+))|
+                        (\s*host\s(?P<source_host>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.)
+                            {3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)))|
+                        (\s*(?P<source_address>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.)
+                            {3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))
+                        (\s+(?P<source_wildcard>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.)
+                            {3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)))?))
                         (\seq\s(?P<seq>(\S+|\d+)))?
                         (\sgt\s(?P<sgt>(\S+|\d+)))?
                         (\slt\s(?P<slt>(\S+|\d+)))?
                         (\sneq\s(?P<sneq>(\S+|\d+)))?
                         (\srange\s(?P<srange_start>\S+)\s(?P<srange_end>\S+))?
-                        (\s*(?P<dest_any>any)|
-                        \s*object-group\s(?P<dest_obj_grp>\S+)|
-                        \s*host\s(?P<dest_host>\S+)|
-                        \s*(?P<ipv6_dest_address>\S+(?:/\d+)?)
-                        (?:\s+(?P<dest_wildcard_v6>\S+))?|
-                        \s*(?P<dest_address>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))
-                        (?:\s+(?P<dest_wildcard>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)))?)
+                        (?:(\s*(?P<dest_any>any))|
+                        (\s*object-group\s(?P<dest_obj_grp>\S+))|
+                        (\s*host\s(?P<dest_host>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.)
+                            {3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)))|
+                        (\s*(?P<dest_address>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.)
+                            {3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))
+                        (\s+(?P<dest_wildcard>((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.)
+                            {3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)))?))
                         (\seq\s(?P<deq>(\S+|\d+)))?
                         (\sgt\s(?P<dgt>(\S+|\d+)))?
                         (\slt\s(?P<dlt>(\S+|\d+)))?
                         (\sneq\s(?P<dneq>(\S+|\d+)))?
                         (\srange\s(?P<drange_start>\S+)\s(?P<drange_end>\S+))?
-                        (\s(?P<icmp_igmp_tcp_protocol>
+                        (\s(?P<icmp_igmp_protocol>
                         administratively-prohibited|alternate-address|conversion-error|dod-host-prohibited|dod-net-prohibited|
                         echo-reply|echo|general-parameter-problem|host-isolated|host-precedence-unreachable|host-redirect|
                         host-tos-redirect|host-tos-unreachable|host-unknown|host-unreachable|information-reply|information-request|
@@ -427,7 +386,7 @@ class AclsTemplate(NetworkTemplate):
                         precedence-unreachable|protocol-unreachable|reassembly-timeout|redirect|router-advertisement|
                         router-solicitation|source-quench|source-route-failed|time-exceeded|timestamp-reply|timestamp-request|
                         traceroute|ttl-exceeded|unreachable|dvmrp|host-query|mtrace-resp|mtrace-route|pim|trace|
-                        v1host-report|v2host-report|v2leave-group|v3host-report|\d+)?)
+                        v1host-report|v2host-report|v2leave-group|v3host-report|\d+)?)?
                         (\s*(?P<tcp_flags>(?:ack|fin|psh|rst|syn|urg|established)(?:\s+(?:ack|fin|psh|rst|syn|urg|established))*))?
                         (\sdscp\s(?P<dscp>\S+))?
                         (\s(?P<enable_fragments>fragments))?
@@ -454,17 +413,15 @@ class AclsTemplate(NetworkTemplate):
                         "name": "{{ acl_name }}",
                         "aces": [
                             {
-                                "sequence": "{% if sequence is defined %}{{ sequence \
-                                    }}{% elif sequence_ipv6 is defined %}{{ sequence_ipv6 }}{% endif %}",
+                                "sequence": "{{ sequence }}",
                                 "grant": "{{ grant }}",
                                 "evaluate": "{{ evaluate }}",
                                 "protocol": "{{ protocol }}",
                                 "protocol_number": "{{ protocol_num }}",
-                                "protocol_options": "{{ ({protocol: True} if protocol and protocol not in ['tcp','icmp','igmp'] else (build_protocol_options(protocol, icmp_igmp_tcp_protocol) if protocol in ['icmp','igmp'] else ({'tcp': {'ack': 'ack' in tcp_flags.split(), 'fin': 'fin' in tcp_flags.split(), 'psh': 'psh' in tcp_flags.split(), 'rst': 'rst' in tcp_flags.split(), 'syn': 'syn' in tcp_flags.split(), 'urg': 'urg' in tcp_flags.split(), 'established': 'established' in tcp_flags.split()}} if protocol == 'tcp' and tcp_flags is defined else None))) }}",
+                                "protocol_options": "{{ tcp_flags if tcp_flags is defined else icmp_igmp_protocol }}",
                                 "source": {
                                     "address": "{{ source_address }}",
-                                    "wildcard_bits": "{{ source_wildcard if source_wildcard is defined else source_wildcard_v6 }}",
-                                    "ipv6_address": "{{ ipv6_source_address }}",
+                                    "wildcard_bits": "{{ source_wildcard }}",
                                     "any": "{{ not not source_any }}",
                                     "host": "{{ source_host }}",
                                     "object_group": "{{ source_obj_grp }}",
@@ -482,7 +439,145 @@ class AclsTemplate(NetworkTemplate):
                                 "destination": {
                                     "address": "{{ dest_address }}",
                                     "wildcard_bits": "{{ dest_wildcard }}",
-                                    "ipv6_address": "{{ ipv6_dest_address }}",
+                                    "any": "{{ not not dest_any }}",
+                                    "host": "{{ dest_host }}",
+                                    "object_group": "{{ dest_obj_grp }}",
+                                    "port_protocol": {
+                                        "eq": "{{ deq }}",
+                                        "gt": "{{ dgt }}",
+                                        "lt": "{{ dlt }}",
+                                        "neq": "{{ dneq }}",
+                                        "range": {
+                                            "start": "{{ drange_start if drange_start is defined else None }}",
+                                            "end": "{{ drange_end if drange_end is defined else None }}",
+                                        },
+                                    },
+                                },
+                                "dscp": "{{ dscp }}",
+                                "enable_fragments": "{{ True if enable_fragments is defined else None }}",
+                                "log": {
+                                    "set": "{{ True if log_only is defined or log is defined }}",
+                                    "user_cookie": "{{ log.split(')')[0] if log is defined }}",
+                                },
+                                "log_input": {
+                                    "set": "{{ True if log_input_only is defined or log_input is defined }}",
+                                    "user_cookie": "{{ log_input.split(')')[0] if log_input is defined }}",
+                                },
+                                "option": {
+                                    "{{ option if option is defined else None }}": "{{ True if option is defined else None }}",
+                                },
+                                "precedence": "{{ precedence }}",
+                                "time_range": "{{ time_range }}",
+                                "tos": {
+                                    "max_reliability": "{{ True if tos is defined and 'max-reliability' in tos else '' }}",
+                                    "max_throughput": "{{ True if tos is defined and 'max-throughput' in tos else '' }}",
+                                    "min_delay": "{{ True if tos is defined and 'min-delay' in tos else '' }}",
+                                    "min_monetary_cost": "{{ True if tos is defined and 'min-monetary-cost' in tos else '' }}",
+                                    "normal": "{{ True if tos is defined and 'normal' in tos else '' }}",
+                                    "service_value": "{{ tos if tos is defined else None }}",
+                                },
+                                "ttl": {
+                                    "eq": "{{ ttl_eq }}",
+                                    "gt": "{{ ttl_gt }}",
+                                    "lt": "{{ ttl_lt }}",
+                                    "neq": "{{ ttl_neq }}",
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+        },
+        {
+            "name": "aces_ipv6",
+            "getval": re.compile(
+                r"""^\s*(sequence\s+(?P<sequence_ipv6>\d+))?
+                        (\s(?P<grant>deny|permit))
+                        (\sevaluate\s(?P<evaluate>\S+))?
+                        (\s(?P<protocol_num>\d+)\s)?
+                        (\s*(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipinip|ipv6|ip|nos|ospf|pcp|pim|sctp|tcp|udp))?
+                        (\s*(?P<source_any>any)|
+                        \s*object-group\s(?P<source_obj_grp>\S+)|
+                        \s*host\s(?P<source_host>\S+)|
+                        \s*(?P<ipv6_source_address>\S+)
+                        (?:\s+(?P<source_wildcard_v6>(?![^/\s]+\/)[^/\s]*:[^/\s]*))?)
+                        (\seq\s(?P<seq>(\S+|\d+)))?
+                        (\sgt\s(?P<sgt>(\S+|\d+)))?
+                        (\slt\s(?P<slt>(\S+|\d+)))?
+                        (\sneq\s(?P<sneq>(\S+|\d+)))?
+                        (\srange\s(?P<srange_start>\S+)\s(?P<srange_end>\S+))?
+                        (\s*(?P<dest_any>any)|
+                        \s*object-group\s(?P<dest_obj_grp>\S+)|
+                        \s*host\s(?P<dest_host>\S+)|
+                        \s*(?P<ipv6_dest_address>\S+)
+                        (?:\s+(?P<dest_wildcard_v6>(?![^/\s]+\/)[^/\s]*:[^/\s]*))?)
+                        (\seq\s(?P<deq>(\S+|\d+)))?
+                        (\sgt\s(?P<dgt>(\S+|\d+)))?
+                        (\slt\s(?P<dlt>(\S+|\d+)))?
+                        (\sneq\s(?P<dneq>(\S+|\d+)))?
+                        (\srange\s(?P<drange_start>\S+)\s(?P<drange_end>\S+))?
+                        (\s(?P<icmp_igmp_protocol>
+                        administratively-prohibited|alternate-address|conversion-error|dod-host-prohibited|dod-net-prohibited|
+                        echo-reply|echo|general-parameter-problem|host-isolated|host-precedence-unreachable|host-redirect|
+                        host-tos-redirect|host-tos-unreachable|host-unknown|host-unreachable|information-reply|information-request|
+                        mask-reply|mask-request|mobile-redirect|net-redirect|net-tos-redirect|net-tos-unreachable|net-unreachable|
+                        network-unknown|no-room-for-option|option-missing|packet-too-big|parameter-problem|port-unreachable|
+                        precedence-unreachable|protocol-unreachable|reassembly-timeout|redirect|router-advertisement|
+                        router-solicitation|source-quench|source-route-failed|time-exceeded|timestamp-reply|timestamp-request|
+                        traceroute|ttl-exceeded|unreachable|dvmrp|host-query|mtrace-resp|mtrace-route|pim|trace|
+                        v1host-report|v2host-report|v2leave-group|v3host-report|\d+)?)?
+                        (\s*(?P<tcp_flags>(?:ack|fin|psh|rst|syn|urg|established)(?:\s+(?:ack|fin|psh|rst|syn|urg|established))*))?
+                        (\sdscp\s(?P<dscp>\S+))?
+                        (\s(?P<enable_fragments>fragments))?
+                        (\slog-input\s\(tag\s=\s(?P<log_input>(?:\S+)|log-input)\))?
+                        (\s(?P<log_input_only>log-input))?
+                        (\slog\s\(tag\s=\s(?P<log>(?:\S+)|log)\))?
+                        (\s(?P<log_only>log))?
+                        (\soption\s(?P<option>\S+|\d+))?
+                        (\sprecedence\s(?P<precedence>\S+))?
+                        (\stime-range\s(?P<time_range>\S+))?
+                        (\stos\s(?P<tos>\S+|\d+))?
+                        (\sttl\seq\s(?P<ttl_eq>\d+))?
+                        (\sttl\sgt\s(?P<ttl_gt>\d+))?
+                        (\sttl\slt\s(?P<ttl_lt>\d+))?
+                        (\sttl\sneg\s(?P<ttl_neg>\d+))?
+                    """,
+                re.VERBOSE,
+            ),
+            "setval": _tmplt_access_list_entries,
+            "compval": "aces",
+            "result": {
+                "acls": {
+                    "{{ acl_name|d() }}": {
+                        "name": "{{ acl_name }}",
+                        "aces": [
+                            {
+                                "sequence": "{{ sequence_ipv6 }}",
+                                "grant": "{{ grant }}",
+                                "evaluate": "{{ evaluate }}",
+                                "protocol": "{{ protocol }}",
+                                "protocol_number": "{{ protocol_num }}",
+                                "protocol_options": "{{ tcp_flags if tcp_flags is defined else icmp_igmp_protocol }}",
+                                "source": {
+                                    "address": "{{ ipv6_source_address }}",
+                                    "wildcard_bits": "{{ source_wildcard_v6 }}",
+                                    "any": "{{ not not source_any }}",
+                                    "host": "{{ source_host }}",
+                                    "object_group": "{{ source_obj_grp }}",
+                                    "port_protocol": {
+                                        "eq": "{{ seq }}",
+                                        "gt": "{{ sgt }}",
+                                        "lt": "{{ slt }}",
+                                        "neq": "{{ sneq }}",
+                                        "range": {
+                                            "start": "{{ srange_start if srange_start is defined else None }}",
+                                            "end": "{{ srange_end if srange_end is defined else None }}",
+                                        },
+                                    },
+                                },
+                                "destination": {
+                                    "address": "{{ ipv6_dest_address }}",
+                                    "wildcard_bits": "{{ dest_wildcard_v6 }}",
                                     "any": "{{ not not dest_any }}",
                                     "host": "{{ dest_host }}",
                                     "object_group": "{{ dest_obj_grp }}",
