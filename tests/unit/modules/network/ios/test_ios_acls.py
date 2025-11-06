@@ -80,6 +80,15 @@ class TestIosAclsModule(TestIosModule):
                                         sequence=20,
                                         source=dict(any=True),
                                     ),
+                                    dict(
+                                        destination=dict(host="1.1.1.1"),
+                                        grant="permit",
+                                        precedence="immediate",
+                                        protocol="tcp",
+                                        protocol_options=dict(tcp=dict(ack=True, fin=True)),
+                                        sequence=30,
+                                        source=dict(address="2.2.2.2", wildcard_bits="3.3.3.3"),
+                                    ),
                                 ],
                                 acl_type="extended",
                                 name="test_pre",
@@ -165,6 +174,7 @@ class TestIosAclsModule(TestIosModule):
             "deny ip any any log-input test_logInput",
             "ip access-list extended test_pre",
             "20 permit ip any any precedence immediate",
+            "30 permit tcp 2.2.2.2 3.3.3.3 host 1.1.1.1 ack fin precedence immediate",
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
@@ -205,6 +215,23 @@ class TestIosAclsModule(TestIosModule):
                                         "protocol": "ip",
                                         "sequence": 20,
                                         "source": {"any": True},
+                                    },
+                                    {
+                                        "destination": {
+                                            "host": "10.40.150.1",
+                                        },
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "protocol_options": {
+                                            "tcp": {
+                                                "ack": True,
+                                                "fin": True
+                                            },
+                                        },
+                                        "sequence": 30,
+                                        "source": {
+                                            "host": "10.40.150.2",
+                                        },
                                     },
                                 ],
                                 "acl_type": "extended",
@@ -476,6 +503,7 @@ class TestIosAclsModule(TestIosModule):
             "ip access-list extended 199",
             "10 permit ip 10.40.150.0 0.0.0.255 any",
             "20 permit ip any 10.40.150.0 0.0.0.255",
+            "30 permit tcp host 10.40.150.2 host 10.40.150.1 ack fin",
             "ip access-list standard 42",
             "10 permit 10.182.250.0 0.0.0.255",
             "ip access-list extended empty_ip_ex_acl",
@@ -611,6 +639,8 @@ class TestIosAclsModule(TestIosModule):
                 40 permit 192.0.2.0 0.0.0.255
                 50 remark Remarks for 50
                 50 permit 198.51.100.0 0.0.0.255
+            ip access-list extended 786
+                40 permit ahp host 10.40.150.1 host 10.40.150.4
             """,
         )
         self.execute_show_command_name.return_value = dedent(
@@ -665,6 +695,21 @@ class TestIosAclsModule(TestIosModule):
                                     ),
                                 ],
                             ),
+                            dict(
+                                name="786",
+                                acl_type="extended",
+                                aces=[
+                                    dict(
+                                    destination=dict(address="10.40.150.3", wildcard_bits="10.40.150.4"),
+                                    grant="permit",
+                                    precedence="immediate",
+                                    protocol="tcp",
+                                    protocol_options=dict(tcp=dict(ack=True, fin=True)),
+                                    sequence=40,
+                                    source=dict(address="10.40.150.1", wildcard_bits="10.40.150.2")
+                                    ),
+                                ]
+                            )
                         ],
                     ),
                 ],
@@ -687,6 +732,9 @@ class TestIosAclsModule(TestIosModule):
             "no 40 permit 192.0.2.0 0.0.0.255",
             "no 50 remark",
             "no 50 permit 198.51.100.0 0.0.0.255",
+            "ip access-list extended 786",
+            "no 40 permit ahp host 10.40.150.1 host 10.40.150.4",
+            "40 permit tcp 10.40.150.1 10.40.150.2 10.40.150.3 10.40.150.4 ack fin precedence immediate",
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
