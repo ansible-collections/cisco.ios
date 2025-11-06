@@ -132,6 +132,7 @@ class AclsFacts(object):
 
             def factor_source_dest(ace, typ):
                 temp = ace.get(typ, {})
+                # TODO add the XOR logic for fixing ipv6 detla address issue
                 if temp.get("address"):
                     ace[typ]["address"] = temp.get("address")
                     ace[typ]["wildcard_bits"] = temp.get("wildcard_bits")
@@ -170,21 +171,21 @@ class AclsFacts(object):
                         }
                     protocol = each_ace.get("protocol")
                     protocol_options = each_ace.get("protocol_options")
-
-                    if protocol_options is None:
-                        if protocol and protocol not in ("igmp", "icmp", "tcp"):
-                            each_ace["protocol_options"] = {protocol: True}
-                    else:
+                    if protocol_options is not None:
                         if protocol == "tcp":
                             flag_dict = {flag: True for flag in protocol_options.split()}
                             each_ace["protocol_options"] = {"tcp": flag_dict}
                         if protocol == "icmp":
+                            # TODO add the mappings and update the argspec
+                            protocol_options = protocol_options.replace("-", "_")
                             mapping = ICMP_MAP.get(protocol_options, None)
                             if mapping:
                                 each_ace["protocol_options"] = {"icmp": {mapping: True}}
                             else:
                                 each_ace["protocol_options"] = {"icmp": {protocol_options: True}}
                         if protocol == "igmp":
+                            # TODO add the mappings and update the argspec
+                            protocol_options = protocol_options.replace("-", "_")
                             mapping = IGMP_MAP.get(protocol_options, None)
                             if mapping:
                                 each_ace["protocol_options"] = {"igmp": {mapping: True}}

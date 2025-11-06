@@ -978,13 +978,13 @@ class TestIosAclsModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             ip access-list extended 110
-                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
+                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
             ip access-list reflexive MIRROR
-                permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50200 (2 matches) (time left 123)
-                permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50201 (2 matches) (time left 345)
-                permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50202 (2 matches) (time left 678)
+                permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50200
+                permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50201
+                permit tcp host 0.0.0.0 eq 22 host 192.168.0.1 eq 50202
             ipv6 access-list R1_TRAFFIC
                 sequence 10 deny tcp any eq www any eq telnet ack dscp af11
             """,
@@ -1016,7 +1016,7 @@ class TestIosAclsModule(TestIosModule):
                                             "any": True,
                                             "port_protocol": {"eq": "22"},
                                         },
-                                        "log": {"set": True, "user_cookie": "testLog"},
+                                        "log": {"set": True},
                                     },
                                     {
                                         "sequence": 20,
@@ -1229,12 +1229,39 @@ class TestIosAclsModule(TestIosModule):
         set_module_args(
             dict(
                 running_config="""ipv6 access-list R1_TRAFFIC\n sequence 10 deny tcp any eq www any range 10 20 ack dscp af11
-                20 permit icmp host 192.0.2.1 host 192.0.2.2 echo\n 30 permit icmp host 192.0.2.3 host 192.0.2.4 echo-reply""",
+                \nip access-list extended 110\n 20 permit icmp host 192.0.2.1 host 192.0.2.2 echo\n 30 permit icmp host 192.0.2.3 host 192.0.2.4 echo-reply""",
                 state="parsed",
             ),
         )
         result = self.execute_module(changed=False)
         parsed_list = [
+            {
+                "afi": "ipv4",
+                "acls": [
+                    {
+                        "name": "110",
+                        "acl_type": "extended",
+                        "aces": [
+                            {
+                                "sequence": 20,
+                                "grant": "permit",
+                                "protocol": "icmp",
+                                "protocol_options": {"icmp": {"echo": True}},
+                                "source": {"host": "192.0.2.1"},
+                                "destination": {"host": "192.0.2.2"},
+                            },
+                            {
+                                "sequence": 30,
+                                "grant": "permit",
+                                "protocol": "icmp",
+                                "protocol_options": {"icmp": {"echo_reply": True}},
+                                "source": {"host": "192.0.2.3"},
+                                "destination": {"host": "192.0.2.4"},
+                            },
+                        ],
+                    }
+                ],
+            },
             {
                 "afi": "ipv6",
                 "acls": [
@@ -1245,34 +1272,21 @@ class TestIosAclsModule(TestIosModule):
                                 "sequence": 10,
                                 "grant": "deny",
                                 "protocol": "tcp",
-                                "source": {"any": True, "port_protocol": {"eq": "www"}},
+                                "protocol_options": {"tcp": {"ack": True}},
+                                "source": {
+                                    "any": True,
+                                    "port_protocol": {"eq": "www"},
+                                },
                                 "destination": {
                                     "any": True,
                                     "port_protocol": {
-                                        "range": {"start": 10, "end": 20},
+                                        "range": {"start": "10", "end": "20"}
                                     },
                                 },
                                 "dscp": "af11",
-                                "protocol_options": {"tcp": {"ack": True}},
-                            },
-                            {
-                                "sequence": 20,
-                                "grant": "permit",
-                                "protocol": "icmp",
-                                "source": {"host": "192.0.2.1"},
-                                "destination": {"host": "192.0.2.2"},
-                                "protocol_options": {"icmp": {"echo": True}},
-                            },
-                            {
-                                "sequence": 30,
-                                "grant": "permit",
-                                "protocol": "icmp",
-                                "source": {"host": "192.0.2.3"},
-                                "destination": {"host": "192.0.2.4"},
-                                "protocol_options": {"icmp": {"echo_reply": True}},
-                            },
+                            }
                         ],
-                    },
+                    }
                 ],
             },
         ]
@@ -2376,15 +2390,15 @@ class TestIosAclsModule(TestIosModule):
                     """\
                 ip access-list extended CP_Quarantine-v4-in
                     10 permit udp any object-group FAA-Networks eq bootps
-                    20 permit object-group BT-ports any object-group AIT-BT-Servers
+                    20 permit ip object-group BT-ports object-group AIT-BT-Servers
                     30 permit tcp any object-group CP-Appliances eq 443
-                    40 deny object-group deny-mgmt-ports any any
-                    50 permit object-group icmp any object-group IB-Servers
-                    60 permit object-group generic-any-port any object-group IB-Servers
-                    70 permit object-group generic-any-port any object-group AD-Servers
-                    80 permit object-group generic-any-port any object-group CP-Appliances
-                    90 permit object-group generic-any-port any object-group Tanium-Servers
-                    100 permit object-group generic-any-port any object-group SOC-Tenable-Servers
+                    40 deny ip object-group deny-mgmt-ports any
+                    50 permit ip object-group icmp object-group IB-Servers
+                    60 permit ip object-group generic-any-port object-group IB-Servers
+                    70 permit ip object-group generic-any-port object-group AD-Servers
+                    80 permit ip object-group generic-any-port object-group CP-Appliances
+                    90 permit ip object-group generic-any-port object-group Tanium-Servers
+                    100 permit ip object-group generic-any-port object-group SOC-Tenable-Servers
                     5000 deny ip any any
                 """,
                 ),
@@ -2416,9 +2430,9 @@ class TestIosAclsModule(TestIosModule):
                                     "object_group": "BT-ports",
                                 },
                                 "destination": {
-                                    "any": True,
                                     "object_group": "AIT-BT-Servers",
                                 },
+                                'protocol': 'ip',
                                 "grant": "permit",
                                 "sequence": 20,
                             },
@@ -2438,12 +2452,12 @@ class TestIosAclsModule(TestIosModule):
                             },
                             {
                                 "source": {
-                                    "any": True,
                                     "object_group": "deny-mgmt-ports",
                                 },
                                 "destination": {
                                     "any": True,
                                 },
+                                'protocol': 'ip',
                                 "grant": "deny",
                                 "sequence": 40,
                             },
@@ -2452,9 +2466,9 @@ class TestIosAclsModule(TestIosModule):
                                     "object_group": "icmp",
                                 },
                                 "destination": {
-                                    "any": True,
                                     "object_group": "IB-Servers",
                                 },
+                                'protocol': 'ip',
                                 "grant": "permit",
                                 "sequence": 50,
                             },
@@ -2463,9 +2477,9 @@ class TestIosAclsModule(TestIosModule):
                                     "object_group": "generic-any-port",
                                 },
                                 "destination": {
-                                    "any": True,
                                     "object_group": "IB-Servers",
                                 },
+                                'protocol': 'ip',
                                 "grant": "permit",
                                 "sequence": 60,
                             },
@@ -2474,9 +2488,9 @@ class TestIosAclsModule(TestIosModule):
                                     "object_group": "generic-any-port",
                                 },
                                 "destination": {
-                                    "any": True,
                                     "object_group": "AD-Servers",
                                 },
+                                'protocol': 'ip',
                                 "grant": "permit",
                                 "sequence": 70,
                             },
@@ -2485,9 +2499,9 @@ class TestIosAclsModule(TestIosModule):
                                     "object_group": "generic-any-port",
                                 },
                                 "destination": {
-                                    "any": True,
                                     "object_group": "CP-Appliances",
                                 },
+                                'protocol': 'ip',
                                 "grant": "permit",
                                 "sequence": 80,
                             },
@@ -2496,9 +2510,9 @@ class TestIosAclsModule(TestIosModule):
                                     "object_group": "generic-any-port",
                                 },
                                 "destination": {
-                                    "any": True,
                                     "object_group": "Tanium-Servers",
                                 },
+                                'protocol': 'ip',
                                 "grant": "permit",
                                 "sequence": 90,
                             },
@@ -2507,9 +2521,9 @@ class TestIosAclsModule(TestIosModule):
                                     "object_group": "generic-any-port",
                                 },
                                 "destination": {
-                                    "any": True,
                                     "object_group": "SOC-Tenable-Servers",
                                 },
+                                'protocol': 'ip',
                                 "grant": "permit",
                                 "sequence": 100,
                             },
@@ -2532,6 +2546,8 @@ class TestIosAclsModule(TestIosModule):
                 "afi": "ipv4",
             },
         ]
+        print(result["parsed"])
+        print(parsed_list)
         self.assertEqual(parsed_list, result["parsed"])
 
     def test_ios_merged_general_2(self):

@@ -377,7 +377,7 @@ class AclsTemplate(NetworkTemplate):
                         (\slt\s(?P<dlt>(\S+|\d+)))?
                         (\sneq\s(?P<dneq>(\S+|\d+)))?
                         (\srange\s(?P<drange_start>\S+)\s(?P<drange_end>\S+))?
-                        (\s(?P<icmp_igmp_protocol>
+                        (\s+(?P<icmp_igmp_protocol>
                         administratively-prohibited|alternate-address|conversion-error|dod-host-prohibited|dod-net-prohibited|
                         echo-reply|echo|general-parameter-problem|host-isolated|host-precedence-unreachable|host-redirect|
                         host-tos-redirect|host-tos-unreachable|host-unknown|host-unreachable|information-reply|information-request|
@@ -386,8 +386,8 @@ class AclsTemplate(NetworkTemplate):
                         precedence-unreachable|protocol-unreachable|reassembly-timeout|redirect|router-advertisement|
                         router-solicitation|source-quench|source-route-failed|time-exceeded|timestamp-reply|timestamp-request|
                         traceroute|ttl-exceeded|unreachable|dvmrp|host-query|mtrace-resp|mtrace-route|pim|trace|
-                        v1host-report|v2host-report|v2leave-group|v3host-report|\d+)?)?
-                        (\s*(?P<tcp_flags>(?:ack|fin|psh|rst|syn|urg|established)(?:\s+(?:ack|fin|psh|rst|syn|urg|established))*))?
+                        v1host-report|v2host-report|v2leave-group|v3host-report|\d+))?
+                        (\s+(?P<tcp_flags>(?:ack|fin|psh|rst|syn|urg|established)(?:\s+(?:ack|fin|psh|rst|syn|urg|established))*))?
                         (\sdscp\s(?P<dscp>\S+))?
                         (\s(?P<enable_fragments>fragments))?
                         (\slog-input\s\(tag\s=\s(?P<log_input>(?:\S+)|log-input)\))?
@@ -516,7 +516,7 @@ class AclsTemplate(NetworkTemplate):
                         (\slt\s(?P<dlt>(\S+|\d+)))?
                         (\sneq\s(?P<dneq>(\S+|\d+)))?
                         (\srange\s(?P<drange_start>\S+)\s(?P<drange_end>\S+))?
-                        (\s(?P<icmp_igmp_protocol>
+                        (\s+(?P<icmp_igmp_protocol>
                         administratively-prohibited|alternate-address|conversion-error|dod-host-prohibited|dod-net-prohibited|
                         echo-reply|echo|general-parameter-problem|host-isolated|host-precedence-unreachable|host-redirect|
                         host-tos-redirect|host-tos-unreachable|host-unknown|host-unreachable|information-reply|information-request|
@@ -525,8 +525,8 @@ class AclsTemplate(NetworkTemplate):
                         precedence-unreachable|protocol-unreachable|reassembly-timeout|redirect|router-advertisement|
                         router-solicitation|source-quench|source-route-failed|time-exceeded|timestamp-reply|timestamp-request|
                         traceroute|ttl-exceeded|unreachable|dvmrp|host-query|mtrace-resp|mtrace-route|pim|trace|
-                        v1host-report|v2host-report|v2leave-group|v3host-report|\d+)?)?
-                        (\s*(?P<tcp_flags>(?:ack|fin|psh|rst|syn|urg|established)(?:\s+(?:ack|fin|psh|rst|syn|urg|established))*))?
+                        v1host-report|v2host-report|v2leave-group|v3host-report|\d+))?
+                        (\s+(?P<tcp_flags>(?:ack|fin|psh|rst|syn|urg|established)(?:\s+(?:ack|fin|psh|rst|syn|urg|established))*))?
                         (\sdscp\s(?P<dscp>\S+))?
                         (\s(?P<enable_fragments>fragments))?
                         (\slog-input\s\(tag\s=\s(?P<log_input>(?:\S+)|log-input)\))?
