@@ -20,6 +20,7 @@
                     protocol_options:
                       tcp:
                         ack: true
+                        fin: true
                     sequence: 10
                     source:
                       address: 198.51.100.0

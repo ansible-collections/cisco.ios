@@ -81,13 +81,20 @@ class TestIosAclsModule(TestIosModule):
                                         source=dict(any=True),
                                     ),
                                     dict(
-                                        destination=dict(host="1.1.1.1"),
+                                        destination=dict(
+                                            host="1.1.1.1",
+                                            port_protocol=dict(eq="9422"),
+                                        ),
                                         grant="permit",
                                         precedence="immediate",
                                         protocol="tcp",
                                         protocol_options=dict(tcp=dict(ack=True, fin=True)),
                                         sequence=30,
-                                        source=dict(address="2.2.2.2", wildcard_bits="3.3.3.3"),
+                                        source=dict(
+                                            address="2.2.2.2",
+                                            wildcard_bits="3.3.3.3",
+                                            port_protocol=dict(range=dict(end=22, start=23))
+                                        ),
                                     ),
                                 ],
                                 acl_type="extended",
@@ -174,7 +181,7 @@ class TestIosAclsModule(TestIosModule):
             "deny ip any any log-input test_logInput",
             "ip access-list extended test_pre",
             "20 permit ip any any precedence immediate",
-            "30 permit tcp 2.2.2.2 3.3.3.3 host 1.1.1.1 ack fin precedence immediate",
+            "30 permit tcp 2.2.2.2 3.3.3.3 range 23 22 host 1.1.1.1 eq 9422 ack fin precedence immediate",
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
@@ -2598,8 +2605,6 @@ class TestIosAclsModule(TestIosModule):
                 "afi": "ipv4",
             },
         ]
-        print(result["parsed"])
-        print(parsed_list)
         self.assertEqual(parsed_list, result["parsed"])
 
     def test_ios_merged_general_2(self):
@@ -2770,3 +2775,57 @@ class TestIosAclsModule(TestIosModule):
             "permit 198.51.105.0 0.0.0.255 198.51.106.0 0.0.0.255 time-range 20 tos max-throughput",
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_acls_gathered(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            ip access-list extended test_pre
+             30 permit tcp 2.2.2.2 3.3.3.3 range 23 22 host 1.1.1.1 eq 9422 ack fin precedence immediate
+            """,
+        )
+        set_module_args(
+            dict(
+                state="gathered",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        gathered = [
+            {
+                "afi": "ipv4",
+                "acls": [
+                    {
+                        "name": "test_pre", 
+                        "acl_type": "extended",
+                        "aces":[
+                            {
+                                "sequence": 30,
+                                "grant": "permit",
+                                "protocol": "tcp",
+                                "protocol_options": {
+                                    "tcp": {
+                                        "ack": True,
+                                        "fin": True
+                                    }
+                                },
+                                "source": {
+                                    "address": "2.2.2.2",
+                                    "wildcard_bits": "3.3.3.3",
+                                    "port_protocol": {
+                                        "range": {
+                                            "start": "23",
+                                            "end": "22",
+                                        },
+                                    },
+                                },
+                                "destination": {
+                                    "host": "1.1.1.1",
+                                    "port_protocol": {"eq": "9422"}
+                                },
+                                "precedence": "immediate",
+                            },
+                        ],
+                    },
+                ],
+            },
+        ]
+        self.assertEqual(result["gathered"], gathered)

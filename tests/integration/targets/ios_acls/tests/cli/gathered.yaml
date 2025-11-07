@@ -7,6 +7,35 @@
 - ansible.builtin.include_tasks: _populate_config.yaml
 
 - block:
+    - name: Merge tcp/port_protocol configuration
+      cisco.ios.ios_acls:
+        config:
+          - afi: ipv4
+            acls:
+              - acl_type: extended
+                name: ACL_STANDARD_786
+                aces:
+                  - destination:
+                      address: 192.0.2.2
+                      wildcard_bits: 0.253.252.252
+                      port_protocol:
+                        eq: 9422
+                    grant: permit
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                        fin: true
+                    sequence: 30
+                    source:
+                      address: 192.0.2.1
+                      wildcard_bits: 0.251.252.252
+                      port_protocol:
+                        range:
+                          start: "22"
+                          end: "23"
+        state: merged
+
     - name: Gather the provided configuration with the existing running configuration
       register: result
       cisco.ios.ios_acls:
