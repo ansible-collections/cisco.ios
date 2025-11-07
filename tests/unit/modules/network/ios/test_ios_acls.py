@@ -93,7 +93,7 @@ class TestIosAclsModule(TestIosModule):
                                         source=dict(
                                             address="2.2.2.2",
                                             wildcard_bits="3.3.3.3",
-                                            port_protocol=dict(range=dict(end=22, start=23))
+                                            port_protocol=dict(range=dict(end=22, start=23)),
                                         ),
                                     ),
                                 ],
@@ -708,7 +708,8 @@ class TestIosAclsModule(TestIosModule):
                                 aces=[
                                     dict(
                                         destination=dict(
-                                            address="10.40.150.3", wildcard_bits="10.40.150.4"
+                                            address="10.40.150.3",
+                                            wildcard_bits="10.40.150.4",
                                         ),
                                         grant="permit",
                                         precedence="immediate",
@@ -716,7 +717,8 @@ class TestIosAclsModule(TestIosModule):
                                         protocol_options=dict(tcp=dict(ack=True, fin=True)),
                                         sequence=40,
                                         source=dict(
-                                            address="10.40.150.1", wildcard_bits="10.40.150.2"
+                                            address="10.40.150.1",
+                                            wildcard_bits="10.40.150.2",
                                         ),
                                     ),
                                 ],
@@ -2794,9 +2796,9 @@ class TestIosAclsModule(TestIosModule):
                 "afi": "ipv4",
                 "acls": [
                     {
-                        "name": "test_pre", 
+                        "name": "test_pre",
                         "acl_type": "extended",
-                        "aces":[
+                        "aces": [
                             {
                                 "sequence": 30,
                                 "grant": "permit",
@@ -2804,8 +2806,8 @@ class TestIosAclsModule(TestIosModule):
                                 "protocol_options": {
                                     "tcp": {
                                         "ack": True,
-                                        "fin": True
-                                    }
+                                        "fin": True,
+                                    },
                                 },
                                 "source": {
                                     "address": "2.2.2.2",
@@ -2819,7 +2821,7 @@ class TestIosAclsModule(TestIosModule):
                                 },
                                 "destination": {
                                     "host": "1.1.1.1",
-                                    "port_protocol": {"eq": "9422"}
+                                    "port_protocol": {"eq": "9422"},
                                 },
                                 "precedence": "immediate",
                             },
