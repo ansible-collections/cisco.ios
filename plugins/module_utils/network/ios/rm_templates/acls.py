@@ -153,6 +153,7 @@ def _tmplt_access_list_entries(aces):
             command += " {0}".format(proto_option)
     return command
 
+
 class AclsTemplate(NetworkTemplate):
     def __init__(self, lines=None):
         super(AclsTemplate, self).__init__(lines=lines, tmplt=self)

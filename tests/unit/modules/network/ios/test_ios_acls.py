@@ -225,7 +225,7 @@ class TestIosAclsModule(TestIosModule):
                                         "protocol_options": {
                                             "tcp": {
                                                 "ack": True,
-                                                "fin": True
+                                                "fin": True,
                                             },
                                         },
                                         "sequence": 30,
@@ -700,16 +700,20 @@ class TestIosAclsModule(TestIosModule):
                                 acl_type="extended",
                                 aces=[
                                     dict(
-                                    destination=dict(address="10.40.150.3", wildcard_bits="10.40.150.4"),
-                                    grant="permit",
-                                    precedence="immediate",
-                                    protocol="tcp",
-                                    protocol_options=dict(tcp=dict(ack=True, fin=True)),
-                                    sequence=40,
-                                    source=dict(address="10.40.150.1", wildcard_bits="10.40.150.2")
+                                        destination=dict(
+                                            address="10.40.150.3", wildcard_bits="10.40.150.4"
+                                        ),
+                                        grant="permit",
+                                        precedence="immediate",
+                                        protocol="tcp",
+                                        protocol_options=dict(tcp=dict(ack=True, fin=True)),
+                                        sequence=40,
+                                        source=dict(
+                                            address="10.40.150.1", wildcard_bits="10.40.150.2"
+                                        ),
                                     ),
-                                ]
-                            )
+                                ],
+                            ),
                         ],
                     ),
                 ],
@@ -1307,7 +1311,7 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {"host": "192.0.2.4"},
                             },
                         ],
-                    }
+                    },
                 ],
             },
             {
@@ -1328,13 +1332,13 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "any": True,
                                     "port_protocol": {
-                                        "range": {"start": "10", "end": "20"}
+                                        "range": {"start": "10", "end": "20"},
                                     },
                                 },
                                 "dscp": "af11",
-                            }
+                            },
                         ],
-                    }
+                    },
                 ],
             },
         ]
@@ -2480,7 +2484,7 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "object_group": "AIT-BT-Servers",
                                 },
-                                'protocol': 'ip',
+                                "protocol": "ip",
                                 "grant": "permit",
                                 "sequence": 20,
                             },
@@ -2505,7 +2509,7 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "any": True,
                                 },
-                                'protocol': 'ip',
+                                "protocol": "ip",
                                 "grant": "deny",
                                 "sequence": 40,
                             },
@@ -2516,7 +2520,7 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "object_group": "IB-Servers",
                                 },
-                                'protocol': 'ip',
+                                "protocol": "ip",
                                 "grant": "permit",
                                 "sequence": 50,
                             },
@@ -2527,7 +2531,7 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "object_group": "IB-Servers",
                                 },
-                                'protocol': 'ip',
+                                "protocol": "ip",
                                 "grant": "permit",
                                 "sequence": 60,
                             },
@@ -2538,7 +2542,7 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "object_group": "AD-Servers",
                                 },
-                                'protocol': 'ip',
+                                "protocol": "ip",
                                 "grant": "permit",
                                 "sequence": 70,
                             },
@@ -2549,7 +2553,7 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "object_group": "CP-Appliances",
                                 },
-                                'protocol': 'ip',
+                                "protocol": "ip",
                                 "grant": "permit",
                                 "sequence": 80,
                             },
@@ -2560,7 +2564,7 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "object_group": "Tanium-Servers",
                                 },
-                                'protocol': 'ip',
+                                "protocol": "ip",
                                 "grant": "permit",
                                 "sequence": 90,
                             },
@@ -2571,7 +2575,7 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "object_group": "SOC-Tenable-Servers",
                                 },
-                                'protocol': 'ip',
+                                "protocol": "ip",
                                 "grant": "permit",
                                 "sequence": 100,
                             },
