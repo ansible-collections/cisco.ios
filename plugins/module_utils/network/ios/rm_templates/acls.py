@@ -111,7 +111,7 @@ def _tmplt_access_list_entries(aces):
         if isinstance(proto_option, dict):
             for flag, enabled in proto_option.items():
                 if enabled:
-                    command += f" {flag.replace('_', '-')}"
+                    command += " {}".format(flag.replace('_', '-'))
         if aces.get("dscp"):
             command += " dscp {dscp}".format(**aces)
         if aces.get("sequence") and aces.get("afi") == "ipv6":
