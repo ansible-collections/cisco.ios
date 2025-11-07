@@ -2460,7 +2460,7 @@ class TestIosAclsModule(TestIosModule):
                     80 permit object-group generic-any-port object-group CP-Appliances
                     90 permit object-group generic-any-port object-group Tanium-Servers
                     100 permit object-group generic-any-port object-group SOC-Tenable-Servers
-                    5000 deny any any
+                    5000 deny ip any any
                 """,
                 ),
                 state="parsed",
@@ -2587,6 +2587,7 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "any": True,
                                 },
+                                "protocol": "ip",
                                 "grant": "deny",
                                 "sequence": 5000,
                             },
