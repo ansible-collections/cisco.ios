@@ -391,9 +391,7 @@ class AclsTemplate(NetworkTemplate):
                         (\s+(?P<tcp_flags>(?:ack|fin|psh|rst|syn|urg|established)(?:\s+(?:ack|fin|psh|rst|syn|urg|established))*))?
                         (\sdscp\s(?P<dscp>\S+))?
                         (\s(?P<enable_fragments>fragments))?
-                        (\slog-input\s\(tag\s=\s(?P<log_input>(?:\S+)|log-input)\))?
                         (\s(?P<log_input_only>log-input))?
-                        (\slog\s\(tag\s=\s(?P<log>(?:\S+)|log)\))?
                         (\s(?P<log_only>log))?
                         (\soption\s(?P<option>\S+|\d+))?
                         (\sprecedence\s(?P<precedence>\S+))?
@@ -530,9 +528,7 @@ class AclsTemplate(NetworkTemplate):
                         (\s+(?P<tcp_flags>(?:ack|fin|psh|rst|syn|urg|established)(?:\s+(?:ack|fin|psh|rst|syn|urg|established))*))?
                         (\sdscp\s(?P<dscp>\S+))?
                         (\s(?P<enable_fragments>fragments))?
-                        (\slog-input\s\(tag\s=\s(?P<log_input>(?:\S+)|log-input)\))?
                         (\s(?P<log_input_only>log-input))?
-                        (\slog\s\(tag\s=\s(?P<log>(?:\S+)|log)\))?
                         (\s(?P<log_only>log))?
                         (\soption\s(?P<option>\S+|\d+))?
                         (\sprecedence\s(?P<precedence>\S+))?

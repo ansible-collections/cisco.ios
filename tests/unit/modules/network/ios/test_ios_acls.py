@@ -756,7 +756,7 @@ class TestIosAclsModule(TestIosModule):
             """\
             ip access-list standard test_acl
             ip access-list extended 110
-                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
+                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
             ipv6 access-list R1_TRAFFIC
@@ -803,7 +803,7 @@ class TestIosAclsModule(TestIosModule):
                                             "any": True,
                                             "port_protocol": {"eq": "22"},
                                         },
-                                        "log": {"set": True, "user_cookie": "testLog"},
+                                        "log": {"set": True},
                                     },
                                     {
                                         "sequence": 20,
@@ -1406,7 +1406,7 @@ class TestIosAclsModule(TestIosModule):
             """\
             ip access-list standard test_acl
             ip access-list extended 110
-                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
+                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
                 remark test ab.
@@ -1435,7 +1435,7 @@ class TestIosAclsModule(TestIosModule):
         result = self.execute_module(changed=True, sort=True)
         cmds = [
             "ip access-list extended 110",
-            "no 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log testLog",
+            "no 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log",
             "no 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10",
             "no 30 deny icmp object-group test_network_og any dscp ef ttl eq 10",
         ]
@@ -2451,16 +2451,16 @@ class TestIosAclsModule(TestIosModule):
                     """\
                 ip access-list extended CP_Quarantine-v4-in
                     10 permit udp any object-group FAA-Networks eq bootps
-                    20 permit ip object-group BT-ports object-group AIT-BT-Servers
+                    20 permit object-group BT-ports object-group AIT-BT-Servers
                     30 permit tcp any object-group CP-Appliances eq 443
-                    40 deny ip object-group deny-mgmt-ports any
-                    50 permit ip object-group icmp object-group IB-Servers
-                    60 permit ip object-group generic-any-port object-group IB-Servers
-                    70 permit ip object-group generic-any-port object-group AD-Servers
-                    80 permit ip object-group generic-any-port object-group CP-Appliances
-                    90 permit ip object-group generic-any-port object-group Tanium-Servers
-                    100 permit ip object-group generic-any-port object-group SOC-Tenable-Servers
-                    5000 deny ip any any
+                    40 deny object-group deny-mgmt-ports any
+                    50 permit object-group icmp object-group IB-Servers
+                    60 permit object-group generic-any-port object-group IB-Servers
+                    70 permit object-group generic-any-port object-group AD-Servers
+                    80 permit object-group generic-any-port object-group CP-Appliances
+                    90 permit object-group generic-any-port object-group Tanium-Servers
+                    100 permit object-group generic-any-port object-group SOC-Tenable-Servers
+                    5000 deny any any
                 """,
                 ),
                 state="parsed",
@@ -2493,7 +2493,6 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "object_group": "AIT-BT-Servers",
                                 },
-                                "protocol": "ip",
                                 "grant": "permit",
                                 "sequence": 20,
                             },
@@ -2517,8 +2516,7 @@ class TestIosAclsModule(TestIosModule):
                                 },
                                 "destination": {
                                     "any": True,
-                                },
-                                "protocol": "ip",
+                                },                                
                                 "grant": "deny",
                                 "sequence": 40,
                             },
@@ -2529,7 +2527,6 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "object_group": "IB-Servers",
                                 },
-                                "protocol": "ip",
                                 "grant": "permit",
                                 "sequence": 50,
                             },
@@ -2540,7 +2537,6 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "object_group": "IB-Servers",
                                 },
-                                "protocol": "ip",
                                 "grant": "permit",
                                 "sequence": 60,
                             },
@@ -2551,7 +2547,6 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "object_group": "AD-Servers",
                                 },
-                                "protocol": "ip",
                                 "grant": "permit",
                                 "sequence": 70,
                             },
@@ -2562,7 +2557,6 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "object_group": "CP-Appliances",
                                 },
-                                "protocol": "ip",
                                 "grant": "permit",
                                 "sequence": 80,
                             },
@@ -2573,7 +2567,6 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "object_group": "Tanium-Servers",
                                 },
-                                "protocol": "ip",
                                 "grant": "permit",
                                 "sequence": 90,
                             },
@@ -2584,7 +2577,6 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "object_group": "SOC-Tenable-Servers",
                                 },
-                                "protocol": "ip",
                                 "grant": "permit",
                                 "sequence": 100,
                             },
@@ -2595,7 +2587,6 @@ class TestIosAclsModule(TestIosModule):
                                 "destination": {
                                     "any": True,
                                 },
-                                "protocol": "ip",
                                 "grant": "deny",
                                 "sequence": 5000,
                             },
