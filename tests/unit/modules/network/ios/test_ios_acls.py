@@ -2516,7 +2516,7 @@ class TestIosAclsModule(TestIosModule):
                                 },
                                 "destination": {
                                     "any": True,
-                                },                                
+                                },
                                 "grant": "deny",
                                 "sequence": 40,
                             },
