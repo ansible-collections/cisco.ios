@@ -756,7 +756,7 @@ class TestIosAclsModule(TestIosModule):
             """\
             ip access-list standard test_acl
             ip access-list extended 110
-                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log
+                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
             ipv6 access-list R1_TRAFFIC
@@ -803,7 +803,7 @@ class TestIosAclsModule(TestIosModule):
                                             "any": True,
                                             "port_protocol": {"eq": "22"},
                                         },
-                                        "log": {"set": True},
+                                        "log": {"set": True, "user_cookie": "testLog"},
                                     },
                                     {
                                         "sequence": 20,
@@ -1039,7 +1039,7 @@ class TestIosAclsModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             ip access-list extended 110
-                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log
+                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
             ip access-list reflexive MIRROR
@@ -1077,7 +1077,7 @@ class TestIosAclsModule(TestIosModule):
                                             "any": True,
                                             "port_protocol": {"eq": "22"},
                                         },
-                                        "log": {"set": True},
+                                        "log": {"set": True, "user_cookie": "testLog"},
                                     },
                                     {
                                         "sequence": 20,
@@ -1406,7 +1406,7 @@ class TestIosAclsModule(TestIosModule):
             """\
             ip access-list standard test_acl
             ip access-list extended 110
-                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log
+                10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log (tag = testLog)
                 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10
                 30 deny icmp object-group test_network_og any dscp ef ttl eq 10
                 remark test ab.
@@ -1435,10 +1435,12 @@ class TestIosAclsModule(TestIosModule):
         result = self.execute_module(changed=True, sort=True)
         cmds = [
             "ip access-list extended 110",
-            "no 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log",
+            "no 10 permit tcp 198.51.100.0 0.0.0.255 any eq 22 log testLog",
             "no 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10",
             "no 30 deny icmp object-group test_network_og any dscp ef ttl eq 10",
         ]
+        print(result['commands'])
+        print(cmds)
         self.assertEqual(sorted(result["commands"]), cmds)
 
     def test_ios_acls_overridden_option(self):

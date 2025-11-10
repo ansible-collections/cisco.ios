@@ -391,7 +391,9 @@ class AclsTemplate(NetworkTemplate):
                         (\s+(?P<tcp_flags>(?:ack|fin|psh|rst|syn|urg|established)(?:\s+(?:ack|fin|psh|rst|syn|urg|established))*))?
                         (\sdscp\s(?P<dscp>\S+))?
                         (\s(?P<enable_fragments>fragments))?
+                        (\slog-input\s\(tag\s=\s(?P<log_input>\S+)\))?
                         (\s(?P<log_input_only>log-input))?
+                        (\slog\s\(tag\s=\s(?P<log>\S+)\))?
                         (\s(?P<log_only>log))?
                         (\soption\s(?P<option>\S+|\d+))?
                         (\sprecedence\s(?P<precedence>\S+))?
@@ -456,11 +458,11 @@ class AclsTemplate(NetworkTemplate):
                                 "enable_fragments": "{{ True if enable_fragments is defined else None }}",
                                 "log": {
                                     "set": "{{ True if log_only is defined or log is defined }}",
-                                    "user_cookie": "{{ log.split(')')[0] if log is defined }}",
+                                    "user_cookie": "{{ log if log is defined else None }}",
                                 },
                                 "log_input": {
                                     "set": "{{ True if log_input_only is defined or log_input is defined }}",
-                                    "user_cookie": "{{ log_input.split(')')[0] if log_input is defined }}",
+                                    "user_cookie": "{{ log_input if log_input is defined else None }}",
                                 },
                                 "option": {
                                     "{{ option if option is defined else None }}": "{{ True if option is defined else None }}",
@@ -528,7 +530,9 @@ class AclsTemplate(NetworkTemplate):
                         (\s+(?P<tcp_flags>(?:ack|fin|psh|rst|syn|urg|established)(?:\s+(?:ack|fin|psh|rst|syn|urg|established))*))?
                         (\sdscp\s(?P<dscp>\S+))?
                         (\s(?P<enable_fragments>fragments))?
+                        (\slog-input\s\(tag\s=\s(?P<log_input>\S+)\))?
                         (\s(?P<log_input_only>log-input))?
+                        (\slog\s\(tag\s=\s(?P<log>\S+)\))?
                         (\s(?P<log_only>log))?
                         (\soption\s(?P<option>\S+|\d+))?
                         (\sprecedence\s(?P<precedence>\S+))?
@@ -593,11 +597,11 @@ class AclsTemplate(NetworkTemplate):
                                 "enable_fragments": "{{ True if enable_fragments is defined else None }}",
                                 "log": {
                                     "set": "{{ True if log_only is defined or log is defined }}",
-                                    "user_cookie": "{{ log.split(')')[0] if log is defined }}",
+                                    "user_cookie": "{{ log if log is defined else None }}",
                                 },
                                 "log_input": {
                                     "set": "{{ True if log_input_only is defined or log_input is defined }}",
-                                    "user_cookie": "{{ log_input.split(')')[0] if log_input is defined }}",
+                                    "user_cookie": "{{ log_input if log_input is defined else None }}",
                                 },
                                 "option": {
                                     "{{ option if option is defined else None }}": "{{ True if option is defined else None }}",
