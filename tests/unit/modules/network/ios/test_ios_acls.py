@@ -1439,7 +1439,7 @@ class TestIosAclsModule(TestIosModule):
             "no 20 deny icmp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 echo dscp ef ttl eq 10",
             "no 30 deny icmp object-group test_network_og any dscp ef ttl eq 10",
         ]
-        print(result['commands'])
+        print(result["commands"])
         print(cmds)
         self.assertEqual(sorted(result["commands"]), cmds)
 
