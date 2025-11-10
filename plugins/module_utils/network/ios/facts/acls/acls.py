@@ -132,18 +132,12 @@ class AclsFacts(object):
 
             def factor_source_dest(ace, typ):
                 temp = ace.get(typ, {})
-                # TODO add the XOR logic for fixing ipv6 detla address issue
+                # TODO complete the ipv6 delta logic
                 if temp.get("address"):
                     ace[typ]["address"] = temp.get("address")
                     ace[typ]["wildcard_bits"] = temp.get("wildcard_bits")
 
             def process_protocol_options(each):
-                ICMP_MAP = {
-                    4: "pim",
-                }
-                IGMP_MAP = {
-                    4: "pim",
-                }
                 for each_ace in each.get("aces"):
                     if each.get("acl_type") == "standard":
                         if len(each_ace.get("source", {})) == 1 and each_ace.get(
@@ -176,21 +170,11 @@ class AclsFacts(object):
                             flag_dict = {flag: True for flag in protocol_options.split()}
                             each_ace["protocol_options"] = {"tcp": flag_dict}
                         if protocol == "icmp":
-                            # TODO add the mappings and update the argspec
-                            protocol_options = protocol_options.replace("-", "_")
-                            mapping = ICMP_MAP.get(protocol_options, None)
-                            if mapping:
-                                each_ace["protocol_options"] = {"icmp": {mapping: True}}
-                            else:
-                                each_ace["protocol_options"] = {"icmp": {protocol_options: True}}
+                            protocol_options = str(protocol_options).replace("-", "_")
+                            each_ace["protocol_options"] = {"icmp": {protocol_options: True}}
                         if protocol == "igmp":
-                            # TODO add the mappings and update the argspec
-                            protocol_options = protocol_options.replace("-", "_")
-                            mapping = IGMP_MAP.get(protocol_options, None)
-                            if mapping:
-                                each_ace["protocol_options"] = {"igmp": {mapping: True}}
-                            else:
-                                each_ace["protocol_options"] = {"igmp": {protocol_options: True}}
+                            protocol_options = str(protocol_options).replace("-", "_")
+                            each_ace["protocol_options"] = {"igmp": {protocol_options: True}}
 
             def collect_remarks(aces):
                 """makes remarks list per ace"""
