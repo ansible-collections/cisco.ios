@@ -35,11 +35,17 @@ replaced:
     - no 20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
     - ip access-list extended 150
     - 20 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10
+    - ipv6 access-list R1_TRAFFIC
+    - no deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+    - permit tcp host 2001:DB8:1234:ABCD::1 range telnet 26 2001:DB8:AB00::/40 ack fin sequence 190
 replaced_changetype:
   commands:
     - no ip access-list extended test_acl
     - ip access-list standard test_acl
     - 10 deny 198.51.100.0 0.0.0.255
+    - ipv6 access-list R1_TRAFFIC
+    - no deny tcp any eq www any eq telnet ack dscp af11 sequence 10
+    - permit tcp host 2001:DB8:1234:ABCD::1 range telnet 26 host 2001:DB8:1234:ABCD::2 ack fin sequence 10
 overridden:
   commands:
     - no ipv6 access-list R1_TRAFFIC
@@ -51,6 +57,8 @@ overridden:
     - no 20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20
     - ip access-list extended 150
     - 10 deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10
+    - ipv6 access-list R2_TRAFFIC
+    - permit tcp host 2001:DB8:1234:ABCD::1 range telnet 26 host 2001:DB8:1234:ABCD::2 ack fin sequence 190
 
 gathered:
   config:
@@ -170,6 +178,21 @@ gathered:
                 any: true
                 port_protocol:
                   eq: www
+            - sequence: 190
+              grant: permit
+              protocol: tcp
+              protocol_options:
+                tcp:
+                  ack: true
+                  fin: true 
+              source:
+                address: 2001:DB8:AB00::/42
+                port_protocol:
+                  range:
+                    start: "22"
+                    end: telnet
+              destination:
+                address: 2001:DB8:AB00::/40
           name: R1_TRAFFIC
       afi: ipv6
 

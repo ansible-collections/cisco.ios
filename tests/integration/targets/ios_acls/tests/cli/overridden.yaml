@@ -11,6 +11,25 @@
       register: result
       cisco.ios.ios_acls: &id001
         config:
+          - afi: ipv6
+            acls:
+              - name: R2_TRAFFIC
+                aces:
+                  - sequence: 190
+                    grant: permit
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                        fin: true 
+                    source:
+                      host: 2001:DB8:1234:ABCD::1
+                      port_protocol:
+                        range:
+                          start: "telnet"
+                          end: "26"
+                    destination:
+                      host: 2001:DB8:1234:ABCD::2
           - afi: ipv4
             acls:
               - name: 110
@@ -78,7 +97,7 @@
 
     - ansible.builtin.assert:
         that:
-          - result.commands|length == 9
+          - result.commands|length == 11
           - result.changed == true
           - result.commands|symmetric_difference(overridden.commands) == []
 

@@ -11,6 +11,25 @@
       register: result
       cisco.ios.ios_acls: &id001
         config:
+          - afi: ipv6
+            acls:
+              - name: R1_TRAFFIC
+                aces:
+                  - sequence: 190
+                    grant: permit
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                        fin: true 
+                    source:
+                      host: 2001:DB8:1234:ABCD::1
+                      port_protocol:
+                        range:
+                          start: "telnet"
+                          end: "26"
+                    destination:
+                      address: 2001:DB8:AB00::/40
           - afi: ipv4
             acls:
               - name: 110
@@ -75,7 +94,7 @@
 
     - ansible.builtin.assert:
         that:
-          - result.commands|length == 7
+          - result.commands|length == 10
           - result.changed == true
           - result.commands|symmetric_difference(replaced.commands) == []
 
@@ -96,6 +115,25 @@
       register: result
       cisco.ios.ios_acls: &id002
         config:
+          - afi: ipv6
+            acls:
+              - name: R1_TRAFFIC
+                aces:
+                  - sequence: 10
+                    grant: permit
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                        fin: true 
+                    source:
+                      host: 2001:DB8:1234:ABCD::1
+                      port_protocol:
+                        range:
+                          start: "telnet"
+                          end: "26"
+                    destination:
+                      host: 2001:DB8:1234:ABCD::2
           - afi: ipv4
             acls:
               - name: test_acl
@@ -110,7 +148,7 @@
 
     - ansible.builtin.assert:
         that:
-          - result.commands|length == 3
+          - result.commands|length == 6
           - result.changed == true
           - result.commands|symmetric_difference(replaced_changetype.commands) == []
 

@@ -34,6 +34,25 @@
                         range:
                           start: "22"
                           end: "23"
+          - afi: ipv6
+            acls:
+              - name: R1_TRAFFIC
+                aces:
+                  - sequence: 190
+                    grant: permit
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                        fin: true 
+                    source:
+                      address: 2001:DB8:AB00::/42
+                      port_protocol:
+                        range:
+                          start: "22"
+                          end: "23"
+                    destination:
+                      address: 2001:DB8:AB00::/40
         state: merged
 
     - name: Gather the provided configuration with the existing running configuration
