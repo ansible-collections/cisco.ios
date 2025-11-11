@@ -21,7 +21,7 @@
                     protocol_options:
                       tcp:
                         ack: true
-                        fin: true 
+                        fin: true
                     source:
                       host: 2001:DB8:1234:ABCD::1
                       port_protocol:

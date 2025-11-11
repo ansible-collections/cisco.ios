@@ -184,7 +184,7 @@ gathered:
               protocol_options:
                 tcp:
                   ack: true
-                  fin: true 
+                  fin: true
               source:
                 address: 2001:DB8:AB00::/42
                 port_protocol:

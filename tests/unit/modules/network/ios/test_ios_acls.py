@@ -184,8 +184,8 @@ class TestIosAclsModule(TestIosModule):
                                 ],
                                 name="R1_TRAFFIC",
                             ),
-                        ]
-                    )
+                        ],
+                    ),
                 ],
                 state="merged",
             ),
@@ -783,7 +783,7 @@ class TestIosAclsModule(TestIosModule):
                                 ],
                                 name="R1_TRAFFIC",
                             ),
-                        ]
+                        ],
                     ),
                 ],
                 state="replaced",
@@ -1064,7 +1064,7 @@ class TestIosAclsModule(TestIosModule):
                                 ],
                                 name="R1_TRAFFIC",
                             ),
-                        ]
+                        ],
                     ),
                 ],
                 state="replaced",
@@ -1145,7 +1145,7 @@ class TestIosAclsModule(TestIosModule):
                                 ],
                                 name="R2_TRAFFIC",
                             ),
-                        ]
+                        ],
                     ),
                 ],
                 state="overridden",
@@ -1159,7 +1159,7 @@ class TestIosAclsModule(TestIosModule):
             "ip access-list extended 150",
             "deny tcp 198.51.100.0 0.0.0.255 eq telnet 198.51.110.0 0.0.0.255 eq telnet syn dscp ef ttl eq 10",
             "ipv6 access-list R2_TRAFFIC",
-            "permit ipv6 host 2001:DB8:1234:ABCD::2 2001:DB8:ABCD::/48 sequence 10"
+            "permit ipv6 host 2001:DB8:1234:ABCD::2 2001:DB8:ABCD::/48 sequence 10",
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
@@ -1420,7 +1420,7 @@ class TestIosAclsModule(TestIosModule):
                                 ],
                                 name="R1_TRAFFIC",
                             ),
-                        ]
+                        ],
                     ),
                 ],
                 state="rendered",
@@ -1432,7 +1432,7 @@ class TestIosAclsModule(TestIosModule):
             "10 remark remark for acl 110",
             "10 deny tcp 192.0.2.0 0.0.0.255 192.0.3.0 0.0.0.255 eq www syn dscp ef ttl eq 10",
             "ipv6 access-list R1_TRAFFIC",
-            "permit tcp host 2001:DB8:1234:ABCD::2 2001:DB8:ABCD::/48 ack fin sequence 10"
+            "permit tcp host 2001:DB8:1234:ABCD::2 2001:DB8:ABCD::/48 ack fin sequence 10",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
@@ -1829,7 +1829,7 @@ class TestIosAclsModule(TestIosModule):
                                 ],
                                 name="R1_TRAFFIC",
                             ),
-                        ]
+                        ],
                     ),
                 ],
                 state="deleted",
