@@ -132,18 +132,10 @@ class AclsFacts(object):
 
             def factor_source_dest(ace, typ):
                 temp = ace.get(typ, {})
+                # TODO complete the ipv6 delta logic
                 if temp.get("address"):
-                    _temp_addr = temp.get("address", "")
-                    ace[typ]["address"] = _temp_addr.split(" ")[0]
-                    ace[typ]["wildcard_bits"] = _temp_addr.split(" ")[1]
-                if temp.get("ipv6_address"):
-                    _temp_addr = temp.get("ipv6_address", "")
-                    if len(_temp_addr.split(" ")) == 2:
-                        ipv6_add = ace[typ].pop("ipv6_address")
-                        ace[typ]["address"] = ipv6_add.split(" ")[0]
-                        ace[typ]["wildcard_bits"] = ipv6_add.split(" ")[1]
-                    else:
-                        ace[typ]["address"] = ace[typ].pop("ipv6_address")
+                    ace[typ]["address"] = temp.get("address")
+                    ace[typ]["wildcard_bits"] = temp.get("wildcard_bits")
 
             def process_protocol_options(each):
                 for each_ace in each.get("aces"):
@@ -167,19 +159,22 @@ class AclsFacts(object):
                         if each_ace.get("destination", {}):
                             factor_source_dest(each_ace, "destination")
 
-                    if each_ace.get("icmp_igmp_tcp_protocol"):
-                        each_ace["protocol_options"] = {
-                            each_ace["protocol"]: {
-                                each_ace.pop("icmp_igmp_tcp_protocol").replace(
-                                    "-",
-                                    "_",
-                                ): True,
-                            },
-                        }
                     if each_ace.get("protocol_number"):
                         each_ace["protocol_options"] = {
                             "protocol_number": each_ace.pop("protocol_number"),
                         }
+                    protocol = each_ace.get("protocol")
+                    protocol_options = each_ace.get("protocol_options")
+                    if protocol_options is not None:
+                        if protocol == "tcp":
+                            flag_dict = {flag: True for flag in protocol_options.split()}
+                            each_ace["protocol_options"] = {"tcp": flag_dict}
+                        if protocol == "icmp":
+                            protocol_options = str(protocol_options).replace("-", "_")
+                            each_ace["protocol_options"] = {"icmp": {protocol_options: True}}
+                        if protocol == "igmp":
+                            protocol_options = str(protocol_options).replace("-", "_")
+                            each_ace["protocol_options"] = {"igmp": {protocol_options: True}}
 
             def collect_remarks(aces):
                 """makes remarks list per ace"""
