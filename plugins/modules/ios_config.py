@@ -493,6 +493,11 @@ def save_config(module, result):
         )
 
 
+def trim_trailing_whitespace(multiline_str):
+    # Removes trailing whitespace from each line in a multiline string.
+    return "\n".join(line.rstrip() for line in multiline_str.splitlines())
+
+
 def main():
     """main entry point for module execution"""
     backup_spec = dict(filename=dict(), dir_path=dict(type="path"))
@@ -660,7 +665,13 @@ def main():
                     before = base_config
                     after = running_config
                 result.update(
-                    {"changed": True, "diff": {"before": str(before), "after": str(after)}},
+                    {
+                        "changed": True,
+                        "diff": {
+                            "before": trim_trailing_whitespace(str(before)),
+                            "after": trim_trailing_whitespace(str(after)),
+                        },
+                    },
                 )
 
     if result.get("changed") and any((module.params["src"], module.params["lines"])):
