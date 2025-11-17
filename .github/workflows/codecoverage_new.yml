@@ -1,0 +1,63 @@
+---
+name: "Code Coverage New"
+on: # yamllint disable-line rule:truthy
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  codecoverage:
+    name: "Code Coverage | Python 3.12"
+    runs-on: ubuntu-latest
+
+    env:
+      PY_COLORS: "1"
+      python_version: "3.12"
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          show-progress: false
+
+      - name: Set up Python ${{ env.python_version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.python_version }}
+
+      - name: Install Python + testing dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install ansible-core pytest pytest-cov pytest-ansible-units pytest-forked pytest-xdist
+
+      - name: Install ansible collection dependencies
+        run: |
+          ansible-galaxy collection install git+https://github.com/ansible-collections/ansible.utils.git
+          ansible-galaxy collection install git+https://github.com/ansible-collections/ansible.netcommon.git
+
+      - name: Print environment info
+        run: |
+          ansible --version
+          python3 -m pip list
+
+      - name: Run unit tests with coverage
+        run: |
+          pytest tests/unit -v --cov-report xml --cov=./
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
+
+      - name: Save PR number
+        if: github.event_name == 'pull_request'
+        run: echo "${{ github.event.pull_request.number }}" > pr_number.txt
+
+      - name: Upload PR number
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr_number
+          path: pr_number.txt
