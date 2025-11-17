@@ -21,19 +21,18 @@ jobs:
       ansible_version: "latest"
 
     steps:
-      - name: Checkout the collection repository
-        uses: ansible-network/github_actions/.github/actions/checkout_dependency@main
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
-          path: ${{ env.source_directory }}
-          ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: "0"
+          fetch-depth: 0
+          show-progress: false
 
       - name: Set up Python ${{ env.python_version }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.python_version }}
 
-      - name: Install ansible-core (${{ env.ansible-version }})
+      - name: Install ansible-core (${{ env.ansible_version }})
         run: python3 -m pip install ansible-core pytest pytest-cov pytest-ansible-units pytest-forked pytest-xdist
 
       - name: Read collection metadata from galaxy.yml
@@ -66,12 +65,6 @@ jobs:
           echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
           echo "PR_BASE=${{ github.base_ref }}" >> $GITHUB_ENV
           echo "PR_HEAD=${{ github.head_ref }}" >> $GITHUB_ENV
-
-      - name: Add base branch
-        run: |
-          gh pr checkout ${{ env.PR_NUMBER }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@master
