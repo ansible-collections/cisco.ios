@@ -16,7 +16,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' }}
     env:
       PY_COLORS: "1"
-      source_directory: "./source"
+      source_directory: "."
       python_version: "3.12"
       ansible_version: "latest"
 
