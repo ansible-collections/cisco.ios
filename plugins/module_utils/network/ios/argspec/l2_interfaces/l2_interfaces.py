@@ -92,7 +92,6 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                         "private_vlan_host",
                         "private_vlan_promiscuous",
                         "private_vlan_trunk",
-                        "layer3",
                     ],
                 },
                 "private_vlan": {
