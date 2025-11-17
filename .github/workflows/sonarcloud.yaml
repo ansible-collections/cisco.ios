@@ -5,17 +5,74 @@
 
 name: SonarCloud
 on: # yamllint disable-line rule:truthy
-  workflow_run:
-    workflows:
-      - "Code Coverage New"
-    types:
-      - completed
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
+  codecoverage:
+    name: "Code Coverage | Python 3.12"
+    runs-on: ubuntu-latest
+
+    env:
+      PY_COLORS: "1"
+      python_version: "3.12"
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          show-progress: false
+
+      - name: Set up Python ${{ env.python_version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.python_version }}
+
+      - name: Install Python + testing dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install ansible-core pytest pytest-cov pytest-ansible-units pytest-forked pytest-xdist
+
+      - name: Install ansible collection dependencies
+        run: |
+          ansible-galaxy collection install git+https://github.com/ansible-collections/ansible.utils.git
+          ansible-galaxy collection install git+https://github.com/ansible-collections/ansible.netcommon.git
+
+      - name: Print environment info
+        run: |
+          ansible --version
+          python3 -m pip list
+
+      - name: Run unit tests with coverage
+        run: |
+          pytest tests/unit -v --cov-report xml --cov=./
+
+      - name: Save PR number for PR runs
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "${{ github.event.pull_request.number }}" > pr_number.txt
+
+      - name: Upload PR number
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr_number
+          path: pr_number.txt
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
+
   sonar:
     name: Upload to SonarCloud
     runs-on: ubuntu-latest
-    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'pull_request'
+    needs: codecoverage
+    if: github.event_name == 'pull_request'
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,19 +83,17 @@ jobs:
         with:
           name: pr_number
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ github.event.workflow_run.id }}
 
       - uses: actions/download-artifact@v4
         with:
           name: coverage-report
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ github.event.workflow_run.id }}
 
       - name: Set PR number
         run: |
           if [ -f pr_number.txt ]; then
             echo "PR_NUMBER=$(cat pr_number.txt)" >> $GITHUB_ENV
-            echo "Running SonarQube scan for PR #$PR_NUM"
+            echo "Running SonarQube scan for PR #$PR_NUMBER"
           else
             echo "pr_number.txt not found, skipping SonarQube PR decoration."
           fi
@@ -71,7 +126,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.scm.revision=${{ github.event.workflow_run.head_sha }}
+            -Dsonar.scm.revision=${{ github.sha }}
             -Dsonar.pullrequest.key=${{ env.PR_NUMBER }}
             -Dsonar.pullrequest.branch=${{ env.PR_HEAD }}
             -Dsonar.pullrequest.base=${{ env.PR_BASE }}
