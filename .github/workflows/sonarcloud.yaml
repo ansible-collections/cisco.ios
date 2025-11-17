@@ -77,5 +77,5 @@ jobs:
             -Dsonar.pullrequest.key=${{ env.PR_NUMBER }}
             -Dsonar.pullrequest.branch=${{ env.PR_HEAD }}
             -Dsonar.pullrequest.base=${{ env.PR_BASE }}
-            -Dsonar.python.coverage.reportPaths=${{ steps.identify.outputs.collection_path }}/coverage.xml
+            -Dsonar.python.coverage.reportPaths=ansible_collections/cisco/ios/coverage.xml
             -Dsonar.qualitygate.wait=true
