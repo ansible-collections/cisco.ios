@@ -2,80 +2,78 @@
 # With much help from:
 # https://community.sonarsource.com/t/how-to-use-sonarcloud-with-a-forked-repository-on-github/7363/30
 # https://community.sonarsource.com/t/how-to-use-sonarcloud-with-a-forked-repository-on-github/7363/32
+
 name: SonarCloud
 on: # yamllint disable-line rule:truthy
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_run:
+    workflows:
+      - "Code Coverage New"
+    types:
+      - completed
 
 jobs:
   sonar:
     name: Upload to SonarCloud
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request' }}
-    env:
-      PY_COLORS: "1"
-      source_directory: "."
-      python_version: "3.12"
-      ansible_version: "latest"
-
+    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.event == 'pull_request'
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           show-progress: false
 
-      - name: Set up Python ${{ env.python_version }}
-        uses: actions/setup-python@v5
+      - uses: actions/download-artifact@v4
         with:
-          python-version: ${{ env.python_version }}
+          name: pr_number
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
 
-      - name: Install ansible-core (${{ env.ansible_version }})
-        run: python3 -m pip install ansible-core pytest pytest-cov pytest-ansible-units pytest-forked pytest-xdist
-
-      - name: Read collection metadata from galaxy.yml
-        id: identify
-        uses: ansible-network/github_actions/.github/actions/identify_collection@main
+      - uses: actions/download-artifact@v4
         with:
-          source_path: ${{ env.source_directory }}
+          name: coverage-report
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
 
-      - name: Build and install the collection
-        uses: ansible-network/github_actions/.github/actions/build_install_collection@main
-        with:
-          install_python_dependencies: true
-          source_path: ${{ env.source_directory }}
-          collection_path: ${{ steps.identify.outputs.collection_path }}
-          tar_file: ${{ steps.identify.outputs.tar_file }}
-
-      - name: Print the ansible version
-        run: ansible --version
-
-      - name: Print the python dependencies
-        run: python3 -m pip list
-
-      - name: Run Coverage tests
+      - name: Set PR number
         run: |
-          pytest tests/unit -v --cov-report xml:coverage.xml --cov=./
-        working-directory: ${{ steps.identify.outputs.collection_path }}
+          if [ -f pr_number.txt ]; then
+            echo "PR_NUMBER=$(cat pr_number.txt)" >> $GITHUB_ENV
+            echo "Running SonarQube scan for PR #$PR_NUM"
+          else
+            echo "pr_number.txt not found, skipping SonarQube PR decoration."
+          fi
+
+      - name: Get PR info
+        uses: octokit/request-action@v2.x
+        id: pr_info
+        with:
+          route: GET /repos/{repo}/pulls/{number}
+          repo: ${{ github.event.repository.full_name }}
+          number: ${{ env.PR_NUMBER }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set PR info into env
         run: |
-          echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
-          echo "PR_BASE=${{ github.base_ref }}" >> $GITHUB_ENV
-          echo "PR_HEAD=${{ github.head_ref }}" >> $GITHUB_ENV
+          echo "PR_BASE=${{ fromJson(steps.pr_info.outputs.data).base.ref }}" >> $GITHUB_ENV
+          echo "PR_HEAD=${{ fromJson(steps.pr_info.outputs.data).head.ref }}" >> $GITHUB_ENV
 
-      - name: Run SonarCloud Scan
+      - name: Add base branch
+        run: |
+          gh pr checkout ${{ env.PR_NUMBER }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@master
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           args: >
-            -Dsonar.scm.revision=${{ github.sha }}
+            -Dsonar.scm.revision=${{ github.event.workflow_run.head_sha }}
             -Dsonar.pullrequest.key=${{ env.PR_NUMBER }}
             -Dsonar.pullrequest.branch=${{ env.PR_HEAD }}
             -Dsonar.pullrequest.base=${{ env.PR_BASE }}
-            -Dsonar.python.coverage.reportPaths=ansible_collections/cisco/ios/coverage.xml
+            -Dsonar.python.coverage.reportPaths=coverage.xml
             -Dsonar.qualitygate.wait=true
