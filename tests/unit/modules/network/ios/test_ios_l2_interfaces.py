@@ -1309,3 +1309,83 @@ class TestIosL2InterfacesModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.maxDiff = None
         self.assertEqual(result["commands"], commands)
+
+
+    def test_ios_l2_interfaces_merged_mixed_config(self):
+        """Test merging mixed configuration - access, trunk, xconnect, and encapsulation scenarios"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1/0/1
+            switchport mode access
+            switchport access vlan 10
+
+            interface GigabitEthernet1/0/2
+            switchport trunk allowed vlan 10-20
+            switchport mode trunk
+
+            interface GigabitEthernet1/0/3
+            description Empty interface
+
+            interface GigabitEthernet1/0/4
+            switchport mode trunk
+            switchport trunk allowed vlan 10-20
+            encapsulation dot1Q 50
+            """
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet1/0/1",
+                        mode="access",
+                        access=dict(vlan=20),
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/2",
+                        mode="trunk",
+                        trunk=dict(
+                            allowed_vlans=["30-40"],
+                        ),
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/3",
+                        mode="layer3",
+                        keepalive=False,
+                        xconnect=dict(
+                            address="10.1.1.1",
+                            vcid=300,
+                            encapsulation="mpls",
+                        ),
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/4",
+                        mode="trunk",
+                        encapsulation=dict(
+                            type="dot1q",
+                            vlan_id=100,
+                        ),
+                    ),
+                ],
+                state="merged",
+            )
+        )
+        commands = [
+            "interface GigabitEthernet1/0/1",
+            "switchport access vlan 20",
+            "switchport mode access",
+
+            "interface GigabitEthernet1/0/2",
+            "switchport mode trunk",
+            "switchport trunk allowed vlan 30-40",
+
+            "interface GigabitEthernet1/0/3",
+            "xconnect 10.1.1.1 300 encapsulation mpls",
+            "switchport mode ",
+
+            "interface GigabitEthernet1/0/4",
+            "switchport mode trunk",
+            "encapsulation dot1q 100",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))

@@ -1,0 +1,39 @@
+---
+- name: "Record start time"
+  ansible.builtin.command: date +%s.%N
+  register: start_time_raw
+  delegate_to: localhost
+  changed_when: false
+
+- name: "Set start time fact"
+  ansible.builtin.set_fact:
+    start_time: "{{ start_time_raw.stdout }}"
+
+- name: "Push massive ACL configuration from file"
+  cisco.ios.ios_config:
+    src: "../files/massive_acl_config.txt"
+    save_when: never
+  register: config_push_result
+
+- name: "Record end time"
+  ansible.builtin.command: date +%s.%N
+  register: end_time_raw
+  delegate_to: localhost
+  changed_when: false
+
+- name: "Set end time fact"
+  ansible.builtin.set_fact:
+    end_time: "{{ end_time_raw.stdout }}"
+
+- name: "Calculate execution time"
+  ansible.builtin.set_fact:
+    execution_time: "{{ (end_time | float - start_time | float) | round(3) }}"
+
+- name: "Store CONFIG execution time for {{ ansible_network_cli_ssh_type }}"
+  ansible.builtin.set_fact:
+    "{{ ansible_network_cli_ssh_type }}_config_time": "{{ execution_time }}"
+
+- name: "Fail if the config push was not successful"
+  ansible.builtin.fail:
+    msg: "The config push failed with the {{ ansible_network_cli_ssh_type }} library."
+  when: config_push_result.changed == false 

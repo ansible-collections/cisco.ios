@@ -112,6 +112,47 @@ class L2_interfacesTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "xconnect",
+            "getval": re.compile(
+                r"""
+                \s+xconnect
+                \s+(?P<address>\S+)
+                \s+(?P<vcid>\d+)
+                \s+encapsulation
+                \s+(?P<encapsulation>mpls|l2tpv3)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "xconnect {{ xconnect.address }} {{ xconnect.vcid }} "
+                    "encapsulation {{ xconnect.encapsulation }}",
+            "result": {
+                "{{ name }}": {
+                    "xconnect": {
+                        "address": "{{ address }}",
+                        "vcid": "{{ vcid }}",
+                        "encapsulation": "{{ encapsulation }}",
+                    },
+                },
+            },
+        },
+        {
+            "name": "encapsulation",
+            "getval": re.compile(
+                r"""
+                \s+encapsulation\s(?P<type>\S+)\s(?P<vlan_id>\d+)$""",
+                re.VERBOSE,
+            ),
+            "setval": "encapsulation {{ encapsulation.type }} {{ encapsulation.vlan_id }}",
+            "result": {
+                "{{ name }}": {
+                    "encapsulation": {
+                        "type": "{{ type }}",
+                        "vlan_id": "{{ vlan_id | int }}",
+                    },
+                },
+            },
+        },
+        {
             "name": "block_options.multicast",
             "getval": re.compile(
                 r"""
