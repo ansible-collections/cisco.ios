@@ -14,28 +14,52 @@ jobs:
     name: Upload to SonarCloud
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          show-progress: false
+    env:
+      PY_COLORS: "1"
+      source_directory: "./source"
+      python_version: "3.12"
+      ansible_version: "latest"
 
-      - name: Set up Python
+    steps:
+      - name: Checkout the collection repository
+        uses: ansible-network/github_actions/.github/actions/checkout_dependency@main
+        with:
+          path: ${{ env.source_directory }}
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: "0"
+
+      - name: Set up Python ${{ env.python_version }}
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ env.python_version }}
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt || true
-          pip install pytest pytest-cov
+      - name: Install ansible-core (${{ env.ansible-version }})
+        run: python3 -m pip install ansible-core pytest pytest-cov pytest-ansible-units pytest-forked pytest-xdist
 
-      - name: Run Unit Tests + Coverage
+      - name: Read collection metadata from galaxy.yml
+        id: identify
+        uses: ansible-network/github_actions/.github/actions/identify_collection@main
+        with:
+          source_path: ${{ env.source_directory }}
+
+      - name: Build and install the collection
+        uses: ansible-network/github_actions/.github/actions/build_install_collection@main
+        with:
+          install_python_dependencies: true
+          source_path: ${{ env.source_directory }}
+          collection_path: ${{ steps.identify.outputs.collection_path }}
+          tar_file: ${{ steps.identify.outputs.tar_file }}
+
+      - name: Print the ansible version
+        run: ansible --version
+
+      - name: Print the python dependencies
+        run: python3 -m pip list
+
+      - name: Run Coverage tests
         run: |
-          pytest tests/unit \
-            --cov=ansible_collections/cisco/ios \
-            --cov-report xml:coverage.xml
+          pytest tests/unit -v --cov-report xml:coverage.xml --cov=./
+        working-directory: ${{ steps.identify.outputs.collection_path }}
 
       - name: Set PR info into env
         run: |
@@ -60,5 +84,5 @@ jobs:
             -Dsonar.pullrequest.key=${{ env.PR_NUMBER }}
             -Dsonar.pullrequest.branch=${{ env.PR_HEAD }}
             -Dsonar.pullrequest.base=${{ env.PR_BASE }}
-            -Dsonar.python.coverage.reportPaths=coverage.xml
+            -Dsonar.python.coverage.reportPaths=${{ steps.identify.outputs.collection_path }}/coverage.xml
             -Dsonar.qualitygate.wait=true
