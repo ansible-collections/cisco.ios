@@ -68,6 +68,18 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                         "pruning_vlans": {"type": "list", "elements": "str"},
                     },
                 },
+                "xconnect": {
+                    "type": "dict",
+                    "options": {
+                        "address": {"type": "str", "required": True},
+                        "vcid": {"type": "int", "required": True},
+                        "encapsulation": {
+                            "type": "str",
+                            "choices": ["mpls", "l2tpv3"],
+                            "default": "mpls",
+                        },
+                    },
+                },
                 "mode": {
                     "type": "str",
                     "choices": [
@@ -101,6 +113,14 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                 "vepa": {"type": "bool"},
                 "host": {"type": "bool"},
                 "protected": {"type": "bool"},
+                "keepalive": {"type": "bool"},
+                "encapsulation": {
+                    "type": "dict",
+                    "options": {
+                        "type": {"type": "str"},
+                        "vlan_id": {"type": "int"},
+                    },
+                },
                 "block_options": {
                     "type": "dict",
                     "options": {

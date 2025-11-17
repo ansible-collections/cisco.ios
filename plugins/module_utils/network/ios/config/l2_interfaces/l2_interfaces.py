@@ -77,6 +77,8 @@ class L2_interfaces(ResourceModule):
             "spanning_tree.portfast",
             "spanning_tree.rootguard",
             "spanning_tree.vlan",
+            "xconnect",
+            "encapsulation",
         ]
 
     def execute_module(self):
