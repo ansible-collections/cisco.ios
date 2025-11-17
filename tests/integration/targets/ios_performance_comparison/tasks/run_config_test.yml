@@ -36,4 +36,4 @@
 - name: "Fail if the config push was not successful"
   ansible.builtin.fail:
     msg: "The config push failed with the {{ ansible_network_cli_ssh_type }} library."
-  when: config_push_result.changed == false 
+  when: config_push_result.changed == false

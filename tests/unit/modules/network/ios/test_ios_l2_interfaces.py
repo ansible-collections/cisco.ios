@@ -1310,7 +1310,6 @@ class TestIosL2InterfacesModule(TestIosModule):
         self.maxDiff = None
         self.assertEqual(result["commands"], commands)
 
-
     def test_ios_l2_interfaces_merged_mixed_config(self):
         """Test merging mixed configuration - access, trunk, xconnect, and encapsulation scenarios"""
         self.execute_show_command.return_value = dedent(
@@ -1330,7 +1329,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             switchport mode trunk
             switchport trunk allowed vlan 10-20
             encapsulation dot1Q 50
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1367,21 +1366,18 @@ class TestIosL2InterfacesModule(TestIosModule):
                     ),
                 ],
                 state="merged",
-            )
+            ),
         )
         commands = [
             "interface GigabitEthernet1/0/1",
             "switchport access vlan 20",
             "switchport mode access",
-
             "interface GigabitEthernet1/0/2",
             "switchport mode trunk",
             "switchport trunk allowed vlan 30-40",
-
             "interface GigabitEthernet1/0/3",
             "xconnect 10.1.1.1 300 encapsulation mpls",
             "switchport mode ",
-
             "interface GigabitEthernet1/0/4",
             "switchport mode trunk",
             "encapsulation dot1q 100",
