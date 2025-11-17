@@ -11,20 +11,20 @@ on: # yamllint disable-line rule:truthy
       - completed
 
 jobs:
-  token:
-    runs-on: ubuntu-latest
-    name: 'Sonar Token Example'
-    steps:
-      - name: 'Check token'
-        env:
-          SONAR_TOKEN: ${{ secrets[format('{0}', vars.SONAR_TOKEN_SECRET_NAME)] }}
-        run: |
-          VALIDITY=$(curl -s\
-            -u $SONAR_TOKEN: \
-            "https://sonarcloud.io/api/authentication/validate" \
-            --request GET \
-          | jq '."valid"')
-          echo "Should be true: "$VALIDITY
+  # token:
+  #   runs-on: ubuntu-latest
+  #   name: 'Sonar Token Example'
+  #   steps:
+  #     - name: 'Check token'
+  #       env:
+  #         SONAR_TOKEN: ${{ secrets[format('{0}', vars.SONAR_TOKEN_SECRET_NAME)] }}
+  #       run: |
+  #         VALIDITY=$(curl -s\
+  #           -u $SONAR_TOKEN: \
+  #           "https://sonarcloud.io/api/authentication/validate" \
+  #           --request GET \
+  #         | jq '."valid"')
+  #         echo "Should be true: "$VALIDITY
   sonar:
     name: Upload to SonarCloud
     runs-on: ubuntu-latest
