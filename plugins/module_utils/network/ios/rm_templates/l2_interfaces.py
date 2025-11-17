@@ -116,10 +116,10 @@ class L2_interfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+xconnect
-                \s+(?P<address>\S+)
-                \s+(?P<vcid>\d+)
-                \s+encapsulation
-                \s+(?P<encapsulation>mpls|l2tpv3)
+                \s(?P<address>\S+)
+                \s(?P<vcid>\d+)
+                \sencapsulation
+                \s(?P<encapsulation>mpls|l2tpv3)
                 $""",
                 re.VERBOSE,
             ),
