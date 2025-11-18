@@ -92,8 +92,9 @@ jobs:
       - name: Set PR number
         run: |
           if [ -f pr_number.txt ]; then
-            echo "PR_NUMBER=$(cat pr_number.txt)" >> $GITHUB_ENV
-            echo "Running SonarQube scan for PR #$PR_NUMBER"
+            PR_NUM=$(cat pr_number.txt)
+            echo "PR_NUMBER=$PR_NUM" >> $GITHUB_ENV
+            echo "Running SonarQube scan for PR #$PR_NUM"
           else
             echo "pr_number.txt not found, skipping SonarQube PR decoration."
           fi
