@@ -11,7 +11,7 @@ on: # yamllint disable-line rule:truthy
     branches: [main]
 
 jobs:
-  sonarcloud:
+  sonar:
     name: "SonarCloud Coverage"
     runs-on: ubuntu-latest
 
