@@ -570,7 +570,9 @@ parsed:
           priority: 100
       use_bia:
         set: true
+      version: 1
     - name: GigabitEthernet2
+      version: 1
       standby_options:
         - authentication:
             key_chain: AUTH_CHAIN
