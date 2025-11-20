@@ -151,7 +151,7 @@ class Hsrp_interfacesArgs(object):  # pylint: disable=R0903
                                 "delay": {"type": "bool"},
                             },
                         },
-                        "priority": {"type": "int", "default": "100"},
+                        "priority": {"type": "int", "default": 100},
                         "timers": {
                             "type": "dict",
                             "options": {

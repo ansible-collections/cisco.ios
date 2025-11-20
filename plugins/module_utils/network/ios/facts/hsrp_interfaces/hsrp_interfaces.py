@@ -47,13 +47,15 @@ class Hsrp_interfacesFacts(object):
             for k, v in obj.items():
                 if k.startswith("group_"):
                     v.update({"group_no": int(k.split("_")[1])})
+
                     standby_options_config.append(v)
                 else:
                     interface_conf[k] = v
 
             if standby_options_config:
                 interface_conf["standby_options"] = standby_options_config
-
+                if not interface_conf.get("version"):
+                    interface_conf["version"] = 1
             hsrp_objs.append(interface_conf)
         return hsrp_objs
 
