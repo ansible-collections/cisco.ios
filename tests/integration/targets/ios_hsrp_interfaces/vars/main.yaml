@@ -55,12 +55,14 @@ replaced:
             - secondary: true
               virtual_ip: 172.16.2.1
           priority: 100
+      version: 1
     - name: GigabitEthernet3
       standby_options:
         - group_no: 1
           ip:
             - virtual_ip: 172.16.1.1
           priority: 100
+      version: 1
     - name: GigabitEthernet4
     - delay:
         minimum: 5555
@@ -139,12 +141,14 @@ replaced:
             - secondary: true
               virtual_ip: 172.16.2.1
           priority: 100
+      version: 1
     - name: GigabitEthernet3
       standby_options:
         - group_no: 1
           ip:
             - virtual_ip: 172.16.1.1
           priority: 100
+      version: 1
     - name: GigabitEthernet4
     - delay:
         minimum: 5555
@@ -213,12 +217,14 @@ overridden:
             - secondary: true
               virtual_ip: 172.16.2.1
           priority: 100
+      version: 1
     - name: GigabitEthernet3
       standby_options:
         - group_no: 1
           ip:
             - virtual_ip: 172.16.1.1
           priority: 100
+      version: 1
     - name: GigabitEthernet4
     - delay:
         minimum: 5555
@@ -339,6 +345,7 @@ overridden:
           priority: 120
       version: 2
     - name: Vlan100
+
 deleted:
   before:
     - name: Loopback888
@@ -353,12 +360,14 @@ deleted:
             - secondary: true
               virtual_ip: 172.16.2.1
           priority: 100
+      version: 1
     - name: GigabitEthernet3
       standby_options:
         - group_no: 1
           ip:
             - virtual_ip: 172.16.1.1
           priority: 100
+      version: 1
     - name: GigabitEthernet4
     - delay:
         minimum: 5555
