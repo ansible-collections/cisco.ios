@@ -1,0 +1,77 @@
+---
+# With much help from:
+# https://community.sonarsource.com/t/how-to-use-sonarcloud-with-a-forked-repository-on-github/7363/30
+# https://community.sonarsource.com/t/how-to-use-sonarcloud-with-a-forked-repository-on-github/7363/32
+
+name: SonarCloud
+on: # yamllint disable-line rule:truthy
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  sonar:
+    name: "SonarCloud Coverage"
+    runs-on: ubuntu-latest
+
+    env:
+      PY_COLORS: "1"
+      python_version: "3.12"
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          show-progress: false
+
+      - name: Set up Python ${{ env.python_version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.python_version }}
+
+      - name: Install Python + testing dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install ansible-core pytest pytest-cov pytest-ansible-units pytest-forked pytest-xdist
+
+      - name: Install ansible collection dependencies
+        run: |
+          ansible-galaxy collection install git+https://github.com/ansible-collections/ansible.utils.git
+          ansible-galaxy collection install git+https://github.com/ansible-collections/ansible.netcommon.git
+
+      - name: Print environment info
+        run: |
+          ansible --version
+          python3 -m pip list
+
+      - name: Run unit tests with coverage
+        run: |
+          pytest tests/unit -v --cov-report xml --cov=./
+
+      - name: Extract PR metadata
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+          echo "PR_BASE=${{ github.event.pull_request.base.ref }}" >> $GITHUB_ENV
+          echo "PR_HEAD=${{ github.event.pull_request.head.ref }}" >> $GITHUB_ENV
+
+      - name: Checkout PR branch for SonarCloud
+        if: github.event_name == 'pull_request'
+        run: |
+          gh pr checkout ${{ github.event.pull_request.number }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.ANSIBLE_COLLECTIONS_ORG_SONAR_TOKEN_CICD_BOT }}
+        with:
+          args: >
+            -Dsonar.scm.revision=${{ github.event.pull_request.head.sha }}
+            -Dsonar.pullrequest.key=${{ env.PR_NUMBER }}
+            -Dsonar.pullrequest.branch=${{ env.PR_HEAD }}
+            -Dsonar.pullrequest.base=${{ env.PR_BASE }}
+            -Dsonar.python.coverage.reportPaths=coverage.xml
