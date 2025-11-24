@@ -45,7 +45,12 @@ jobs:
         id: sonar-args
         run: |
           if [ "${{ github.event_name }}" == "pull_request_target" ]; then
-            echo "ARGS=-Dsonar.scm.revision=${{ github.event.pull_request.head.sha }} -Dsonar.pullrequest.key=${{ github.event.pull_request.number }} -Dsonar.pullrequest.branch=${{ github.event.pull_request.head.ref }} -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }}" >> $GITHUB_OUTPUT
+            # Build string incrementally to satisfy line length linter (max 160 chars)
+            ARGS="-Dsonar.scm.revision=${{ github.event.pull_request.head.sha }}"
+            ARGS="$ARGS -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}"
+            ARGS="$ARGS -Dsonar.pullrequest.branch=${{ github.event.pull_request.head.ref }}"
+            ARGS="$ARGS -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }}"
+            echo "ARGS=$ARGS" >> $GITHUB_OUTPUT
           else
             echo "ARGS=" >> $GITHUB_OUTPUT
           fi
