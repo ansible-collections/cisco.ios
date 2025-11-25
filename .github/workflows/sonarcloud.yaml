@@ -1,5 +1,6 @@
+---
 name: SonarCloud
-on: # yamllint disable-line rule:truthy
+on:  # yamllint disable-line rule:truthy
   push:
     branches: [main]
   pull_request_target:
