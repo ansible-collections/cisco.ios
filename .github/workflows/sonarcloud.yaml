@@ -73,7 +73,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.ANSIBLE_COLLECTIONS_ORG_SONAR_TOKEN_CICD_BOT }}
-          SSONAR_SCANNER_OPTS: "-Xss512m"
+          SONAR_SCANNER_OPTS: "-Xss512m"
         with:
           args: >
             ${{ steps.sonar-args.outputs.ARGS }}
