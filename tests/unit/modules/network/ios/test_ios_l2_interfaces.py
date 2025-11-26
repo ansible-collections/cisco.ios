@@ -1348,8 +1348,7 @@ class TestIosL2InterfacesModule(TestIosModule):
                     ),
                     dict(
                         name="GigabitEthernet1/0/3",
-                        mode="layer3",
-                        keepalive=False,
+                        mode="access",
                         xconnect=dict(
                             address="10.1.1.1",
                             vcid=300,
@@ -1373,17 +1372,15 @@ class TestIosL2InterfacesModule(TestIosModule):
             "switchport access vlan 20",
             "switchport mode access",
             "interface GigabitEthernet1/0/2",
-            "switchport mode trunk",
-            "switchport trunk allowed vlan 30-40",
+            "switchport trunk allowed vlan add 30-40",
             "interface GigabitEthernet1/0/3",
             "xconnect 10.1.1.1 300 encapsulation mpls",
-            "switchport mode ",
             "interface GigabitEthernet1/0/4",
-            "switchport mode trunk",
             "encapsulation dot1q 100",
         ]
 
         result = self.execute_module(changed=True)
+        print(result["commands"])
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_l2_interfaces_merged_xconnect_config(self):

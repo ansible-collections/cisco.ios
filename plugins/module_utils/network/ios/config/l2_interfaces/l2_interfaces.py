@@ -160,25 +160,14 @@ class L2_interfaces(ResourceModule):
                 if key in parsers:
                     parsers.remove(key)
                     parsers.insert(parsers.index("mode") + 1, key)
-
-        if have_xconnect and want_xconnect and have_xconnect != want_xconnect:
-            cmd = self._tmplt.render(have, "xconnect", False)
-            self.commands.append("no " + cmd)
-
-        if have_encap and want_encap and have_encap != want_encap:
-            cmd = self._tmplt.render(have, "encapsulation", False)
-            self.commands.append("no " + cmd)
-
+        
         if self.state in ["replaced", "overridden", "deleted", "purged"]:
-            if have_xconnect != want_xconnect:
-                if "xconnect" in parsers:
-                    parsers.remove("xconnect")
-                    parsers.insert(parsers.index("mode") + 1, "xconnect")
-
-            if have_encap != want_encap:
-                if "encapsulation" in parsers:
-                    parsers.remove("encapsulation")
-                    parsers.insert(parsers.index("mode") + 1, "encapsulation")
+            if have_xconnect and want_xconnect and have_xconnect != want_xconnect:
+                cmd = self._tmplt.render(have, "xconnect", False)
+                self.commands.append("no " + cmd)
+            if have_encap and want_encap and have_encap != want_encap:
+                cmd = self._tmplt.render(have, "encapsulation", False)
+                self.commands.append("no " + cmd)
 
         self.compare(parsers=parsers, want=want, have=have)
         self.compare_list(want, have)
