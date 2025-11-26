@@ -78,3 +78,6 @@ jobs:
             ${{ steps.sonar-args.outputs.ARGS }}
             -Dsonar.python.coverage.reportPaths=coverage.xml
             -Dsonar.verbose=true
+            -Dsonar.regex.dfa=false
+            -Dsonar.python.regex.equivalence=false
+
