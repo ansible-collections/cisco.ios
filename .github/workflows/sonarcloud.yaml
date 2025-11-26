@@ -1,0 +1,80 @@
+---
+name: SonarCloud
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches: [main]
+  pull_request_target:
+    branches: [main]
+
+jobs:
+  sonar:
+    name: "SonarCloud Coverage"
+    runs-on: ubuntu-latest
+
+    env:
+      PY_COLORS: "1"
+      python_version: "3.12"
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          show-progress: false
+
+      - name: Set up Python ${{ env.python_version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.python_version }}
+
+      - name: Install Python + testing dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install ansible-core pytest pytest-cov pytest-ansible-units pytest-forked pytest-xdist
+
+      - name: Install ansible collection dependencies
+        run: |
+          ansible-galaxy collection install git+https://github.com/ansible-collections/ansible.utils.git
+          ansible-galaxy collection install git+https://github.com/ansible-collections/ansible.netcommon.git
+
+      - name: Print environment info
+        run: |
+          ansible --version
+          python3 -m pip list
+
+      - name: Prepare Sonar Args
+        id: sonar-args
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request_target" ]; then
+            # Build string incrementally to satisfy line length linter (max 160 chars)
+            ARGS="-Dsonar.scm.revision=${{ github.event.pull_request.head.sha }}"
+            ARGS="$ARGS -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}"
+            ARGS="$ARGS -Dsonar.pullrequest.branch=${{ github.event.pull_request.head.ref }}"
+            ARGS="$ARGS -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }}"
+            echo "ARGS=$ARGS" >> $GITHUB_OUTPUT
+          else
+            echo "ARGS=" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Checkout PR branch code
+        if: github.event_name == 'pull_request_target'
+        run: |
+          git fetch origin pull/${{ github.event.pull_request.number }}/head:pr
+          git checkout pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run unit tests with coverage
+        run: |
+          pytest tests/unit -v --cov-report xml --cov=./
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.ANSIBLE_COLLECTIONS_ORG_SONAR_TOKEN_CICD_BOT }}
+        with:
+          args: >
+            ${{ steps.sonar-args.outputs.ARGS }}
+            -Dsonar.python.coverage.reportPaths=coverage.xml
+            -Dsonar.python.regex.dfa=false
