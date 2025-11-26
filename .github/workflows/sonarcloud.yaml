@@ -75,4 +75,4 @@ jobs:
           SONAR_TOKEN: ${{ secrets.ANSIBLE_COLLECTIONS_ORG_SONAR_TOKEN_CICD_BOT }}
         with:
           args: >
-            ${{ steps.sonar-args.outputs.ARGS }} -Dsonar.python.coverage.reportPaths=coverage.xml -Dsonar.python.regex.dfa=false
+            ${{ steps.sonar-args.outputs.ARGS }} -Dsonar.python.coverage.reportPaths=coverage.xml -Dsonar.regex.dfa=false
