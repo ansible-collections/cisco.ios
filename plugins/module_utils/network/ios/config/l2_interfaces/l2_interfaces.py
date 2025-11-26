@@ -160,7 +160,7 @@ class L2_interfaces(ResourceModule):
                 if key in parsers:
                     parsers.remove(key)
                     parsers.insert(parsers.index("mode") + 1, key)
-        
+
         if self.state in ["replaced", "overridden", "deleted", "purged"]:
             if have_xconnect and want_xconnect and have_xconnect != want_xconnect:
                 cmd = self._tmplt.render(have, "xconnect", False)
