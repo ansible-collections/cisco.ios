@@ -1329,7 +1329,7 @@ class TestIosL2InterfacesModule(TestIosModule):
              switchport mode trunk
              switchport trunk allowed vlan 10-20
              encapsulation dot1q 50
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1386,7 +1386,7 @@ class TestIosL2InterfacesModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-    def test_ios_l2_interfaces_merged_mixed_config(self):
+    def test_ios_l2_interfaces_merged_xconnect_config(self):
         """
         Test merging mixed configuration including new xconnect and encapsulation params.
         """
@@ -1397,7 +1397,7 @@ class TestIosL2InterfacesModule(TestIosModule):
              switchport access vlan 10
             interface GigabitEthernet1/0/3
              description Empty interface
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1427,7 +1427,7 @@ class TestIosL2InterfacesModule(TestIosModule):
                     ),
                 ],
                 state="merged",
-            )
+            ),
         )
         commands = [
             "interface GigabitEthernet1/0/1",
@@ -1453,7 +1453,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             interface GigabitEthernet0/1
              switchport mode trunk
              xconnect 192.168.1.1 123 encapsulation mpls
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1467,7 +1467,7 @@ class TestIosL2InterfacesModule(TestIosModule):
                             encapsulation="mpls",
                             manual=True,
                             pw_class="TEST",
-                            sequencing="transmit"
+                            sequencing="transmit",
                         ),
                     ),
                 ],
@@ -1490,7 +1490,7 @@ class TestIosL2InterfacesModule(TestIosModule):
              encapsulation dot1Q 500
             interface GigabitEthernet0/2
              xconnect 10.1.1.1 123 encapsulation mpls pw-class OLD_CLASS sequencing both
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1522,7 +1522,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             """\
             interface GigabitEthernet0/1
              xconnect 10.1.1.1 34 encapsulation mpls pw-class OLD_CLASS sequencing both
-            """
+            """,
         )
         set_module_args(
             dict(
@@ -1558,14 +1558,14 @@ class TestIosL2InterfacesModule(TestIosModule):
             interface HundredGigE1/0/1
              description Test
              encapsulation dot1q 300
-            """
+            """,
         )
         set_module_args(
             dict(
                 config=[
                     dict(
                         name="HundredGigE1/0/1",
-                        encapsulation=dict(type="dot1q", vlan_id=200)
+                        encapsulation=dict(type="dot1q", vlan_id=200),
                     ),
                 ],
                 state="replaced",

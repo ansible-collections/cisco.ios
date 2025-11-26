@@ -144,7 +144,9 @@ class L2_interfaces(ResourceModule):
             reverse_order = True
 
         elif self.state in ["replaced", "overridden"]:
-            if have_mode == "trunk" and (want_mode != "trunk" or have_trunk_encap != want_trunk_encap):
+            if have_mode == "trunk" and (
+                want_mode != "trunk" or have_trunk_encap != want_trunk_encap
+            ):
                 reverse_order = True
 
         REORDER_KEYS = [
