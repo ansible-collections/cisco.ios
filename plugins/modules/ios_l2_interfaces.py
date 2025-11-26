@@ -127,7 +127,6 @@ options:
           - private_vlan_host
           - private_vlan_promiscuous
           - private_vlan_trunk
-          - layer3
       xconnect:
         description:
           - Configure xconnect reference for the interface.
