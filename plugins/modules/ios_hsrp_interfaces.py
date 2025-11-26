@@ -121,7 +121,7 @@ options:
             description: Set use-bia
             type: bool
       version:
-        description: HSRP version
+        description: HSRP version (Defaults to 1 when standby_options is present)
         type: int
         choices:
           - 1
@@ -206,7 +206,7 @@ options:
                 description: Wait before preempting
                 type: bool
           priority:
-            description: Priority level
+            description: Priority level (defaults to 100)
             type: int
             default: 100
           timers:

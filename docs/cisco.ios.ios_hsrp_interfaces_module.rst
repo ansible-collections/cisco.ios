@@ -799,7 +799,7 @@ Parameters
                         <b>Default:</b><br/><div style="color: blue">100</div>
                 </td>
                 <td>
-                        <div>Priority level</div>
+                        <div>Priority level (defaults to 100)</div>
                 </td>
             </tr>
             <tr>
@@ -1067,7 +1067,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>HSRP version</div>
+                        <div>HSRP version (Defaults to 1 when standby_options is present)</div>
                 </td>
             </tr>
 
