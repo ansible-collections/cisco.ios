@@ -71,12 +71,17 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                 "xconnect": {
                     "type": "dict",
                     "options": {
-                        "address": {"type": "str", "required": True},
-                        "vcid": {"type": "int", "required": True},
+                        "address": {"type": "str"},
+                        "vcid": {"type": "int"},
                         "encapsulation": {
                             "type": "str",
                             "choices": ["mpls", "l2tpv3"],
-                            "default": "mpls",
+                        },
+                        "manual": {"type": "bool"},
+                        "pw_class": {"type": "str"},
+                        "sequencing": {
+                            "type": "str",
+                            "choices": ["both", "receive", "transmit"],
                         },
                     },
                 },
@@ -113,7 +118,6 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                 "vepa": {"type": "bool"},
                 "host": {"type": "bool"},
                 "protected": {"type": "bool"},
-                "keepalive": {"type": "bool"},
                 "encapsulation": {
                     "type": "dict",
                     "options": {

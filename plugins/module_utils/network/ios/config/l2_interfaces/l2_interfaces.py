@@ -130,19 +130,53 @@ class L2_interfaces(ResourceModule):
         parsers = list(self.parsers)
         have_mode = have.get("mode", "")
         want_mode = want.get("mode", "")
-        have_encap = have.get("trunk", {}).get("encapsulation")
-        want_encap = want.get("trunk", {}).get("encapsulation")
+        have_trunk_encap = have.get("trunk", {}).get("encapsulation")
+        want_trunk_encap = want.get("trunk", {}).get("encapsulation")
+
+        have_xconnect = have.get("xconnect")
+        want_xconnect = want.get("xconnect")
+
+        have_encap = have.get("encapsulation")
+        want_encap = want.get("encapsulation")
 
         reverse_order = False
         if self.state in ["deleted", "purged"]:
             reverse_order = True
+
         elif self.state in ["replaced", "overridden"]:
-            if have_mode == "trunk" and (want_mode != "trunk" or have_encap != want_encap):
+            if have_mode == "trunk" and (want_mode != "trunk" or have_trunk_encap != want_trunk_encap):
                 reverse_order = True
 
+        REORDER_KEYS = [
+            "trunk.encapsulation",
+            "encapsulation",
+            "xconnect",
+        ]
+
         if reverse_order:
-            parsers.remove("trunk.encapsulation")
-            parsers.insert(parsers.index("mode") + 1, "trunk.encapsulation")
+            for key in REORDER_KEYS:
+                if key in parsers:
+                    parsers.remove(key)
+                    parsers.insert(parsers.index("mode") + 1, key)
+
+        if have_xconnect and want_xconnect and have_xconnect != want_xconnect:
+            cmd = self._tmplt.render(have, "xconnect", False)
+            self.commands.append("no " + cmd)
+
+        if have_encap and want_encap and have_encap != want_encap:
+            cmd = self._tmplt.render(have, "encapsulation", False)
+            self.commands.append("no " + cmd)
+
+        if self.state in ["replaced", "overridden", "deleted", "purged"]:
+            if have_xconnect != want_xconnect:
+                if "xconnect" in parsers:
+                    parsers.remove("xconnect")
+                    parsers.insert(parsers.index("mode") + 1, "xconnect")
+
+            if have_encap != want_encap:
+                if "encapsulation" in parsers:
+                    parsers.remove("encapsulation")
+                    parsers.insert(parsers.index("mode") + 1, "encapsulation")
 
         self.compare(parsers=parsers, want=want, have=have)
         self.compare_list(want, have)

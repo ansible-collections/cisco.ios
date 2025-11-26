@@ -82,6 +82,34 @@ class L2_interfacesFacts(object):
                 del _vlans[vlan_type + "_add"]
             return vlans
 
+        def process_xconnect(obj):
+            """
+            Normalize xconnect dictionary.
+            Since rm_templates now generates 'address' and 'vcid' directly,
+            we map them straight to the argspec keys.
+            """
+            xconnect = obj.get("xconnect")
+            if xconnect:
+                normalized = {}
+                if xconnect.get("address"):
+                    normalized["address"] = xconnect.get("address")
+                elif xconnect.get("peer"):
+                    normalized["address"] = xconnect.get("peer")
+                if xconnect.get("vcid") is not None:
+                    normalized["vcid"] = xconnect.get("vcid")
+                elif xconnect.get("vc_id") is not None:
+                    normalized["vcid"] = xconnect.get("vc_id")
+                if xconnect.get("encapsulation"):
+                    normalized["encapsulation"] = xconnect.get("encapsulation")
+                if xconnect.get("pw_class"):
+                    normalized["pw_class"] = xconnect.get("pw_class")
+                if xconnect.get("sequencing"):
+                    normalized["sequencing"] = xconnect.get("sequencing")
+                if xconnect.get("manual") is not None:
+                    normalized["manual"] = xconnect.get("manual")
+                return normalized if normalized else None
+            return None
+
         if objs:
             for obj in objs:
                 if obj.get("mode") and obj.get("mode") not in ["trunk", "access", "dynamic"]:
@@ -90,6 +118,8 @@ class L2_interfacesFacts(object):
                     for _vlan in ["allowed_vlans", "pruning_vlans"]:
                         if obj.get("trunk", {}).get(_vlan):
                             obj["trunk"][_vlan] = process_vlans(obj, _vlan)
+                if obj.get("xconnect"):
+                    obj["xconnect"] = process_xconnect(obj)
 
             ansible_facts["ansible_network_resources"].pop("l2_interfaces", None)
 
