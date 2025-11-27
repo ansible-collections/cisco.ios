@@ -131,7 +131,6 @@ class L2_interfacesTemplate(NetworkTemplate):
                       "{{ ' manual' if xconnect.manual|d(False) else '' }}"
                       "{{ ' pw-class ' + xconnect.pw_class if xconnect.pw_class is defined else '' }}"
                       "{{ ' sequencing ' + xconnect.sequencing if xconnect.sequencing is defined else '' }}",
-            # ADD THIS LINE:
             "result": {
                 "{{ name }}": {
                     "xconnect": {
