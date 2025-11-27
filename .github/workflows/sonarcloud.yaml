@@ -23,7 +23,7 @@ jobs:
           show-progress: false
 
       - name: Set up Python ${{ env.python_version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ env.python_version }}
 
