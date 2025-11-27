@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - cisco.ios.ios_acls - Gathered state showing incomplete configuration.

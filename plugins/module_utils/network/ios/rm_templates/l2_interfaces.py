@@ -112,6 +112,56 @@ class L2_interfacesTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "xconnect",
+            "getval": re.compile(
+                r"""
+                \s+xconnect
+                \s+(?P<address>\S+)
+                \s+(?P<vcid>\d+)
+                \s+encapsulation
+                \s+(?P<encapsulation>mpls|l2tpv3)
+                (\s(?P<manual>manual))?
+                (\spw-class\s(?P<pw_class>\S+))?
+                (\ssequencing\s(?P<sequencing>receive|transmit|both))?
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "xconnect {{ xconnect.address }} {{ xconnect.vcid }} "
+                      "encapsulation {{ xconnect.encapsulation }}"
+                      "{{ ' manual' if xconnect.manual|d(False) else '' }}"
+                      "{{ ' pw-class ' + xconnect.pw_class if xconnect.pw_class is defined else '' }}"
+                      "{{ ' sequencing ' + xconnect.sequencing if xconnect.sequencing is defined else '' }}",
+            "result": {
+                "{{ name }}": {
+                    "xconnect": {
+                        "address": "{{ address }}",
+                        "vcid": "{{ vcid | int }}",
+                        "encapsulation": "{{ encapsulation }}",
+                        "manual": "{{ not not manual }}",
+                        "pw_class": "{{ pw_class }}",
+                        "sequencing": "{{ sequencing }}",
+                    },
+                },
+            },
+        },
+        {
+            "name": "encapsulation",
+            "getval": re.compile(
+                r"""
+                \s+encapsulation\s(?P<type>\S+)\s(?P<vlan_id>\d+)$""",
+                re.VERBOSE,
+            ),
+            "setval": "encapsulation {{ encapsulation.type }} {{ encapsulation.vlan_id }}",
+            "result": {
+                "{{ name }}": {
+                    "encapsulation": {
+                        "type": "{{ type }}",
+                        "vlan_id": "{{ vlan_id | int }}",
+                    },
+                },
+            },
+        },
+        {
             "name": "block_options.multicast",
             "getval": re.compile(
                 r"""

@@ -1003,6 +1003,7 @@ class TestIosHSRPInterfaceModule(TestIosModule):
             {
                 "name": "GigabitEthernet3",
                 "use_bia": {"set": True},
+                "version": 1,
                 "standby_options": [
                     {"ip": [{"virtual_ip": "172.16.1.1"}], "priority": 100, "group_no": 1},
                 ],
