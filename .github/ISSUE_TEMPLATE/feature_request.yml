@@ -1,0 +1,31 @@
+---
+name: Feature Request
+description: "✨ Suggest a new feature or enhancement"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Feature requests help us understand what functionality would be valuable to the community.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Feature Summary
+      description: Briefly describe the feature you'd like to see.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: components
+    attributes:
+      label: Select the relevant components
+      options:
+        - label: New Module
+        - label: Enhancement to Existing Module
+        - label: New Action Plugin
+        - label: Enhancement to Existing Action Plugin
+        - label: Connection Plugin (cliconf)
+        - label: Terminal Plugin
+        - label: Module Utils
+        - label: Documentation
+        - label: Other
