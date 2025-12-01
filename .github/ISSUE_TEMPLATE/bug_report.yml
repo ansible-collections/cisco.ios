@@ -28,7 +28,9 @@ body:
         - label: Documentation
         - label: Integration Tests
         - label: Unit Tests
-        - label: Other
+        - label: Collection Release
+        - label: CI Maintenance
+        - label: Workflow Maintenance
 
   - type: input
     id: ios_version

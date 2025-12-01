@@ -13,7 +13,9 @@
 - [ ] Documentation update
 - [ ] Test update
 - [ ] Refactoring (no functional changes)
-- [ ] Development environment change
+- [ ] Collection release
+- [ ] CI maintenance
+- [ ] Workflow maintenance
 - [ ] Configuration change
 
 ## Related Issue
