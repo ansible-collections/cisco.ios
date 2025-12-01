@@ -49,9 +49,9 @@
 - Test Topology:
 
 ### Steps to Test
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 ### Expected Results
 <!-- Describe what should happen after following the steps -->
@@ -65,9 +65,9 @@
 <!-- Mandatory: Verify that all acceptance criteria from the related ticket are met -->
 - [ ] All acceptance criteria have been reviewed and verified
 - [ ] Acceptance criteria checklist:
-  - [ ] 
-  - [ ] 
-  - [ ] 
+  - [ ]
+  - [ ]
+  - [ ]
 
 ## Additional Context
 <!-- Optional but helpful information -->
@@ -100,4 +100,3 @@
 ### Breaking Changes
 <!-- If this is a breaking change, describe the impact and migration path -->
 <!-- Remove section if not applicable -->
-
