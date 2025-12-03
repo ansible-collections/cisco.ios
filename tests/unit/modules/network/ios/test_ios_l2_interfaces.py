@@ -1309,3 +1309,269 @@ class TestIosL2InterfacesModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.maxDiff = None
         self.assertEqual(result["commands"], commands)
+
+    def test_ios_l2_interfaces_merged_mixed_config(self):
+        """Test merging mixed configuration - access, trunk, xconnect, and encapsulation scenarios"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1/0/1
+             switchport mode access
+             switchport access vlan 10
+
+            interface GigabitEthernet1/0/2
+             switchport trunk allowed vlan 10-20
+             switchport mode trunk
+
+            interface GigabitEthernet1/0/3
+             description Empty interface
+
+            interface GigabitEthernet1/0/4
+             switchport mode trunk
+             switchport trunk allowed vlan 10-20
+             encapsulation dot1q 50
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet1/0/1",
+                        mode="access",
+                        access=dict(vlan=20),
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/2",
+                        mode="trunk",
+                        trunk=dict(
+                            allowed_vlans=["30-40"],
+                        ),
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/3",
+                        mode="access",
+                        xconnect=dict(
+                            address="10.1.1.1",
+                            vcid=300,
+                            encapsulation="mpls",
+                        ),
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/4",
+                        mode="trunk",
+                        encapsulation=dict(
+                            type="dot1q",
+                            vlan_id=100,
+                        ),
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet1/0/1",
+            "switchport access vlan 20",
+            "switchport mode access",
+            "interface GigabitEthernet1/0/2",
+            "switchport trunk allowed vlan add 30-40",
+            "interface GigabitEthernet1/0/3",
+            "xconnect 10.1.1.1 300 encapsulation mpls",
+            "interface GigabitEthernet1/0/4",
+            "encapsulation dot1q 100",
+        ]
+
+        result = self.execute_module(changed=True)
+        print(result["commands"])
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_l2_interfaces_merged_xconnect_config(self):
+        """
+        Test merging mixed configuration including new xconnect and encapsulation params.
+        """
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1/0/1
+             switchport mode access
+             switchport access vlan 10
+            interface GigabitEthernet1/0/3
+             description Empty interface
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet1/0/1",
+                        mode="access",
+                        access=dict(vlan=20),
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/3",
+                        xconnect=dict(
+                            address="10.1.1.1",
+                            vcid=300,
+                            encapsulation="mpls",
+                            manual=True,
+                            pw_class="TEST",
+                            sequencing="transmit",
+                        ),
+                    ),
+                    dict(
+                        name="HundredGigE1/0/41.123",
+                        encapsulation=dict(
+                            type="dot1Q",
+                            vlan_id=123,
+                        ),
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet1/0/1",
+            "switchport access vlan 20",
+            "interface GigabitEthernet1/0/3",
+            "xconnect 10.1.1.1 300 encapsulation mpls manual pw-class TEST sequencing transmit",
+            "interface HundredGigE1/0/41.123",
+            "encapsulation dot1Q 123",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_l2_interfaces_replaced_ordering_logic(self):
+        """
+        Verifies the priority logic:
+        1. Remove OLD xconnect (if changing)
+        2. Change Mode (L2/L3)
+        3. Add NEW xconnect
+        """
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             switchport mode trunk
+             xconnect 192.168.1.1 123 encapsulation mpls
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/1",
+                        mode="access",
+                        xconnect=dict(
+                            address="192.168.1.1",
+                            vcid=100,
+                            encapsulation="mpls",
+                            manual=True,
+                            pw_class="TEST",
+                            sequencing="transmit",
+                        ),
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/1",
+            "no xconnect 192.168.1.1 123 encapsulation mpls",
+            "switchport mode access",
+            "xconnect 192.168.1.1 100 encapsulation mpls manual pw-class TEST sequencing transmit",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_l2_interfaces_overridden_full_wipe(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             encapsulation dot1Q 500
+            interface GigabitEthernet0/2
+             xconnect 10.1.1.1 123 encapsulation mpls pw-class OLD_CLASS sequencing both
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/1",
+                    ),
+                    dict(
+                        name="GigabitEthernet0/2",
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/1",
+            "no encapsulation dot1Q 500",
+            "interface GigabitEthernet0/2",
+            "no xconnect 10.1.1.1 123 encapsulation mpls pw-class OLD_CLASS sequencing both",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_l2_interfaces_overridden_update_params(self):
+        """
+        Verifies updating parameters via overridden (e.g., changing VCID/Class).
+        """
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             xconnect 10.1.1.1 34 encapsulation mpls pw-class OLD_CLASS sequencing both
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/1",
+                        xconnect=dict(
+                            address="10.1.1.1",
+                            vcid=123,
+                            encapsulation="mpls",
+                            pw_class="NEW_CLASS",
+                            sequencing="transmit",
+                        ),
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/1",
+            "no xconnect 10.1.1.1 34 encapsulation mpls pw-class OLD_CLASS sequencing both",
+            "xconnect 10.1.1.1 123 encapsulation mpls pw-class NEW_CLASS sequencing transmit",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_l2_interfaces_merged_encapsulation_update(self):
+        """
+        Verifies merging encapsulation updates.
+        """
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface HundredGigE1/0/1
+             description Test
+             encapsulation dot1q 300
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="HundredGigE1/0/1",
+                        encapsulation=dict(type="dot1q", vlan_id=200),
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            "interface HundredGigE1/0/1",
+            "no encapsulation dot1q 300",
+            "encapsulation dot1q 200",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
