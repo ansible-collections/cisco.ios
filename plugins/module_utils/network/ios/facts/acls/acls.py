@@ -138,6 +138,13 @@ class AclsFacts(object):
                     ace[typ]["wildcard_bits"] = temp.get("wildcard_bits")
 
             def process_protocol_options(each):
+                IGMP_MAP = {
+                    "1": "host_query",
+                    "2": "host_report",
+                    "3": "dvmrp",
+                    "4": "pim",
+                    "5": "trace",
+                }
                 for each_ace in each.get("aces"):
                     if each.get("acl_type") == "standard":
                         if len(each_ace.get("source", {})) == 1 and each_ace.get(
@@ -174,7 +181,8 @@ class AclsFacts(object):
                             each_ace["protocol_options"] = {"icmp": {protocol_options: True}}
                         if protocol == "igmp":
                             protocol_options = str(protocol_options).replace("-", "_")
-                            each_ace["protocol_options"] = {"igmp": {protocol_options: True}}
+                            mapping = IGMP_MAP.get(protocol_options, protocol_options)
+                            each_ace["protocol_options"] = {"igmp": {mapping: True}}
 
             def collect_remarks(aces):
                 """makes remarks list per ace"""

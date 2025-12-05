@@ -178,6 +178,7 @@ class AclsArgs(object):  # pylint: disable=R0903
                                             "options": {
                                                 "dvmrp": {"type": "bool"},
                                                 "host_query": {"type": "bool"},
+                                                "host_report": {"type": "bool"},
                                                 "mtrace_resp": {"type": "bool"},
                                                 "mtrace_route": {"type": "bool"},
                                                 "pim": {"type": "bool"},
