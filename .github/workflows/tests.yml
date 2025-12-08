@@ -23,7 +23,6 @@ jobs:
       galaxy_dependencies: |
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git
-      test_command: "pip install passlib && pytest tests/unit -v --cov-report xml --cov=./"
     secrets:
       SONAR_TOKEN: ${{ secrets.ANSIBLE_COLLECTIONS_ORG_SONAR_TOKEN_CICD_BOT }}
 
@@ -59,7 +58,6 @@ jobs:
       - unit-galaxy
       - ansible-lint
       - sonar
-      - unit-source
     runs-on: ubuntu-latest
     steps:
       - run: >-
