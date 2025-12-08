@@ -8,8 +8,6 @@ concurrency:
 on:  # yamllint disable-line rule:truthy
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
   pull_request_target:
     branches: [main]
   workflow_dispatch:
@@ -19,39 +17,34 @@ on:  # yamllint disable-line rule:truthy
 jobs:
   sonar:
     name: SonarCloud
-    if: github.event_name == 'push' || github.event_name == 'pull_request_target'
     uses: ansible/ansible-content-actions/.github/workflows/sonarcloud.yaml@main
     with:
       python_version: "3.12"
       galaxy_dependencies: |
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git
+      test_command: "pip install passlib && pytest tests/unit -v --cov-report xml --cov=./"
     secrets:
       SONAR_TOKEN: ${{ secrets.ANSIBLE_COLLECTIONS_ORG_SONAR_TOKEN_CICD_BOT }}
 
   changelog:
     uses: ansible/ansible-content-actions/.github/workflows/changelog.yaml@main
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request_target'
 
   build-import:
     uses: ansible/ansible-content-actions/.github/workflows/build_import.yaml@main
-    if: github.event_name != 'push' && github.event_name != 'pull_request_target'
 
   ansible-lint:
     uses: ansible/ansible-content-actions/.github/workflows/ansible_lint.yaml@main
-    if: github.event_name != 'push' && github.event_name != 'pull_request_target'
 
   sanity:
     uses: ansible/ansible-content-actions/.github/workflows/sanity.yaml@main
-    if: github.event_name != 'push' && github.event_name != 'pull_request_target'
 
   unit-galaxy:
     uses: ansible/ansible-content-actions/.github/workflows/unit.yaml@main
-    if: github.event_name != 'push' && github.event_name != 'pull_request_target'
 
   unit-source:
     uses: ansible-network/github_actions/.github/workflows/unit_source.yml@main
-    if: github.event_name != 'push' && github.event_name != 'pull_request_target'
     with:
       collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git
@@ -66,6 +59,7 @@ jobs:
       - unit-galaxy
       - ansible-lint
       - sonar
+      - unit-source
     runs-on: ubuntu-latest
     steps:
       - run: >-
