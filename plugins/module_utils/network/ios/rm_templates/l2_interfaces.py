@@ -198,13 +198,13 @@ class L2_interfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+spanning-tree\sbpdufilter
-                (\s(?P<enabled>enabled))?
-                (\s(?P<disabled>disabled))?
+                (\s(?P<enabled>enable))?
+                (\s(?P<disabled>disable))?
                 $""", re.VERBOSE,
             ),
             "setval": "spanning-tree bpdufilter"
-                      "{{ ' enabled' if spanning_tree.bpdufilter.enabled|d(False) else ''}}"
-                      "{{ ' disabled' if spanning_tree.bpdufilter.disabled|d(False) else ''}}",
+                      "{{ ' enable' if spanning_tree.bpdufilter.enabled|d(False) else ''}}"
+                      "{{ ' disable' if spanning_tree.bpdufilter.disabled|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
                     "spanning_tree": {
@@ -221,13 +221,13 @@ class L2_interfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s+spanning-tree\sbpduguard
-                (\s(?P<enabled>enabled))?
-                (\s(?P<disabled>disabled))?
+                (\s(?P<enabled>enable))?
+                (\s(?P<disabled>disable))?
                 $""", re.VERBOSE,
             ),
             "setval": "spanning-tree bpduguard"
-                      "{{ ' enabled' if spanning_tree.bpduguard.enabled|d(False) else ''}}"
-                      "{{ ' disabled' if spanning_tree.bpduguard.disabled|d(False) else ''}}",
+                      "{{ ' enable' if spanning_tree.bpduguard.enabled|d(False) else ''}}"
+                      "{{ ' disable' if spanning_tree.bpduguard.disabled|d(False) else ''}}",
             "result": {
                 "{{ name }}": {
                     "spanning_tree": {
@@ -363,7 +363,7 @@ class L2_interfacesTemplate(NetworkTemplate):
                 "{{ name }}": {
                     "spanning_tree": {
                         "portfast": {
-                            "disabled": "{{ not not disabled }}",
+                            "disabled": "{{ not not disabled|d(False) }}",
                             "trunk": "{{ not not trunk }}",
                         },
                     },
