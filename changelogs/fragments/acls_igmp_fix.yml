@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - cisco.ios.ios_acls - Added support for converting numeric protocol values to real protocol options when gathered from the device.
