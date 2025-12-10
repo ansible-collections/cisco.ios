@@ -4,6 +4,17 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v11.1.2
+=======
+
+Bugfixes
+--------
+
+- cisco.ios.ios_acls - Gathered state showing incomplete configuration.
+- cisco.ios.ios_hsrp_intefaces - Considers version 1 as default if configuration does not specify version.
+- cisco.ios.ios_hsrp_intefaces - Corrects idempotency issue when version is not specified in configuration.
+- cisco.ios.ios_l2_interfaces - Moved mode parser to below the trunk parsers.
+
 v11.1.1
 =======
 
