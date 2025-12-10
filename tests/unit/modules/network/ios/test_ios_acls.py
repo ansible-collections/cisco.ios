@@ -3054,6 +3054,8 @@ class TestIosAclsModule(TestIosModule):
             """\
             ip access-list extended test_pre
              30 permit tcp 2.2.2.2 3.3.3.3 range 23 22 host 1.1.1.1 eq 9422 ack fin precedence immediate
+             21 permit igmp 192.0.2.0 0.0.0.155 192.0.3.0 0.0.0.254 4
+             22 permit igmp 192.0.2.0 0.0.0.155 192.0.3.0 0.0.0.254 1
             ipv6 access-list R1_TRAFFIC
              sequence 10 deny tcp any eq www any eq telnet ack dscp af11
              sequence 210 deny tcp 2001:DB8:1234:ABCD::1 eq www 2001:DB8:1234:ABCD::2 eq telnet fin ack dscp af11
@@ -3098,6 +3100,42 @@ class TestIosAclsModule(TestIosModule):
                                     "port_protocol": {"eq": "9422"},
                                 },
                                 "precedence": "immediate",
+                            },
+                            {
+                                "sequence": 21,
+                                "grant": "permit",
+                                "protocol": "igmp",
+                                "protocol_options": {
+                                    "igmp": {
+                                        "pim": True,
+                                    },
+                                },
+                                "source": {
+                                    "address": "192.0.2.0",
+                                    "wildcard_bits": "0.0.0.155",
+                                },
+                                "destination": {
+                                    "address": "192.0.3.0",
+                                    "wildcard_bits": "0.0.0.254",
+                                },
+                            },
+                            {
+                                "sequence": 22,
+                                "grant": "permit",
+                                "protocol": "igmp",
+                                "protocol_options": {
+                                    "igmp": {
+                                        "host_query": True,
+                                    },
+                                },
+                                "source": {
+                                    "address": "192.0.2.0",
+                                    "wildcard_bits": "0.0.0.155",
+                                },
+                                "destination": {
+                                    "address": "192.0.3.0",
+                                    "wildcard_bits": "0.0.0.254",
+                                },
                             },
                         ],
                     },
