@@ -344,6 +344,20 @@ releases:
       - ios_bgp_add_fam_inf.yml
       - redo_hsrp.yml
     release_date: "2025-10-10"
+  11.1.2:
+    changes:
+      bugfixes:
+        - cisco.ios.ios_acls - Gathered state showing incomplete configuration.
+        - cisco.ios.ios_hsrp_intefaces - Considers version 1 as default if configuration
+          does not specify version.
+        - cisco.ios.ios_hsrp_intefaces - Corrects idempotency issue when version is
+          not specified in configuration.
+        - cisco.ios.ios_l2_interfaces - Moved mode parser to below the trunk parsers.
+    fragments:
+      - acls_gathered_fix.yml
+      - hsrp_intf_ver_def_1.yml
+      - l2_interface_parser_reordering.yml
+    release_date: "2025-12-10"
   2.0.0:
     changes:
       bugfixes:

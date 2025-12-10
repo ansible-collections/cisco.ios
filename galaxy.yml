@@ -11,4 +11,4 @@ readme: README.md
 repository: https://github.com/ansible-collections/cisco.ios
 issues: https://github.com/ansible-collections/cisco.ios/issues
 tags: [cisco, ios, iosxe, networking]
-version: "11.1.1"
+version: "11.1.2"
