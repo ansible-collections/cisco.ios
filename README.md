@@ -1,6 +1,5 @@
 # Cisco IOS Collection
 
-[![CI](https://zuul-ci.org/gated.svg)](https://dashboard.zuul.ansible.com/t/ansible/project/github.com/ansible-collections/cisco.ios)
 [![CI](https://github.com/ansible-collections/cisco.ios/actions/workflows/tests.yml/badge.svg?branch=main&event=schedule)](https://github.com/ansible-collections/cisco.ios/actions/workflows/tests.yml)
 [![Integration tests 💻](https://github.com/ansible-collections/cisco.ios/actions/workflows/integration-libssh.yml/badge.svg?branch=main)](https://github.com/ansible-collections/cisco.ios/actions/workflows/integration-libssh.yml)
 
