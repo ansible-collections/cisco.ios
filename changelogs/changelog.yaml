@@ -364,7 +364,7 @@ releases:
       - hsrp_intf_ver_def_1.yml
       - l2_interface_parser_reordering.yml
       - l2_interfaces.yml
-    release_date: '2025-12-11'
+    release_date: "2025-12-11"
   2.0.0:
     changes:
       bugfixes:
