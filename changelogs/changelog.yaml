@@ -344,6 +344,27 @@ releases:
       - ios_bgp_add_fam_inf.yml
       - redo_hsrp.yml
     release_date: "2025-10-10"
+  11.2.0:
+    changes:
+      bugfixes:
+        - cisco.ios.ios_acls - Added support for converting numeric protocol values
+          to real protocol options when gathered from the device.
+        - cisco.ios.ios_acls - Gathered state showing incomplete configuration.
+        - cisco.ios.ios_hsrp_intefaces - Considers version 1 as default if configuration
+          does not specify version.
+        - cisco.ios.ios_hsrp_intefaces - Corrects idempotency issue when version is
+          not specified in configuration.
+        - cisco.ios.ios_l2_interfaces - Moved mode parser to below the trunk parsers.
+      minor_changes:
+        - ios_l2_interfaces - Added xconnect and encapsulation attributes for L2VPN
+          pseudowire and MPLS services configuration.
+    fragments:
+      - acls_gathered_fix.yml
+      - acls_igmp_fix.yml
+      - hsrp_intf_ver_def_1.yml
+      - l2_interface_parser_reordering.yml
+      - l2_interfaces.yml
+    release_date: "2025-12-11"
   2.0.0:
     changes:
       bugfixes:

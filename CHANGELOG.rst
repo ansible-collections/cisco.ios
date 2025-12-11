@@ -4,6 +4,23 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v11.2.0
+=======
+
+Minor Changes
+-------------
+
+- ios_l2_interfaces - Added xconnect and encapsulation attributes for L2VPN pseudowire and MPLS services configuration.
+
+Bugfixes
+--------
+
+- cisco.ios.ios_acls - Added support for converting numeric protocol values to real protocol options when gathered from the device.
+- cisco.ios.ios_acls - Gathered state showing incomplete configuration.
+- cisco.ios.ios_hsrp_intefaces - Considers version 1 as default if configuration does not specify version.
+- cisco.ios.ios_hsrp_intefaces - Corrects idempotency issue when version is not specified in configuration.
+- cisco.ios.ios_l2_interfaces - Moved mode parser to below the trunk parsers.
+
 v11.1.1
 =======
 
