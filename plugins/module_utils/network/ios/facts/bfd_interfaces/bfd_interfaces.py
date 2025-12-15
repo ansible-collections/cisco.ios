@@ -61,7 +61,9 @@ class Bfd_interfacesFacts(object):
 
         params = utils.remove_empties(
             bfd_interfaces_parser.validate_config(
-                self.argument_spec, {"config": objs}, redact=True
+                self.argument_spec,
+                {"config": objs},
+                redact=True,
             ),
         )
 
