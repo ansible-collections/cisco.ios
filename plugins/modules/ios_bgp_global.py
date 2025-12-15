@@ -970,9 +970,15 @@ options:
                 type: bool
               number:
                 description:
+                  - "DEPRECATED: This option is deprecated and will be removed at/as of jan 2027. Use 'asn' instead."
                   - AS number used as local AS
                   - Please refer vendor documentation for valid values
                 type: int
+              asn:
+                description:
+                  - Autonomous system number for local BGP routes
+                  - Please refer vendor documentation for valid values
+                type: str
               dual_as:
                 description: Accept either real AS or local AS from the ebgp peer
                 type: bool
