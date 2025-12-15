@@ -1,0 +1,4 @@
+---
+- name: Remove all spanning-tree configuration
+  cisco.ios.ios_spanning_tree:
+    state: deleted

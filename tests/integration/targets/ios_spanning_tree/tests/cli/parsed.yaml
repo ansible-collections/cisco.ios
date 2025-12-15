@@ -1,0 +1,14 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_spanning_tree parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parse the commands for provided configuration
+  register: result
+  cisco.ios.ios_spanning_tree:
+    running_config: "{{ lookup('file', '_parsed.cfg') }}"
+    state: parsed
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - parsed['config'] == result['parsed']
