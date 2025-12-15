@@ -143,7 +143,7 @@ class AclsFacts(object):
                     "2": "host_report",
                     "3": "dvmrp",
                     "4": "pim",
-                    "5": "trace",
+                    "6": "trace",
                 }
                 for each_ace in each.get("aces"):
                     if each.get("acl_type") == "standard":
