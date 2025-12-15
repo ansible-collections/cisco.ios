@@ -76,6 +76,7 @@ options:
           multiplier:
             description:
               - Detection multiplier 3 - 50
+            type: int
   running_config:
     description:
       - This option is used only with state I(parsed).
