@@ -18,7 +18,6 @@ __metaclass__ = type
 import re
 
 from ansible.module_utils._text import to_text
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
@@ -116,7 +115,7 @@ class AclsFacts(object):
         temp_v6 = []
 
         if raw_acls.get("acls"):
-            for k, v in iteritems(raw_acls.get("acls")):
+            for k, v in raw_acls.get("acls").items():
                 if v.get("afi") == "ipv4" and v.get("acl_type") in [
                     "standard",
                     "extended",

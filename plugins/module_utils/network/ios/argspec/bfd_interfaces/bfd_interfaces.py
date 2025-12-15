@@ -46,9 +46,9 @@ class Bfd_interfacesArgs(object):  # pylint: disable=R0903
                 "interval": {
                     "type": "dict",
                     "options": {
-                        "input": {"type": "int", "required": True},
-                        "mix_rx": {"type": "int", "required": True},
-                        "multiplier": {"type": "int", "required": True},
+                        "input": {"type": "int"},
+                        "min_rx": {"type": "int"},
+                        "multiplier": {"type": "int"},
                     },
                 },
             },

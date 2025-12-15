@@ -69,17 +69,13 @@ options:
             description:
               - Interval between transmitted BFD control packets 50 - 9999 Milliseconds
             type: int
-            required: true
-          mix_rx:
+          min_rx:
             description:
               - Minimum receive interval capability 50 - 9999 Milliseconds
             type: int
-            required: true
           multiplier:
             description:
               - Detection multiplier 3 - 50
-            type: int
-            required: true
   running_config:
     description:
       - This option is used only with state I(parsed).

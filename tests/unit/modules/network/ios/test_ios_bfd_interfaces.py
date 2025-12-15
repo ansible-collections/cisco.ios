@@ -64,11 +64,10 @@ class TestIosBfdInterfacesModule(TestIosModule):
             {
                 "config": [
                     {
-                        "description": "This interface should be disabled",
                         "bfd": True,
                         "echo": True,
                         "jitter": True,
-                        "interval": {"input": 100, "mix_rx": 100, "multiplier": 3},
+                        "interval": {"input": 100, "min_rx": 100, "multiplier": 3},
                         "local_address": "10.0.1.2",
                         "name": "GigabitEthernet1",
                         "template": "ANSIBLE",
@@ -77,7 +76,7 @@ class TestIosBfdInterfacesModule(TestIosModule):
                         "bfd": True,
                         "echo": True,
                         "jitter": True,
-                        "interval": {"input": 100, "mix_rx": 100, "multiplier": 3},
+                        "interval": {"input": 100, "min_rx": 100, "multiplier": 3},
                         "name": "GigabitEthernet2",
                     },
                     {"template": "ANSIBLE_3Tempalte", "name": "GigabitEthernet6"},
@@ -85,9 +84,259 @@ class TestIosBfdInterfacesModule(TestIosModule):
                 "state": "merged",
             },
         )
-        commands = []
+        commands = [
+            "interface GigabitEthernet1",
+            "bfd enable",
+            "bfd echo",
+            "bfd jitter",
+            "bfd local-address 10.0.1.2",
+            "bfd interval 100 min_rx 100multiplier 3",
+            "bfd template ANSIBLE",
+            "interface GigabitEthernet2",
+            "bfd enable",
+            "bfd echo",
+            "bfd jitter",
+            "bfd interval 100 min_rx 100multiplier 3",
+            "interface GigabitEthernet6",
+            "bfd template ANSIBLE_3Tempalte",
+        ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
+
+    def test_ios_bfd_interfaces_replaced(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1
+             description Ansible UT interface 1
+             no shutdown
+             bfd local-address 10.0.0.1
+             bfd interval 57 min_rx 66 multiplier 45
+            interface GigabitEthernet2
+             description Ansible UT interface 2
+             ip address dhcp
+             bfd template OLD_TEMPLATE
+            interface GigabitEthernet3
+             description Ansible UT interface 3
+             no ip address
+             shutdown
+             bfd jitter
+             bfd local-address 10.0.1.2
+             bfd interval 50 min_rx 50 multiplier 3
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "bfd": True,
+                        "echo": True,
+                        "jitter": True,
+                        "interval": {"input": 100, "min_rx": 100, "multiplier": 3},
+                        "local_address": "10.0.1.2",
+                        "name": "GigabitEthernet1",
+                        "template": "ANSIBLE",
+                    },
+                    {
+                        "bfd": True,
+                        "echo": True,
+                        "jitter": True,
+                        "interval": {"input": 100, "min_rx": 100, "multiplier": 3},
+                        "name": "GigabitEthernet2",
+                    },
+                    {"template": "ANSIBLE_3Tempalte", "name": "GigabitEthernet6"},
+                ],
+                "state": "replaced",
+            },
+        )
+        commands = [
+            "interface GigabitEthernet1",
+            "bfd enable",
+            "bfd echo",
+            "bfd jitter",
+            "bfd local-address 10.0.1.2",
+            "bfd interval 100 min_rx 100multiplier 3",
+            "bfd template ANSIBLE",
+            "interface GigabitEthernet2",
+            "bfd enable",
+            "bfd echo",
+            "bfd jitter",
+            "bfd interval 100 min_rx 100multiplier 3",
+            "no bfd template OLD_TEMPLATE",
+            "interface GigabitEthernet6",
+            "bfd template ANSIBLE_3Tempalte",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_bfd_interfaces_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1
+             description Ansible UT interface 1
+             no shutdown
+             bfd local-address 10.0.0.1
+             bfd interval 57 min_rx 66 multiplier 45
+            interface GigabitEthernet2
+             description Ansible UT interface 2
+             ip address dhcp
+             bfd template OLD_TEMPLATE
+            interface GigabitEthernet3
+             description Ansible UT interface 3
+             no ip address
+             shutdown
+             bfd jitter
+             bfd local-address 10.0.1.2
+             bfd interval 50 min_rx 50 multiplier 3
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "bfd": True,
+                        "echo": True,
+                        "jitter": True,
+                        "interval": {"input": 100, "min_rx": 100, "multiplier": 3},
+                        "local_address": "10.0.1.2",
+                        "name": "GigabitEthernet1",
+                        "template": "ANSIBLE",
+                    },
+                    {
+                        "bfd": True,
+                        "echo": True,
+                        "jitter": True,
+                        "interval": {"input": 100, "min_rx": 100, "multiplier": 3},
+                        "name": "GigabitEthernet2",
+                    },
+                    {"template": "ANSIBLE_3Tempalte", "name": "GigabitEthernet6"},
+                ],
+                "state": "overridden",
+            },
+        )
+        commands = [
+            "interface GigabitEthernet3",
+            "no bfd jitter",
+            "no bfd local-address 10.0.1.2",
+            "no bfd interval 50 min_rx 50multiplier 3",
+            "interface GigabitEthernet1",
+            "bfd enable",
+            "bfd echo",
+            "bfd jitter",
+            "bfd local-address 10.0.1.2",
+            "bfd interval 100 min_rx 100multiplier 3",
+            "bfd template ANSIBLE",
+            "interface GigabitEthernet2",
+            "bfd enable",
+            "bfd echo",
+            "bfd jitter",
+            "bfd interval 100 min_rx 100multiplier 3",
+            "no bfd template OLD_TEMPLATE",
+            "interface GigabitEthernet6",
+            "bfd template ANSIBLE_3Tempalte",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_bfd_interfaces_deleted(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1
+             description Ansible UT interface 1
+             no shutdown
+             bfd local-address 10.0.0.1
+             bfd interval 57 min_rx 66 multiplier 45
+            interface GigabitEthernet2
+             description Ansible UT interface 2
+             ip address dhcp
+             bfd template OLD_TEMPLATE
+            interface GigabitEthernet3
+             description Ansible UT interface 3
+             no ip address
+             shutdown
+             bfd jitter
+             bfd local-address 10.0.1.2
+             bfd interval 50 min_rx 50 multiplier 3
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "bfd": True,
+                        "echo": True,
+                        "jitter": True,
+                        "interval": {"input": 100, "min_rx": 100, "multiplier": 3},
+                        "local_address": "10.0.1.2",
+                        "name": "GigabitEthernet1",
+                        "template": "ANSIBLE",
+                    },
+                    {
+                        "bfd": True,
+                        "echo": True,
+                        "jitter": True,
+                        "interval": {"input": 100, "min_rx": 100, "multiplier": 3},
+                        "name": "GigabitEthernet2",
+                    },
+                    {"template": "ANSIBLE_3Tempalte", "name": "GigabitEthernet6"},
+                ],
+                "state": "deleted",
+            },
+        )
+        commands = [
+            "interface GigabitEthernet1",
+            "no bfd local-address 10.0.0.1",
+            "no bfd interval 57 min_rx 66multiplier 45",
+            "interface GigabitEthernet2",
+            "no bfd template OLD_TEMPLATE",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_bfd_interfaces_action_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1
+             description Ansible UT interface 1
+             no shutdown
+             bfd local-address 10.0.0.1
+             bfd interval 57 min_rx 66 multiplier 45
+            interface GigabitEthernet2
+             description Ansible UT interface 2
+             ip address dhcp
+             bfd template OLD_TEMPLATE
+            interface GigabitEthernet3
+             description Ansible UT interface 3
+             no ip address
+             shutdown
+             bfd jitter
+             bfd local-address 10.0.1.2
+             bfd interval 50 min_rx 50 multiplier 3
+            """,
+        )
+        for states in ["merged", "replaced", "overridden"]:
+            set_module_args(
+                {
+                    "config": [
+                        {
+                            "name": "GigabitEthernet1",
+                            "local_address": "10.0.0.1",
+                            "interval": {"input": 57, "min_rx": 66, "multiplier": 45},
+                        },
+                        {"name": "GigabitEthernet2", "template": "OLD_TEMPLATE"},
+                        {
+                            "name": "GigabitEthernet3",
+                            "jitter": True,
+                            "local_address": "10.0.1.2",
+                            "interval": {"input": 50, "min_rx": 50, "multiplier": 3},
+                        },
+                    ],
+                    "state": states,
+                },
+            )
+            commands = []
+
+            result = self.execute_module(changed=False)
+            self.assertEqual(result["commands"], commands)
 
     def test_ios_bfd_interfaces_parsed(self):
         set_module_args(
@@ -116,7 +365,20 @@ class TestIosBfdInterfacesModule(TestIosModule):
             ),
         )
         result = self.execute_module(changed=False)
-        parsed_list = []
+        parsed_list = [
+            {
+                "name": "GigabitEthernet1",
+                "local_address": "10.0.0.1",
+                "interval": {"input": 57, "min_rx": 66, "multiplier": 45},
+            },
+            {"name": "GigabitEthernet2", "template": "OLD_TEMPLATE"},
+            {
+                "name": "GigabitEthernet3",
+                "jitter": True,
+                "local_address": "10.0.1.2",
+                "interval": {"input": 50, "min_rx": 50, "multiplier": 3},
+            },
+        ]
         self.assertEqual(parsed_list, result["parsed"])
 
     def test_ios_bfd_interfaces_rendered(self):
@@ -129,21 +391,15 @@ class TestIosBfdInterfacesModule(TestIosModule):
                 config=[
                     {
                         "name": "GigabitEthernet1",
-                        "description": "Ansible UT interface 1",
-                        "enabled": False,
+                        "local_address": "10.0.0.1",
+                        "interval": {"input": 57, "min_rx": 66, "multiplier": 45},
                     },
+                    {"name": "GigabitEthernet2", "template": "OLD_TEMPLATE"},
                     {
-                        "name": "GigabitEthernet0/1",
-                        "description": "Ansible UT interface 2",
-                        "speed": "1000",
-                        "mtu": 1500,
-                        "enabled": True,
-                    },
-                    {
-                        "name": "gigabitEthernet3",
-                        "description": "Ansible UT interface 3",
-                        "enabled": True,
-                        "duplex": "auto",
+                        "name": "GigabitEthernet3",
+                        "jitter": True,
+                        "local_address": "10.0.1.2",
+                        "interval": {"input": 50, "min_rx": 50, "multiplier": 3},
                     },
                 ],
                 state="rendered",
@@ -152,17 +408,14 @@ class TestIosBfdInterfacesModule(TestIosModule):
 
         commands = [
             "interface GigabitEthernet1",
-            "description Ansible UT interface 1",
-            "shutdown",
-            "interface GigabitEthernet0/1",
-            "description Ansible UT interface 2",
-            "speed 1000",
-            "mtu 1500",
-            "no shutdown",
+            "bfd local-address 10.0.0.1",
+            "bfd interval 57 min_rx 66multiplier 45",
+            "interface GigabitEthernet2",
+            "bfd template OLD_TEMPLATE",
             "interface GigabitEthernet3",
-            "description Ansible UT interface 3",
-            "duplex auto",
-            "no shutdown",
+            "bfd jitter",
+            "bfd local-address 10.0.1.2",
+            "bfd interval 50 min_rx 50multiplier 3",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
