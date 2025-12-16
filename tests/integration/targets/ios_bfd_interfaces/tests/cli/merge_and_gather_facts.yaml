@@ -16,7 +16,7 @@
 
     - name: Merge the provided configuration
       cisco.ios.ios_bfd_interfaces:
-        config: '{{ result_parsed.parsed }}'
+        config: "{{ result_parsed.parsed }}"
         state: merged
       register: result_merged
 
@@ -25,7 +25,7 @@
         state: gathered
       register: result_gathered
 
-    - name:  Facts gather ios_bfd_interfaces facts
+    - name: Facts gather ios_bfd_interfaces facts
       cisco.ios.ios_facts:
         gather_subset:
           - "!all"
@@ -43,7 +43,6 @@
         state: deleted
       register: result_deleted
 
-
 - name: Assets ios_bfd_interfaces merged
   block:
     - name: Assert merged - verify against expected execution output
@@ -59,4 +58,3 @@
           - deleted['after'] == result_deleted['after']
           - deleted['before'] == result_deleted['before']
           - deleted['commands']|symmetric_difference(result_deleted['commands']) == []
-

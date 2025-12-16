@@ -16,19 +16,19 @@
 
     - name: Render the provided configuration
       cisco.ios.ios_bfd_interfaces:
-        config: '{{ result_parsed.parsed }}'
+        config: "{{ result_parsed.parsed }}"
         state: rendered
       register: result_rendered
 
     - name: Override the provided configuration
       cisco.ios.ios_bfd_interfaces:
-        config: '{{ result_parsed.parsed }}'
+        config: "{{ result_parsed.parsed }}"
         state: overridden
       register: result_overridden
 
     - name: Override the provided configuration (IDEMPOTENT)
       cisco.ios.ios_bfd_interfaces:
-        config: '{{ result_parsed.parsed }}'
+        config: "{{ result_parsed.parsed }}"
         state: overridden
       register: result_overridden_idempotent
 
@@ -36,7 +36,6 @@
       cisco.ios.ios_bfd_interfaces:
         state: deleted
       register: result_deleted
-
 
 - name: Assets ios_bfd_interfaces parse, render and override configuration
   block:
@@ -72,4 +71,3 @@
           - deleted['after'] == result_deleted['after']
           - deleted['before'] == result_deleted['before']
           - deleted['commands']|symmetric_difference(result_deleted['commands']) == []
-
