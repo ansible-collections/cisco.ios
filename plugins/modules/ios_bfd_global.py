@@ -25,7 +25,6 @@ author:
 notes:
   - Tested against Cisco IOS XE Software, Version 17.13.01a on CML
   - This module works with connection C(network_cli)
-  - BFD global does not have a 'state' parameter. All of the BFD commands are unique
 options:
   slow_timer:
     description:
