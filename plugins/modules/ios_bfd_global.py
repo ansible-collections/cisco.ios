@@ -10,6 +10,7 @@ The module file for ios_bfd_global
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -28,29 +29,29 @@ notes:
 options:
   slow_timer:
     description:
-      - Configures slow timers used by BFD , Value in ms to use for slow timers  <1000-30000>  
+      - Configures slow timers used by BFD , Value in ms to use for slow timers  <1000-30000>
     required: false
     type: int
   l2cos:
     description:
-      - Configures L2 COS value to be used for BFD packets over VLAN interfaces <0-7> 
+      - Configures L2 COS value to be used for BFD packets over VLAN interfaces <0-7>
     required: false
-    type: int 
+    type: int
   bfd_template:
     description: creates a reusable template that defines a set of Bidirectional Forwarding Detection (BFD) session parameters
     required: false
-    type: dict      
+    type: dict
     suboptions:
-      name: 
+      name:
         description: name of the BFD template to be used
         required: true
         type: str
       hop:
-        description: type of template to be used 
+        description: type of template to be used
         required: true
         choices:
           - single-hop
-          - multi-hop 
+          - multi-hop
         type: str
       config:
         description: bfd template configuration
@@ -69,14 +70,14 @@ options:
               min-rx:
                 description: The minimum interval in milliseconds that the local system is capable of supporting between received BFD control packets
                 required: true
-                type: int 
+                type: int
               multiplier:
                 description: The minimum interval in milliseconds that the local system is capable of supporting between received BFD control packets
                 required: true
-                type: int   
+                type: int
           dampening:
-            description: enables session dampening  
-            required: false    
+            description: enables session dampening
+            required: false
             type: dict
             suboptions:
               half-life-period:
@@ -86,17 +87,17 @@ options:
               reuse-threshold:
                 description: The threshold at which a dampened session is allowed to be reused (taken out of dampening), in milliseconds.
                 required: true
-                type: int  
+                type: int
               suppress-threshold:
                 description: The threshold at which a session is suppressed (put into dampening), in milliseconds.
                 required: true
-                type: int  
+                type: int
               max-suppress-time:
-                description: The maximum amount of time a session can be suppressed, in minutes. 
+                description: The maximum amount of time a session can be suppressed, in minutes.
                 required: true
-                type: int 
+                type: int
           echo:
-            description: enables the BFD echo function for all interfaces which uses thsis specific template. 
+            description: enables the BFD echo function for all interfaces which uses thsis specific template.
             required: false
             type : bool
 """
@@ -153,6 +154,7 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.cisco.ios.ios.plugins.module_utils.network.ios.argspec.bfd_global.bfd_global import (
     Bfd_globalArgs,
 )

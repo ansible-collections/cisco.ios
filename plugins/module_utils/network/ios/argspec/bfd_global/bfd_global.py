@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -29,8 +30,7 @@ The arg spec for the ios_bfd_global module
 
 
 class Bfd_globalArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_bfd_global module
-    """
+    """The arg spec for the ios_bfd_global module"""
 
     argument_spec = {
         "slow_timer": {"required": False, "type": "int"},
