@@ -97,7 +97,26 @@ class Bfd_interfaces(ResourceModule):
         for the Bfd_interfaces network resource.
         """
         begin = len(self.commands)
+
+        if want.get("bfd") is False:
+            if have.get("bfd", True) is not False:
+                self.commands.append("no bfd enable")
+            if have.get("bfd"):
+                self.have.pop("bfd", None)
+            if want.get("bfd"):
+                self.want.pop("bfd", None)
+
         self.compare(parsers=self.parsers, want=want, have=have)
+
+        for tag in ["echo", "jitter"]:
+            if want.get(tag) is False:
+                if have.get(tag, True) is not False:
+                    self.commands.append("no bfd " + tag)
+                if have.get(tag):
+                    self.have.pop(tag, None)
+                if want.get(tag):
+                    self.want.pop(tag, None)
+
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
 

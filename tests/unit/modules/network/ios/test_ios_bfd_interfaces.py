@@ -90,13 +90,13 @@ class TestIosBfdInterfacesModule(TestIosModule):
             "bfd echo",
             "bfd jitter",
             "bfd local-address 10.0.1.2",
-            "bfd interval 100 min_rx 100multiplier 3",
+            "bfd interval 100 min_rx 100 multiplier 3",
             "bfd template ANSIBLE",
             "interface GigabitEthernet2",
             "bfd enable",
             "bfd echo",
             "bfd jitter",
-            "bfd interval 100 min_rx 100multiplier 3",
+            "bfd interval 100 min_rx 100 multiplier 3",
             "interface GigabitEthernet6",
             "bfd template ANSIBLE_3Tempalte",
         ]
@@ -154,13 +154,13 @@ class TestIosBfdInterfacesModule(TestIosModule):
             "bfd echo",
             "bfd jitter",
             "bfd local-address 10.0.1.2",
-            "bfd interval 100 min_rx 100multiplier 3",
+            "bfd interval 100 min_rx 100 multiplier 3",
             "bfd template ANSIBLE",
             "interface GigabitEthernet2",
             "bfd enable",
             "bfd echo",
             "bfd jitter",
-            "bfd interval 100 min_rx 100multiplier 3",
+            "bfd interval 100 min_rx 100 multiplier 3",
             "no bfd template OLD_TEMPLATE",
             "interface GigabitEthernet6",
             "bfd template ANSIBLE_3Tempalte",
@@ -174,6 +174,8 @@ class TestIosBfdInterfacesModule(TestIosModule):
             interface GigabitEthernet1
              description Ansible UT interface 1
              no shutdown
+             no bfd enable
+             no bfd echo
              bfd local-address 10.0.0.1
              bfd interval 57 min_rx 66 multiplier 45
             interface GigabitEthernet2
@@ -184,7 +186,6 @@ class TestIosBfdInterfacesModule(TestIosModule):
              description Ansible UT interface 3
              no ip address
              shutdown
-             bfd jitter
              bfd local-address 10.0.1.2
              bfd interval 50 min_rx 50 multiplier 3
             """,
@@ -204,7 +205,7 @@ class TestIosBfdInterfacesModule(TestIosModule):
                     {
                         "bfd": True,
                         "echo": True,
-                        "jitter": True,
+                        "jitter": False,
                         "interval": {"input": 100, "min_rx": 100, "multiplier": 3},
                         "name": "GigabitEthernet2",
                     },
@@ -215,22 +216,21 @@ class TestIosBfdInterfacesModule(TestIosModule):
         )
         commands = [
             "interface GigabitEthernet3",
-            "no bfd jitter",
             "no bfd local-address 10.0.1.2",
-            "no bfd interval 50 min_rx 50multiplier 3",
+            "no bfd interval 50 min_rx 50 multiplier 3",
             "interface GigabitEthernet1",
             "bfd enable",
             "bfd echo",
             "bfd jitter",
             "bfd local-address 10.0.1.2",
-            "bfd interval 100 min_rx 100multiplier 3",
+            "bfd interval 100 min_rx 100 multiplier 3",
             "bfd template ANSIBLE",
             "interface GigabitEthernet2",
             "bfd enable",
             "bfd echo",
-            "bfd jitter",
-            "bfd interval 100 min_rx 100multiplier 3",
+            "bfd interval 100 min_rx 100 multiplier 3",
             "no bfd template OLD_TEMPLATE",
+            "no bfd jitter",
             "interface GigabitEthernet6",
             "bfd template ANSIBLE_3Tempalte",
         ]
@@ -285,7 +285,7 @@ class TestIosBfdInterfacesModule(TestIosModule):
         commands = [
             "interface GigabitEthernet1",
             "no bfd local-address 10.0.0.1",
-            "no bfd interval 57 min_rx 66multiplier 45",
+            "no bfd interval 57 min_rx 66 multiplier 45",
             "interface GigabitEthernet2",
             "no bfd template OLD_TEMPLATE",
         ]
@@ -302,13 +302,15 @@ class TestIosBfdInterfacesModule(TestIosModule):
              bfd interval 57 min_rx 66 multiplier 45
             interface GigabitEthernet2
              description Ansible UT interface 2
+             no bfd enable
+             no bfd echo
+             no bfd jitter
              ip address dhcp
              bfd template OLD_TEMPLATE
             interface GigabitEthernet3
              description Ansible UT interface 3
              no ip address
              shutdown
-             bfd jitter
              bfd local-address 10.0.1.2
              bfd interval 50 min_rx 50 multiplier 3
             """,
@@ -322,10 +324,15 @@ class TestIosBfdInterfacesModule(TestIosModule):
                             "local_address": "10.0.0.1",
                             "interval": {"input": 57, "min_rx": 66, "multiplier": 45},
                         },
-                        {"name": "GigabitEthernet2", "template": "OLD_TEMPLATE"},
+                        {
+                            "name": "GigabitEthernet2",
+                            "bfd": False,
+                            "echo": False,
+                            "jitter": False,
+                            "template": "OLD_TEMPLATE",
+                        },
                         {
                             "name": "GigabitEthernet3",
-                            "jitter": True,
                             "local_address": "10.0.1.2",
                             "interval": {"input": 50, "min_rx": 50, "multiplier": 3},
                         },
@@ -343,22 +350,19 @@ class TestIosBfdInterfacesModule(TestIosModule):
             dict(
                 running_config=dedent(
                     """\
-                    interface GigabitEthernet1
+                    interface GigabitEthernet2
                      description Ansible UT interface 1
                      no shutdown
-                     bfd local-address 10.0.0.1
-                     bfd interval 57 min_rx 66 multiplier 45
-                    interface GigabitEthernet2
+                     no bfd enable
+                     no bfd echo
+                     bfd local-address 10.0.1.2
+                     bfd interval 100 min_rx 100 multiplier 3
+                    interface GigabitEthernet3
                      description Ansible UT interface 2
                      ip address dhcp
-                     bfd template OLD_TEMPLATE
-                    interface GigabitEthernet3
-                     description Ansible UT interface 3
-                     no ip address
-                     shutdown
-                     bfd jitter
-                     bfd local-address 10.0.1.2
-                     bfd interval 50 min_rx 50 multiplier 3
+                     bfd interval 100 min_rx 100 multiplier 3
+                    interface GigabitEthernet4
+                     bfd template ANSIBLE_Template
                     """,
                 ),
                 state="parsed",
@@ -367,17 +371,17 @@ class TestIosBfdInterfacesModule(TestIosModule):
         result = self.execute_module(changed=False)
         parsed_list = [
             {
-                "name": "GigabitEthernet1",
-                "local_address": "10.0.0.1",
-                "interval": {"input": 57, "min_rx": 66, "multiplier": 45},
+                "name": "GigabitEthernet2",
+                "bfd": False,
+                "echo": False,
+                "local_address": "10.0.1.2",
+                "interval": {"input": 100, "min_rx": 100, "multiplier": 3},
             },
-            {"name": "GigabitEthernet2", "template": "OLD_TEMPLATE"},
             {
                 "name": "GigabitEthernet3",
-                "jitter": True,
-                "local_address": "10.0.1.2",
-                "interval": {"input": 50, "min_rx": 50, "multiplier": 3},
+                "interval": {"input": 100, "min_rx": 100, "multiplier": 3},
             },
+            {"name": "GigabitEthernet4", "template": "ANSIBLE_Template"},
         ]
         self.assertEqual(parsed_list, result["parsed"])
 
@@ -409,13 +413,13 @@ class TestIosBfdInterfacesModule(TestIosModule):
         commands = [
             "interface GigabitEthernet1",
             "bfd local-address 10.0.0.1",
-            "bfd interval 57 min_rx 66multiplier 45",
+            "bfd interval 57 min_rx 66 multiplier 45",
             "interface GigabitEthernet2",
             "bfd template OLD_TEMPLATE",
             "interface GigabitEthernet3",
             "bfd jitter",
             "bfd local-address 10.0.1.2",
-            "bfd interval 50 min_rx 50multiplier 3",
+            "bfd interval 50 min_rx 50 multiplier 3",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))

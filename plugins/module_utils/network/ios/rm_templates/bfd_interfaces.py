@@ -45,13 +45,14 @@ class Bfd_interfacesTemplate(NetworkTemplate):
             "name": "bfd",
             "getval": re.compile(
                 r"""
+                (\s+(?P<no>no))
                 \s+bfd\senable
                 $""", re.VERBOSE,
             ),
             "setval": "bfd enable",
             "result": {
                 "{{ name }}": {
-                    "bfd": True,
+                    "bfd": "{{ False if no is defined else True }}",
                 },
             },
         },
@@ -59,13 +60,14 @@ class Bfd_interfacesTemplate(NetworkTemplate):
             "name": "echo",
             "getval": re.compile(
                 r"""
+                (\s+(?P<no>no))
                 \s+bfd\secho
                 $""", re.VERBOSE,
             ),
             "setval": "bfd echo",
             "result": {
                 "{{ name }}": {
-                    "echo": True,
+                    "echo": "{{ False if no is defined else True }}",
                 },
             },
         },
@@ -73,13 +75,14 @@ class Bfd_interfacesTemplate(NetworkTemplate):
             "name": "jitter",
             "getval": re.compile(
                 r"""
+                (\s+(?P<no>no))
                 \s+bfd\sjitter
                 $""", re.VERBOSE,
             ),
             "setval": "bfd jitter",
             "result": {
                 "{{ name }}": {
-                    "jitter": True,
+                    "jitter": "{{ False if no is defined else True }}",
                 },
             },
         },
@@ -117,7 +120,7 @@ class Bfd_interfacesTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "bfd interval {{ interval.input }} "
-                      "min_rx {{ interval.min_rx }}"
+                      "min_rx {{ interval.min_rx }} "
                       "multiplier {{ interval.multiplier }}",
             "result": {
                 "{{ name }}": {
