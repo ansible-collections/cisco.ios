@@ -1,7 +1,8 @@
 ---
-- name: Add Port-channels for tests
+- name: Add Port-channels and Loopbacks for tests
   cisco.ios.ios_interfaces:
     config:
       - name: Port-channel10
       - name: Port-channel40
+      - name: Loopback999
     state: merged

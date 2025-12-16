@@ -20,7 +20,6 @@ created.
 
 from copy import deepcopy
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -117,7 +116,7 @@ class Ntp_global(ResourceModule):
         for _parser in self.complex_parser[4:8]:  # other list attrs
             i_want = want.get(_parser, {})
             i_have = have.get(_parser, {})
-            for key, wanting in iteritems(i_want):
+            for key, wanting in i_want.items():
                 haveing = i_have.pop(key, {})
                 if wanting != haveing:
                     if (
@@ -127,7 +126,7 @@ class Ntp_global(ResourceModule):
                     ):
                         self.addcmd(haveing, _parser, negate=True)
                     self.addcmd(wanting, _parser)
-            for key, haveing in iteritems(i_have):
+            for key, haveing in i_have.items():
                 self.addcmd(haveing, _parser, negate=True)
 
     def _compare_access_groups(self, want, have):
@@ -137,12 +136,12 @@ class Ntp_global(ResourceModule):
             i_want = w.get(_parser, {})
             i_have = h.get(_parser, {})
 
-            for key, wanting in iteritems(i_want):
+            for key, wanting in i_want.items():
                 haveing = i_have.pop(key, {})
                 if wanting != haveing:
                     self.addcmd(wanting, _parser)
 
-            for key, haveing in iteritems(i_have):
+            for key, haveing in i_have.items():
                 self.addcmd(haveing, _parser, negate=True)
 
     def _ntp_list_to_dict(self, data):

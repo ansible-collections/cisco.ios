@@ -1,9 +1,10 @@
 ---
 - name: L3_interface - remove configuration
   vars:
-    lines:
-      "interface Loopback 999\nno ip address\ninterface GigabitEthernet 2\nno ip address\nno ipv6 address\ninterface GigabitEthernet 3\nno ip address\nno\
-      \ ipv6 address\n"
+    lines: "interface Loopback 999\nno ip address\ninterface
+      GigabitEthernet 2\nno ip address\nno ipv6 address\ninterface GigabitEthernet
+      3\nno ip address\nno ipv6 address\nno ip helper-address global 10.0.0.1
+      \nno ip helper-address 10.0.0.2\n"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"
 
@@ -16,3 +17,16 @@
       - name: Vlan901
       - name: Vlan902
     state: purged
+
+- name: Delete attributes of all configured interfaces
+  register: result
+  cisco.ios.ios_interfaces:
+    config:
+      - name: Port-channel10
+      - name: Port-channel11
+      - name: Port-channel22
+      - name: Port-channel40
+      - name: Loopback1
+    state: purged
+  retries: 2
+  delay: 10

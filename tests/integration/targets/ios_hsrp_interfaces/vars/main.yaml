@@ -1,0 +1,598 @@
+---
+merged:
+  before:
+    - name: Loopback888
+    - name: Loopback999
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
+    - name: GigabitEthernet4
+  commands:
+    - interface GigabitEthernet3
+    - standby 22 ip 10.0.0.1 secondary
+    - standby mac-refresh 21
+    - standby version 1
+    - interface GigabitEthernet4
+    - standby version 1
+    - standby 0 priority 5
+    - standby 0 preempt delay minimum 60 reload 70 sync 90
+  after:
+    - name: Loopback888
+    - name: Loopback999
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
+      mac_refresh: 21
+      version: 1
+      standby_groups:
+        - group_no: 22
+          priority: 100
+          ip:
+            - virtual_ip: 10.0.0.1
+              secondary: true
+    - name: GigabitEthernet4
+      version: 1
+      standby_groups:
+        - group_no: 0
+          priority: 5
+          preempt:
+            enabled: true
+            delay: true
+            minimum: 60
+            reload: 70
+            sync: 90
+replaced:
+  before:
+    - name: Loopback888
+    - name: Loopback999
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+      standby_options:
+        - authentication:
+            key_chain: AUTH_CHAIN
+          group_no: 2
+          ip:
+            - secondary: true
+              virtual_ip: 172.16.2.1
+          priority: 100
+      version: 1
+    - name: GigabitEthernet3
+      standby_options:
+        - group_no: 1
+          ip:
+            - virtual_ip: 172.16.1.1
+          priority: 100
+      version: 1
+    - name: GigabitEthernet4
+    - delay:
+        minimum: 5555
+        reload: 556
+      mac_refresh: 45
+      name: Vlan70
+      redirect:
+        advertisement:
+          authentication:
+            key_chain: HSRP_CHAIN
+        timers:
+          adv_timer: 10
+          holddown_timer: 55
+      standby_options:
+        - authentication:
+            encryption: 7
+            key_string: "0123456789ABCDEF"
+          follow: MASTER_GROUP
+          group_name: PRIMARY_GROUP
+          group_no: 10
+          ip:
+            - secondary: true
+              virtual_ip: 10.0.10.2
+          preempt:
+            delay: true
+            enabled: true
+            minimum: 100
+            reload: 50
+            sync: 30
+          priority: 110
+          track:
+            - decrement: 20
+              track_no: 1
+        - follow: MASTER_GROUP
+          group_name: IPV6_GROUP
+          group_no: 20
+          ipv6:
+            addresses:
+              - 2001:DB8:20::1/64
+            autoconfig: true
+          mac_address: 0000.0000.0014
+          priority: 120
+      version: 2
+    - delay:
+        minimum: 100
+        reload: 200
+      name: Vlan100
+      standby_options:
+        - group_name: BACKUP_GROUP
+          group_no: 5
+          ip:
+            - virtual_ip: 192.168.1.1
+          preempt:
+            enabled: true
+          priority: 150
+          track:
+            - decrement: 30
+              track_no: 10
+      version: 2
+  commands:
+    - interface Vlan70
+    - no standby 10 preempt
+    - standby 10 ip 10.0.10.3 secondary
+    - no standby 10 ip 10.0.10.2 secondary
+    - standby 20 follow MASTER_GROUP_NEW
+  after:
+    - name: Loopback888
+    - name: Loopback999
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+      standby_options:
+        - authentication:
+            key_chain: AUTH_CHAIN
+          group_no: 2
+          ip:
+            - secondary: true
+              virtual_ip: 172.16.2.1
+          priority: 100
+      version: 1
+    - name: GigabitEthernet3
+      standby_options:
+        - group_no: 1
+          ip:
+            - virtual_ip: 172.16.1.1
+          priority: 100
+      version: 1
+    - name: GigabitEthernet4
+    - delay:
+        minimum: 5555
+        reload: 556
+      mac_refresh: 45
+      name: Vlan70
+      redirect:
+        advertisement:
+          authentication:
+            key_chain: HSRP_CHAIN
+        timers:
+          adv_timer: 10
+          holddown_timer: 55
+      standby_options:
+        - authentication:
+            encryption: 7
+            key_string: "0123456789ABCDEF"
+          follow: MASTER_GROUP
+          group_name: PRIMARY_GROUP
+          group_no: 10
+          ip:
+            - secondary: true
+              virtual_ip: 10.0.10.3
+          priority: 110
+          track:
+            - decrement: 20
+              track_no: 1
+        - follow: MASTER_GROUP_NEW
+          group_name: IPV6_GROUP
+          group_no: 20
+          ipv6:
+            addresses:
+              - 2001:DB8:20::1/64
+            autoconfig: true
+          mac_address: 0000.0000.0014
+          priority: 120
+      version: 2
+    - delay:
+        minimum: 100
+        reload: 200
+      name: Vlan100
+      standby_options:
+        - group_name: BACKUP_GROUP
+          group_no: 5
+          ip:
+            - virtual_ip: 192.168.1.1
+          preempt:
+            enabled: true
+          priority: 150
+          track:
+            - decrement: 30
+              track_no: 10
+      version: 2
+
+overridden:
+  before:
+    - name: Loopback888
+    - name: Loopback999
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+      standby_options:
+        - authentication:
+            key_chain: AUTH_CHAIN
+          group_no: 2
+          ip:
+            - secondary: true
+              virtual_ip: 172.16.2.1
+          priority: 100
+      version: 1
+    - name: GigabitEthernet3
+      standby_options:
+        - group_no: 1
+          ip:
+            - virtual_ip: 172.16.1.1
+          priority: 100
+      version: 1
+    - name: GigabitEthernet4
+    - delay:
+        minimum: 5555
+        reload: 556
+      mac_refresh: 45
+      name: Vlan70
+      redirect:
+        advertisement:
+          authentication:
+            key_chain: HSRP_CHAIN
+        timers:
+          adv_timer: 10
+          holddown_timer: 55
+      standby_options:
+        - authentication:
+            encryption: 7
+            key_string: "0123456789ABCDEF"
+          follow: MASTER_GROUP
+          group_name: PRIMARY_GROUP
+          group_no: 10
+          ip:
+            - secondary: true
+              virtual_ip: 10.0.10.2
+          preempt:
+            delay: true
+            enabled: true
+            minimum: 100
+            reload: 50
+            sync: 30
+          priority: 110
+          track:
+            - decrement: 20
+              track_no: 1
+        - follow: MASTER_GROUP
+          group_name: IPV6_GROUP
+          group_no: 20
+          ipv6:
+            addresses:
+              - 2001:DB8:20::1/64
+            autoconfig: true
+          mac_address: 0000.0000.0014
+          priority: 120
+      version: 2
+    - delay:
+        minimum: 100
+        reload: 200
+      name: Vlan100
+      standby_options:
+        - group_name: BACKUP_GROUP
+          group_no: 5
+          ip:
+            - virtual_ip: 192.168.1.1
+          preempt:
+            enabled: true
+          priority: 150
+          track:
+            - decrement: 30
+              track_no: 10
+      version: 2
+  commands:
+    - interface GigabitEthernet2
+    - no standby version 1
+    - no standby 2
+    - interface GigabitEthernet3
+    - no standby version 1
+    - no standby 1
+    - interface Vlan100
+    - no standby version 2
+    - no standby delay minimum 100 reload 200
+    - no standby 5
+    - no standby version 2
+    - interface Vlan70
+    - no standby 10 preempt
+    - standby 10 ip 10.0.10.3 secondary
+    - no standby 10 ip 10.0.10.2 secondary
+    - standby 20 follow MASTER_GROUP_NEW
+  after:
+    - name: Loopback888
+    - name: Loopback999
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
+    - name: GigabitEthernet4
+    - delay:
+        minimum: 5555
+        reload: 556
+      mac_refresh: 45
+      name: Vlan70
+      redirect:
+        advertisement:
+          authentication:
+            key_chain: HSRP_CHAIN
+        timers:
+          adv_timer: 10
+          holddown_timer: 55
+      standby_options:
+        - authentication:
+            encryption: 7
+            key_string: "0123456789ABCDEF"
+          follow: MASTER_GROUP
+          group_name: PRIMARY_GROUP
+          group_no: 10
+          ip:
+            - secondary: true
+              virtual_ip: 10.0.10.3
+          priority: 110
+          track:
+            - decrement: 20
+              track_no: 1
+        - follow: MASTER_GROUP_NEW
+          group_name: IPV6_GROUP
+          group_no: 20
+          ipv6:
+            addresses:
+              - 2001:DB8:20::1/64
+            autoconfig: true
+          mac_address: 0000.0000.0014
+          priority: 120
+      version: 2
+    - name: Vlan100
+
+deleted:
+  before:
+    - name: Loopback888
+    - name: Loopback999
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+      standby_options:
+        - authentication:
+            key_chain: AUTH_CHAIN
+          group_no: 2
+          ip:
+            - secondary: true
+              virtual_ip: 172.16.2.1
+          priority: 100
+      version: 1
+    - name: GigabitEthernet3
+      standby_options:
+        - group_no: 1
+          ip:
+            - virtual_ip: 172.16.1.1
+          priority: 100
+      version: 1
+    - name: GigabitEthernet4
+    - delay:
+        minimum: 5555
+        reload: 556
+      mac_refresh: 45
+      name: Vlan70
+      redirect:
+        advertisement:
+          authentication:
+            key_chain: HSRP_CHAIN
+        timers:
+          adv_timer: 10
+          holddown_timer: 55
+      standby_options:
+        - authentication:
+            encryption: 7
+            key_string: "0123456789ABCDEF"
+          follow: MASTER_GROUP
+          group_name: PRIMARY_GROUP
+          group_no: 10
+          ip:
+            - secondary: true
+              virtual_ip: 10.0.10.2
+          preempt:
+            delay: true
+            enabled: true
+            minimum: 100
+            reload: 50
+            sync: 30
+          priority: 110
+          track:
+            - decrement: 20
+              track_no: 1
+        - follow: MASTER_GROUP
+          group_name: IPV6_GROUP
+          group_no: 20
+          ipv6:
+            addresses:
+              - 2001:DB8:20::1/64
+            autoconfig: true
+          mac_address: 0000.0000.0014
+          priority: 120
+      version: 2
+    - delay:
+        minimum: 100
+        reload: 200
+      name: Vlan100
+      standby_options:
+        - group_name: BACKUP_GROUP
+          group_no: 5
+          ip:
+            - virtual_ip: 192.168.1.1
+          preempt:
+            enabled: true
+          priority: 150
+          track:
+            - decrement: 30
+              track_no: 10
+      version: 2
+  commands:
+    - interface GigabitEthernet2
+    - no standby version 1
+    - no standby 2
+    - interface GigabitEthernet3
+    - no standby version 1
+    - no standby 1
+    - interface Vlan70
+    - no standby version 2
+    - no standby delay minimum 5555 reload 556
+    - no standby mac-refresh 45
+    - no standby redirect timers 10 55
+    - no standby redirect advertisement authentication md5 key-chain HSRP_CHAIN
+    - no standby 10
+    - no standby 20
+    - no standby version 2
+    - interface Vlan100
+    - no standby version 2
+    - no standby delay minimum 100 reload 200
+    - no standby 5
+    - no standby version 2
+  after:
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
+    - name: GigabitEthernet4
+    - name: Vlan70
+    - name: Vlan100
+    - name: Loopback888
+    - name: Loopback999
+gathered:
+  config:
+    - name: Loopback888
+    - name: Loopback999
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+      standby_options:
+        - authentication:
+            key_chain: AUTH_CHAIN
+          group_no: 2
+          ip:
+            - secondary: true
+              virtual_ip: 172.16.2.1
+          priority: 100
+      version: 1
+    - name: GigabitEthernet3
+      standby_options:
+        - group_no: 1
+          ip:
+            - virtual_ip: 172.16.1.1
+          priority: 100
+      version: 1
+    - name: GigabitEthernet4
+    - delay:
+        minimum: 5555
+        reload: 556
+      mac_refresh: 45
+      name: Vlan70
+      redirect:
+        advertisement:
+          authentication:
+            key_chain: HSRP_CHAIN
+        timers:
+          adv_timer: 10
+          holddown_timer: 55
+      standby_options:
+        - authentication:
+            encryption: 7
+            key_string: "0123456789ABCDEF"
+          follow: MASTER_GROUP
+          group_name: PRIMARY_GROUP
+          group_no: 10
+          ip:
+            - secondary: true
+              virtual_ip: 10.0.10.2
+          preempt:
+            delay: true
+            enabled: true
+            minimum: 100
+            reload: 50
+            sync: 30
+          priority: 110
+          track:
+            - decrement: 20
+              track_no: 1
+        - follow: MASTER_GROUP
+          group_name: IPV6_GROUP
+          group_no: 20
+          ipv6:
+            addresses:
+              - 2001:DB8:20::1/64
+            autoconfig: true
+          mac_address: 0000.0000.0014
+          priority: 120
+      version: 2
+    - delay:
+        minimum: 100
+        reload: 200
+      name: Vlan100
+      standby_options:
+        - group_name: BACKUP_GROUP
+          group_no: 5
+          ip:
+            - virtual_ip: 192.168.1.1
+          preempt:
+            enabled: true
+          priority: 150
+          track:
+            - decrement: 30
+              track_no: 10
+      version: 2
+
+parsed:
+  config:
+    - delay:
+        minimum: 100
+        reload: 200
+      name: Vlan100
+      standby_options:
+        - authentication:
+            password_text: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
+          group_name: BACKUP_GROUP
+          group_no: 5
+          ip:
+            - virtual_ip: 192.168.1.1
+          preempt:
+            enabled: true
+          priority: 150
+          timers:
+            hello_interval: 5
+            hold_time: 15
+          track:
+            - decrement: 30
+              track_no: 10
+      version: 2
+    - name: GigabitEthernet3
+      standby_options:
+        - group_no: 1
+          ip:
+            - virtual_ip: 172.16.1.1
+          priority: 100
+      use_bia:
+        set: true
+      version: 1
+    - name: GigabitEthernet2
+      version: 1
+      standby_options:
+        - authentication:
+            key_chain: AUTH_CHAIN
+          group_no: 2
+          ip:
+            - secondary: true
+              virtual_ip: 172.16.2.1
+          priority: 100
+rtt:
+  commands:
+    - interface GigabitEthernet4
+    - standby 0 priority 6
+
+rendered:
+  commands:
+    - interface GigabitEthernet3
+    - standby version 1
+    - standby 22 priority 100
+    - standby 22 ip 10.0.0.1 secondary
+    - standby 22 name sentry
+    - interface GigabitEthernet4
+    - standby version 1
+    - standby 0 priority 5

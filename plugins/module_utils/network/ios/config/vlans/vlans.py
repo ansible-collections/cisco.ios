@@ -19,7 +19,6 @@ created.
 """
 
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -49,7 +48,6 @@ class Vlans(ResourceModule):
         self.parsers = [
             "name",
             "state",
-            "mtu",
             "remote_span",
             "private_vlan.type",
             "private_vlan.associated",
@@ -116,27 +114,27 @@ class Vlans(ResourceModule):
 
         # if state is overridden, remove excluded vlans
         if self.state == "overridden":
-            excluded_vlans = {k: v for k, v in iteritems(haved) if k not in wantd or not wantd}
-            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
-            for k, have in iteritems(excluded_vlans):
+            excluded_vlans = {k: v for k, v in haved.items() if k not in wantd or not wantd}
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
+            for k, have in excluded_vlans.items():
                 self.purge(have, resource)
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state in ["deleted", "purged"]:
-            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
             wantd = {}
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 if k not in wantd:
                     self._compare(want={}, have=have, resource=resource)
 
         if self.state == "purged":
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 self.purge(have, resource)
         else:
-            for k, want in iteritems(wantd):
+            for k, want in wantd.items():
                 self._compare(want=want, have=haved.pop(k, {}), resource=resource)
 
     def _compare(self, want, have, resource=None):
@@ -146,7 +144,9 @@ class Vlans(ResourceModule):
         for the Vlans network resource.
         """
         begin = len(self.commands)
-        self.compare(parsers=self.parsers, want=want, have=have)
+        # Exclude 'mtu' from comparison if deleting VLANs as it is not supported
+        filtered_parsers = [p for p in self.parsers if not (self.state == "deleted" and p == "mtu")]
+        self.compare(parsers=filtered_parsers, want=want, have=have)
         if want.get("shutdown") != have.get("shutdown"):
             if want.get("shutdown"):
                 self.addcmd(want, "shutdown", True)
@@ -165,7 +165,9 @@ class Vlans(ResourceModule):
 
     def purge(self, have, resource):
         """Handle operation for purged state"""
-        if resource == "vlan_configuration":
+        if resource == "vlan_configuration" and any(
+            key in have for key in ["member", "private_vlan.type", "private_vlan.associated"]
+        ):
             self.commands.append(self._tmplt.render(have, resource, True))
         elif resource == "vlans":
             self.commands.append(self._tmplt.render(have, resource, True))

@@ -116,3 +116,4 @@ venv.bak/
 .DS_Store
 
 changelogs/.plugin-cache.yaml
+.ansible/.lock

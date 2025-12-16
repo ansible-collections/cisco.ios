@@ -15,7 +15,6 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -52,6 +51,10 @@ class L3_interfaces(ResourceModule):
             "ipv4.pool",
             "ipv4.dhcp",
             "ipv4.source_interface",
+            "ipv4.mtu",
+            "ipv4.redirects",
+            "ipv4.unreachables",
+            "ipv4.proxy_arp",
             "ipv6.address",
             "ipv6.autoconfig",
             "ipv6.dhcp",
@@ -121,6 +124,32 @@ class L3_interfaces(ResourceModule):
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
 
     def _compare_lists(self, want, have):
+        helper_address_dict_wantd = want.get("helper_addresses", {})
+        if helper_address_dict_wantd:
+            for value in ["ipv4"]:
+                for k, val in helper_address_dict_wantd.get(value, {}).items():
+                    hacl = have.get("helper_addresses", {}).get(value, {})
+                    hacl_val = hacl.pop(k, {})
+                    if hacl_val and hacl_val != val:
+                        self.compare(
+                            parsers=["helper_addresses_ipv4"],
+                            want={},
+                            have={value: hacl_val},
+                        )
+                    self.compare(
+                        parsers=["helper_addresses_ipv4"],
+                        want={value: val},
+                        have={value: hacl_val},
+                    )
+        helper_address_dict_haved = have.get("helper_addresses", {})
+        if helper_address_dict_haved:
+            for value in ["ipv4"]:
+                for k, val in helper_address_dict_haved.get(value, {}).items():
+                    self.compare(
+                        parsers=["helper_addresses_ipv4"],
+                        want={},
+                        have={value: val},
+                    )
         for afi in ("ipv4", "ipv6"):
             wacls = want.pop(afi, {})
             hacls = have.pop(afi, {})
@@ -191,9 +220,18 @@ class L3_interfaces(ResourceModule):
                 have["address"] = v4_addr_h
 
     def list_to_dict(self, param):
+        def list_to_dict_by_destination_ip(helper_list):
+            return {item["destination_ip"]: item for item in helper_list}
+
         if param:
-            for _k, val in iteritems(param):
+            for k, val in param.items():
                 val["name"] = normalize_interface(val["name"])
+                helper_addresses_dict = val.get("helper_addresses", {})
+                for value in ["ipv4"]:
+                    if value in helper_addresses_dict:
+                        helper_addresses_dict[value] = list_to_dict_by_destination_ip(
+                            helper_addresses_dict[value],
+                        )
                 if "ipv4" in val:
                     temp = {}
                     for each in val["ipv4"]:

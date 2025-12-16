@@ -50,6 +50,9 @@
                 slow_peer:
                   - detection:
                       threshold: 150
+              neighbors:
+                - neighbor_address: "10.1.1.2"
+                  activate: true
               network:
                 - address: 198.51.110.10
                   mask: 255.255.255.255
@@ -75,11 +78,6 @@
       ansible.builtin.assert:
         that:
           - "{{ overridden['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
-
-    # - name: Assert that after dict is correctly generated
-    #   ansible.builtin.assert:
-    #     that:
-    #       - overridden['after'] == result['after']
 
     - name: Override provided BGP address family configuration (idempotent)
       register: result

@@ -1,0 +1,14 @@
+---
+- name: REMOVE - any existing HSRP configuration - ensure clean state
+  cisco.ios.ios_hsrp_interfaces:
+    state: deleted
+
+- name: REMOVE - Created VLANs to populate standby configuration
+  register: result
+  cisco.ios.ios_interfaces:
+    config:
+      - name: Vlan70
+        description: "Test interfaces"
+      - name: Vlan100
+        description: "Test interfaces"
+    state: purged

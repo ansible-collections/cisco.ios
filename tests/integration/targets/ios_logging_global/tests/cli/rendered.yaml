@@ -64,7 +64,7 @@
           source_interface:
             - interface: GBit1/0
             - interface: CTunnel2
-          trap: errors
+          trap: informational
           userinfo: true
           logging_on: disable
         state: rendered

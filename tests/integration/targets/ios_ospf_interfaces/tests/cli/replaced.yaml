@@ -27,12 +27,24 @@
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ replaced['before'] | symmetric_difference(result['before']) | length == 0 }}"
+          - >
+            {{
+              result['before']
+              | selectattr('name', 'in', 'GigabitEthernet1,GigabitEthernet2,GigabitEthernet3,GigabitEthernet4')
+              | symmetric_difference(replaced['before'])
+              | length == 0
+            }}
 
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ replaced['after'] | symmetric_difference(result['after']) | length == 0 }}"
+          - >
+            {{
+              result['after']
+              | selectattr('name', 'in', 'GigabitEthernet1,GigabitEthernet2,GigabitEthernet3,GigabitEthernet4')
+              | symmetric_difference(replaced['after'])
+              | length == 0
+            }}
 
     - name: Replaced provided OSPF interfaces configuration (idempotent)
       register: result

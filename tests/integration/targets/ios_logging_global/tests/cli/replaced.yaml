@@ -19,6 +19,7 @@
             - host: 192.0.2.10
               filtered: true
               stream: 15
+          trap: errors
         state: replaced
 
     - name: Test - [replaced] assert that correct set of commands were generated

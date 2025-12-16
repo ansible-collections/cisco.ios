@@ -140,6 +140,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                                 },
                                             },
                                         },
+                                        "mldp": {"type": "bool"},
                                         "pim": {
                                             "type": "dict",
                                             "options": {
@@ -210,6 +211,12 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                             },
                                         },
                                         "threshold": {"type": "int"},
+                                        "mpls": {
+                                            "type": "dict",
+                                            "options": {
+                                                "mldp": {"type": "int"},
+                                            },
+                                        },
                                     },
                                 },
                                 "default": {
@@ -242,6 +249,7 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                         "use_bgp": {
                                             "type": "dict",
                                             "options": {
+                                                "set": {"type": "bool"},
                                                 "spt_only": {"type": "bool"},
                                             },
                                         },
@@ -251,6 +259,12 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                     "type": "dict",
                                     "options": {
                                         "ingress_replication": {"type": "bool"},
+                                        "mldp": {
+                                            "type": "dict",
+                                            "options": {
+                                                "p2mp": {"type": "bool"},
+                                            },
+                                        },
                                     },
                                 },
                                 "strict_rpf": {
@@ -1130,6 +1144,30 @@ class Vrf_address_familyArgs(object):  # pylint: disable=R0903
                                 "export": {"type": "str"},
                                 "import_config": {"type": "str"},
                                 "both": {"type": "str"},
+                                "exports": {
+                                    "type": "list",
+                                    "elements": "dict",
+                                    "options": {
+                                        "rt_value": {"type": "str"},
+                                        "stitching": {"type": "bool"},
+                                    },
+                                },
+                                "imports": {
+                                    "type": "list",
+                                    "elements": "dict",
+                                    "options": {
+                                        "rt_value": {"type": "str"},
+                                        "stitching": {"type": "bool"},
+                                    },
+                                },
+                                "both_options": {
+                                    "type": "list",
+                                    "elements": "dict",
+                                    "options": {
+                                        "rt_value": {"type": "str"},
+                                        "stitching": {"type": "bool"},
+                                    },
+                                },
                             },
                         },
                     },

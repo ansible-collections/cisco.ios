@@ -18,7 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -57,9 +56,29 @@ class L2_interfaces(ResourceModule):
             "voice.vlan",
             "voice.vlan_tag",
             "voice.vlan_name",
-            "mode",
             "trunk.encapsulation",
+            "mode",
             "trunk.native_vlan",
+            "private_vlan",
+            "app_interface",
+            "nonegotiate",
+            "vepa",
+            "host",
+            "protected",
+            "block_options.multicast",
+            "block_options.unicast",
+            "spanning_tree.bpdufilter",
+            "spanning_tree.bpduguard",
+            "spanning_tree.cost",
+            "spanning_tree.guard",
+            "spanning_tree.link_type",
+            "spanning_tree.mst",
+            "spanning_tree.port_priority",
+            "spanning_tree.portfast",
+            "spanning_tree.rootguard",
+            "spanning_tree.vlan",
+            "xconnect",
+            "encapsulation",
         ]
 
     def execute_module(self):
@@ -89,16 +108,16 @@ class L2_interfaces(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
             wantd = {}
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 if k not in wantd:
                     self._compare(want={}, have=have)
 
-        for k, want in iteritems(wantd):
+        for k, want in wantd.items():
             self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
@@ -108,7 +127,48 @@ class L2_interfaces(ResourceModule):
         for the L2_interfaces network resource.
         """
         begin = len(self.commands)
-        self.compare(parsers=self.parsers, want=want, have=have)
+        parsers = list(self.parsers)
+        have_mode = have.get("mode", "")
+        want_mode = want.get("mode", "")
+        have_trunk_encap = have.get("trunk", {}).get("encapsulation")
+        want_trunk_encap = want.get("trunk", {}).get("encapsulation")
+
+        have_xconnect = have.get("xconnect")
+        want_xconnect = want.get("xconnect")
+
+        have_encap = have.get("encapsulation")
+        want_encap = want.get("encapsulation")
+
+        reverse_order = False
+        if self.state in ["deleted", "purged"]:
+            reverse_order = True
+
+        elif self.state in ["replaced", "overridden"]:
+            if have_mode == "trunk" and (
+                want_mode != "trunk" or have_trunk_encap != want_trunk_encap
+            ):
+                reverse_order = True
+
+        REORDER_KEYS = [
+            "trunk.encapsulation",
+            "encapsulation",
+            "xconnect",
+        ]
+
+        if reverse_order:
+            for key in REORDER_KEYS:
+                if key in parsers:
+                    parsers.remove(key)
+                    parsers.insert(parsers.index("mode") + 1, key)
+        if self.state in ["replaced", "overridden", "deleted", "purged"]:
+            if have_xconnect and want_xconnect and have_xconnect != want_xconnect:
+                cmd = self._tmplt.render(have, "xconnect", False)
+                self.commands.append("no " + cmd)
+            if have_encap and want_encap and have_encap != want_encap:
+                cmd = self._tmplt.render(have, "encapsulation", False)
+                self.commands.append("no " + cmd)
+
+        self.compare(parsers=parsers, want=want, have=have)
         self.compare_list(want, have)
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
@@ -147,7 +207,7 @@ class L2_interfaces(ResourceModule):
 
     def process_list_attrs(self, param):
         if param:
-            for _k, val in iteritems(param):
+            for k, val in param.items():
                 val["name"] = normalize_interface(val["name"])
                 if val.get("trunk"):
                     for vlan in ["allowed_vlans", "pruning_vlans"]:

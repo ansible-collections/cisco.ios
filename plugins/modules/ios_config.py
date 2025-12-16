@@ -47,7 +47,21 @@ options:
         idempotency and correct diff. Be sure to note the configuration command syntax as
         some commands are automatically modified by the device config parser.
     type: list
-    elements: str
+    elements: raw
+    suboptions:
+      config_line:
+        required: false
+        type: str
+        description: use to specify config lines when options are required to declare,works sames as lines
+      prompt:
+        required: false
+        type: str
+        description: prompt message to handle while editng configurations on device in configration mode
+      answer:
+        required: false
+        type: str
+        description: answer to send to device in order to handle prompt on device in configration mode
+
     aliases:
       - commands
   parents:
@@ -316,6 +330,49 @@ EXAMPLES = """
       filename: backup.cfg
       dir_path: /home/user
 
+- name: Configure Access Session Attributes while handlening prompt
+  cisco.ios.ios_config:
+    lines:
+      - config_line: access-session authentication attributes filter-spec include list test_filter
+      - config_line: access-session accounting attributes filter-spec include list test_filter
+        prompt: "Do you wish to continue? [yes]:"
+        answer: "yes"
+    save_when: "changed"
+
+# Task Output :
+# --------
+#
+# banners: {}
+#  commands:
+#  - access-session authentication attributes filter-spec include list mylist
+#  - access-session accounting attributes filter-spec include list mylist
+#  invocation:
+#    module_args:
+#      after: null
+#     backup: false
+#      backup_options: null
+#      before: null
+#      defaults: false
+#      diff_against: null
+#      diff_ignore_lines: null
+#      intended_config: null
+#      lines:
+#      - config_line: access-session authentication attributes filter-spec include list mylist
+#      - answer: "yes"
+#        config_line: access-session accounting attributes filter-spec include list mylist
+#        prompt: "Do you wish to continue? [yes]:"
+#      match: line
+#      multiline_delimiter: '@'
+#      parents: null
+#      replace: line
+#      running_config: null
+#      save_when: changed
+#      src: null
+#  updates:
+#  - access-session authentication attributes filter-spec include list mylist
+#  - access-session accounting attributes filter-spec include list mylist
+
+
 # Example ios_template.j2
 # ip access-list extended test
 #  permit ip host 192.0.2.1 any log
@@ -385,13 +442,16 @@ def check_args(module, warnings):
             module.fail_json(msg="multiline_delimiter value can only be a single character")
 
 
-def edit_config_or_macro(connection, commands):
+def edit_config_or_macro(connection, commands, config_prompt_lines):
     # only catch the macro configuration command,
     # not negated 'no' variation.
     if commands[0].startswith("macro name"):
         connection.edit_macro(candidate=commands)
     else:
-        connection.edit_config(candidate=commands)
+        if config_prompt_lines:
+            connection.edit_config_with_prompt(candidate=config_prompt_lines)
+        else:
+            connection.edit_config(candidate=commands)
 
 
 def get_candidate_config(module):
@@ -399,9 +459,16 @@ def get_candidate_config(module):
     if module.params["src"]:
         candidate = module.params["src"]
     elif module.params["lines"]:
+        lines = []
+        for item in module.params["lines"]:
+            if isinstance(item, dict):
+                if item.get("config_line"):
+                    lines.append(item.get("config_line"))
+            else:
+                lines.append(item)
         candidate_obj = NetworkConfig(indent=1)
         parents = module.params["parents"] or list()
-        candidate_obj.add(module.params["lines"], parents=parents)
+        candidate_obj.add(lines=lines, parents=parents)
         candidate = dumps(candidate_obj, "raw")
     return candidate
 
@@ -429,9 +496,14 @@ def save_config(module, result):
 def main():
     """main entry point for module execution"""
     backup_spec = dict(filename=dict(), dir_path=dict(type="path"))
+    line_spec = dict(
+        config_line=dict(type="str", required=False),
+        prompt=dict(type="str", required=False),
+        answer=dict(type="str", required=False),
+    )
     argument_spec = dict(
         src=dict(type="str"),
-        lines=dict(aliases=["commands"], type="list", elements="str"),
+        lines=dict(aliases=["commands"], type="list", elements="raw", options=line_spec),
         parents=dict(type="list", elements="str"),
         before=dict(type="list", elements="str"),
         after=dict(type="list", elements="str"),
@@ -507,7 +579,35 @@ def main():
             # them with the current running config
             if not module.check_mode:
                 if commands:
-                    edit_config_or_macro(connection, commands)
+                    configs = []
+                    if module.params["lines"]:
+                        for item in module.params["lines"]:
+                            if isinstance(item, dict):
+                                for command in commands:
+                                    if (
+                                        module.params["before"]
+                                        and command in module.params["before"]
+                                    ):
+                                        before_commands = {
+                                            "config_line": command,
+                                        }  # add before commands as dictonary type to config lines
+                                        configs[:0].append(before_commands)
+                                    if (
+                                        module.params["parents"]
+                                        and command in module.params["parents"]
+                                    ):
+                                        parent_lines = {"config_line": command}
+                                        configs.append(parent_lines)
+                                    if command == item.get("config_line"):
+                                        configs.append(item)
+                                    if module.params["after"] and command in module.params["after"]:
+                                        after_lines = {"config_line": command}
+                                        configs.extend(after_lines)
+                                edit_config_or_macro(connection, commands, configs)
+                            else:
+                                edit_config_or_macro(connection, commands, configs)
+                    elif module.params["src"]:
+                        edit_config_or_macro(connection, commands, configs)
                 if banner_diff:
                     connection.edit_banner(
                         candidate=json.dumps(banner_diff),

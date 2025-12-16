@@ -157,6 +157,9 @@ options:
                             description: Enable PIM Hellos over MDT interface
                             type: bool
                       mdt_hello_enable: *mdt_hello_enable
+                  mldp:
+                    description: Use MLDP for MDT auto-discovery.
+                    type: bool
                   pim:
                     description: BGP auto-discovery for PIM
                     type: dict
@@ -201,6 +204,13 @@ options:
                             description: IP Named Extended Access list
                             type: str
                   list: *list
+                  mpls:
+                    description: Configure MPLS for data MDT
+                    type: dict
+                    suboptions:
+                      mldp:
+                        description: Use MLDP for MPLS data MDT
+                        type: int
                   threshold:
                     description: MDT switching threshold
                     type: int
@@ -245,6 +255,9 @@ options:
                     description: Use BGP for MDT overlay signaling
                     type: dict
                     suboptions:
+                      set:
+                        description: Enable the use of BGP for MDT overlay.
+                        type: bool
                       spt_only:
                         description: Enable SPT-only ASM mode
                         type: bool
@@ -255,6 +268,13 @@ options:
                   ingress_replication:
                     description: Use Ingress-Replication for the partitioned MDT
                     type: bool
+                  mldp:
+                    description: Use MLDP for the partitioned MDT.
+                    type: dict
+                    suboptions:
+                      p2mp:
+                        description: Enable P2MP for partitioned MLDP MDT.
+                        type: bool
               strict_rpf:
                 description: Enable strict RPF check
                 type: dict
@@ -462,14 +482,56 @@ options:
             type: dict
             suboptions:
               export:
-                description: Export Target-VPN community.
+                description:
+                  - This option is DEPRECATED and is replaced with exports which
+                    accepts list of dict input.
                 type: str
               import_config:
-                description: Export Target-VPN community.
+                description:
+                 - This option is DEPRECATED and is replaced with imports which
+                   accepts list of dict input.
                 type: str
               both:
-                description: Both export and import Target-VPN community
+                description:
+                  - This option is DEPRECATED and is replaced with both_options which
+                    accepts list of dict input.
                 type: str
+              exports:
+                description: Export Target-VPN community.
+                type: list
+                elements: dict
+                suboptions:
+                  rt_value:
+                    description: Export Target-VPN community.
+                    type: str
+                  stitching:
+                    description: Export Target-VPN community.
+                    type: bool
+
+              imports:
+                description: Export Target-VPN community.
+                type: list
+                elements: dict
+                suboptions:
+                  rt_value:
+                    description: Export Target-VPN community.
+                    type: str
+                  stitching:
+                    description: Export Target-VPN community.
+                    type: bool
+
+              both_options:
+                description: Both export and import Target-VPN community
+                type: list
+                elements: dict
+                suboptions:
+                  rt_value:
+                    description: Export Target-VPN community.
+                    type: str
+                  stitching:
+                    description: Export Target-VPN community.
+                    type: bool
+
   running_config:
     description:
       - This option is used only with state I(parsed).

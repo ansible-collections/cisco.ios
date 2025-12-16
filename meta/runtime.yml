@@ -27,6 +27,8 @@ plugin_routing:
       redirect: cisco.ios.ios_l2_interfaces
     l3_interfaces:
       redirect: cisco.ios.ios_l3_interfaces
+    hsrp_interfaces:
+      redirect: cisco.ios.ios_hsrp_interfaces
     lacp:
       redirect: cisco.ios.ios_lacp
     lacp_interfaces:
@@ -71,4 +73,4 @@ plugin_routing:
       redirect: cisco.ios.ios_vrf_address_family
     vrf_global:
       redirect: cisco.ios.ios_vrf_global
-requires_ansible: ">=2.15.0"
+requires_ansible: ">=2.16.0"

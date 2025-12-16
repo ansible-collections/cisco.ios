@@ -1,3 +1,0 @@
----
-minor_changes:
-  - Added ios_vrf_interfaces resource module,that helps with configuration of vrfs within interface

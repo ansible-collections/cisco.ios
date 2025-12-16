@@ -132,6 +132,25 @@ class Bgp_address_family(ResourceModule):
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
+        if self.state in ["overridden", "replaced"]:
+            all_neighbors_to_delete = set()
+
+            for af_key, have_af_val in haved.get("address_family", {}).items():
+                want_af_val = wantd.get("address_family", {}).get(af_key)
+
+                if self.state == "overridden" and want_af_val is None:
+                    all_neighbors_to_delete.update(have_af_val.get("neighbors", {}).keys())
+                    continue
+
+                if want_af_val and "neighbors" in want_af_val:
+                    have_neighbors = set(have_af_val.get("neighbors", {}).keys())
+                    want_neighbors = set(want_af_val.get("neighbors", {}).keys())
+                    neighbors_to_remove_from_af = have_neighbors - want_neighbors
+                    all_neighbors_to_delete.update(neighbors_to_remove_from_af)
+
+            for neighbor_addr in all_neighbors_to_delete:
+                self.addcmd({"neighbor_address": neighbor_addr}, "neighbor_address", True)
+
         if self.state == "deleted":
             for k, have in haved.get("address_family", {}).items():
                 if wantd.get("address_family"):
@@ -183,6 +202,7 @@ class Bgp_address_family(ResourceModule):
         # add af command
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "afi", False))
+            self.commands.append("exit-address-family")
 
     def _compare_redist_ospf(self, _parser, w_attr, h_attr):
         """
@@ -289,8 +309,6 @@ class Bgp_address_family(ResourceModule):
                             have_rmps["neighbor_address"] = have_nbr.get("neighbor_address")
                             have_rmps = {i: have_rmps}
                         self.compare(parsers=[i], want={i: w_rmps}, have=have_rmps)
-        for name, h_neighbor in have.items():
-            self.compare(parsers="neighbor_address", want={}, have=h_neighbor)
 
     def _compare_network_lists(self, w_attr, h_attr):
         """Handling of network list options."""
@@ -328,6 +346,8 @@ class Bgp_address_family(ResourceModule):
 
         af_data = {}
         for af in tmp_data:
+            if af.get("afi") in ["ipv4", "ipv6"] and not af.get("safi"):
+                af["safi"] = "unicast"
             _af = {}
             for k, tval in af.items():
                 val = deepcopy(tval)

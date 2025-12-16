@@ -1,0 +1,45 @@
+---
+name: "Integration tests with CML - paramiko 💻"
+on:
+  pull_request_target:
+    branches: [main]
+    types:
+      - labeled
+      - opened
+      - reopened
+      - synchronize
+    paths:
+      - "plugins/**"
+      - "tests/integration/**"
+  workflow_dispatch:
+jobs:
+  lab-create:
+    uses: ansible/ansible-content-actions/.github/workflows/cml_lab_create.yaml@main
+    with:
+      topology_path: tests/integration/labs/multi.yaml
+      # lab_title_override: "Optional custom lab title"
+    secrets:
+      virl_host: ${{ secrets.VIRL_HOST }}
+      virl_username: ${{ secrets.VIRL_USERNAME }}
+      virl_password: ${{ secrets.VIRL_PASSWORD }}
+
+  integration-tests-paramiko:
+    needs: lab-create
+    strategy:
+      fail-fast: true
+      matrix:
+        ansible_version: ["stable-2.16", "stable-2.18", "stable-2.19", "milestone", "devel"]
+    uses: ansible/ansible-content-actions/.github/workflows/cml_network_integration.yaml@main
+    with:
+      ansible_version: ${{ matrix.ansible_version }}
+      lab_nodes: ${{ needs.lab-create.outputs.lab_nodes_json }}
+      cli_ssh_type: paramiko
+
+  lab-destroy:
+    if: ${{ always() }}
+    needs: integration-tests-paramiko
+    uses: ansible/ansible-content-actions/.github/workflows/cml_lab_destroy.yaml@main
+    secrets:
+      virl_host: ${{ secrets.VIRL_HOST }}
+      virl_username: ${{ secrets.VIRL_USERNAME }}
+      virl_password: ${{ secrets.VIRL_PASSWORD }}

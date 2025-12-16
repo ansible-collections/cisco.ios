@@ -259,7 +259,7 @@ class TestIosRouteMapsModule(TestIosModule):
                                         exact_match=True,
                                         name=["new_replace"],
                                     ),
-                                    ip=dict(address=dict(acls=[10, 100])),
+                                    ip=dict(address=dict(acls=[10, 20, 30])),
                                     length=dict(maximum=50000, minimum=5000),
                                     mpls_label=True,
                                     policy_lists=["ip_policy"],
@@ -328,11 +328,13 @@ class TestIosRouteMapsModule(TestIosModule):
         )
         commands = [
             "route-map test_1 deny 10",
-            "no description this is test",
+            "no description",
             "continue 20",
             "description this is replace test",
             "match community new_replace exact-match",
+            "match ip address 20 30",
             "match length 5000 50000",
+            "no match ip address 100",
             "no match mdt-group 25 30",
             "no match community 98 99 test_1 test_2 exact-match",
             "no match extcommunity 110 130",
@@ -539,7 +541,7 @@ class TestIosRouteMapsModule(TestIosModule):
         )
         commands = [
             "route-map test_1 deny 10",
-            "no description this is test",
+            "no description",
             "continue 20",
             "description this is override test",
             "match community new_override exact-match",
@@ -573,6 +575,7 @@ class TestIosRouteMapsModule(TestIosModule):
             "match security-group source tag 10 20",
             "match local-preference 105 55",
             "match mpls-label",
+            "no route-map TO_OUT",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
@@ -657,6 +660,29 @@ class TestIosRouteMapsModule(TestIosModule):
                         ],
                         route_map="test_1",
                     ),
+                    dict(
+                        route_map="TO_OUT",
+                        entries=[
+                            dict(
+                                sequence=10,
+                                action="permit",
+                                match=dict(
+                                    ip=dict(
+                                        address=dict(
+                                            acls=["185", "186"],
+                                        ),
+                                    ),
+                                ),
+                                set=dict(
+                                    as_path=dict(
+                                        prepend=dict(
+                                            as_number=["1321"],
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
                 ],
                 state="overridden",
             ),
@@ -671,7 +697,10 @@ class TestIosRouteMapsModule(TestIosModule):
 
     def test_ios_route_maps_delete_without_config(self):
         set_module_args(dict(state="deleted"))
-        commands = ["no route-map test_1"]
+        commands = [
+            "no route-map test_1",
+            "no route-map TO_OUT",
+        ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
@@ -819,3 +848,41 @@ class TestIosRouteMapsModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
+
+    def test_ios_route_maps_replaced_acl_removal(self):
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TO_OUT",
+                        entries=[
+                            dict(
+                                sequence=10,
+                                action="permit",
+                                match=dict(
+                                    ip=dict(
+                                        address=dict(
+                                            acls=["185"],
+                                        ),
+                                    ),
+                                ),
+                                set=dict(
+                                    as_path=dict(
+                                        prepend=dict(
+                                            as_number=["1321"],
+                                        ),
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            "route-map TO_OUT permit 10",
+            "no match ip address 186",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))

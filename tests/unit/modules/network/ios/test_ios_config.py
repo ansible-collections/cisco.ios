@@ -196,13 +196,36 @@ class TestIosConfigModule(TestIosModule):
         commands = ["hostname router"]
         self.execute_module(changed=True, commands=commands)
 
+    def test_ios_config_prompt(self):
+        lines = [
+            {
+                "config_line": "access-session accounting attributes filter-spec include list myVLANList",
+                "prompt": "Do you wish to continue\\? \\[yes]:",
+                "answer": "yes",
+            },
+        ]
+        set_module_args(dict(lines=lines, save_when="changed"))
+        module = MagicMock()
+        module.params = {"lines": lines, "src": None, "parents": None}
+        candidate_config = ios_config.get_candidate_config(module)
+
+        self.conn.get_diff = MagicMock(
+            return_value=self.cliconf_obj.get_diff(
+                candidate_config,
+                self.running_config,
+            ),
+        )
+
+        commands = ["access-session accounting attributes filter-spec include list myVLANList"]
+        self.execute_module(changed=True, commands=commands)
+
     def test_ios_config_replace_block(self):
         lines = ["description test string", "test string"]
         parents = ["interface GigabitEthernet0/0"]
         set_module_args(dict(lines=lines, replace="block", parents=parents))
 
         module = MagicMock()
-        module.params = {"lines": lines, "parents": parents, "src": None}
+        module.params = {"lines": lines, "parents": parents, "src": None, "before": None}
         candidate_config = ios_config.get_candidate_config(module)
 
         self.conn.get_diff = MagicMock(

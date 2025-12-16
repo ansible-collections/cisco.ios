@@ -178,7 +178,7 @@
   register: result_purge
   cisco.ios.ios_user:
     aggregate:
-      - name: cisco
+      - name: "{{ ansible_user }}"
     purge: true
 
 - ansible.builtin.assert:

@@ -1,0 +1,99 @@
+---
+- name: POPULATE - Create VLANs to populate standby configuration
+  register: result
+  cisco.ios.ios_interfaces:
+    config:
+      - name: Vlan70
+        description: "Test interfaces"
+      - name: Vlan100
+        description: "Test interfaces"
+    state: merged
+
+- name: POPULATE - Populate the device with HSRP interface configuration
+  cisco.ios.hsrp_interfaces:
+    state: replaced
+    config:
+      - delay:
+          minimum: 5555
+          reload: 556
+        mac_refresh: 45
+        name: Vlan70
+        redirect:
+          advertisement:
+            authentication:
+              key_chain: HSRP_CHAIN
+          timers:
+            adv_timer: 10
+            holddown_timer: 55
+        standby_options:
+          - authentication:
+              encryption: 7
+              key_string: 0123456789ABCDEF
+            follow: MASTER_GROUP
+            group_name: PRIMARY_GROUP
+            group_no: 10
+            ip:
+              - secondary: true
+                virtual_ip: 10.0.10.2
+            preempt:
+              delay: true
+              enabled: true
+              minimum: 100
+              reload: 50
+              sync: 30
+            priority: 110
+            timers:
+              hold_time: 250
+              msec:
+                hello_interval: 200
+            track:
+              - decrement: 20
+                track_no: 1
+          - follow: MASTER_GROUP
+            group_name: IPV6_GROUP
+            group_no: 20
+            ipv6:
+              addresses:
+                - "2001:DB8:20::1/64"
+              autoconfig: true
+            mac_address: 0000.0000.0014
+            priority: 120
+        version: 2
+      - delay:
+          minimum: 100
+          reload: 200
+        name: Vlan100
+        standby_options:
+          - authentication:
+              password_text: hello_secret
+            group_name: BACKUP_GROUP
+            group_no: 5
+            ip:
+              - virtual_ip: 192.168.1.1
+            preempt:
+              enabled: true
+            priority: 150
+            timers:
+              hello_interval: 5
+              hold_time: 15
+            track:
+              - decrement: 30
+                track_no: 10
+        version: 2
+      - name: GigabitEthernet3
+        standby_options:
+          - group_no: 1
+            ip:
+              - virtual_ip: 172.16.1.1
+            priority: 100
+        version: 1
+      - name: GigabitEthernet2
+        standby_options:
+          - authentication:
+              key_chain: AUTH_CHAIN
+            group_no: 2
+            ip:
+              - secondary: true
+                virtual_ip: 172.16.2.1
+            priority: 100
+        version: 1

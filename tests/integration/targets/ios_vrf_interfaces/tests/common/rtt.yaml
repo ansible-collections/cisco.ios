@@ -5,6 +5,39 @@
 - ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
+    - name: Configure vrf B
+      cisco.ios.ios_config:
+        lines:
+          - vrf definition vrf_B
+      retries: 2
+      delay: 10
+
+    - name: Wait for VRF
+      ansible.builtin.wait_for:
+        timeout: 2
+
+    - name: Configure vrf C
+      cisco.ios.ios_config:
+        lines:
+          - vrf definition vrf_C
+      retries: 2
+      delay: 10
+
+    - name: Wait for VRF
+      ansible.builtin.wait_for:
+        timeout: 2
+
+    - name: Configure vrf D
+      cisco.ios.ios_config:
+        lines:
+          - vrf definition vrf_D
+      retries: 2
+      delay: 10
+
+    - name: Wait for VRF
+      ansible.builtin.wait_for:
+        timeout: 2
+
     - name: Apply the provided configuration (base config)
       register: base_config
       cisco.ios.ios_vrf_interfaces:

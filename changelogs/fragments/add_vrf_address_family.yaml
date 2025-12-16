@@ -1,3 +1,0 @@
----
-minor_changes:
-  - Adds a new module `ios_vrf_address_family` to manage VRFs address families on Cisco IOS devices.
