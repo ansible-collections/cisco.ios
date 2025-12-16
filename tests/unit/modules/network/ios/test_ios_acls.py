@@ -187,6 +187,9 @@ class TestIosAclsModule(TestIosModule):
             "deny ip any any log-input test_logInput",
             "ip access-list extended test_pre",
             "20 permit ip any any precedence immediate",
+            "30 permit tcp 2.2.2.2 3.3.3.3 range 23 22 host 1.1.1.1 eq 9422 ack fin precedence immediate",
+            "ipv6 access-list R1_TRAFFIC",
+            "permit ipv6 2001:DB8:AB00::/40 2001:DB8:AB00::/48 sequence 300",
             "ip access-list extended test_service_og",
             "10 permit object-group test_service_og object-group test_src_network_og object-group test_dst_network_og",
         ]

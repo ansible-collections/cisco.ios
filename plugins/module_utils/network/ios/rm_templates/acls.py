@@ -289,8 +289,8 @@ class AclsTemplate(NetworkTemplate):
                         (\sevaluate\s(?P<evaluate>\S+))?
                         (\s(?P<protocol_num>\d+)\s)?
                         (\sobject-group\s(?P<service_obj_grp>\S+))?
-                        (\s*(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipinip|ipv6|ip|nos|ospf|pcp|pim|sctp|tcp|ip|udp))?
-                        ((\s*(?P<source_any>any))|
+                        (\s*(?P<protocol>ahp|eigrp|esp|gre|icmp|igmp|ipinip|ipv6|ip|nos|ospf|pcp|pim|sctp|tcp|udp))?
+                        (?:(\s*(?P<source_any>any))|
                         (\s*object-group\s(?P<source_obj_grp>\S+))|
                         (\s*host\s(?P<source_host>\S+))|
                         (\s*(?P<ipv6_source_address>\S+/\d+))|
@@ -342,8 +342,8 @@ class AclsTemplate(NetworkTemplate):
                                 "evaluate": "{{ evaluate }}",
                                 "protocol": "{{ protocol }}",
                                 "protocol_number": "{{ protocol_num }}",
-                                "icmp_igmp_tcp_protocol": "{{ icmp_igmp_tcp_protocol }}",
                                 "service_object_group": "{{ service_obj_grp }}",
+                                "protocol_options": "{{ tcp_flags if tcp_flags is defined else icmp_igmp_protocol }}",
                                 "source": {
                                     "address": "{{ source_address }}",
                                     "ipv6_address": "{{ ipv6_source_address }}",
