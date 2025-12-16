@@ -16,7 +16,6 @@ import socket
 from itertools import count, groupby
 
 from ansible.module_utils.common.network import is_masklen, to_netmask
-from ansible.module_utils.six import iteritems
 
 
 def remove_command_from_config_list(interface, cmd, commands):
@@ -71,7 +70,7 @@ def new_dict_to_set(input_dict, temp_list, test_set, count=0):
     test_dict = dict()
     if isinstance(input_dict, dict):
         input_dict_len = len(input_dict)
-        for k, v in sorted(iteritems(input_dict)):
+        for k, v in sorted(input_dict.items()):
             count += 1
             if isinstance(v, list):
                 temp_list.append(k)
@@ -85,26 +84,26 @@ def new_dict_to_set(input_dict, temp_list, test_set, count=0):
                 if v is not None:
                     test_dict.update({k: v})
                 try:
-                    if tuple(iteritems(test_dict)) not in test_set and count == input_dict_len:
-                        test_set.add(tuple(iteritems(test_dict)))
+                    if tuple(test_dict.items()) not in test_set and count == input_dict_len:
+                        test_set.add(tuple(test_dict.items()))
                         count = 0
                 except TypeError:
                     temp_dict = {}
 
                     def expand_dict(dict_to_expand):
                         temp = dict()
-                        for k, v in iteritems(dict_to_expand):
+                        for k, v in dict_to_expand.items():
                             if isinstance(v, dict):
                                 expand_dict(v)
                             else:
                                 if v is not None:
                                     temp.update({k: v})
-                                temp_dict.update(tuple(iteritems(temp)))
+                                temp_dict.update(tuple(temp.items()))
 
                     new_dict = {k: v}
                     expand_dict(new_dict)
-                    if tuple(iteritems(temp_dict)) not in test_set:
-                        test_set.add(tuple(iteritems(temp_dict)))
+                    if tuple(temp_dict.items()) not in test_set:
+                        test_set.add(tuple(temp_dict.items()))
     return test_dict
 
 
@@ -114,28 +113,28 @@ def dict_to_set(sample_dict, sort_dictionary=False):
     # Generate a set with passed dictionary for comparison
     test_dict = dict()
     if isinstance(sample_dict, dict):
-        for k, v in iteritems(sample_dict):
+        for k, v in sample_dict.items():
             if v is not None:
                 if isinstance(v, list):
                     if isinstance(v[0], dict):
                         li = []
                         for each in v:
-                            for key, value in iteritems(each):
+                            for key, value in each.items():
                                 if isinstance(value, list):
                                     each[key] = tuple(value)
-                            li.append(tuple(iteritems(each)))
+                            li.append(tuple(each.items()))
                         v = tuple(li)
                     else:
                         v = tuple(v)
                 elif isinstance(v, dict):
                     li = []
-                    for key, value in iteritems(v):
+                    for key, value in v.items():
                         if isinstance(value, list):
                             v[key] = tuple(value)
-                    li.extend(tuple(iteritems(v)))
+                    li.extend(tuple(v.items()))
                     v = tuple(li)
                 test_dict.update({k: v})
-        return_set = set(tuple(iteritems(test_dict)))
+        return_set = set(tuple(test_dict.items()))
     else:
         return_set = set(sample_dict)
     return return_set
@@ -148,9 +147,9 @@ def filter_dict_having_none_value(want, have):
     if name:
         test_dict["name"] = name
     diff_ip = False
-    for k, v in iteritems(want):
+    for k, v in want.items():
         if isinstance(v, dict):
-            for key, value in iteritems(v):
+            for key, value in v.items():
                 test_key_dict = dict()
                 if value is None:
                     if have.get(k):
@@ -168,7 +167,7 @@ def filter_dict_having_none_value(want, have):
                 if test_key_dict:
                     test_dict.update({k: test_key_dict})
         if isinstance(v, list):
-            for key, value in iteritems(v[0]):
+            for key, value in v[0].items():
                 test_key_dict = dict()
                 if value is None:
                     if have.get(k) and key in have.get(k):
@@ -219,7 +218,7 @@ def flatten_dict(x):
     if not isinstance(x, dict):
         return result
 
-    for key, value in iteritems(x):
+    for key, value in x.items():
         if isinstance(value, dict):
             result.update(flatten_dict(value))
         else:
@@ -423,7 +422,7 @@ def get_ranges(data):
     Returns a generator object that yields lists of
     consecutive integers from a list of integers.
     """
-    for _k, group in groupby(data, lambda t, c=count(): int(t) - next(c)):
+    for k, group in groupby(data, lambda t, c=count(): int(t) - next(c)):
         yield list(group)
 
 

@@ -5,7 +5,6 @@ __metaclass__ = type
 
 import re
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
@@ -66,7 +65,7 @@ def _tmplt_ospf_area_authentication(config_data):
 def _tmplt_ospf_area_filter(config_data):
     if "filter_list" in config_data:
         command = []
-        for key, value in iteritems(config_data.get("filter_list")):
+        for key, value in config_data.get("filter_list").items():
             cmd = "area {area_id}".format(**config_data)
             if value.get("name") and value.get("direction"):
                 cmd += " filter-list prefix {name} {direction}".format(**value)
@@ -109,7 +108,7 @@ def _tmplt_ospf_area_nssa_translate(config_data):
 def _tmplt_ospf_area_ranges(config_data):
     if "ranges" in config_data:
         commands = []
-        for k, v in iteritems(config_data["ranges"]):
+        for k, v in config_data["ranges"].items():
             cmd = "area {area_id} range".format(**config_data)
             temp_cmd = " {address} {netmask}".format(**v)
             if "advertise" in v:
@@ -232,7 +231,7 @@ def _tmplt_ospf_distance_ospf(config_data):
 def _tmplt_ospf_distribute_list_acls(config_data):
     if "acls" in config_data.get("distribute_list"):
         command = []
-        for k, v in iteritems(config_data["distribute_list"]["acls"]):
+        for k, v in config_data["distribute_list"]["acls"].items():
             cmd = "distribute-list {name} {direction}".format(**v)
             if "interface" in v:
                 cmd += " {interface}".format(**v)

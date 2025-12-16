@@ -4,6 +4,171 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v11.2.0
+=======
+
+Minor Changes
+-------------
+
+- ios_l2_interfaces - Added xconnect and encapsulation attributes for L2VPN pseudowire and MPLS services configuration.
+
+Bugfixes
+--------
+
+- cisco.ios.ios_acls - Added support for converting numeric protocol values to real protocol options when gathered from the device.
+- cisco.ios.ios_acls - Gathered state showing incomplete configuration.
+- cisco.ios.ios_hsrp_intefaces - Considers version 1 as default if configuration does not specify version.
+- cisco.ios.ios_hsrp_intefaces - Corrects idempotency issue when version is not specified in configuration.
+- cisco.ios.ios_l2_interfaces - Moved mode parser to below the trunk parsers.
+
+v11.1.1
+=======
+
+Bugfixes
+--------
+
+- cisco.ios.ios_bgp_address_family - Encrypted strings as password are not evaluated rather treated as string forcefully.
+- cisco.ios.ios_hsrp_interfaces - Fixed default values for version and priority.
+- cisco.ios.ios_hsrp_interfaces - Fixed overridden state to be idempotent with ipv6 configuration.
+- cisco.ios.ios_hsrp_interfaces - Fixed parsers to group HSRP configuration and optimize parsing time.
+- cisco.ios.ios_hsrp_interfaces - Fixed removal of HSRP configuration when state is deleted, replaced, overridden.
+- cisco.ios.ios_hsrp_interfaces - Fixed rendered output for standby redirect advertisement authentication key-chain.
+- cisco.ios.ios_hsrp_interfaces - Fixed rendered output for standby redirect advertisement authentication key-string with encryption.
+- cisco.ios.ios_hsrp_interfaces - Fixed rendered output for standby redirect advertisement authentication.
+- cisco.ios.ios_hsrp_interfaces - Handle operation of list attributes like ipv6, ip, track.
+- cisco.ios.ios_l2_interfaces - Add private-vlan support to switchport.
+
+Documentation Changes
+---------------------
+
+- Updated documentation for cisco.ios.ios_hsrp_interfaces module, with examples for all parameters.
+
+v11.1.0
+=======
+
+Minor Changes
+-------------
+
+- ios_config - added answering prompt functionality while working in config mode on ios device
+- ios_facts - Add chassis_id value to ansible_net_neighbors dictionary for lldp neighbours.
+
+Bugfixes
+--------
+
+- Fixed an issue where configuration within an address family (ipv6) was ignored by the parser.
+- cisco.ios.ios_vrf_global - fixed issue preventing idempotent configuration of multiple import/export route-targets for a VRF.
+- ios_hsrp_interfaces - Device defaults version to 1 if standby_groups is present but version is not configured. and module would also consider priority as 100 if not configured, to maintain idempotency.
+- ios_hsrp_interfaces - Fixed operation for ipv6 standby configuration.
+- ios_static_routes - Fix parsing of static routes with interface and distance in gathered state
+
+v11.0.0
+=======
+
+Release Summary
+---------------
+
+With this release, the minimum required version of `ansible.netcommon` for this collection is `>=8.1.0`. The last version known to be compatible with `ansible-core<=2.18.x` is ansible.netcommon `v8.0.1` and cisco.ios `v10.1.1`.
+
+Major Changes
+-------------
+
+- Bumping `dependencies` of ansible.netcommon to `>=8.1.0`, since previous versions of the dependency had compatibility issues with `ansible-core>=2.19`.
+
+Bugfixes
+--------
+
+- ios_vrf_address_family - fixed an issue where the module failed to gather `mdt` configuration options.
+
+v10.1.1
+=======
+
+Bugfixes
+--------
+
+- cisco.ios.ios_acls - Added default acls to not get updated/removed in any state.
+- cisco.ios.ios_hsrp_interfaces - Fix module operation around the preempt attributes, also addressed issues around command ordering.
+- cisco.ios.ios_l3_interfaces - Fixed Helper Address command support for l3 interface.
+- cisco.ios.ios_ospfv2 - Fix ospf admin distance parameter and fix other distance specific attributes to be optional.
+- cisco.ios.ios_vlans - Fixed errors during VLAN overrides where primary VLANs have private VLAN associations referencing non-existent or higher VLAN IDs, ensuring smoother private VLAN handling and preventing module failures.
+- ios_bgp_address_family - Refined state handling for `replaced` and `overridden` modes and enhanced address-family parsing to accurately differentiate between types such as unicast, multicast, and others.
+- ios_static_routes - Add missing interface names in parser
+- ios_vrf_address_family - Added support for parsing the `stitching` attribute under route targets when gathering facts. Enhanced handling of `import_config` and `export` and renamed them to `imports` and `exports` to consistently represent them as lists of dictionaries during fact collection.
+
+Documentation Changes
+---------------------
+
+- ios_hsrp_interfaces - Corrected the version_added information and enhanced the documentation for subnet-related parameters.
+
+v10.1.0
+=======
+
+Minor Changes
+-------------
+
+- ios_hsrp_interfaces - Added support for cisco.ios.hsrp_interfaces module (standby commands).
+
+Bugfixes
+--------
+
+- cisco.ios.ios_interfaces - Improved handling of the `enabled` state to prevent incorrect `shutdown` or `no shutdown` commands during configuration changes.
+- ios_acls - Fix issue where commands were not being parsed correctly and incorrect commands were being generated.
+- ios_bgp_address_family - fix configuration of neighbor's as-override split-horizon.
+
+v10.0.0
+=======
+
+Release Summary
+---------------
+
+With this release, the minimum required version of `ansible-core` for this collection is `2.16.0`. The last version known to be compatible with `ansible-core` versions below `2.16` is v9.2.0.
+
+Major Changes
+-------------
+
+- Bumping `requires_ansible` to `>=2.16.0`, since previous ansible-core versions are EoL now.
+
+Minor Changes
+-------------
+
+- ios_interfaces - Added service-policy, logging and snmp configuration options for interface.
+- ios_l2_interfaces - Added a few switchport and spanning-tree configuration options for interface.
+- ios_l3_interfaces - Added a few ip configuration options for interface.
+
+v9.2.0
+======
+
+Minor Changes
+-------------
+
+- Add ios_evpn_ethernet resource module.
+
+Deprecated Features
+-------------------
+
+- ios_vlans - deprecate mtu, please use ios_interfaces to configure mtu to the interface where vlans is applied.
+
+Bugfixes
+--------
+
+- ios_logging_global - Fixed issue where cisco.ios.logging_global module was not showing idempotent behaviour when trap was set to informational.
+- ios_vlans - Defaut mtu would be captured (1500) and no configuration for mtu is allowed via ios_vlans module.
+- ios_vlans - Fixed an issue in the `cisco.ios.ios_vlans` module on Cisco Catalyst 9000 switches where using state:purged generated an incorrect command syntax (`no vlan configuration <vlan_id>` instead of `no vlan <vlan_id>`).
+- ios_vlans - Resolved a failure in the `cisco.ios.ios_vlans` module when using state:deleted, where the module incorrectly attempted to remove VLANs using `no mtu <value>`, causing an invalid input error. The fix ensures that the module does not generate `no mtu` commands during VLAN deletion, aligning with the correct VLAN removal behavior on Catalyst 9000 switches.
+
+New Modules
+-----------
+
+- ios_evpn_ethernet - Resource module to configure L2VPN EVPN Ethernet Segment.
+
+v9.1.2
+======
+
+Bugfixes
+--------
+
+- ios_acls - Fixed issue where cisco.ios.ios_acls module failed to process IPv6 ACL remarks, causing unsupported parameter errors.
+- ios_route_maps - Fixes an issue where 'no description value' is an invalid command on the latest devices.
+
 v9.1.1
 ======
 

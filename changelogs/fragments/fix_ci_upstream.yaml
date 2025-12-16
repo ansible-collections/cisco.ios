@@ -1,8 +1,0 @@
----
-bugfixes:
-  - ios_route_maps - Fixes an issue where 'no description value' is an invalid command on the latest devices.
-trivial:
-  - ios_lldp_interfaces - Fix upstream CI failure due to difference in interface values.
-  - ios_interfaces - Fix upstream CI failure due to difference in interface values.
-  - ios_user - Fixes ios_user purging the ssh user running the test.
-  - ios_ospf_interfaces - Fix upstream CI failure due to difference in interface values.

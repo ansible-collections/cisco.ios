@@ -13,6 +13,10 @@
         config:
         state: gathered
 
+    - name: debug
+      debug:
+        msg: "{{ gathered.after | difference(result.gathered) }}"
+
     - name: Assert
       ansible.builtin.assert:
         that:

@@ -18,6 +18,8 @@ merged:
     - interface GigabitEthernet3
     - ip address 198.51.100.1 255.255.255.0 secondary
     - ip address 198.51.100.2 255.255.255.0
+    - ip helper-address global 10.0.0.1
+    - ip helper-address 10.0.0.2
     - ipv6 address 2001:db8:0:3::/64
     - interface Vlan901
     - no autostate
@@ -47,6 +49,11 @@ merged:
       ipv6:
         - address: 2001:DB8:0:3::/64
       name: GigabitEthernet3
+      helper_addresses:
+        ipv4:
+          - destination_ip: 10.0.0.1
+            global: true
+          - destination_ip: 10.0.0.2
     - name: GigabitEthernet4
     - name: Loopback1
     - name: Vlan901

@@ -77,10 +77,10 @@ gathered:
   after:
     - name: test1
       address_families:
-        - afi: "ipv4"
-          safi: "unicast"
+        - afi: ipv4
+          safi: unicast
           inter_as_hybrid:
-            next_hop: "1.0.0.0"
+            next_hop: 1.0.0.0
           mdt:
             auto_discovery:
               pim:
@@ -116,8 +116,8 @@ parsed:
                   mdt_hello_enable: true
               receiver_site: true
           route_target:
-            export: "10.12.0.1:20"
-            import_config: "10.0.0.1:30"
+            exports: "10.12.0.1:20"
+            imports: "10.0.0.1:30"
           safi: "unicast"
     - name: test
 

@@ -7,6 +7,8 @@
 - ansible.builtin.include_tasks: _remove_config.yaml
 
 - ansible.builtin.include_tasks: _populate_config.yaml
+  vars:
+    isMerged: true
 
 - block:
     - name: Override device configuration of all lldp_interfaces with provided configuration

@@ -225,13 +225,35 @@ class TestIosL3InterfacesModule(TestIosModule):
     def test_ios_l3_interfaces_parsed(self):
         set_module_args(
             dict(
-                running_config="interface GigabitEthernet0/3.100\nencapsulation dot1Q 20\n ip address 192.168.0.3 255.255.255.0\n",
+                running_config=dedent(
+                    """\
+                    interface GigabitEthernet0/3.100
+                      encapsulation dot1Q 20
+                      ip address 192.168.0.3 255.255.255.0
+                      mac-address 0000.0000.0001
+                      ip redirects
+                      ip mtu 1500
+                      ip helper-address global 10.0.0.1
+                      ip unreachables
+                      ip proxy-arp
+                    """,
+                ),
                 state="parsed",
             ),
         )
         result = self.execute_module(changed=False)
         parsed_list = [
-            {"name": "GigabitEthernet0/3.100", "ipv4": [{"address": "192.168.0.3/24"}]},
+            {
+                "name": "GigabitEthernet0/3.100",
+                "helper_addresses": {"ipv4": [{"global": True, "destination_ip": "10.0.0.1"}]},
+                "ipv4": [
+                    {"address": "192.168.0.3/24"},
+                    {"redirects": True},
+                    {"mtu": 1500},
+                    {"unreachables": True},
+                    {"proxy_arp": True},
+                ],
+            },
         ]
         self.assertEqual(parsed_list, result["parsed"])
 
@@ -253,7 +275,7 @@ class TestIosL3InterfacesModule(TestIosModule):
                     dict(
                         name="GigabitEthernet0/2",
                         ipv4=[
-                            dict(address="192.168.0.2/24"),
+                            dict(address="192.168.0.2/24", redirects=True, mtu=1500),
                             dict(
                                 dhcp=dict(
                                     enable=False,
@@ -277,6 +299,8 @@ class TestIosL3InterfacesModule(TestIosModule):
             "ipv6 address fd5d:12c9:2202:1::1/64",
             "interface GigabitEthernet0/2",
             "ip address 192.168.0.2 255.255.255.0",
+            "ip redirects",
+            "ip mtu 1500",
             "interface GigabitEthernet0/4",
             "ip address 192.168.0.4 255.255.255.0 secondary",
             "interface Serial1/0",
@@ -551,3 +575,49 @@ class TestIosL3InterfacesModule(TestIosModule):
             },
         ]
         self.assertEqual(result["gathered"], gathered)
+
+    def test_ios_l3_interfaces_helper_overridden(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             description Configured by Ansible
+             duplex auto
+             speed auto
+             ip helper-address 10.0.0.3
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/1",
+                        helper_addresses={
+                            "ipv4": [
+                                dict(vrf="abc", destination_ip="10.0.0.1"),
+                                dict(destination_ip="10.0.0.2"),
+                                {"global": True, "destination_ip": "10.0.0.3"},
+                            ],
+                        },
+                        ipv4=[
+                            {
+                                "address": "192.168.0.1/24",
+                                "mtu": 4,
+                            },
+                        ],
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+
+        commands = [
+            "interface GigabitEthernet0/1",
+            "ip address 192.168.0.1 255.255.255.0",
+            "ip helper-address vrf abc 10.0.0.1",
+            "ip helper-address 10.0.0.2",
+            "ip helper-address global 10.0.0.3",
+            "no ip helper-address 10.0.0.3",
+            "ip mtu 4",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))

@@ -1,5 +1,5 @@
 ---
-name: Integration
+name: "Integration - old"
 on:
   pull_request_target:
     branches: [main]
@@ -12,7 +12,6 @@ on:
       - "plugins/**"
       - "tests/integration/**"
   workflow_dispatch:
-
 jobs:
   safe-to-test:
     if: >-
@@ -29,7 +28,7 @@ jobs:
     with:
       lab_title: cisco_ios
       network_os: cisco.ios.ios
-      pytest_addopts: "--color=yes -n 2 --log-level WARNING -vvv"
+      pytest_addopts: "--color=yes -n 1 --log-level WARNING -vvv"
       collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git

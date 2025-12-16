@@ -5,7 +5,7 @@
 - block:
     - name: Render config lines for the provided configuration
       register: result
-      cisco.ios.ios_bgp_address_family: &id001
+      cisco.ios.ios_bgp_address_family:
         config:
           address_family:
             - afi: ipv4

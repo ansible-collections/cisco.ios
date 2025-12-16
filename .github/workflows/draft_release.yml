@@ -3,7 +3,7 @@ name: "Draft release"
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
-on:  # yamllint disable-line rule:truthy
+on: # yamllint disable-line rule:truthy
   workflow_dispatch:
 env:
   NAMESPACE: ${{ github.repository_owner }}

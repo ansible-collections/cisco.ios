@@ -1,0 +1,13 @@
+[ios]
+BATMON
+
+[ios:vars]
+ansible_host={{ ansible_host }}
+ansible_network_os={{ ansible_network_os | default('cisco.ios.ios') }}
+ansible_user={{ ansible_user | default('ansible') }}
+ansible_ssh_pass={{ ansible_ssh_pass | default('ansible') }}
+ansible_connection="ansible.netcommon.network_cli"
+ansible_network_cli_ssh_type={{ ansible_network_cli_ssh_type | default('libssh') }}
+ansible_ssh_port={{ ansible_ssh_port }}
+ansible_become={{ ansible_become | default(true) }}
+ansible_become_password={{ ansible_become_password | default('cisco') }}

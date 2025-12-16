@@ -8,10 +8,11 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 from textwrap import dedent
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from ansible_collections.cisco.ios.plugins.modules import ios_logging_global
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
+from plugins.module_utils.network.ios.facts.logging_global.logging_global import Logging_globalFacts
 
 from .ios_module import TestIosModule
 
@@ -718,3 +719,20 @@ class TestIosLoggingGlobalModule(TestIosModule):
 
         self.maxDiff = None
         self.assertEqual(sorted(result["commands"]), sorted(replaced))
+
+    def mock_connection(self):
+        """Fixture to provide a mock connection object"""
+        mock = MagicMock()
+        return mock
+
+    def test_get_logging_data_logging_trap_informational(self):
+        """Testing get_logging_data function for informational trap idempotency"""
+        mock_connection = self.mock_connection()
+        mock_connection.get.side_effect = [
+            "logging enable",
+            "logging trap informational",
+        ]
+        logging_fact = Logging_globalFacts(module="logging")
+        result = logging_fact.get_logging_data(mock_connection)
+        expected_data = "logging trap informational\nlogging enable"
+        assert result == expected_data

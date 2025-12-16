@@ -14,7 +14,6 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -141,7 +140,7 @@ class Ospfv2(ResourceModule):
         # set want to nothing
         if self.state == "deleted":
             temp = {}
-            for k, v in iteritems(haved):
+            for k, v in haved.items():
                 if k in wantd or not wantd:
                     temp.update({k: v})
             haved = temp
@@ -149,11 +148,11 @@ class Ospfv2(ResourceModule):
 
         # delete processes first so we do run into "more than one" errors
         if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 if k not in wantd:
                     self.addcmd(have, "pid", True)
 
-        for k, want in iteritems(wantd):
+        for k, want in wantd.items():
             self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
@@ -174,21 +173,21 @@ class Ospfv2(ResourceModule):
             else:
                 wdist = want.get(_parser, {})
                 hdist = have.get(_parser, {})
-            for key, wanting in iteritems(wdist):
+            for key, wanting in wdist.items():
                 haveing = hdist.pop(key, {})
                 if wanting != haveing:
                     if haveing and self.state in ["overridden", "replaced"]:
                         self.addcmd(haveing, _parser, negate=True)
                     self.addcmd(wanting, _parser, False)
-            for key, haveing in iteritems(hdist):
+            for key, haveing in hdist.items():
                 self.addcmd(haveing, _parser, negate=True)
 
     def _areas_compare(self, want, have):
         wareas = want.get("areas", {})
         hareas = have.get("areas", {})
-        for name, entry in iteritems(wareas):
+        for name, entry in wareas.items():
             self._area_compare(want=entry, have=hareas.pop(name, {}))
-        for name, entry in iteritems(hareas):
+        for name, entry in hareas.items():
             self._area_compare(want={}, have=entry)
 
     def _area_compare(self, want, have):
@@ -209,7 +208,7 @@ class Ospfv2(ResourceModule):
         for _parser in area_complex_parsers:
             wantr = want.get(_parser, {})
             haver = have.get(_parser, {})
-            for key, wanting in iteritems(wantr):
+            for key, wanting in wantr.items():
                 haveing = have.pop(key, {})
                 haveing["area_id"] = area_id
                 wanting["area_id"] = area_id
@@ -217,14 +216,14 @@ class Ospfv2(ResourceModule):
                     if haveing and self.state in ["overridden", "replaced"]:
                         self.addcmd(haveing, _parser, negate=True)
                     self.addcmd(wanting, _parser, False)
-            for key, haveing in iteritems(haver):
+            for key, haveing in haver.items():
                 haveing["area_id"] = area_id
                 self.addcmd(haveing, _parser, negate=True)
 
     def _passive_interfaces_compare(self, want, have):
         parsers = ["passive_interfaces.default", "passive_interfaces.interface"]
         h_pi = None
-        for k, v in iteritems(want["passive_interfaces"]):
+        for k, v in want["passive_interfaces"].items():
             h_pi = have.get("passive_interfaces", {})
             if h_pi.get(k) and h_pi.get(k) != v:
                 for each in v["name"]:
@@ -257,7 +256,7 @@ class Ospfv2(ResourceModule):
                 h_pi.pop(k)
         if (self.state == "replaced" or self.state == "overridden") and h_pi:
             if h_pi.get("default") or h_pi.get("interface"):
-                for k, v in iteritems(h_pi):
+                for k, v in h_pi.items():
                     if k == "interface":
                         for each in v["name"]:
                             temp = {

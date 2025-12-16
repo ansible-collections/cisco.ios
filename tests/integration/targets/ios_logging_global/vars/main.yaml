@@ -1,7 +1,6 @@
 ---
 merged:
   before: {}
-
   commands:
     - logging on
     - logging host 192.0.2.13 transport tcp port 514
@@ -18,7 +17,7 @@ merged:
     - logging exception 4099
     - logging host 192.0.2.10 filtered stream 10
     - logging cns-events warnings
-    - logging trap errors
+    - logging trap informational
 
   after:
     buffered:
@@ -48,7 +47,7 @@ merged:
       - log
     monitor:
       severity: warnings
-    trap: errors
+    trap: informational
     userinfo: true
 
 replaced:
@@ -60,7 +59,7 @@ replaced:
     - no logging exception 4099
     - logging facility local6
     - no logging monitor warnings
-    - no logging trap errors
+    - logging trap errors
     - no logging userinfo
     - logging host 192.0.2.19
     - no logging host 192.0.2.10
@@ -80,6 +79,7 @@ replaced:
         filtered: true
         stream: 15
       - host: 192.0.2.19
+    trap: errors
 
 overridden:
   commands:
@@ -90,7 +90,7 @@ overridden:
     - no logging exception 4099
     - logging facility local6
     - logging monitor critical
-    - no logging trap errors
+    - no logging trap informational
     - no logging userinfo
     - no logging host 192.0.2.12
     - logging host 192.0.2.12 xml
@@ -125,10 +125,9 @@ deleted:
     - no logging monitor warnings
     - no logging cns-events warnings
     - no logging dmvpn rate-limit 10
-    - no logging trap errors
+    - no logging trap informational
     - no logging facility local5
   after: {}
-
 parsed:
   after:
     buffered:
@@ -157,7 +156,7 @@ rendered:
     - logging rate-limit all 2 except alerts
     - logging reload alerts
     - logging server-arp
-    - logging trap errors
+    - logging trap informational
     - logging userinfo
     - logging host 192.0.2.1
     - logging host 192.0.2.11 transport tcp port 514

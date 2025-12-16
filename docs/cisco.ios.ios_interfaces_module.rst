@@ -29,12 +29,12 @@ Parameters
 
     <table  border=0 cellpadding=0 class="documentation-table">
         <tr>
-            <th colspan="2">Parameter</th>
+            <th colspan="5">Parameter</th>
             <th>Choices/<font color="blue">Defaults</font></th>
             <th width="100%">Comments</th>
         </tr>
             <tr>
-                <td colspan="2">
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>config</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -51,7 +51,7 @@ Parameters
             </tr>
                                 <tr>
                     <td class="elbow-placeholder"></td>
-                <td colspan="1">
+                <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>description</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -67,7 +67,7 @@ Parameters
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
-                <td colspan="1">
+                <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>duplex</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -88,7 +88,7 @@ Parameters
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
-                <td colspan="1">
+                <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>enabled</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -99,7 +99,7 @@ Parameters
                 <td>
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li>no</li>
-                                    <li><div style="color: blue"><b>yes</b>&nbsp;&larr;</div></li>
+                                    <li>yes</li>
                         </ul>
                 </td>
                 <td>
@@ -109,7 +109,187 @@ Parameters
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
-                <td colspan="1">
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>logging</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Logging interface events</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>bundle_status</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>BUNDLE/UNBUNDLE messages</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>link_status</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>UPDOWN and CHANGE messages</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>nfas_status</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>NFAS D-channel status messages</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>spanning_tree</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Spanning-tree Interface events</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>status</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Spanning-tree state change messages</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>subif_link_status</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Sub-interface UPDOWN and CHANGE messages</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>trunk_status</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>TRUNK status messages</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mac_address</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>H.H.H  MAC address.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>mode</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -132,7 +312,7 @@ Parameters
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
-                <td colspan="1">
+                <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>mtu</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -149,7 +329,7 @@ Parameters
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
-                <td colspan="1">
+                <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>name</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -166,7 +346,546 @@ Parameters
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>service_policy</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Service policy configuration</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>input</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Assign policy-map to the input of an interface</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>output</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Assign policy-map to the output of an interface</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>type_options</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Configure CPL Service Policy</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>access_control</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>access-control specific policy-map</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
                 <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>input</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Assign policy-map to the input of an interface</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>output</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Assign policy-map to the output of an interface</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>epbr</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Configure ePBR Service Policy</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>input</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Assign policy-map to the input of an interface</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>output</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Assign policy-map to the output of an interface</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>nwpi</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Configure Network Wide Path Insight Service Policy</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>input</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Assign policy-map to the input of an interface</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>output</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Assign policy-map to the output of an interface</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>packet_service</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Configure Packet-Service Service Policy</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>input</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Assign policy-map to the input of an interface</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>output</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Assign policy-map to the output of an interface</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>service_chain</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Configure Service-chain Service Policy</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>input</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Assign policy-map to the input of an interface</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>output</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Assign policy-map to the output of an interface</div>
+                </td>
+            </tr>
+
+
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>snmp</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>snmp trap configurations</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>ifindex</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Persist ifindex for the interface</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>clear</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Clear Enable/Disable ifIndex persistence</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>persist</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Enable/Disable ifIndex persistence</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>trap</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Allow a specific SNMP trap</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>ip</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>internet protocol (snmp trap ip verify drop-rate)</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>link_status</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Allow SNMP LINKUP and LINKDOWN traps (snmp trap link-status permit duplicates)</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mac_notification_added</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>MAC Address notification for the interface (snmp trap mac-notification change added)</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>mac_notification_removed</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>MAC Address notification for the interface (snmp trap mac-notification change removed)</div>
+                </td>
+            </tr>
+
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>speed</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -182,7 +901,7 @@ Parameters
             </tr>
             <tr>
                     <td class="elbow-placeholder"></td>
-                <td colspan="1">
+                <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>template</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -198,7 +917,7 @@ Parameters
             </tr>
 
             <tr>
-                <td colspan="2">
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>running_config</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
@@ -215,7 +934,7 @@ Parameters
                 </td>
             </tr>
             <tr>
-                <td colspan="2">
+                <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>

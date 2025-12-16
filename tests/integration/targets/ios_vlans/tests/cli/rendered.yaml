@@ -29,4 +29,3 @@
         that:
           - result.changed == false
           - "{{ rendered['commands'] | symmetric_difference(result['rendered']) | length == 0 }}"
-  when: ansible_net_version != "15.6(2)T"
