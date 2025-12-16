@@ -243,7 +243,7 @@ Parameters
                 </td>
                 <td>
                         <div>This option is used only with state <em>parsed</em>.</div>
-                        <div>The value of this option should be the output received from the IOS device by executing the command <b>show running-config | section ^interface</b>.</div>
+                        <div>The value of this option should be the output received from the IOS XE device by executing the command <b>show running-config | section ^interface</b>.</div>
                         <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into Ansible structured data as per the resource module&#x27;s argspec and the value is then returned in the <em>parsed</em> key within the result.</div>
                 </td>
             </tr>
@@ -264,7 +264,6 @@ Parameters
                                     <li>deleted</li>
                                     <li>rendered</li>
                                     <li>gathered</li>
-                                    <li>purged</li>
                                     <li>parsed</li>
                         </ul>
                 </td>
@@ -274,7 +273,6 @@ Parameters
                         <div>The state <em>rendered</em> will transform the configuration in <code>config</code> option to platform specific CLI commands which will be returned in the <em>rendered</em> key within the result. For state <em>rendered</em> active connection to remote host is not required.</div>
                         <div>The state <em>gathered</em> will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the <em>gathered</em> key within the result.</div>
                         <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into JSON format as per the resource module parameters and the value is returned in the <em>parsed</em> key within the result. The value of <code>running_config</code> option should be the same format as the output of command <em>show running-config | section interface</em> executed on device. For state <em>parsed</em> active connection to remote host is not required.</div>
-                        <div>The state <em>purged</em> negates virtual/logical interfaces that are specified in task from running-config.</div>
                 </td>
             </tr>
     </table>
@@ -291,6 +289,519 @@ Notes
 
 
 
+Examples
+--------
+
+.. code-block:: yaml
+
+    # Using state: merged
+
+    # Before state:
+    # -------------
+
+    # router-ios#show running-config | section ^interface
+    # interface GigabitEthernet1
+    #  description Ansible UT interface 1
+    #  no shutdown
+    # interface GigabitEthernet2
+    #  description Ansible UT interface 2
+    #  ip address dhcp
+
+    - name: Apply the provided BFD configuration to interfaces
+      cisco.ios.ios_bfd_interfaces:
+        config:
+          - name: GigabitEthernet1
+            bfd: true
+            echo: true
+            jitter: true
+            interval:
+              input: 100
+              min_rx: 100
+              multiplier: 3
+            local_address: 10.0.1.2
+            template: ANSIBLE
+          - name: GigabitEthernet2
+            bfd: true
+            echo: true
+            jitter: true
+            interval:
+              input: 100
+              min_rx: 100
+              multiplier: 3
+          - name: GigabitEthernet6
+            template: ANSIBLE_3Tempalte
+        state: merged
+
+    # Commands Fired:
+    # ---------------
+
+    # "commands": [
+    #       "interface GigabitEthernet1",
+    #       "bfd enable",
+    #       "bfd echo",
+    #       "bfd jitter",
+    #       "bfd local-address 10.0.1.2",
+    #       "bfd interval 100 min_rx 100 multiplier 3",
+    #       "bfd template ANSIBLE",
+    #       "interface GigabitEthernet2",
+    #       "bfd enable",
+    #       "bfd echo",
+    #       "bfd jitter",
+    #       "bfd interval 100 min_rx 100 multiplier 3",
+    #       "interface GigabitEthernet6",
+    #       "bfd template ANSIBLE_3Tempalte"
+    #     ]
+
+    # After state:
+    # ------------
+
+    # router-ios#show running-config | section ^interface
+    # interface GigabitEthernet1
+    #  description Ansible UT interface 1
+    #  no shutdown
+    #  bfd enable
+    #  bfd echo
+    #  bfd jitter
+    #  bfd local-address 10.0.1.2
+    #  bfd interval 100 min_rx 100 multiplier 3
+    #  bfd template ANSIBLE
+    # interface GigabitEthernet2
+    #  description Ansible UT interface 2
+    #  ip address dhcp
+    #  bfd enable
+    #  bfd echo
+    #  bfd jitter
+    #  bfd interval 100 min_rx 100 multiplier 3
+    # interface GigabitEthernet6
+    #  bfd template ANSIBLE_3Tempalte
+
+    # Using state: replaced
+
+    # Before state:
+    # -------------
+
+    # router-ios#show running-config | section ^interface
+    # interface GigabitEthernet1
+    #  description Ansible UT interface 1
+    #  no shutdown
+    #  bfd local-address 10.0.0.1
+    #  bfd interval 57 min_rx 66 multiplier 45
+    # interface GigabitEthernet2
+    #  description Ansible UT interface 2
+    #  ip address dhcp
+    #  bfd template OLD_TEMPLATE
+    # interface GigabitEthernet3
+    #  description Ansible UT interface 3
+    #  no ip address
+    #  shutdown
+    #  bfd jitter
+    #  bfd local-address 10.0.1.2
+    #  bfd interval 50 min_rx 50 multiplier 3
+
+    - name: Replace BFD configuration for specified interfaces
+      cisco.ios.ios_bfd_interfaces:
+        config:
+          - name: GigabitEthernet1
+            bfd: true
+            echo: true
+            jitter: true
+            interval:
+              input: 100
+              min_rx: 100
+              multiplier: 3
+            local_address: 10.0.1.2
+            template: ANSIBLE
+          - name: GigabitEthernet2
+            bfd: true
+            echo: true
+            jitter: true
+            interval:
+              input: 100
+              min_rx: 100
+              multiplier: 3
+          - name: GigabitEthernet6
+            template: ANSIBLE_3Tempalte
+        state: replaced
+
+    # Commands Fired:
+    # ---------------
+
+    # "commands": [
+    #       "interface GigabitEthernet1",
+    #       "bfd enable",
+    #       "bfd echo",
+    #       "bfd jitter",
+    #       "bfd local-address 10.0.1.2",
+    #       "bfd interval 100 min_rx 100 multiplier 3",
+    #       "bfd template ANSIBLE",
+    #       "interface GigabitEthernet2",
+    #       "bfd enable",
+    #       "bfd echo",
+    #       "bfd jitter",
+    #       "bfd interval 100 min_rx 100 multiplier 3",
+    #       "no bfd template OLD_TEMPLATE",
+    #       "interface GigabitEthernet6",
+    #       "bfd template ANSIBLE_3Tempalte"
+    #     ]
+
+    # After state:
+    # ------------
+
+    # router-ios#show running-config | section ^interface
+    # interface GigabitEthernet1
+    #  description Ansible UT interface 1
+    #  no shutdown
+    #  bfd enable
+    #  bfd echo
+    #  bfd jitter
+    #  bfd local-address 10.0.1.2
+    #  bfd interval 100 min_rx 100 multiplier 3
+    #  bfd template ANSIBLE
+    # interface GigabitEthernet2
+    #  description Ansible UT interface 2
+    #  ip address dhcp
+    #  bfd enable
+    #  bfd echo
+    #  bfd jitter
+    #  bfd interval 100 min_rx 100 multiplier 3
+    # interface GigabitEthernet3
+    #  description Ansible UT interface 3
+    #  no ip address
+    #  shutdown
+    #  bfd jitter
+    #  bfd local-address 10.0.1.2
+    #  bfd interval 50 min_rx 50 multiplier 3
+    # interface GigabitEthernet6
+    #  bfd template ANSIBLE_3Tempalte
+
+    # Using state: overridden
+
+    # Before state:
+    # -------------
+
+    # router-ios#show running-config | section ^interface
+    # interface GigabitEthernet1
+    #  description Ansible UT interface 1
+    #  no shutdown
+    #  bfd local-address 10.0.0.1
+    #  bfd interval 57 min_rx 66 multiplier 45
+    # interface GigabitEthernet2
+    #  description Ansible UT interface 2
+    #  ip address dhcp
+    #  bfd template OLD_TEMPLATE
+    # interface GigabitEthernet3
+    #  description Ansible UT interface 3
+    #  no ip address
+    #  shutdown
+    #  bfd jitter
+    #  bfd local-address 10.0.1.2
+    #  bfd interval 50 min_rx 50 multiplier 3
+
+    - name: Override all BFD configuration with provided configuration
+      cisco.ios.ios_bfd_interfaces:
+        config:
+          - name: GigabitEthernet1
+            bfd: true
+            echo: true
+            jitter: true
+            interval:
+              input: 100
+              min_rx: 100
+              multiplier: 3
+            local_address: 10.0.1.2
+            template: ANSIBLE
+          - name: GigabitEthernet2
+            bfd: true
+            echo: true
+            jitter: true
+            interval:
+              input: 100
+              min_rx: 100
+              multiplier: 3
+          - name: GigabitEthernet6
+            template: ANSIBLE_3Tempalte
+        state: overridden
+
+    # Commands Fired:
+    # ---------------
+
+    # "commands": [
+    #       "interface GigabitEthernet3",
+    #       "no bfd jitter",
+    #       "no bfd local-address 10.0.1.2",
+    #       "no bfd interval 50 min_rx 50 multiplier 3",
+    #       "interface GigabitEthernet1",
+    #       "bfd enable",
+    #       "bfd echo",
+    #       "bfd jitter",
+    #       "bfd local-address 10.0.1.2",
+    #       "bfd interval 100 min_rx 100 multiplier 3",
+    #       "bfd template ANSIBLE",
+    #       "interface GigabitEthernet2",
+    #       "bfd enable",
+    #       "bfd echo",
+    #       "bfd jitter",
+    #       "bfd interval 100 min_rx 100 multiplier 3",
+    #       "no bfd template OLD_TEMPLATE",
+    #       "interface GigabitEthernet6",
+    #       "bfd template ANSIBLE_3Tempalte"
+    #     ]
+
+    # After state:
+    # ------------
+
+    # router-ios#show running-config | section ^interface
+    # interface GigabitEthernet1
+    #  description Ansible UT interface 1
+    #  no shutdown
+    #  bfd enable
+    #  bfd echo
+    #  bfd jitter
+    #  bfd local-address 10.0.1.2
+    #  bfd interval 100 min_rx 100 multiplier 3
+    #  bfd template ANSIBLE
+    # interface GigabitEthernet2
+    #  description Ansible UT interface 2
+    #  ip address dhcp
+    #  bfd enable
+    #  bfd echo
+    #  bfd jitter
+    #  bfd interval 100 min_rx 100 multiplier 3
+    # interface GigabitEthernet3
+    #  description Ansible UT interface 3
+    #  no ip address
+    #  shutdown
+    # interface GigabitEthernet6
+    #  bfd template ANSIBLE_3Tempalte
+
+    # Using state: deleted
+
+    # Before state:
+    # -------------
+
+    # router-ios#show running-config | section ^interface
+    # interface GigabitEthernet1
+    #  description Ansible UT interface 1
+    #  no shutdown
+    #  bfd local-address 10.0.0.1
+    #  bfd interval 57 min_rx 66 multiplier 45
+    # interface GigabitEthernet2
+    #  description Ansible UT interface 2
+    #  ip address dhcp
+    #  bfd template OLD_TEMPLATE
+    # interface GigabitEthernet3
+    #  description Ansible UT interface 3
+    #  no ip address
+    #  shutdown
+    #  bfd jitter
+    #  bfd local-address 10.0.1.2
+    #  bfd interval 50 min_rx 50 multiplier 3
+
+    - name: Delete BFD configuration for specified interfaces
+      cisco.ios.ios_bfd_interfaces:
+        config:
+          - name: GigabitEthernet1
+          - name: GigabitEthernet2
+        state: deleted
+
+    # Commands Fired:
+    # ---------------
+
+    # "commands": [
+    #       "interface GigabitEthernet1",
+    #       "no bfd local-address 10.0.0.1",
+    #       "no bfd interval 57 min_rx 66 multiplier 45",
+    #       "interface GigabitEthernet2",
+    #       "no bfd template OLD_TEMPLATE"
+    #     ]
+
+    # After state:
+    # ------------
+
+    # router-ios#show running-config | section ^interface
+    # interface GigabitEthernet1
+    #  description Ansible UT interface 1
+    #  no shutdown
+    # interface GigabitEthernet2
+    #  description Ansible UT interface 2
+    #  ip address dhcp
+    # interface GigabitEthernet3
+    #  description Ansible UT interface 3
+    #  no ip address
+    #  shutdown
+    #  bfd jitter
+    #  bfd local-address 10.0.1.2
+    #  bfd interval 50 min_rx 50 multiplier 3
+
+    # Using state: gathered
+
+    # Before state:
+    # -------------
+
+    # router-ios#show running-config | section ^interface
+    # interface GigabitEthernet1
+    #  description Ansible UT interface 1
+    #  no shutdown
+    #  bfd local-address 10.0.0.1
+    #  bfd interval 57 min_rx 66 multiplier 45
+    # interface GigabitEthernet2
+    #  description Ansible UT interface 2
+    #  ip address dhcp
+    #  bfd template OLD_TEMPLATE
+    # interface GigabitEthernet3
+    #  description Ansible UT interface 3
+    #  no ip address
+    #  shutdown
+    #  bfd jitter
+    #  bfd local-address 10.0.1.2
+    #  bfd interval 50 min_rx 50 multiplier 3
+
+    - name: Gather listed BFD interfaces config
+      cisco.ios.ios_bfd_interfaces:
+        state: gathered
+
+    # Module Execution Result:
+    # ------------------------
+
+    # "gathered": [
+    #     {
+    #         "name": "GigabitEthernet1",
+    #         "local_address": "10.0.0.1",
+    #         "interval": {
+    #             "input": 57,
+    #             "min_rx": 66,
+    #             "multiplier": 45
+    #         }
+    #     },
+    #     {
+    #         "name": "GigabitEthernet2",
+    #         "template": "OLD_TEMPLATE"
+    #     },
+    #     {
+    #         "name": "GigabitEthernet3",
+    #         "jitter": true,
+    #         "local_address": "10.0.1.2",
+    #         "interval": {
+    #             "input": 50,
+    #             "min_rx": 50,
+    #             "multiplier": 3
+    #         }
+    #     }
+    # ]
+
+    # After state:
+    # -------------
+
+    # router-ios#show running-config | section ^interface
+    # interface GigabitEthernet1
+    #  description Ansible UT interface 1
+    #  no shutdown
+    #  bfd local-address 10.0.0.1
+    #  bfd interval 57 min_rx 66 multiplier 45
+    # interface GigabitEthernet2
+    #  description Ansible UT interface 2
+    #  ip address dhcp
+    #  bfd template OLD_TEMPLATE
+    # interface GigabitEthernet3
+    #  description Ansible UT interface 3
+    #  no ip address
+    #  shutdown
+    #  bfd jitter
+    #  bfd local-address 10.0.1.2
+    #  bfd interval 50 min_rx 50 multiplier 3
+
+    # Using state: rendered
+
+    - name: Render the commands for provided configuration
+      cisco.ios.ios_bfd_interfaces:
+        config:
+          - name: GigabitEthernet1
+            local_address: 10.0.0.1
+            interval:
+              input: 57
+              min_rx: 66
+              multiplier: 45
+          - name: GigabitEthernet2
+            template: OLD_TEMPLATE
+          - name: GigabitEthernet3
+            jitter: true
+            local_address: 10.0.1.2
+            interval:
+              input: 50
+              min_rx: 50
+              multiplier: 3
+        state: rendered
+
+    # Module Execution Result:
+    # ------------------------
+
+    # "rendered": [
+    #     "interface GigabitEthernet1",
+    #     "bfd local-address 10.0.0.1",
+    #     "bfd interval 57 min_rx 66 multiplier 45",
+    #     "interface GigabitEthernet2",
+    #     "bfd template OLD_TEMPLATE",
+    #     "interface GigabitEthernet3",
+    #     "bfd jitter",
+    #     "bfd local-address 10.0.1.2",
+    #     "bfd interval 50 min_rx 50 multiplier 3"
+    # ]
+
+    # Using state: parsed
+
+    # File: parsed.cfg
+    # ----------------
+
+    # interface GigabitEthernet1
+    #  description Ansible UT interface 1
+    #  no shutdown
+    #  bfd local-address 10.0.0.1
+    #  bfd interval 57 min_rx 66 multiplier 45
+    # interface GigabitEthernet2
+    #  description Ansible UT interface 2
+    #  ip address dhcp
+    #  bfd template OLD_TEMPLATE
+    # interface GigabitEthernet3
+    #  description Ansible UT interface 3
+    #  no ip address
+    #  shutdown
+    #  bfd jitter
+    #  bfd local-address 10.0.1.2
+    #  bfd interval 50 min_rx 50 multiplier 3
+
+    - name: Parse the provided configuration with the existing running configuration
+      cisco.ios.ios_bfd_interfaces:
+        running_config: "{{ lookup('file', 'parsed.cfg') }}"
+        state: parsed
+
+    # Module Execution Result:
+    # ------------------------
+
+    # "parsed": [
+    #     {
+    #         "name": "GigabitEthernet1",
+    #         "local_address": "10.0.0.1",
+    #         "interval": {
+    #             "input": 57,
+    #             "min_rx": 66,
+    #             "multiplier": 45
+    #         }
+    #     },
+    #     {
+    #         "name": "GigabitEthernet2",
+    #         "template": "OLD_TEMPLATE"
+    #     },
+    #     {
+    #         "name": "GigabitEthernet3",
+    #         "jitter": true,
+    #         "local_address": "10.0.1.2",
+    #         "interval": {
+    #             "input": 50,
+    #             "min_rx": 50,
+    #             "multiplier": 3
+    #         }
+    #     }
+    # ]
 
 
 
@@ -312,7 +823,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <b>after</b>
                     <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
                     <div style="font-size: small">
-                      <span style="color: purple">dictionary</span>
+                      <span style="color: purple">list</span>
                     </div>
                 </td>
                 <td>when changed</td>
@@ -329,10 +840,10 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                     <b>before</b>
                     <a class="ansibleOptionLink" href="#return-" title="Permalink to this return value"></a>
                     <div style="font-size: small">
-                      <span style="color: purple">dictionary</span>
+                      <span style="color: purple">list</span>
                     </div>
                 </td>
-                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code> or <code>deleted</code></td>
                 <td>
                             <div>The configuration prior to the module execution.</div>
                     <br/>
@@ -349,7 +860,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                       <span style="color: purple">list</span>
                     </div>
                 </td>
-                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code>, <code>deleted</code> or <code>purged</code></td>
+                <td>when <em>state</em> is <code>merged</code>, <code>replaced</code>, <code>overridden</code> or <code>deleted</code></td>
                 <td>
                             <div>The set of commands pushed to the remote device.</div>
                     <br/>
