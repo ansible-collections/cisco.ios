@@ -124,19 +124,28 @@ EXAMPLES = """
 
 # router-ios#show running-config | section ^interface
 # interface GigabitEthernet1
-#  description Ansible UT interface 1
-#  no shutdown
-# interface GigabitEthernet2
-#  description Ansible UT interface 2
 #  ip address dhcp
+#  negotiation auto
+# interface GigabitEthernet2
+#  no ip address
+#  shutdown
+#  negotiation auto
+# interface GigabitEthernet3
+#  no ip address
+#  shutdown
+#  negotiation auto
+# interface GigabitEthernet4
+#  no ip address
+#  shutdown
+#  negotiation auto
+
 
 - name: Apply the provided BFD configuration to interfaces
   cisco.ios.ios_bfd_interfaces:
     config:
       - name: GigabitEthernet1
         bfd: true
-        echo: true
-        jitter: true
+        jitter: false
         interval:
           input: 100
           min_rx: 100
@@ -145,58 +154,78 @@ EXAMPLES = """
         template: ANSIBLE
       - name: GigabitEthernet2
         bfd: true
-        echo: true
         jitter: true
         interval:
           input: 100
           min_rx: 100
           multiplier: 3
-      - name: GigabitEthernet6
-        template: ANSIBLE_3Tempalte
+      - name: GigabitEthernet4
+        template: ANSIBLE_Tempalte
     state: merged
 
 # Commands Fired:
 # ---------------
 
-# "commands": [
-#       "interface GigabitEthernet1",
-#       "bfd enable",
-#       "bfd echo",
-#       "bfd jitter",
-#       "bfd local-address 10.0.1.2",
-#       "bfd interval 100 min_rx 100 multiplier 3",
-#       "bfd template ANSIBLE",
-#       "interface GigabitEthernet2",
-#       "bfd enable",
-#       "bfd echo",
-#       "bfd jitter",
-#       "bfd interval 100 min_rx 100 multiplier 3",
-#       "interface GigabitEthernet6",
-#       "bfd template ANSIBLE_3Tempalte"
-#     ]
+# after:
+# -   interval:
+#         input: 100
+#         min_rx: 100
+#         multiplier: 3
+#     jitter: false
+#     local_address: 10.0.1.2
+#     name: GigabitEthernet1
+# -   interval:
+#         input: 100
+#         min_rx: 100
+#         multiplier: 3
+#     name: GigabitEthernet2
+# -   name: GigabitEthernet3
+# -   name: GigabitEthernet4
+#     template: ANSIBLE_Tempalte
+# before:
+# -   name: GigabitEthernet1
+# -   name: GigabitEthernet2
+# -   name: GigabitEthernet3
+# -   name: GigabitEthernet4
+# changed: true
+# commands:
+# - interface GigabitEthernet1
+# - bfd enable
+# - bfd local-address 10.0.1.2
+# - bfd interval 100 min_rx 100 multiplier 3
+# - bfd template ANSIBLE
+# - no bfd jitter
+# - interface GigabitEthernet2
+# - bfd enable
+# - bfd jitter
+# - bfd interval 100 min_rx 100 multiplier 3
+# - interface GigabitEthernet4
+# - bfd template ANSIBLE_Tempalte
 
 # After state:
 # ------------
 
 # router-ios#show running-config | section ^interface
 # interface GigabitEthernet1
-#  description Ansible UT interface 1
-#  no shutdown
-#  bfd enable
-#  bfd echo
-#  bfd jitter
+#  ip address dhcp
+#  negotiation auto
 #  bfd local-address 10.0.1.2
 #  bfd interval 100 min_rx 100 multiplier 3
-#  bfd template ANSIBLE
+#  no bfd jitter
 # interface GigabitEthernet2
-#  description Ansible UT interface 2
-#  ip address dhcp
-#  bfd enable
-#  bfd echo
-#  bfd jitter
+#  no ip address
+#  shutdown
+#  negotiation auto
 #  bfd interval 100 min_rx 100 multiplier 3
-# interface GigabitEthernet6
-#  bfd template ANSIBLE_3Tempalte
+# interface GigabitEthernet3
+#  no ip address
+#  shutdown
+#  negotiation auto
+# interface GigabitEthernet4
+#  no ip address
+#  shutdown
+#  negotiation auto
+#  bfd template ANSIBLE_Tempalte
 
 # Using state: replaced
 
@@ -204,22 +233,28 @@ EXAMPLES = """
 # -------------
 
 # router-ios#show running-config | section ^interface
+testios#show running-config | section ^interface
 # interface GigabitEthernet1
-#  description Ansible UT interface 1
-#  no shutdown
-#  bfd local-address 10.0.0.1
-#  bfd interval 57 min_rx 66 multiplier 45
-# interface GigabitEthernet2
-#  description Ansible UT interface 2
 #  ip address dhcp
-#  bfd template OLD_TEMPLATE
-# interface GigabitEthernet3
-#  description Ansible UT interface 3
+#  negotiation auto
+#  bfd local-address 10.0.1.2
+#  bfd interval 100 min_rx 100 multiplier 3
+#  no bfd jitter
+# interface GigabitEthernet2
 #  no ip address
 #  shutdown
-#  bfd jitter
-#  bfd local-address 10.0.1.2
-#  bfd interval 50 min_rx 50 multiplier 3
+#  negotiation auto
+#  bfd interval 100 min_rx 100 multiplier 3
+# interface GigabitEthernet3
+#  no ip address
+#  shutdown
+#  negotiation auto
+# interface GigabitEthernet4
+#  no ip address
+#  shutdown
+#  negotiation auto
+#  bfd template ANSIBLE_Tempalte
+
 
 - name: Replace BFD configuration for specified interfaces
   cisco.ios.ios_bfd_interfaces:
@@ -588,7 +623,7 @@ EXAMPLES = """
 #  description Ansible UT interface 3
 #  no ip address
 #  shutdown
-#  bfd jitter
+#  no bfd jitter
 #  bfd local-address 10.0.1.2
 #  bfd interval 50 min_rx 50 multiplier 3
 
@@ -616,7 +651,7 @@ EXAMPLES = """
 #     },
 #     {
 #         "name": "GigabitEthernet3",
-#         "jitter": true,
+#         "jitter": false,
 #         "local_address": "10.0.1.2",
 #         "interval": {
 #             "input": 50,
@@ -648,7 +683,7 @@ commands:
   type: list
   sample:
     - interface GigabitEthernet0/2
-    - bfd echo
+    - no bfd jitter
     - bfd interval 100 min_rx 100 multiplier 3
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
