@@ -13,15 +13,15 @@
         config:
           - name: GigabitEthernet1
           - interval:
-                input: 100
-                min_rx: 100
-                multiplier: 3
+              input: 100
+              min_rx: 100
+              multiplier: 3
             local_address: 10.0.1.2
             name: GigabitEthernet2
           - interval:
-                input: 100
-                min_rx: 100
-                multiplier: 3
+              input: 100
+              min_rx: 100
+              multiplier: 3
             jitter: false
             name: GigabitEthernet3
           - name: GigabitEthernet4

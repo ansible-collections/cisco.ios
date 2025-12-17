@@ -130,4 +130,3 @@ rtt:
   commands:
     - interface GigabitEthernet4
     - bfd template ANSIBLE_Template
-  
