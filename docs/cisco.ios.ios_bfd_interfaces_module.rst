@@ -410,7 +410,6 @@ Examples
     # -------------
 
     # router-ios#show running-config | section ^interface
-    testios#show running-config | section ^interface
     # interface GigabitEthernet1
     #  ip address dhcp
     #  negotiation auto
