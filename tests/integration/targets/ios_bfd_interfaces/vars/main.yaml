@@ -26,6 +26,7 @@ rendered:
     - bfd template ANSIBLE_Template
 overridden:
   after:
+    - name: Loopback888
     - name: GigabitEthernet1
     - interval:
         input: 100
@@ -42,6 +43,7 @@ overridden:
     - name: GigabitEthernet4
       template: ANSIBLE_Template
   before:
+    - name: Loopback888
     - name: GigabitEthernet1
     - name: GigabitEthernet2
     - name: GigabitEthernet3
@@ -58,11 +60,13 @@ overridden:
     - bfd template ANSIBLE_Template
 deleted:
   after:
+    - name: Loopback888
     - name: GigabitEthernet1
     - name: GigabitEthernet2
     - name: GigabitEthernet3
     - name: GigabitEthernet4
   before:
+    - name: Loopback888
     - name: GigabitEthernet1
     - interval:
         input: 100
@@ -90,6 +94,7 @@ deleted:
     - no bfd template ANSIBLE_Template
 merged:
   after:
+    - name: Loopback888
     - name: GigabitEthernet1
     - interval:
         input: 100
@@ -106,6 +111,7 @@ merged:
     - name: GigabitEthernet4
       template: ANSIBLE_Template
   before:
+    - name: Loopback888
     - name: GigabitEthernet1
     - name: GigabitEthernet2
     - name: GigabitEthernet3
@@ -120,3 +126,8 @@ merged:
     - no bfd jitter
     - interface GigabitEthernet4
     - bfd template ANSIBLE_Template
+rtt:
+  commands:
+    - interface GigabitEthernet4
+    - bfd template ANSIBLE_Template
+  
