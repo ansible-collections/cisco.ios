@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -20,23 +21,24 @@ from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import (
     utils,
 )
-from ansible_collections.cisco.ios.ios.plugins.module_utils.network.ios.rm_templates.bfd_templates import (
-    Bfd_templatesTemplate,
-)
+
 from ansible_collections.cisco.ios.ios.plugins.module_utils.network.ios.argspec.bfd_templates.bfd_templates import (
     Bfd_templatesArgs,
 )
+from ansible_collections.cisco.ios.ios.plugins.module_utils.network.ios.rm_templates.bfd_templates import (
+    Bfd_templatesTemplate,
+)
+
 
 class Bfd_templatesFacts(object):
-    """ The ios bfd_templates facts class
-    """
+    """The ios bfd_templates facts class"""
 
-    def __init__(self, module, subspec='config', options='options'):
+    def __init__(self, module, subspec="config", options="options"):
         self._module = module
         self.argument_spec = Bfd_templatesArgs.argument_spec
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """ Populate the facts for Bfd_templates network resource
+        """Populate the facts for Bfd_templates network resource
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -55,13 +57,13 @@ class Bfd_templatesFacts(object):
         bfd_templates_parser = Bfd_templatesTemplate(lines=data.splitlines(), module=self._module)
         objs = list(bfd_templates_parser.parse().values())
 
-        ansible_facts['ansible_network_resources'].pop('bfd_templates', None)
+        ansible_facts["ansible_network_resources"].pop("bfd_templates", None)
 
         params = utils.remove_empties(
-            bfd_templates_parser.validate_config(self.argument_spec, {"config": objs}, redact=True)
+            bfd_templates_parser.validate_config(self.argument_spec, {"config": objs}, redact=True),
         )
 
-        facts['bfd_templates'] = params['config']
-        ansible_facts['ansible_network_resources'].update(facts)
+        facts["bfd_templates"] = params["config"]
+        ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts

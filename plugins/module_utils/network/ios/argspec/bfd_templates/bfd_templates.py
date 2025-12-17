@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 #############################################
@@ -29,8 +30,7 @@ The arg spec for the ios_bfd_templates module
 
 
 class Bfd_templatesArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_bfd_templates module
-    """
+    """The arg spec for the ios_bfd_templates module"""
 
     argument_spec = {
         "config": {

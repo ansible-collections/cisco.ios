@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 """
@@ -15,9 +16,11 @@ the given network resource.
 """
 
 import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
+
 
 class Bfd_templatesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
@@ -30,18 +33,20 @@ class Bfd_templatesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 ^key_a\s(?P<key_a>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "",
             "result": {
             },
-            "shared": True
+            "shared": True,
         },
         {
             "name": "key_b",
             "getval": re.compile(
                 r"""
                 \s+key_b\s(?P<key_b>\S+)
-                $""", re.VERBOSE),
+                $""", re.VERBOSE,
+            ),
             "setval": "",
             "result": {
             },
