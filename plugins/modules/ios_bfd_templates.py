@@ -16,9 +16,9 @@ DOCUMENTATION = """
 module: ios_bfd_templates
 extends_documentation_fragment:
   - cisco.ios.ios
-short_description: Bidirectional Forwarding Detection (BFD) global-level configuration
+short_description: Bidirectional Forwarding Detection (BFD) templates configurations
 description:
-   - Manages Bidirectional Forwarding Detection (BFD) global-level configuration.
+   - Manages Bidirectional Forwarding Detection (BFD) templates configurations
 version_added: 1.0.0
 author:
   - Komal Desai (@komaldesai13)
