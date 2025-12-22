@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat Inc.
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
+
 """
 The ios_l3_interfaces class
 It is in this file where the current configuration (as dict)
@@ -46,7 +47,6 @@ class L3_interfaces(ResourceModule):
             tmplt=L3_interfacesTemplate(),
         )
         self.parsers = [
-            "mac_address",
             "ipv4.address",
             "ipv4.pool",
             "ipv4.dhcp",
@@ -62,6 +62,7 @@ class L3_interfaces(ResourceModule):
         ]
         self.gen_parsers = [
             "autostate",
+            "mac_address",
         ]
 
     def execute_module(self):
