@@ -95,8 +95,9 @@ options:
               - meticulous_keyed_sha_1
               - meticulous_keyed_md5
           keychain:
-            description: Name of the key chain to use for authentication ,this value is marked as no_log=True and will not appear in logs
+            description: Name of the key chain to use for authentication
             type: str
+            no_log: true
   running_config:
     description:
       - This option is used only with state I(parsed).

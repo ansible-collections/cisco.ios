@@ -78,7 +78,7 @@ class Bfd_templatesArgs(object):  # pylint: disable=R0903
                             ],
                             "type": "str",
                         },
-                        "keychain": {"type": "str", "no_log": True},
+                        "keychain": {"type": "str"},
                     },
                 },
             },
