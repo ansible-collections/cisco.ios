@@ -55,7 +55,7 @@ options:
             description: The minimum interval in milliseconds that the local system is capable of supporting between received BFD control packets
             type: int
           multiplier:
-            description: Specifies the number of consecutive BFD control packets that must be missed from a BFD peer before BFD declares that the peer is unavailable and the Layer 3 BFD peer is informed of the failure.
+            description: Specifies the number of consecutive BFD control packets that must be missed from a BFD peer before BFD declares that the peer is unavailable
             type: int
       dampening:
         description: enables session dampening
