@@ -46,7 +46,7 @@ class Bfd_templates(ResourceModule):
             resource="bfd_templates",
             tmplt=Bfd_templatesTemplate(),
         )
-        self.parsers = ["interval", "dampening", "echo", "authentication"]
+        self.parsers = ["interval", "dampening", "authentication", "echo"]
 
     def execute_module(self):
         """Execute the module
@@ -79,14 +79,17 @@ class Bfd_templates(ResourceModule):
         if self.state in ["overridden", "deleted"]:
             for k, have in haved.items():
                 if k not in wantd:
-                    self._compare(want={}, have=have)
+                    self.purge(have)
 
         if self.state == "purged":
             for k, have in haved.items():
                 self.purge(have)
         else:
-            for k, want in wantd.items():
-                self._compare(want=want, have=haved.pop(k, {}))
+            # Process templates in the original order from self.want to ensure deterministic output
+            for entry in self.want:
+                k = entry["name"]
+                if k in wantd:
+                    self._compare(want=wantd[k], have=haved.pop(k, {}))
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -96,16 +99,27 @@ class Bfd_templates(ResourceModule):
         """
         begin = len(self.commands)
 
-        # Handle echo boolean False case
-        if want.get("echo") is False:
-            if have.get("echo", True) is not False:
-                self.commands.append("no echo")
-            if have.get("echo"):
-                self.have.pop("echo", None)
-            if want.get("echo"):
-                self.want.pop("echo", None)
+        # Handle echo removal - needs to come first in command order
+        # Check if echo should be removed (present in have but not in want, or explicitly False in want)
+        parsers = self.parsers
+        if have.get("echo") and not want.get("echo"):
+            self.commands.append("no echo")
+            # Exclude echo from parsers since we've already handled it
+            parsers = [p for p in self.parsers if p != "echo"]
 
-        self.compare(parsers=self.parsers, want=want, have=have)
+        self.compare(parsers=parsers, want=want, have=have)
+
+        # Handle authentication replacement - need to negate old auth before adding new one
+        if have.get("authentication") and want.get("authentication"):
+            if have["authentication"] != want["authentication"]:
+                # Find the index of the new authentication command
+                auth_cmd_prefix = f"authentication {want['authentication']['type'].replace('_', '-')}"
+                for i in range(begin, len(self.commands)):
+                    if self.commands[i].startswith(auth_cmd_prefix):
+                        # Insert the no command before the new authentication
+                        no_auth_cmd = self._tmplt.render(have, "authentication", True)
+                        self.commands.insert(i, no_auth_cmd)
+                        break
 
         # Insert the bfd-template header command at the beginning
         if len(self.commands) != begin:
