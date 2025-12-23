@@ -1,0 +1,12 @@
+---
+- name: Populate BFD template configuration
+  cisco.ios.ios_bfd_templates:
+    config:
+      - name: template1
+        hop: single_hop
+        interval:
+          min_tx: 500
+          min_rx: 500
+          multiplier: 3
+        echo: true
+    state: merged

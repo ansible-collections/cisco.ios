@@ -1,0 +1,5 @@
+---
+- name: Run the cli test
+  ansible.builtin.include_tasks: cli.yaml
+  tags:
+    - cli

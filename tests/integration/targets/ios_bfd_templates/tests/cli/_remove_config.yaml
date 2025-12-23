@@ -1,0 +1,12 @@
+---
+- name: Remove BFD template configuration
+  cisco.ios.ios_config:
+    lines:
+      - no bfd-template single-hop template1
+      - no bfd-template single-hop template2
+      - no bfd-template multi-hop template3
+      - no bfd-template single-hop secure_template
+      - no bfd-template single-hop new_template
+      - no bfd-template single-hop boxTest
+    match: none
+  ignore_errors: true

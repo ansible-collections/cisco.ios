@@ -1,0 +1,15 @@
+[test_env]
+192.168.255.14
+
+[test_env:vars]
+ansible_network_os=cisco.ios.ios
+ansible_user=cisco
+ansible_ssh_pass=cisco
+ansible_connection=ansible.netcommon.network_cli
+ansible_ssh_port=2014
+ansible_become=True
+ansible_become_pass=cisco
+collection_name=ios
+collection_namespace=cisco
+collection_fork=ansible-collections
+collection_branch=main

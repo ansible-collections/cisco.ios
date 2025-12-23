@@ -1,0 +1,25 @@
+---
+- ansible.builtin.debug:
+    msg: START Rendered ios_bfd_templates state for integration tests on connection={{ ansible_connection }}
+
+- block:
+    - name: Render BFD template configuration
+      register: result
+      cisco.ios.ios_bfd_templates:
+        config:
+          - name: rendered_template
+            hop: single_hop
+            interval:
+              min_tx: 400
+              min_rx: 400
+              multiplier: 4
+            authentication:
+              authentication_type: md5
+              chain_name: my_keychain
+            echo: true
+        state: rendered
+
+    - name: Assert that correct set of commands were rendered
+      ansible.builtin.assert:
+        that:
+          - "{{ rendered['commands'] | symmetric_difference(result['rendered']) | length == 0 }}"

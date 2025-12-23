@@ -1,0 +1,103 @@
+---
+merged:
+  commands:
+    - bfd-template single-hop template1
+    - interval min-tx 500 min-rx 500 multiplier 3
+    - echo
+    - bfd-template multi-hop template3
+    - interval min-tx 1000 min-rx 1000 multiplier 5
+    - dampening 2 1000 3000 8
+  after:
+    - name: template1
+      hop: single_hop
+      interval:
+        min_tx: 500
+        min_rx: 500
+        multiplier: 3
+      echo: true
+    - name: template3
+      hop: multi_hop
+      interval:
+        min_tx: 1000
+        min_rx: 1000
+        multiplier: 5
+      dampening:
+        half_life_period: 2
+        reuse_threshold: 1000
+        suppress_threshold: 3000
+        max_suppress_time: 8
+
+replaced:
+  commands:
+    - bfd-template single-hop template1
+    - interval min-tx 1000 min-rx 1000 multiplier 5
+    - no echo
+  after:
+    - name: template1
+      hop: single_hop
+      interval:
+        min_tx: 1000
+        min_rx: 1000
+        multiplier: 5
+      echo: false
+
+overridden:
+  commands:
+    - no bfd-template single-hop template1
+    - bfd-template single-hop new_template
+    - interval min-tx 200 min-rx 200 multiplier 6
+  after:
+    - name: new_template
+      hop: single_hop
+      interval:
+        min_tx: 200
+        min_rx: 200
+        multiplier: 6
+
+deleted:
+  commands:
+    - no bfd-template single-hop template1
+  after: []
+
+gathered:
+  config:
+    - name: template1
+      hop: single_hop
+      interval:
+        min_tx: 500
+        min_rx: 500
+        multiplier: 3
+      echo: true
+
+rendered:
+  commands:
+    - bfd-template single-hop rendered_template
+    - interval min-tx 400 min-rx 400 multiplier 4
+    - authentication md5 keychain my_keychain
+    - echo
+
+parsed:
+  config:
+    - name: template1
+      hop: single_hop
+      interval:
+        min_tx: 500
+        min_rx: 500
+        multiplier: 3
+      echo: true
+    - name: template2
+      hop: multi_hop
+      interval:
+        min_tx: 1000
+        min_rx: 1000
+        multiplier: 5
+      dampening:
+        half_life_period: 2
+        reuse_threshold: 1000
+        suppress_threshold: 3000
+        max_suppress_time: 8
+
+purged:
+  commands:
+    - no bfd-template single-hop template1
+  after: []
