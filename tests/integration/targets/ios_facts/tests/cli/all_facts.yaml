@@ -60,6 +60,7 @@
       - vrf_address_family
       - vrf_interfaces
       - hsrp_interfaces
+      - bfd_interfaces
 
 - name: Collect list of available network resources for IOS
   register: result
