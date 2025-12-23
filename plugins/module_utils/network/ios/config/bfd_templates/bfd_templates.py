@@ -113,7 +113,9 @@ class Bfd_templates(ResourceModule):
         if have.get("authentication") and want.get("authentication"):
             if have["authentication"] != want["authentication"]:
                 # Find the index of the new authentication command
-                auth_cmd_prefix = f"authentication {want['authentication']['type'].replace('_', '-')}"
+                auth_cmd_prefix = (
+                    f"authentication {want['authentication']['type'].replace('_', '-')}"
+                )
                 for i in range(begin, len(self.commands)):
                     if self.commands[i].startswith(auth_cmd_prefix):
                         # Insert the no command before the new authentication
