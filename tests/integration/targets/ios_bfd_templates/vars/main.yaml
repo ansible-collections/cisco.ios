@@ -1,103 +1,187 @@
 ---
-merged:
+parsed:
+  - name: template1
+    hop: single_hop
+    interval:
+      min_tx: 200
+      min_rx: 200
+      multiplier: 3
+    authentication:
+      type: keyed_sha_1
+      keychain: bfd_keychain
+    echo: true
+  - name: template2
+    hop: multi_hop
+    interval:
+      min_tx: 500
+      min_rx: 500
+      multiplier: 5
+    dampening:
+      half_life_period: 30
+      reuse_threshold: 2000
+      suppress_threshold: 5000
+      max_suppress_time: 120
+
+rendered:
   commands:
     - bfd-template single-hop template1
-    - interval min-tx 500 min-rx 500 multiplier 3
+    - interval min-tx 200 min-rx 200 multiplier 3
+    - authentication keyed-sha-1 keychain bfd_keychain
     - echo
-    - bfd-template multi-hop template3
-    - interval min-tx 1000 min-rx 1000 multiplier 5
-    - dampening 2 1000 3000 8
-  after:
-    - name: template1
-      hop: single_hop
-      interval:
-        min_tx: 500
-        min_rx: 500
-        multiplier: 3
-      echo: true
-    - name: template3
-      hop: multi_hop
-      interval:
-        min_tx: 1000
-        min_rx: 1000
-        multiplier: 5
-      dampening:
-        half_life_period: 2
-        reuse_threshold: 1000
-        suppress_threshold: 3000
-        max_suppress_time: 8
+    - bfd-template multi-hop template2
+    - interval min-tx 500 min-rx 500 multiplier 5
+    - dampening 30 2000 5000 120
 
-replaced:
+merged:
+  before: []
   commands:
     - bfd-template single-hop template1
-    - interval min-tx 1000 min-rx 1000 multiplier 5
-    - no echo
+    - interval min-tx 200 min-rx 200 multiplier 3
+    - authentication keyed-sha-1 keychain bfd_keychain
+    - echo
+    - bfd-template multi-hop template2
+    - interval min-tx 500 min-rx 500 multiplier 5
+    - dampening 30 2000 5000 120
   after:
     - name: template1
-      hop: single_hop
-      interval:
-        min_tx: 1000
-        min_rx: 1000
-        multiplier: 5
-      echo: false
-
-overridden:
-  commands:
-    - no bfd-template single-hop template1
-    - bfd-template single-hop new_template
-    - interval min-tx 200 min-rx 200 multiplier 6
-  after:
-    - name: new_template
       hop: single_hop
       interval:
         min_tx: 200
         min_rx: 200
-        multiplier: 6
-
-deleted:
-  commands:
-    - no bfd-template single-hop template1
-  after: []
-
-gathered:
-  config:
-    - name: template1
-      hop: single_hop
-      interval:
-        min_tx: 500
-        min_rx: 500
         multiplier: 3
-      echo: true
-
-rendered:
-  commands:
-    - bfd-template single-hop rendered_template
-    - interval min-tx 400 min-rx 400 multiplier 4
-    - authentication md5 keychain my_keychain
-    - echo
-
-parsed:
-  config:
-    - name: template1
-      hop: single_hop
-      interval:
-        min_tx: 500
-        min_rx: 500
-        multiplier: 3
+      authentication:
+        type: keyed_sha_1
+        keychain: bfd_keychain
       echo: true
     - name: template2
       hop: multi_hop
       interval:
-        min_tx: 1000
-        min_rx: 1000
+        min_tx: 500
+        min_rx: 500
         multiplier: 5
       dampening:
-        half_life_period: 2
-        reuse_threshold: 1000
-        suppress_threshold: 3000
-        max_suppress_time: 8
+        half_life_period: 30
+        reuse_threshold: 2000
+        suppress_threshold: 5000
+        max_suppress_time: 120
+  changed: true
 
-purged:
+replaced:
+  before:
+    - name: template1
+      hop: single_hop
+      interval:
+        min_tx: 200
+        min_rx: 200
+        multiplier: 3
+      authentication:
+        type: keyed_sha_1
+        keychain: bfd_keychain
+      echo: true
+    - name: template2
+      hop: multi_hop
+      interval:
+        min_tx: 500
+        min_rx: 500
+        multiplier: 5
+      dampening:
+        half_life_period: 30
+        reuse_threshold: 2000
+        suppress_threshold: 5000
+        max_suppress_time: 120
+  commands:
+    - bfd-template single-hop template1
+    - no echo
+    - interval min-tx 300 min-rx 300 multiplier 4
+    - no authentication keyed-sha-1 keychain bfd_keychain
+    - authentication sha-1 keychain new_keychain
+  after:
+    - name: template1
+      hop: single_hop
+      interval:
+        min_tx: 300
+        min_rx: 300
+        multiplier: 4
+      authentication:
+        type: sha_1
+        keychain: new_keychain
+    - name: template2
+      hop: multi_hop
+      interval:
+        min_tx: 500
+        min_rx: 500
+        multiplier: 5
+      dampening:
+        half_life_period: 30
+        reuse_threshold: 2000
+        suppress_threshold: 5000
+        max_suppress_time: 120
+  changed: true
+
+overridden:
+  before: []
+  commands:
+    - bfd-template single-hop template1
+    - interval min-tx 200 min-rx 200 multiplier 3
+    - authentication keyed-sha-1 keychain bfd_keychain
+    - echo
+    - bfd-template multi-hop template2
+    - interval min-tx 500 min-rx 500 multiplier 5
+    - dampening 30 2000 5000 120
+  after:
+    - name: template1
+      hop: single_hop
+      interval:
+        min_tx: 200
+        min_rx: 200
+        multiplier: 3
+      authentication:
+        type: keyed_sha_1
+        keychain: bfd_keychain
+      echo: true
+    - name: template2
+      hop: multi_hop
+      interval:
+        min_tx: 500
+        min_rx: 500
+        multiplier: 5
+      dampening:
+        half_life_period: 30
+        reuse_threshold: 2000
+        suppress_threshold: 5000
+        max_suppress_time: 120
+  changed: true
+
+deleted:
+  before:
+    - name: template1
+      hop: single_hop
+      interval:
+        min_tx: 200
+        min_rx: 200
+        multiplier: 3
+      authentication:
+        type: keyed_sha_1
+        keychain: bfd_keychain
+      echo: true
+    - name: template2
+      hop: multi_hop
+      interval:
+        min_tx: 500
+        min_rx: 500
+        multiplier: 5
+      dampening:
+        half_life_period: 30
+        reuse_threshold: 2000
+        suppress_threshold: 5000
+        max_suppress_time: 120
   commands:
     - no bfd-template single-hop template1
+    - no bfd-template multi-hop template2
   after: []
+  changed: true
+
+rtt:
+  commands:
+    - bfd-template single-hop template1
+    - interval min-tx 200 min-rx 200 multiplier 3

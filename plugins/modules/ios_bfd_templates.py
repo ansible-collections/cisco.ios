@@ -40,8 +40,8 @@ options:
         description: type of template to be used
         required: true
         choices:
-          - single-hop
-          - multi-hop
+          - single_hop
+          - multi_hop
         type: str
       interval:
         description: defines transmit interval between BFD packets
@@ -50,15 +50,12 @@ options:
         suboptions:
           min_tx:
             description: The minimum interval in milliseconds that the local system desires for transmitting BFD control packets
-            required: true
             type: int
           min_rx:
             description: The minimum interval in milliseconds that the local system is capable of supporting between received BFD control packets
-            required: true
             type: int
           multiplier:
             description: Specifies the number of consecutive BFD control packets that must be missed from a BFD peer before BFD declares that the peer is unavailable and the Layer 3 BFD peer is informed of the failure.
-            required: true
             type: int
       dampening:
         description: enables session dampening
@@ -67,29 +64,43 @@ options:
         suboptions:
           half_life_period:
             description: half-life period for the exponential decay algorithm, in minutes.
-            required: true
             type: int
           reuse_threshold:
             description: The threshold at which a dampened session is allowed to be reused (taken out of dampening), in milliseconds.
-            required: true
             type: int
           suppress_threshold:
             description: The threshold at which a session is suppressed (put into dampening), in milliseconds.
-            required: true
             type: int
           max_suppress_time:
             description: The maximum amount of time a session can be suppressed, in minutes.
-            required: true
             type: int
       echo:
-        description: enables the BFD echo function for all interfaces which uses thsis specific template.
+        description: enables the BFD echo function for all interfaces which uses this specific template.
         required: false
-        type : bool
+        type: bool
+      authentication:
+        description: Configure authentication for the BFD template
+        required: false
+        type: dict
+        suboptions:
+          type:
+            description: Authentication type to use for BFD sessions
+            type: str
+            choices:
+              - sha_1
+              - md5
+              - keyed_sha_1
+              - keyed_md5
+              - meticulous_keyed_sha_1
+              - meticulous_keyed_md5
+          keychain:
+            description: Name of the key chain to use for authentication
+            type: str
   running_config:
     description:
       - This option is used only with state I(parsed).
       - The value of this option should be the output received from the IOS device by
-        executing the command B(show running-config | section ^interface).
+        executing the command B(show running-config | section ^bfd-template).
       - The state I(parsed) reads the configuration from C(running_config) option and
         transforms it into Ansible structured data as per the resource module's argspec
         and the value is then returned in the I(parsed) key within the result.
@@ -120,24 +131,324 @@ options:
         transforms it into JSON format as per the resource module parameters and the
         value is returned in the I(parsed) key within the result. The value of C(running_config)
         option should be the same format as the output of command I(show running-config
-        | include bfd-template ) executed on device. For state I(parsed) active
+        | section ^bfd-template) executed on device. For state I(parsed) active
         connection to remote host is not required.
-      - The state I(purged) negates virtual/logical interfaces that are specified in task
-        from running-config.
+      - The state I(purged) removes the BFD templates that are specified in the task
+        from running-config. Purged and deleted states function identically for this module.
     type: str
 """
 
 EXAMPLES = """
+# Using merged
+# Before state:
+# -------------
+# router-ios#show running-config | section ^bfd-template
+# (no BFD templates configured)
 
+- name: Merge provided configuration with device configuration
+  cisco.ios.ios_bfd_templates:
+    config:
+      - name: template1
+        hop: single_hop
+        interval:
+          min_tx: 200
+          min_rx: 200
+          multiplier: 3
+        authentication:
+          type: keyed_sha_1
+          keychain: bfd_keychain
+        echo: true
+      - name: template2
+        hop: multi_hop
+        interval:
+          min_tx: 500
+          min_rx: 500
+          multiplier: 5
+        dampening:
+          half_life_period: 30
+          reuse_threshold: 2000
+          suppress_threshold: 5000
+          max_suppress_time: 120
+    state: merged
+
+# Commands Fired:
+# ---------------
+# bfd-template single-hop template1
+#  interval min-tx 200 min-rx 200 multiplier 3
+#  authentication keyed-sha-1 keychain bfd_keychain
+#  echo
+# bfd-template multi-hop template2
+#  interval min-tx 500 min-rx 500 multiplier 5
+#  dampening 30 2000 5000 120
+
+# After state:
+# ------------
+# router-ios#show running-config | section ^bfd-template
+# bfd-template single-hop template1
+#  interval min-tx 200 min-rx 200 multiplier 3
+#  authentication keyed-sha-1 keychain bfd_keychain
+#  echo
+# bfd-template multi-hop template2
+#  interval min-tx 500 min-rx 500 multiplier 5
+#  dampening 30 2000 5000 120
+
+# Using replaced
+# Before state:
+# -------------
+# router-ios#show running-config | section ^bfd-template
+# bfd-template single-hop template1
+#  interval min-tx 200 min-rx 200 multiplier 3
+#  authentication keyed-sha-1 keychain bfd_keychain
+#  echo
+# bfd-template multi-hop template2
+#  interval min-tx 500 min-rx 500 multiplier 5
+
+- name: Replace device configuration of specified BFD templates with provided configuration
+  cisco.ios.ios_bfd_templates:
+    config:
+      - name: template1
+        hop: single_hop
+        interval:
+          min_tx: 300
+          min_rx: 300
+          multiplier: 4
+        authentication:
+          type: sha_1
+          keychain: new_keychain
+    state: replaced
+
+# Commands Fired:
+# ---------------
+# bfd-template single-hop template1
+#  no echo
+#  interval min-tx 300 min-rx 300 multiplier 4
+#  no authentication keyed-sha-1 keychain bfd_keychain
+#  authentication sha-1 keychain new_keychain
+
+# After state:
+# ------------
+# router-ios#show running-config | section ^bfd-template
+# bfd-template single-hop template1
+#  interval min-tx 300 min-rx 300 multiplier 4
+#  authentication sha-1 keychain new_keychain
+# bfd-template multi-hop template2
+#  interval min-tx 500 min-rx 500 multiplier 5
+
+# Using overridden
+# Before state:
+# -------------
+# router-ios#show running-config | section ^bfd-template
+# bfd-template single-hop template1
+#  interval min-tx 200 min-rx 200 multiplier 3
+# bfd-template multi-hop template2
+#  interval min-tx 500 min-rx 500 multiplier 5
+# bfd-template single-hop template3
+#  echo
+
+- name: Override device configuration with provided configuration
+  cisco.ios.ios_bfd_templates:
+    config:
+      - name: template1
+        hop: single_hop
+        interval:
+          min_tx: 300
+          min_rx: 300
+          multiplier: 5
+        authentication:
+          type: keyed_md5
+          keychain: secure_key
+    state: overridden
+
+# Commands Fired:
+# ---------------
+# no bfd-template multi-hop template2
+# no bfd-template single-hop template3
+# bfd-template single-hop template1
+#  interval min-tx 300 min-rx 300 multiplier 5
+#  authentication keyed-md5 keychain secure_key
+
+# After state:
+# ------------
+# router-ios#show running-config | section ^bfd-template
+# bfd-template single-hop template1
+#  interval min-tx 300 min-rx 300 multiplier 5
+#  authentication keyed-md5 keychain secure_key
+
+# Using deleted
+# Before state:
+# -------------
+# router-ios#show running-config | section ^bfd-template
+# bfd-template single-hop template1
+#  interval min-tx 200 min-rx 200 multiplier 3
+#  authentication keyed-sha-1 keychain bfd_keychain
+#  echo
+# bfd-template multi-hop template2
+#  interval min-tx 500 min-rx 500 multiplier 5
+
+- name: Delete specified BFD template configuration
+  cisco.ios.ios_bfd_templates:
+    config:
+      - name: template1
+        hop: single_hop
+    state: deleted
+
+# Commands Fired:
+# ---------------
+# no bfd-template single-hop template1
+
+# After state:
+# ------------
+# router-ios#show running-config | section ^bfd-template
+# bfd-template multi-hop template2
+#  interval min-tx 500 min-rx 500 multiplier 5
+
+# Using deleted (to delete all BFD templates)
+# Before state:
+# -------------
+# router-ios#show running-config | section ^bfd-template
+# bfd-template single-hop template1
+#  interval min-tx 200 min-rx 200 multiplier 3
+# bfd-template multi-hop template2
+#  interval min-tx 500 min-rx 500 multiplier 5
+
+- name: Delete all BFD template configurations
+  cisco.ios.ios_bfd_templates:
+    state: deleted
+
+# Commands Fired:
+# ---------------
+# no bfd-template single-hop template1
+# no bfd-template multi-hop template2
+
+# After state:
+# ------------
+# router-ios#show running-config | section ^bfd-template
+# (no BFD templates configured)
+
+# Using purged
+# Before state:
+# -------------
+# router-ios#show running-config | section ^bfd-template
+# bfd-template single-hop template1
+#  interval min-tx 200 min-rx 200 multiplier 3
+# bfd-template multi-hop template2
+#  interval min-tx 500 min-rx 500 multiplier 5
+
+- name: Purge specified BFD template configurations
+  cisco.ios.ios_bfd_templates:
+    config:
+      - name: template1
+        hop: single_hop
+    state: purged
+
+# Commands Fired:
+# ---------------
+# no bfd-template single-hop template1
+
+# After state:
+# ------------
+# router-ios#show running-config | section ^bfd-template
+# bfd-template multi-hop template2
+#  interval min-tx 500 min-rx 500 multiplier 5
+
+# Using rendered
+- name: Render platform specific commands from task input using rendered state
+  cisco.ios.ios_bfd_templates:
+    config:
+      - name: template1
+        hop: single_hop
+        interval:
+          min_tx: 200
+          min_rx: 200
+          multiplier: 3
+        authentication:
+          type: meticulous_keyed_sha_1
+          keychain: secure_chain
+        echo: true
+    state: rendered
+
+# Module Execution Result:
+# ------------------------
+# "rendered": [
+#     "bfd-template single-hop template1",
+#     "interval min-tx 200 min-rx 200 multiplier 3",
+#     "authentication meticulous-keyed-sha-1 keychain secure_chain",
+#     "echo"
+# ]
+
+# Using gathered
+- name: Gather BFD template configuration from the device
+  cisco.ios.ios_bfd_templates:
+    state: gathered
+
+# Module Execution Result:
+# ------------------------
+# "gathered": [
+#     {
+#         "name": "template1",
+#         "hop": "single_hop",
+#         "interval": {
+#             "min_tx": 200,
+#             "min_rx": 200,
+#             "multiplier": 3
+#         },
+#         "authentication": {
+#             "type": "keyed_sha_1",
+#             "keychain": "bfd_keychain"
+#         },
+#         "echo": true
+#     }
+# ]
+
+# Using parsed
+- name: Parse the provided configuration to structured format
+  cisco.ios.ios_bfd_templates:
+    running_config: |
+      bfd-template single-hop template1
+       interval min-tx 200 min-rx 200 multiplier 3
+       authentication keyed-sha-1 keychain bfd_keychain
+       echo
+      bfd-template multi-hop template2
+       dampening 30 2000 5000 120
+    state: parsed
+
+# Module Execution Result:
+# ------------------------
+# "parsed": [
+#     {
+#         "name": "template1",
+#         "hop": "single_hop",
+#         "interval": {
+#             "min_tx": 200,
+#             "min_rx": 200,
+#             "multiplier": 3
+#         },
+#         "authentication": {
+#             "type": "keyed_sha_1",
+#             "keychain": "bfd_keychain"
+#         },
+#         "echo": true
+#     },
+#     {
+#         "name": "template2",
+#         "hop": "multi_hop",
+#         "dampening": {
+#             "half_life_period": 30,
+#             "reuse_threshold": 2000,
+#             "suppress_threshold": 5000,
+#             "max_suppress_time": 120
+#         }
+#     }
+# ]
 """
 
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.cisco.ios.ios.plugins.module_utils.network.ios.argspec.bfd_templates.bfd_templates import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bfd_templates.bfd_templates import (
     Bfd_templatesArgs,
 )
-from ansible_collections.cisco.ios.ios.plugins.module_utils.network.ios.config.bfd_templates.bfd_templates import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.bfd_templates.bfd_templates import (
     Bfd_templates,
 )
 

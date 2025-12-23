@@ -166,6 +166,7 @@ FACT_RESOURCE_SUBSETS = dict(
     vrf_interfaces=Vrf_interfacesFacts,
     hsrp_interfaces=Hsrp_interfacesFacts,
     bfd_interfaces=Bfd_interfacesFacts,
+    bfd_templates=Bfd_templatesFacts,
 )
 
 

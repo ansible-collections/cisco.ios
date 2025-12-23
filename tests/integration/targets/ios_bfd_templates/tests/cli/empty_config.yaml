@@ -1,18 +1,58 @@
 ---
 - ansible.builtin.debug:
-    msg: START empty_config ios_bfd_templates state for integration tests on connection={{ ansible_connection }}
+    msg: START ios_bfd_templates empty_config.yaml integration tests on connection={{ ansible_connection }}
 
-- ansible.builtin.include_tasks: _remove_config.yaml
-
-- name: Apply an empty configuration (empty config)
+- name: Merged with empty configuration should give appropriate error message
   register: result
+  ignore_errors: true
   cisco.ios.ios_bfd_templates:
-    config: []
+    config:
     state: merged
 
-- name: Assert that no changes were made
-  ansible.builtin.assert:
+- ansible.builtin.assert:
     that:
-      - result['changed'] == false
-      - result['before'] == []
-      - result['after'] == []
+      - result.msg == 'value of config parameter must not be empty for state merged'
+
+- name: Replaced with empty configuration should give appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.ios.ios_bfd_templates:
+    config:
+    state: replaced
+
+- ansible.builtin.assert:
+    that:
+      - result.msg == 'value of config parameter must not be empty for state replaced'
+
+- name: Overridden with empty configuration should give appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.ios.ios_bfd_templates:
+    config:
+    state: overridden
+
+- ansible.builtin.assert:
+    that:
+      - result.msg == 'value of config parameter must not be empty for state overridden'
+
+- name: Rendered with empty configuration should give appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.ios.ios_bfd_templates:
+    config:
+    state: rendered
+
+- ansible.builtin.assert:
+    that:
+      - result.msg == 'value of config parameter must not be empty for state rendered'
+
+- name: Parsed with empty configuration should give appropriate error message
+  register: result
+  ignore_errors: true
+  cisco.ios.ios_bfd_templates:
+    running_config:
+    state: parsed
+
+- ansible.builtin.assert:
+    that:
+      - result.msg == 'value of running_config parameter must not be empty for state parsed'

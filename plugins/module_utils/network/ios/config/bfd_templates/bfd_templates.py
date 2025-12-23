@@ -18,8 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from copy import deepcopy
-
 from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
@@ -28,10 +26,10 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     dict_merge,
 )
 
-from ansible_collections.cisco.ios.ios.plugins.module_utils.network.ios.facts.facts import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import (
     Facts,
 )
-from ansible_collections.cisco.ios.ios.plugins.module_utils.network.ios.rm_templates.bfd_templates import (
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bfd_templates import (
     Bfd_templatesTemplate,
 )
 
@@ -49,7 +47,7 @@ class Bfd_templates(ResourceModule):
             resource="bfd_templates",
             tmplt=Bfd_templatesTemplate(),
         )
-        self.parsers = []
+        self.parsers = ["interval", "dampening", "echo", "authentication"]
 
     def execute_module(self):
         """Execute the module
@@ -73,8 +71,8 @@ class Bfd_templates(ResourceModule):
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
-        # if state is deleted, empty out wantd and set haved to wantd
-        if self.state == "deleted":
+        # if state is deleted or purged, empty out wantd and set haved to wantd
+        if self.state in ["deleted", "purged"]:
             haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
             wantd = {}
 
@@ -84,8 +82,12 @@ class Bfd_templates(ResourceModule):
                 if k not in wantd:
                     self._compare(want={}, have=have)
 
-        for k, want in iteritems(wantd):
-            self._compare(want=want, have=haved.pop(k, {}))
+        if self.state == "purged":
+            for k, have in iteritems(haved):
+                self.purge(have)
+        else:
+            for k, want in iteritems(wantd):
+                self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -93,4 +95,23 @@ class Bfd_templates(ResourceModule):
         the `want` and `have` data with the `parsers` defined
         for the Bfd_templates network resource.
         """
+        begin = len(self.commands)
+
+        # Handle echo boolean False case
+        if want.get("echo") is False:
+            if have.get("echo", True) is not False:
+                self.commands.append("no echo")
+            if have.get("echo"):
+                self.have.pop("echo", None)
+            if want.get("echo"):
+                self.want.pop("echo", None)
+
         self.compare(parsers=self.parsers, want=want, have=have)
+
+        # Insert the bfd-template header command at the beginning
+        if len(self.commands) != begin:
+            self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
+
+    def purge(self, have):
+        """Handle operation for purged state - removes entire template"""
+        self.commands.append(self._tmplt.render(have, "name", True))

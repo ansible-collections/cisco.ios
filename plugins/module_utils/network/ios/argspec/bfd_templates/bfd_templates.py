@@ -40,7 +40,7 @@ class Bfd_templatesArgs(object):  # pylint: disable=R0903
                 "name": {"required": True, "type": "str"},
                 "hop": {
                     "required": True,
-                    "choices": ["single-hop", "multi-hop"],
+                    "choices": ["single_hop", "multi_hop"],
                     "type": "str",
                 },
                 "interval": {
@@ -63,6 +63,25 @@ class Bfd_templatesArgs(object):  # pylint: disable=R0903
                     },
                 },
                 "echo": {"required": False, "type": "bool"},
+                "authentication": {
+                    "required": False,
+                    "type": "dict",
+                    "options": {
+                        "type": {
+                            "required": False,
+                            "choices": [
+                                "sha_1",
+                                "md5",
+                                "keyed_sha_1",
+                                "keyed_md5",
+                                "meticulous_keyed_sha_1",
+                                "meticulous_keyed_md5",
+                            ],
+                            "type": "str",
+                        },
+                        "keychain": {"required": False, "type": "str"},
+                    },
+                },
             },
         },
         "running_config": {"type": "str"},

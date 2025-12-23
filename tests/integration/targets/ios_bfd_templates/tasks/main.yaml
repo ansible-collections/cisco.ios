@@ -1,5 +1,5 @@
 ---
-- name: Run the cli test
+- name: Main task file for ios_bfd_templates tests
   ansible.builtin.include_tasks: cli.yaml
   tags:
     - cli

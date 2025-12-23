@@ -45,298 +45,220 @@ class TestIosBfdTemplatesModule(TestIosModule):
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "name": "template1",
                         "hop": "single_hop",
-                        "interval": {
-                            "min_tx": 500,
-                            "min_rx": 500,
-                            "multiplier": 3,
-                        },
+                        "interval": {"min_tx": 200, "min_rx": 200, "multiplier": 3},
+                        "authentication": {"type": "keyed_sha_1", "keychain": "bfd_keychain"},
                         "echo": True,
                     },
                     {
                         "name": "template2",
                         "hop": "multi_hop",
-                        "interval": {
-                            "min_tx": 1000,
-                            "min_rx": 1000,
-                            "multiplier": 5,
-                        },
+                        "interval": {"min_tx": 500, "min_rx": 500, "multiplier": 5},
                         "dampening": {
-                            "half_life_period": 2,
-                            "reuse_threshold": 1000,
-                            "suppress_threshold": 3000,
-                            "max_suppress_time": 8,
+                            "half_life_period": 30,
+                            "reuse_threshold": 2000,
+                            "suppress_threshold": 5000,
+                            "max_suppress_time": 120,
                         },
                     },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
         commands = [
             "bfd-template single-hop template1",
-            "interval min-tx 500 min-rx 500 multiplier 3",
+            "interval min-tx 200 min-rx 200 multiplier 3",
+            "authentication keyed-sha-1 keychain bfd_keychain",
             "echo",
             "bfd-template multi-hop template2",
-            "interval min-tx 1000 min-rx 1000 multiplier 5",
-            "dampening 2 1000 3000 8",
+            "interval min-tx 500 min-rx 500 multiplier 5",
+            "dampening 30 2000 5000 120",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        self.assertEqual(result["commands"], commands)
 
     def test_ios_bfd_templates_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
             bfd-template single-hop template1
-             interval min-tx 500 min-rx 500 multiplier 3
+             interval min-tx 200 min-rx 200 multiplier 3
+             authentication keyed-sha-1 keychain bfd_keychain
              echo
-            !
-            bfd-template multi-hop template2
-             interval min-tx 1000 min-rx 1000 multiplier 5
-             dampening 2 1000 3000 8
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "name": "template1",
                         "hop": "single_hop",
-                        "interval": {
-                            "min_tx": 500,
-                            "min_rx": 500,
-                            "multiplier": 3,
-                        },
+                        "interval": {"min_tx": 200, "min_rx": 200, "multiplier": 3},
+                        "authentication": {"type": "keyed_sha_1", "keychain": "bfd_keychain"},
                         "echo": True,
                     },
-                    {
-                        "name": "template2",
-                        "hop": "multi_hop",
-                        "interval": {
-                            "min_tx": 1000,
-                            "min_rx": 1000,
-                            "multiplier": 5,
-                        },
-                        "dampening": {
-                            "half_life_period": 2,
-                            "reuse_threshold": 1000,
-                            "suppress_threshold": 3000,
-                            "max_suppress_time": 8,
-                        },
-                    },
                 ],
-                state="merged",
-            ),
+                "state": "merged",
+            },
         )
-        commands = []
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
-
-    def test_ios_bfd_templates_merged_with_authentication(self):
-        self.execute_show_command.return_value = dedent(
-            """\
-            """,
-        )
-        set_module_args(
-            dict(
-                config=[
-                    {
-                        "name": "secure_template",
-                        "hop": "single_hop",
-                        "interval": {
-                            "min_tx": 300,
-                            "min_rx": 300,
-                            "multiplier": 4,
-                        },
-                        "authentication": {
-                            "authentication_type": "sha-1",
-                            "chain_name": "bfd_keychain",
-                        },
-                    },
-                ],
-                state="merged",
-            ),
-        )
-        commands = [
-            "bfd-template single-hop secure_template",
-            "interval min-tx 300 min-rx 300 multiplier 4",
-            "authentication sha-1 keychain bfd_keychain",
-        ]
-        result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        self.assertEqual(result["commands"], [])
 
     def test_ios_bfd_templates_replaced(self):
         self.execute_show_command.return_value = dedent(
             """\
             bfd-template single-hop template1
-             interval min-tx 500 min-rx 500 multiplier 3
+             interval min-tx 200 min-rx 200 multiplier 3
+             authentication keyed-sha-1 keychain bfd_keychain
              echo
+            bfd-template multi-hop template2
+             interval min-tx 500 min-rx 500 multiplier 5
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "name": "template1",
                         "hop": "single_hop",
-                        "interval": {
-                            "min_tx": 1000,
-                            "min_rx": 1000,
-                            "multiplier": 5,
-                        },
-                        "echo": False,
+                        "interval": {"min_tx": 300, "min_rx": 300, "multiplier": 4},
+                        "authentication": {"type": "sha_1", "keychain": "new_keychain"},
                     },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
         commands = [
             "bfd-template single-hop template1",
-            "interval min-tx 1000 min-rx 1000 multiplier 5",
             "no echo",
+            "interval min-tx 300 min-rx 300 multiplier 4",
+            "no authentication keyed-sha-1 keychain bfd_keychain",
+            "authentication sha-1 keychain new_keychain",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        self.assertEqual(result["commands"], commands)
 
     def test_ios_bfd_templates_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
             bfd-template single-hop template1
-             interval min-tx 1000 min-rx 1000 multiplier 5
-             no echo
+             interval min-tx 300 min-rx 300 multiplier 4
+             authentication sha-1 keychain new_keychain
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "name": "template1",
                         "hop": "single_hop",
-                        "interval": {
-                            "min_tx": 1000,
-                            "min_rx": 1000,
-                            "multiplier": 5,
-                        },
-                        "echo": False,
+                        "interval": {"min_tx": 300, "min_rx": 300, "multiplier": 4},
+                        "authentication": {"type": "sha_1", "keychain": "new_keychain"},
                     },
                 ],
-                state="replaced",
-            ),
+                "state": "replaced",
+            },
         )
-        commands = []
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        self.assertEqual(result["commands"], [])
 
     def test_ios_bfd_templates_overridden(self):
         self.execute_show_command.return_value = dedent(
             """\
             bfd-template single-hop template1
-             interval min-tx 500 min-rx 500 multiplier 3
-             echo
-            !
+             interval min-tx 200 min-rx 200 multiplier 3
             bfd-template multi-hop template2
-             interval min-tx 1000 min-rx 1000 multiplier 5
+             interval min-tx 500 min-rx 500 multiplier 5
+            bfd-template single-hop template3
+             echo
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
-                        "name": "new_template",
+                        "name": "template1",
                         "hop": "single_hop",
-                        "interval": {
-                            "min_tx": 200,
-                            "min_rx": 200,
-                            "multiplier": 6,
-                        },
+                        "interval": {"min_tx": 300, "min_rx": 300, "multiplier": 5},
+                        "authentication": {"type": "keyed_md5", "keychain": "secure_key"},
                     },
                 ],
-                state="overridden",
-            ),
+                "state": "overridden",
+            },
         )
         commands = [
-            "no bfd-template single-hop template1",
             "no bfd-template multi-hop template2",
-            "bfd-template single-hop new_template",
-            "interval min-tx 200 min-rx 200 multiplier 6",
+            "no bfd-template single-hop template3",
+            "bfd-template single-hop template1",
+            "interval min-tx 300 min-rx 300 multiplier 5",
+            "authentication keyed-md5 keychain secure_key",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        self.assertEqual(result["commands"], commands)
 
     def test_ios_bfd_templates_overridden_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
-            bfd-template single-hop new_template
-             interval min-tx 200 min-rx 200 multiplier 6
-            """,
-        )
-        set_module_args(
-            dict(
-                config=[
-                    {
-                        "name": "new_template",
-                        "hop": "single_hop",
-                        "interval": {
-                            "min_tx": 200,
-                            "min_rx": 200,
-                            "multiplier": 6,
-                        },
-                    },
-                ],
-                state="overridden",
-            ),
-        )
-        commands = []
-        result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
-
-    def test_ios_bfd_templates_deleted_single(self):
-        self.execute_show_command.return_value = dedent(
-            """\
             bfd-template single-hop template1
-             interval min-tx 500 min-rx 500 multiplier 3
-             echo
-            !
-            bfd-template multi-hop template2
-             interval min-tx 1000 min-rx 1000 multiplier 5
+             interval min-tx 300 min-rx 300 multiplier 5
+             authentication keyed-md5 keychain secure_key
             """,
         )
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
                         "name": "template1",
                         "hop": "single_hop",
+                        "interval": {"min_tx": 300, "min_rx": 300, "multiplier": 5},
+                        "authentication": {"type": "keyed_md5", "keychain": "secure_key"},
                     },
                 ],
-                state="deleted",
-            ),
+                "state": "overridden",
+            },
         )
-        commands = [
-            "no bfd-template single-hop template1",
-        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_bfd_templates_deleted(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            bfd-template single-hop template1
+             interval min-tx 200 min-rx 200 multiplier 3
+             authentication keyed-sha-1 keychain bfd_keychain
+             echo
+            bfd-template multi-hop template2
+             interval min-tx 500 min-rx 500 multiplier 5
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {"name": "template1", "hop": "single_hop"},
+                ],
+                "state": "deleted",
+            },
+        )
+        commands = ["no bfd-template single-hop template1"]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        self.assertEqual(result["commands"], commands)
 
     def test_ios_bfd_templates_deleted_all(self):
         self.execute_show_command.return_value = dedent(
             """\
             bfd-template single-hop template1
-             interval min-tx 500 min-rx 500 multiplier 3
-             echo
-            !
+             interval min-tx 200 min-rx 200 multiplier 3
             bfd-template multi-hop template2
-             interval min-tx 1000 min-rx 1000 multiplier 5
+             interval min-tx 500 min-rx 500 multiplier 5
             """,
         )
         set_module_args(
-            dict(
-                config=[],
-                state="deleted",
-            ),
+            {
+                "state": "deleted",
+            },
         )
         commands = [
             "no bfd-template single-hop template1",
@@ -345,93 +267,86 @@ class TestIosBfdTemplatesModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
-    def test_ios_bfd_templates_deleted_blank(self):
+    def test_ios_bfd_templates_purged(self):
         self.execute_show_command.return_value = dedent(
             """\
+            bfd-template single-hop template1
+             interval min-tx 200 min-rx 200 multiplier 3
+            bfd-template multi-hop template2
+             interval min-tx 500 min-rx 500 multiplier 5
             """,
         )
         set_module_args(
-            dict(
-                config=[],
-                state="deleted",
-            ),
+            {
+                "config": [
+                    {"name": "template1", "hop": "single_hop"},
+                ],
+                "state": "purged",
+            },
         )
-        commands = []
-        result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        commands = ["no bfd-template single-hop template1"]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
 
     def test_ios_bfd_templates_rendered(self):
         set_module_args(
-            dict(
-                config=[
+            {
+                "config": [
                     {
-                        "name": "rendered_template",
+                        "name": "template1",
                         "hop": "single_hop",
-                        "interval": {
-                            "min_tx": 400,
-                            "min_rx": 400,
-                            "multiplier": 4,
-                        },
+                        "interval": {"min_tx": 200, "min_rx": 200, "multiplier": 3},
                         "authentication": {
-                            "authentication_type": "md5",
-                            "chain_name": "my_keychain",
+                            "type": "meticulous_keyed_sha_1",
+                            "keychain": "secure_chain",
                         },
                         "echo": True,
                     },
                 ],
-                state="rendered",
-            ),
+                "state": "rendered",
+            },
         )
         commands = [
-            "bfd-template single-hop rendered_template",
-            "interval min-tx 400 min-rx 400 multiplier 4",
-            "authentication md5 keychain my_keychain",
+            "bfd-template single-hop template1",
+            "interval min-tx 200 min-rx 200 multiplier 3",
+            "authentication meticulous-keyed-sha-1 keychain secure_chain",
             "echo",
         ]
         result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+        self.assertEqual(result["rendered"], commands)
 
     def test_ios_bfd_templates_parsed(self):
         set_module_args(
-            dict(
-                running_config=dedent(
+            {
+                "running_config": dedent(
                     """\
                     bfd-template single-hop template1
-                     interval min-tx 500 min-rx 500 multiplier 3
+                     interval min-tx 200 min-rx 200 multiplier 3
+                     authentication keyed-sha-1 keychain bfd_keychain
                      echo
-                    !
                     bfd-template multi-hop template2
-                     interval min-tx 1000 min-rx 1000 multiplier 5
-                     dampening 2 1000 3000 8
+                     dampening 30 2000 5000 120
                     """,
                 ),
-                state="parsed",
-            ),
+                "state": "parsed",
+            },
         )
         parsed = [
             {
                 "name": "template1",
                 "hop": "single_hop",
-                "interval": {
-                    "min_tx": 500,
-                    "min_rx": 500,
-                    "multiplier": 3,
-                },
+                "interval": {"min_tx": 200, "min_rx": 200, "multiplier": 3},
+                "authentication": {"type": "keyed_sha_1", "keychain": "bfd_keychain"},
                 "echo": True,
             },
             {
                 "name": "template2",
                 "hop": "multi_hop",
-                "interval": {
-                    "min_tx": 1000,
-                    "min_rx": 1000,
-                    "multiplier": 5,
-                },
                 "dampening": {
-                    "half_life_period": 2,
-                    "reuse_threshold": 1000,
-                    "suppress_threshold": 3000,
-                    "max_suppress_time": 8,
+                    "half_life_period": 30,
+                    "reuse_threshold": 2000,
+                    "suppress_threshold": 5000,
+                    "max_suppress_time": 120,
                 },
             },
         ]
@@ -442,112 +357,69 @@ class TestIosBfdTemplatesModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             bfd-template single-hop template1
-             interval min-tx 500 min-rx 500 multiplier 3
+             interval min-tx 200 min-rx 200 multiplier 3
+             authentication keyed-sha-1 keychain bfd_keychain
              echo
-            !
             bfd-template multi-hop template2
-             interval min-tx 1000 min-rx 1000 multiplier 5
-             dampening 2 1000 3000 8
+             dampening 30 2000 5000 120
             """,
         )
         set_module_args(
-            dict(
-                state="gathered",
-            ),
+            {
+                "state": "gathered",
+            },
         )
         gathered = [
             {
                 "name": "template1",
                 "hop": "single_hop",
-                "interval": {
-                    "min_tx": 500,
-                    "min_rx": 500,
-                    "multiplier": 3,
-                },
+                "interval": {"min_tx": 200, "min_rx": 200, "multiplier": 3},
+                "authentication": {"type": "keyed_sha_1", "keychain": "bfd_keychain"},
                 "echo": True,
             },
             {
                 "name": "template2",
                 "hop": "multi_hop",
-                "interval": {
-                    "min_tx": 1000,
-                    "min_rx": 1000,
-                    "multiplier": 5,
-                },
                 "dampening": {
-                    "half_life_period": 2,
-                    "reuse_threshold": 1000,
-                    "suppress_threshold": 3000,
-                    "max_suppress_time": 8,
+                    "half_life_period": 30,
+                    "reuse_threshold": 2000,
+                    "suppress_threshold": 5000,
+                    "max_suppress_time": 120,
                 },
             },
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], gathered)
 
-    def test_ios_bfd_templates_purged_single(self):
-        self.execute_show_command.return_value = dedent(
-            """\
-            bfd-template single-hop template1
-             interval min-tx 500 min-rx 500 multiplier 3
-             echo
-            !
-            bfd-template multi-hop template2
-             interval min-tx 1000 min-rx 1000 multiplier 5
-            """,
-        )
-        set_module_args(
-            dict(
-                config=[
-                    {
-                        "name": "template1",
-                        "hop": "single_hop",
-                    },
-                ],
-                state="purged",
-            ),
-        )
-        commands = [
-            "no bfd-template single-hop template1",
-        ]
-        result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
-
-    def test_ios_bfd_templates_purged_all(self):
-        self.execute_show_command.return_value = dedent(
-            """\
-            bfd-template single-hop template1
-             interval min-tx 500 min-rx 500 multiplier 3
-             echo
-            !
-            bfd-template multi-hop template2
-             interval min-tx 1000 min-rx 1000 multiplier 5
-            """,
-        )
-        set_module_args(
-            dict(
-                config=[],
-                state="purged",
-            ),
-        )
-        commands = [
-            "no bfd-template single-hop template1",
-            "no bfd-template multi-hop template2",
-        ]
-        result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
-
-    def test_ios_bfd_templates_purged_blank(self):
+    def test_ios_bfd_templates_authentication_types(self):
+        """Test all authentication types"""
         self.execute_show_command.return_value = dedent(
             """\
             """,
         )
-        set_module_args(
-            dict(
-                config=[],
-                state="purged",
-            ),
-        )
-        commands = []
-        result = self.execute_module(changed=False)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        for auth_type, cli_type in [
+            ("sha_1", "sha-1"),
+            ("md5", "md5"),
+            ("keyed_sha_1", "keyed-sha-1"),
+            ("keyed_md5", "keyed-md5"),
+            ("meticulous_keyed_sha_1", "meticulous-keyed-sha-1"),
+            ("meticulous_keyed_md5", "meticulous-keyed-md5"),
+        ]:
+            set_module_args(
+                {
+                    "config": [
+                        {
+                            "name": "test_template",
+                            "hop": "single_hop",
+                            "authentication": {"type": auth_type, "keychain": "test_key"},
+                        },
+                    ],
+                    "state": "merged",
+                },
+            )
+            commands = [
+                "bfd-template single-hop test_template",
+                f"authentication {cli_type} keychain test_key",
+            ]
+            result = self.execute_module(changed=True)
+            self.assertEqual(result["commands"], commands)

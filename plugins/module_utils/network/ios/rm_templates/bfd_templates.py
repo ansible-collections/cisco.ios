@@ -29,26 +29,106 @@ class Bfd_templatesTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
-            "name": "key_a",
+            "name": "name",
             "getval": re.compile(
-                r"""
-                ^key_a\s(?P<key_a>\S+)
-                $""", re.VERBOSE,
+                r"""^bfd-template
+                    \s(?P<hop>single-hop|multi-hop)
+                    \s(?P<name>\S+)
+                    $""",
+                re.VERBOSE,
             ),
-            "setval": "",
+            "compval": "name",
+            "setval": "bfd-template {{ hop|replace('_', '-') }} {{ name }}",
             "result": {
+                "{{ name }}": {
+                    "name": "{{ name }}",
+                    "hop": "{{ hop|replace('-', '_') }}",
+                },
             },
             "shared": True,
         },
         {
-            "name": "key_b",
+            "name": "interval",
             "getval": re.compile(
                 r"""
-                \s+key_b\s(?P<key_b>\S+)
-                $""", re.VERBOSE,
+                \s+interval\smin-tx\s(?P<min_tx>\d+)
+                \smin-rx\s(?P<min_rx>\d+)
+                \smultiplier\s(?P<multiplier>\d+)
+                $""",
+                re.VERBOSE,
             ),
-            "setval": "",
+            "setval": "interval min-tx {{ interval.min_tx }} "
+                      "min-rx {{ interval.min_rx }} "
+                      "multiplier {{ interval.multiplier }}",
             "result": {
+                "{{ name }}": {
+                    "interval": {
+                        "min_tx": "{{ min_tx | int }}",
+                        "min_rx": "{{ min_rx | int }}",
+                        "multiplier": "{{ multiplier | int }}",
+                    },
+                },
+            },
+        },
+        {
+            "name": "dampening",
+            "getval": re.compile(
+                r"""
+                \s+dampening\s(?P<half_life_period>\d+)
+                \s(?P<reuse_threshold>\d+)
+                \s(?P<suppress_threshold>\d+)
+                \s(?P<max_suppress_time>\d+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "dampening {{ dampening.half_life_period }} "
+                      "{{ dampening.reuse_threshold }} "
+                      "{{ dampening.suppress_threshold }} "
+                      "{{ dampening.max_suppress_time }}",
+            "result": {
+                "{{ name }}": {
+                    "dampening": {
+                        "half_life_period": "{{ half_life_period | int }}",
+                        "reuse_threshold": "{{ reuse_threshold | int }}",
+                        "suppress_threshold": "{{ suppress_threshold | int }}",
+                        "max_suppress_time": "{{ max_suppress_time | int }}",
+                    },
+                },
+            },
+        },
+        {
+            "name": "echo",
+            "getval": re.compile(
+                r"""
+                \s+(?P<no>no\s)?echo
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "echo",
+            "result": {
+                "{{ name }}": {
+                    "echo": "{{ False if no is defined else True }}",
+                },
+            },
+        },
+        {
+            "name": "authentication",
+            "getval": re.compile(
+                r"""
+                \s+authentication\s(?P<auth_type>sha-1|md5|keyed-sha-1|keyed-md5|meticulous-keyed-sha-1|meticulous-keyed-md5)
+                \skeychain\s(?P<keychain>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "authentication {{ authentication.type|replace('_', '-') }} "
+                      "keychain {{ authentication.keychain }}",
+            "result": {
+                "{{ name }}": {
+                    "authentication": {
+                        "type": "{{ auth_type|replace('-', '_') }}",
+                        "keychain": "{{ keychain }}",
+                    },
+                },
             },
         },
     ]
