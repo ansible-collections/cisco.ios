@@ -97,7 +97,6 @@ options:
           keychain:
             description: Name of the key chain to use for authentication
             type: str
-            no_log: true
   running_config:
     description:
       - This option is used only with state I(parsed).
