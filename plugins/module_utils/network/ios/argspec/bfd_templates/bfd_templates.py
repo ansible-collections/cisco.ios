@@ -71,10 +71,8 @@ class Bfd_templatesArgs(object):  # pylint: disable=R0903
                             "choices": [
                                 "sha_1",
                                 "md5",
-                                "keyed_sha_1",
-                                "keyed_md5",
-                                "meticulous_keyed_sha_1",
-                                "meticulous_keyed_md5",
+                                "meticulous_md5",
+                                "meticulous_sha_1",
                             ],
                             "type": "str",
                         },

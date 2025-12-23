@@ -115,7 +115,7 @@ class Bfd_templatesTemplate(NetworkTemplate):
             "name": "authentication",
             "getval": re.compile(
                 r"""
-                \s+authentication\s(?P<auth_type>sha-1|md5|keyed-sha-1|keyed-md5|meticulous-keyed-sha-1|meticulous-keyed-md5)
+                \s+authentication\s(?P<auth_type>sha-1|md5|meticulous-md5|meticulous-sha-1)
                 \skeychain\s(?P<keychain>\S+)
                 $""",
                 re.VERBOSE,

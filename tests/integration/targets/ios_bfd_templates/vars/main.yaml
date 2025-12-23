@@ -7,7 +7,7 @@ parsed:
       min_rx: 200
       multiplier: 3
     authentication:
-      type: keyed_sha_1
+      type: sha_1
       keychain: bfd_keychain
     echo: true
   - name: template2
@@ -26,7 +26,7 @@ rendered:
   commands:
     - bfd-template single-hop template1
     - interval min-tx 200 min-rx 200 multiplier 3
-    - authentication keyed-sha-1 keychain bfd_keychain
+    - authentication sha-1 keychain bfd_keychain
     - echo
     - bfd-template multi-hop template2
     - interval min-tx 500 min-rx 500 multiplier 5
@@ -37,7 +37,7 @@ merged:
   commands:
     - bfd-template single-hop template1
     - interval min-tx 200 min-rx 200 multiplier 3
-    - authentication keyed-sha-1 keychain bfd_keychain
+    - authentication sha-1 keychain bfd_keychain
     - echo
     - bfd-template multi-hop template2
     - interval min-tx 500 min-rx 500 multiplier 5
@@ -50,7 +50,7 @@ merged:
         min_rx: 200
         multiplier: 3
       authentication:
-        type: keyed_sha_1
+        type: sha_1
         keychain: bfd_keychain
       echo: true
     - name: template2
@@ -75,7 +75,7 @@ replaced:
         min_rx: 200
         multiplier: 3
       authentication:
-        type: keyed_sha_1
+        type: sha_1
         keychain: bfd_keychain
       echo: true
     - name: template2
@@ -93,7 +93,7 @@ replaced:
     - bfd-template single-hop template1
     - no echo
     - interval min-tx 300 min-rx 300 multiplier 4
-    - no authentication keyed-sha-1 keychain bfd_keychain
+    - no authentication sha-1 keychain bfd_keychain
     - authentication sha-1 keychain new_keychain
   after:
     - name: template1
@@ -123,7 +123,7 @@ overridden:
   commands:
     - bfd-template single-hop template1
     - interval min-tx 200 min-rx 200 multiplier 3
-    - authentication keyed-sha-1 keychain bfd_keychain
+    - authentication sha-1 keychain bfd_keychain
     - echo
     - bfd-template multi-hop template2
     - interval min-tx 500 min-rx 500 multiplier 5
@@ -136,7 +136,7 @@ overridden:
         min_rx: 200
         multiplier: 3
       authentication:
-        type: keyed_sha_1
+        type: sha_1
         keychain: bfd_keychain
       echo: true
     - name: template2
@@ -161,7 +161,7 @@ deleted:
         min_rx: 200
         multiplier: 3
       authentication:
-        type: keyed_sha_1
+        type: sha_1
         keychain: bfd_keychain
       echo: true
     - name: template2

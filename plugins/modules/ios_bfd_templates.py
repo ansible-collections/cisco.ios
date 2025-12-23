@@ -90,10 +90,8 @@ options:
             choices:
               - sha_1
               - md5
-              - keyed_sha_1
-              - keyed_md5
-              - meticulous_keyed_sha_1
-              - meticulous_keyed_md5
+              - meticulous_md5
+              - meticulous_sha_1
           keychain:
             description: Name of the key chain to use for authentication
             type: str
@@ -156,7 +154,7 @@ EXAMPLES = """
           min_rx: 200
           multiplier: 3
         authentication:
-          type: keyed_sha_1
+          type: sha_1
           keychain: bfd_keychain
         echo: true
       - name: template2
@@ -176,7 +174,7 @@ EXAMPLES = """
 # ---------------
 # bfd-template single-hop template1
 #  interval min-tx 200 min-rx 200 multiplier 3
-#  authentication keyed-sha-1 keychain bfd_keychain
+#  authentication sha-1 keychain bfd_keychain
 #  echo
 # bfd-template multi-hop template2
 #  interval min-tx 500 min-rx 500 multiplier 5
@@ -187,7 +185,7 @@ EXAMPLES = """
 # router-ios#show running-config | section ^bfd-template
 # bfd-template single-hop template1
 #  interval min-tx 200 min-rx 200 multiplier 3
-#  authentication keyed-sha-1 keychain bfd_keychain
+#  authentication sha-1 keychain bfd_keychain
 #  echo
 # bfd-template multi-hop template2
 #  interval min-tx 500 min-rx 500 multiplier 5
@@ -199,7 +197,7 @@ EXAMPLES = """
 # router-ios#show running-config | section ^bfd-template
 # bfd-template single-hop template1
 #  interval min-tx 200 min-rx 200 multiplier 3
-#  authentication keyed-sha-1 keychain bfd_keychain
+#  authentication sha-1 keychain bfd_keychain
 #  echo
 # bfd-template multi-hop template2
 #  interval min-tx 500 min-rx 500 multiplier 5
@@ -223,7 +221,7 @@ EXAMPLES = """
 # bfd-template single-hop template1
 #  no echo
 #  interval min-tx 300 min-rx 300 multiplier 4
-#  no authentication keyed-sha-1 keychain bfd_keychain
+#  no authentication sha-1 keychain bfd_keychain
 #  authentication sha-1 keychain new_keychain
 
 # After state:
@@ -256,7 +254,7 @@ EXAMPLES = """
           min_rx: 300
           multiplier: 5
         authentication:
-          type: keyed_md5
+          type: md5
           keychain: secure_key
     state: overridden
 
@@ -266,14 +264,14 @@ EXAMPLES = """
 # no bfd-template single-hop template3
 # bfd-template single-hop template1
 #  interval min-tx 300 min-rx 300 multiplier 5
-#  authentication keyed-md5 keychain secure_key
+#  authentication md5 keychain secure_key
 
 # After state:
 # ------------
 # router-ios#show running-config | section ^bfd-template
 # bfd-template single-hop template1
 #  interval min-tx 300 min-rx 300 multiplier 5
-#  authentication keyed-md5 keychain secure_key
+#  authentication md5 keychain secure_key
 
 # Using deleted
 # Before state:
@@ -281,7 +279,7 @@ EXAMPLES = """
 # router-ios#show running-config | section ^bfd-template
 # bfd-template single-hop template1
 #  interval min-tx 200 min-rx 200 multiplier 3
-#  authentication keyed-sha-1 keychain bfd_keychain
+#  authentication sha-1 keychain bfd_keychain
 #  echo
 # bfd-template multi-hop template2
 #  interval min-tx 500 min-rx 500 multiplier 5
@@ -363,7 +361,7 @@ EXAMPLES = """
           min_rx: 200
           multiplier: 3
         authentication:
-          type: meticulous_keyed_sha_1
+          type: meticulous_sha_1
           keychain: secure_chain
         echo: true
     state: rendered
@@ -373,7 +371,7 @@ EXAMPLES = """
 # "rendered": [
 #     "bfd-template single-hop template1",
 #     "interval min-tx 200 min-rx 200 multiplier 3",
-#     "authentication meticulous-keyed-sha-1 keychain secure_chain",
+#     "authentication meticulous-sha-1 keychain secure_chain",
 #     "echo"
 # ]
 
@@ -394,7 +392,7 @@ EXAMPLES = """
 #             "multiplier": 3
 #         },
 #         "authentication": {
-#             "type": "keyed_sha_1",
+#             "type": "sha_1",
 #             "keychain": "bfd_keychain"
 #         },
 #         "echo": true
@@ -407,7 +405,7 @@ EXAMPLES = """
     running_config: |
       bfd-template single-hop template1
        interval min-tx 200 min-rx 200 multiplier 3
-       authentication keyed-sha-1 keychain bfd_keychain
+       authentication sha-1 keychain bfd_keychain
        echo
       bfd-template multi-hop template2
        dampening 30 2000 5000 120
@@ -425,7 +423,7 @@ EXAMPLES = """
 #             "multiplier": 3
 #         },
 #         "authentication": {
-#             "type": "keyed_sha_1",
+#             "type": "sha_1",
 #             "keychain": "bfd_keychain"
 #         },
 #         "echo": true

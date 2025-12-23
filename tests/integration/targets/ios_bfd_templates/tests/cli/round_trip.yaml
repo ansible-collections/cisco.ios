@@ -32,7 +32,7 @@
               min_rx: 200
               multiplier: 3
             authentication:
-              type: keyed_sha_1
+              type: sha_1
               keychain: bfd_keychain
             echo: true
           - name: template2
