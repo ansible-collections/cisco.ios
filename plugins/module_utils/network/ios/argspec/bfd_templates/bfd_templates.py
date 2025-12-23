@@ -47,19 +47,19 @@ class Bfd_templatesArgs(object):  # pylint: disable=R0903
                     "required": False,
                     "type": "dict",
                     "options": {
-                        "min_tx": {"required": True, "type": "int"},
-                        "min_rx": {"required": True, "type": "int"},
-                        "multiplier": {"required": True, "type": "int"},
+                        "min_tx": {"type": "int"},
+                        "min_rx": {"type": "int"},
+                        "multiplier": {"type": "int"},
                     },
                 },
                 "dampening": {
                     "required": False,
                     "type": "dict",
                     "options": {
-                        "half_life_period": {"required": True, "type": "int"},
-                        "reuse_threshold": {"required": True, "type": "int"},
-                        "suppress_threshold": {"required": True, "type": "int"},
-                        "max_suppress_time": {"required": True, "type": "int"},
+                        "half_life_period": {"type": "int"},
+                        "reuse_threshold": {"type": "int"},
+                        "suppress_threshold": {"type": "int"},
+                        "max_suppress_time": {"type": "int"},
                     },
                 },
                 "echo": {"required": False, "type": "bool"},
@@ -68,7 +68,6 @@ class Bfd_templatesArgs(object):  # pylint: disable=R0903
                     "type": "dict",
                     "options": {
                         "type": {
-                            "required": False,
                             "choices": [
                                 "sha_1",
                                 "md5",
@@ -79,7 +78,7 @@ class Bfd_templatesArgs(object):  # pylint: disable=R0903
                             ],
                             "type": "str",
                         },
-                        "keychain": {"required": False, "type": "str"},
+                        "keychain": {"type": "str"},
                     },
                 },
             },
