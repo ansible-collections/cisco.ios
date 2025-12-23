@@ -6,6 +6,20 @@
   cisco.ios.ios_bfd_templates:
     state: deleted
 
+- name: Create keychains for BFD authentication
+  cisco.ios.ios_config:
+    lines:
+      - key 1
+      - key-string bfd_test_key
+    parents: key chain bfd_keychain
+
+- name: Create new keychain for replaced test
+  cisco.ios.ios_config:
+    lines:
+      - key 1
+      - key-string bfd_new_key
+    parents: key chain new_keychain
+
 - block:
     - name: ios_bfd_templates RTT - play (base config)
       register: result
@@ -67,3 +81,9 @@
 - name: Delete any existing BFD template configuration - no granularity
   cisco.ios.ios_bfd_templates:
     state: deleted
+
+- name: Cleanup keychains
+  cisco.ios.ios_config:
+    lines:
+      - no key chain bfd_keychain
+      - no key chain new_keychain
