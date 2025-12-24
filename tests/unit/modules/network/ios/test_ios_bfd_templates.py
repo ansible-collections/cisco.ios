@@ -62,7 +62,7 @@ class TestIosBfdTemplatesModule(TestIosModule):
                             "half_life_period": 30,
                             "reuse_threshold": 2000,
                             "suppress_threshold": 5000,
-                            "max_suppress_time": 120,
+                            "max_suppress_time": 54,
                         },
                     },
                 ],
@@ -76,7 +76,7 @@ class TestIosBfdTemplatesModule(TestIosModule):
             "echo",
             "bfd-template multi-hop template2",
             "interval min-tx 500 min-rx 500 multiplier 5",
-            "dampening 30 2000 5000 120",
+            "dampening 30 2000 5000 54",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
@@ -325,7 +325,7 @@ class TestIosBfdTemplatesModule(TestIosModule):
                      authentication sha-1 keychain bfd_keychain
                      echo
                     bfd-template multi-hop template2
-                     dampening 30 2000 5000 120
+                     dampening 30 2000 5000 54
                     """,
                 ),
                 "state": "parsed",
@@ -333,21 +333,21 @@ class TestIosBfdTemplatesModule(TestIosModule):
         )
         parsed = [
             {
-                "name": "template1",
-                "hop": "single_hop",
-                "interval": {"min_tx": 200, "min_rx": 200, "multiplier": 3},
-                "authentication": {"type": "sha_1", "keychain": "bfd_keychain"},
+                "authentication": {"keychain": "bfd_keychain", "type": "sha_1"},
                 "echo": True,
+                "hop": "single_hop",
+                "interval": {"min_rx": 200, "min_tx": 200, "multiplier": 3},
+                "name": "template1",
             },
             {
-                "name": "template2",
-                "hop": "multi_hop",
                 "dampening": {
                     "half_life_period": 30,
+                    "max_suppress_time": 54,
                     "reuse_threshold": 2000,
                     "suppress_threshold": 5000,
-                    "max_suppress_time": 120,
                 },
+                "hop": "multi_hop",
+                "name": "template2",
             },
         ]
         result = self.execute_module(changed=False)
@@ -361,7 +361,7 @@ class TestIosBfdTemplatesModule(TestIosModule):
              authentication sha-1 keychain bfd_keychain
              echo
             bfd-template multi-hop template2
-             dampening 30 2000 5000 120
+             dampening 30 2000 5000 54
             """,
         )
         set_module_args(
@@ -371,21 +371,21 @@ class TestIosBfdTemplatesModule(TestIosModule):
         )
         gathered = [
             {
-                "name": "template1",
-                "hop": "single_hop",
-                "interval": {"min_tx": 200, "min_rx": 200, "multiplier": 3},
-                "authentication": {"type": "sha_1", "keychain": "bfd_keychain"},
+                "authentication": {"keychain": "bfd_keychain", "type": "sha_1"},
                 "echo": True,
+                "hop": "single_hop",
+                "interval": {"min_rx": 200, "min_tx": 200, "multiplier": 3},
+                "name": "template1",
             },
             {
-                "name": "template2",
-                "hop": "multi_hop",
                 "dampening": {
                     "half_life_period": 30,
+                    "max_suppress_time": 54,
                     "reuse_threshold": 2000,
                     "suppress_threshold": 5000,
-                    "max_suppress_time": 120,
                 },
+                "hop": "multi_hop",
+                "name": "template2",
             },
         ]
         result = self.execute_module(changed=False)
