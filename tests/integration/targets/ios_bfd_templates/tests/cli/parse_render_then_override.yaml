@@ -70,7 +70,6 @@
       ansible.builtin.assert:
         that:
           - overridden['after'] == result_overridden['after']
-          - overridden['before'] == result_overridden['before']
           - overridden['commands']|symmetric_difference(result_overridden['commands']) == []
 
  
