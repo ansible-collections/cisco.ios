@@ -61,6 +61,7 @@
       - vrf_interfaces
       - hsrp_interfaces
       - bfd_interfaces
+      - bfd_templates
 
 - name: Collect list of available network resources for IOS
   register: result
