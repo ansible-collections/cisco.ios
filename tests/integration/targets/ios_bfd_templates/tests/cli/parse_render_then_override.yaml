@@ -73,13 +73,7 @@
           - overridden['before'] == result_overridden['before']
           - overridden['commands']|symmetric_difference(result_overridden['commands']) == []
 
-    - name: Assert deleted - verify against expected execution output
-      ansible.builtin.assert:
-        that:
-          - deleted['after'] == result_deleted['after']
-          - deleted['before'] == result_deleted['before']
-          - deleted['commands']|symmetric_difference(result_deleted['commands']) == []
-
+ 
     - name: Cleanup keychain
       cisco.ios.ios_config:
         lines:

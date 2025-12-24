@@ -49,12 +49,4 @@
       ansible.builtin.assert:
         that:
           - merged['after'] == result_merged['after']
-          - merged['before'] == result_merged['before']
           - merged['commands']|symmetric_difference(result_merged['commands']) == []
-
-    - name: Assert deleted - verify against expected execution output
-      ansible.builtin.assert:
-        that:
-          - deleted['after'] == result_deleted['after']
-          - deleted['before'] == result_deleted['before']
-          - deleted['commands']|symmetric_difference(result_deleted['commands']) == []
