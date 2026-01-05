@@ -44,7 +44,6 @@ class Bfd_templatesArgs(object):  # pylint: disable=R0903
                     "type": "str",
                 },
                 "interval": {
-                    "required": False,
                     "type": "dict",
                     "options": {
                         "min_tx": {"type": "int"},
@@ -53,7 +52,6 @@ class Bfd_templatesArgs(object):  # pylint: disable=R0903
                     },
                 },
                 "dampening": {
-                    "required": False,
                     "type": "dict",
                     "options": {
                         "half_life_period": {"type": "int"},
@@ -62,9 +60,8 @@ class Bfd_templatesArgs(object):  # pylint: disable=R0903
                         "max_suppress_time": {"type": "int"},
                     },
                 },
-                "echo": {"required": False, "type": "bool"},
+                "echo": {"type": "bool"},
                 "authentication": {
-                    "required": False,
                     "type": "dict",
                     "options": {
                         "type": {

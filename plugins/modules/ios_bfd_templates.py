@@ -45,7 +45,6 @@ options:
         type: str
       interval:
         description: defines transmit interval between BFD packets
-        required: false
         type: dict
         suboptions:
           min_tx:
@@ -60,7 +59,6 @@ options:
             type: int
       dampening:
         description: enables session dampening
-        required: false
         type: dict
         suboptions:
           half_life_period:
@@ -77,11 +75,9 @@ options:
             type: int
       echo:
         description: enables the BFD echo function for all interfaces which uses this specific template.
-        required: false
         type: bool
       authentication:
         description: Configure authentication for the BFD template
-        required: false
         type: dict
         suboptions:
           type:

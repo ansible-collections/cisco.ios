@@ -10,15 +10,11 @@
   cisco.ios.ios_config:
     lines:
       - key 1
-      - key-string bfd_test_key
-    parents: key chain bfd_keychain
-
-- name: Create new keychain for replaced test
-  cisco.ios.ios_config:
-    lines:
-      - key 1
-      - key-string bfd_new_key
-    parents: key chain new_keychain
+      - key-string {{ item.key_string }}
+    parents: key chain {{ item.keychain_name }}
+  with_items:
+    - { keychain_name: 'bfd_keychain', key_string: 'bfd_test_key' }
+    - { keychain_name: 'new_keychain', key_string: 'bfd_new_key' }
 
 - block:
     - name: ios_bfd_templates RTT - play (base config)

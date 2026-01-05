@@ -421,3 +421,410 @@ class TestIosBfdTemplatesModule(TestIosModule):
             ]
             result = self.execute_module(changed=True)
             self.assertEqual(result["commands"], commands)
+
+    def test_ios_bfd_templates_merged_add_authentication(self):
+        """Test adding authentication to existing template without auth"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            bfd-template single-hop template1
+             interval min-tx 200 min-rx 200 multiplier 3
+             echo
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "template1",
+                        "hop": "single_hop",
+                        "interval": {"min_tx": 200, "min_rx": 200, "multiplier": 3},
+                        "authentication": {"type": "sha_1", "keychain": "new_keychain"},
+                        "echo": True,
+                    },
+                ],
+                "state": "merged",
+            },
+        )
+        commands = [
+            "bfd-template single-hop template1",
+            "authentication sha-1 keychain new_keychain",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_bfd_templates_replaced_remove_authentication(self):
+        """Test removing authentication completely from template"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            bfd-template single-hop template1
+             interval min-tx 200 min-rx 200 multiplier 3
+             authentication sha-1 keychain bfd_keychain
+             echo
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "template1",
+                        "hop": "single_hop",
+                        "interval": {"min_tx": 200, "min_rx": 200, "multiplier": 3},
+                        "echo": True,
+                    },
+                ],
+                "state": "replaced",
+            },
+        )
+        commands = [
+            "bfd-template single-hop template1",
+            "no authentication sha-1 keychain bfd_keychain",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_bfd_templates_replaced_change_authentication_type(self):
+        """Test changing authentication type from md5 to sha-1"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            bfd-template single-hop template1
+             interval min-tx 200 min-rx 200 multiplier 3
+             authentication md5 keychain old_keychain
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "template1",
+                        "hop": "single_hop",
+                        "interval": {"min_tx": 200, "min_rx": 200, "multiplier": 3},
+                        "authentication": {"type": "sha_1", "keychain": "new_keychain"},
+                    },
+                ],
+                "state": "replaced",
+            },
+        )
+        commands = [
+            "bfd-template single-hop template1",
+            "no authentication md5 keychain old_keychain",
+            "authentication sha-1 keychain new_keychain",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_bfd_templates_replaced_change_authentication_keychain_only(self):
+        """Test changing only keychain with same authentication type"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            bfd-template single-hop template1
+             interval min-tx 200 min-rx 200 multiplier 3
+             authentication sha-1 keychain old_keychain
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "template1",
+                        "hop": "single_hop",
+                        "interval": {"min_tx": 200, "min_rx": 200, "multiplier": 3},
+                        "authentication": {"type": "sha_1", "keychain": "new_keychain"},
+                    },
+                ],
+                "state": "replaced",
+            },
+        )
+        commands = [
+            "bfd-template single-hop template1",
+            "no authentication sha-1 keychain old_keychain",
+            "authentication sha-1 keychain new_keychain",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_bfd_templates_merged_add_dampening(self):
+        """Test adding dampening to existing template"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            bfd-template multi-hop template2
+             interval min-tx 500 min-rx 500 multiplier 5
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "template2",
+                        "hop": "multi_hop",
+                        "interval": {"min_tx": 500, "min_rx": 500, "multiplier": 5},
+                        "dampening": {
+                            "half_life_period": 30,
+                            "reuse_threshold": 2000,
+                            "suppress_threshold": 5000,
+                            "max_suppress_time": 120,
+                        },
+                    },
+                ],
+                "state": "merged",
+            },
+        )
+        commands = [
+            "bfd-template multi-hop template2",
+            "dampening 30 2000 5000 120",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_bfd_templates_replaced_remove_dampening(self):
+        """Test removing dampening from template"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            bfd-template multi-hop template2
+             interval min-tx 500 min-rx 500 multiplier 5
+             dampening 30 2000 5000 120
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "template2",
+                        "hop": "multi_hop",
+                        "interval": {"min_tx": 500, "min_rx": 500, "multiplier": 5},
+                    },
+                ],
+                "state": "replaced",
+            },
+        )
+        commands = [
+            "bfd-template multi-hop template2",
+            "no dampening 30 2000 5000 120",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_bfd_templates_merged_update_interval_only(self):
+        """Test updating only interval values"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            bfd-template single-hop template1
+             interval min-tx 200 min-rx 200 multiplier 3
+             echo
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "template1",
+                        "hop": "single_hop",
+                        "interval": {"min_tx": 300, "min_rx": 300, "multiplier": 5},
+                        "echo": True,
+                    },
+                ],
+                "state": "merged",
+            },
+        )
+        commands = [
+            "bfd-template single-hop template1",
+            "interval min-tx 300 min-rx 300 multiplier 5",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_bfd_templates_overridden_multiple_changes(self):
+        """Test overridden with multiple existing templates - keep one, modify one, delete one"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            bfd-template single-hop template1
+             interval min-tx 200 min-rx 200 multiplier 3
+             echo
+            bfd-template multi-hop template2
+             interval min-tx 500 min-rx 500 multiplier 5
+            bfd-template single-hop template3
+             authentication sha-1 keychain old_key
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "template1",
+                        "hop": "single_hop",
+                        "interval": {"min_tx": 300, "min_rx": 300, "multiplier": 4},
+                    },
+                ],
+                "state": "overridden",
+            },
+        )
+        commands = [
+            "no bfd-template multi-hop template2",
+            "no bfd-template single-hop template3",
+            "bfd-template single-hop template1",
+            "no echo",
+            "interval min-tx 300 min-rx 300 multiplier 4",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_bfd_templates_deleted_idempotent(self):
+        """Test deleting already deleted template"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            bfd-template multi-hop template2
+             interval min-tx 500 min-rx 500 multiplier 5
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {"name": "template1", "hop": "single_hop"},
+                ],
+                "state": "deleted",
+            },
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_bfd_templates_purged_multiple(self):
+        """Test purging multiple templates"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            bfd-template single-hop template1
+             interval min-tx 200 min-rx 200 multiplier 3
+            bfd-template multi-hop template2
+             interval min-tx 500 min-rx 500 multiplier 5
+            bfd-template single-hop template3
+             echo
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {"name": "template1", "hop": "single_hop"},
+                    {"name": "template3", "hop": "single_hop"},
+                ],
+                "state": "purged",
+            },
+        )
+        commands = [
+            "no bfd-template single-hop template1",
+            "no bfd-template single-hop template3",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_bfd_templates_replaced_add_echo(self):
+        """Test adding echo to template without echo"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            bfd-template single-hop template1
+             interval min-tx 200 min-rx 200 multiplier 3
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "template1",
+                        "hop": "single_hop",
+                        "interval": {"min_tx": 200, "min_rx": 200, "multiplier": 3},
+                        "echo": True,
+                    },
+                ],
+                "state": "replaced",
+            },
+        )
+        commands = [
+            "bfd-template single-hop template1",
+            "echo",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_bfd_templates_merged_echo_only(self):
+        """Test adding only echo to existing template"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            bfd-template single-hop template1
+             interval min-tx 200 min-rx 200 multiplier 3
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "template1",
+                        "hop": "single_hop",
+                        "echo": True,
+                    },
+                ],
+                "state": "merged",
+            },
+        )
+        commands = [
+            "bfd-template single-hop template1",
+            "echo",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_bfd_templates_replaced_dampening_to_authentication(self):
+        """Test replacing dampening with authentication"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            bfd-template multi-hop template2
+             interval min-tx 500 min-rx 500 multiplier 5
+             dampening 30 2000 5000 120
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "template2",
+                        "hop": "multi_hop",
+                        "interval": {"min_tx": 500, "min_rx": 500, "multiplier": 5},
+                        "authentication": {"type": "md5", "keychain": "new_key"},
+                    },
+                ],
+                "state": "replaced",
+            },
+        )
+        commands = [
+            "bfd-template multi-hop template2",
+            "no dampening 30 2000 5000 120",
+            "authentication md5 keychain new_key",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_bfd_templates_merged_dampening_only(self):
+        """Test adding only dampening without other parameters"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "template2",
+                        "hop": "multi_hop",
+                        "dampening": {
+                            "half_life_period": 30,
+                            "reuse_threshold": 2000,
+                            "suppress_threshold": 5000,
+                            "max_suppress_time": 120,
+                        },
+                    },
+                ],
+                "state": "merged",
+            },
+        )
+        commands = [
+            "bfd-template multi-hop template2",
+            "dampening 30 2000 5000 120",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
