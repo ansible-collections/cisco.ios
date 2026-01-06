@@ -27,4 +27,3 @@
   ignore_errors: true
 
 - ansible.builtin.debug: msg="END cli_config/cli_template_file.yaml on connection={{ ansible_connection }}"
-
