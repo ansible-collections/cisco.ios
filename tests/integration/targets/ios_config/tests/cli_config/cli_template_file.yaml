@@ -1,0 +1,30 @@
+---
+- ansible.builtin.debug: msg="START cli_config/cli_template_file.yaml on connection={{ ansible_connection }}"
+
+- name: Show what lookup will render
+  ansible.builtin.debug:
+    msg: "Rendered template: {{ lookup('ansible.builtin.template', 'basic/test_src.j2') }}"
+
+- name: Setup - ensure loopback does not exist
+  cisco.ios.ios_config:
+    lines:
+      - no interface Loopback998
+  ignore_errors: true
+
+- name: Apply configuration from file again
+  register: result
+  cisco.ios.ios_config:
+    src: "{{ lookup('ansible.builtin.template', 'basic/test_src.j2') }}"
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == true
+
+- name: Cleanup - remove loopback interface
+  cisco.ios.ios_config:
+    lines:
+      - no interface Loopback998
+  ignore_errors: true
+
+- ansible.builtin.debug: msg="END cli_config/cli_template_file.yaml on connection={{ ansible_connection }}"
+
