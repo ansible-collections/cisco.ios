@@ -26,6 +26,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.a
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bfd_interfaces.bfd_interfaces import (
     Bfd_interfacesFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bfd_templates.bfd_templates import (
+    Bfd_templatesFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_address_family.bgp_address_family import (
     Bgp_address_familyFacts,
 )
@@ -163,6 +166,7 @@ FACT_RESOURCE_SUBSETS = dict(
     vrf_interfaces=Vrf_interfacesFacts,
     hsrp_interfaces=Hsrp_interfacesFacts,
     bfd_interfaces=Bfd_interfacesFacts,
+    bfd_templates=Bfd_templatesFacts,
 )
 
 
