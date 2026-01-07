@@ -120,16 +120,25 @@ class Bfd_templatesTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "authentication {% if authentication.type == 'sha_1' %}sha-1{% elif \
-                       authentication.type == 'md5' %}md5{% elif authentication.type == 'meticulous_md5' %}\
-                       meticulous-md5{% elif authentication.type == 'meticulous_sha_1' %}meticulous-sha-1{% endif %} "
-                      "keychain {{ authentication.keychain }}",
+            "setval": (
+                "authentication "
+                "{% if authentication.type == 'sha_1' %}sha-1"
+                "{% elif authentication.type == 'md5' %}md5"
+                "{% elif authentication.type == 'meticulous_md5' %}meticulous-md5"
+                "{% elif authentication.type == 'meticulous_sha_1' %}meticulous-sha-1"
+                "{% endif %} "
+                "keychain {{ authentication.keychain }}"
+            ),
             "result": {
                 "{{ name }}": {
                     "authentication": {
-                        "type": "{% if auth_type == 'sha-1' %}sha_1{% elif auth_type == 'md5' %}\
-                        md5{% elif auth_type == 'meticulous-md5' %}meticulous_md5{% elif auth_type == 'meticulous-sha-1' %}\
-                        meticulous_sha_1{% endif %}",
+                        "type": (
+                            "{% if auth_type == 'sha-1' %}sha_1"
+                            "{% elif auth_type == 'md5' %}md5"
+                            "{% elif auth_type == 'meticulous-md5' %}meticulous_md5"
+                            "{% elif auth_type == 'meticulous-sha-1' %}meticulous_sha_1"
+                            "{% endif %}"
+                        ),
                         "keychain": "{{ keychain }}",
                     },
                 },
