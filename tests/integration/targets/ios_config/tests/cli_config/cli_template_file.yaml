@@ -11,7 +11,7 @@
       - no interface Loopback998
   ignore_errors: true
 
-- name: Apply configuration from file again
+- name: Apply configuration from file
   register: result
   cisco.ios.ios_config:
     lines: "{{ lookup('ansible.builtin.template', 'basic/test_src.j2') }}"
