@@ -72,7 +72,6 @@
           - overridden['after'] == result_overridden['after']
           - overridden['commands']|symmetric_difference(result_overridden['commands']) == []
 
- 
     - name: Cleanup keychain
       cisco.ios.ios_config:
         lines:

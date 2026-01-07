@@ -152,7 +152,6 @@ overridden:
       name: template2
   changed: true
 
-
 rtt:
   commands:
     - bfd-template single-hop template1

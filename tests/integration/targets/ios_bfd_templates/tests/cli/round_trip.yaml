@@ -13,8 +13,8 @@
       - key-string {{ item.key_string }}
     parents: key chain {{ item.keychain_name }}
   with_items:
-    - { keychain_name: 'bfd_keychain', key_string: 'bfd_test_key' }
-    - { keychain_name: 'new_keychain', key_string: 'bfd_new_key' }
+    - { keychain_name: "bfd_keychain", key_string: "bfd_test_key" }
+    - { keychain_name: "new_keychain", key_string: "bfd_new_key" }
 
 - block:
     - name: ios_bfd_templates RTT - play (base config)
