@@ -1,0 +1,7 @@
+---
+doc_changes:
+  - Post ansible-core 2.18 templating option have changed, src is backported to render template files by
+    default. It is advised to use the ansible.builtin.template lookup plugin.
+  - The functionality of src rendering templates inherently would be deprecated on a release after
+    2028-01-01.
+  - Documentation and examples updated for ios_config module.

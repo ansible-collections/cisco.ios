@@ -73,13 +73,15 @@ options:
   src:
     description:
       - Specifies the source path to the file that contains the configuration or configuration
-        template to load (till ansible-core 2.18).  The path to the source file can either be the full path on
+        template to load. The path to the source file can either be the full path on
         the Ansible control host or a relative path from the playbook or role root directory. This
         argument is mutually exclusive with I(lines), I(parents). The configuration lines in the
         source file should be similar to how it will appear if present in the running-configuration
         of the device including the indentation to ensure idempotency and correct diff.
-      - Post ansible-core 2.18 templating option have changed, src would not render template files by
+      - Post ansible-core 2.18 templating option have changed, src is backported to render template files by
         default. It is advised to use the ansible.builtin.template lookup plugin.
+      - The functionality of src rendering templates inherently would be deprecated on a release after
+        2028-01-01.
       - See [2.19 Porting Guide](https://docs.ansible.com/projects/ansible-core/devel/porting_guides/porting_guide_core_2.19.html)
     type: str
   before:
@@ -324,12 +326,27 @@ EXAMPLES = """
     backup: true
     src: ios_config.txt
 
-# Note that the behavior is impacted post ansible-core 2.18 to render jinja2 templates
-# src files that are not templates can be used directly.
-- name: Render a Jinja2 template onto an IOS device
+# This functionality would be deprecated on a release after 2028-01-01
+# src attribute would still support handing configuration files (path)
+# rendering template as by the src template would be deprecated.
+
+- name: Apply configuration from file - not recommended tests backward compatibility
+  register: result
   cisco.ios.ios_config:
-    backup: true
-    src: "{{ lookup('ansible.builtin.template', './ios_template.j2') }}"
+    src: basic/config_src_not_recommended.j2
+
+# This is the recommended way.
+
+- name: Template a file - recommended way
+  ansible.builtin.template:
+    src: basic/config_src_recommended.j2
+    dest: /tmp/config_src_recommended.j2
+    mode: "0644"
+
+- name: Apply configuration from file
+  register: result
+  cisco.ios.ios_config:
+    src: /tmp/config_src_recommended.j2
 
 - name: Configurable backup path
   cisco.ios.ios_config:
