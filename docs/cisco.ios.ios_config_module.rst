@@ -526,7 +526,7 @@ Examples
 
     - name: Configurable backup path
       cisco.ios.ios_config:
-        src: "{{ lookup('ansible.builtin.template', './ios_template.j2') }}"
+        src: ios_template.j2
         backup: true
         backup_options:
           filename: backup.cfg
