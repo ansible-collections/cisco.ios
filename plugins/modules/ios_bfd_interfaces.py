@@ -21,7 +21,7 @@ version_added: 11.3.0
 author:
   - Sagar Paul (@KB-perByte)
 notes:
-  - Tested against Cisco IOSXE Version 17.3 on CML.
+  - Tested against Cisco IOSXE Version 17.1 on CML.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
   - The module examples uses callback plugin (stdout_callback = yaml) to generate task
