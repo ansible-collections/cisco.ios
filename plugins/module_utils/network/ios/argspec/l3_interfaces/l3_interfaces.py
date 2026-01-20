@@ -38,7 +38,7 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
             "elements": "dict",
             "options": {
                 "name": {"type": "str", "required": True},
-                "redirects": {"type": "bool", },
+                "redirects": {"type": "bool"},
                 "unreachables": {"type": "bool"},
                 "autostate": {"type": "bool"},
                 "mac_address": {"type": "str"},

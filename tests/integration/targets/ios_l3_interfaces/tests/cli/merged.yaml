@@ -74,7 +74,6 @@
               | length == 0
             }}
 
-
     - name: L3_interface merged - merge provided configuration with device configuration (idempotent)
       register: result
       cisco.ios.ios_l3_interfaces: *id001
