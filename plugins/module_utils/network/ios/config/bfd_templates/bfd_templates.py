@@ -70,20 +70,32 @@ class Bfd_templates(ResourceModule):
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
-        # if state is deleted or purged, empty out wantd and set haved to wantd
-        if self.state in ["deleted", "purged"]:
+        # if state is deleted, perform granular deletion
+        if self.state == "deleted":
+            # Filter to only templates specified in want, or all if want is empty
             haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
-            wantd = {}
+            # For deleted state, compare empty want with have to generate granular no commands
+            for k, have in haved.items():
+                self._compare(want={"name": have["name"], "hop": have["hop"]}, have=have)
 
-        # remove superfluous config for overridden and deleted
-        if self.state in ["overridden", "deleted"]:
+        # if state is purged, remove entire templates at top level
+        elif self.state == "purged":
+            # Filter to only templates specified in want, or all if want is empty
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
+            for k, have in haved.items():
+                self.purge(have)
+
+        # remove superfluous config for overridden
+        elif self.state == "overridden":
             for k, have in haved.items():
                 if k not in wantd:
                     self.purge(have)
+            # Process templates in the original order from self.want to ensure deterministic output
+            for entry in self.want:
+                k = entry["name"]
+                if k in wantd:
+                    self._compare(want=wantd[k], have=haved.pop(k, {}))
 
-        if self.state == "purged":
-            for k, have in haved.items():
-                self.purge(have)
         else:
             # Process templates in the original order from self.want to ensure deterministic output
             for entry in self.want:

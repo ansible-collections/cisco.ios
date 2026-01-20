@@ -5,9 +5,9 @@
 
 - name: ios_bfd_templates parse, render and override configuration
   block:
-    - name: Delete any existing BFD template configuration - no granularity
+    - name: Purge any existing BFD template configuration
       cisco.ios.ios_bfd_templates:
-        state: deleted
+        state: purged
 
     - name: Create keychain for BFD authentication
       cisco.ios.ios_config:
@@ -40,21 +40,21 @@
         state: overridden
       register: result_overridden_idempotent
 
-    - name: Delete any existing BFD template configuration again - no granularity
+    - name: Purge any existing BFD template configuration again
       cisco.ios.ios_bfd_templates:
-        state: deleted
-      register: result_deleted
+        state: purged
+      register: result_purged
 
 - name: Assets ios_bfd_templates parse, render and override configuration
   block:
-    - name: Assert parsed, rendered, overridden and deleted results
+    - name: Assert parsed, rendered, overridden and purged results
       ansible.builtin.assert:
         that:
           - result_parsed.parsed | length > 0
           - result_rendered.rendered | length > 0
           - result_overridden.changed == true
           - result_overridden_idempotent.changed == false
-          - result_deleted.changed == true
+          - result_purged.changed == true
 
     - name: Assert parsed - verify against expected parsed output
       ansible.builtin.assert:
