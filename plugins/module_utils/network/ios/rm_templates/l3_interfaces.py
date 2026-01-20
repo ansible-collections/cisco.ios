@@ -66,23 +66,6 @@ class L3_interfacesTemplate(NetworkTemplate):
     # fmt: off
     PARSERS = [
         {
-            "name": "autostate",
-            "getval": re.compile(r"""\s+no\s+autostate$""", re.VERBOSE),
-            "setval": "autostate",
-            "result": {"{{ name }}": {"autostate": False}},
-        },
-        {
-            "name": "mac_address",
-            "getval": re.compile(
-                r"""^mac-address
-                    (\s(?P<mac_address>\S+))
-                    $""",
-                re.VERBOSE,
-            ),
-            "setval": "mac-address {{ mac_address }}",
-            "result": {"{{ name }}": {"mac_address": "{{ mac_address }}"}},
-        },
-        {
             "name": "name",
             "getval": re.compile(
                 r"""^interface
@@ -94,6 +77,79 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": "interface {{ name }}",
             "result": {"{{ name }}": {"name": "{{ name }}"}},
             "shared": True,
+        },
+        {
+            "name": "autostate",
+            "getval": re.compile(r"""\s+no\s+autostate$""", re.VERBOSE),
+            "setval": "autostate",
+            "result": {"{{ name }}": {"autostate": False}},
+        },
+        {
+            "name": "redirects",
+            "getval": re.compile(
+                r"""
+                \s+ip\sredirects
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip redirects",
+            "result": {
+                "{{ name }}": {
+                    "redirects": True,
+                },
+            },
+        },
+        {
+            "name": "no_redirects",
+            "getval": re.compile(
+                r"""
+                \s+no\s+ip\sredirects
+                $""", re.VERBOSE,
+            ),
+            "setval": "no ip redirects",
+            "result": {
+                "{{ name }}": {
+                    "redirects": False,
+                },
+            },
+        },
+        {
+            "name": "unreachables",
+            "getval": re.compile(
+                r"""
+                \s+ip\sunreachables
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip unreachables",
+            "result": {
+                "{{ name }}": {
+                    "unreachables": True,
+                },
+            },
+        },
+        {
+            "name": "no_unreachables",
+            "getval": re.compile(
+                r"""
+                \s+no\s+ip\sunreachables
+                $""", re.VERBOSE,
+            ),
+            "setval": "no ip unreachables",
+            "result": {
+                "{{ name }}": {
+                    "unreachables": False,
+                },
+            },
+        },
+        {
+            "name": "mac_address",
+            "getval": re.compile(
+                r"""^\s*mac-address
+                    (\s(?P<mac_address>\S+))
+                    $""",
+                re.VERBOSE,
+            ),
+            "setval": "mac-address {{ mac_address }}",
+            "result": {"{{ name }}": {"mac_address": "{{ mac_address }}"}},
         },
         {
             "name": "helper_addresses_ipv4",
@@ -179,42 +235,6 @@ class L3_interfacesTemplate(NetworkTemplate):
                     "ipv4": [
                         {
                             "mtu": "{{ mtu }}",
-                        },
-                    ],
-                },
-            },
-        },
-        {
-            "name": "ipv4.redirects",
-            "getval": re.compile(
-                r"""
-                \s+ip\sredirects
-                $""", re.VERBOSE,
-            ),
-            "setval": "ip redirects",
-            "result": {
-                "{{ name }}": {
-                    "ipv4": [
-                        {
-                            "redirects": True,
-                        },
-                    ],
-                },
-            },
-        },
-        {
-            "name": "ipv4.unreachables",
-            "getval": re.compile(
-                r"""
-                \s+ip\sunreachables
-                $""", re.VERBOSE,
-            ),
-            "setval": "ip unreachables",
-            "result": {
-                "{{ name }}": {
-                    "ipv4": [
-                        {
-                            "unreachables": True,
                         },
                     ],
                 },

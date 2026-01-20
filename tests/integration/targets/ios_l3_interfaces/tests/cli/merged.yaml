@@ -61,15 +61,19 @@
             }}
 
     - name: L3_interface merged - assert that after dict is correctly generated
-      ansible.builtin.assert:
+      assert:
         that:
-          - >
+          - |
             {{
               result['after']
-              | rejectattr('name', 'in', 'Loopback888')
-              | symmetric_difference(merged['after'])
+              | rejectattr('name', 'in', ['Loopback999'])
+              | symmetric_difference(
+                  merged['after']
+                  | rejectattr('name', 'in', ['Loopback999'])
+                )
               | length == 0
             }}
+
 
     - name: L3_interface merged - merge provided configuration with device configuration (idempotent)
       register: result

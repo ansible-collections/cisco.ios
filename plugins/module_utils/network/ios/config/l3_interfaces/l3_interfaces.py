@@ -52,8 +52,6 @@ class L3_interfaces(ResourceModule):
             "ipv4.dhcp",
             "ipv4.source_interface",
             "ipv4.mtu",
-            "ipv4.redirects",
-            "ipv4.unreachables",
             "ipv4.proxy_arp",
             "ipv6.address",
             "ipv6.autoconfig",
@@ -117,11 +115,63 @@ class L3_interfaces(ResourceModule):
             self._compare(want=want, have=have)
 
     def _compare(self, want, have):
+        """Leverages the base class `compare()` method and
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the L3_interfaces network resource.
+        """
         begin = len(self.commands)
+        # Extract redirects/unreachables FIRST before any comparison
+        want_redirects = want.pop("redirects", None)
+        have_redirects = have.pop("redirects", None)
+        want_unreachables = want.pop("unreachables", None)
+        have_unreachables = have.pop("unreachables", None)
+        want_copy = want.copy()
+        want_copy.pop("name", None)
+        has_other_config = bool(want_copy)
+
         self.compare(parsers=self.gen_parsers, want=want, have=have)
+
+        self.handle_redirects(want_redirects, have_redirects, "redirects", has_other_config)
+
+        self.handle_unreachables(want_unreachables, have_unreachables, "unreachables", has_other_config)
+
         self._compare_lists(want=want, have=have)
+
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
+
+    def handle_redirects(self, want_redirects, have_redirects, parser, want):
+        """Handle redirects with state-aware logic"""
+        if want_redirects is None and have_redirects is None:
+            # Neither specified - set default for replaced/overridden
+            if self.state == "replaced" or (self.state == "overridden" and want):
+                self.addcmd({parser: False}, parser, True)  # Changed to False!
+        elif want_redirects is not None:
+            # User explicitly specified redirects
+            if want_redirects != have_redirects:
+                # Want is different from have - generate command
+                self.addcmd({parser: want_redirects}, parser, not want_redirects)
+        elif want_redirects is None and have_redirects is False:
+            # Not specified but currently disabled - restore for overridden/deleted
+            if self.state in ["overridden", "deleted"] and not want:
+                self.addcmd({parser: True}, parser, False)
+
+    def handle_unreachables(self, want_unreachables, have_unreachables, parser, want):
+        """Handle unreachables with state-aware logic"""
+        if want_unreachables is None and have_unreachables is None:
+            # Neither specified - set default for replaced/overridden
+            if self.state == "replaced" or (self.state == "overridden" and want):
+                self.addcmd({parser: False}, parser, True)  # Changed to False!
+        elif want_unreachables is not None:
+            # User explicitly specified unreachables
+            if want_unreachables != have_unreachables:
+                # Want is different from have - generate command
+                self.addcmd({parser: want_unreachables}, parser, not want_unreachables)
+        elif want_unreachables is None and have_unreachables is False:
+            # Not specified but currently disabled - restore for overridden/deleted
+            if self.state in ["overridden", "deleted"] and not want:
+                self.addcmd({parser: True}, parser, False)
 
     def _compare_lists(self, want, have):
         helper_address_dict_wantd = want.get("helper_addresses", {})

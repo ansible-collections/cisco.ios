@@ -48,6 +48,12 @@ options:
         description:
           - Manually set interface MAC address.
         type: str
+      redirects:
+            description: Enable sending ICMP Redirect messages.
+            type: bool
+      unreachables:
+        description: Enable sending ICMP Unreachable messages.
+        type: bool
       helper_addresses:
         description: Specify a destination address for UDP broadcasts
         type: dict
@@ -113,12 +119,6 @@ options:
           pool:
             description: IP Address auto-configured from a local DHCP pool.
             type: str
-          redirects:
-            description: Enable sending ICMP Redirect messages.
-            type: bool
-          unreachables:
-            description: Enable sending ICMP Unreachable messages.
-            type: bool
           proxy_arp:
             description: Enable proxy_arp.
             type: bool

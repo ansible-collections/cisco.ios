@@ -124,10 +124,16 @@ class TestIosL3InterfacesModule(TestIosModule):
             "interface GigabitEthernet0/3.100",
             "no ip address 192.168.0.3 255.255.255.0",
             "interface GigabitEthernet0/1",
+            "no ip redirects",
+            "no ip unreachables",
             "ip address 192.168.0.1 255.255.255.0 secondary",
             "interface GigabitEthernet0/2",
+            "no ip redirects",
+            "no ip unreachables",
             "ip address 192.168.0.2 255.255.255.0",
             "interface Serial1/0",
+            "no ip redirects",
+            "no ip unreachables",
             "ip address 192.168.0.3 255.255.255.0",
         ]
         result = self.execute_module(changed=True)
@@ -208,13 +214,21 @@ class TestIosL3InterfacesModule(TestIosModule):
         )
         commands = [
             "interface GigabitEthernet0/3",
+            "no ip redirects",
+            "no ip unreachables",
             "no ipv6 address fd5d:12c9:2201:1::1/64",
             "ipv6 address fd5d:12c9:2202:1::1/64",
             "interface GigabitEthernet0/2",
+            "no ip redirects",
+            "no ip unreachables",
             "ip address 192.168.0.2 255.255.255.0",
             "interface Serial1/0",
+            "no ip redirects",
+            "no ip unreachables",
             "ip address 192.168.0.5 255.255.255.0",
             "interface GigabitEthernet0/3.100",
+            "no ip redirects",
+            "no ip unreachables",
             "no ip address 192.168.0.3 255.255.255.0",
             "ip address 192.168.0.4 255.255.255.0",
         ]
@@ -245,12 +259,13 @@ class TestIosL3InterfacesModule(TestIosModule):
         parsed_list = [
             {
                 "name": "GigabitEthernet0/3.100",
+                "redirects": True,
+                "unreachables": True,
+                "mac_address": "0000.0000.0001",
                 "helper_addresses": {"ipv4": [{"global": True, "destination_ip": "10.0.0.1"}]},
                 "ipv4": [
                     {"address": "192.168.0.3/24"},
-                    {"redirects": True},
                     {"mtu": 1500},
-                    {"unreachables": True},
                     {"proxy_arp": True},
                 ],
             },
@@ -274,8 +289,9 @@ class TestIosL3InterfacesModule(TestIosModule):
                     ),
                     dict(
                         name="GigabitEthernet0/2",
+                        redirects=True,
                         ipv4=[
-                            dict(address="192.168.0.2/24", redirects=True, mtu=1500),
+                            dict(address="192.168.0.2/24", mtu=1500),
                             dict(
                                 dhcp=dict(
                                     enable=False,
@@ -541,6 +557,8 @@ class TestIosL3InterfacesModule(TestIosModule):
         )
         commands = [
             "interface GigabitEthernet0/3.100",
+            "no ip redirects",
+            "no ip unreachables",
             "ip address 192.168.1.3 255.255.255.0",
             "no ip address 192.168.0.3 255.255.255.0",
             "no ip address 192.168.1.3 255.255.255.0 secondary",
@@ -612,6 +630,8 @@ class TestIosL3InterfacesModule(TestIosModule):
 
         commands = [
             "interface GigabitEthernet0/1",
+            "no ip redirects",
+            "no ip unreachables",
             "ip address 192.168.0.1 255.255.255.0",
             "ip helper-address vrf abc 10.0.0.1",
             "ip helper-address 10.0.0.2",
