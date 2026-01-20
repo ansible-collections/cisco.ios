@@ -135,7 +135,10 @@ class L3_interfaces(ResourceModule):
         self.handle_redirects(want_redirects, have_redirects, "redirects", has_other_config)
 
         self.handle_unreachables(
-            want_unreachables, have_unreachables, "unreachables", has_other_config
+            want_unreachables,
+            have_unreachables,
+            "unreachables",
+            has_other_config,
         )
 
         self._compare_lists(want=want, have=have)
