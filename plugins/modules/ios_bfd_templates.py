@@ -20,7 +20,7 @@ extends_documentation_fragment:
 short_description: Bidirectional Forwarding Detection (BFD) templates configurations
 description:
    - Manages Bidirectional Forwarding Detection (BFD) templates configurations
-version_added: 1.0.0
+version_added: 12.0.0
 author:
   - Komal Desai (@komaldesai13)
 notes:
@@ -444,56 +444,6 @@ EXAMPLES = """
 #         }
 #     }
 # ]
-"""
-
-RETURN = """
-before:
-  description: The configuration prior to the module invocation.
-  returned: always
-  type: list
-  sample: >
-    This output will always be in the same format as the
-    module argspec.
-after:
-  description: The resulting configuration after module execution.
-  returned: when changed
-  type: list
-  sample: >
-    This output will always be in the same format as the
-    module argspec.
-commands:
-  description: The set of commands pushed to the remote device.
-  returned: always
-  type: list
-  sample:
-    - bfd-template single-hop template1
-    - interval min-tx 200 min-rx 200 multiplier 3
-    - authentication sha-1 keychain bfd_keychain
-    - echo
-rendered:
-  description: The provided configuration in the task rendered in device native format (offline).
-  returned: when I(state) is C(rendered)
-  type: list
-  sample:
-    - bfd-template single-hop template1
-    - interval min-tx 200 min-rx 200 multiplier 3
-    - authentication sha-1 keychain bfd_keychain
-    - echo
-gathered:
-  description: Facts about the network resource gathered from the remote device as structured data.
-  returned: when I(state) is C(gathered)
-  type: list
-  sample: >
-    This output will always be in the same format as the
-    module argspec.
-parsed:
-  description: The device native config provided in I(running_config) option parsed
-    into structured data as per module argspec.
-  returned: when I(state) is C(parsed)
-  type: list
-  sample: >
-    This output will always be in the same format as the
-    module argspec.
 """
 
 
