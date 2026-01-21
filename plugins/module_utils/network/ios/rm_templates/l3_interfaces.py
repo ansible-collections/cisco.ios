@@ -141,6 +141,64 @@ class L3_interfacesTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "ipv6_redirects",
+            "getval": re.compile(
+                r"""
+                \s+ipv6\sredirects
+                $""", re.VERBOSE,
+            ),
+            "setval": "ipv6 redirects",
+            "result": {
+                "{{ name }}": {
+                    "ipv6_redirects": True,
+                },
+            },
+        },
+        {
+            "name": "no_ipv6_redirects",
+            "getval": re.compile(
+                r"""
+                \s+no\s+ipv6\sredirects
+                $""", re.VERBOSE,
+            ),
+            "setval": "no ipv6 redirects",
+            "result": {
+                "{{ name }}": {
+                    "ipv6_redirects": False,
+                },
+            },
+        },
+        # IPv6 unreachables - explicit enabled
+        {
+            "name": "ipv6_unreachables",
+            "getval": re.compile(
+                r"""
+                \s+ipv6\sunreachables
+                $""", re.VERBOSE,
+            ),
+            "setval": "ipv6 unreachables",
+            "result": {
+                "{{ name }}": {
+                    "ipv6_unreachables": True,
+                },
+            },
+        },
+        # IPv6 unreachables - explicit disabled
+        {
+            "name": "no_ipv6_unreachables",
+            "getval": re.compile(
+                r"""
+                \s+no\s+ipv6\sunreachables
+                $""", re.VERBOSE,
+            ),
+            "setval": "no ipv6 unreachables",
+            "result": {
+                "{{ name }}": {
+                    "ipv6_unreachables": False,
+                },
+            },
+        },
+        {
             "name": "mac_address",
             "getval": re.compile(
                 r"""^\s*mac-address

@@ -54,6 +54,12 @@ options:
       unreachables:
         description: Enable sending ICMP Unreachable messages.
         type: bool
+      ipv6_redirects:
+        description: Enable sending ICMP Redirect messages for IPv6.
+        type: bool
+      ipv6_unreachables:
+        description: Enable sending ICMP Unreachable messages for IPv6.
+        type: bool
       helper_addresses:
         description: Specify a destination address for UDP broadcasts
         type: dict

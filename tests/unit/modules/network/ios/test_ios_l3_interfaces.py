@@ -126,14 +126,20 @@ class TestIosL3InterfacesModule(TestIosModule):
             "interface GigabitEthernet0/1",
             "no ip redirects",
             "no ip unreachables",
+            "no ipv6 redirects",
+            "no ipv6 unreachables",
             "ip address 192.168.0.1 255.255.255.0 secondary",
             "interface GigabitEthernet0/2",
             "no ip redirects",
             "no ip unreachables",
+            "no ipv6 redirects",
+            "no ipv6 unreachables",
             "ip address 192.168.0.2 255.255.255.0",
             "interface Serial1/0",
             "no ip redirects",
             "no ip unreachables",
+            "no ipv6 redirects",
+            "no ipv6 unreachables",
             "ip address 192.168.0.3 255.255.255.0",
         ]
         result = self.execute_module(changed=True)
@@ -216,24 +222,33 @@ class TestIosL3InterfacesModule(TestIosModule):
             "interface GigabitEthernet0/3",
             "no ip redirects",
             "no ip unreachables",
+            "no ipv6 redirects",
+            "no ipv6 unreachables",
             "no ipv6 address fd5d:12c9:2201:1::1/64",
             "ipv6 address fd5d:12c9:2202:1::1/64",
             "interface GigabitEthernet0/2",
             "no ip redirects",
             "no ip unreachables",
+            "no ipv6 redirects",
+            "no ipv6 unreachables",
             "ip address 192.168.0.2 255.255.255.0",
             "interface Serial1/0",
             "no ip redirects",
             "no ip unreachables",
+            "no ipv6 redirects",
+            "no ipv6 unreachables",
             "ip address 192.168.0.5 255.255.255.0",
             "interface GigabitEthernet0/3.100",
             "no ip redirects",
             "no ip unreachables",
+            "no ipv6 redirects",
+            "no ipv6 unreachables",
             "no ip address 192.168.0.3 255.255.255.0",
             "ip address 192.168.0.4 255.255.255.0",
         ]
 
         result = self.execute_module(changed=True)
+        print(result["commands"])
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_l3_interfaces_parsed(self):
@@ -315,7 +330,6 @@ class TestIosL3InterfacesModule(TestIosModule):
             "ipv6 address fd5d:12c9:2202:1::1/64",
             "interface GigabitEthernet0/2",
             "ip address 192.168.0.2 255.255.255.0",
-            "ip redirects",
             "ip mtu 1500",
             "interface GigabitEthernet0/4",
             "ip address 192.168.0.4 255.255.255.0 secondary",
@@ -559,6 +573,8 @@ class TestIosL3InterfacesModule(TestIosModule):
             "interface GigabitEthernet0/3.100",
             "no ip redirects",
             "no ip unreachables",
+            "no ipv6 redirects",
+            "no ipv6 unreachables",
             "ip address 192.168.1.3 255.255.255.0",
             "no ip address 192.168.0.3 255.255.255.0",
             "no ip address 192.168.1.3 255.255.255.0 secondary",
@@ -632,12 +648,400 @@ class TestIosL3InterfacesModule(TestIosModule):
             "interface GigabitEthernet0/1",
             "no ip redirects",
             "no ip unreachables",
+            "no ipv6 redirects",
+            "no ipv6 unreachables",
             "ip address 192.168.0.1 255.255.255.0",
             "ip helper-address vrf abc 10.0.0.1",
             "ip helper-address 10.0.0.2",
             "ip helper-address global 10.0.0.3",
             "no ip helper-address 10.0.0.3",
             "ip mtu 4",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_l3_interfaces_redirects_unreachables_merged(self):
+        """Test merged state with explicit redirects and unreachables settings."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             ip address 192.168.0.1 255.255.255.0
+            interface GigabitEthernet0/2
+             ip address 192.168.0.2 255.255.255.0
+             ipv6 address 2001:db8::2/64
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/1",
+                        redirects=False,
+                        unreachables=True,
+                        ipv4=[dict(address="192.168.0.1/24")],
+                    ),
+                    dict(
+                        name="GigabitEthernet0/2",
+                        redirects=True,
+                        unreachables=False,
+                        ipv6_redirects=False,
+                        ipv6_unreachables=True,
+                        ipv4=[dict(address="192.168.0.2/24")],
+                        ipv6=[dict(address="2001:db8::2/64")],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/1",
+            "no ip redirects",
+            "interface GigabitEthernet0/2",
+            "no ip unreachables",
+            "no ipv6 redirects",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_l3_interfaces_redirects_unreachables_merged_idempotent(self):
+        """Test merged state idempotency with redirects and unreachables."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             ip address 192.168.0.1 255.255.255.0
+             no ip redirects
+             ip unreachables
+            interface GigabitEthernet0/2
+             ip address 192.168.0.2 255.255.255.0
+             ipv6 address 2001:db8::2/64
+             ip redirects
+             no ip unreachables
+             no ipv6 redirects
+             ipv6 unreachables
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/1",
+                        redirects=False,
+                        unreachables=True,
+                        ipv4=[dict(address="192.168.0.1/24")],
+                    ),
+                    dict(
+                        name="GigabitEthernet0/2",
+                        redirects=True,
+                        unreachables=False,
+                        ipv6_redirects=False,
+                        ipv6_unreachables=True,
+                        ipv4=[dict(address="192.168.0.2/24")],
+                        ipv6=[dict(address="2001:db8::2/64")],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=False, commands=[])
+
+    def test_ios_l3_interfaces_redirects_replaced(self):
+        """Test replaced state with redirects and unreachables - should set defaults only for configured AFI."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             ip address 192.168.0.1 255.255.255.0
+             no ip redirects
+            interface GigabitEthernet0/2
+             ip address 192.168.0.2 255.255.255.0
+             ipv6 address 2001:db8::2/64
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/1",
+                        ipv4=[dict(address="192.168.0.5/24")],
+                    ),
+                    dict(
+                        name="GigabitEthernet0/2",
+                        ipv4=[dict(address="192.168.0.2/24")],
+                        ipv6=[dict(address="2001:db8::2/64")],
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/1",
+            "no ip unreachables",
+            "no ipv6 redirects",
+            "no ipv6 unreachables",
+            "no ip address 192.168.0.1 255.255.255.0",
+            "ip address 192.168.0.5 255.255.255.0",
+            "interface GigabitEthernet0/2",
+            "no ip redirects",
+            "no ip unreachables",
+            "no ipv6 redirects",
+            "no ipv6 unreachables",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_l3_interfaces_redirects_replaced_with_explicit_values(self):
+        """Test replaced state with explicit redirects/unreachables values."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             ip address 192.168.0.1 255.255.255.0
+             no ip redirects
+             no ip unreachables
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/1",
+                        redirects=True,
+                        unreachables=True,
+                        ipv4=[dict(address="192.168.0.1/24")],
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/1",
+            "ip redirects",
+            "ip unreachables",
+            "no ipv6 redirects",
+            "no ipv6 unreachables",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_l3_interfaces_ipv6_redirects_unreachables(self):
+        """Test IPv6-specific redirects and unreachables."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+                ipv6 address 2001:db8::1/64
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/1",
+                        ipv6_redirects=False,
+                        ipv6_unreachables=False,
+                        ipv6=[dict(address="2001:db8::1/64")],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/1",
+            "no ipv6 redirects",
+            "no ipv6 unreachables",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_l3_interfaces_mixed_redirects_unreachables(self):
+        """Test mixed IPv4 and IPv6 redirects/unreachables settings."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             ip address 192.168.0.1 255.255.255.0
+             ipv6 address 2001:db8::1/64
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/1",
+                        redirects=False,
+                        unreachables=True,
+                        ipv6_redirects=True,
+                        ipv6_unreachables=False,
+                        ipv4=[dict(address="192.168.0.1/24")],
+                        ipv6=[dict(address="2001:db8::1/64")],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/1",
+            "no ip redirects",
+            "no ipv6 unreachables",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_l3_interfaces_redirects_parsed(self):
+        """Test parsed state with redirects and unreachables."""
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    interface GigabitEthernet0/1
+                      ip address 192.168.0.1 255.255.255.0
+                      no ip redirects
+                      ip unreachables
+                      ipv6 address 2001:db8::1/64
+                      no ipv6 redirects
+                      ipv6 unreachables
+                    """,
+                ),
+                state="parsed",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        parsed_list = [
+            {
+                "name": "GigabitEthernet0/1",
+                "redirects": False,
+                "unreachables": True,
+                "ipv6_redirects": False,
+                "ipv6_unreachables": True,
+                "ipv4": [{"address": "192.168.0.1/24"}],
+                "ipv6": [{"address": "2001:db8::1/64"}],
+            },
+        ]
+        self.assertEqual(parsed_list, result["parsed"])
+
+    def test_ios_l3_interfaces_redirects_rendered(self):
+        """Test rendered state with redirects and unreachables."""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/1",
+                        redirects=False,
+                        unreachables=True,
+                        ipv6_redirects=True,
+                        ipv6_unreachables=False,
+                        ipv4=[dict(address="192.168.0.1/24")],
+                        ipv6=[dict(address="2001:db8::1/64")],
+                    ),
+                ],
+                state="rendered",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/1",
+            "ip address 192.168.0.1 255.255.255.0",
+            "no ip redirects",
+            "ipv6 address 2001:db8::1/64",
+            "no ipv6 unreachables",
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+
+    def test_ios_l3_interfaces_redirects_gathered(self):
+        """Test gathered state with redirects and unreachables."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+              ip address 192.168.0.1 255.255.255.0
+              no ip redirects
+              ip unreachables
+            interface GigabitEthernet0/2
+              ipv6 address 2001:db8::2/64
+              ipv6 redirects
+              no ipv6 unreachables
+            """,
+        )
+        set_module_args(dict(state="gathered"))
+        result = self.execute_module(changed=False)
+        gathered = [
+            {
+                "name": "GigabitEthernet0/1",
+                "redirects": False,
+                "unreachables": True,
+                "ipv4": [{"address": "192.168.0.1/24"}],
+            },
+            {
+                "name": "GigabitEthernet0/2",
+                "ipv6_redirects": True,
+                "ipv6_unreachables": False,
+                "ipv6": [{"address": "2001:db8::2/64"}],
+            },
+        ]
+        self.assertEqual(result["gathered"], gathered)
+
+    def test_ios_l3_interfaces_overridden_with_redirects_explicit(self):
+        """Test overridden with explicit redirects values."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             ip address 10.0.0.1 255.255.255.0
+             no ip redirects
+            interface GigabitEthernet0/2
+             ip address 10.0.0.2 255.255.255.0
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/2",
+                        redirects=True,
+                        unreachables=False,
+                        ipv4=[dict(address="192.168.0.2/24")],
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/1",
+            "no ip address 10.0.0.1 255.255.255.0",
+            "interface GigabitEthernet0/2",
+            "no ip address 10.0.0.2 255.255.255.0",
+            "ip address 192.168.0.2 255.255.255.0",
+            "ip redirects",
+            "no ip unreachables",
+            "no ipv6 redirects",
+            "no ipv6 unreachables",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_l3_interfaces_replaced_ipv6_only(self):
+        """Test replaced state with IPv6 only - should not set IPv4 defaults."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/3
+             ipv6 address FD5D:12C9:2201:1::1/64
+             no ip redirects
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/3",
+                        redirects=True,
+                        ipv6=[dict(address="FD5D:12C9:2202:1::1/64")],
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/3",
+            "ip redirects",
+            "no ip unreachables",
+            "no ipv6 redirects",
+            "no ipv6 unreachables",
+            "no ipv6 address fd5d:12c9:2201:1::1/64",
+            "ipv6 address fd5d:12c9:2202:1::1/64",
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))

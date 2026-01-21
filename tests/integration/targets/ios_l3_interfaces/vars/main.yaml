@@ -95,6 +95,8 @@ replaced:
     - interface GigabitEthernet2
     - no ip redirects
     - no ip unreachables
+    - no ipv6 redirects
+    - no ipv6 unreachables
     - no ip address 203.0.113.27 255.255.255.0
     - ip address 203.0.114.1 255.255.255.0
     - interface GigabitEthernet3
@@ -116,6 +118,8 @@ replaced:
         - address: 203.0.114.1/24
       redirects: false
       unreachables: false
+      ipv6_redirects: false
+      ipv6_unreachables: false
       name: GigabitEthernet2
     - ipv4:
         - address: 198.51.100.1/24
@@ -125,6 +129,8 @@ replaced:
         - address: 2001:DB8:1:1::/64
       redirects: false
       unreachables: false
+      ipv6_redirects: false
+      ipv6_unreachables: false
       name: GigabitEthernet3
     - name: GigabitEthernet4
 
@@ -153,11 +159,15 @@ overridden:
     - interface GigabitEthernet1
     - no ip redirects
     - no ip unreachables
+    - no ipv6 redirects
+    - no ipv6 unreachables
     - interface GigabitEthernet2
     - no ip address 203.0.113.27 255.255.255.0
     - interface GigabitEthernet3
     - no ip redirects
     - no ip unreachables
+    - no ipv6 redirects
+    - no ipv6 unreachables
     - no ipv6 address autoconfig
     - no ipv6 address 2001:db8:0:3::/64
     - no ip address 192.0.2.2 255.255.255.0
@@ -172,6 +182,8 @@ overridden:
             enable: true
       redirects: false
       unreachables: false
+      ipv6_redirects: false
+      ipv6_unreachables: false
       name: GigabitEthernet1
     - name: GigabitEthernet2
     - ipv4:
@@ -180,6 +192,8 @@ overridden:
         - address: 198.51.100.1/24
       redirects: false
       unreachables: false
+      ipv6_redirects: false
+      ipv6_unreachables: false
       name: GigabitEthernet3
     - name: GigabitEthernet4
 
@@ -268,6 +282,8 @@ rtt:
     - interface GigabitEthernet3
     - no ip redirects
     - no ip unreachables
+    - no ipv6 redirects
+    - no ipv6 unreachables
     - interface loopback999
     - no ip address 192.0.2.2 255.255.255.0
     - ip address 192.0.2.1 255.255.255.0

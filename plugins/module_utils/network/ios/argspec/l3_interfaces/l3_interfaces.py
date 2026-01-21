@@ -40,6 +40,8 @@ class L3_interfacesArgs(object):  # pylint: disable=R0903
                 "name": {"type": "str", "required": True},
                 "redirects": {"type": "bool"},
                 "unreachables": {"type": "bool"},
+                "ipv6_redirects": {"type": "bool"},
+                "ipv6_unreachables": {"type": "bool"},
                 "autostate": {"type": "bool"},
                 "mac_address": {"type": "str"},
                 "helper_addresses": {
