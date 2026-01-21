@@ -18,6 +18,10 @@ jobs:
     with:
       topology_path: tests/integration/labs/multi.yaml
       # lab_title_override: "Optional custom lab title"
+    secrets:
+      virl_host: ${{ secrets.VIRL_HOST }}
+      virl_username: ${{ secrets.VIRL_USERNAME }}
+      virl_password: ${{ secrets.VIRL_PASSWORD }}
 
   integration-tests-libssh:
     needs: lab-create
