@@ -20,7 +20,7 @@ extends_documentation_fragment:
 short_description: Bidirectional Forwarding Detection (BFD) templates configurations
 description:
    - Manages Bidirectional Forwarding Detection (BFD) templates configurations
-version_added: 12.0.0
+version_added: 11.3.0
 author:
   - Komal Desai (@komaldesai13)
 notes:
@@ -128,8 +128,10 @@ options:
         option should be the same format as the output of command I(show running-config
         | section ^bfd-template) executed on device. For state I(parsed) active
         connection to remote host is not required.
-      - The state I(deleted) removes BFD template configurations granularly by entering
-        the template context and negating individual configuration items (interval, authentication, etc.).
+      - The state C(deleted) does not support or guarantee granular deletion of configuration
+        the playbook should act as source of truth, and the desired state of the resouce is what
+        the playbook should reflect. Use C(overridden) or C(replaced) to get extra configuration
+        removed.
       - The state I(purged) removes BFD templates completely using a single top-level
         C(no bfd-template) command, which removes the entire template definition at once.
     type: str
@@ -282,7 +284,7 @@ EXAMPLES = """
 # bfd-template multi-hop template2
 #  interval min-tx 500 min-rx 500 multiplier 5
 
-- name: Delete specified BFD template configuration (granular deletion)
+- name: Delete specified BFD template  
   cisco.ios.ios_bfd_templates:
     config:
       - name: template1
@@ -303,7 +305,7 @@ EXAMPLES = """
 # bfd-template multi-hop template2
 #  interval min-tx 500 min-rx 500 multiplier 5
 
-# Using deleted (to delete all BFD templates granularly)
+# Using deleted (to delete all BFD templates )
 # Before state:
 # -------------
 # router-ios#show running-config | section ^bfd-template
@@ -312,7 +314,7 @@ EXAMPLES = """
 # bfd-template multi-hop template2
 #  interval min-tx 500 min-rx 500 multiplier 5
 
-- name: Delete all BFD template configurations granularly
+- name: Delete all BFD template configurations 
   cisco.ios.ios_bfd_templates:
     state: deleted
 

@@ -37,7 +37,7 @@
               multiplier: 5
         state: merged
 
-    - name: Test deleted state - granular deletion of specific template
+    - name: Test deleted state , deletion of specific template
       cisco.ios.ios_bfd_templates:
         config:
           - name: template1
@@ -50,7 +50,7 @@
         state: gathered
       register: result_after_deleted
 
-    - name: Assert deleted state - granular deletion leaves empty template
+    - name: Assert deleted state -  deletion leaves empty template
       ansible.builtin.assert:
         that:
           - result_deleted_specific.changed == true
@@ -97,7 +97,7 @@
             echo: true
         state: merged
 
-    - name: Test deleted state without config - granular deletion of all templates
+    - name: Test deleted state without config , deletion of all templates
       cisco.ios.ios_bfd_templates:
         state: deleted
       register: result_deleted_all
@@ -107,7 +107,7 @@
         state: gathered
       register: result_after_deleted_all
 
-    - name: Assert deleted all - granular deletion of all templates
+    - name: Assert deleted all - deletion of all templates
       ansible.builtin.assert:
         that:
           - result_deleted_all.changed == true
