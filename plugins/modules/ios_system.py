@@ -17,7 +17,6 @@
 #
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 DOCUMENTATION = """
@@ -130,7 +129,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
     load_config,
 )
-
 
 _CONFIGURED_VRFS = None
 

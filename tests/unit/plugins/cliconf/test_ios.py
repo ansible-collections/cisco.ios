@@ -18,13 +18,11 @@
 #
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 import json
 
 from os import path
-
 
 try:
     from unittest.mock import MagicMock
@@ -36,7 +34,6 @@ from unittest import TestCase
 from ansible.module_utils._text import to_bytes
 
 from ansible_collections.cisco.ios.plugins.cliconf import ios
-
 
 b_FIXTURE_DIR = b"%s/fixtures/ios" % (
     to_bytes(path.dirname(path.abspath(__file__)), errors="surrogate_or_strict")
