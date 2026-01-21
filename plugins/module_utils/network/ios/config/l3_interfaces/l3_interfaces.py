@@ -139,7 +139,10 @@ class L3_interfaces(ResourceModule):
         want_unreachables = want.pop("ipv6_unreachables", None)
         have_unreachables = have.pop("ipv6_unreachables", None)
         self.handle_redirects(
-            want_unreachables, have_unreachables, "ipv6_unreachables", pre_pop_want
+            want_unreachables,
+            have_unreachables,
+            "ipv6_unreachables",
+            pre_pop_want,
         )
 
         self.compare(parsers=self.gen_parsers, want=want, have=have)
