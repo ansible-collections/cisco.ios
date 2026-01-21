@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Fix an issue where the `mac_address` parameter was being ignored.
