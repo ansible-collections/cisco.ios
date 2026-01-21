@@ -4,13 +4,13 @@
     lines: "interface Loopback 999\nip redirects\nip unreachables\n
       ipv6 redirects\nipv6 unreachables\nno ip address\ninterface
       GigabitEthernet 2\nno ip address\nno ipv6 address\n ip redirects\n
-       ip unreachables\n ipv6 redirects\n ipv6 unreachables
+      ip unreachables\n ipv6 redirects\n ipv6 unreachables
       \ninterface GigabitEthernet3\n ip redirects\n ip unreachables\n
       \n ipv6 redirects\n ipv6 unreachables\n
       no ip address\nno ipv6 address\nno ip helper-address global 10.0.0.1
-      \nno ip helper-address 10.0.0.2\n interface GigabitEthernet1 
+      \nno ip helper-address 10.0.0.2\n interface GigabitEthernet1
       \n ip redirects\n ip unreachables\n ipv6 redirects\n ipv6 unreachables
-       \ninterface GigabitEthernet4 
+      \ninterface GigabitEthernet4
       \n ip redirects\n ip unreachables\n ipv6 redirects\n ipv6 unreachables"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"
