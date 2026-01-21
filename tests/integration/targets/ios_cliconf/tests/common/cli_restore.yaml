@@ -1,0 +1,100 @@
+---
+- ansible.builtin.debug: msg="END cliconf/restore.yaml on connection={{ ansible_connection }}"
+
+- block:
+    - name: Prepare appliance for restore
+      ansible.builtin.debug:
+        msg:
+          - "Task to prepare appliance for restore operation"
+
+    - name: Make file promt quite
+      cisco.ios.ios_config:
+        lines:
+          - "file prompt quiet"
+
+    - name: Overwrite startup config - archive
+      cisco.ios.ios_config:
+        lines:
+          - "archive"
+
+    - name: Delete ios hostname config
+      register: result
+      cisco.ios.ios_hostname:
+        config:
+        state: deleted
+
+    - name: Delete ios hostname config
+      register: result
+      cisco.ios.ios_hostname:
+        config:
+        state: gathered
+
+    - name: Add ios hostname config
+      register: result
+      cisco.ios.ios_hostname:
+        config:
+          hostname: "IOSTest"
+        state: merged
+
+    - name: Get running configuration
+      register: result
+      ansible.netcommon.cli_command:
+        command: show running-config configuration
+
+    - name: Copy configuration to file
+      ansible.builtin.copy:
+        content: "{{ result['stdout'] }}"
+        dest: /tmp/ios01.cfg
+
+    - name: Modify hostname config
+      ansible.buitin.replace:
+        path: /tmp/ios01.cfg
+        regexp: IOSTest
+        replace: IOSTest restored
+
+    - name: Copy config file to remote host
+      ansible.netcommon.net_put:
+        src: /tmp/ios01.cfg
+        protocol: scp
+        dest: "flash:ios01.cfg"
+
+    - name: Replace syslog test file configuration
+      ansible.netcommon.cli_restore:
+        filename: "flash:ios01.cfg"
+        path: "flash:"
+
+    - name: Get hostname configuration
+      register: result
+      cisco.ios.ios_hostname:
+        state: gathered
+
+    - name: Assert that interface config change is reflected on device
+      ansible.builtin.assert:
+        that:
+          - "'test cli_config restored' in  result.gathered.hostname"
+
+    - name: Replace syslog test file configuration
+      ansible.netcommon.cli_restore:
+        filename: "flash:ios01.cfg"
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+  always:
+    - name: Delete hostname config
+      cisco.ios.ios_hostname:
+        state: deleted
+
+    - name: Make file promt quite
+      cisco.ios.ios_config:
+        lines:
+          - "file prompt quiet"
+
+    - name: Delete the backup file post backup
+      cisco.ios.ios_command:
+        commands:
+          - command: "delete /force flash:ios01.cfg"
+
+- ansible.builtin.debug: msg="END cliconf/restore.yaml on connection={{ ansible_connection }}"
