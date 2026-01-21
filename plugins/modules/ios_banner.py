@@ -54,8 +54,14 @@ options:
   text:
     description:
       - The banner text that should be present in the remote device running configuration.  This
-        argument accepts a multiline string, with no empty lines. Requires I(state=present).
+        argument accepts a multiline string, including empty lines. Requires I(state=present).
     type: str
+  preserve_empty_lines:
+    description:
+      - When set to true, preserves leading and trailing empty lines in the banner text.
+        This is useful for ASCII art banners that require specific spacing.
+    default: false
+    type: bool
   state:
     description:
       - Specifies whether or not the configuration is present in the current devices
@@ -94,6 +100,17 @@ EXAMPLES = """
     multiline_delimiter: x
     text: this is my login banner
     state: present
+
+- name: Configure ASCII art banner with empty lines
+  cisco.ios.ios_banner:
+    banner: login
+    preserve_empty_lines: true
+    text: |
+
+      _   _   _                                      _   _   _
+      | |_| |_| |          Network Test              | |_| |_| |
+
+    state: present
 """
 
 RETURN = """
@@ -122,6 +139,7 @@ def map_obj_to_commands(updates, module):
     want, have = updates
     state = module.params["state"]
     multiline_delimiter = module.params.get("multiline_delimiter")
+    preserve_empty_lines = module.params.get("preserve_empty_lines", False)
     if state == "absent" and "text" in have.keys() and have["text"]:
         commands.append("no banner %s" % module.params["banner"])
     elif state == "present":
@@ -129,12 +147,17 @@ def map_obj_to_commands(updates, module):
             haved = have.get("text").rstrip("\n")
         else:
             haved = ""
-        if want["text"] and (want["text"].rstrip("\n") != haved):
-            banner_cmd = "banner %s" % module.params["banner"]
-            banner_cmd += " {0}\n".format(multiline_delimiter)
-            banner_cmd += want["text"].strip("\n")
-            banner_cmd += "\n{0}".format(multiline_delimiter)
-            commands.append(banner_cmd)
+        if want["text"]:
+            if preserve_empty_lines:
+                wanted_text = want["text"]
+            else:
+                wanted_text = want["text"].strip("\n")
+            if wanted_text and (wanted_text != haved):
+                banner_cmd = "banner %s" % module.params["banner"]
+                banner_cmd += " {0}\n".format(multiline_delimiter)
+                banner_cmd += wanted_text
+                banner_cmd += "\n{0}".format(multiline_delimiter)
+                commands.append(banner_cmd)
     return commands
 
 
@@ -168,6 +191,7 @@ def map_params_to_obj(module):
         "banner": module.params["banner"],
         "text": text,
         "multiline_delimiter": module.params["multiline_delimiter"],
+        "preserve_empty_lines": module.params["preserve_empty_lines"],
         "state": module.params["state"],
     }
 
@@ -178,6 +202,7 @@ def main():
         banner=dict(required=True, choices=["login", "motd", "exec", "incoming", "slip-ppp"]),
         multiline_delimiter=dict(default="@"),
         text=dict(),
+        preserve_empty_lines=dict(default=False, type="bool"),
         state=dict(default="present", choices=["present", "absent"]),
     )
     required_if = [("state", "present", ("text",))]
