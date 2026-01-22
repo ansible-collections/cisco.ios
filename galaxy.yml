@@ -2,7 +2,7 @@
 authors:
   - Ansible Network Community (ansible-network)
 dependencies:
-  "ansible.netcommon": ">=8.1.0"
+  "ansible.netcommon": ">=8.2.2"
 license_file: LICENSE
 name: ios
 namespace: cisco
@@ -11,4 +11,16 @@ readme: README.md
 repository: https://github.com/ansible-collections/cisco.ios
 issues: https://github.com/ansible-collections/cisco.ios/issues
 tags: [cisco, ios, iosxe, networking]
+build_ignore:
+  - .yamllint
+  - .prettierignore
+  - .pre-commit-config.yaml
+  - .isort.cfg
+  - .gitignore
+  - .darglint
+  - .flake8
+  - .ansible-lint
+  - sonar-project.properties
+  - codecov.yml
+  - .github/
 version: "11.2.0"
