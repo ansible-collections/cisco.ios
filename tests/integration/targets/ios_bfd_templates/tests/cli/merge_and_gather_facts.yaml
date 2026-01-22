@@ -5,9 +5,9 @@
 
 - name: ios_bfd_templates merged, replaced configuration and facts gathering
   block:
-    - name: Delete any existing BFD template configuration - no granularity
+    - name: Purge any existing BFD template configuration
       cisco.ios.ios_bfd_templates:
-        state: deleted
+        state: purged
 
     - name: Create keychain for BFD authentication
       cisco.ios.ios_config:
@@ -46,10 +46,10 @@
         that:
           - result_gathered['gathered'] == ansible_facts['network_resources']['bfd_templates']
 
-    - name: Delete any existing BFD template configuration again - no granularity
+    - name: Purge any existing BFD template configuration again
       cisco.ios.ios_bfd_templates:
-        state: deleted
-      register: result_deleted
+        state: purged
+      register: result_purged
 
 - name: Assets ios_bfd_templates merged
   block:

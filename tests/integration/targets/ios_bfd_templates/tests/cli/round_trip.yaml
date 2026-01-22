@@ -2,9 +2,9 @@
 - ansible.builtin.debug:
     msg: START ios_bfd_templates round trip integration tests on connection={{ ansible_connection }}
 
-- name: Delete any existing BFD template configuration - no granularity
+- name: Purge any existing BFD template configuration
   cisco.ios.ios_bfd_templates:
-    state: deleted
+    state: purged
 
 - name: Create keychains for BFD authentication
   cisco.ios.ios_config:
@@ -74,9 +74,9 @@
           - revert.changed == true
           - revert['commands'] == rtt['commands']
 
-- name: Delete any existing BFD template configuration - no granularity
+- name: Purge any existing BFD template configuration
   cisco.ios.ios_bfd_templates:
-    state: deleted
+    state: purged
 
 - name: Cleanup keychains
   cisco.ios.ios_config:

@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Fixed delete and purged state function for ios_bfd_templates

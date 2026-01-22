@@ -242,7 +242,12 @@ class TestIosBfdTemplatesModule(TestIosModule):
                 "state": "deleted",
             },
         )
-        commands = ["no bfd-template single-hop template1"]
+        commands = [
+            "bfd-template single-hop template1",
+            "no echo",
+            "no interval min-tx 200 min-rx 200 multiplier 3",
+            "no authentication sha-1 keychain bfd_keychain",
+        ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
 
@@ -261,11 +266,13 @@ class TestIosBfdTemplatesModule(TestIosModule):
             },
         )
         commands = [
-            "no bfd-template single-hop template1",
-            "no bfd-template multi-hop template2",
+            "bfd-template single-hop template1",
+            "no interval min-tx 200 min-rx 200 multiplier 3",
+            "bfd-template multi-hop template2",
+            "no interval min-tx 500 min-rx 500 multiplier 5",
         ]
         result = self.execute_module(changed=True)
-        self.assertEqual(sorted(result["commands"]), sorted(commands))
+        self.assertEqual(result["commands"], commands)
 
     def test_ios_bfd_templates_purged(self):
         self.execute_show_command.return_value = dedent(
