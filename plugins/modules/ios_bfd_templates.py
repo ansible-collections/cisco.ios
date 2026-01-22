@@ -357,6 +357,34 @@ EXAMPLES = """
 # bfd-template multi-hop template2
 #  interval min-tx 500 min-rx 500 multiplier 5
 
+# Using purged (to remove all BFD templates)
+# Before state:
+# -------------
+# router-ios#show running-config | section ^bfd-template
+# bfd-template single-hop template1
+#  interval min-tx 200 min-rx 200 multiplier 3
+#  authentication sha-1 keychain bfd_keychain
+# bfd-template multi-hop template2
+#  interval min-tx 500 min-rx 500 multiplier 5
+# bfd-template single-hop template3
+#  echo
+
+- name: Purge all BFD template configurations (complete removal)
+  cisco.ios.ios_bfd_templates:
+    config: []
+    state: purged
+
+# Commands Fired:
+# ---------------
+# no bfd-template single-hop template1
+# no bfd-template multi-hop template2
+# no bfd-template single-hop template3
+
+# After state:
+# ------------
+# router-ios#show running-config | section ^bfd-template
+# (no BFD templates configured)
+
 # Using rendered
 - name: Render platform specific commands from task input using rendered state
   cisco.ios.ios_bfd_templates:
