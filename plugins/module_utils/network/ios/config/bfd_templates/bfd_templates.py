@@ -70,7 +70,6 @@ class Bfd_templates(ResourceModule):
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
-      
         if self.state == "deleted":
             # Filter to only templates specified in want, or all if want is empty
             haved = {k: v for k, v in haved.items() if k in wantd or not wantd}

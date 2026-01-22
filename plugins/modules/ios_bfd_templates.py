@@ -284,7 +284,7 @@ EXAMPLES = """
 # bfd-template multi-hop template2
 #  interval min-tx 500 min-rx 500 multiplier 5
 
-- name: Delete specified BFD template  
+- name: Delete specified BFD template
   cisco.ios.ios_bfd_templates:
     config:
       - name: template1
@@ -314,7 +314,7 @@ EXAMPLES = """
 # bfd-template multi-hop template2
 #  interval min-tx 500 min-rx 500 multiplier 5
 
-- name: Delete all BFD template configurations 
+- name: Delete all BFD template configurations
   cisco.ios.ios_bfd_templates:
     state: deleted
 
