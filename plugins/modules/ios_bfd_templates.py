@@ -20,7 +20,7 @@ extends_documentation_fragment:
 short_description: Bidirectional Forwarding Detection (BFD) templates configurations
 description:
    - Manages Bidirectional Forwarding Detection (BFD) templates configurations
-version_added: 1.0.0
+version_added: 11.3.0
 author:
   - Komal Desai (@komaldesai13)
 notes:
@@ -128,8 +128,12 @@ options:
         option should be the same format as the output of command I(show running-config
         | section ^bfd-template) executed on device. For state I(parsed) active
         connection to remote host is not required.
-      - The state I(purged) removes the BFD templates that are specified in the task
-        from running-config. Purged and deleted states function identically for this module.
+      - The state C(deleted) does not support or guarantee granular deletion of configuration
+        the playbook should act as source of truth, and the desired state of the resouce is what
+        the playbook should reflect. Use C(overridden) or C(replaced) to get extra configuration
+        removed.
+      - The state I(purged) removes BFD templates completely using a single top-level
+        C(no bfd-template) command, which removes the entire template definition at once.
     type: str
 """
 
@@ -280,7 +284,7 @@ EXAMPLES = """
 # bfd-template multi-hop template2
 #  interval min-tx 500 min-rx 500 multiplier 5
 
-- name: Delete specified BFD template configuration
+- name: Delete specified BFD template
   cisco.ios.ios_bfd_templates:
     config:
       - name: template1
@@ -289,15 +293,19 @@ EXAMPLES = """
 
 # Commands Fired:
 # ---------------
-# no bfd-template single-hop template1
+# bfd-template single-hop template1
+#  no echo
+#  no interval min-tx 200 min-rx 200 multiplier 3
+#  no authentication sha-1 keychain bfd_keychain
 
 # After state:
 # ------------
 # router-ios#show running-config | section ^bfd-template
+# bfd-template single-hop template1
 # bfd-template multi-hop template2
 #  interval min-tx 500 min-rx 500 multiplier 5
 
-# Using deleted (to delete all BFD templates)
+# Using deleted (to delete all BFD templates )
 # Before state:
 # -------------
 # router-ios#show running-config | section ^bfd-template
@@ -312,13 +320,16 @@ EXAMPLES = """
 
 # Commands Fired:
 # ---------------
-# no bfd-template single-hop template1
-# no bfd-template multi-hop template2
+# bfd-template single-hop template1
+#  no interval min-tx 200 min-rx 200 multiplier 3
+# bfd-template multi-hop template2
+#  no interval min-tx 500 min-rx 500 multiplier 5
 
 # After state:
 # ------------
 # router-ios#show running-config | section ^bfd-template
-# (no BFD templates configured)
+# bfd-template single-hop template1
+# bfd-template multi-hop template2
 
 # Using purged
 # Before state:
@@ -329,7 +340,7 @@ EXAMPLES = """
 # bfd-template multi-hop template2
 #  interval min-tx 500 min-rx 500 multiplier 5
 
-- name: Purge specified BFD template configurations
+- name: Purge specified BFD template configurations (complete removal)
   cisco.ios.ios_bfd_templates:
     config:
       - name: template1
@@ -345,6 +356,34 @@ EXAMPLES = """
 # router-ios#show running-config | section ^bfd-template
 # bfd-template multi-hop template2
 #  interval min-tx 500 min-rx 500 multiplier 5
+
+# Using purged (to remove all BFD templates)
+# Before state:
+# -------------
+# router-ios#show running-config | section ^bfd-template
+# bfd-template single-hop template1
+#  interval min-tx 200 min-rx 200 multiplier 3
+#  authentication sha-1 keychain bfd_keychain
+# bfd-template multi-hop template2
+#  interval min-tx 500 min-rx 500 multiplier 5
+# bfd-template single-hop template3
+#  echo
+
+- name: Purge all BFD template configurations (complete removal)
+  cisco.ios.ios_bfd_templates:
+    config: []
+    state: purged
+
+# Commands Fired:
+# ---------------
+# no bfd-template single-hop template1
+# no bfd-template multi-hop template2
+# no bfd-template single-hop template3
+
+# After state:
+# ------------
+# router-ios#show running-config | section ^bfd-template
+# (no BFD templates configured)
 
 # Using rendered
 - name: Render platform specific commands from task input using rendered state
@@ -435,6 +474,55 @@ EXAMPLES = """
 #         }
 #     }
 # ]
+"""
+
+RETURN = """
+before:
+  description: The configuration prior to the module invocation.
+  returned: always
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+after:
+  description: The resulting configuration after module execution.
+  returned: when changed
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+commands:
+  description: The set of commands pushed to the remote device.
+  returned: always
+  type: list
+  sample:
+    - bfd-template single-hop template1
+    - interval min-tx 200 min-rx 200 multiplier 3
+    - authentication sha-1 keychain bfd_keychain
+    - echo
+rendered:
+  description: The provided configuration in the task rendered in device native format (offline).
+  returned: when I(state) is C(rendered)
+  type: list
+  sample:
+    - bfd-template single-hop template1
+    - interval min-tx 200 min-rx 200 multiplier 3
+    - authentication sha-1 keychain bfd_keychain
+    - echo
+gathered:
+  description: Facts about the network resource gathered from the remote device as structured data.
+  returned: when I(state) is C(gathered)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
+parsed:
+  description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
+  returned: when I(state) is C(parsed)
+  type: list
+  sample: >
+    This output will always be in the same format as the
+    module argspec.
 """
 
 
