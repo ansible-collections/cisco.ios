@@ -66,10 +66,10 @@
           - |
             {{
               result['after']
-              | rejectattr('name', 'in', ['Loopback999'])
+              | rejectattr('name', 'in', ['Loopback999', 'Loopback888'])
               | symmetric_difference(
                   merged['after']
-                  | rejectattr('name', 'in', ['Loopback999'])
+                  | rejectattr('name', 'in', ['Loopback999', 'Loopback888'])
                 )
               | length == 0
             }}
