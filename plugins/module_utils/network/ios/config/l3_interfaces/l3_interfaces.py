@@ -1,4 +1,3 @@
-#
 # -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat Inc.
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -52,8 +51,6 @@ class L3_interfaces(ResourceModule):
             "ipv4.dhcp",
             "ipv4.source_interface",
             "ipv4.mtu",
-            "ipv4.redirects",
-            "ipv4.unreachables",
             "ipv4.proxy_arp",
             "ipv6.address",
             "ipv6.autoconfig",
@@ -117,11 +114,55 @@ class L3_interfaces(ResourceModule):
             self._compare(want=want, have=have)
 
     def _compare(self, want, have):
+        """Leverages the base class `compare()` method and
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the L3_interfaces network resource.
+        """
         begin = len(self.commands)
+        want_without_name = want.copy()
+        want_without_name.pop("name", None)
+        pre_pop_want = bool(want_without_name)
+
+        want_redirects = want.pop("redirects", None)
+        have_redirects = have.pop("redirects", None)
+        self.handle_redirects(want_redirects, have_redirects, "redirects", pre_pop_want)
+
+        want_unreachables = want.pop("unreachables", None)
+        have_unreachables = have.pop("unreachables", None)
+        self.handle_redirects(want_unreachables, have_unreachables, "unreachables", pre_pop_want)
+
+        want_redirects = want.pop("ipv6_redirects", None)
+        have_redirects = have.pop("ipv6_redirects", None)
+        self.handle_redirects(want_redirects, have_redirects, "ipv6_redirects", pre_pop_want)
+
+        want_unreachables = want.pop("ipv6_unreachables", None)
+        have_unreachables = have.pop("ipv6_unreachables", None)
+        self.handle_redirects(
+            want_unreachables,
+            have_unreachables,
+            "ipv6_unreachables",
+            pre_pop_want,
+        )
+
         self.compare(parsers=self.gen_parsers, want=want, have=have)
         self._compare_lists(want=want, have=have)
+
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
+
+    def handle_redirects(self, want_redirects, have_redirects, parser, want):
+        if want_redirects is None and have_redirects is None:
+            if self.state == "replaced" or (self.state == "overridden" and want):
+                self.addcmd({parser: True}, parser, True)
+        else:
+            if want_redirects is True and have_redirects is False:
+                self.addcmd({parser: want_redirects}, parser, not want_redirects)
+            elif want_redirects is False and have_redirects is None:
+                self.addcmd({parser: not want_redirects}, parser, not want_redirects)
+            elif want_redirects is None and have_redirects is False:
+                if self.state in ["overridden", "deleted"] and not want:
+                    self.addcmd({parser: not have_redirects}, parser, have_redirects)
 
     def _compare_lists(self, want, have):
         helper_address_dict_wantd = want.get("helper_addresses", {})
