@@ -70,11 +70,11 @@ class Bfd_templates(ResourceModule):
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
-        # if state is deleted, perform granular deletion
+      
         if self.state == "deleted":
             # Filter to only templates specified in want, or all if want is empty
             haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
-            # For deleted state, compare empty want with have to generate granular no commands
+            # For deleted state, compare empty want with have to generate  no commands
             for k, have in haved.items():
                 self._compare(want={"name": have["name"], "hop": have["hop"]}, have=have)
 
