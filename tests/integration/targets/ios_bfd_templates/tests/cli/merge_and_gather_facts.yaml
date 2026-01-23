@@ -1,0 +1,65 @@
+---
+- name: START ios_bfd_templates merge_and_gather_facts.yaml integration tests
+  ansible.builtin.debug:
+    msg: START ios_bfd_templates merge_and_gather_facts.yaml integration tests on connection={{ ansible_connection }}
+
+- name: ios_bfd_templates merged, replaced configuration and facts gathering
+  block:
+    - name: Purge any existing BFD template configuration
+      cisco.ios.ios_bfd_templates:
+        state: purged
+
+    - name: Create keychain for BFD authentication
+      cisco.ios.ios_config:
+        lines:
+          - key 1
+          - key-string bfd_test_key
+        parents: key chain bfd_keychain
+
+    - name: Parse the provided configuration
+      cisco.ios.ios_bfd_templates:
+        running_config: "{{ lookup('file', '_parsed.cfg') }}"
+        state: parsed
+      register: result_parsed
+
+    - name: Merge the provided configuration
+      cisco.ios.ios_bfd_templates:
+        config: "{{ result_parsed.parsed }}"
+        state: merged
+      register: result_merged
+
+    - name: Gather any existing BFD template configuration
+      cisco.ios.ios_bfd_templates:
+        state: gathered
+      register: result_gathered
+
+    - name: Facts gather ios_bfd_templates facts
+      cisco.ios.ios_facts:
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources:
+          - bfd_templates
+
+    - name: Assert gathered with facts - verify against expected gathered output
+      ansible.builtin.assert:
+        that:
+          - result_gathered['gathered'] == ansible_facts['network_resources']['bfd_templates']
+
+    - name: Purge any existing BFD template configuration again
+      cisco.ios.ios_bfd_templates:
+        state: purged
+      register: result_purged
+
+- name: Assets ios_bfd_templates merged
+  block:
+    - name: Assert merged - verify against expected execution output
+      ansible.builtin.assert:
+        that:
+          - merged['after'] == result_merged['after']
+          - merged['commands']|symmetric_difference(result_merged['commands']) == []
+
+    - name: Cleanup keychain
+      cisco.ios.ios_config:
+        lines:
+          - no key chain bfd_keychain

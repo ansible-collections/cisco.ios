@@ -1,0 +1,85 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_bfd_templates round trip integration tests on connection={{ ansible_connection }}
+
+- name: Purge any existing BFD template configuration
+  cisco.ios.ios_bfd_templates:
+    state: purged
+
+- name: Create keychains for BFD authentication
+  cisco.ios.ios_config:
+    lines:
+      - key 1
+      - key-string {{ item.key_string }}
+    parents: key chain {{ item.keychain_name }}
+  with_items:
+    - { keychain_name: "bfd_keychain", key_string: "bfd_test_key" }
+    - { keychain_name: "new_keychain", key_string: "bfd_new_key" }
+
+- block:
+    - name: ios_bfd_templates RTT - play (base config)
+      register: result
+      cisco.ios.ios_bfd_templates:
+        config:
+          - name: template1
+            hop: single_hop
+            interval:
+              min_tx: 200
+              min_rx: 200
+              multiplier: 3
+            authentication:
+              type: sha_1
+              keychain: bfd_keychain
+            echo: true
+          - name: template2
+            hop: multi_hop
+            interval:
+              min_tx: 500
+              min_rx: 500
+              multiplier: 5
+            dampening:
+              half_life_period: 30
+              reuse_threshold: 2000
+              suppress_threshold: 5000
+              max_suppress_time: 120
+        state: merged
+
+    - name: ios_bfd_templates RTT - gather bfd_templates facts
+      cisco.ios.ios_facts:
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources:
+          - bfd_templates
+
+    - name: ios_bfd_templates RTT - apply the provided configuration (config to be reverted)
+      cisco.ios.ios_bfd_templates:
+        config:
+          - name: template1
+            hop: single_hop
+            interval:
+              min_tx: 300
+              min_rx: 300
+              multiplier: 5
+        state: merged
+
+    - name: ios_bfd_templates RTT - revert back to base configuration using facts round trip
+      register: revert
+      cisco.ios.ios_bfd_templates:
+        config: "{{ ansible_facts['network_resources']['bfd_templates'] }}"
+        state: replaced
+
+    - ansible.builtin.assert:
+        that:
+          - revert.changed == true
+          - revert['commands'] == rtt['commands']
+
+- name: Purge any existing BFD template configuration
+  cisco.ios.ios_bfd_templates:
+    state: purged
+
+- name: Cleanup keychains
+  cisco.ios.ios_config:
+    lines:
+      - no key chain bfd_keychain
+      - no key chain new_keychain
