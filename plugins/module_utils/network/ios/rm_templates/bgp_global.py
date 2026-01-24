@@ -1582,7 +1582,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \sneighbor\s(?P<neighbor_address>\S+)\s(?P<local_as>local-as)
-                (\s(?P<number>\S+))?
+                (\s(?P<asn>\S+))?
                 (\s(?P<dual_as>dual-as))?
                 (\s(?P<no_prepend>no-prepend))?
                 (\s(?P<replace_as>replace-as))?
@@ -1590,7 +1590,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} local-as"
-            "{{ (' ' + local_as.number|string) if local_as.number is defined else '' }}"
+            "{{ (' ' + local_as.asn|string) if local_as.asn is defined else '' }}"
             "{{ (' dual-as') if local_as.dual_as is defined else '' }}"
             "{{ (' no-prepend') if local_as.no_prepend.set is defined else '' }}"
             "{{ (' replace-as') if local_as.no_prepend.replace_as is defined else '' }}",
@@ -1600,7 +1600,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                         "neighbor_address": "{{ neighbor_address }}",
                         "local_as": {
                             "set": "{{ not not local_as }}",
-                            "number": "{{ number }}",
+                            "asn": "{{ asn }}",
                             "dual_as": "{{ not not dual_as }}",
                             "no_prepend": {
                                 "set": "{{ not not no_prepend }}",
