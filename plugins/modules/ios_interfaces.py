@@ -248,6 +248,7 @@ options:
       - gathered
       - purged
       - parsed
+      - detected
     default: merged
     description:
       - The state the configuration should be left in

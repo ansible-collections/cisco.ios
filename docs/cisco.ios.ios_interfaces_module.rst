@@ -952,6 +952,7 @@ Parameters
                                     <li>gathered</li>
                                     <li>purged</li>
                                     <li>parsed</li>
+                                    <li>detected</li>
                         </ul>
                 </td>
                 <td>
