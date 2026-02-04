@@ -49,10 +49,10 @@ jobs:
       collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git
-        
+
   report-status:
-    if: ${{ always() }} 
-    needs: 
+    if: ${{ always() }}
+    needs:
       - changelog
       - build-import
       - sanity
@@ -65,7 +65,7 @@ jobs:
       job_context: ${{ toJSON(needs) }}
       component_name: ${{ github.event.repository.name }}
       UPLOAD_USER: ${{ vars.PDE_ORG_RESULTS_AGGREGATOR_UPLOAD_USER }}
-      UPLOAD_URL: ${{ vars.PDE_ORG_RESULTS_AGGREGATOR_UPLOAD_URL }}  
+      UPLOAD_URL: ${{ vars.PDE_ORG_RESULTS_AGGREGATOR_UPLOAD_URL }}
     secrets:
       UPLOAD_PASSWORD: ${{ secrets.PDE_ORG_RESULTS_UPLOAD_PASSWORD }}
 
