@@ -1,3 +1,4 @@
+---
 name: "Collection Tests 🧪"
 
 concurrency:
@@ -76,7 +77,6 @@ jobs:
       - sanity
       - unit-galaxy
       - ansible-lint
-      - unit-source
       - sonar
       - report-status
     runs-on: ubuntu-latest
