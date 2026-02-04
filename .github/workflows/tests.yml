@@ -1,4 +1,3 @@
----
 name: "Collection Tests 🧪"
 
 concurrency:
@@ -49,6 +48,25 @@ jobs:
       collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git
+        
+  report-status:
+    if: ${{ always() }} 
+    needs: 
+      - changelog
+      - build-import
+      - sanity
+      - unit-galaxy
+      - ansible-lint
+      - unit-source
+      - sonar
+    uses: ansible/ansible-content-actions/.github/workflows/upload_results.yml@main
+    with:
+      job_context: ${{ toJSON(needs) }}
+      component_name: ${{ github.event.repository.name }}
+      UPLOAD_USER: ${{ vars.PDE_ORG_RESULTS_AGGREGATOR_UPLOAD_USER }}
+      UPLOAD_URL: ${{ vars.PDE_ORG_RESULTS_AGGREGATOR_UPLOAD_URL }}  
+    secrets:
+      UPLOAD_PASSWORD: ${{ secrets.PDE_ORG_RESULTS_UPLOAD_PASSWORD }}
 
   all_green:
     if: ${{ always() }}
@@ -58,7 +76,9 @@ jobs:
       - sanity
       - unit-galaxy
       - ansible-lint
+      - unit-source
       - sonar
+      - report-status
     runs-on: ubuntu-latest
     steps:
       - run: >-
