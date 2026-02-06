@@ -392,7 +392,10 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specifies the source path to the file that contains the configuration or configuration template to load.  The path to the source file can either be the full path on the Ansible control host or a relative path from the playbook or role root directory. This argument is mutually exclusive with <em>lines</em>, <em>parents</em>. The configuration lines in the source file should be similar to how it will appear if present in the running-configuration of the device including the indentation to ensure idempotency and correct diff.</div>
+                        <div>Specifies the source path to the file that contains the configuration or configuration template to load. The path to the source file can either be the full path on the Ansible control host or a relative path from the playbook or role root directory. This argument is mutually exclusive with <em>lines</em>, <em>parents</em>. The configuration lines in the source file should be similar to how it will appear if present in the running-configuration of the device including the indentation to ensure idempotency and correct diff.</div>
+                        <div>Post ansible-core 2.18 templating option have changed, src is backported to render template files by default. It is advised to use the ansible.builtin.template lookup plugin.</div>
+                        <div>The functionality of src rendering templates inherently would be deprecated on a release after 2028-01-01.</div>
+                        <div>See [2.19 Porting Guide](https://docs.ansible.com/projects/ansible-core/devel/porting_guides/porting_guide_core_2.19.html)</div>
                 </td>
             </tr>
     </table>
@@ -494,10 +497,32 @@ Examples
         host: "{{ inventory_hostname }}"
       when: ansible_net_version != version
 
-    - name: Render a Jinja2 template onto an IOS device
+    - name: Apply configuration using src
       cisco.ios.ios_config:
         backup: true
-        src: ios_template.j2
+        src: ios_config.txt
+
+    # This functionality would be deprecated on a release after 2028-01-01
+    # src attribute would still support handing configuration files (path)
+    # rendering template as by the src template would be deprecated.
+
+    - name: Apply configuration from file - not recommended tests backward compatibility
+      register: result
+      cisco.ios.ios_config:
+        src: basic/config_src_not_recommended.j2
+
+    # This is the recommended way.
+
+    - name: Template a file - recommended way
+      ansible.builtin.template:
+        src: basic/config_src_recommended.j2
+        dest: /tmp/config_src_recommended.j2
+        mode: "0644"
+
+    - name: Apply configuration from file
+      register: result
+      cisco.ios.ios_config:
+        src: /tmp/config_src_recommended.j2
 
     - name: Configurable backup path
       cisco.ios.ios_config:
@@ -507,7 +532,7 @@ Examples
           filename: backup.cfg
           dir_path: /home/user
 
-    - name: Configure Access Session Attributes while handlening prompt
+    - name: Configure Access Session Attributes while handling prompt
       cisco.ios.ios_config:
         lines:
           - config_line: access-session authentication attributes filter-spec include list test_filter
