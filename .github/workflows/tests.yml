@@ -60,7 +60,7 @@ jobs:
       - ansible-lint
       - unit-source
       - sonar
-    uses: nickbhasin/ansible-content-actions/.github/workflows/upload_results.yml@main
+    uses: nickbhasin/ansible-content-actions/.github/workflows/upload_upstream_results.yaml@upload_to_dashboard
     with:
       job_context: ${{ toJSON(needs) }}
       component_name: ${{ github.event.repository.name }}
