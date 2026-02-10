@@ -36,7 +36,7 @@
           - >
             {{
               result['before']
-              | rejectattr('name', 'in', 'Loopback888,Loopback999')
+              | rejectattr('name', 'in', ['Loopback888', 'Loopback999'])
               | symmetric_difference(replaced['before'])
               | length == 0
             }}

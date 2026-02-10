@@ -74,7 +74,7 @@ class L3_interfacesTemplate(NetworkTemplate):
         {
             "name": "mac_address",
             "getval": re.compile(
-                r"""^mac-address
+                r"""^\s*mac-address
                     (\s(?P<mac_address>\S+))
                     $""",
                 re.VERBOSE,
@@ -199,6 +199,119 @@ class L3_interfacesTemplate(NetworkTemplate):
                             "redirects": True,
                         },
                     ],
+                },
+            },
+        },
+
+        {
+            "name": "redirects",
+            "getval": re.compile(
+                r"""
+                \s+ip\sredirects
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip redirects",
+            "result": {
+                "{{ name }}": {
+                    "redirects": True,
+                },
+            },
+        },
+        {
+            "name": "no_redirects",
+            "getval": re.compile(
+                r"""
+                \s+no\s+ip\sredirects
+                $""", re.VERBOSE,
+            ),
+            "setval": "no ip redirects",
+            "result": {
+                "{{ name }}": {
+                    "redirects": False,
+                },
+            },
+        },
+        {
+            "name": "unreachables",
+            "getval": re.compile(
+                r"""
+                \s+ip\sunreachables
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip unreachables",
+            "result": {
+                "{{ name }}": {
+                    "unreachables": True,
+                },
+            },
+        },
+        {
+            "name": "no_unreachables",
+            "getval": re.compile(
+                r"""
+                \s+no\s+ip\sunreachables
+                $""", re.VERBOSE,
+            ),
+            "setval": "no ip unreachables",
+            "result": {
+                "{{ name }}": {
+                    "unreachables": False,
+                },
+            },
+        },
+        {
+            "name": "ipv6_redirects",
+            "getval": re.compile(
+                r"""
+                \s+ipv6\sredirects
+                $""", re.VERBOSE,
+            ),
+            "setval": "ipv6 redirects",
+            "result": {
+                "{{ name }}": {
+                    "ipv6_redirects": True,
+                },
+            },
+        },
+        {
+            "name": "no_ipv6_redirects",
+            "getval": re.compile(
+                r"""
+                \s+no\s+ipv6\sredirects
+                $""", re.VERBOSE,
+            ),
+            "setval": "no ipv6 redirects",
+            "result": {
+                "{{ name }}": {
+                    "ipv6_redirects": False,
+                },
+            },
+        },
+        {
+            "name": "ipv6_unreachables",
+            "getval": re.compile(
+                r"""
+                \s+ipv6\sunreachables
+                $""", re.VERBOSE,
+            ),
+            "setval": "ipv6 unreachables",
+            "result": {
+                "{{ name }}": {
+                    "ipv6_unreachables": True,
+                },
+            },
+        },
+        {
+            "name": "no_ipv6_unreachables",
+            "getval": re.compile(
+                r"""
+                \s+no\s+ipv6\sunreachables
+                $""", re.VERBOSE,
+            ),
+            "setval": "no ipv6 unreachables",
+            "result": {
+                "{{ name }}": {
+                    "ipv6_unreachables": False,
                 },
             },
         },
