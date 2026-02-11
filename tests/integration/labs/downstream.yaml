@@ -13,8 +13,8 @@ links:
     conditioning: {}
     label: cat8000v-0-GigabitEthernet1<->ext-conn-0-port
 nodes:
-  - boot_disk_size: null
-    configuration: |2-
+  - boot_disk_size:
+    configuration: |-
       service timestamps debug datetime msec
       service timestamps log datetime msec
       platform qfp utilization monitor load 80
@@ -154,16 +154,16 @@ nodes:
       !
       !
       end
-    cpu_limit: null
-    cpus: null
-    data_volume: null
+    cpu_limit:
+    cpus:
+    data_volume:
     hide_links: false
     id: n0
-    image_definition: null
+    image_definition:
     label: cat8000v-0
     node_definition: cat8000v
     parameters: {}
-    ram: null
+    ram:
     tags: []
     x: -120
     y: 40
@@ -187,18 +187,18 @@ nodes:
         label: GigabitEthernet4
         slot: 3
         type: physical
-  - boot_disk_size: null
+  - boot_disk_size:
     configuration: []
-    cpu_limit: null
-    cpus: null
-    data_volume: null
+    cpu_limit:
+    cpus:
+    data_volume:
     hide_links: false
     id: n1
-    image_definition: null
+    image_definition:
     label: ext-conn-0
     node_definition: external_connector
     parameters: {}
-    ram: null
+    ram:
     tags: []
     x: 160
     y: 0

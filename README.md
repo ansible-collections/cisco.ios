@@ -1,8 +1,7 @@
 # Cisco IOS Collection
 
-[![CI](https://zuul-ci.org/gated.svg)](https://dashboard.zuul.ansible.com/t/ansible/project/github.com/ansible-collections/cisco.ios)
-[![Codecov](https://codecov.io/gh/ansible-collections/cisco.ios/branch/main/graph/badge.svg)](https://codecov.io/gh/ansible-collections/cisco.ios)
 [![CI](https://github.com/ansible-collections/cisco.ios/actions/workflows/tests.yml/badge.svg?branch=main&event=schedule)](https://github.com/ansible-collections/cisco.ios/actions/workflows/tests.yml)
+[![Integration tests 💻](https://github.com/ansible-collections/cisco.ios/actions/workflows/integration-libssh.yml/badge.svg?branch=main)](https://github.com/ansible-collections/cisco.ios/actions/workflows/integration-libssh.yml)
 
 The Ansible Cisco IOS collection includes a variety of Ansible content to help automate the management of Cisco IOS and Cisco IOS XE network appliances.
 
@@ -34,10 +33,8 @@ For more information about communication, see the [Ansible communication guide](
 <!--start requires_ansible-->
 ## Ansible version compatibility
 
-This collection has been tested against following Ansible versions: **>=2.15.0**.
+This collection has been tested against the following Ansible versions: **>=2.16.0**.
 
-For collections that support Ansible 2.9, please ensure you update your `network_os` to use the
-fully qualified collection name (for example, `cisco.ios.ios`).
 Plugins and modules within a collection may be tested with only specific Ansible versions.
 A collection may contain metadata that identifies these versions.
 PEP440 is the schema used to describe the versions of Ansible.
@@ -61,14 +58,18 @@ Name | Description
 [cisco.ios.ios_acl_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_acl_interfaces_module.rst)|Resource module to configure ACL interfaces.
 [cisco.ios.ios_acls](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_acls_module.rst)|Resource module to configure ACLs.
 [cisco.ios.ios_banner](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_banner_module.rst)|Module to configure multiline banners.
+[cisco.ios.ios_bfd_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_bfd_interfaces_module.rst)|Resource module to configure bfd in interfaces.
+[cisco.ios.ios_bfd_templates](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_bfd_templates_module.rst)|Bidirectional Forwarding Detection (BFD) templates configurations
 [cisco.ios.ios_bgp_address_family](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_bgp_address_family_module.rst)|Resource module to configure BGP Address family.
 [cisco.ios.ios_bgp_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_bgp_global_module.rst)|Resource module to configure BGP.
 [cisco.ios.ios_command](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_command_module.rst)|Module to run commands on remote devices.
 [cisco.ios.ios_config](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_config_module.rst)|Module to manage configuration sections.
+[cisco.ios.ios_evpn_ethernet](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_evpn_ethernet_module.rst)|Resource module to configure L2VPN EVPN Ethernet Segment.
 [cisco.ios.ios_evpn_evi](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_evpn_evi_module.rst)|Resource module to configure L2VPN EVPN EVI.
 [cisco.ios.ios_evpn_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_evpn_global_module.rst)|Resource module to configure L2VPN EVPN.
 [cisco.ios.ios_facts](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_facts_module.rst)|Module to collect facts from remote devices.
 [cisco.ios.ios_hostname](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_hostname_module.rst)|Resource module to configure hostname.
+[cisco.ios.ios_hsrp_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_hsrp_interfaces_module.rst)|Resource module to configure HSRP on interfaces.
 [cisco.ios.ios_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_interfaces_module.rst)|Resource module to configure interfaces.
 [cisco.ios.ios_l2_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_l2_interfaces_module.rst)|Resource module to configure L2 interfaces.
 [cisco.ios.ios_l3_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_l3_interfaces_module.rst)|Resource module to configure L3 interfaces.

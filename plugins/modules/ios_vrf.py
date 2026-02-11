@@ -350,7 +350,6 @@ from functools import partial
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.connection import exec_command
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     NetworkConfig,
 )
@@ -845,7 +844,7 @@ def update_objects(want, have):
         if all((item is None, entry["state"] == "present")):
             updates.append((entry, {}))
         else:
-            for key, value in iteritems(entry):
+            for key, value in entry.items():
                 if value:
                     if isinstance(value, list):
                         try:

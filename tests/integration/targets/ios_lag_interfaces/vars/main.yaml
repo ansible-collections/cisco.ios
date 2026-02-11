@@ -14,12 +14,6 @@ merged:
         - member: GigabitEthernet3
           mode: passive
       name: Port-channel22
-    - members:
-        - {}
-      name: Port-channel10
-    - members:
-        - {}
-      name: Port-channel40
 
 replaced:
   before:
@@ -31,12 +25,6 @@ replaced:
         - member: GigabitEthernet3
           mode: active
       name: Port-channel22
-    - members:
-        - {}
-      name: Port-channel10
-    - members:
-        - {}
-      name: Port-channel40
   commands:
     - interface GigabitEthernet2
     - channel-group 11 mode passive
@@ -49,12 +37,6 @@ replaced:
         - member: GigabitEthernet3
           mode: active
       name: Port-channel22
-    - members:
-        - {}
-      name: Port-channel10
-    - members:
-        - {}
-      name: Port-channel40
 
 overridden:
   before:
@@ -66,12 +48,6 @@ overridden:
         - member: GigabitEthernet3
           mode: active
       name: Port-channel22
-    - members:
-        - {}
-      name: Port-channel10
-    - members:
-        - {}
-      name: Port-channel40
   commands:
     - interface GigabitEthernet2
     - no channel-group 11 mode active
@@ -84,13 +60,7 @@ overridden:
       name: Port-channel22
     - members:
         - {}
-      name: Port-channel10
-    - members:
-        - {}
       name: Port-channel11
-    - members:
-        - {}
-      name: Port-channel40
 
 deleted:
   before:
@@ -102,12 +72,6 @@ deleted:
         - member: GigabitEthernet3
           mode: active
       name: Port-channel22
-    - members:
-        - {}
-      name: Port-channel10
-    - members:
-        - {}
-      name: Port-channel40
   commands:
     - interface GigabitEthernet2
     - no channel-group 11 mode active
@@ -124,12 +88,6 @@ gathered:
         - member: GigabitEthernet3
           mode: active
       name: Port-channel22
-    - members:
-        - {}
-      name: Port-channel10
-    - members:
-        - {}
-      name: Port-channel40
 
 parsed:
   config:

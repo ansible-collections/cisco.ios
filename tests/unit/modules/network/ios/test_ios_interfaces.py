@@ -339,6 +339,7 @@ class TestIosInterfacesModule(TestIosModule):
                         "name": "GigabitEthernet3",
                         "speed": 1000,
                         "mtu": 1500,
+                        "enabled": True,
                     },
                 ],
                 "state": "overridden",
@@ -353,6 +354,7 @@ class TestIosInterfacesModule(TestIosModule):
             "shutdown",
             "interface GigabitEthernet4",
             "no description Ansible UT interface 4",
+            "shutdown",
             "interface GigabitEthernet5",
             "no description Ansible UT interface 5",
             "no duplex full",
@@ -557,6 +559,12 @@ class TestIosInterfacesModule(TestIosModule):
                      duplex full
                      negotiation auto
                      ipv6 dhcp server
+                     logging event nfas-status
+                     logging event bundle-status
+                     logging event link-status
+                     logging event subif-link-status
+                     logging event trunk-status
+                     service-policy input policy1
                     interface GigabitEthernet6
                      description Ansible UT interface 6
                      switchport
@@ -578,40 +586,40 @@ class TestIosInterfacesModule(TestIosModule):
                 "mtu": 1500,
                 "enabled": True,
             },
-            {
-                "name": "GigabitEthernet1",
-                "description": "Ansible UT interface 1",
-                "enabled": True,
-            },
+            {"name": "GigabitEthernet1", "description": "Ansible UT interface 1", "enabled": True},
             {
                 "name": "GigabitEthernet3",
                 "description": "Ansible UT interface 3",
                 "enabled": False,
                 "duplex": "auto",
             },
-            {
-                "name": "GigabitEthernet4",
-                "description": "Ansible UT interface 4",
-                "enabled": False,
-            },
+            {"name": "GigabitEthernet4", "description": "Ansible UT interface 4", "enabled": False},
             {
                 "name": "GigabitEthernet5",
                 "description": "Ansible UT interface 5",
                 "duplex": "full",
+                "logging": {
+                    "nfas_status": True,
+                    "bundle_status": True,
+                    "link_status": True,
+                    "subif_link_status": True,
+                    "trunk_status": True,
+                },
+                "service_policy": {"input": "policy1"},
                 "enabled": True,
             },
             {
                 "name": "GigabitEthernet6",
-                "mode": "layer2",
                 "description": "Ansible UT interface 6",
+                "mode": "layer2",
                 "enabled": True,
             },
             {
                 "name": "GigabitEthernet7",
-                "mode": "layer3",
                 "description": "Ansible UT interface 7",
-                "enabled": True,
+                "mode": "layer3",
                 "template": "ANSIBLE",
+                "enabled": True,
             },
         ]
         self.assertEqual(parsed_list, result["parsed"])
@@ -657,6 +665,15 @@ class TestIosInterfacesModule(TestIosModule):
                     {
                         "name": "twentyFiveGigE1",
                         "description": "Ansible UT TwentyFiveGigE",
+                        "logging": {
+                            "nfas_status": True,
+                            "bundle_status": True,
+                            "link_status": True,
+                            "subif_link_status": True,
+                            "trunk_status": True,
+                        },
+                        "service_policy": {"input": "policy1"},
+                        "snmp": {"trap": {"ip": True}},
                     },
                     {
                         "name": "twoGigabitEthernet2",
@@ -681,6 +698,10 @@ class TestIosInterfacesModule(TestIosModule):
                     {
                         "name": "fiftyGigabitEthernet",
                         "description": "Ansible UT for fiftyGigabitEthernet",
+                    },
+                    {
+                        "name": "FoUrHuNdReDgIgE",
+                        "description": "Ansible UT for FourHundredGigE",
                     },
                     {
                         "name": "ethernet1",
@@ -738,46 +759,89 @@ class TestIosInterfacesModule(TestIosModule):
             "no shutdown",
             "interface TwentyFiveGigE1",
             "description Ansible UT TwentyFiveGigE",
-            "no shutdown",
+            "service-policy input policy1",
+            "logging event trunk-status",
+            "logging event subif-link-status",
+            "logging event nfas-status",
+            "logging event bundle-status",
+            "logging event link-status",
+            "snmp trap ip verify drop-rate",
             "interface TwoGigabitEthernet2",
             "description Ansible UT TwoGigabitEthernet",
-            "no shutdown",
             "interface TenGigabitEthernet1",
             "description Ansible UT TenGigabitEthernet",
-            "no shutdown",
             "interface FastEthernet1",
             "description Ansible UT FastEthernet",
-            "no shutdown",
             "interface FortyGigabitEthernet1",
             "description Ansible UT FortyGigabitEthernet",
-            "no shutdown",
             "interface FiveGigabitEthernet",
             "description Ansible UT FiveGigabitEthernet",
-            "no shutdown",
             "interface FiftyGigabitEthernet",
             "description Ansible UT for fiftyGigabitEthernet",
-            "no shutdown",
+            "interface FourHundredGigE",
+            "description Ansible UT for FourHundredGigE",
             "interface Ethernet1",
             "description Ansible UT Ethernet",
-            "no shutdown",
             "interface Vlan10",
             "description Ansible UT Vlan",
-            "no shutdown",
             "interface loopback999",
             "description Ansible UT loopback",
-            "no shutdown",
             "interface Port-channel01",
             "description Ansible UT port-channel",
-            "no shutdown",
             "interface nve1",
             "description Ansible UT nve",
-            "no shutdown",
             "interface HundredGigE1",
             "description Ansible UT HundredGigE",
-            "no shutdown",
             "interface Serial0/1",
             "description Ansible UT Serial",
-            "no shutdown",
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
+
+    def test_ios_interfaces_merged_on_shutdown_interface_no_enabled_specified(self):
+        """
+        Test case for AAP-44541: Verify 'no shutdown' is NOT sent when
+        'enabled' is omitted for an already shutdown interface with state=merged.
+        """
+        # SETUP: Mock the device's running config
+        # Interface GigabitEthernet3 starts as 'shutdown'
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1
+             description Ansible UT interface 1
+             no shutdown
+             negotiation auto
+            interface GigabitEthernet3
+             description Ansible UT interface 3 - Initial Desc
+             shutdown
+             duplex auto
+             negotiation auto
+            """,
+        )
+
+        # ACTION: Define module arguments (configure only description on Gi3, omit 'enabled')
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "GigabitEthernet3",
+                        "description": "AAP-44541 Test Description",
+                        # 'enabled' parameter is deliberately omitted here
+                    },
+                ],
+                "state": "merged",
+            },
+        )
+
+        # EXPECTED RESULT: Only description command should be generated, no 'no shutdown'
+        expected_commands = [
+            "interface GigabitEthernet3",
+            "description AAP-44541 Test Description",
+        ]
+
+        # EXECUTE & ASSERT
+        # Changed should be True because the description is different
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], expected_commands)
+        # Explicitly assert changed is True as well
+        self.assertTrue(result["changed"])

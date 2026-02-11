@@ -19,7 +19,6 @@ created.
 """
 
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -71,16 +70,16 @@ class Lag_interfaces(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state == "deleted":
-            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
             wantd = {}
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 if k not in wantd:
                     self._compare(wants={}, haveing=have)
 
-        for k, want in iteritems(wantd):
+        for k, want in wantd.items():
             self._compare(wants=want, haveing=haved.pop(k, {}))
 
     def _compare(self, wants, haveing):

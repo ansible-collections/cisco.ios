@@ -37,8 +37,8 @@ class Static_routesTemplate(NetworkTemplate):
                 (\svrf\s(?P<vrf>\S+))?
                 (\s(?P<dest>\S+))
                 (\s(?P<netmask>\S+))
-                (\s(?P<interface>(ACR|ATM-ACR|Analysis-Module|AppNav-Compress|AppNav-UnCompress|Async|Auto-Template|BD-VIF|BDI|BVI|Bluetooth|CDMA-Ix|CEM-ACR|CEM-PG|CTunnel|Container|Dialer|EsconPhy|Ethernet-Internal|Fcpa|Filter|Filtergroup|GigabitEthernet|TenGigabitEthernet|IMA-ACR|LongReachEthernet|Loopback|Lspvif|MFR|Multilink|NVI|Null|PROTECTION_GROUP|Port-channel|Portgroup|Pos-channel|SBC|SDH_ACR|SERIAL-ACR|SONET_ACR|SSLVPN-VIF|SYSCLOCK|Serial-PG|Service-Engine|TLS-VIF|Tunnel|VPN|Vif|Vir-cem-ACR|Virtual-PPP|Virtual-TokenRing)\S+))?
-                (\s(?P<forward_router_address>(?!multicast|dhcp|global|tag|track|permanent|name)(?!(?<!\d\.)\b\d+\b(?!\.\d))(\d{1,3}(\.\d{1,3}){3}|\S+)))?
+                (\s(?P<interface>(ACR|ATM-ACR|Analysis-Module|AppNav-Compress|AppNav-UnCompress|Async|Auto-Template|BD-VIF|BDI|BVI|Bluetooth|CDMA-Ix|CEM-ACR|CEM-PG|CTunnel|Container|Dialer|EsconPhy|Ethernet-Internal|FastEthernet|Fcpa|Filter|Filtergroup|FiveGigabitEthernet|FortyGigabitEthernet|GigabitEthernet|HundredGigE|IMA-ACR|LongReachEthernet|Loopback|Lspvif|MFR|Multilink|NVI|Null|PROTECTION_GROUP|Port-channel|Portgroup|Pos-channel|SBC|SDH_ACR|SERIAL-ACR|SONET_ACR|SSLVPN-VIF|SYSCLOCK|Serial|Serial-PG|Service-Engine|TenGigabitEthernet|TLS-VIF|Tunnel|TwentyFiveGigE|TwoGigabitEthernet|VPN|Vif|Vir-cem-ACR|Virtual-PPP|Virtual-TokenRing|Vlan)\S+))?
+                (\s(?P<forward_router_address>(?!multicast|dhcp|global|tag|track|permanent|name)\d+\.\d+\.\d+\.\d+))?
                 (\s(?P<distance_metric>\d+))?
                 (\stag\s(?P<tag>\d+))?
                 (\s(?P<permanent>permanent))?
@@ -93,7 +93,7 @@ class Static_routesTemplate(NetworkTemplate):
                 (\stopology\s(?P<topology>\S+))?
                 (\svrf\s(?P<vrf>\S+))?
                 (\s(?P<dest>\S+))
-                (\s(?P<interface>(ACR|ATM-ACR|Analysis-Module|AppNav-Compress|AppNav-UnCompress|Async|Auto-Template|BD-VIF|BDI|BVI|Bluetooth|CDMA-Ix|CEM-ACR|CEM-PG|CTunnel|Container|Dialer|EsconPhy|Ethernet-Internal|Fcpa|Filter|Filtergroup|GigabitEthernet|IMA-ACR|LongReachEthernet|Loopback|Lspvif|MFR|Multilink|NVI|Null|PROTECTION_GROUP|Port-channel|Portgroup|Pos-channel|SBC|SDH_ACR|SERIAL-ACR|SONET_ACR|SSLVPN-VIF|SYSCLOCK|Serial-PG|Service-Engine|TLS-VIF|Tunnel|VPN|Vif|Vir-cem-ACR|Virtual-PPP|Virtual-TokenRing)\S+))?
+                (\s(?P<interface>(ACR|ATM-ACR|Analysis-Module|AppNav-Compress|AppNav-UnCompress|Async|Auto-Template|BD-VIF|BDI|BVI|Bluetooth|CDMA-Ix|CEM-ACR|CEM-PG|CTunnel|Container|Dialer|EsconPhy|Ethernet-Internal|FastEthernet|Fcpa|Filter|Filtergroup|FiveGigabitEthernet|FortyGigabitEthernet|GigabitEthernet|HundredGigE|IMA-ACR|LongReachEthernet|Loopback|Lspvif|MFR|Multilink|NVI|Null|PROTECTION_GROUP|Port-channel|Portgroup|Pos-channel|SBC|SDH_ACR|SERIAL-ACR|SONET_ACR|SSLVPN-VIF|SYSCLOCK|Serial|Serial-PG|Service-Engine|TenGigabitEthernet|TLS-VIF|Tunnel|TwentyFiveGigE|TwoGigabitEthernet|VPN|Vif|Vir-cem-ACR|Virtual-PPP|Virtual-TokenRing|Vlan)\S+))?
                 (\s(?P<forward_router_address>(?!multicast|unicast|tag|track|permanent|name)\S+))?
                 (\s(?P<distance_metric>\d+))?
                 (\s(?P<multicast>multicast))?

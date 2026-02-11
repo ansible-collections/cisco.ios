@@ -1,7 +1,6 @@
 ---
 merged:
   before: {}
-
   commands:
     - ip prefix-list test description this is test
     - ip prefix-list test seq 50 deny 12.0.0.0/8 ge 15

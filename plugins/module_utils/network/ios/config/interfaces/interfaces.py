@@ -18,7 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -48,7 +47,30 @@ class Interfaces(ResourceModule):
             resource="interfaces",
             tmplt=InterfacesTemplate(),
         )
-        self.parsers = ["description", "speed", "mtu", "duplex", "template"]
+        self.parsers = [
+            "description",
+            "speed",
+            "mtu",
+            "duplex",
+            "template",
+            "mac_address",
+            "service_policy.input",
+            "service_policy.output",
+            "service_policy.type_options.access_control",
+            "service_policy.type_options.epbr",
+            "service_policy.type_options.nwpi",
+            "service_policy.type_options.packet_service",
+            "service_policy.type_options.service_chain",
+            "logging.trunk_status",
+            "logging.subif_link_status",
+            "logging.status",
+            "logging.spanning_tree",
+            "logging.nfas_status",
+            "logging.bundle_status",
+            "logging.link_status",
+            "snmp.ifindex",
+            "snmp.trap",
+        ]
 
     def execute_module(self):
         """Execute the module
@@ -77,20 +99,20 @@ class Interfaces(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to wantd
         if self.state in ["deleted", "purged"]:
-            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
             wantd = {}
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 if k not in wantd:
                     self._compare(want={}, have=have)
 
         if self.state == "purged":
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 self.purge(have)
         else:
-            for k, want in iteritems(wantd):
+            for k, want in wantd.items():
                 self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
@@ -101,16 +123,19 @@ class Interfaces(ResourceModule):
         """
         begin = len(self.commands)
         self.compare(parsers=self.parsers, want=want, have=have)
-        if want.get("enabled") != have.get("enabled"):
-            if want.get("enabled"):
-                self.addcmd(want, "enabled", True)
-            else:
-                if want:
+        want_enabled = want.get("enabled")
+        have_enabled = have.get("enabled")
+        if want_enabled is not None:
+            if want_enabled != have_enabled:
+                if want_enabled is True:
+                    self.addcmd(want, "enabled", True)
+                else:
                     self.addcmd(want, "enabled", False)
-                elif have.get("enabled"):
-                    # handles deleted as want be blank and only
-                    # negates if no shutdown
-                    self.addcmd(have, "enabled", False)
+        elif not want and self.state == "overridden":
+            self.addcmd(have, "enabled", False)
+        elif not want and self.state == "deleted":
+            if have_enabled:
+                self.addcmd(have, "enabled", False)
         if want.get("mode") != have.get("mode"):
             if want.get("mode") == "layer3":
                 self.addcmd(want, "mode", True)
@@ -129,6 +154,6 @@ class Interfaces(ResourceModule):
 
     def normalize_interface_names(self, param):
         if param:
-            for _k, val in iteritems(param):
+            for k, val in param.items():
                 val["name"] = normalize_interface(val["name"])
         return param

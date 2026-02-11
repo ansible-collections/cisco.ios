@@ -2138,6 +2138,7 @@ class TestIosStaticRoutesModule(TestIosModule):
         self.execute_show_command.return_value = dedent(
             """\
             ip route 10.0.0.0 255.0.0.0 Null0 permanent
+            ip route 10.10.0.0 255.255.0.0 Vlan10 10.0.0.1
             ip route 192.168.1.0 255.255.255.0 GigabitEthernet0/1.22 10.0.0.1 tag 30
             ip route 192.168.1.0 255.255.255.0 10.0.0.2
             ip route 192.168.1.0 255.255.255.248 GigabitEthernet0/1.23 10.0.0.3 tag 30
@@ -2158,6 +2159,15 @@ class TestIosStaticRoutesModule(TestIosModule):
                                     {
                                         "interface": "Null0",
                                         "permanent": True,
+                                    },
+                                ],
+                            },
+                            {
+                                "dest": "10.10.0.0/16",
+                                "next_hops": [
+                                    {
+                                        "forward_router_address": "10.0.0.1",
+                                        "interface": "Vlan10",
                                     },
                                 ],
                             },
@@ -2306,3 +2316,33 @@ class TestIosStaticRoutesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_static_route_gathered_interface_with_metric_only(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            ip route 198.12.4.20 255.255.255.252 Null0 254
+            """,
+        )
+        set_module_args(dict(state="gathered"))
+        expected_gathered = [
+            {
+                "address_families": [
+                    {
+                        "afi": "ipv4",
+                        "routes": [
+                            {
+                                "dest": "198.12.4.20/30",
+                                "next_hops": [
+                                    {
+                                        "interface": "Null0",
+                                        "distance_metric": 254,
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], expected_gathered)

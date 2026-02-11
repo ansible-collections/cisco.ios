@@ -328,7 +328,7 @@ class TestIosRouteMapsModule(TestIosModule):
         )
         commands = [
             "route-map test_1 deny 10",
-            "no description this is test",
+            "no description",
             "continue 20",
             "description this is replace test",
             "match community new_replace exact-match",
@@ -541,7 +541,7 @@ class TestIosRouteMapsModule(TestIosModule):
         )
         commands = [
             "route-map test_1 deny 10",
-            "no description this is test",
+            "no description",
             "continue 20",
             "description this is override test",
             "match community new_override exact-match",

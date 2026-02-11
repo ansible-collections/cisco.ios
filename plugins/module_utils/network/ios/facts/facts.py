@@ -23,11 +23,20 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acl_in
     Acl_interfacesFacts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls import AclsFacts
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bfd_interfaces.bfd_interfaces import (
+    Bfd_interfacesFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bfd_templates.bfd_templates import (
+    Bfd_templatesFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_address_family.bgp_address_family import (
     Bgp_address_familyFacts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_global.bgp_global import (
     Bgp_globalFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.evpn_ethernet.evpn_ethernet import (
+    Evpn_ethernetFacts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.evpn_evi.evpn_evi import (
     Evpn_eviFacts,
@@ -37,6 +46,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.evpn_g
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.hostname.hostname import (
     HostnameFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.hsrp_interfaces.hsrp_interfaces import (
+    Hsrp_interfacesFacts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.interfaces.interfaces import (
     InterfacesFacts,
@@ -147,10 +159,14 @@ FACT_RESOURCE_SUBSETS = dict(
     hostname=HostnameFacts,
     vxlan_vtep=Vxlan_vtepFacts,
     evpn_global=Evpn_globalFacts,
+    evpn_ethernet=Evpn_ethernetFacts,
     evpn_evi=Evpn_eviFacts,
     vrf_address_family=Vrf_address_familyFacts,
     vrf_global=Vrf_globalFacts,
     vrf_interfaces=Vrf_interfacesFacts,
+    hsrp_interfaces=Hsrp_interfacesFacts,
+    bfd_interfaces=Bfd_interfacesFacts,
+    bfd_templates=Bfd_templatesFacts,
 )
 
 

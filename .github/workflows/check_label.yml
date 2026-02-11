@@ -1,9 +1,9 @@
 ---
-name: "Check label"
+name: "Check PR label 👓"
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
-on:  # yamllint disable-line rule:truthy
+on: # yamllint disable-line rule:truthy
   pull_request_target:
     types: [opened, labeled, unlabeled, synchronize]
 jobs:

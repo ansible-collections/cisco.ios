@@ -16,7 +16,6 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.l3_interfaces.l3_interfaces import (
@@ -48,6 +47,46 @@ class L3_InterfacesFacts(object):
                 intf.setdefault("autostate", True)
         return objs
 
+    def _migrate_deprecated_attributes(self, objs):
+        """
+        Migrate deprecated attributes from ipv4 nested structure to interface level.
+        This handles backward compatibility for:
+        - ipv4.redirects -> redirects
+        - ipv4.unreachables -> unreachables
+        :param objs: List of interface configurations
+        :return: Migrated list of interface configurations
+        """
+        for intf in objs:
+            if not intf.get("ipv4"):
+                continue
+            redirects_value = None
+            unreachables_value = None
+
+            new_ipv4_list = []
+            for item in intf["ipv4"]:
+                if not isinstance(item, dict):
+                    new_ipv4_list.append(item)
+                    continue
+
+                if "redirects" in item:
+                    redirects_value = item.pop("redirects")
+
+                if "unreachables" in item:
+                    unreachables_value = item.pop("unreachables")
+
+                if item:
+                    new_ipv4_list.append(item)
+
+            intf["ipv4"] = new_ipv4_list
+
+            if redirects_value is not None and "redirects" not in intf:
+                intf["redirects"] = redirects_value
+
+            if unreachables_value is not None and "unreachables" not in intf:
+                intf["unreachables"] = unreachables_value
+
+        return objs
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for l3 interfaces
         :param connection: the device connection
@@ -67,7 +106,7 @@ class L3_InterfacesFacts(object):
 
         objs = utils.remove_empties(objs)
         temp = []
-        for k, v in iteritems(objs):
+        for k, v in objs.items():
             if v.get("ipv4"):
                 for each in v["ipv4"]:
                     if each.get("netmask"):
@@ -82,6 +121,7 @@ class L3_InterfacesFacts(object):
 
         if objs:
             objs = self._set_defaults(objs)
+            objs = self._migrate_deprecated_attributes(objs)
 
         facts = {}
         if objs:

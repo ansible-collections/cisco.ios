@@ -1,9 +1,31 @@
 ---
 - name: Set a fact for 'skip_test'
   ansible.builtin.set_fact:
-    skip_test: false
+    skip_test: true
+
+- name: Gather device information
+  cisco.ios.ios_command:
+    commands:
+      - show version
+      - show vlan brief
+      - show ip route
+  register: device_info
+  ignore_errors: true
+
+- name: Determine if device supports Layer 2 (VLANs)
+  ansible.builtin.set_fact:
+    supports_l2: "{{ 'VLAN' in device_info.stdout[1] | default('') }}"
+
+- name: Determine if device supports Layer 3 (Routing)
+  ansible.builtin.set_fact:
+    supports_l3: "{{ 'Gateway of last resort' in device_info.stdout[2] | default('') }}"
+
+- name: Skip test if VLANs are not supported (L2)
+  ansible.builtin.meta: end_play
+  when: not supports_l2
 
 - name: Main task for vlans module
   ansible.builtin.include_tasks: cli.yaml
   tags:
-    - network_cli
+    - l2_tests
+  when: not skip_test

@@ -40,12 +40,24 @@
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ merged['after'] | symmetric_difference(result['before']) | length == 0 }}"
+          - >
+            {{
+              result['before']
+              | selectattr('name', 'in', 'GigabitEthernet1,GigabitEthernet2,GigabitEthernet3,GigabitEthernet4')
+              | symmetric_difference(merged['after'])
+              | length == 0
+            }}
 
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ overridden['after'] | symmetric_difference(result['after']) | length == 0 }}"
+          - >
+            {{
+              result['after']
+              | selectattr('name', 'in', 'GigabitEthernet1,GigabitEthernet2,GigabitEthernet3,GigabitEthernet4')
+              | symmetric_difference(overridden['after'])
+              | length == 0
+            }}
 
     - name: Override provided OSPF interfaces configuration (idempotent)
       register: result

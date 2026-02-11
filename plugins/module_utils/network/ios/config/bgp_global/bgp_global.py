@@ -18,7 +18,6 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -388,12 +387,12 @@ class Bgp_global(ResourceModule):
 
     def _compare_generic_lists(self, w_attr, h_attr, parser):
         """Handling of gereric list options."""
-        for wkey, wentry in iteritems(w_attr):
+        for wkey, wentry in w_attr.items():
             if wentry != h_attr.pop(wkey, {}):
                 self.addcmd(wentry, parser, False)
 
         # remove remaining items in have for replaced state
-        for hkey, hentry in iteritems(h_attr):
+        for hkey, hentry in h_attr.items():
             self.addcmd(hentry, parser, True)
 
     def _bgp_global_list_to_dict(self, tmp_data):

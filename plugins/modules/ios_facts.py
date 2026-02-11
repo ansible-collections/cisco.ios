@@ -57,7 +57,7 @@ options:
         Possible values for this argument include all and the resources like interfaces,
         vlans etc. Can specify a list of values to include a larger subset. Values can
         also be used with an initial C(!) to specify that a specific subset should
-        not be collected. Valid subsets are 'bgp_global', 'l3_interfaces', 'lag_interfaces',
+        not be collected. Valid subsets are 'hsrp_interfaces', 'bgp_global', 'l3_interfaces', 'lag_interfaces',
         'ntp_global', 'acls', 'hostname', 'interfaces', 'lldp_interfaces', 'logging_global',
         'ospf_interfaces', 'ospfv2', 'prefix_lists', 'static_routes', 'acl_interfaces',
         'all', 'bgp_address_family', 'l2_interfaces', 'lacp', 'lacp_interfaces', 'lldp_global',

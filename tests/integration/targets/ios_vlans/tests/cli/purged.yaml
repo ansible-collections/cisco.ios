@@ -1,0 +1,38 @@
+---
+- ansible.builtin.debug:
+    msg: Start purged integration state for ios_vlans ansible_connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Create VLAN
+      cisco.ios.ios_vlans:
+        config:
+          - vlan_id: 1337
+            name: test
+            state: active
+        state: merged
+
+    - name: Purge provided VLAN
+      register: result
+      cisco.ios.ios_vlans: &id001
+        config:
+          - vlan_id: 1337
+        state: purged
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "'no vlan 1337' in result.commands"
+          - result.commands|length == 1
+
+    - name: Purge provided VLANs (idempotent)
+      register: result
+      cisco.ios.ios_vlans: *id001
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

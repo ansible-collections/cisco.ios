@@ -1,7 +1,6 @@
 ---
 - name: Remove configuration
   vars:
-    lines: "no vlan 10\nno vlan 20\nno vlan 30\nno vlan 40\n"
-  when: ansible_net_version != "15.6(2)T"
+    lines: "no vlan 10\nno vlan 20\nno vlan 30\nno vlan 100\n"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"

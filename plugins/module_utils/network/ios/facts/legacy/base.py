@@ -20,7 +20,6 @@ __metaclass__ = type
 import platform
 import re
 
-from ansible.module_utils.six import iteritems
 from ansible.module_utils.six.moves import zip
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
@@ -267,7 +266,7 @@ class Interfaces(FactsBase):
 
     def populate_interfaces(self, interfaces):
         facts = dict()
-        for key, value in iteritems(interfaces):
+        for key, value in interfaces.items():
             intf = dict()
             intf["description"] = self.parse_description(value)
             intf["macaddress"] = self.parse_macaddress(value)
@@ -304,7 +303,7 @@ class Interfaces(FactsBase):
                 self.facts["interfaces"][key]["ipv4"].append(ipv4)
 
     def populate_ipv6_interfaces(self, data):
-        for key, value in iteritems(data):
+        for key, value in data.items():
             try:
                 self.facts["interfaces"][key]["ipv6"] = list()
             except KeyError:
@@ -339,6 +338,7 @@ class Interfaces(FactsBase):
             fact["host"] = self.parse_lldp_host(entry)
             fact["port"] = self.parse_lldp_port(entry)
             fact["ip"] = self.parse_lldp_ip(entry)
+            fact["chassis_id"] = self.parse_chassis_id(entry)
             facts[intf].append(fact)
         return facts
 
@@ -449,6 +449,11 @@ class Interfaces(FactsBase):
 
     def parse_lldp_ip(self, data):
         match = re.search(r"^    IP: (.+)$", data, re.M)
+        if match:
+            return match.group(1)
+
+    def parse_chassis_id(self, data):
+        match = re.search(r"^Chassis id: (.+)$", data, re.M)
         if match:
             return match.group(1)
 

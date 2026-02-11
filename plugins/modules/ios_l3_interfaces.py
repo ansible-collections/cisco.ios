@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# Copyright 2021 Red Hat
+# Copyright 2025 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -22,6 +22,7 @@ version_added: 1.0.0
 author:
   - Sagar Paul (@KB-perByte)
   - Sumit Jaiswal (@justjais)
+  - Aayush Anand (@AAYUSH2091)
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - Using deleted state without config will delete all l3 attributes from all the interfaces.
@@ -48,6 +49,36 @@ options:
         description:
           - Manually set interface MAC address.
         type: str
+      redirects:
+            description: Enable sending ICMP Redirect messages.
+            type: bool
+      unreachables:
+        description: Enable sending ICMP Unreachable messages.
+        type: bool
+      ipv6_redirects:
+        description: Enable sending ICMP Redirect messages for IPv6.
+        type: bool
+      ipv6_unreachables:
+        description: Enable sending ICMP Unreachable messages for IPv6.
+        type: bool
+      helper_addresses:
+        description: Specify a destination address for UDP broadcasts
+        type: dict
+        suboptions:
+          ipv4:
+            description: List of ipv4 destiantion IPs
+            type: list
+            elements: dict
+            suboptions:
+              destination_ip:
+                description: IP destination address
+                type: str
+              global:
+                description: Helper-address is global
+                type: bool
+              vrf:
+                description: VRF name for helper-address (if different from interface VRF)
+                type: str
       ipv4:
         description:
           - IPv4 address to be set for the Layer-3 interface mentioned in I(name) option.
@@ -95,6 +126,24 @@ options:
           pool:
             description: IP Address auto-configured from a local DHCP pool.
             type: str
+          redirects:
+            description:
+              - Enable sending ICMP Redirect messages.
+              - This option is DEPRECATED and is replaced with redirects at the interface
+                level. This attribute will be removed after 2028-01-30.
+            type: bool
+          unreachables:
+            description:
+              - Enable sending ICMP Unreachable messages.
+              - This option is DEPRECATED and is replaced with unreachables at the interface
+                level. This attribute will be removed after 2028-01-30.
+            type: bool
+          proxy_arp:
+            description: Enable proxy_arp.
+            type: bool
+          mtu:
+            description: Set IP Maximum Transmission Unit.
+            type: int
           source_interface:
             description: Enable IP processing without an explicit address
             type: dict
@@ -245,6 +294,11 @@ EXAMPLES = """
           - address: 192.168.0.1/24
             secondary: true
       - name: GigabitEthernet2
+        helper_addresses:
+          ipv4:
+            - destination_ip: 10.0.0.1
+            - global: true
+              destination_ip: 10.0.0.2
         ipv4:
           - address: 192.168.0.2/24
       - name: GigabitEthernet3
@@ -296,6 +350,11 @@ EXAMPLES = """
 # - ipv4:
 #   - address: 192.168.0.2/24
 #   name: GigabitEthernet2
+#   helper_addresses:
+#     ipv4:
+#       - destination_ip: 10.0.0.1
+#       - global: true
+#         destination_ip: 10.0.0.2
 # - ipv6:
 #   - address: FD5D:12C9:2201:1::1/64
 #   name: GigabitEthernet3
@@ -325,6 +384,8 @@ EXAMPLES = """
 #  negotiation auto
 # interface GigabitEthernet2
 #  ip address 192.168.0.2 255.255.255.0
+#  ip helper-address 10.0.0.1
+#  ip helper-address global 10.0.0.2
 #  shutdown
 #  speed 1000
 #  no negotiation auto
@@ -362,6 +423,7 @@ EXAMPLES = """
 #  negotiation auto
 # interface GigabitEthernet2
 #  ip address 192.168.0.2 255.255.255.0
+#  ip helper-address global 10.0.0.1
 #  shutdown
 #  speed 1000
 #  no negotiation auto
@@ -382,6 +444,10 @@ EXAMPLES = """
   cisco.ios.ios_l3_interfaces:
     config:
       - name: GigabitEthernet2
+        helper_addresses:
+          ipv4:
+            - vrf: abc
+              destination_ip: 10.0.0.1
         ipv4:
           - address: 192.168.2.0/24
       - name: GigabitEthernet3
@@ -402,6 +468,10 @@ EXAMPLES = """
 # - ipv4:
 #   - address: 192.168.0.2/24
 #   name: GigabitEthernet2
+#   helper_addresses:
+#     ipv4:
+#       - global: true
+#         destination_ip: 10.0.0.1
 # - ipv6:
 #   - address: FD5D:12C9:2201:1::1/64
 #   name: GigabitEthernet3
@@ -412,6 +482,8 @@ EXAMPLES = """
 # - interface GigabitEthernet2
 # - ip address 192.168.0.3 255.255.255.0
 # - no ip address 192.168.0.2 255.255.255.0
+# - no ip helper-address global 10.0.0.1
+# - ip helper-address vrf abc 10.0.0.1
 # - interface GigabitEthernet3
 # - ip address dhcp client-id GigabitEthernet2 hostname test.com
 # - no ipv6 address fd5d:12c9:2201:1::1/64
@@ -423,6 +495,10 @@ EXAMPLES = """
 # - ipv4:
 #   - address: 192.168.0.3/24
 #   name: GigabitEthernet2
+#   helper_addresses:
+#     ipv4:
+#       - vrf: abc
+#         destination_ip: 10.0.0.1
 # - ipv4:
 #   - dhcp:
 #       client_id: GigabitEthernet2
@@ -879,7 +955,7 @@ EXAMPLES = """
 RETURN = """
 before:
   description: The configuration prior to the module execution.
-  returned: when state is I(merged), I(replaced), I(overridden), I(deleted) or I(purged)
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: dict
   sample: >
     This output will always be in the same format as the
@@ -893,7 +969,7 @@ after:
     module argspec.
 commands:
   description: The set of commands pushed to the remote device.
-  returned: when state is I(merged), I(replaced), I(overridden), I(deleted) or I(purged)
+  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
   type: list
   sample:
     - "ip address 192.168.0.3 255.255.255.0"
@@ -901,7 +977,7 @@ commands:
     - "ipv6 address fd5d:12c9:2201:1::1/64 anycast"
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
-  returned: when state is I(rendered)
+  returned: when I(state) is C(rendered)
   type: list
   sample:
     - "ipv6 address FD5D:12C9:2201:1::1/64"
@@ -909,14 +985,14 @@ rendered:
     - "ip address autoconfig"
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
-  returned: when state is I(gathered)
+  returned: when I(state) is C(gathered)
   type: list
   sample: >
     This output will always be in the same format as the
     module argspec.
 parsed:
   description: The device native config provided in I(running_config) option parsed into structured data as per module argspec.
-  returned: when state is I(parsed)
+  returned: when I(state) is C(parsed)
   type: list
   sample: >
     This output will always be in the same format as the

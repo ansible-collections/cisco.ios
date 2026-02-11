@@ -4,7 +4,6 @@
 
 - block:
     - ansible.builtin.include_tasks: _remove_config.yaml
-  when: ansible_net_version == "15.6(2)T"
 
 - block:
     - name: Apply the provided configuration (base config)
@@ -67,6 +66,5 @@
           - revert.commands|length == 14
           - revert.changed == true
           - revert.commands|symmetric_difference(rtt.commands) == []
-  when: ansible_net_version == "15.6(2)T"
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

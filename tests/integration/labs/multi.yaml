@@ -1,0 +1,461 @@
+annotations:
+  - border_color: "#808080FF"
+    border_style: ""
+    color: "#FFFFFFFF"
+    line_end: null
+    line_start: null
+    thickness: 1
+    type: line
+    x1: -320.0
+    y1: 240.0
+    x2: -320.0
+    y2: 240.0
+    z_index: 0
+  - border_color: "#00000000"
+    border_style: ""
+    color: "#808080FF"
+    rotation: 0
+    text_bold: true
+    text_content: |-
+      CISCO.IOS AUTOMATED LAB
+        FOR UPSTREAM TESTS
+    text_font: sans-serif
+    text_italic: false
+    text_size: 22
+    text_unit: pt
+    thickness: 1
+    type: text
+    x1: -1120.0
+    y1: 40.0
+    z_index: 1
+nodes:
+  - boot_disk_size: null
+    configuration: &conf |-
+      service timestamps debug datetime msec
+      service timestamps log datetime msec
+      platform qfp utilization monitor load 80
+      platform punt-keepalive disable-kernel-core
+      platform sslvpn use-pd
+      platform console serial
+      !
+      hostname cisco
+      !
+      boot-start-marker
+      boot-end-marker
+      !
+      !
+      no aaa new-model
+      !
+      !
+      !
+      !
+      !
+      !
+      !
+      !
+      !
+      !
+      !
+      !
+      ip domain name ansible.com
+      !
+      !
+      !
+      login on-success log
+      !
+      !
+      subscriber templating
+      !
+      pae
+      !
+      !
+      crypto pki trustpoint SLA-TrustPoint
+       enrollment pkcs12
+       revocation-check crl
+       hash sha256
+      !
+      !
+      crypto pki certificate chain SLA-TrustPoint
+       certificate ca 01
+        30820321 30820209 A0030201 02020101 300D0609 2A864886 F70D0101 0B050030
+        32310E30 0C060355 040A1305 43697363 6F312030 1E060355 04031317 43697363
+        6F204C69 63656E73 696E6720 526F6F74 20434130 1E170D31 33303533 30313934
+        3834375A 170D3338 30353330 31393438 34375A30 32310E30 0C060355 040A1305
+        43697363 6F312030 1E060355 04031317 43697363 6F204C69 63656E73 696E6720
+        526F6F74 20434130 82012230 0D06092A 864886F7 0D010101 05000382 010F0030
+        82010A02 82010100 A6BCBD96 131E05F7 145EA72C 2CD686E6 17222EA1 F1EFF64D
+        CBB4C798 212AA147 C655D8D7 9471380D 8711441E 1AAF071A 9CAE6388 8A38E520
+        1C394D78 462EF239 C659F715 B98C0A59 5BBB5CBD 0CFEBEA3 700A8BF7 D8F256EE
+        4AA4E80D DB6FD1C9 60B1FD18 FFC69C96 6FA68957 A2617DE7 104FDC5F EA2956AC
+        7390A3EB 2B5436AD C847A2C5 DAB553EB 69A9A535 58E9F3E3 C0BD23CF 58BD7188
+        68E69491 20F320E7 948E71D7 AE3BCC84 F10684C7 4BC8E00F 539BA42B 42C68BB7
+        C7479096 B4CB2D62 EA2F505D C7B062A4 6811D95B E8250FC4 5D5D5FB8 8F27D191
+        C55F0D76 61F9A4CD 3D992327 A8BB03BD 4E6D7069 7CBADF8B DF5F4368 95135E44
+        DFC7C6CF 04DD7FD1 02030100 01A34230 40300E06 03551D0F 0101FF04 04030201
+        06300F06 03551D13 0101FF04 05300301 01FF301D 0603551D 0E041604 1449DC85
+        4B3D31E5 1B3E6A17 606AF333 3D3B4C73 E8300D06 092A8648 86F70D01 010B0500
+        03820101 00507F24 D3932A66 86025D9F E838AE5C 6D4DF6B0 49631C78 240DA905
+        604EDCDE FF4FED2B 77FC460E CD636FDB DD44681E 3A5673AB 9093D3B1 6C9E3D8B
+        D98987BF E40CBD9E 1AECA0C2 2189BB5C 8FA85686 CD98B646 5575B146 8DFC66A8
+        467A3DF4 4D565700 6ADF0F0D CF835015 3C04FF7C 21E878AC 11BA9CD2 55A9232C
+        7CA7B7E6 C1AF74F6 152E99B7 B1FCF9BB E973DE7F 5BDDEB86 C71E3B49 1765308B
+        5FB0DA06 B92AFE7F 494E8A9E 07B85737 F3A58BE1 1A48A229 C37C1E69 39F08678
+        80DDCD16 D6BACECA EEBC7CF9 8428787B 35202CDC 60E4616A B623CDBD 230E3AFB
+        418616A9 4093E049 4D10AB75 27E86F73 932E35B5 8862FDAE 0275156F 719BB2F0
+        D697DF7F 28
+              quit
+      !
+      !
+      license udi pid C8000V sn 9EGHOCL6VW2
+      memory free low-watermark processor 201711
+      diagnostic bootup level minimal
+      !
+      !
+      !
+      username ansible privilege 15 secret 9 $9$VslpRow9omMy..$5zvxcxrJqLeDd0qEe.5FANSAeLgz9LLAzMiAjieb/nc
+      !
+      redundancy
+      !
+      !
+      !
+      !
+      !
+      !
+      !
+      !
+      interface GigabitEthernet1
+       ip address dhcp
+       no shutdown
+       negotiation auto
+      !
+      interface GigabitEthernet2
+       no ip address
+       shutdown
+       negotiation auto
+      !
+      interface GigabitEthernet3
+       no ip address
+       shutdown
+       negotiation auto
+      !
+      interface GigabitEthernet4
+       no ip address
+       shutdown
+       negotiation auto
+      !
+      ip forward-protocol nd
+      !
+      no ip http server
+      ip http secure-server
+      ip ssh bulk-mode 131072
+      !
+      !
+      !
+      !
+      !
+      control-plane
+      !
+      !
+      line con 0
+       stopbits 1
+      line aux 0
+      line vty 0 4
+       login local
+       transport input ssh
+      !
+      !
+      !
+      !
+      !
+      !
+      !
+      end
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n0
+    image_definition: null
+    label: devel
+    node_definition: cat8000v
+    parameters: {}
+    ram: null
+    tags: []
+    x: -1200
+    y: -40
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        slot: 0
+        type: physical
+      - id: i2
+        label: GigabitEthernet2
+        slot: 1
+        type: physical
+      - id: i3
+        label: GigabitEthernet3
+        slot: 2
+        type: physical
+      - id: i4
+        label: GigabitEthernet4
+        slot: 3
+        type: physical
+  - boot_disk_size: null
+    configuration: *conf
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n1
+    image_definition: null
+    label: milestone
+    node_definition: cat8000v
+    parameters: {}
+    ram: null
+    tags: []
+    x: -1440
+    y: -40
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        slot: 0
+        type: physical
+      - id: i2
+        label: GigabitEthernet2
+        slot: 1
+        type: physical
+      - id: i3
+        label: GigabitEthernet3
+        slot: 2
+        type: physical
+      - id: i4
+        label: GigabitEthernet4
+        slot: 3
+        type: physical
+  - boot_disk_size: null
+    configuration: *conf
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n2
+    image_definition: null
+    label: stable-2.18
+    node_definition: cat8000v
+    parameters: {}
+    ram: null
+    tags: []
+    x: -1520
+    y: 120
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        slot: 0
+        type: physical
+      - id: i2
+        label: GigabitEthernet2
+        slot: 1
+        type: physical
+      - id: i3
+        label: GigabitEthernet3
+        slot: 2
+        type: physical
+      - id: i4
+        label: GigabitEthernet4
+        slot: 3
+        type: physical
+  - boot_disk_size: null
+    configuration: *conf
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n3
+    image_definition: null
+    label: stable-2.16
+    node_definition: cat8000v
+    parameters: {}
+    ram: null
+    tags: []
+    x: -1440
+    y: 280
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        slot: 0
+        type: physical
+      - id: i2
+        label: GigabitEthernet2
+        slot: 1
+        type: physical
+      - id: i3
+        label: GigabitEthernet3
+        slot: 2
+        type: physical
+      - id: i4
+        label: GigabitEthernet4
+        slot: 3
+        type: physical
+  - boot_disk_size: null
+    configuration: *conf
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n4
+    image_definition: null
+    label: stable-2.19
+    node_definition: cat8000v
+    parameters: {}
+    ram: null
+    tags: []
+    x: -1200
+    y: 280
+    interfaces:
+      - id: i0
+        label: Loopback0
+        type: loopback
+      - id: i1
+        label: GigabitEthernet1
+        slot: 0
+        type: physical
+      - id: i2
+        label: GigabitEthernet2
+        slot: 1
+        type: physical
+      - id: i3
+        label: GigabitEthernet3
+        slot: 2
+        type: physical
+      - id: i4
+        label: GigabitEthernet4
+        slot: 3
+        type: physical
+  - boot_disk_size: null
+    configuration: []
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n5
+    image_definition: null
+    label: unmanaged-switch-0
+    node_definition: unmanaged_switch
+    parameters: {}
+    ram: null
+    tags: []
+    x: -1320
+    y: 120
+    interfaces:
+      - id: i0
+        label: port0
+        slot: 0
+        type: physical
+      - id: i1
+        label: port1
+        slot: 1
+        type: physical
+      - id: i2
+        label: port2
+        slot: 2
+        type: physical
+      - id: i3
+        label: port3
+        slot: 3
+        type: physical
+      - id: i4
+        label: port4
+        slot: 4
+        type: physical
+      - id: i5
+        label: port5
+        slot: 5
+        type: physical
+      - id: i6
+        label: port6
+        slot: 6
+        type: physical
+      - id: i7
+        label: port7
+        slot: 7
+        type: physical
+  - boot_disk_size: null
+    configuration: []
+    cpu_limit: null
+    cpus: null
+    data_volume: null
+    hide_links: false
+    id: n6
+    image_definition: null
+    label: ext-conn-0
+    node_definition: external_connector
+    parameters: {}
+    ram: null
+    tags: []
+    x: -640
+    y: 120
+    interfaces:
+      - id: i0
+        label: port
+        slot: 0
+        type: physical
+links:
+  - id: l0
+    n1: n5
+    n2: n6
+    i1: i0
+    i2: i0
+    conditioning: {}
+    label: unmanaged-switch-0-port0<->ext-conn-0-port
+  - id: l1
+    n1: n5
+    n2: n0
+    i1: i1
+    i2: i1
+    conditioning: {}
+    label: unmanaged-switch-0-port1<->devel-GigabitEthernet1
+  - id: l2
+    n1: n5
+    n2: n1
+    i1: i2
+    i2: i1
+    conditioning: {}
+    label: unmanaged-switch-0-port2<->milestone-GigabitEthernet1
+  - id: l3
+    n1: n5
+    n2: n2
+    i1: i3
+    i2: i1
+    conditioning: {}
+    label: unmanaged-switch-0-port3<->stable-2.18-GigabitEthernet1
+  - id: l4
+    n1: n5
+    n2: n3
+    i1: i4
+    i2: i1
+    conditioning: {}
+    label: unmanaged-switch-0-port4<->stable-2.16-GigabitEthernet1
+  - id: l5
+    n1: n5
+    n2: n4
+    i1: i5
+    i2: i1
+    conditioning: {}
+    label: unmanaged-switch-0-port5<->stable-2.19-GigabitEthernet1
+lab:
+  description: "Upstream test lab for cisco.ios"
+  notes: "Upstream test lab for cisco.ios"
+  title: cisco.ios.ios-wip
+  version: 0.2.2

@@ -15,7 +15,6 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.cfg.base import (
     ConfigBase,
 )
@@ -240,7 +239,7 @@ class Lldp_global(ConfigBase):
                 self.add_command_to_config_list(cmd, commands)
             if tlv_select:
                 tlv_selec_dict = dict(tlv_select)
-                for k, v in iteritems(self.tlv_select_params):
+                for k, v in self.tlv_select_params.items():
                     if k in tlv_selec_dict and tlv_selec_dict[k]:
                         cmd = "lldp tlv-select {0}".format(v)
                         self.add_command_to_config_list(cmd, commands)

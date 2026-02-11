@@ -5,6 +5,8 @@
 - ansible.builtin.include_tasks: _enable_lldp.yaml
 - ansible.builtin.include_tasks: _remove_config.yaml
 - ansible.builtin.include_tasks: _populate_config.yaml
+  vars:
+    isMerged: true
 
 - block:
     - name: Gather the provided configuration with the existing running configuration

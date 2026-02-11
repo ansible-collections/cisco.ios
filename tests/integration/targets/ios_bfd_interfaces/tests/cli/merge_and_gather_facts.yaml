@@ -1,0 +1,60 @@
+- name: START ios_bfd_interfaces merge_and_gather_facts.yaml integration tests
+  ansible.builtin.debug:
+    msg: START ios_bfd_interfaces merge_and_gather_facts.yaml integration tests on connection={{ ansible_connection }}
+
+- name: ios_bfd_interfaces merged, replaced configuration and facts gathering
+  block:
+    - name: Delete any existing BFD interface configuration - no granularity
+      cisco.ios.ios_bfd_interfaces:
+        state: deleted
+
+    - name: Parse the provided configuration
+      cisco.ios.ios_bfd_interfaces:
+        running_config: "{{ lookup('file', '_parsed.cfg') }}"
+        state: parsed
+      register: result_parsed
+
+    - name: Merge the provided configuration
+      cisco.ios.ios_bfd_interfaces:
+        config: "{{ result_parsed.parsed }}"
+        state: merged
+      register: result_merged
+
+    - name: Gather any existing BFD interface configuration
+      cisco.ios.ios_bfd_interfaces:
+        state: gathered
+      register: result_gathered
+
+    - name: Facts gather ios_bfd_interfaces facts
+      cisco.ios.ios_facts:
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources:
+          - bfd_interfaces
+
+    - name: Assert gathered with facts - verify against expected gathered output
+      ansible.builtin.assert:
+        that:
+          - result_gathered['gathered'] == ansible_facts['network_resources']['bfd_interfaces']
+
+    - name: Delete any existing BFD interface configuration again - no granularity
+      cisco.ios.ios_bfd_interfaces:
+        state: deleted
+      register: result_deleted
+
+- name: Assets ios_bfd_interfaces merged
+  block:
+    - name: Assert merged - verify against expected execution output
+      ansible.builtin.assert:
+        that:
+          - merged['after'] == result_merged['after']
+          - merged['before'] == result_merged['before']
+          - merged['commands']|symmetric_difference(result_merged['commands']) == []
+
+    - name: Assert deleted - verify against expected execution output
+      ansible.builtin.assert:
+        that:
+          - deleted['after'] == result_deleted['after']
+          - deleted['before'] == result_deleted['before']
+          - deleted['commands']|symmetric_difference(result_deleted['commands']) == []

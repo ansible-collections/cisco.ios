@@ -1,7 +1,7 @@
 ---
 - name: Delete ACL attributes based on AFI
   register: result
-  cisco.ios.ios_acls: &id002
+  cisco.ios.ios_acls:
     config:
       - afi: ipv4
       - afi: ipv6

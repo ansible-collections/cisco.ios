@@ -43,3 +43,16 @@
 - name: Wait for VRF
   ansible.builtin.wait_for:
     timeout: 2
+
+- name: Delete attributes of all configured interfaces
+  register: result
+  cisco.ios.ios_interfaces:
+    config:
+      - name: Port-channel10
+      - name: Port-channel11
+      - name: Port-channel22
+      - name: Port-channel40
+      - name: Loopback1
+    state: purged
+  retries: 2
+  delay: 10

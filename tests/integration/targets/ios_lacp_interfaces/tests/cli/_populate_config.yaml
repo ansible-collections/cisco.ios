@@ -1,9 +1,10 @@
 ---
 - name: Populate configuration
   vars:
-    lines:
-      "interface GigabitEthernet 2\nlacp port-priority 30\ninterface GigabitEthernet 3\nlacp port-priority 20\ninterface Port-channel 10\nlacp fast-switchover\n\
-      lacp max-bundle 2\ninterface Port-channel 40\nlacp max-bundle 4\ninterface loopback888\ninterface loopback999\n"
+    lines: "interface GigabitEthernet 2\nlacp port-priority 30\ninterface
+      GigabitEthernet 3\nlacp port-priority 20\ninterface Port-channel 10\nlacp fast-switchover\n
+      lacp max-bundle 2\ninterface Port-channel 40\nlacp max-bundle 4\ninterface
+      loopback888\ninterface loopback999\n"
   when: ansible_net_version != "15.6(2)T"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"

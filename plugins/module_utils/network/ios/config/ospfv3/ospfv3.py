@@ -14,7 +14,6 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -78,7 +77,7 @@ class Ospfv3(ResourceModule):
 
         # turn all lists of dicts into dicts prior to merge
         for thing in wantd, haved:
-            for _pid, proc in iteritems(thing):
+            for _pid, proc in thing.items():
                 for area in proc.get("areas", []):
                     ranges = {}
                     for entry in area.get("ranges", []):
@@ -109,7 +108,7 @@ class Ospfv3(ResourceModule):
         # set want to nothing
         if self.state == "deleted":
             temp = {}
-            for k, v in iteritems(haved):
+            for k, v in haved.items():
                 if k in wantd or not wantd:
                     temp.update({k: v})
             haved = temp
@@ -117,11 +116,11 @@ class Ospfv3(ResourceModule):
 
         # delete processes first so we do run into "more than one" errors
         if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 if k not in wantd:
                     self.addcmd(have, "pid", True)
 
-        for k, want in iteritems(wantd):
+        for k, want in wantd.items():
             self._compare(want=want, have=haved.pop(k, {}))
 
     def _compare(self, want, have):
@@ -161,9 +160,9 @@ class Ospfv3(ResourceModule):
     def _areas_compare(self, want, have):
         wareas = want.get("areas", {})
         hareas = have.get("areas", {})
-        for name, entry in iteritems(wareas):
+        for name, entry in wareas.items():
             self._area_compare(want=entry, have=hareas.pop(name, {}))
-        for name, entry in iteritems(hareas):
+        for name, entry in hareas.items():
             self._area_compare(want={}, have=entry)
 
     def _area_compare(self, want, have):
@@ -181,7 +180,7 @@ class Ospfv3(ResourceModule):
         self._area_compare_filters(want, have)
 
     def _area_compare_filters(self, wantd, haved):
-        for name, entry in iteritems(wantd):
+        for name, entry in wantd.items():
             h_item = haved.pop(name, {})
             if entry != h_item and name == "filter_list":
                 filter_list_entry = {}
@@ -194,7 +193,7 @@ class Ospfv3(ResourceModule):
                     li_diff = entry
                 filter_list_entry["filter_list"] = li_diff
                 self.addcmd(filter_list_entry, "area.filter_list", False)
-        for name, entry in iteritems(haved):
+        for name, entry in haved.items():
             if name == "filter_list":
                 self.addcmd(entry, "area.filter_list", True)
 

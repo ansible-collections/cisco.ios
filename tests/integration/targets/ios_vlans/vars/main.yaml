@@ -7,6 +7,11 @@ merged:
       state: active
       vlan_id: 1
     - mtu: 1500
+      name: VLAN0040
+      shutdown: enabled
+      state: active
+      vlan_id: 40
+    - mtu: 1500
       name: fddi-default
       shutdown: enabled
       state: active
@@ -27,6 +32,9 @@ merged:
       state: active
       vlan_id: 1005
   commands:
+    - vlan 100
+    - name pvlan-primary
+    - private-vlan primary
     - vlan 10
     - name Vlan_10
     - state active
@@ -35,15 +43,11 @@ merged:
     - vlan 20
     - name Vlan_20
     - state active
-    - mtu 610
-    - shutdown
+    - no shutdown
     - vlan 30
     - name Vlan_30
     - state suspend
-    - shutdown
-    - vlan 100
-    - name pvlan-primary
-    - private-vlan primary
+    - no shutdown
   after:
     - mtu: 1500
       name: default
@@ -56,23 +60,26 @@ merged:
       shutdown: disabled
       state: active
       vlan_id: 10
-    - mtu: 610
+    - mtu: 1500
       name: Vlan_20
-      shutdown: enabled
+      shutdown: disabled
       state: active
       vlan_id: 20
     - mtu: 1500
       name: Vlan_30
-      shutdown: enabled
+      shutdown: disabled
       state: suspend
       vlan_id: 30
+    - mtu: 1500
+      name: VLAN0040
+      shutdown: enabled
+      state: active
+      vlan_id: 40
     - mtu: 1500
       name: pvlan-primary
       shutdown: disabled
       state: active
       vlan_id: 100
-      private_vlan:
-        type: primary
     - mtu: 1500
       name: fddi-default
       shutdown: enabled
@@ -175,10 +182,8 @@ replaced:
   commands:
     - vlan 20
     - name Test_VLAN20
-    - mtu 700
     - vlan 30
     - name Test_VLAN30
-    - mtu 1000
     - vlan 40
     - name Test_new_VLAN40
     - state suspend
@@ -193,12 +198,12 @@ replaced:
       shutdown: disabled
       state: active
       vlan_id: 10
-    - mtu: 700
+    - mtu: 1500
       name: Test_VLAN20
       shutdown: disabled
       state: active
       vlan_id: 20
-    - mtu: 1000
+    - mtu: 1500
       name: Test_VLAN30
       shutdown: disabled
       state: active
@@ -251,6 +256,11 @@ overridden:
       state: active
       vlan_id: 30
     - mtu: 1500
+      name: VLAN0040
+      shutdown: enabled
+      state: active
+      vlan_id: 40
+    - mtu: 1500
       name: fddi-default
       shutdown: enabled
       state: active
@@ -271,28 +281,33 @@ overridden:
       state: active
       vlan_id: 1005
   commands:
-    - vlan 10
-    - name VLAN_10
-    - mtu 1000
+    - no vlan 1
     - no vlan 20
     - no vlan 30
+    - no vlan 1002
+    - no vlan 1003
+    - no vlan 1004
+    - no vlan 1005
+    - vlan 10
+    - name VLAN_10
+    - no state active
+    - shutdown
     - vlan 40
     - name VLAN_40
-    - mtu 850
   after:
     - mtu: 1500
       name: default
       shutdown: disabled
       state: active
       vlan_id: 1
-    - mtu: 1000
+    - mtu: 1500
       name: VLAN_10
-      shutdown: disabled
+      shutdown: enabled
       state: active
       vlan_id: 10
-    - mtu: 850
+    - mtu: 1500
       name: VLAN_40
-      shutdown: disabled
+      shutdown: enabled
       state: active
       vlan_id: 40
     - mtu: 1500
@@ -346,6 +361,52 @@ overridden_vlan_config:
         evi: 101
         vni: 10101
 deleted:
+  after:
+    - mtu: 1500
+      name: default
+      shutdown: disabled
+      state: active
+      vlan_id: 1
+    - mtu: 1500
+      name: VLAN0010
+      shutdown: enabled
+      state: active
+      vlan_id: 10
+    - mtu: 1500
+      name: VLAN0020
+      shutdown: enabled
+      state: active
+      vlan_id: 20
+    - mtu: 1500
+      name: VLAN0030
+      shutdown: enabled
+      state: active
+      vlan_id: 30
+    - mtu: 1500
+      name: VLAN0040
+      shutdown: enabled
+      state: active
+      vlan_id: 40
+    - mtu: 1500
+      name: fddi-default
+      shutdown: enabled
+      state: active
+      vlan_id: 1002
+    - mtu: 1500
+      name: token-ring-default
+      shutdown: enabled
+      state: active
+      vlan_id: 1003
+    - mtu: 1500
+      name: fddinet-default
+      shutdown: enabled
+      state: active
+      vlan_id: 1004
+    - mtu: 1500
+      name: trnet-default
+      shutdown: enabled
+      state: active
+      vlan_id: 1005
   before:
     - mtu: 1500
       name: default
@@ -368,6 +429,11 @@ deleted:
       state: active
       vlan_id: 30
     - mtu: 1500
+      name: VLAN0040
+      shutdown: enabled
+      state: active
+      vlan_id: 40
+    - mtu: 1500
       name: fddi-default
       shutdown: enabled
       state: active
@@ -388,35 +454,42 @@ deleted:
       state: active
       vlan_id: 1005
   commands:
-    - no vlan 10
-    - no vlan 20
-    - no vlan 30
-  after:
-    - mtu: 1500
-      name: default
-      shutdown: disabled
-      state: active
-      vlan_id: 1
-    - mtu: 1500
-      name: fddi-default
-      shutdown: enabled
-      state: active
-      vlan_id: 1002
-    - mtu: 1500
-      name: token-ring-default
-      shutdown: enabled
-      state: active
-      vlan_id: 1003
-    - mtu: 1500
-      name: fddinet-default
-      shutdown: enabled
-      state: active
-      vlan_id: 1004
-    - mtu: 1500
-      name: trnet-default
-      shutdown: enabled
-      state: active
-      vlan_id: 1005
+    - vlan 1
+    - no name default
+    - no state active
+    - shutdown
+    - vlan 10
+    - no name VLAN0010
+    - no state active
+    - shutdown
+    - vlan 20
+    - no name VLAN0020
+    - no state active
+    - shutdown
+    - vlan 30
+    - no name VLAN0030
+    - no state active
+    - shutdown
+    - vlan 40
+    - no name VLAN0040
+    - no state active
+    - shutdown
+    - vlan 1002
+    - no name fddi-default
+    - no state active
+    - shutdown
+    - vlan 1003
+    - no name token-ring-default
+    - no state active
+    - shutdown
+    - vlan 1004
+    - no name fddinet-default
+    - no state active
+    - shutdown
+    - vlan 1005
+    - no name trnet-default
+    - no state active
+    - shutdown
 deleted_vlan_config:
   before:
     - vlan_id: 101
@@ -436,7 +509,6 @@ deleted_vlan_config:
     - no vlan configuration 901
 
   after: []
-
 gathered:
   config:
     - mtu: 1500
@@ -460,6 +532,11 @@ gathered:
       state: active
       vlan_id: 30
     - mtu: 1500
+      name: VLAN0040
+      shutdown: enabled
+      state: active
+      vlan_id: 40
+    - mtu: 1500
       name: fddi-default
       shutdown: enabled
       state: active
@@ -479,7 +556,6 @@ gathered:
       shutdown: enabled
       state: active
       vlan_id: 1005
-
 gathered_vlan_config:
   config:
     - vlan_id: 101
@@ -493,7 +569,6 @@ gathered_vlan_config:
     - vlan_id: 901
       member:
         vni: 50901
-
 parsed:
   config:
     - mtu: 1500
@@ -536,7 +611,6 @@ parsed:
       shutdown: enabled
       state: active
       vlan_id: 1005
-
 parsed_vlan_config:
   config:
     - vlan_id: 101
@@ -561,7 +635,6 @@ parsed_vlan_config:
     - vlan_id: 902
       member:
         vni: 50902
-
 rendered:
   commands:
     - vlan 10
@@ -572,13 +645,11 @@ rendered:
     - vlan 20
     - name Vlan_20
     - state active
-    - mtu 610
     - no shutdown
     - vlan 30
     - name Vlan_30
     - state suspend
     - no shutdown
-
 rendered_vlan_config:
   commands:
     - vlan configuration 101
@@ -587,20 +658,16 @@ rendered_vlan_config:
     - member evpn-instance 102 vni 10102
     - vlan configuration 901
     - member vni 50901
-
 rtt:
   commands:
     - vlan 10
     - name Vlan_10
-    - mtu 1500
     - no vlan 40
     - vlan 20
     - name Vlan_20
     - state active
-    - mtu 610
     - shutdown
     - vlan 30
     - name Vlan_30
     - state suspend
-    - mtu 1500
     - shutdown

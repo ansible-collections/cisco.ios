@@ -8,8 +8,8 @@
       - ipv4 multicast multitopology
       - ipv6 multicast multitopology
       - rd 2:3
-      - route-target export 192.0.2.1:400
-      - route-target import 192.0.2.6:400
+      - route-target export 198.51.100.5:400
+      - route-target import 198.51.100.5:400
       - vnet tag 200
       - vpn id 2:45
     save_when: always

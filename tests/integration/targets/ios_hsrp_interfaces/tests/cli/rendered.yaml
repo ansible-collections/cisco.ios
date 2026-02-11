@@ -1,0 +1,28 @@
+---
+- ansible.builtin.debug:
+    msg: Start ios_hsrp_interfaces rendered integration tests ansible_connection={{ ansible_connection }}
+
+- block:
+    - name: Render the commands for provided  configuration
+      become: true
+      register: result
+      cisco.ios.ios_hsrp_interfaces:
+        config:
+          - name: GigabitEthernet3
+            standby_groups:
+              - group_no: 22
+                ip:
+                  - virtual_ip: 10.0.0.1
+                    secondary: true
+                group_name: sentry
+          - name: GigabitEthernet4
+            standby_groups:
+              - group_no: 0
+                priority: 5
+        state: rendered
+
+    - name: Assert rendered commands
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.rendered|symmetric_difference(rendered.commands) == []

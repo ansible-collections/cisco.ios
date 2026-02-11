@@ -9,7 +9,7 @@
 - block:
     - name: Delete provided VXLAN VTEP interface
       register: result
-      cisco.ios.ios_vxlan_vtep: &id001
+      cisco.ios.ios_vxlan_vtep:
         config:
           - interface: nve1
         state: deleted

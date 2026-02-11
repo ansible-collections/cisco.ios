@@ -3,10 +3,10 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 import io
+import sys
 
 import yaml
 
-from ansible.module_utils.six import PY3
 from ansible.parsing.yaml.dumper import AnsibleDumper
 from ansible.parsing.yaml.loader import AnsibleLoader
 
@@ -22,14 +22,14 @@ class YamlTestUtils(object):
 
     def _dump_stream(self, obj, stream, dumper=None):
         """Dump to a py2-unicode or py3-string stream."""
-        if PY3:
+        if sys.version_info[0] == 3:
             return yaml.dump(obj, stream, Dumper=dumper)
         else:
             return yaml.dump(obj, stream, Dumper=dumper, encoding=None)
 
     def _dump_string(self, obj, dumper=None):
         """Dump to a py2-unicode or py3-string"""
-        if PY3:
+        if sys.version_info[0] == 3:
             return yaml.dump(obj, Dumper=dumper)
         else:
             return yaml.dump(obj, Dumper=dumper, encoding=None)
@@ -89,7 +89,7 @@ class YamlTestUtils(object):
         stream_obj_from_stream = io.StringIO()
         stream_obj_from_string = io.StringIO()
 
-        if PY3:
+        if sys.version_info[0] == 3:
             yaml.dump(obj_from_stream, stream_obj_from_stream, Dumper=AnsibleDumper)
             yaml.dump(obj_from_stream, stream_obj_from_string, Dumper=AnsibleDumper)
         else:
@@ -102,7 +102,7 @@ class YamlTestUtils(object):
         stream_obj_from_stream.seek(0)
         stream_obj_from_string.seek(0)
 
-        if PY3:
+        if sys.version_info[0] == 3:
             yaml_string_obj_from_stream = yaml.dump(obj_from_stream, Dumper=AnsibleDumper)
             yaml_string_obj_from_string = yaml.dump(obj_from_string, Dumper=AnsibleDumper)
         else:

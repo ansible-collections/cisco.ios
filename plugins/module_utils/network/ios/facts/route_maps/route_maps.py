@@ -17,7 +17,6 @@ based on the configuration.
 
 from copy import deepcopy
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.route_maps.route_maps import (
@@ -69,17 +68,17 @@ class Route_mapsFacts(object):
 
         final_objs = []
         if objs:
-            for k, v in iteritems(objs):
+            for k, v in objs.items():
                 temp_dict = {}
                 temp_dict["entries"] = []
-                for key, val in iteritems(v):
+                for key, val in v.items():
                     if key == "route_map":
                         temp_dict.update({"route_map": val})
                         continue
                     if val.get("entries"):
                         if val["entries"].get("match"):
                             if val["entries"]["match"].get("ip"):
-                                for k_ip, v_ip in iteritems(val["entries"]["match"]["ip"]):
+                                for k_ip, v_ip in val["entries"]["match"]["ip"].items():
                                     if v_ip.get("acls"):
                                         if "src-pfx" in v_ip["acls"]:
                                             v_ip["acls"].pop(v_ip["acls"].index("src-pfx"))

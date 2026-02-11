@@ -32,7 +32,7 @@
           message_counter:
             - log
             - syslog
-          trap: errors
+          trap: informational
           userinfo: true
           logging_on: enable
           exception: 4099

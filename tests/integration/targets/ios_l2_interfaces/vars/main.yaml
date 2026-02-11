@@ -8,6 +8,7 @@ merged:
     - interface GigabitEthernet2
     - switchport access vlan 30
     - switchport voice vlan 40
+    - switchport private-vlan association host 2000 2500
     - interface GigabitEthernet3
     - switchport trunk encapsulation dot1q
     - switchport trunk native vlan 20
@@ -20,6 +21,11 @@ merged:
         vlan: 30
       voice:
         vlan: 40
+      private_vlan:
+        association: true
+        host: true
+        primary_range: 2000
+        secondary_range: 2500
       name: GigabitEthernet2
     - mode: trunk
       name: GigabitEthernet3
@@ -41,6 +47,11 @@ merged_again:
     - name: GigabitEthernet0/0
     - access:
         vlan: 30
+      private_vlan:
+        association: true
+        host: true
+        primary_range: 2000
+        secondary_range: 2500
       name: GigabitEthernet2
     - mode: trunk
       name: GigabitEthernet3

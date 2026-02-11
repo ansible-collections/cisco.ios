@@ -10,7 +10,7 @@
 - block:
     - name: Replaces device configuration of listed interfaces with provided configuration
       register: result
-      cisco.ios.ios_lag_interfaces: &id001
+      cisco.ios.ios_lag_interfaces:
         config:
           - name: Port-channel11
             members:

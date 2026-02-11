@@ -80,7 +80,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 r"""
                 \s\saggregate-address
                 (\s(?P<address>\S+))?
-                (\s(?P<netmask>\S+))?
+                (\s(?P<netmask>\d+\.\d+\.\d+\.\d+))?
                 (\s(?P<as_set>as-set))?
                 (\s(?P<summary_only>summary-only))?
                 (\s(?P<as_confed_set>as-confed-set))?
@@ -90,8 +90,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "aggregate-address "
-            "{{ address }} {{ netmask }}"
+            "setval": "aggregate-address {{ address }}"
+            "{{ (' ' + netmask) if netmask is defined and ':' not in address else '' }}"
             "{{ ' as-set' if as_set|d(False) else ''}}"
             "{{ ' summary-only' if summary_only|d(False) else ''}}"
             "{{ ' as-confed-set' if as_confed_set|d(False) else ''}}"
@@ -1048,15 +1048,27 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "as_override",
             "getval": re.compile(
                 r"""
-                \s\sneighbor\s(?P<neighbor_address>\S+)\sas-override
+                \s\sneighbor\s(?P<neighbor_address>\S+)
+                (\s(?P<set>as-override))
+                (\s(?P<split_horizon>split-horizon))?
                 $""",
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }}"
-            "{{ (' as-override') if as_override|d(False) else '' }}",
+            "{{ (' as-override') if as_override|d(False) else '' }}"
+            "{{ (' split-horizon') if as_override.split_horizon|d(False) else '' }}",
             "result": {
                 "address_family": {
-                    UNIQUE_AFI: {"neighbors": {UNIQUE_NEIB_ADD: {"as_override": True}}},
+                    UNIQUE_AFI: {
+                        "neighbors": {
+                            UNIQUE_NEIB_ADD: {
+                                "as_override": {
+                                    "set": "{{ not not set }}",
+                                    "split_horizon": "{{ not not split_horizon }}",
+                                },
+                            },
+                        },
+                    },
                 },
             },
         },
@@ -1602,7 +1614,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                                 "neighbor_address": UNIQUE_NEIB_ADD,
                                 "password_options": {
                                     "encryption": "{{ encryption }}",
-                                    "pass_key": "{{ pass_key }}",
+                                    "pass_key": "'{{ pass_key }}'",
                                 },
                             },
                         },
