@@ -59,7 +59,7 @@ jobs:
       - unit-galaxy
       - ansible-lint
       - unit-source
-    uses: nickbhasin/ansible-content-actions/.github/workflows/upload_upstream_results.yaml@upload_to_dashboard
+    uses: ansible/ansible-content-actions/.github/workflows/upload_upstream_results.yaml@main
     with:
       job_context: ${{ toJSON(needs) }}
       component_name: ${{ github.event.repository.name }}
