@@ -1,3 +1,0 @@
----
-minor_changes:
-  - Adds a new Resource Module `ios_bfd_templates` to configure BFD  using templates.

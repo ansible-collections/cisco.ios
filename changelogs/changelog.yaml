@@ -365,6 +365,28 @@ releases:
       - l2_interface_parser_reordering.yml
       - l2_interfaces.yml
     release_date: "2025-12-11"
+  11.3.0:
+    changes:
+      bugfixes:
+        - Fixed delete and purged state function for ios_bfd_templates
+      minor_changes:
+        - Adds a new Resource Module `ios_bfd_interfaces` to configure BFD on interfaces.
+        - Adds a new Resource Module `ios_bfd_templates` to configure BFD  using templates.
+        - ios_l3_interfaces - Add support for 'redirects' and 'unreachables' attributes
+          to configure ICMP redirect and unreachable messages.
+    fragments:
+      - bfd_interfaces.yaml
+      - bfd_templates.yaml
+      - bfd_templates_fix.yaml
+      - l3_interfaces.yaml
+    modules:
+      - description: Resource module to configure bfd in interfaces.
+        name: ios_bfd_interfaces
+        namespace: ""
+      - description: Bidirectional Forwarding Detection (BFD) templates configurations
+        name: ios_bfd_templates
+        namespace: ""
+    release_date: "2026-02-16"
   2.0.0:
     changes:
       bugfixes:

@@ -1,3 +1,0 @@
----
-minor_changes:
-  - ios_l3_interfaces - Add support for 'redirects' and 'unreachables' attributes to configure ICMP redirect and unreachable messages.

@@ -4,6 +4,27 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v11.3.0
+=======
+
+Minor Changes
+-------------
+
+- Adds a new Resource Module `ios_bfd_interfaces` to configure BFD on interfaces.
+- Adds a new Resource Module `ios_bfd_templates` to configure BFD  using templates.
+- ios_l3_interfaces - Add support for 'redirects' and 'unreachables' attributes to configure ICMP redirect and unreachable messages.
+
+Bugfixes
+--------
+
+- Fixed delete and purged state function for ios_bfd_templates
+
+New Modules
+-----------
+
+- ios_bfd_interfaces - Resource module to configure bfd in interfaces.
+- ios_bfd_templates - Bidirectional Forwarding Detection (BFD) templates configurations
+
 v11.2.0
 =======
 
