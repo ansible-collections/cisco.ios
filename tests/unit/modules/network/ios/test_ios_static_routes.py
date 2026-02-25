@@ -2346,3 +2346,33 @@ class TestIosStaticRoutesModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], expected_gathered)
+    def test_ios_static_route_gathered_skips_bfd_static_route_line(self):
+        """Gather should not crash and should skip 'ip route static bfd' line (no int('bfd') error)."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            ip route static bfd GigabitEthernet0/0 1.2.3.4
+            ip route 10.10.10.0 255.255.255.0 GigabitEthernet0/0
+            ip route 10.10.10.0 255.255.255.0 192.168.255.237
+            """,
+        )
+        set_module_args(dict(state="gathered"))
+        expected_gathered = [
+            {
+                "address_families": [
+                    {
+                        "afi": "ipv4",
+                        "routes": [
+                            {
+                                "dest": "10.10.10.0/24",
+                                "next_hops": [
+                                    {"interface": "GigabitEthernet0/0"},
+                                    {"forward_router_address": "192.168.255.237"},
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], expected_gathered)
