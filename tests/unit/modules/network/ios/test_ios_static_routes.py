@@ -2346,6 +2346,7 @@ class TestIosStaticRoutesModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(result["gathered"], expected_gathered)
+
     def test_ios_static_route_gathered_skips_bfd_static_route_line(self):
         """Gather should not crash and should skip 'ip route static bfd' line (no int('bfd') error)."""
         self.execute_show_command.return_value = dedent(
