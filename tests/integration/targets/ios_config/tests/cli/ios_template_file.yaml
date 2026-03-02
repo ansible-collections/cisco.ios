@@ -1,5 +1,4 @@
 ---
-
 - name: Test start msg for ios_config template file tests
   ansible.builtin.debug:
     msg: "START ios_config/ios_template_file.yaml on connection={{ ansible_connection }}"
