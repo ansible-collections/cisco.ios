@@ -1,0 +1,24 @@
+---
+- ansible.builtin.debug: msg="START cli_config/cli_strict_match.yaml on connection={{ ansible_connection }}"
+
+- name: Setup - remove configuration
+  ansible.netcommon.cli_config:
+    config: "{{ lookup('template', 'basic/setupstrict.j2') }}"
+    diff_match: none
+
+- name: Configure using strict match
+  register: result
+  ansible.netcommon.cli_config:
+    config: "{{ lookup('template', 'basic/configstrict1.j2') }}"
+    diff_match: strict
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == true
+
+- name: Teardown
+  ansible.netcommon.cli_config:
+    config: no ip access-list extended test
+    diff_match: none
+
+- ansible.builtin.debug: msg="END cli_config/cli_strict_match.yaml on connection={{ ansible_connection }}"
