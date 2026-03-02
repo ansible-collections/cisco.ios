@@ -1,0 +1,33 @@
+---
+- ansible.builtin.debug: msg="START cli_config/cli_exact_match.yaml on connection={{ ansible_connection }}"
+
+- name: Setup - remove configuration
+  ansible.netcommon.cli_config:
+    config: "{{ lookup('template', 'basic/setupexact.j2') }}"
+    diff_match: none
+
+- name: Configure using exact match
+  register: result
+  ansible.netcommon.cli_config:
+    config: "{{ lookup('template', 'basic/configexact1.j2') }}"
+    diff_match: exact
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == true
+
+- name: Check using exact match
+  register: result
+  ansible.netcommon.cli_config:
+    config: "{{ lookup('template', 'basic/configexact2.j2') }}"
+
+# - ansible.builtin.assert:
+#     that:
+#       - result.changed == false
+
+- name: Teardown
+  ansible.netcommon.cli_config:
+    config: no ip access-list extended test
+    diff_match: none
+
+- ansible.builtin.debug: msg="END cli_config/cli_exact_match.yaml on connection={{ ansible_connection }}"

@@ -1,0 +1,59 @@
+---
+- ansible.builtin.debug: msg="END cli_config/backup.yaml on connection={{ ansible_connection }}"
+
+- name: Delete configurable backup file path
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ role_path }}/backup_test_dir/"
+    - "{{ role_path }}/backup/backup.cfg"
+
+- name: Take configuration backup
+  become: true
+  register: result
+  ansible.netcommon.cli_config:
+    backup: true
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == true
+
+- name: Take configuration backup in custom filename and directory path
+  become: true
+  register: result
+  ansible.netcommon.cli_config:
+    backup: true
+    backup_options:
+      filename: backup.cfg
+      dir_path: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}"
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == true
+
+- name: Take configuration backup in custom filename
+  become: true
+  register: result
+  ansible.netcommon.cli_config:
+    backup: true
+    backup_options:
+      filename: backup.cfg
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == true
+
+- name: Take configuration backup in custom path and default filename
+  become: true
+  register: result
+  ansible.netcommon.cli_config:
+    backup: true
+    backup_options:
+      dir_path: "{{ role_path }}/backup_test_dir/{{ inventory_hostname_short }}"
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == true
+
+- ansible.builtin.debug: msg="END cli_config/backup.yaml on connection={{ ansible_connection }}"

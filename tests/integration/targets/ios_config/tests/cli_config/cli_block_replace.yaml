@@ -1,0 +1,32 @@
+---
+- ansible.builtin.debug: msg="START cli_config/cli_block_replace.yaml on connection={{ ansible_connection }}"
+
+- name: Setup - remove configuration
+  ansible.netcommon.cli_config:
+    config: "{{ lookup('template', 'basic/setupblock.j2') }}"
+    diff_match: none
+
+- name: Block replace
+  register: result
+  ansible.netcommon.cli_config: &id001
+    config: "{{ lookup('template', 'basic/configblock.j2') }}"
+    diff_replace: block
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == true
+
+- name: Block replace (idempotence)
+  register: result
+  ansible.netcommon.cli_config: *id001
+
+# - ansible.builtin.assert:
+#     that:
+#       - result.changed == false
+
+- name: Teardown
+  ansible.netcommon.cli_config:
+    config: no ip access-list extended test
+    diff_match: none
+
+- ansible.builtin.debug: msg="END cli_config/cli_block_replace.yaml on connection={{ ansible_connection }}"
