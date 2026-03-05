@@ -397,7 +397,7 @@ releases:
     fragments:
       - ios_static_routes_bfd_gather_fix.yaml
       - snmp_users_auth_fix.yaml
-    release_date: '2026-03-05'  
+    release_date: "2026-03-05"
   2.0.0:
     changes:
       bugfixes:
