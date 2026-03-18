@@ -4,6 +4,15 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v11.3.1
+=======
+
+Bugfixes
+--------
+
+- ios_snmp_users - Fixed authentication option to correctly handle authentication protocol configuration.
+- ios_static_routes - Fix gather crash when "ip route static bfd" is present on the device.
+
 v11.3.0
 =======
 

@@ -387,6 +387,17 @@ releases:
         name: ios_bfd_templates
         namespace: ""
     release_date: "2026-02-16"
+  11.3.1:
+    changes:
+      bugfixes:
+        - ios_snmp_users - Fixed authentication option to correctly handle authentication
+          protocol configuration.
+        - ios_static_routes - Fix gather crash when "ip route static bfd" is present
+          on the device.
+    fragments:
+      - ios_static_routes_bfd_gather_fix.yaml
+      - snmp_users_auth_fix.yaml
+    release_date: "2026-03-05"
   2.0.0:
     changes:
       bugfixes:
