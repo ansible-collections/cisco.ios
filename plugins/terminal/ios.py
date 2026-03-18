@@ -56,7 +56,7 @@ class TerminalModule(TerminalBase):
         re.compile(rb"% ?(\S+) ?Error: ?[\s]+", re.I),
         re.compile(rb"% ?(\S+) ?Informational: ?[\s]+", re.I),
         re.compile(rb"Command authorization failed"),
-        re.compile(rb"Command Rejected: ?[\s]+", re.I),
+        re.compile(rb"Command Rejected(\s*\([^)]*\))?\s*: ?[\s]+", re.I),
         re.compile(
             rb"% General session commands not allowed under the address family",
             re.I,
