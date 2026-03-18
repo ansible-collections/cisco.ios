@@ -18,7 +18,6 @@
 # Make coding more python3-ish
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 import json
@@ -29,7 +28,6 @@ from ansible_collections.cisco.ios.tests.unit.modules.utils import (
     AnsibleFailJson,
     ModuleTestCase,
 )
-
 
 fixture_path = os.path.join(os.path.dirname(__file__), "fixtures")
 fixture_data = {}
