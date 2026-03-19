@@ -136,7 +136,7 @@ class TestIosConfigModule(TestIosModule):
         parents = ["interface GigabitEthernet0/0"]
         set_module_args(dict(lines=lines, parents=parents))
         module = MagicMock()
-        module.params = {"lines": lines, "parents": parents, "src": None}
+        module.params = {"lines": lines, "parents": parents, "src": None, "content": None}
         candidate_config = ios_config.get_candidate_config(module)
 
         self.conn.get_diff = MagicMock(
@@ -206,7 +206,7 @@ class TestIosConfigModule(TestIosModule):
         ]
         set_module_args(dict(lines=lines, save_when="changed"))
         module = MagicMock()
-        module.params = {"lines": lines, "src": None, "parents": None}
+        module.params = {"lines": lines, "src": None, "parents": None, "content": None}
         candidate_config = ios_config.get_candidate_config(module)
 
         self.conn.get_diff = MagicMock(
@@ -225,7 +225,13 @@ class TestIosConfigModule(TestIosModule):
         set_module_args(dict(lines=lines, replace="block", parents=parents))
 
         module = MagicMock()
-        module.params = {"lines": lines, "parents": parents, "src": None, "before": None}
+        module.params = {
+            "lines": lines,
+            "parents": parents,
+            "src": None,
+            "before": None,
+            "content": None,
+        }
         candidate_config = ios_config.get_candidate_config(module)
 
         self.conn.get_diff = MagicMock(
@@ -267,7 +273,7 @@ class TestIosConfigModule(TestIosModule):
         set_module_args(dict(lines=lines, parents=parents, match="none"))
 
         module = MagicMock()
-        module.params = {"lines": lines, "parents": parents, "src": None}
+        module.params = {"lines": lines, "parents": parents, "src": None, "content": None}
         candidate_config = ios_config.get_candidate_config(module)
         self.conn.get_diff = MagicMock(
             return_value=self.cliconf_obj.get_diff(
@@ -291,7 +297,7 @@ class TestIosConfigModule(TestIosModule):
         set_module_args(dict(lines=lines, parents=parents, match="strict"))
 
         module = MagicMock()
-        module.params = {"lines": lines, "parents": parents, "src": None}
+        module.params = {"lines": lines, "parents": parents, "src": None, "content": None}
         candidate_config = ios_config.get_candidate_config(module)
         self.conn.get_diff = MagicMock(
             return_value=self.cliconf_obj.get_diff(
@@ -315,7 +321,7 @@ class TestIosConfigModule(TestIosModule):
         set_module_args(dict(lines=lines, parents=parents, match="exact"))
 
         module = MagicMock()
-        module.params = {"lines": lines, "parents": parents, "src": None}
+        module.params = {"lines": lines, "parents": parents, "src": None, "content": None}
         candidate_config = ios_config.get_candidate_config(module)
         self.conn.get_diff = MagicMock(
             return_value=self.cliconf_obj.get_diff(
