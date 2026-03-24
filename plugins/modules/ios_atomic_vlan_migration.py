@@ -1,8 +1,77 @@
-#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+# (c) 2026, Divesh (@vishnusingh2700)
+# GNU General Public License v3.0+
+
+from __future__ import (absolute_import, division, print_function)
+__metaclass__ = type
+
+DOCUMENTATION = r'''
+---
+module: ios_atomic_vlan_migration
+short_description: Atomic migration of Management IP and Trunk Cleanup on Cisco IOS.
+description:
+  - This module automates the migration of a management IP from VLAN 1 to a target VLAN.
+  - It uses Cisco EEM (Event Manager) to ensure the migration is atomic, preventing lockouts.
+  - It specifically handles the removal of VLAN 1 from trunk allowed lists and sets a new native VLAN.
+version_added: "1.0.0"
+author:
+  - Divesh (@vishnusingh2700)
+options:
+  applet_name:
+    description: Name of the EEM applet to be created on the switch.
+    type: str
+    default: MIGRATE_MGMT
+  new_ip:
+    description: The new Management IP address for the target VLAN.
+    type: str
+    required: true
+  mgmt_gateway:
+    description: The default gateway for the new management network.
+    type: str
+    required: true
+  vlan_id:
+    description: The ID of the new Management VLAN.
+    type: int
+    default: 99
+  trunks:
+    description: List of trunk interfaces to be updated.
+    type: list
+    elements: str
+    required: true
+  native_vlan:
+    description: The new native VLAN ID (Blackhole VLAN).
+    type: int
+    default: 999
+  is_root:
+    description: Set to true if the switch is the Root Bridge/Gateway.
+    type: bool
+    default: false
+  mgmt_iface:
+    description: Physical interface for management if is_root is true.
+    type: str
+'''
+
+EXAMPLES = r'''
+- name: Migrate Management to VLAN 99
+  cisco.ios.ios_atomic_vlan_migration:
+    new_ip: "192.168.100.10"
+    mgmt_gateway: "192.168.100.1"
+    vlan_id: 99
+    trunks: ["GigabitEthernet0/0", "GigabitEthernet0/1"]
+    native_vlan: 999
+'''
+
+RETURN = r'''
+msg:
+  description: The status of the EEM applet creation.
+  returned: always
+  type: str
+  sample: "EEM Applet MIGRATE_MGMT created successfully"
+'''
+
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import get_config, load_config
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import load_config
 
 def generate_eem_commands(params):
     """EEM Script generate karne ka logic (Bulletproof Version)"""
@@ -32,7 +101,6 @@ def generate_eem_commands(params):
         f' action 3.4 cli command "ip default-gateway {mgmt_gateway}"'
     ]
 
-    # Root Bridge vs Non-Root Logic (Playbook style)
     if is_root and mgmt_iface:
         commands.extend([
             f' action 4.0 cli command "interface {mgmt_iface}"',
@@ -48,7 +116,6 @@ def generate_eem_commands(params):
             ' action 4.2 cli command "exit"'
         ])
 
-    # Trunk Updates (VLAN 1 Removal Fixed!)
     commands.extend([
         f' action 4.6 cli command "interface range {trunks}"',
         f' action 4.7 cli command "switchport trunk allowed vlan add {vlan_id},999"',
@@ -63,7 +130,6 @@ def generate_eem_commands(params):
     return commands
 
 def main():
-    # 1. Inputs define karna (Argument Spec)
     module_args = dict(
         applet_name=dict(type='str', default='MIGRATE_MGMT'),
         new_ip=dict(type='str', required=True),
@@ -76,11 +142,8 @@ def main():
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
-
-    # 2. Logic chalana
     commands = generate_eem_commands(module.params)
 
-    # 3. Switch par push karna
     if not module.check_mode:
         load_config(module, commands)
         module.exit_json(changed=True, msg=f"EEM Applet {module.params['applet_name']} created successfully")
