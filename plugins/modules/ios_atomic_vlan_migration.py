@@ -6,6 +6,7 @@
 
 from __future__ import absolute_import, division, print_function
 
+
 __metaclass__ = type
 
 DOCUMENTATION = r"""
@@ -92,7 +93,12 @@ gathered:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import load_config, get_config
+
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
+    get_config,
+    load_config,
+)
+
 
 def generate_eem_commands(params):
     """EEM Script logic - Takes data from config dictionary"""
@@ -105,16 +111,16 @@ def generate_eem_commands(params):
     vlan_id = params.get("vlan_id", 99)
     vrf_name = params.get("vrf", "MGMT")
     mgmt_iface = params.get("mgmt_iface")
-    
+
     trunk_list = params.get("trunks", [])
     trunks = ", ".join(trunk_list) if isinstance(trunk_list, list) else trunk_list
-    
+
     native_vlan = params.get("native_vlan", 999)
 
     commands = [
         "no event manager applet {0}".format(applet_name),
         "event manager applet {0}".format(applet_name),
-        ' event none',
+        " event none",
         ' action 1.0 cli command "enable"',
         ' action 1.1 cli command "conf t"',
         ' action 1.2 cli command "ip vrf {0}"'.format(vrf_name),
@@ -129,73 +135,97 @@ def generate_eem_commands(params):
         ' action 3.2 cli command "ip address {0} 255.255.255.0"'.format(new_ip),
         ' action 3.3 cli command "no shutdown"',
         ' action 3.4 cli command "exit"',
-        ' action 3.5 cli command "ip route vrf {0} 0.0.0.0 0.0.0.0 {1}"'.format(vrf_name, mgmt_gateway),
+        ' action 3.5 cli command "ip route vrf {0} 0.0.0.0 0.0.0.0 {1}"'.format(
+            vrf_name, mgmt_gateway
+        ),
     ]
 
     if mgmt_iface:
-        commands.extend([
-            ' action 4.0 cli command "interface {0}"'.format(mgmt_iface),
-            ' action 4.1 cli command "switchport mode access"',
-            ' action 4.2 cli command "switchport access vlan {0}"'.format(vlan_id),
-        ])
+        commands.extend(
+            [
+                ' action 4.0 cli command "interface {0}"'.format(mgmt_iface),
+                ' action 4.1 cli command "switchport mode access"',
+                ' action 4.2 cli command "switchport access vlan {0}"'.format(vlan_id),
+            ]
+        )
 
-    commands.extend([
-        ' action 5.0 cli command "interface range {0}"'.format(trunks),
-        ' action 5.1 cli command "switchport trunk allowed vlan add {0},{1}"'.format(vlan_id, native_vlan),
-        ' action 5.2 cli command "switchport trunk allowed vlan remove 1"',
-        ' action 5.3 cli command "switchport trunk native vlan {0}"'.format(native_vlan),
-        ' action 6.0 cli command "exit"',
-        ' action 6.1 cli command "conf t"',
-        ' action 6.2 cli command "no event manager applet {0}"'.format(applet_name),
-        ' action 6.3 cli command "do write memory"',
-        ' action 7.0 cli command "end"',
-    ])
+    commands.extend(
+        [
+            ' action 5.0 cli command "interface range {0}"'.format(trunks),
+            ' action 5.1 cli command "switchport trunk allowed vlan add {0},{1}"'.format(
+                vlan_id, native_vlan
+            ),
+            ' action 5.2 cli command "switchport trunk allowed vlan remove 1"',
+            ' action 5.3 cli command "switchport trunk native vlan {0}"'.format(native_vlan),
+            ' action 6.0 cli command "exit"',
+            ' action 6.1 cli command "conf t"',
+            ' action 6.2 cli command "no event manager applet {0}"'.format(applet_name),
+            ' action 6.3 cli command "do write memory"',
+            ' action 7.0 cli command "end"',
+        ]
+    )
 
     return commands
 
+
 def main():
     module_args = dict(
-        config=dict(type='dict', options=dict(
-            applet_name=dict(type='str', default='MIGRATE_MGMT'),
-            new_ip=dict(type='str', required=False), 
-            mgmt_gateway=dict(type='str', required=False),
-            vlan_id=dict(type='int', default=99),
-            vrf=dict(type='str', default='MGMT'),
-            trunks=dict(type='list', elements='str', required=False),
-            native_vlan=dict(type='int', default=999),
-            mgmt_iface=dict(type='str', required=False)
-        )),
-        state=dict(type='str', 
-                   choices=['merged', 'replaced', 'overridden', 'deleted', 'gathered', 'rendered', 'parsed'], 
-                   default='merged')
+        config=dict(
+            type="dict",
+            options=dict(
+                applet_name=dict(type="str", default="MIGRATE_MGMT"),
+                new_ip=dict(type="str", required=False),
+                mgmt_gateway=dict(type="str", required=False),
+                vlan_id=dict(type="int", default=99),
+                vrf=dict(type="str", default="MGMT"),
+                trunks=dict(type="list", elements="str", required=False),
+                native_vlan=dict(type="int", default=999),
+                mgmt_iface=dict(type="str", required=False),
+            ),
+        ),
+        state=dict(
+            type="str",
+            choices=[
+                "merged",
+                "replaced",
+                "overridden",
+                "deleted",
+                "gathered",
+                "rendered",
+                "parsed",
+            ],
+            default="merged",
+        ),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
-    state = module.params.get('state')
-    config = module.params.get('config') or {}
+    state = module.params.get("state")
+    config = module.params.get("config") or {}
 
-    if state not in ['deleted', 'gathered']:
-        missing = [k for k in ['new_ip', 'mgmt_gateway', 'trunks'] if not config.get(k)]
+    if state not in ["deleted", "gathered"]:
+        missing = [k for k in ["new_ip", "mgmt_gateway", "trunks"] if not config.get(k)]
         if missing:
             module.fail_json(msg="State {0} requires: {1}".format(state, ", ".join(missing)))
 
-    if state == 'parsed':
+    if state == "parsed":
         module.exit_json(parsed=config)
 
-    if state == 'rendered':
+    if state == "rendered":
         cmds = generate_eem_commands(config)
         module.exit_json(rendered=cmds)
-        
-    if state == 'gathered':
-        current_config = get_config(module, flags='| section event manager')
+
+    if state == "gathered":
+        current_config = get_config(module, flags="| section event manager")
         gathered_data = {
             "raw_config": current_config,
-            "status": "Applet found" if "event manager applet" in current_config else "No applet found"
+            "status": (
+                "Applet found" if "event manager applet" in current_config else "No applet found"
+            ),
         }
         module.exit_json(gathered=gathered_data, msg="Successfully fetched data from switch")
-        
-    if state == 'deleted':
-        applet = config.get('applet_name', 'MIGRATE_MGMT')
+
+    if state == "deleted":
+        applet = config.get("applet_name", "MIGRATE_MGMT")
         cleanup_cmds = ["no event manager applet {0}".format(applet)]
         load_config(module, cleanup_cmds)
         module.exit_json(changed=True, msg="Applet deleted", commands=cleanup_cmds)
@@ -204,9 +234,12 @@ def main():
         commands = generate_eem_commands(config)
         if not module.check_mode:
             load_config(module, commands)
-            module.exit_json(changed=True, msg="Resource {0} applied via EEM".format(state), commands=commands)
+            module.exit_json(
+                changed=True, msg="Resource {0} applied via EEM".format(state), commands=commands
+            )
         else:
             module.exit_json(changed=False, msg="Check mode: commands generated but not pushed")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
