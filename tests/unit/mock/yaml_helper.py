@@ -71,7 +71,7 @@ class YamlTestUtils(object):
         stream_obj_from_string = io.StringIO()
 
         yaml.dump(obj_from_stream, stream_obj_from_stream, Dumper=AnsibleDumper)
-        yaml.dump(obj_from_stream, stream_obj_from_string, Dumper=AnsibleDumper)
+        yaml.dump(obj_from_string, stream_obj_from_string, Dumper=AnsibleDumper)
 
         yaml_string_stream_obj_from_stream = stream_obj_from_stream.getvalue()
         yaml_string_stream_obj_from_string = stream_obj_from_string.getvalue()
