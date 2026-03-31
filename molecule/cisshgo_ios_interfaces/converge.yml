@@ -1,0 +1,239 @@
+---
+# Molecule converge: Run ios_interfaces integration tests against CISSHGO
+#
+# Adapted from: tests/integration/targets/ios_interfaces/tests/cli/
+#
+# This playbook runs the same assertions as the original integration tests
+# but against CISSHGO instead of real Cisco devices. The key adaptation is
+# that _populate_config and _remove_config are not needed — CISSHGO scenarios
+# handle device state via pre-recorded transcript sequences.
+#
+# Test coverage:
+#   Play 1: gathered  (stateless - platform mode, port 10000)
+#   Play 2: merged    (stateful - scenario mode, port 10001)
+#   Play 3: replaced  (stateful - scenario mode, port 10002)
+#   Play 4: parsed    (offline - no device connection needed)
+#   Play 5: rendered  (offline - no device connection needed)
+
+# ============================================================================
+# Play 1: ios_interfaces — state: gathered
+# ============================================================================
+# Uses CISSHGO platform mode (port 10000, stateless).
+# The platform transcript returns the "populated" interface config, which
+# the module parses into structured facts.
+- name: "ios_interfaces — gathered state"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/tests/integration/targets/ios_interfaces/vars/main.yaml"
+
+  tasks:
+    - name: "Gather interface facts from device"
+      cisco.ios.ios_interfaces:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered facts match expected config"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - "{{ gathered['config'] | symmetric_difference(result['gathered']) | length == 0 }}"
+        quiet: true
+
+    - name: "Assert correct number of interfaces gathered"
+      ansible.builtin.assert:
+        that:
+          - result['gathered'] | length == 6
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — {{ result['gathered'] | length }} interfaces collected"
+
+# ============================================================================
+# Play 2: ios_interfaces — state: merged
+# ============================================================================
+# Uses CISSHGO scenario mode (port 10001, stateful).
+# Scenario sequence: before.txt → config commands → after.txt → after.txt (idempotent)
+- name: "ios_interfaces — merged state"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/tests/integration/targets/ios_interfaces/vars/main.yaml"
+
+  tasks:
+    - name: "Merge interface configuration"
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet2
+            description: Configured and Merged by Ansible-Network
+            enabled: true
+          - name: GigabitEthernet3
+            description: 04j
+            enabled: false
+        state: merged
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+        quiet: true
+
+    - name: "Assert before state matches expected"
+      ansible.builtin.assert:
+        that:
+          - "{{ merged['before'] | symmetric_difference(result['before']) | length == 0 }}"
+        quiet: true
+
+    - name: "Assert after state matches expected"
+      ansible.builtin.assert:
+        that:
+          - "{{ merged['after'] | symmetric_difference(result['after']) | length == 0 }}"
+        quiet: true
+
+    - name: "Merge interface configuration — idempotent run"
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet2
+            description: Configured and Merged by Ansible-Network
+            enabled: true
+          - name: GigabitEthernet3
+            description: 04j
+            enabled: false
+        state: merged
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — config applied + idempotency verified"
+
+# ============================================================================
+# Play 3: ios_interfaces — state: replaced
+# ============================================================================
+# Uses CISSHGO scenario mode (port 10002, stateful).
+# The replaced state starts from a "populated" baseline where interfaces
+# already have descriptions, and replaces GigE2's config.
+- name: "ios_interfaces — replaced state"
+  hosts: ios_replaced
+  gather_facts: false
+  vars_files:
+    - "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/tests/integration/targets/ios_interfaces/vars/main.yaml"
+
+  tasks:
+    - name: "Replace interface configuration"
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet2
+            description: Configured and Replaced by Ansible-Network
+        state: replaced
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+        quiet: true
+
+    - name: "Assert before state matches expected"
+      ansible.builtin.assert:
+        that:
+          - "{{ replaced['before'] | symmetric_difference(result['before']) | length == 0 }}"
+        quiet: true
+
+    - name: "Assert after state matches expected"
+      ansible.builtin.assert:
+        that:
+          - "{{ replaced['after'] | symmetric_difference(result['after']) | length == 0 }}"
+        quiet: true
+
+    - name: "Replace interface configuration — idempotent run"
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet2
+            description: Configured and Replaced by Ansible-Network
+        state: replaced
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: replaced state"
+      ansible.builtin.debug:
+        msg: "replaced state test passed — config replaced + idempotency verified"
+
+# ============================================================================
+# Play 4: ios_interfaces — state: parsed (offline, no device needed)
+# ============================================================================
+# Parsed state works entirely offline by parsing a config file.
+# We run this against the gathered host for ansible_network_os context,
+# but no SSH commands are actually sent.
+- name: "ios_interfaces — parsed state"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/tests/integration/targets/ios_interfaces/vars/main.yaml"
+
+  tasks:
+    - name: "Parse interface configuration from file"
+      cisco.ios.ios_interfaces:
+        running_config: "{{ lookup('file', lookup('env', 'MOLECULE_PROJECT_DIRECTORY') + '/tests/integration/targets/ios_interfaces/tests/cli/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed facts match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - "{{ parsed['config'] | symmetric_difference(result['parsed']) | length == 0 }}"
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — {{ result['parsed'] | length }} interfaces parsed from config file"
+
+# ============================================================================
+# Play 5: ios_interfaces — state: rendered (offline, no device needed)
+# ============================================================================
+# Rendered state computes what CLI commands would be sent, without any device.
+- name: "ios_interfaces — rendered state"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "{{ lookup('env', 'MOLECULE_PROJECT_DIRECTORY') }}/tests/integration/targets/ios_interfaces/vars/main.yaml"
+
+  tasks:
+    - name: "Render interface configuration to CLI commands"
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet2
+            description: Configured by Ansible-Network
+            mtu: 110
+            enabled: true
+          - name: GigabitEthernet3
+            description: Configured by Ansible-Network
+            mtu: 2800
+            enabled: false
+            speed: "100"
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - "{{ rendered['commands'] | symmetric_difference(result['rendered']) | length == 0 }}"
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — {{ result['rendered'] | length }} CLI commands rendered"
