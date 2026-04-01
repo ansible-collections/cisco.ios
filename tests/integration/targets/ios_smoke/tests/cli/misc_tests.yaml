@@ -17,13 +17,12 @@
     defaults: true
   register: result
 
-
-- ansible.builtin.debug: 
+- ansible.builtin.debug:
     msg: "{{ ansible_command_timeout }}"
   register: default_timeout
 
 #setting timeout to 1 for immediate task to reflect in persistent connection
-- ansible.builtin.set_fact: 
+- ansible.builtin.set_fact:
     ansible_command_timeout: 1
 
 - name: Run IOS commands to test command_timeout
@@ -39,10 +38,10 @@
   when: ansible_connection == 'ansible.netcommon.network_cli'
 
 #setting back timeout back to default
-- ansible.builtin.set_fact: 
+- ansible.builtin.set_fact:
     ansible_command_timeout: "{{ default_timeout.msg }}"
 
-- ansible.builtin.debug: 
+- ansible.builtin.debug:
     msg: "Timeout set back to original value: {{ ansible_command_timeout }}"
 
 - ansible.builtin.assert:
