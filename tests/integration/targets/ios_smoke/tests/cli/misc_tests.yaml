@@ -1,5 +1,4 @@
 ---
-
 - ansible.builtin.debug: msg="START ios_smoke cli/misc_tests.yaml on connection={{ ansible_connection }}"
 
 # hit network.ios.ios- get_defaults_flag()
