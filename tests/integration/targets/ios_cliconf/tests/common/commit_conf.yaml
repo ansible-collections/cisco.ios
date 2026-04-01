@@ -1,4 +1,8 @@
 ---
+- ansible.builtin.set_fact:
+    ansible_command_timeout: 30
+  
+
 - ansible.builtin.debug:
     msg: "START ios_cliconf  mycheckout-revert integration tests on connection={{ ansible_connection }}"
 
@@ -21,6 +25,7 @@
     lines:
       - no archive
   ignore_errors: true
+
 
 - name: Test archiving disabled
   register: result
