@@ -25,11 +25,6 @@
   register: result
   ansible.builtin.include_tasks: _test_config.yaml
   ignore_errors: true
-<<<<<<< HEAD
-  vars:
-    ansible_command_timeout: 30
-=======
->>>>>>> 5eb35414 (allowed ignore_error true for some command_time_put related task)
 
 # allowed errors for downstream CI as it does not consider playlevel ansible_command_timeout and gives stderr_ansible_command_timeout
 - name: Assert that the result error equals std_err_archiving_disabled
