@@ -44,7 +44,7 @@
   when: ansible_connection == 'ansible.netcommon.network_cli'
 
 # setting back timeout back to default
-- ansible.builtin.set_fact: 
+- ansible.builtin.set_fact:
     ansible_command_timeout: "{{ default_timeout.msg }}"
 
 - ansible.builtin.debug:
