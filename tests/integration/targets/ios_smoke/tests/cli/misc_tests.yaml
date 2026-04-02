@@ -37,18 +37,18 @@
   register: result
   when: ansible_connection == 'ansible.netcommon.network_cli'
 
-# setting back timeout back to default
-- ansible.builtin.set_fact:
-    ansible_command_timeout: "{{ default_timeout.msg }}"
-
-- ansible.builtin.debug:
-    msg: "Timeout set back to original value: {{ ansible_command_timeout }}"
-
 - ansible.builtin.assert:
     that:
       - "result.failed == true"
       - "'timeout value is 1 secs' in result.msg"
   when: ansible_connection == 'ansible.netcommon.network_cli'
+
+# setting back timeout back to default
+- ansible.builtin.set_fact: 
+    ansible_command_timeout: "{{ default_timeout.msg }}"
+
+- ansible.builtin.debug:
+    msg: "Timeout set back to original value: {{ ansible_command_timeout }}"
 
 - name: Reset ssh connection to allow user changes to affect 'current login user'
   ansible.builtin.meta: reset_connection

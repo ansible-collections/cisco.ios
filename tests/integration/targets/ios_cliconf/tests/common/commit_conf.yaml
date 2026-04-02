@@ -1,6 +1,4 @@
 ---
-- ansible.builtin.set_fact:
-    ansible_command_timeout: 30
 
 - ansible.builtin.debug:
     msg: "START ios_cliconf  mycheckout-revert integration tests on connection={{ ansible_connection }}"
@@ -29,6 +27,8 @@
   register: result
   ansible.builtin.include_tasks: _test_config.yaml
   ignore_errors: true
+  vars:  
+    ansible_command_timeout: 30
 
 - name: Assert that the result error equals std_err_archiving_disabled
   ansible.builtin.assert:
