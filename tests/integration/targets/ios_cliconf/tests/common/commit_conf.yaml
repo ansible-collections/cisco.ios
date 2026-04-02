@@ -37,7 +37,7 @@
     that:
       - result is failed
       - std_err_archiving_disabled in result.msg
-  ignore_errors: true    
+  ignore_errors: true
 
 - name: Enable archiving
   ansible.builtin.include_tasks: _enable_archiving.yaml
