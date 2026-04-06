@@ -54,4 +54,3 @@
           CISSHGO verification passed.
           Log file: {{ cisshgo_log_file }}
           Log size: {{ log_stat.stat.size }} bytes
-

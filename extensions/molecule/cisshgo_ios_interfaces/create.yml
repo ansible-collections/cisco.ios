@@ -103,4 +103,3 @@
           PID: {{ lookup('file', cisshgo_pid_file) }}.
           Ports: {{ cisshgo_starting_port }}-{{ cisshgo_starting_port | int + cisshgo_port_count - 1 }}.
           Log: {{ cisshgo_log_file }}
-

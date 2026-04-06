@@ -32,4 +32,3 @@ interface Loopback888
 !
 interface Loopback999
  no ip address
-

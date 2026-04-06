@@ -1,9 +1,9 @@
 ---
 # Molecule converge: Run ios_interfaces integration tests against CISSHGO
 
-# ============================================================================ 
+# ============================================================================
 # Play 1: ios_interfaces — state: gathered (platform mode, stateless)
-# ============================================================================ 
+# ============================================================================
 - name: "ios_interfaces — gathered state"
   hosts: ios_gathered
   gather_facts: false
@@ -32,9 +32,9 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — {{ result['gathered'] | length }} interfaces collected"
 
-# ============================================================================ 
+# ============================================================================
 # Play 2: ios_interfaces — state: merged (scenario mode, stateful + idempotent)
-# ============================================================================ 
+# ============================================================================
 - name: "ios_interfaces — merged state"
   hosts: ios_merged
   gather_facts: false
@@ -93,9 +93,9 @@
       ansible.builtin.debug:
         msg: "merged state test passed — config applied + idempotency verified"
 
-# ============================================================================ 
+# ============================================================================
 # Play 3: ios_interfaces — state: replaced (scenario mode, stateful + idempotent)
-# ============================================================================ 
+# ============================================================================
 - name: "ios_interfaces — replaced state"
   hosts: ios_replaced
   gather_facts: false
@@ -148,9 +148,9 @@
       ansible.builtin.debug:
         msg: "replaced state test passed — config replaced + idempotency verified"
 
-# ============================================================================ 
+# ============================================================================
 # Play 4: ios_interfaces — state: parsed (offline)
-# ============================================================================ 
+# ============================================================================
 - name: "ios_interfaces — parsed state"
   hosts: ios_gathered
   gather_facts: false
@@ -174,9 +174,9 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — {{ result['parsed'] | length }} interfaces parsed from config file"
 
-# ============================================================================ 
+# ============================================================================
 # Play 5: ios_interfaces — state: rendered (offline)
-# ============================================================================ 
+# ============================================================================
 - name: "ios_interfaces — rendered state"
   hosts: ios_gathered
   gather_facts: false
@@ -208,4 +208,3 @@
     - name: "PASSED: rendered state"
       ansible.builtin.debug:
         msg: "rendered state test passed — {{ result['rendered'] | length }} CLI commands rendered"
-
