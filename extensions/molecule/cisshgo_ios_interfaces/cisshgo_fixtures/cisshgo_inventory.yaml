@@ -1,0 +1,20 @@
+---
+# CISSHGO device inventory for ios_interfaces integration tests
+#
+# Each entry spawns an SSH listener on its own port (starting from --starting-port):
+# Port 10000: Platform mode (ios) - stateless, for gathered tests
+# Port 10001: Scenario (ios-interfaces-merged) - stateful, for merged tests
+# Port 10002: Scenario (ios-interfaces-replaced) - stateful, for replaced tests
+#
+# To add more test states, add new scenarios here and define corresponding entries in transcript_map.yaml
+
+devices:
+  - platform: ios
+    count: 1
+
+  - scenario: ios-interfaces-merged
+    count: 1
+
+  - scenario: ios-interfaces-replaced
+    count: 1
+

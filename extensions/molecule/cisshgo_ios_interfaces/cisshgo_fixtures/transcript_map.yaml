@@ -1,0 +1,120 @@
+---
+# CISSHGO Transcript Map for cisco.ios.ios_interfaces integration tests
+#
+# Platform: ios
+# Stateless layer serving connection setup commands and read-only show commands.
+# Used by gathered test state (and by platform fallback for any unmapped commands).
+#
+# Scenarios:
+# ios-interfaces-merged: Stateful sequence for merged state test + idempotency
+# ios-interfaces-replaced: Stateful sequence for replaced state test + idempotency
+#
+# How it works:
+# 1. Incoming commands first check the scenario sequence (if in scenario mode).
+# 2. If no scenario match, fall through to the platform layer.
+# 3. Platform layer serves setup commands (show privilege, terminal length, etc.).
+# 4. Scenario sequence pointer advances on each match.
+
+platforms:
+  ios:
+    vendor: "cisco"
+    hostname: "cisshgo-ios"
+    username: "admin"
+    password: "admin"
+    command_transcripts:
+      # --- Connection setup (sent automatically by Ansible network_cli + terminal plugin) ---
+      "show privilege": "transcripts/cisco/ios/show_privilege.txt"
+      "terminal length 0": "transcripts/generic_empty_return.txt"
+      "terminal width 512": "transcripts/generic_empty_return.txt"
+      "terminal width 0": "transcripts/generic_empty_return.txt"
+
+      # --- Device identification ---
+      "show version": "transcripts/cisco/ios/show_version.txt"
+
+      # --- Configuration gathering ---
+      "show running-config": "transcripts/cisco/ios/show_running-config.txt"
+      "show running-config | section ^interface": "transcripts/cisco/ios/show_running-config_section_interface_gathered.txt"
+
+      # --- Write operations (no-op for fixture) ---
+      "write memory": "transcripts/generic_empty_return.txt"
+      "write mem": "transcripts/generic_empty_return.txt"
+
+    # Prompt context transitions (Cisco CLI mode switching)
+    context_search:
+      "configure terminal": "(config)#"
+      "interface": "(config-if)#"
+      "enable": "#"
+      "base": "#"
+
+    # How to navigate back through contexts
+    context_hierarchy:
+      "(config-if)#": "(config)#"
+      "(config)#": "#"
+      "#": ">"
+
+    # Where "end" command returns to
+    end_context: "#"
+
+scenarios:
+  # ========================================================================
+  # ios_interfaces: state=merged
+  # ========================================================================
+  ios-interfaces-merged:
+    platform: ios
+    sequence:
+      # Step 1: Initial facts gathering -> before state (no descriptions on GigE2/3)
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-interfaces-merged/before.txt"
+
+      # Step 2: Config commands from the module
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "description Configured and Merged by Ansible-Network"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "description 04j"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "shutdown"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+
+      # Step 3: Post-change facts gathering -> after state (descriptions applied)
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-interfaces-merged/after.txt"
+
+      # Step 4: Idempotent run - facts gathering -> still after state (no changes)
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-interfaces-merged/after.txt"
+
+  # ========================================================================
+  # ios_interfaces: state=replaced
+  # ========================================================================
+  ios-interfaces-replaced:
+    platform: ios
+    sequence:
+      # Step 1: Initial facts gathering -> before state (populated with descriptions)
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-interfaces-replaced/before.txt"
+
+      # Step 2: Config commands from the module
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "description Configured and Replaced by Ansible-Network"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+
+      # Step 3: Post-change facts gathering -> after state
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-interfaces-replaced/after.txt"
+
+      # Step 4: Idempotent run - facts gathering -> still after state
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-interfaces-replaced/after.txt"
+
