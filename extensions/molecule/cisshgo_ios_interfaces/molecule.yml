@@ -1,0 +1,83 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: default
+  options:
+    managed: false
+
+scenario:
+  name: cisshgo_ios_interfaces
+  test_sequence:
+    - create
+    - converge
+    - verify
+    - destroy
+
+platforms:
+  - name: cisshgo-ios-gathered
+    groups:
+      - ios_gathered
+  - name: cisshgo-ios-merged
+    groups:
+      - ios_merged
+  - name: cisshgo-ios-replaced
+    groups:
+      - ios_replaced
+
+provisioner:
+  name: ansible
+  inventory:
+    host_vars:
+      cisshgo-ios-gathered:
+        ansible_host: 127.0.0.1
+        ansible_port: 10000
+        ansible_connection: ansible.netcommon.network_cli
+        ansible_network_os: cisco.ios.ios
+        ansible_user: admin
+        ansible_password: admin
+        ansible_become: false
+        ansible_network_cli_ssh_type: libssh
+        ansible_libssh_key_exchange_algorithms: +diffie-hellman-group14-sha1,+diffie-hellman-group-exchange-sha1
+        ansible_libssh_hostkeys: +ssh-rsa
+        ansible_libssh_publickey_algorithms: +ssh-rsa
+        ansible_command_timeout: 200
+        ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+      cisshgo-ios-merged:
+        ansible_host: 127.0.0.1
+        ansible_port: 10001
+        ansible_connection: ansible.netcommon.network_cli
+        ansible_network_os: cisco.ios.ios
+        ansible_user: admin
+        ansible_password: admin
+        ansible_become: false
+        ansible_network_cli_ssh_type: libssh
+        ansible_libssh_key_exchange_algorithms: +diffie-hellman-group14-sha1,+diffie-hellman-group-exchange-sha1
+        ansible_libssh_hostkeys: +ssh-rsa
+        ansible_libssh_publickey_algorithms: +ssh-rsa
+        ansible_command_timeout: 200
+        ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+      cisshgo-ios-replaced:
+        ansible_host: 127.0.0.1
+        ansible_port: 10002
+        ansible_connection: ansible.netcommon.network_cli
+        ansible_network_os: cisco.ios.ios
+        ansible_user: admin
+        ansible_password: admin
+        ansible_become: false
+        ansible_network_cli_ssh_type: libssh
+        ansible_libssh_key_exchange_algorithms: +diffie-hellman-group14-sha1,+diffie-hellman-group-exchange-sha1
+        ansible_libssh_hostkeys: +ssh-rsa
+        ansible_libssh_publickey_algorithms: +ssh-rsa
+        ansible_command_timeout: 200
+        ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+  env:
+    # Molecule runs ansible-playbook from an ephemeral directory, so point at the
+    # ansible_collections parent (namespace dirs live one level below).
+    ANSIBLE_COLLECTIONS_PATH: "${MOLECULE_SCENARIO_DIRECTORY}/../../../../.."
+    ANSIBLE_HOST_KEY_CHECKING: "false"
+
+verifier:
+  name: ansible
+
