@@ -117,4 +117,3 @@ scenarios:
       # Step 4: Idempotent run - facts gathering -> still after state
       - command: "show running-config | section ^interface"
         transcript: "transcripts/scenarios/ios-interfaces-replaced/after.txt"
-

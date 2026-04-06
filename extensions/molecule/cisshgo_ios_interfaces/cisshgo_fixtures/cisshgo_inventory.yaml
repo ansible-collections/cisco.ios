@@ -17,4 +17,3 @@ devices:
 
   - scenario: ios-interfaces-replaced
     count: 1
-

@@ -62,4 +62,3 @@
     - name: "CISSHGO stopped and cleaned up"
       ansible.builtin.debug:
         msg: "CISSHGO fixture server stopped. All temporary files removed."
-

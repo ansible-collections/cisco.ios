@@ -22,4 +22,3 @@ License Type: Default. No valid license found.
 Next reload license Level: ax
 
 Configuration register is 0x2102
-
