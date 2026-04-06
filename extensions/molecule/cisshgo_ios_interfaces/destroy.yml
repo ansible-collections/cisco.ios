@@ -36,7 +36,8 @@
             state: stopped
             timeout: 10
           loop: "{{ range(cisshgo_port_count | int) | list }}"
-          ignore_errors: true
+          register: wait_for_ports_released
+          failed_when: false
 
         - name: "Remove PID file"
           ansible.builtin.file:

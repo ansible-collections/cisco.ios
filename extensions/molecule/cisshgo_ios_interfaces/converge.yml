@@ -4,7 +4,7 @@
 # ============================================================================
 # Play 1: ios_interfaces — state: gathered (platform mode, stateless)
 # ============================================================================
-- name: "ios_interfaces — gathered state"
+- name: "Gather ios_interfaces facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false
   vars_files:
@@ -35,7 +35,7 @@
 # ============================================================================
 # Play 2: ios_interfaces — state: merged (scenario mode, stateful + idempotent)
 # ============================================================================
-- name: "ios_interfaces — merged state"
+- name: "Merge ios_interfaces configuration (merged state)"
   hosts: ios_merged
   gather_facts: false
   vars_files:
@@ -96,7 +96,7 @@
 # ============================================================================
 # Play 3: ios_interfaces — state: replaced (scenario mode, stateful + idempotent)
 # ============================================================================
-- name: "ios_interfaces — replaced state"
+- name: "Replace ios_interfaces configuration (replaced state)"
   hosts: ios_replaced
   gather_facts: false
   vars_files:
@@ -151,7 +151,7 @@
 # ============================================================================
 # Play 4: ios_interfaces — state: parsed (offline)
 # ============================================================================
-- name: "ios_interfaces — parsed state"
+- name: "Parse ios_interfaces configuration from file (parsed state)"
   hosts: ios_gathered
   gather_facts: false
   vars_files:
@@ -177,7 +177,7 @@
 # ============================================================================
 # Play 5: ios_interfaces — state: rendered (offline)
 # ============================================================================
-- name: "ios_interfaces — rendered state"
+- name: "Render ios_interfaces configuration to CLI (rendered state)"
   hosts: ios_gathered
   gather_facts: false
   vars_files:
