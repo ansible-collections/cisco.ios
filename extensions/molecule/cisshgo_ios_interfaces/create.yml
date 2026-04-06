@@ -22,11 +22,7 @@
     - name: "Resolve cisshgo binary path"
       ansible.builtin.set_fact:
         cisshgo_binary: >-
-          {%- if cisshgo_bin_path != '' -%}
-          {{ cisshgo_bin_path }}
-          {%- else -%}
-          {{ cisshgo_repo_path }}/cisshgo
-          {%- endif -%}
+          {%- if cisshgo_bin_path != '' -%} {{ cisshgo_bin_path }}{%- else -%} {{ cisshgo_repo_path }}/cisshgo{%- endif -%}
 
     - name: "Check if cisshgo binary exists"
       ansible.builtin.stat:
