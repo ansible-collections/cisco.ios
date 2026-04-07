@@ -1,0 +1,3 @@
+---
+trivial:
+  - fix sanity issues due to addition of 2.22 ansible.
