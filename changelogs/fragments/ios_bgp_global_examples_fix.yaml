@@ -1,0 +1,3 @@
+---
+doc_changes:
+  - ios_bgp_global - Fix stale EXAMPLES that used removed parameter names (bestpath, nopeerup_delay, address, route_map) causing validation errors when copy-pasted. Updated to current argspec keys (bestpath_options, nopeerup_delay_options, neighbor_address, route_maps).
