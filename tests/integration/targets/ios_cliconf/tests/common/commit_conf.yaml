@@ -17,7 +17,6 @@
 - name: Reset ssh connection to reset ansible_command_timeout
   ansible.builtin.meta: reset_connection
 
-
 - name: Disable archiving
   register: result
   cisco.ios.ios_config:
