@@ -23,11 +23,15 @@
     lines:
       - no archive
   ignore_errors: true
+  vars:
+    ansible_command_timeout: 30
 
 - name: Test archiving disabled
   register: result
   ansible.builtin.include_tasks: _test_config.yaml
   ignore_errors: true
+  vars:
+    ansible_command_timeout: 1
 
 - name: Assert that the result error equals std_err_archiving_disabled
   ansible.builtin.assert:
