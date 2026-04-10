@@ -7,7 +7,7 @@ This file lives in the collection so clone consumers have the same guidance as t
 | Scenario                    | Module                        | Listeners (default `CISSHGO_PORT=10000`) | Purpose                                      |
 | --------------------------- | ----------------------------- | ---------------------------------------- | -------------------------------------------- |
 | `cisshgo_ios_interfaces`    | `cisco.ios.ios_interfaces`    | 3 (platform + merged + replaced)         | gathered, merged, replaced, parsed, rendered |
-| `cisshgo_ios_l2_interfaces` | `cisco.ios.ios_l2_interfaces` | 2 (platform + merged scenario)           | gathered, merged + idempotency               |
+| `cisshgo_ios_l2_interfaces` | `cisco.ios.ios_l2_interfaces` | 5 (platform + 4 scenario listeners)      | gathered, merged + merged_again, replaced, overridden, deleted, parsed, rendered |
 
 Paths: `extensions/molecule/<scenario>/`.
 
@@ -16,7 +16,7 @@ Paths: `extensions/molecule/<scenario>/`.
 From `extensions/`:
 
 ```bash
-export ANSIBLE_COLLECTIONS_PATH="$(pwd)/../../.."
+export ANSIBLE_COLLECTIONS_PATH="$(pwd)/../../..:${ANSIBLE_COLLECTIONS_PATH:-}"
 export CISSHGO_BIN_PATH=/path/to/cisshgo   # or CISSHGO_REPO_PATH to build from source
 
 molecule test -s cisshgo_ios_interfaces
@@ -42,7 +42,7 @@ The platform transcript for `show running-config | section ^interface` must pars
 
 ## Scenario `sequence` order vs `vars` `commands`
 
-The **`sequence`** in `transcript_map.yaml` must match the **exact order** Ansible sends commands. Do **not** assume `merged['commands']` in vars matches emit order; use **`state: rendered`** with the same `config` as the merge play to get the canonical list. Wrong order causes cisshgo desync and responses containing **`% Invalid input`**, which the ios terminal plugin treats as failure.
+The **`sequence`** in `transcript_map.yaml` must match the **exact order** Ansible sends commands. Do **not** assume `merged['commands']` in vars matches emit order (and for vlan lists, vars may show full ranges while the module emits `switchport trunk ... vlan add` / `remove` deltas). Derive order from **`self.parsers`** and **`compare_list()`** in `plugins/module_utils/network/ios/config/<module>/<module>.py`, from **`state: rendered`**, or from **`-vvv`** on a lab run. Wrong order causes cisshgo desync and **`% Invalid input`**, which the ios terminal plugin treats as failure.
 
 ## Checklist: new `cisshgo_<module>` scenario
 

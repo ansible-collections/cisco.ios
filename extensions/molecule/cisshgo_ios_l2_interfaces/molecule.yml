@@ -22,6 +22,15 @@ platforms:
   - name: cisshgo-ios-l2-merged
     groups:
       - ios_merged
+  - name: cisshgo-ios-l2-replaced
+    groups:
+      - ios_replaced
+  - name: cisshgo-ios-l2-overridden
+    groups:
+      - ios_overridden
+  - name: cisshgo-ios-l2-deleted
+    groups:
+      - ios_deleted
 
 provisioner:
   name: ansible

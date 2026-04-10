@@ -1,5 +1,5 @@
 ---
-# Molecule destroy: Stop CISSHGO SSH fixture server and clean up
+# Molecule destroy: Stop CISSHGO SSH fixture server and clean up (ios_l2_interfaces)
 
 - name: "CISSHGO — Stop and cleanup"
   hosts: localhost
@@ -8,7 +8,7 @@
     cisshgo_pid_file: "{{ playbook_dir }}/.cisshgo.pid"
     cisshgo_log_file: "{{ playbook_dir }}/.cisshgo.log"
     cisshgo_starting_port: "{{ lookup('env', 'CISSHGO_PORT') | default('10000', true) }}"
-    cisshgo_port_count: 2
+    cisshgo_port_count: 5
 
   tasks:
     - name: "Check if PID file exists"
@@ -47,12 +47,11 @@
     - name: "Fallback — kill any process on CISSHGO ports"
       when: not pid_stat.stat.exists
       ansible.builtin.shell: |
-        for port in $(seq {{ cisshgo_starting_port | int }} $(( {{ cisshgo_starting_port | int }} + {{ cisshgo_port_count | int }} - 1 ))); do
-          pid=$(lsof -ti:${port} 2>/dev/null || true)
-          if [ -n "$pid" ]; then
-            kill $pid 2>/dev/null || true
-          fi
-        done
+        pid=$(lsof -ti:{{ item }} 2>/dev/null || true)
+        if [ -n "$pid" ]; then
+          kill $pid 2>/dev/null || true
+        fi
+      loop: "{{ range(cisshgo_starting_port | int, cisshgo_starting_port | int + (cisshgo_port_count | int)) | list }}"
       changed_when: false
 
     - name: "Clean up log file"

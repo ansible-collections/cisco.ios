@@ -1,13 +1,9 @@
 ---
-# CISSHGO Transcript Map for cisco.ios.ios_l2_interfaces Molecule tests
-#
-# Platform: ios — gathered play (port 10000) and fallback commands.
-# Scenario: ios-l2-interfaces-merged — merged + idempotency (port 10001).
-
+# CISSHGO transcript map for cisco.ios.ios_l2_interfaces Molecule scenario
 platforms:
   ios:
     vendor: "cisco"
-    hostname: "cisshgo-ios-l2"
+    hostname: "cisshgo-ios"
     username: "admin"
     password: "admin"
     command_transcripts:
@@ -15,14 +11,9 @@ platforms:
       "terminal length 0": "transcripts/generic_empty_return.txt"
       "terminal width 512": "transcripts/generic_empty_return.txt"
       "terminal width 0": "transcripts/generic_empty_return.txt"
-
       "show version": "transcripts/cisco/ios/show_version.txt"
-      # Some fact-gather paths issue additional read-only commands; serve empty if present.
-      "show vlan": "transcripts/generic_empty_return.txt"
-
       "show running-config": "transcripts/cisco/ios/show_running-config.txt"
       "show running-config | section ^interface": "transcripts/cisco/ios/show_running-config_section_l2_gathered.txt"
-
       "write memory": "transcripts/generic_empty_return.txt"
       "write mem": "transcripts/generic_empty_return.txt"
 
@@ -45,7 +36,6 @@ scenarios:
     sequence:
       - command: "show running-config | section ^interface"
         transcript: "transcripts/scenarios/ios-l2-interfaces-merged/before.txt"
-
       - command: "configure terminal"
         transcript: "transcripts/generic_empty_return.txt"
       - command: "interface GigabitEthernet2"
@@ -58,8 +48,6 @@ scenarios:
         transcript: "transcripts/generic_empty_return.txt"
       - command: "interface GigabitEthernet3"
         transcript: "transcripts/generic_empty_return.txt"
-      # Command order must match the module (see state: rendered for same config).
-      # Mode trunk is generated before native / allowed / pruning on the trunk interface.
       - command: "switchport trunk encapsulation dot1q"
         transcript: "transcripts/generic_empty_return.txt"
       - command: "switchport mode trunk"
@@ -72,9 +60,115 @@ scenarios:
         transcript: "transcripts/generic_empty_return.txt"
       - command: "end"
         transcript: "transcripts/generic_empty_return.txt"
-
       - command: "show running-config | section ^interface"
         transcript: "transcripts/scenarios/ios-l2-interfaces-merged/after.txt"
-
       - command: "show running-config | section ^interface"
         transcript: "transcripts/scenarios/ios-l2-interfaces-merged/after.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-l2-interfaces-merged/after.txt"
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "switchport trunk allowed vlan add 200"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "switchport trunk pruning vlan add 40-60"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-l2-interfaces-merged/after_again.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-l2-interfaces-merged/after_again.txt"
+
+  ios-l2-interfaces-replaced:
+    platform: ios
+    sequence:
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-l2-interfaces-replaced/before.txt"
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "switchport access vlan 40"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "switchport voice vlan 20"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no switchport mode"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "switchport trunk native vlan 20"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no switchport trunk allowed vlan"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "switchport trunk pruning vlan add 11-19,30"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-l2-interfaces-replaced/after.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-l2-interfaces-replaced/after.txt"
+
+  ios-l2-interfaces-overridden:
+    platform: ios
+    sequence:
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-l2-interfaces-overridden/before.txt"
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no switchport access vlan"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no switchport mode"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "switchport trunk encapsulation isl"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "switchport trunk native vlan 30"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "switchport trunk allowed vlan remove 10-20"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "switchport trunk allowed vlan add 30-35"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no switchport trunk pruning vlan"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-l2-interfaces-overridden/after.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-l2-interfaces-overridden/after.txt"
+
+  ios-l2-interfaces-deleted:
+    platform: ios
+    sequence:
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-l2-interfaces-deleted/before.txt"
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no switchport access vlan"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no switchport mode"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no switchport trunk encapsulation"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no switchport trunk native vlan"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no switchport trunk allowed vlan"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no switchport trunk pruning vlan"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-l2-interfaces-deleted/after.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-l2-interfaces-deleted/after.txt"
