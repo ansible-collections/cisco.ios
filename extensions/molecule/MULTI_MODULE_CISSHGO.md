@@ -4,9 +4,9 @@ This file lives in the collection so clone consumers have the same guidance as t
 
 ## Scenarios
 
-| Scenario                    | Module                        | Listeners (default `CISSHGO_PORT=10000`) | Purpose                                      |
-| --------------------------- | ----------------------------- | ---------------------------------------- | -------------------------------------------- |
-| `cisshgo_ios_interfaces`    | `cisco.ios.ios_interfaces`    | 3 (platform + merged + replaced)         | gathered, merged, replaced, parsed, rendered |
+| Scenario                    | Module                        | Listeners (default `CISSHGO_PORT=10000`) | Purpose                                                                          |
+| --------------------------- | ----------------------------- | ---------------------------------------- | -------------------------------------------------------------------------------- |
+| `cisshgo_ios_interfaces`    | `cisco.ios.ios_interfaces`    | 3 (platform + merged + replaced)         | gathered, merged, replaced, parsed, rendered                                     |
 | `cisshgo_ios_l2_interfaces` | `cisco.ios.ios_l2_interfaces` | 5 (platform + 4 scenario listeners)      | gathered, merged + merged_again, replaced, overridden, deleted, parsed, rendered |
 
 Paths: `extensions/molecule/<scenario>/`.
