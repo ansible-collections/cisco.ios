@@ -4,8 +4,8 @@
 # Expected env vars:
 # - CISSHGO_BIN_PATH: path to a pre-built `cisshgo` binary (preferred)
 # - CISSHGO_REPO_PATH: path to the cisshgo source repo (used only if BIN_PATH not provided)
-# - CISSHGO_PORT: starting port (default: 10000). Each scenario may reuse this value;
-#   ports are freed when destroy runs, so sequential scenario runs do not need unique ranges.
+# - CISSHGO_PORT: starting port (default: 10000). Reused across module scenarios when each
+#   scenario runs to completion (destroy releases listeners) before the next scenario.
 
 - name: "CISSHGO - Build and start SSH fixture server"
   hosts: localhost
@@ -17,7 +17,7 @@
     cisshgo_fixture_dir: "{{ playbook_dir }}/cisshgo_fixtures"
     cisshgo_log_file: "{{ playbook_dir }}/.cisshgo.log"
     cisshgo_pid_file: "{{ playbook_dir }}/.cisshgo.pid"
-    cisshgo_port_count: 3
+    cisshgo_port_count: 2
 
   tasks:
     - name: "Resolve cisshgo binary path"
