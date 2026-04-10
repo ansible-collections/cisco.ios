@@ -329,6 +329,28 @@ class TestIosConfigModule(TestIosModule):
         commands = parents + lines
         self.execute_module(changed=True, commands=commands, sort=False)
 
+    def test_ios_config_interface_range_parents_idempotent(self):
+        lines = ["description test string"]
+        parents = "interface range GigabitEthernet 0/0, GigabitEthernet 0/1"
+        set_module_args(dict(lines=lines, parents=parents))
+        self.conn.get_diff = MagicMock(side_effect=self.cliconf_obj.get_diff)
+
+        self.execute_module(changed=False)
+        get_diff_call = self.conn.get_diff.call_args.kwargs
+        self.assertEqual(
+            get_diff_call["path"],
+            ["interface range GigabitEthernet 0/0, GigabitEthernet 0/1"],
+        )
+
+    def test_ios_config_interface_range_parents_executes_range_command(self):
+        lines = ["shutdown"]
+        parents = "interface range GigabitEthernet 0/0, GigabitEthernet 0/1"
+        set_module_args(dict(lines=lines, parents=parents))
+        self.conn.get_diff = MagicMock(side_effect=self.cliconf_obj.get_diff)
+
+        commands = ["interface range GigabitEthernet 0/0, GigabitEthernet 0/1", "shutdown"]
+        self.execute_module(changed=True, commands=commands, sort=False)
+
     def test_ios_config_src_and_lines_fails(self):
         args = dict(src="foo", lines="foo")
         set_module_args(args)
