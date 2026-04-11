@@ -26,12 +26,15 @@
   vars:
     ansible_command_timeout: 30
 
+- name: Reset ssh connection before archiving test
+  ansible.builtin.meta: reset_connection
+
 - name: Test archiving disabled
   register: result
   ansible.builtin.include_tasks: _test_config.yaml
   ignore_errors: true
   vars:
-    ansible_command_timeout: 1
+    ansible_command_timeout: 59
 
 - name: Assert that the result error equals std_err_archiving_disabled
   ansible.builtin.assert:

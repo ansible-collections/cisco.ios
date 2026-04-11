@@ -17,6 +17,9 @@
     defaults: true
   register: result
 
+- name: Reset ssh connection before timeout test
+  ansible.builtin.meta: reset_connection
+
 - block:
     - name: Run IOS commands to test command_timeout
       cisco.ios.ios_command:
