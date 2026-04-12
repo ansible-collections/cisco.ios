@@ -21,6 +21,10 @@
   ansible.builtin.meta: reset_connection
 
 - block:
+    - name: Debug ansible_command_timeout before test
+      ansible.builtin.debug:
+        msg: "ansible_command_timeout BEFORE: {{ ansible_command_timeout | default('NOT SET') }}"
+
     - name: Run IOS commands to test command_timeout
       cisco.ios.ios_command:
         commands:
@@ -32,6 +36,14 @@
           - show running-config all
       ignore_errors: true
       register: result
+
+    - name: Debug ansible_command_timeout after test
+      ansible.builtin.debug:
+        msg: "ansible_command_timeout AFTER: {{ ansible_command_timeout | default('NOT SET') }}"
+
+    - name: Debug result from ios_command
+      ansible.builtin.debug:
+        var: result
 
     - ansible.builtin.assert:
         that:

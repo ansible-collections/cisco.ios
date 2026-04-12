@@ -25,6 +25,8 @@
   ignore_errors: true
   vars:
     ansible_command_timeout: 30
+    ansible_ios_commit_confirm_immediate: false
+    ansible_ios_commit_confirm_timeout: 100
 
 - name: Reset ssh connection before archiving test
   ansible.builtin.meta: reset_connection
@@ -35,6 +37,7 @@
   ignore_errors: true
   vars:
     ansible_command_timeout: 59
+    ansible_ios_commit_confirm_timeout: 60
 
 - name: Assert that the result error equals std_err_archiving_disabled
   ansible.builtin.assert:
