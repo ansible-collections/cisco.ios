@@ -2,42 +2,54 @@
 
 | Scenario | Module | Listeners (`cisshgo_port_count`) | States exercised |
 |----------|--------|----------------------------------|------------------|
-| `cisshgo_ios_hostname` | `ios_hostname` | 3 | gathered, merged, deleted, parsed, rendered |
-| `cisshgo_ios_interfaces` | `ios_interfaces` | 6 | gathered, merged, replaced, overridden, deleted, parsed, rendered, **rtt** |
-| `cisshgo_ios_l2_interfaces` | `ios_l2_interfaces` | 6 | gathered, merged + merged_again, replaced, overridden, deleted, parsed, rendered, **rtt** |
-| `cisshgo_ios_l3_interfaces` | `ios_l3_interfaces` | 6 | gathered, merged, replaced, overridden, deleted, parsed, rendered, **rtt** |
-| `cisshgo_ios_acl_interfaces` | `ios_acl_interfaces` | 6 | gathered, merged, replaced, overridden, deleted, parsed, rendered, **rtt** |
-| `cisshgo_ios_ntp_global` | `ios_ntp_global` | 5 | gathered, merged, overridden, deleted, parsed, rendered, **rtt** |
-| `cisshgo_ios_lldp_global` | `ios_lldp_global` | 4 | gathered, merged, replaced, deleted, parsed, rendered |
-| `cisshgo_ios_logging_global` | `ios_logging_global` | 5 | gathered, merged, replaced, overridden, deleted, parsed, rendered |
-| `cisshgo_ios_prefix_lists` | `ios_prefix_lists` | 5 | gathered, merged, replaced, overridden, deleted, parsed, rendered |
-| `cisshgo_ios_snmp_server` | `ios_snmp_server` | 4 | gathered, merged, overridden, deleted, parsed, rendered |
-| `cisshgo_ios_static_routes` | `ios_static_routes` | 5 | gathered, merged, replaced, overridden, deleted, parsed, rendered |
-| `cisshgo_ios_ospfv2` | `ios_ospfv2` | 5 | gathered, merged, replaced, overridden, deleted, parsed, rendered |
-| `cisshgo_ios_ospfv3` | `ios_ospfv3` | 5 | gathered, merged, replaced, overridden, deleted, parsed, rendered |
-| `cisshgo_ios_ospf_interfaces` | `ios_ospf_interfaces` | 5 | gathered, merged, replaced, overridden, deleted, parsed, rendered |
-| `cisshgo_ios_bgp_global` | `ios_bgp_global` | 5 | gathered, merged, replaced, deleted, purged, parsed, rendered |
+| `cisshgo_ios_acl_interfaces` | `ios_acl_interfaces` | 6 | deleted, gathered, merged, overridden, parsed, rendered, replaced (+ RTT round-trip) |
+| `cisshgo_ios_acls` | `ios_acls` | 5 | deleted, gathered, merged, parsed, rendered |
+| `cisshgo_ios_bfd_interfaces` | `ios_bfd_interfaces` | 3 | deleted, gathered, merged, parsed, rendered |
+| `cisshgo_ios_bfd_templates` | `ios_bfd_templates` | 3 | gathered, merged, parsed, rendered, replaced |
+| `cisshgo_ios_bgp_address_family` | `ios_bgp_address_family` | 4 | deleted, gathered, merged, parsed, rendered, replaced |
+| `cisshgo_ios_bgp_global` | `ios_bgp_global` | 5 | deleted, gathered, merged, parsed, purged, rendered, replaced |
+| `cisshgo_ios_evpn_evi` | `ios_evpn_evi` | 5 | deleted, gathered, merged, parsed, rendered |
+| `cisshgo_ios_evpn_global` | `ios_evpn_global` | 5 | deleted, gathered, merged, parsed, rendered |
+| `cisshgo_ios_hostname` | `ios_hostname` | 3 | deleted, gathered, merged, parsed, rendered |
+| `cisshgo_ios_hsrp_interfaces` | `ios_hsrp_interfaces` | 5 | deleted, gathered, merged, parsed, rendered |
+| `cisshgo_ios_interfaces` | `ios_interfaces` | 6 | deleted, gathered, merged, overridden, parsed, rendered, replaced (+ RTT round-trip) |
+| `cisshgo_ios_l2_interfaces` | `ios_l2_interfaces` | 6 | deleted, gathered, merged, overridden, parsed, rendered, replaced (+ RTT round-trip) |
+| `cisshgo_ios_l3_interfaces` | `ios_l3_interfaces` | 6 | deleted, gathered, merged, overridden, parsed, rendered, replaced (+ RTT round-trip) |
+| `cisshgo_ios_lacp` | `ios_lacp` | 5 | deleted, gathered, merged, parsed, rendered |
+| `cisshgo_ios_lacp_interfaces` | `ios_lacp_interfaces` | 5 | deleted, gathered, merged, parsed, rendered |
+| `cisshgo_ios_lag_interfaces` | `ios_lag_interfaces` | 5 | deleted, gathered, merged, parsed, rendered |
+| `cisshgo_ios_lldp_global` | `ios_lldp_global` | 4 | deleted, gathered, merged, parsed, rendered, replaced |
+| `cisshgo_ios_lldp_interfaces` | `ios_lldp_interfaces` | 3 | deleted, gathered, merged |
+| `cisshgo_ios_logging_global` | `ios_logging_global` | 5 | deleted, gathered, merged, overridden, parsed, rendered, replaced |
+| `cisshgo_ios_ntp_global` | `ios_ntp_global` | 5 | deleted, gathered, merged, overridden, parsed, rendered, replaced (+ RTT round-trip) |
+| `cisshgo_ios_ospf_interfaces` | `ios_ospf_interfaces` | 5 | deleted, gathered, merged, overridden, parsed, rendered, replaced |
+| `cisshgo_ios_ospfv2` | `ios_ospfv2` | 5 | deleted, gathered, merged, overridden, parsed, rendered, replaced |
+| `cisshgo_ios_ospfv3` | `ios_ospfv3` | 5 | deleted, gathered, merged, overridden, parsed, rendered, replaced |
+| `cisshgo_ios_prefix_lists` | `ios_prefix_lists` | 5 | deleted, gathered, merged, overridden, parsed, rendered, replaced |
+| `cisshgo_ios_route_maps` | `ios_route_maps` | 4 | deleted, gathered, merged, parsed, rendered, replaced |
+| `cisshgo_ios_snmp_server` | `ios_snmp_server` | 4 | deleted, gathered, merged, overridden, parsed, rendered |
+| `cisshgo_ios_static_routes` | `ios_static_routes` | 5 | deleted, gathered, merged, overridden, parsed, rendered, replaced |
+| `cisshgo_ios_vlans` | `ios_vlans` | 5 | deleted, gathered, merged, parsed, rendered |
+| `cisshgo_ios_vrf_address_family` | `ios_vrf_address_family` | 5 | deleted, gathered, merged, parsed, rendered |
+| `cisshgo_ios_vrf_global` | `ios_vrf_global` | 5 | deleted, gathered, merged, parsed, rendered |
+| `cisshgo_ios_vrf_interfaces` | `ios_vrf_interfaces` | 3 | deleted, gathered, merged |
+| `cisshgo_ios_vxlan_vtep` | `ios_vxlan_vtep` | 5 | deleted, gathered, merged, parsed, rendered |
 
-Run from `ansible_collections/cisco/ios/extensions/`:
+Each scenario is its own Molecule project under `extensions/molecule/<scenario>/` (see that directory’s `molecule.yml`). Run from the scenario directory so `ANSIBLE_COLLECTIONS_PATH` in `molecule.yml` resolves correctly.
 
 ```bash
-export ANSIBLE_COLLECTIONS_PATH="$(pwd)/../../..:${ANSIBLE_COLLECTIONS_PATH:-}"
 export CISSHGO_BIN_PATH=/path/to/cisshgo   # or CISSHGO_REPO_PATH for go build
-molecule test -s cisshgo_ios_hostname
-molecule test -s cisshgo_ios_interfaces
-molecule test -s cisshgo_ios_l2_interfaces
-molecule test -s cisshgo_ios_l3_interfaces
-molecule test -s cisshgo_ios_acl_interfaces
-molecule test -s cisshgo_ios_ntp_global
-molecule test -s cisshgo_ios_lldp_global
-molecule test -s cisshgo_ios_logging_global
-molecule test -s cisshgo_ios_prefix_lists
-molecule test -s cisshgo_ios_snmp_server
-molecule test -s cisshgo_ios_static_routes
-molecule test -s cisshgo_ios_ospfv2
-molecule test -s cisshgo_ios_ospfv3
-molecule test -s cisshgo_ios_ospf_interfaces
-molecule test -s cisshgo_ios_bgp_global
+
+# Example: one scenario
+cd ansible_collections/cisco/ios/extensions/molecule/cisshgo_ios_hostname
+molecule test
+
+# Run all cisshgo_ios_* scenarios in sequence (each destroy frees listener ports)
+cd ansible_collections/cisco/ios/extensions/molecule
+for d in cisshgo_ios_*/; do
+  echo "==> ${d%/}"
+  (cd "$d" && molecule test) || exit 1
+done
 ```
 
 See [MULTI_MODULE_CISSHGO.md](MULTI_MODULE_CISSHGO.md) for port conventions, `ANSIBLE_COLLECTIONS_PATH`, and multi-scenario notes.
@@ -82,4 +94,4 @@ Everything for this workflow is co-located under the Cursor skill:
     └── run_scenario.sh
 ```
 
-See [SKILL.md](../../../../../.cursor/skills/cisco-ios-molecule-cisshgo-integration/SKILL.md) (**Recommended workflow**) for commands and the full step-by-step.
+See [SKILL.md](../../.cursor/skills/cisco-ios-molecule-cisshgo-integration/SKILL.md) (**Recommended workflow**) for commands and the full step-by-step.
