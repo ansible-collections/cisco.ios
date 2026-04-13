@@ -1,0 +1,119 @@
+---
+# CISSHGO Transcript Map for cisco.ios.ios_bfd_interfaces integration tests
+#
+# Platform: ios
+# Getter: show running-config | section ^interface
+#
+# Emit order verified via check_mode:
+#   merged:  GigE2 → GigE3 → GigE4
+#   deleted: GigE2 → GigE3 → GigE4
+#
+# Scenarios:
+#   ios-bfd-intf-merged:  clean → merged + idempotency
+#   ios-bfd-intf-deleted: populated → deleted (all) + idempotency
+
+platforms:
+  ios:
+    vendor: "cisco"
+    hostname: "cisshgo-ios"
+    username: "admin"
+    password: "admin"
+    command_transcripts:
+      "show privilege": "transcripts/cisco/ios/show_privilege.txt"
+      "terminal length 0": "transcripts/generic_empty_return.txt"
+      "terminal width 512": "transcripts/generic_empty_return.txt"
+      "terminal width 0": "transcripts/generic_empty_return.txt"
+      "show version": "transcripts/cisco/ios/show_version.txt"
+      "show running-config": "transcripts/cisco/ios/show_running-config.txt"
+      "show running-config | section ^interface": "transcripts/cisco/ios/show_running-config_section_interface_bfd_populated.txt"
+      "show vlan": "transcripts/generic_empty_return.txt"
+      "write memory": "transcripts/generic_empty_return.txt"
+      "write mem": "transcripts/generic_empty_return.txt"
+
+    context_search:
+      "configure terminal": "(config)#"
+      "enable": "#"
+      "base": "#"
+
+    context_hierarchy:
+      "(config)#": "#"
+      "#": ">"
+
+    end_context: "#"
+
+scenarios:
+  # ── merged: clean → merged ──────────────────────────────────────────────
+  ios-bfd-intf-merged:
+    platform: ios
+    sequence:
+      # get_facts (have) — clean (no BFD)
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-bfd-intf-merged/before_clean.txt"
+      # edit_config
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      # GigabitEthernet2
+      - command: "interface GigabitEthernet2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "bfd local-address 10.0.1.2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "bfd interval 100 min_rx 100 multiplier 3"
+        transcript: "transcripts/generic_empty_return.txt"
+      # GigabitEthernet3
+      - command: "interface GigabitEthernet3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "bfd interval 100 min_rx 100 multiplier 3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no bfd jitter"
+        transcript: "transcripts/generic_empty_return.txt"
+      # GigabitEthernet4
+      - command: "interface GigabitEthernet4"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "bfd template ANSIBLE_Template"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-bfd-intf-merged/after_merged.txt"
+      # idempotent: get_facts (have)
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-bfd-intf-merged/after_merged.txt"
+
+  # ── deleted: populated → deleted (all) ──────────────────────────────────
+  ios-bfd-intf-deleted:
+    platform: ios
+    sequence:
+      # get_facts (have) — populated (with BFD)
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-bfd-intf-deleted/before_populated.txt"
+      # edit_config
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      # GigabitEthernet2
+      - command: "interface GigabitEthernet2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no bfd local-address 10.0.1.2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no bfd interval 100 min_rx 100 multiplier 3"
+        transcript: "transcripts/generic_empty_return.txt"
+      # GigabitEthernet3
+      - command: "interface GigabitEthernet3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "bfd jitter"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no bfd interval 100 min_rx 100 multiplier 3"
+        transcript: "transcripts/generic_empty_return.txt"
+      # GigabitEthernet4
+      - command: "interface GigabitEthernet4"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no bfd template ANSIBLE_Template"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-bfd-intf-deleted/after_deleted.txt"
+      # idempotent: get_facts (have)
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-bfd-intf-deleted/after_deleted.txt"

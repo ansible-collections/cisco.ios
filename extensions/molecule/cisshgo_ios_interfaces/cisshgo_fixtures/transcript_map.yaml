@@ -8,6 +8,8 @@
 # Scenarios:
 # ios-interfaces-merged: Stateful sequence for merged state test + idempotency
 # ios-interfaces-replaced: Stateful sequence for replaced state test + idempotency
+# ios-interfaces-overridden: Stateful sequence for overridden state + idempotency
+# ios-interfaces-deleted: Stateful sequence for deleted state + idempotency
 #
 # How it works:
 # 1. Incoming commands first check the scenario sequence (if in scenario mode).
@@ -117,3 +119,110 @@ scenarios:
       # Step 4: Idempotent run - facts gathering -> still after state
       - command: "show running-config | section ^interface"
         transcript: "transcripts/scenarios/ios-interfaces-replaced/after.txt"
+
+  # ========================================================================
+  # ios_interfaces: state=overridden
+  # ========================================================================
+  ios-interfaces-overridden:
+    platform: ios
+    sequence:
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-interfaces-overridden/before.txt"
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "description Configured and Overridden by Ansible-Network"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no shutdown"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet4"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no description Auto_Cable_Testing_Ansible"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-interfaces-overridden/after.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-interfaces-overridden/after.txt"
+
+  # ========================================================================
+  # ios_interfaces: state=deleted
+  # ========================================================================
+  ios-interfaces-deleted:
+    platform: ios
+    sequence:
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-interfaces-deleted/before.txt"
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no description this is interface1"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no speed 1000"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "shutdown"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no description this is interface for testing"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no speed 1000"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-interfaces-deleted/after.txt"
+
+  # ========================================================================
+  # ios_interfaces: RTT (merged -> ios_facts -> replaced drift -> overridden revert)
+  # ========================================================================
+  ios-interfaces-rtt:
+    platform: ios
+    sequence:
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-interfaces-merged/before.txt"
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "description Configured and Merged by Ansible-Network"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "description 04j"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "shutdown"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-interfaces-merged/after.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-interfaces-merged/after.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-interfaces-merged/after.txt"
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "description RTT drift GE3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-interfaces-rtt/after_drift.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-interfaces-rtt/after_drift.txt"
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "description 04j"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/scenarios/ios-interfaces-merged/after.txt"

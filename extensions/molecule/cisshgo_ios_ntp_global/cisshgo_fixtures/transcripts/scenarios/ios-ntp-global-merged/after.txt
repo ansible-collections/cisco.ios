@@ -1,0 +1,4 @@
+ntp max-associations 34
+ntp mindistance 10
+ntp maxdistance 3
+ntp master 4

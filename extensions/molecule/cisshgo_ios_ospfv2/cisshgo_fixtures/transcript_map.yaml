@@ -1,0 +1,260 @@
+---
+# CISSHGO Transcript Map for cisco.ios.ios_ospfv2 integration tests
+#
+# Platform: ios
+# Getter: show running-config | section ^router ospf
+#
+# Emit order derived from source: _compare calls compare(self.parsers),
+# then _areas_compare (area parsers per area), then _complex_compare
+# (distribute_list.acls, network).
+#
+# Scenarios:
+#   ios-ospfv2-merged:     empty → populated + idempotency
+#   ios-ospfv2-replaced:   populated → replaced + idempotency
+#   ios-ospfv2-overridden: populated → overridden + idempotency
+#   ios-ospfv2-deleted:    populated → empty + idempotency
+
+platforms:
+  ios:
+    vendor: "cisco"
+    hostname: "cisshgo-ios"
+    username: "admin"
+    password: "admin"
+    command_transcripts:
+      "show privilege": "transcripts/cisco/ios/show_privilege.txt"
+      "terminal length 0": "transcripts/generic_empty_return.txt"
+      "terminal width 512": "transcripts/generic_empty_return.txt"
+      "terminal width 0": "transcripts/generic_empty_return.txt"
+      "show version": "transcripts/cisco/ios/show_version.txt"
+      "show running-config": "transcripts/cisco/ios/show_running-config.txt"
+      "show running-config | section ^router ospf": "transcripts/cisco/ios/show_running-config_section_router_ospf_populated.txt"
+      "show vlan": "transcripts/generic_empty_return.txt"
+      "write memory": "transcripts/generic_empty_return.txt"
+      "write mem": "transcripts/generic_empty_return.txt"
+
+    context_search:
+      "configure terminal": "(config)#"
+      "enable": "#"
+      "base": "#"
+
+    context_hierarchy:
+      "(config)#": "#"
+      "#": ">"
+
+    end_context: "#"
+
+scenarios:
+  # ── merged: empty → populated ──────────────────────────────────────────
+  ios-ospfv2-merged:
+    platform: ios
+    sequence:
+      # get_facts (have) — empty device
+      - command: "show running-config | section ^router ospf"
+        transcript: "transcripts/scenarios/ios-ospfv2-merged/before_empty.txt"
+      # edit_config: configure + 18 commands + end
+      # Process 1 first (config list order), then process 200 vrf blue
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      # Process 1: self.parsers phase
+      - command: "router ospf 1"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "default-information originate"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "max-metric router-lsa on-startup 110"
+        transcript: "transcripts/generic_empty_return.txt"
+      # Process 1: _areas_compare — area 5 then area 10
+      - command: "area 5 capability default-exclusion"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "area 10 authentication message-digest"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "area 10 default-cost 10"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "area 10 nssa default-information-originate metric 10"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "area 10 nssa translate type7 suppress-fa"
+        transcript: "transcripts/generic_empty_return.txt"
+      # Process 1: _area_complex_compare — filter_list
+      - command: "area 10 filter-list prefix test_prefix_in in"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "area 10 filter-list prefix test_prefix_out out"
+        transcript: "transcripts/generic_empty_return.txt"
+      # Process 1: _complex_compare — network
+      - command: "network 198.51.100.0 0.0.0.255 area 5"
+        transcript: "transcripts/generic_empty_return.txt"
+      # Process 200 vrf blue: self.parsers phase
+      - command: "router ospf 200 vrf blue"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "auto-cost reference-bandwidth 4"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "domain-id 192.0.3.1"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "max-metric router-lsa on-startup 100"
+        transcript: "transcripts/generic_empty_return.txt"
+      # Process 200: _areas_compare — area 10
+      - command: "area 10 capability default-exclusion"
+        transcript: "transcripts/generic_empty_return.txt"
+      # Process 200: _complex_compare — distribute_list.acls
+      - command: "distribute-list 10 out"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "distribute-list 123 in"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^router ospf"
+        transcript: "transcripts/scenarios/ios-ospfv2-merged/after_populated.txt"
+      # idempotent: get_facts (have)
+      - command: "show running-config | section ^router ospf"
+        transcript: "transcripts/scenarios/ios-ospfv2-merged/after_populated.txt"
+      # idempotent: get_facts (after)
+      - command: "show running-config | section ^router ospf"
+        transcript: "transcripts/scenarios/ios-ospfv2-merged/after_populated.txt"
+
+  # ── replaced: populated → replaced ─────────────────────────────────────
+  ios-ospfv2-replaced:
+    platform: ios
+    sequence:
+      # get_facts (have) — populated
+      - command: "show running-config | section ^router ospf"
+        transcript: "transcripts/scenarios/ios-ospfv2-replaced/before_populated.txt"
+      # edit_config: configure + 17 commands + end
+      # wantd iteration: process 200 first (config order), then process 100
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      # Process 200 vrf blue: compare self.parsers (negate removed attrs, set new)
+      - command: "router ospf 200 vrf blue"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no auto-cost reference-bandwidth 4"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "domain-id 192.0.4.1"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "max-metric router-lsa on-startup 200"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "maximum-paths 15"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ttl-security all-interfaces hops 7"
+        transcript: "transcripts/generic_empty_return.txt"
+      # Process 200: _areas_compare — area 10
+      - command: "area 10 authentication message-digest"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no area 10 capability default-exclusion"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "area 10 default-cost 10"
+        transcript: "transcripts/generic_empty_return.txt"
+      # Process 200: _complex_compare — negate distribute_list.acls
+      - command: "no distribute-list 10 out"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no distribute-list 123 in"
+        transcript: "transcripts/generic_empty_return.txt"
+      # Process 100 vrf blue: new process
+      - command: "router ospf 100 vrf blue"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "auto-cost reference-bandwidth 5"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "domain-id 192.0.5.1"
+        transcript: "transcripts/generic_empty_return.txt"
+      # Process 100: _areas_compare — area 5
+      - command: "area 5 authentication message-digest"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "area 5 nssa default-information-originate metric 10"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "area 5 nssa translate type7 suppress-fa"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^router ospf"
+        transcript: "transcripts/scenarios/ios-ospfv2-replaced/after_replaced.txt"
+      # idempotent: get_facts (have)
+      - command: "show running-config | section ^router ospf"
+        transcript: "transcripts/scenarios/ios-ospfv2-replaced/after_replaced.txt"
+      # idempotent: get_facts (after)
+      - command: "show running-config | section ^router ospf"
+        transcript: "transcripts/scenarios/ios-ospfv2-replaced/after_replaced.txt"
+
+  # ── overridden: populated → overridden ─────────────────────────────────
+  ios-ospfv2-overridden:
+    platform: ios
+    sequence:
+      # get_facts (have) — populated
+      - command: "show running-config | section ^router ospf"
+        transcript: "transcripts/scenarios/ios-ospfv2-overridden/before_populated.txt"
+      # edit_config: configure + 18 commands + end
+      # First: remove extra processes (process 1 not in want)
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no router ospf 1"
+        transcript: "transcripts/generic_empty_return.txt"
+      # wantd iteration: process 200 first, then process 100
+      - command: "router ospf 200 vrf blue"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no auto-cost reference-bandwidth 4"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "domain-id 192.0.4.1"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "max-metric router-lsa on-startup 200"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "maximum-paths 15"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ttl-security all-interfaces hops 7"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "area 10 authentication message-digest"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no area 10 capability default-exclusion"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "area 10 default-cost 10"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no distribute-list 10 out"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no distribute-list 123 in"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "router ospf 100 vrf blue"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "auto-cost reference-bandwidth 5"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "domain-id 192.0.5.1"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "area 5 authentication message-digest"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "area 5 nssa default-information-originate metric 10"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "area 5 nssa translate type7 suppress-fa"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^router ospf"
+        transcript: "transcripts/scenarios/ios-ospfv2-overridden/after_overridden.txt"
+      # idempotent: get_facts (have)
+      - command: "show running-config | section ^router ospf"
+        transcript: "transcripts/scenarios/ios-ospfv2-overridden/after_overridden.txt"
+      # idempotent: get_facts (after)
+      - command: "show running-config | section ^router ospf"
+        transcript: "transcripts/scenarios/ios-ospfv2-overridden/after_overridden.txt"
+
+  # ── deleted: populated → empty ─────────────────────────────────────────
+  ios-ospfv2-deleted:
+    platform: ios
+    sequence:
+      # get_facts (have) — populated
+      - command: "show running-config | section ^router ospf"
+        transcript: "transcripts/scenarios/ios-ospfv2-deleted/before_populated.txt"
+      # edit_config: configure + 2 negate commands + end
+      # haved iteration order (from show output): process 200 first, then process 1
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no router ospf 200 vrf blue"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no router ospf 1"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after) — empty
+      - command: "show running-config | section ^router ospf"
+        transcript: "transcripts/scenarios/ios-ospfv2-deleted/after_empty.txt"
+      # idempotent: get_facts (have) — empty
+      - command: "show running-config | section ^router ospf"
+        transcript: "transcripts/scenarios/ios-ospfv2-deleted/after_empty.txt"
+      # idempotent: get_facts (after) — empty
+      - command: "show running-config | section ^router ospf"
+        transcript: "transcripts/scenarios/ios-ospfv2-deleted/after_empty.txt"

@@ -1,0 +1,25 @@
+---
+# CISSHGO device inventory for ios_static_routes integration tests
+#
+# Ports (starting --starting-port, default 10000):
+#   10000: platform (gathered, parsed, rendered)
+#   10001: scenario ios-static-routes-merged
+#   10002: scenario ios-static-routes-replaced
+#   10003: scenario ios-static-routes-overridden
+#   10004: scenario ios-static-routes-deleted
+
+devices:
+  - platform: ios
+    count: 1
+
+  - scenario: ios-static-routes-merged
+    count: 1
+
+  - scenario: ios-static-routes-replaced
+    count: 1
+
+  - scenario: ios-static-routes-overridden
+    count: 1
+
+  - scenario: ios-static-routes-deleted
+    count: 1

@@ -25,6 +25,15 @@ platforms:
   - name: cisshgo-ios-replaced
     groups:
       - ios_replaced
+  - name: cisshgo-ios-overridden
+    groups:
+      - ios_overridden
+  - name: cisshgo-ios-deleted
+    groups:
+      - ios_deleted
+  - name: cisshgo-ios-rtt
+    groups:
+      - ios_rtt
 
 provisioner:
   name: ansible

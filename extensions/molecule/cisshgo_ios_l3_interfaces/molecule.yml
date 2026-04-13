@@ -1,0 +1,50 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: default
+  options:
+    managed: false
+
+scenario:
+  name: cisshgo_ios_l3_interfaces
+  test_sequence:
+    - create
+    - converge
+    - verify
+    - destroy
+
+platforms:
+  - name: cisshgo-ios-gathered
+    groups:
+      - ios_gathered
+  - name: cisshgo-ios-merged
+    groups:
+      - ios_merged
+  - name: cisshgo-ios-replaced
+    groups:
+      - ios_replaced
+  - name: cisshgo-ios-overridden
+    groups:
+      - ios_overridden
+  - name: cisshgo-ios-deleted
+    groups:
+      - ios_deleted
+  - name: cisshgo-ios-l3-rtt
+    groups:
+      - ios_l3_rtt
+
+provisioner:
+  name: ansible
+  inventory:
+    links:
+      hosts: ${MOLECULE_SCENARIO_DIRECTORY}/inventory/hosts.yml
+  env:
+    ANSIBLE_COLLECTIONS_PATH: "${MOLECULE_SCENARIO_DIRECTORY}/../../../../.."
+    ANSIBLE_HOST_KEY_CHECKING: "false"
+    # dict_merge() uses set(other)-base key order; pin hash so ios_l3_interfaces emit order matches cisshgo transcript_map.
+    PYTHONHASHSEED: "0"
+
+verifier:
+  name: ansible

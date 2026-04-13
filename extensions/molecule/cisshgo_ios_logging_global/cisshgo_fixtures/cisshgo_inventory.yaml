@@ -1,0 +1,25 @@
+---
+# CISSHGO device inventory for ios_logging_global integration tests
+#
+# Ports (starting --starting-port, default 10000):
+#   10000: platform (gathered, parsed, rendered)
+#   10001: scenario ios-logging-global-merged
+#   10002: scenario ios-logging-global-replaced
+#   10003: scenario ios-logging-global-overridden
+#   10004: scenario ios-logging-global-deleted
+
+devices:
+  - platform: ios
+    count: 1
+
+  - scenario: ios-logging-global-merged
+    count: 1
+
+  - scenario: ios-logging-global-replaced
+    count: 1
+
+  - scenario: ios-logging-global-overridden
+    count: 1
+
+  - scenario: ios-logging-global-deleted
+    count: 1

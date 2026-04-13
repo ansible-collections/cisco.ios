@@ -1,0 +1,151 @@
+---
+# CISSHGO transcript map for cisco.ios.ios_vlans Molecule tests.
+#
+# ios_vlans has TRIPLE getters on the first facts pass:
+#   1. show vlan  (from check_device_type() in get_device_info())
+#   2. show vlan  (from get_vlans_data())
+#   3. show running-config | section ^vlan configuration .+  (from get_vlan_conf_data())
+#
+# get_device_info() caches after first call, so subsequent facts passes use 2 getters:
+#   1. show vlan  (from get_vlans_data())
+#   2. show running-config | section ^vlan configuration .+  (from get_vlan_conf_data())
+#
+# Main merged play (check_mode + apply + idempotent):
+#   check_mode before: 3 (show vlan, show vlan, show running-config section)
+#   check_mode after:  2 (show vlan, show running-config section)
+#   apply before:      2 (show vlan, show running-config section)
+#   configure terminal + commands + end
+#   apply after:       2 (show vlan, show running-config section)
+#   idempotent before: 2 (show vlan, show running-config section)
+#   idempotent after:  2 (show vlan, show running-config section)
+#
+# Total before configure: 7 getters
+# Total after end: 6 getters
+
+platforms:
+  ios:
+    vendor: "cisco"
+    hostname: "cisshgo-ios"
+    username: "admin"
+    password: "admin"
+    command_transcripts:
+      "show privilege": "transcripts/cisco/ios/show_privilege.txt"
+      "terminal length 0": "transcripts/generic_empty_return.txt"
+      "terminal width 512": "transcripts/generic_empty_return.txt"
+      "terminal width 0": "transcripts/generic_empty_return.txt"
+      "show version": "transcripts/cisco/ios/show_version.txt"
+      "show running-config": "transcripts/cisco/ios/show_running-config.txt"
+      "show vlan": "transcripts/cisco/ios/show_vlan_populated.txt"
+      "show running-config | section ^vlan configuration .+": "transcripts/cisco/ios/show_running-config_section_vlan_configuration_empty.txt"
+      "write memory": "transcripts/generic_empty_return.txt"
+      "write mem": "transcripts/generic_empty_return.txt"
+
+    context_search:
+      "configure terminal": "(config)#"
+      "enable": "#"
+      "base": "#"
+
+    context_hierarchy:
+      "(config)#": "#"
+      "#": ">"
+
+    end_context: "#"
+
+scenarios:
+  ios-vlans-merged:
+    platform: ios
+    sequence:
+      # --- check_mode before facts (first facts pass: 3 getters) ---
+      - command: "show vlan"
+        transcript: "transcripts/scenarios/ios-vlans-merged/show_vlan_before.txt"
+      - command: "show vlan"
+        transcript: "transcripts/scenarios/ios-vlans-merged/show_vlan_before.txt"
+      - command: "show running-config | section ^vlan configuration .+"
+        transcript: "transcripts/scenarios/ios-vlans-merged/vlan_config_before.txt"
+      # --- check_mode after facts (result property: 2 getters) ---
+      - command: "show vlan"
+        transcript: "transcripts/scenarios/ios-vlans-merged/show_vlan_before.txt"
+      - command: "show running-config | section ^vlan configuration .+"
+        transcript: "transcripts/scenarios/ios-vlans-merged/vlan_config_before.txt"
+      # --- apply before facts (2 getters) ---
+      - command: "show vlan"
+        transcript: "transcripts/scenarios/ios-vlans-merged/show_vlan_before.txt"
+      - command: "show running-config | section ^vlan configuration .+"
+        transcript: "transcripts/scenarios/ios-vlans-merged/vlan_config_before.txt"
+      # --- configure ---
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "vlan 100"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "name TEST_VLAN"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "state active"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no shutdown"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # --- apply after facts (2 getters) ---
+      - command: "show vlan"
+        transcript: "transcripts/scenarios/ios-vlans-merged/show_vlan_after.txt"
+      - command: "show running-config | section ^vlan configuration .+"
+        transcript: "transcripts/scenarios/ios-vlans-merged/vlan_config_after.txt"
+      # --- idempotent before facts (2 getters) ---
+      - command: "show vlan"
+        transcript: "transcripts/scenarios/ios-vlans-merged/show_vlan_after.txt"
+      - command: "show running-config | section ^vlan configuration .+"
+        transcript: "transcripts/scenarios/ios-vlans-merged/vlan_config_after.txt"
+      # --- idempotent after facts (result property: 2 getters) ---
+      - command: "show vlan"
+        transcript: "transcripts/scenarios/ios-vlans-merged/show_vlan_after.txt"
+      - command: "show running-config | section ^vlan configuration .+"
+        transcript: "transcripts/scenarios/ios-vlans-merged/vlan_config_after.txt"
+
+  ios-vlans-deleted:
+    platform: ios
+    sequence:
+      # --- check_mode before facts (first facts pass: 3 getters) ---
+      - command: "show vlan"
+        transcript: "transcripts/scenarios/ios-vlans-deleted/show_vlan_before.txt"
+      - command: "show vlan"
+        transcript: "transcripts/scenarios/ios-vlans-deleted/show_vlan_before.txt"
+      - command: "show running-config | section ^vlan configuration .+"
+        transcript: "transcripts/scenarios/ios-vlans-deleted/vlan_config_before.txt"
+      # --- check_mode after facts (result property: 2 getters) ---
+      - command: "show vlan"
+        transcript: "transcripts/scenarios/ios-vlans-deleted/show_vlan_before.txt"
+      - command: "show running-config | section ^vlan configuration .+"
+        transcript: "transcripts/scenarios/ios-vlans-deleted/vlan_config_before.txt"
+      # --- apply before facts (2 getters) ---
+      - command: "show vlan"
+        transcript: "transcripts/scenarios/ios-vlans-deleted/show_vlan_before.txt"
+      - command: "show running-config | section ^vlan configuration .+"
+        transcript: "transcripts/scenarios/ios-vlans-deleted/vlan_config_before.txt"
+      # --- configure ---
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "vlan 100"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no name TEST_VLAN"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no state active"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "shutdown"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # --- apply after facts (2 getters) ---
+      - command: "show vlan"
+        transcript: "transcripts/scenarios/ios-vlans-deleted/show_vlan_after.txt"
+      - command: "show running-config | section ^vlan configuration .+"
+        transcript: "transcripts/scenarios/ios-vlans-deleted/vlan_config_after.txt"
+      # --- idempotent before facts (2 getters) ---
+      - command: "show vlan"
+        transcript: "transcripts/scenarios/ios-vlans-deleted/show_vlan_after.txt"
+      - command: "show running-config | section ^vlan configuration .+"
+        transcript: "transcripts/scenarios/ios-vlans-deleted/vlan_config_after.txt"
+      # --- idempotent after facts (result property: 2 getters) ---
+      - command: "show vlan"
+        transcript: "transcripts/scenarios/ios-vlans-deleted/show_vlan_after.txt"
+      - command: "show running-config | section ^vlan configuration .+"
+        transcript: "transcripts/scenarios/ios-vlans-deleted/vlan_config_after.txt"

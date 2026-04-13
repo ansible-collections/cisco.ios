@@ -1,0 +1,108 @@
+---
+# CISSHGO Transcript Map for cisco.ios.ios_bfd_templates integration tests
+#
+# Platform: ios
+# Getter: show running-config | section ^bfd-template
+#
+# Emit order verified via check_mode:
+#   merged:   template1 (single-hop) → template2 (multi-hop)
+#   replaced: template1 modifications only
+#
+# Scenarios:
+#   ios-bfd-tmpl-merged:   empty → merged + idempotency
+#   ios-bfd-tmpl-replaced: populated → replaced + idempotency
+
+platforms:
+  ios:
+    vendor: "cisco"
+    hostname: "cisshgo-ios"
+    username: "admin"
+    password: "admin"
+    command_transcripts:
+      "show privilege": "transcripts/cisco/ios/show_privilege.txt"
+      "terminal length 0": "transcripts/generic_empty_return.txt"
+      "terminal width 512": "transcripts/generic_empty_return.txt"
+      "terminal width 0": "transcripts/generic_empty_return.txt"
+      "show version": "transcripts/cisco/ios/show_version.txt"
+      "show running-config": "transcripts/cisco/ios/show_running-config.txt"
+      "show running-config | section ^bfd-template": "transcripts/cisco/ios/show_running-config_section_bfd-template_populated.txt"
+      "show vlan": "transcripts/generic_empty_return.txt"
+      "write memory": "transcripts/generic_empty_return.txt"
+      "write mem": "transcripts/generic_empty_return.txt"
+
+    context_search:
+      "configure terminal": "(config)#"
+      "enable": "#"
+      "base": "#"
+
+    context_hierarchy:
+      "(config)#": "#"
+      "#": ">"
+
+    end_context: "#"
+
+scenarios:
+  # ── merged: empty → merged ──────────────────────────────────────────────
+  ios-bfd-tmpl-merged:
+    platform: ios
+    sequence:
+      # get_facts (have) — empty
+      - command: "show running-config | section ^bfd-template"
+        transcript: "transcripts/scenarios/ios-bfd-tmpl-merged/before_empty.txt"
+      # edit_config
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      # template1 single-hop
+      - command: "bfd-template single-hop template1"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interval min-tx 200 min-rx 200 multiplier 3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "authentication sha-1 keychain bfd_keychain"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "echo"
+        transcript: "transcripts/generic_empty_return.txt"
+      # template2 multi-hop
+      - command: "bfd-template multi-hop template2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interval min-tx 500 min-rx 500 multiplier 5"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "dampening 30 2000 5000 54"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^bfd-template"
+        transcript: "transcripts/scenarios/ios-bfd-tmpl-merged/after_merged.txt"
+      # idempotent: get_facts (have)
+      - command: "show running-config | section ^bfd-template"
+        transcript: "transcripts/scenarios/ios-bfd-tmpl-merged/after_merged.txt"
+
+  # ── replaced: populated → replaced ──────────────────────────────────────
+  ios-bfd-tmpl-replaced:
+    platform: ios
+    sequence:
+      # get_facts (have) — populated
+      - command: "show running-config | section ^bfd-template"
+        transcript: "transcripts/scenarios/ios-bfd-tmpl-replaced/before_populated.txt"
+      # edit_config
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      # template1 modifications
+      - command: "bfd-template single-hop template1"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no echo"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interval min-tx 300 min-rx 300 multiplier 4"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no authentication sha-1 keychain bfd_keychain"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "authentication sha-1 keychain new_keychain"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^bfd-template"
+        transcript: "transcripts/scenarios/ios-bfd-tmpl-replaced/after_replaced.txt"
+      # idempotent: get_facts (have)
+      - command: "show running-config | section ^bfd-template"
+        transcript: "transcripts/scenarios/ios-bfd-tmpl-replaced/after_replaced.txt"

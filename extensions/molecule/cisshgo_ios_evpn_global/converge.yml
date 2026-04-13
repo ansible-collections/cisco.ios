@@ -1,0 +1,222 @@
+---
+# Preview check_mode on stateful hosts first, then gathered/parsed/rendered, then full
+# merged/deleted plays. Each new TCP session resets the CISSHGO scenario cursor.
+
+- name: "ios_evpn_global — merged check_mode (preview)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_evpn_global/vars/main.yaml"
+  tasks:
+    - name: "Merged — check_mode (preview)"
+      cisco.ios.ios_evpn_global:
+        config:
+          replication_type: static
+        state: merged
+      check_mode: true
+      register: cm_merged_preview
+
+    - name: "Debug merged check_mode (preview)"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_merged_preview.changed }}"
+          commands: "{{ cm_merged_preview.commands | default([]) }}"
+          before: "{{ cm_merged_preview.before | default({}) }}"
+          after: "{{ cm_merged_preview.after | default({}) }}"
+
+- name: "ios_evpn_global — deleted check_mode (preview)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_evpn_global/vars/main.yaml"
+  tasks:
+    - name: "Deleted — check_mode (preview)"
+      cisco.ios.ios_evpn_global:
+        state: deleted
+      check_mode: true
+      register: cm_deleted_preview
+
+    - name: "Debug deleted check_mode (preview)"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_deleted_preview.changed }}"
+          commands: "{{ cm_deleted_preview.commands | default([]) }}"
+          before: "{{ cm_deleted_preview.before | default({}) }}"
+          after: "{{ cm_deleted_preview.after | default({}) }}"
+
+- name: "ios_evpn_global — state: gathered"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_evpn_global/vars/main.yaml"
+  tasks:
+    - name: "Gather EVPN global configuration"
+      cisco.ios.ios_evpn_global:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered | length > 0
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — EVPN global from CISSHGO fixture"
+
+- name: "ios_evpn_global — state: parsed (running_config from _parsed.cfg)"
+  hosts: ios_parsed
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_evpn_global/vars/main.yaml"
+  tasks:
+    - name: "Parse EVPN global from integration _parsed.cfg"
+      cisco.ios.ios_evpn_global:
+        running_config: "{{ lookup('file', playbook_dir ~ '/../../../tests/integration/targets/ios_evpn_global/tests/cli/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed structure"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed['after'] == result['parsed']
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — _parsed.cfg"
+
+- name: "ios_evpn_global — state: rendered"
+  hosts: ios_rendered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_evpn_global/vars/main.yaml"
+  vars:
+    evpn_global_merged_cmds:
+      - l2vpn evpn
+      - replication-type static
+  tasks:
+    - name: "Render EVPN global configuration to CLI"
+      cisco.ios.ios_evpn_global:
+        config:
+          replication_type: static
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - evpn_global_merged_cmds | symmetric_difference(result['rendered'] | default([])) | length == 0
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — offline CLI projection"
+
+- name: "ios_evpn_global — state: merged (check_mode, apply, idempotency)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_evpn_global/vars/main.yaml"
+  vars:
+    evpn_global_merged_cmds:
+      - l2vpn evpn
+      - replication-type static
+  tasks:
+    - name: "Merged — check_mode"
+      cisco.ios.ios_evpn_global:
+        config:
+          replication_type: static
+        state: merged
+      check_mode: true
+      register: cm_merged
+
+    - name: "Debug merged check_mode"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_merged.changed }}"
+          commands: "{{ cm_merged.commands | default([]) }}"
+          before: "{{ cm_merged.before | default({}) }}"
+          after: "{{ cm_merged.after | default({}) }}"
+
+    - name: "Merge EVPN global replication-type"
+      cisco.ios.ios_evpn_global: &merged_evpn_global
+        config:
+          replication_type: static
+        state: merged
+      register: result
+
+    - name: "Assert merged first apply"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - evpn_global_merged_cmds | symmetric_difference(result['commands'] | default([])) | length == 0
+          - result['after']['replication_type'] == 'static'
+        quiet: true
+
+    - name: "Merge EVPN global — idempotent run"
+      cisco.ios.ios_evpn_global: *merged_evpn_global
+      register: result
+
+    - name: "Assert merged idempotency"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — check_mode + apply + idempotency"
+
+- name: "ios_evpn_global — state: deleted (check_mode, apply, idempotency)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_evpn_global/vars/main.yaml"
+  vars:
+    evpn_global_deleted_cmds:
+      - no l2vpn evpn
+  tasks:
+    - name: "Deleted — check_mode"
+      cisco.ios.ios_evpn_global:
+        state: deleted
+      check_mode: true
+      register: cm_deleted
+
+    - name: "Debug deleted check_mode"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_deleted.changed }}"
+          commands: "{{ cm_deleted.commands | default([]) }}"
+          before: "{{ cm_deleted.before | default({}) }}"
+          after: "{{ cm_deleted.after | default({}) }}"
+
+    - name: "Delete EVPN global configuration"
+      cisco.ios.ios_evpn_global: &deleted_evpn_global
+        state: deleted
+      register: result
+
+    - name: "Assert deleted first apply"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - evpn_global_deleted_cmds | symmetric_difference(result['commands'] | default([])) | length == 0
+        quiet: true
+
+    - name: "Delete EVPN global — idempotent run"
+      cisco.ios.ios_evpn_global: *deleted_evpn_global
+      register: result
+
+    - name: "Assert deleted idempotency"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: deleted state"
+      ansible.builtin.debug:
+        msg: "deleted state test passed — check_mode + apply + idempotency"

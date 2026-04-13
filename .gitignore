@@ -117,3 +117,8 @@ venv.bak/
 
 changelogs/.plugin-cache.yaml
 .ansible/.lock
+
+# cisshgo / Molecule ephemeral files
+extensions/molecule/*/.cisshgo.log
+extensions/molecule/*/.cisshgo.pid
+extensions/molecule/captured/

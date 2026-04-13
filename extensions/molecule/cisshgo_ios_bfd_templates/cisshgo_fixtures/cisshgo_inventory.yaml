@@ -1,0 +1,10 @@
+---
+devices:
+  - platform: ios
+    count: 1
+
+  - scenario: ios-bfd-tmpl-merged
+    count: 1
+
+  - scenario: ios-bfd-tmpl-replaced
+    count: 1

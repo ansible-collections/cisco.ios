@@ -1,0 +1,21 @@
+---
+# CISSHGO device inventory for ios_lldp_global integration tests
+#
+# Ports (starting --starting-port, default 10000):
+#   10000: platform (gathered, parsed, rendered)
+#   10001: scenario ios-lldp-global-merged
+#   10002: scenario ios-lldp-global-replaced
+#   10003: scenario ios-lldp-global-deleted
+
+devices:
+  - platform: ios
+    count: 1
+
+  - scenario: ios-lldp-global-merged
+    count: 1
+
+  - scenario: ios-lldp-global-replaced
+    count: 1
+
+  - scenario: ios-lldp-global-deleted
+    count: 1

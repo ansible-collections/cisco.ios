@@ -1,0 +1,92 @@
+---
+# CISSHGO Transcript Map for cisco.ios.ios_hostname integration tests
+#
+# Platform: ios
+# Stateless layer serving connection setup commands and read-only show commands.
+# Used by gathered test state (and by platform fallback for any unmapped commands).
+#
+# Scenarios:
+# ios-hostname-merged:  Stateful sequence for merged state test + idempotency
+# ios-hostname-deleted: Stateful sequence for deleted state test
+#
+# Getter command: show running-config | section ^hostname
+
+platforms:
+  ios:
+    vendor: "cisco"
+    hostname: "cisshgo-ios"
+    username: "admin"
+    password: "admin"
+    command_transcripts:
+      "show privilege": "transcripts/cisco/ios/show_privilege.txt"
+      "terminal length 0": "transcripts/generic_empty_return.txt"
+      "terminal width 512": "transcripts/generic_empty_return.txt"
+      "terminal width 0": "transcripts/generic_empty_return.txt"
+
+      "show version": "transcripts/cisco/ios/show_version.txt"
+
+      "show running-config": "transcripts/cisco/ios/show_running-config.txt"
+      "show running-config | section ^hostname": "transcripts/cisco/ios/show_running-config_section_hostname_gathered.txt"
+
+      "write memory": "transcripts/generic_empty_return.txt"
+      "write mem": "transcripts/generic_empty_return.txt"
+
+    context_search:
+      "configure terminal": "(config)#"
+      "enable": "#"
+      "base": "#"
+
+    context_hierarchy:
+      "(config)#": "#"
+      "#": ">"
+
+    end_context: "#"
+
+scenarios:
+  # ========================================================================
+  # ios_hostname: state=merged
+  # ========================================================================
+  ios-hostname-merged:
+    platform: ios
+    sequence:
+      # Step 1: Initial facts gathering -> before state (hostname box1)
+      - command: "show running-config | section ^hostname"
+        transcript: "transcripts/scenarios/ios-hostname-merged/before.txt"
+
+      # Step 2: Config commands from the module
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "hostname boxTest"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+
+      # Step 3: Post-change facts gathering -> after state
+      - command: "show running-config | section ^hostname"
+        transcript: "transcripts/scenarios/ios-hostname-merged/after.txt"
+
+      # Step 4: Idempotent run - facts gathering -> still after state (no changes)
+      - command: "show running-config | section ^hostname"
+        transcript: "transcripts/scenarios/ios-hostname-merged/after.txt"
+
+  # ========================================================================
+  # ios_hostname: state=deleted
+  # ========================================================================
+  ios-hostname-deleted:
+    platform: ios
+    sequence:
+      # Step 1: Initial facts gathering -> before state (hostname box1)
+      - command: "show running-config | section ^hostname"
+        transcript: "transcripts/scenarios/ios-hostname-deleted/before.txt"
+
+      # Step 2: Config commands from the module
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no hostname box1"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+
+      # Step 3: Post-change facts gathering -> after state (reverts to default)
+      - command: "show running-config | section ^hostname"
+        transcript: "transcripts/scenarios/ios-hostname-deleted/after.txt"

@@ -1,0 +1,241 @@
+---
+# Preview check_mode on stateful hosts first, then gathered/parsed/rendered, then full
+# merged/deleted plays. Each new TCP session resets the CISSHGO scenario cursor.
+
+- name: "ios_hsrp_interfaces — merged check_mode (preview)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_hsrp_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Merged — check_mode (preview)"
+      cisco.ios.ios_hsrp_interfaces:
+        config:
+          - name: GigabitEthernet0/1
+            version: 1
+            mac_refresh: 21
+        state: merged
+      check_mode: true
+      register: cm_merged_preview
+
+    - name: "Debug merged check_mode (preview)"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_merged_preview.changed }}"
+          commands: "{{ cm_merged_preview.commands | default([]) }}"
+          before: "{{ cm_merged_preview.before | default([]) }}"
+          after: "{{ cm_merged_preview.after | default([]) }}"
+
+- name: "ios_hsrp_interfaces — deleted check_mode (preview)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_hsrp_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Deleted — check_mode (preview)"
+      cisco.ios.ios_hsrp_interfaces:
+        config:
+          - name: GigabitEthernet0/1
+        state: deleted
+      check_mode: true
+      register: cm_deleted_preview
+
+    - name: "Debug deleted check_mode (preview)"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_deleted_preview.changed }}"
+          commands: "{{ cm_deleted_preview.commands | default([]) }}"
+          before: "{{ cm_deleted_preview.before | default([]) }}"
+          after: "{{ cm_deleted_preview.after | default([]) }}"
+
+- name: "ios_hsrp_interfaces — state: gathered"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_hsrp_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Gather HSRP interface configuration"
+      cisco.ios.ios_hsrp_interfaces:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered (relaxed)"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered is defined
+          - result.gathered | length > 0
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — HSRP interfaces from CISSHGO fixture"
+
+- name: "ios_hsrp_interfaces — state: parsed (running_config from _parsed.cfg)"
+  hosts: ios_parsed
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_hsrp_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Parse HSRP interfaces from integration _parsed.cfg"
+      cisco.ios.ios_hsrp_interfaces:
+        running_config: "{{ lookup('file', playbook_dir ~ '/../../../tests/integration/targets/ios_hsrp_interfaces/tests/cli/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed structure (relaxed — interface names only)"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - (result.parsed | map(attribute='name') | list | symmetric_difference(parsed.config | map(attribute='name') | list) | length) == 0
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — _parsed.cfg"
+
+- name: "ios_hsrp_interfaces — state: rendered"
+  hosts: ios_rendered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_hsrp_interfaces/vars/main.yaml"
+  vars:
+    hsrp_interfaces_rendered_cmds:
+      - interface GigabitEthernet0/1
+      - standby version 1
+      - standby mac-refresh 21
+  tasks:
+    - name: "Render HSRP interface configuration to CLI"
+      cisco.ios.ios_hsrp_interfaces:
+        config:
+          - name: GigabitEthernet0/1
+            version: 1
+            mac_refresh: 21
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - hsrp_interfaces_rendered_cmds | symmetric_difference(result['rendered'] | default([])) | length == 0
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — offline CLI projection"
+
+- name: "ios_hsrp_interfaces — state: merged (check_mode, apply, idempotency)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_hsrp_interfaces/vars/main.yaml"
+  vars:
+    hsrp_interfaces_merged_cmds:
+      - interface GigabitEthernet0/1
+      - standby version 1
+      - standby mac-refresh 21
+  tasks:
+    - name: "Merged — check_mode"
+      cisco.ios.ios_hsrp_interfaces:
+        config:
+          - name: GigabitEthernet0/1
+            version: 1
+            mac_refresh: 21
+        state: merged
+      check_mode: true
+      register: cm_merged
+
+    - name: "Debug merged check_mode"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_merged.changed }}"
+          commands: "{{ cm_merged.commands | default([]) }}"
+          before: "{{ cm_merged.before | default([]) }}"
+          after: "{{ cm_merged.after | default([]) }}"
+
+    - name: "Merge HSRP interface settings"
+      cisco.ios.ios_hsrp_interfaces: &merged_hsrp_interfaces
+        config:
+          - name: GigabitEthernet0/1
+            version: 1
+            mac_refresh: 21
+        state: merged
+      register: result
+
+    - name: "Assert merged first apply"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - hsrp_interfaces_merged_cmds | symmetric_difference(result['commands'] | default([])) | length == 0
+          - result['after'] | selectattr('name', 'equalto', 'GigabitEthernet0/1') | list | length > 0
+        quiet: true
+
+    - name: "Merge HSRP interfaces — idempotent run"
+      cisco.ios.ios_hsrp_interfaces: *merged_hsrp_interfaces
+      register: result
+
+    - name: "Assert merged idempotency"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — check_mode + apply + idempotency"
+
+- name: "ios_hsrp_interfaces — state: deleted (check_mode, apply, idempotency)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_hsrp_interfaces/vars/main.yaml"
+  vars:
+    hsrp_interfaces_deleted_cmds:
+      - interface GigabitEthernet0/1
+      - no standby version 1
+      - no standby mac-refresh 21
+  tasks:
+    - name: "Deleted — check_mode"
+      cisco.ios.ios_hsrp_interfaces:
+        config:
+          - name: GigabitEthernet0/1
+        state: deleted
+      check_mode: true
+      register: cm_deleted
+
+    - name: "Debug deleted check_mode"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_deleted.changed }}"
+          commands: "{{ cm_deleted.commands | default([]) }}"
+          before: "{{ cm_deleted.before | default([]) }}"
+          after: "{{ cm_deleted.after | default([]) }}"
+
+    - name: "Delete HSRP interface configuration"
+      cisco.ios.ios_hsrp_interfaces: &deleted_hsrp_interfaces
+        config:
+          - name: GigabitEthernet0/1
+        state: deleted
+      register: result
+
+    - name: "Assert deleted first apply"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - hsrp_interfaces_deleted_cmds | symmetric_difference(result['commands'] | default([])) | length == 0
+        quiet: true
+
+    - name: "Delete HSRP interfaces — idempotent run"
+      cisco.ios.ios_hsrp_interfaces: *deleted_hsrp_interfaces
+      register: result
+
+    - name: "Assert deleted idempotency"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: deleted state"
+      ansible.builtin.debug:
+        msg: "deleted state test passed — check_mode + apply + idempotency"

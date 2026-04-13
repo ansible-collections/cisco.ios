@@ -1,0 +1,137 @@
+---
+# ============================================================================
+# Play 1: ios_vrf_interfaces — state: gathered
+# ============================================================================
+- name: "Gather ios_vrf_interfaces facts (gathered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Gather VRF interface facts from device"
+      cisco.ios.ios_vrf_interfaces:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered facts match vars/main.yaml"
+      ansible.builtin.assert:
+        that:
+          - not result.changed
+          - gathered['config'] | symmetric_difference(result['gathered']) | length == 0
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — VRF interface config gathered from fixture"
+
+# ============================================================================
+# Play 2: ios_vrf_interfaces — state: merged (scenario mode, stateful)
+# ============================================================================
+- name: "Merge ios_vrf_interfaces configuration (merged state)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Merged — check_mode (emit discovery / dry-run)"
+      cisco.ios.ios_vrf_interfaces:
+        config:
+          - name: GigabitEthernet2
+            vrf_name: vrf_D
+        state: merged
+      check_mode: true
+      register: cm_merged
+
+    - name: "Debug merged check_mode result"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_merged.changed }}"
+          commands: "{{ cm_merged.commands | default([]) }}"
+          before: "{{ cm_merged.before | default([]) }}"
+          after: "{{ cm_merged.after | default([]) }}"
+
+    - name: "Merge VRF on GigabitEthernet2"
+      cisco.ios.ios_vrf_interfaces: &merged_config
+        config:
+          - name: GigabitEthernet2
+            vrf_name: vrf_D
+        state: merged
+      register: result
+
+    - name: "Assert merged commands / before / after"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - merged['commands'] | symmetric_difference(result['commands']) | length == 0
+          - merged['before'] | symmetric_difference(result['before']) | length == 0
+          - merged['after'] | symmetric_difference(result['after']) | length == 0
+        quiet: true
+
+    - name: "Merge VRF on GigabitEthernet2 — idempotent run"
+      cisco.ios.ios_vrf_interfaces: *merged_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — config applied + idempotency verified"
+
+# ============================================================================
+# Play 3: ios_vrf_interfaces — state: deleted (scenario mode, stateful)
+# ============================================================================
+- name: "Delete ios_vrf_interfaces configuration (deleted state)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Deleted — check_mode (emit discovery / dry-run)"
+      cisco.ios.ios_vrf_interfaces:
+        config:
+          - name: GigabitEthernet2
+        state: deleted
+      check_mode: true
+      register: cm_deleted
+
+    - name: "Debug deleted check_mode result"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_deleted.changed }}"
+          commands: "{{ cm_deleted.commands | default([]) }}"
+          before: "{{ cm_deleted.before | default([]) }}"
+          after: "{{ cm_deleted.after | default([]) }}"
+
+    - name: "Remove VRF from GigabitEthernet2"
+      cisco.ios.ios_vrf_interfaces: &deleted_config
+        config:
+          - name: GigabitEthernet2
+        state: deleted
+      register: result
+
+    - name: "Assert deleted commands / before / after"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - deleted['commands'] | symmetric_difference(result['commands']) | length == 0
+          - deleted['before'] | symmetric_difference(result['before']) | length == 0
+          - deleted['after'] | symmetric_difference(result['after']) | length == 0
+        quiet: true
+
+    - name: "Remove VRF from GigabitEthernet2 — idempotent run"
+      cisco.ios.ios_vrf_interfaces: *deleted_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: deleted state"
+      ansible.builtin.debug:
+        msg: "deleted state test passed — VRF removed + idempotency verified"

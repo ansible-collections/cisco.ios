@@ -1,0 +1,45 @@
+---
+dependency:
+  name: galaxy
+
+driver:
+  name: default
+  options:
+    managed: false
+
+scenario:
+  name: cisshgo_ios_vxlan_vtep
+  test_sequence:
+    - create
+    - converge
+    - verify
+    - destroy
+
+platforms:
+  - name: cisshgo-ios-gathered
+    groups:
+      - ios_gathered
+  - name: cisshgo-ios-merged
+    groups:
+      - ios_merged
+  - name: cisshgo-ios-deleted
+    groups:
+      - ios_deleted
+  - name: cisshgo-ios-parsed
+    groups:
+      - ios_parsed
+  - name: cisshgo-ios-rendered
+    groups:
+      - ios_rendered
+
+provisioner:
+  name: ansible
+  inventory:
+    links:
+      hosts: ${MOLECULE_SCENARIO_DIRECTORY}/inventory/hosts.yml
+  env:
+    ANSIBLE_COLLECTIONS_PATH: "${MOLECULE_SCENARIO_DIRECTORY}/../../../../.."
+    ANSIBLE_HOST_KEY_CHECKING: "false"
+
+verifier:
+  name: ansible
