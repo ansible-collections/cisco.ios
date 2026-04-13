@@ -455,9 +455,55 @@ def edit_config_or_macro(connection, commands, config_prompt_lines):
             connection.edit_config(candidate=commands)
 
 
-INTERFACE_RANGE_RE = re.compile(r"^interface\s+range\s+(.+)$", re.I)
-INTERFACE_TOKEN_RE = re.compile(r"^([A-Za-z][A-Za-z\d.-]*)\s*(\d.*)$")
-IDENTIFIER_SUFFIX_RE = re.compile(r"^(.*?)(\d+)$")
+def _interface_range_tail(line):
+    """Return text after ``interface range `` prefix, or None if the line does not match."""
+    s = line.strip()
+    m = re.match(r"^interface\s+range\s+", s, re.I)
+    if not m:
+        return None
+    return s[m.end() :]
+
+
+def _is_interface_type_char(c):
+    return (
+        ("A" <= c <= "Z")
+        or ("a" <= c <= "z")
+        or ("0" <= c <= "9")
+        or c in ".-"
+    )
+
+
+def _split_interface_token(token):
+    """Split ``GigabitEthernet 0/1``-style tokens into (type, identifier); linear-time."""
+    token = token.strip()
+    if len(token) < 2:
+        return None
+    c0 = token[0]
+    if not (("A" <= c0 <= "Z") or ("a" <= c0 <= "z")):
+        return None
+    i = 1
+    n = len(token)
+    while i < n and _is_interface_type_char(token[i]):
+        i += 1
+    while i < n and token[i].isspace():
+        i += 1
+    if i >= n:
+        return None
+    if not ("0" <= token[i] <= "9"):
+        return None
+    return token[:i].rstrip(), token[i:]
+
+
+def _split_identifier_suffix(s):
+    """Split into (non-digit-suffix prefix, trailing ASCII digits); linear-time."""
+    if not s:
+        return None
+    i = len(s) - 1
+    while i >= 0 and "0" <= s[i] <= "9":
+        i -= 1
+    if i == len(s) - 1:
+        return None
+    return s[: i + 1], s[i + 1 :]
 
 
 def normalize_parents(parents):
@@ -466,11 +512,11 @@ def normalize_parents(parents):
         return parents
 
     first_parent = parents[0].strip()
-    first_match = INTERFACE_RANGE_RE.match(first_parent)
-    if not first_match:
+    tail = _interface_range_tail(first_parent)
+    if tail is None:
         return parents
 
-    range_tokens = [first_match.group(1).strip()]
+    range_tokens = [tail.strip()]
     range_tokens.extend(str(parent).strip() for parent in parents[1:] if str(parent).strip())
     return ["interface range {0}".format(", ".join(range_tokens))]
 
@@ -511,16 +557,16 @@ def _expand_range_identifier(identifier):
     if not start or not end:
         return []
 
-    start_match = IDENTIFIER_SUFFIX_RE.match(start)
-    if not start_match:
+    start_parts = _split_identifier_suffix(start)
+    if not start_parts:
         return []
-    start_prefix, start_num = start_match.groups()
+    start_prefix, start_num = start_parts
 
     if "/" in end or "." in end or ":" in end:
-        end_match = IDENTIFIER_SUFFIX_RE.match(end)
-        if not end_match:
+        end_parts = _split_identifier_suffix(end)
+        if not end_parts:
             return []
-        end_prefix, end_num = end_match.groups()
+        end_prefix, end_num = end_parts
     else:
         end_prefix, end_num = start_prefix, end
 
@@ -538,19 +584,19 @@ def _expand_range_identifier(identifier):
 def expand_interface_range_parent(parent):
     if not parent:
         return []
-    match = INTERFACE_RANGE_RE.match(parent.strip())
-    if not match:
+    tail = _interface_range_tail(parent)
+    if tail is None:
         return []
 
     expanded_interfaces = []
-    for token in match.group(1).split(","):
+    for token in tail.split(","):
         token = token.strip()
         if not token:
             continue
-        token_match = INTERFACE_TOKEN_RE.match(token)
-        if not token_match:
+        split_tok = _split_interface_token(token)
+        if not split_tok:
             return []
-        interface_type, identifier = token_match.groups()
+        interface_type, identifier = split_tok
         expanded_identifiers = _expand_range_identifier(identifier.strip())
         if not expanded_identifiers:
             return []

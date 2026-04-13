@@ -380,3 +380,68 @@ class TestIosConfigModule(TestIosModule):
         args = dict(replace="config")
         set_module_args(args)
         self.execute_module(failed=True)
+
+    def test_normalize_parents_merges_multiline_interface_range(self):
+        parents = [
+            "interface range GigabitEthernet 0/0",
+            "GigabitEthernet 0/1",
+        ]
+        self.assertEqual(
+            ios_config.normalize_parents(parents),
+            ["interface range GigabitEthernet 0/0, GigabitEthernet 0/1"],
+        )
+
+    def test_normalize_parents_single_parent_unchanged(self):
+        p = ["interface range GigabitEthernet 0/0"]
+        self.assertEqual(ios_config.normalize_parents(p), p)
+
+    def test_expand_interface_range_parent_comma_separated(self):
+        self.assertEqual(
+            ios_config.expand_interface_range_parent(
+                "interface range GigabitEthernet 0/0, GigabitEthernet 0/1",
+            ),
+            [
+                "interface GigabitEthernet0/0",
+                "interface GigabitEthernet0/1",
+            ],
+        )
+
+    def test_expand_interface_range_parent_numeric_span(self):
+        self.assertEqual(
+            ios_config.expand_interface_range_parent(
+                "interface range GigabitEthernet 0/0 - 0/2",
+            ),
+            [
+                "interface GigabitEthernet0/0",
+                "interface GigabitEthernet0/1",
+                "interface GigabitEthernet0/2",
+            ],
+        )
+
+    def test_expand_interface_range_parent_not_range_returns_empty(self):
+        self.assertEqual(
+            ios_config.expand_interface_range_parent("interface GigabitEthernet0/0"),
+            [],
+        )
+
+    def test_expand_interface_range_parent_invalid_token_returns_empty(self):
+        self.assertEqual(
+            ios_config.expand_interface_range_parent("interface range FooBar"),
+            [],
+        )
+
+    def test_expand_interface_range_prefix_mismatch_returns_empty(self):
+        self.assertEqual(
+            ios_config.expand_interface_range_parent(
+                "interface range GigabitEthernet 0/0 - Ethernet0/2",
+            ),
+            [],
+        )
+
+    def test_build_expanded_range_candidate(self):
+        raw = ios_config.build_expanded_range_candidate(
+            ["interface GigabitEthernet0/0", "interface GigabitEthernet0/1"],
+            [" description x"],
+        )
+        self.assertIn("interface GigabitEthernet0/0", raw)
+        self.assertIn("description x", raw)
