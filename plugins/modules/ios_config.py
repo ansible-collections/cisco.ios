@@ -498,7 +498,7 @@ def _split_identifier_suffix(s):
         i -= 1
     if i == len(s) - 1:
         return None
-    return s[:i + 1], s[i + 1:]
+    return s[: i + 1], s[i + 1 :]
 
 
 def normalize_parents(parents):
