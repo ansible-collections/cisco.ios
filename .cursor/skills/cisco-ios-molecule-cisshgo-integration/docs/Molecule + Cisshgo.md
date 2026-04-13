@@ -1,6 +1,6 @@
 # **cisshgo Integration with Molecule**
 
-The first milestone is local validation of `ios_interfaces` against the CML device in `inventory.ini`,  
+The first milestone is local validation of `ios_interfaces` against the CML device in `inventory.ini`,
 followed by Molecule scenarios that run with cisshgo.
 
 ## **1\. Molecule Local Validation (CML Devices)**
@@ -310,11 +310,11 @@ Required tools/components:
 
 `molecule` orchestrates lifecycle stages (`create`, `converge`, `verify`, `destroy`).
 
-`ansible` executes the playbooks for those lifecycle stages. 
+`ansible` executes the playbooks for those lifecycle stages.
 
-`cisco.ios` provides `ios_interfaces`. 
+`cisco.ios` provides `ios_interfaces`.
 
-`ansible.netcommon` provides `network_cli` \+ libssh transport. 
+`ansible.netcommon` provides `network_cli` \+ libssh transport.
 
 `cisshgo` runs local SSH listeners and replays transcript responses.
 
@@ -364,27 +364,27 @@ ansible_collections/cisco/ios/extensions/molecule/cisshgo_ios_interfaces/
 
 ### **2.4 End-to-End Execution Flow**
 
-1. `molecule test -s cisshgo_ios_interfaces` starts and reads `molecule.yml`.(Ansible inventory is linked from `inventory/hosts.yml`).  
-2. `create.yml` resolves binary path, starts `cisshgo`, and opens three listeners:  
-   * `10000` platform mode (`gathered`, and shared commands)  
-   * `10001` scenario mode (`merged`)  
-   * `10002` scenario mode (`replaced`)  
-3. `converge.yml` runs five functional plays:  
-   * `gathered` (network online)  
-   * `merged` (network online \+ idempotence)  
-   * `replaced` (network online \+ idempotence)  
-   * `parsed` (offline, no SSH needed)  
-   * `rendered` (offline, no SSH needed)  
-4. `verify.yml` reads `.cisshgo.log` and asserts no `Unknown command`.  
+1. `molecule test -s cisshgo_ios_interfaces` starts and reads `molecule.yml`.(Ansible inventory is linked from `inventory/hosts.yml`).
+2. `create.yml` resolves binary path, starts `cisshgo`, and opens three listeners:
+   * `10000` platform mode (`gathered`, and shared commands)
+   * `10001` scenario mode (`merged`)
+   * `10002` scenario mode (`replaced`)
+3. `converge.yml` runs five functional plays:
+   * `gathered` (network online)
+   * `merged` (network online \+ idempotence)
+   * `replaced` (network online \+ idempotence)
+   * `parsed` (offline, no SSH needed)
+   * `rendered` (offline, no SSH needed)
+4. `verify.yml` reads `.cisshgo.log` and asserts no `Unknown command`.
 5. `destroy.yml` kills cisshgo process and cleans PID/log files.
 
 How transcript dispatch works:
 
-* If a host is tied to a `scenario`, cisshgo first consumes commands from `scenarios.<name>.sequence`.  
-* If no scenario match exists, command falls back to `platforms.ios.command_transcripts`.  
+* If a host is tied to a `scenario`, cisshgo first consumes commands from `scenarios.<name>.sequence`.
+* If no scenario match exists, command falls back to `platforms.ios.command_transcripts`.
 * Prompt transitions (enter/exit config modes) are driven by `context_search`, `context_hierarchy`, and `end_context`.
 
-### 
+###
 
 ### **2.5 Files and Full Content (Inline at First Mention)**
 

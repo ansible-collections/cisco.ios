@@ -12,7 +12,7 @@ A **scenario** is an **ordered sequence of (command → transcript)** steps laye
 
 That lets you simulate **before/after** behavior: for example, the first time the client runs show running-config | section ^interface they get a "before" transcript, and after a simulated config change the next time they get an "after" transcript.
 
-* **Platform:** Supplies the base device (hostname, password, command\_transcripts, context\_search, etc.).  
+* **Platform:** Supplies the base device (hostname, password, command\_transcripts, context\_search, etc.).
 * **Sequence:** A list of steps. Each step has a command (exact string to match) and a transcript (path to the file to return when that command is received). Commands must be sent **in the exact order** of the sequence; the device keeps a **per-session pointer** that advances one step per matching command.
 
 Scenarios are defined in the same transcript map as platforms, under a top-level scenarios: key.
@@ -25,7 +25,7 @@ A scenario is used **only** when:
 
 1. **You start cisshgo with an inventory file:**
 
-./cisshgo \--inventory path/to/inventory.yaml ... 2\. **An inventory entry specifies a scenario (not a platform):**  
+./cisshgo \--inventory path/to/inventory.yaml ... 2\. **An inventory entry specifies a scenario (not a platform):**
 In the inventory YAML, a device entry must have scenario:
 
 and must **not** have platform set for that entry.
@@ -36,8 +36,8 @@ If you run cisshgo **without** \--inventory, every listener uses the default **p
 
 For each such entry, cisshgo:
 
-* Loads the scenario by name from the transcript map.  
-* Builds a device from the scenario’s platform and preloads the sequence (command → transcript content) from the transcript paths.  
+* Loads the scenario by name from the transcript map.
+* Builds a device from the scenario’s platform and preloads the sequence (command → transcript content) from the transcript paths.
 * Starts one or more listeners (according to count) that use **ScenarioListener** and the sequence. All other listeners use the generic platform handler and no sequence.
 
 ---
@@ -46,13 +46,13 @@ For each such entry, cisshgo:
 
 In **interactive** mode (one SSH session, multiple commands over the same connection):
 
-1. Each new SSH connection gets its **own** sequence pointer, starting at step 0\.  
-2. When the client sends a line, the handler first checks whether it **matches the current sequence step** (word-based prefix match; see matchSequenceStep in the code). If it matches:  
-   * The transcript for that step is sent to the client.  
-   * The pointer advances to the next step.  
-   * If the command also appears in the platform’s context\_search (e.g. enable, configure terminal, interface), the **context switch is applied** (prompt and internal state update). So enable both returns empty and moves the prompt to \#.  
-3. If the input **does not** match the current step:  
-   * **Context switches** (e.g. enable, configure terminal) are **not** applied while the scenario is active—so those commands can be reported as unknown or return the wrong behavior unless they are **in** the sequence.  
+1. Each new SSH connection gets its **own** sequence pointer, starting at step 0\.
+2. When the client sends a line, the handler first checks whether it **matches the current sequence step** (word-based prefix match; see matchSequenceStep in the code). If it matches:
+   * The transcript for that step is sent to the client.
+   * The pointer advances to the next step.
+   * If the command also appears in the platform’s context\_search (e.g. enable, configure terminal, interface), the **context switch is applied** (prompt and internal state update). So enable both returns empty and moves the prompt to \#.
+3. If the input **does not** match the current step:
+   * **Context switches** (e.g. enable, configure terminal) are **not** applied while the scenario is active—so those commands can be reported as unknown or return the wrong behavior unless they are **in** the sequence.
    * The handler then falls through to normal dispatch: platform command\_transcripts (e.g. for no description) or unknown-command handling.
 
 So for a scenario to behave correctly, **every command that the client sends** (and that must change context or return a specific response) should appear in the sequence **in the exact order** the client sends it. Commands that only need to return empty can be sequence steps with generic\_empty\_return.txt; commands that must return different content at different times (e.g. show running-config | section ^interface) must appear multiple times in the sequence with different transcript paths.
@@ -67,7 +67,7 @@ So for a scenario to behave correctly, **every command that the client sends** (
 
 You must know the **exact order** of commands your test sends. Options:
 
-* Run the test against a **real device** (or against cisshgo) with **verbose** output (-vvv for Ansible) and inspect the log for the commands sent to the device.  
+* Run the test against a **real device** (or against cisshgo) with **verbose** output (-vvv for Ansible) and inspect the log for the commands sent to the device.
 * Or derive the order from the test: e.g. gather facts (enable, show privilege, show version), then task 1 (e.g. remove config: configure terminal, interface …, end), then task 2 (e.g. gather, then merge config, then gather again), etc.
 
 Spacing and exact strings (e.g. GigabitEthernet 0/1 vs GigabitEthernet0/1) matter; the matcher is word-based.
@@ -80,8 +80,8 @@ Do **not** put a “same command, different output” key (e.g. show running-con
 
 ### **4.3 Create transcript files**
 
-* For steps that should return **empty** (e.g. enable, configure terminal, interface …, end), use generic\_empty\_return.txt or your existing empty transcript.  
-* For steps that must return **specific content** (e.g. interface section “before” vs “after”), create one file per response (e.g. section\_before.txt, section\_after.txt) under a folder like transcripts/scenarios/  
+* For steps that should return **empty** (e.g. enable, configure terminal, interface …, end), use generic\_empty\_return.txt or your existing empty transcript.
+* For steps that must return **specific content** (e.g. interface section “before” vs “after”), create one file per response (e.g. section\_before.txt, section\_after.txt) under a folder like transcripts/scenarios/
   /. The content must match what the client’s parser expects (e.g. Cisco-style interface blocks for ios\_interfaces).
 
 Transcript paths in the scenario are **relative to the directory that contains the transcript map file** (e.g. transcripts/ when the map is transcripts/transcript\_map.yaml).
@@ -134,8 +134,8 @@ Configure the integration test (e.g. Ansible inventory) so the target host is th
 
 ### **4.8 If something fails**
 
-* **“Unknown command” or “Invalid input” for a command:** Either add that exact command as the **next** step in the sequence (with the correct transcript), or add it to the platform’s command\_transcripts. For context-changing commands (enable, configure terminal, interface, end), they must be **in the sequence** so that the context switch is applied (see section 3).  
-* **Wrong “before” or “after”:** The order of steps in the sequence does not match the order the client sends. Adjust the sequence (or add/remove steps) so it matches the verbose log. Or the transcript content does not parse as the test expects—fix the transcript file.  
+* **“Unknown command” or “Invalid input” for a command:** Either add that exact command as the **next** step in the sequence (with the correct transcript), or add it to the platform’s command\_transcripts. For context-changing commands (enable, configure terminal, interface, end), they must be **in the sequence** so that the context switch is applied (see section 3).
+* **Wrong “before” or “after”:** The order of steps in the sequence does not match the order the client sends. Adjust the sequence (or add/remove steps) so it matches the verbose log. Or the transcript content does not parse as the test expects—fix the transcript file.
 * **Section command not matched:** The scenario step command must match the string sent by the client exactly (including |, ^, spaces). Capture it with \-vvv and align the YAML.
 
 ---
@@ -148,20 +148,20 @@ This scenario was built so the **cisco.ios ios\_interfaces** “merged” integr
 
 ### **5.1 Purpose**
 
-* The test expects **before** and **after** interface lists (e.g. from show running-config | section ^interface).  
-* The first time the module runs that command it should get a “clean” interface list; after the merge task it should get the same list with the new descriptions/shutdown. The idempotent run should see the same “after” again.  
+* The test expects **before** and **after** interface lists (e.g. from show running-config | section ^interface).
+* The first time the module runs that command it should get a “clean” interface list; after the merge task it should get the same list with the new descriptions/shutdown. The idempotent run should see the same “after” again.
 * So we need **three** responses for show running-config | section ^interface: one “before”, two “after” (merge and idempotent).
 
 ### **5.2 Sequence shape**
 
 The test sends many commands in a fixed order. The scenario models that full order so that:
 
-1. **Facts:** enable, show privilege, show version (so the test can gather facts and verify privilege).  
-2. **Remove config:** configure terminal, then interface GigabitEthernet 0/1, no description, no shutdown, then the same pattern for 0/2 and 0/3, then end.  
-3. **First gather:** show running-config | section ^interface → return **section\_before.txt** (interfaces without the merge).  
-4. **Merge:** configure terminal, interface GigabitEthernet0/1, description…, interface GigabitEthernet0/2, description 04j, shutdown, end.  
-5. **Second gather:** show running-config | section ^interface → return **section\_after.txt**.  
-6. **Idempotent gather:** show running-config | section ^interface again → return **section\_after.txt**.  
+1. **Facts:** enable, show privilege, show version (so the test can gather facts and verify privilege).
+2. **Remove config:** configure terminal, then interface GigabitEthernet 0/1, no description, no shutdown, then the same pattern for 0/2 and 0/3, then end.
+3. **First gather:** show running-config | section ^interface → return **section\_before.txt** (interfaces without the merge).
+4. **Merge:** configure terminal, interface GigabitEthernet0/1, description…, interface GigabitEthernet0/2, description 04j, shutdown, end.
+5. **Second gather:** show running-config | section ^interface → return **section\_after.txt**.
+6. **Idempotent gather:** show running-config | section ^interface again → return **section\_after.txt**.
 7. **Teardown:** configure terminal and the same remove-config block again, then end.
 
 So the scenario has **dozens of steps** (one per command in that order), with the three “section” steps pointing to the two transcript files (before, after, after).
@@ -333,20 +333,20 @@ devices:
 
 ### **5.6 Running the integration test**
 
-1. Start cisshgo from the repo root:  
+1. Start cisshgo from the repo root:
    /cisshgo \--inventory cisshgo\_inventory.yaml \--listeners 1 \--starting-port 10000
 
 (Expected Output)
 
 2026/03/26 17:32:30 Starting listener on :10000 \[scenario=ios\_interfaces\_merged hostname=cisshgo1000v user=admin\]
 
-1. Point Ansible at that host and port (e.g. ansible\_host: [localhost](http://localhost), ansible\_ssh\_port: 10000\) with the same connection and become vars as for a real IOS device.  
-2. Run the playbook:  
+1. Point Ansible at that host and port (e.g. ansible\_host: [localhost](http://localhost), ansible\_ssh\_port: 10000\) with the same connection and become vars as for a real IOS device.
+2. Run the playbook:
    nsible-playbook \-i inventory.ini test.yml
 
 **Expected Outcome from ansible after running the playbook \-**
 
-“”””  
+“”””
 ok: \[ios\_device\]
 
 Read `vars_file` '/Users/piyushmalik/dev-workspace/ansible-dev/vars.yaml'.
@@ -1027,7 +1027,7 @@ changed: \[ios\_device\] \=\> {
 
 PLAY RECAP \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*
 
-ios\_device                 : ok=12   changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+ios\_device                 : ok=12   changed=3    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 
 “””
 
@@ -1047,8 +1047,8 @@ This scenario supports the **gathered** state: **remove baseline → populate in
 
 ### **6.1 Purpose**
 
-* After `_populate_config.yaml`, the module gathers interface facts from **`show running-config | section ^interface`**.  
-* cisshgo must return a single interface section transcript that parses to the list in **`vars.yaml`** under **`gathered.config`** (asserted with `symmetric_difference` against `result.gathered`).  
+* After `_populate_config.yaml`, the module gathers interface facts from **`show running-config | section ^interface`**.
+* cisshgo must return a single interface section transcript that parses to the list in **`vars.yaml`** under **`gathered.config`** (asserted with `symmetric_difference` against `result.gathered`).
 * Teardown repeats **`_remove_config.yaml`** (same command shape as the merged example).
 
 ### **6.2 Supporting task files**
@@ -1144,10 +1144,10 @@ gathered:
 
 ### **6.4 Sequence shape**
 
-1. **Facts:** `enable`, `show privilege`, `show version`.  
-2. **First remove (`_remove_config`):** `configure terminal`, per-interface cleanup for `GigabitEthernet 0/1` … `0/3` (spacing as in the merged scenario), `end`.  
-3. **Populate:** three blocks: `configure terminal` → `interface GigabitEthernet0/1` → description → `end`; then `GigabitEthernet0/2` (description, `mtu 1500`, `speed 1000`, `no shutdown`) → `end`; then `GigabitEthernet0/3` (description, `speed 1000`, `shutdown`) → `end`.  
-4. **Gather:** `show running-config | section ^interface` → **`scenarios/ios_interfaces_gathered/section_gathered.txt`** (interface blocks that yield the expected `gathered` list).  
+1. **Facts:** `enable`, `show privilege`, `show version`.
+2. **First remove (`_remove_config`):** `configure terminal`, per-interface cleanup for `GigabitEthernet 0/1` … `0/3` (spacing as in the merged scenario), `end`.
+3. **Populate:** three blocks: `configure terminal` → `interface GigabitEthernet0/1` → description → `end`; then `GigabitEthernet0/2` (description, `mtu 1500`, `speed 1000`, `no shutdown`) → `end`; then `GigabitEthernet0/3` (description, `speed 1000`, `shutdown`) → `end`.
+4. **Gather:** `show running-config | section ^interface` → **`scenarios/ios_interfaces_gathered/section_gathered.txt`** (interface blocks that yield the expected `gathered` list).
 5. **Teardown:** same remove-config block as step 2, then `end`.
 
 The full ordered command list is in **`transcripts/transcript_map.yaml`** under **`scenarios.ios_interfaces_gathered`** (see §6.6).
@@ -1314,13 +1314,13 @@ You can merge multiple device entries in one inventory if you run listeners on d
 
 ### **6.8 Running the integration test**
 
-1. Start cisshgo from the repo root (or the directory where **`cisshgo`** and **`transcripts/`** live):  
-   `./cisshgo --inventory cisshgo_inventory_gathered.yaml --listeners 1 --starting-port 10000`  
-    **(Expected output)**  
-    `Starting listener on :10000 [scenario=ios_interfaces_gathered hostname=cisshgo1000v user=admin]`  
-    (Timestamp prefix may differ.)  
-2. Point Ansible at that host and port (e.g. **`ansible_host: localhost`**, **`ansible_port: 10000`** or **`ansible_ssh_port`**, depending on your inventory plugin) with the same connection and become vars as for a real IOS device (**`ansible_connection=ansible.netcommon.network_cli`**, etc.).  
-3. Run the playbook (name it as you like, e.g. **`gathertest.yml`**):  
+1. Start cisshgo from the repo root (or the directory where **`cisshgo`** and **`transcripts/`** live):
+   `./cisshgo --inventory cisshgo_inventory_gathered.yaml --listeners 1 --starting-port 10000`
+    **(Expected output)**
+    `Starting listener on :10000 [scenario=ios_interfaces_gathered hostname=cisshgo1000v user=admin]`
+    (Timestamp prefix may differ.)
+2. Point Ansible at that host and port (e.g. **`ansible_host: localhost`**, **`ansible_port: 10000`** or **`ansible_ssh_port`**, depending on your inventory plugin) with the same connection and become vars as for a real IOS device (**`ansible_connection=ansible.netcommon.network_cli`**, etc.).
+3. Run the playbook (name it as you like, e.g. **`gathertest.yml`**):
    `ansible-playbook -i inventory.ini gathertest.yml`
 
 **Expected outcome from Ansible after running the playbook** (representative; paths and **`vars_file`** locations reflect your workspace):
@@ -1657,7 +1657,7 @@ changed: [ios_device] => {
 }
 
 PLAY RECAP ********************************************************************************************
-ios_device                 : ok=13   changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+ios_device                 : ok=13   changed=5    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
 
 
 ```
@@ -1668,7 +1668,7 @@ If the sequence drifts (extra lines from Ansible, different interface spacing, o
 
 ---
 
-## 
+##
 
 ## **7\. Example: Simple show command (`show privilege`, platform mode)**
 
@@ -1678,20 +1678,20 @@ This example uses a **platform** listener (**not** `**scenarios:`\*\*). cisshgo 
 
 ### **7.1 Purpose**
 
-* Show how to **add a new command response** (here `**show privilege`**) for a platform and run `**cisco.ios.ios_command`** against cisshgo without defining a scenario.  
+* Show how to **add a new command response** (here `**show privilege`**) for a platform and run `**cisco.ios.ios_command`** against cisshgo without defining a scenario.
 * Assert `**stdout**` contains the expected line (e.g. `**Current privilege level is 15**`).
 
 ### **7.2 Platform behavior (no scenario)**
 
-1. Start cisshgo with an inventory entry `**platform: csr1000v`\*\* (not `**scenario:**`).  
-2. On each SSH line, the device uses `**platforms.csr1000v.command_transcripts**` to choose the transcript. The command string must match the map **key** exactly (e.g. `**show privilege`\*\*, not `**show privelege**`).  
+1. Start cisshgo with an inventory entry `**platform: csr1000v`\*\* (not `**scenario:**`).
+2. On each SSH line, the device uses `**platforms.csr1000v.command_transcripts**` to choose the transcript. The command string must match the map **key** exactly (e.g. `**show privilege`\*\*, not `**show privelege**`).
 3. Commands Ansible sends before your task (e.g. `**terminal length 0**`) must either exist under `**command_transcripts**` for that platform or be handled by the generic device logic—if Ansible reports unknown output, capture `**ansible-playbook -vvv**` and add the missing key.
 
 ### **7.3 Create the transcript file**
 
 Paths in the map are relative to the directory that contains `**transcripts/transcript_map.yaml`\*\* (the `**transcripts/**` tree next to that file).
 
-1. Create a text file, for example `**transcripts/cisco/ios/show_privilege.txt**` (you can use any subdirectory under `**transcripts/**` that keeps your layout clear).  
+1. Create a text file, for example `**transcripts/cisco/ios/show_privilege.txt**` (you can use any subdirectory under `**transcripts/**` that keeps your layout clear).
 2. Put the exact device output you want Ansible to parse—one line is enough for a privilege check:
 
 ```
@@ -1724,7 +1724,7 @@ platforms:
 
 Rules:
 
-* The key must match what appears on the wire (`**show privilege**`).  
+* The key must match what appears on the wire (`**show privilege**`).
 * The value is a path under `**transcripts/**` (here `**cisco/ios/show_privilege.txt**` → file `**transcripts/cisco/ios/show_privilege.txt**`).
 
 If your playbook uses a different platform name in cisshgo inventory, add the same `**command_transcripts**` entry under `**platforms.<that_name>**` instead.
@@ -1766,10 +1766,10 @@ devices:
           - "'Current privilege level is 15' in result.stdout[0]"
 ```
 
-1.   
-   Start cisshgo:  
-   `./cisshgo --inventory cisshgo_inventory_simple_show_command.yaml --listeners 1 --starting-port 10000` **(Expected output)** `Starting listener on :10000 [platform=csr1000v hostname=cisshgo1000v user=admin]`  
-2. Point Ansible at the listener and run:  
+1.
+   Start cisshgo:
+   `./cisshgo --inventory cisshgo_inventory_simple_show_command.yaml --listeners 1 --starting-port 10000` **(Expected output)** `Starting listener on :10000 [platform=csr1000v hostname=cisshgo1000v user=admin]`
+2. Point Ansible at the listener and run:
    `ansible-playbook -i inventory.ini simple_show_command.yml`
 
 **Expected outcome (abbreviated):**
@@ -1798,35 +1798,35 @@ ok: [ios_device] => {
 
 ---
 
-## 
+##
 
 ## **8\. Gaps and customizations**
 
 ### **8.1 Missing transcripts (command coverage gaps)**
 
-* What: Certain commands expected by Ansible (e.g. show privilege during enable, or other operational/config queries) may not have corresponding transcripts in cisshgo. When a command is missing, cisshgo returns “Unknown command,” which can cause Ansible tasks to fail (e.g. privilege checks, config tasks, backups) or behave unexpectedly.  
+* What: Certain commands expected by Ansible (e.g. show privilege during enable, or other operational/config queries) may not have corresponding transcripts in cisshgo. When a command is missing, cisshgo returns “Unknown command,” which can cause Ansible tasks to fail (e.g. privilege checks, config tasks, backups) or behave unexpectedly.
 * Fix: Add transcripts for all required commands and register them in the transcript map (see “[How to add new transcripts](https://docs.google.com/document/d/11kJDbAKBfHHT0K6Y8WXzmEKJITyejYolSo-DdszYuk0/edit?tab=t.0#heading=h.jzzc4joe0t3m)” below). Each transcript should return output that matches real IOS behavior so that Ansible can correctly parse and validate responses. For example, show privilege must return Current privilege level is 15, but the same principle applies to any command used in playbooks or integration tests.
 
 ### **8.2 Unknown-command response format (integration test “invalid command” task)**
 
-* **What:** The cisco.ios integration test sends an **invalid command** (e.g. `show foo`) and **asserts that the task fails** (`result.failed == true`). On real IOS, the device prints something like `% Invalid input detected at '^' marker.` and the Ansible stack treats that as a **failed** task. cisshgo’s default was `% Unknown command: "show foo"`, and Ansible did **not** treat that as a failure, so the task **succeeded** and the assertion failed.  
+* **What:** The cisco.ios integration test sends an **invalid command** (e.g. `show foo`) and **asserts that the task fails** (`result.failed == true`). On real IOS, the device prints something like `% Invalid input detected at '^' marker.` and the Ansible stack treats that as a **failed** task. cisshgo’s default was `% Unknown command: "show foo"`, and Ansible did **not** treat that as a failure, so the task **succeeded** and the assertion failed.
 * **Fix:** Change cisshgo’s **unknown-command** response to match the IOS-style error format (e.g. “Invalid input detected at '^' marker”) so that Ansible fails the task and the integration test assertion passes. This is done in the handler/code that generates the unknown-command message, not via a per-command transcript.
 
-### **8.3 Scenario sequencing requirements** 
+### **8.3 Scenario sequencing requirements**
 
-* What: For a scenario to behave correctly, every command that the client sends (and that must change context or return a specific response) must appear in the sequence in the exact order the client sends it. If commands are missing, out of order, or reused incorrectly, the interaction can desynchronize and produce unexpected results in playbooks or tests.  
-* Details: Commands that only need to return empty output can use generic\_empty\_return.txt as sequence steps. Commands that must return different outputs at different times (e.g. show running-config | section ^interface) must appear multiple times in the sequence with different transcript paths.  
+* What: For a scenario to behave correctly, every command that the client sends (and that must change context or return a specific response) must appear in the sequence in the exact order the client sends it. If commands are missing, out of order, or reused incorrectly, the interaction can desynchronize and produce unexpected results in playbooks or tests.
+* Details: Commands that only need to return empty output can use generic\_empty\_return.txt as sequence steps. Commands that must return different outputs at different times (e.g. show running-config | section ^interface) must appear multiple times in the sequence with different transcript paths.
 * Important: Scenarios apply only in interactive mode. If the client uses exec mode (one command per connection, no PTY), the handler uses only the platform’s SupportedCommands and does not execute the sequence. Therefore, integration tests that rely on before/after state must use a persistent connection (e.g. Ansible network\_cli with a single session per play).
 
 ### **8.4 Vendor parity (handlers, errors, and per-OS work)**
 
-* What: cisshgo’s interactive SSH path is built around Cisco-style CLI behavior: IOS-like prompts, context handling (enable, config modes), and generic error lines such as % Invalid input detected at '^' marker. and % Ambiguous command: … when a command does not match the map. Platforms listed in transcript\_map.yaml (e.g. csr1000v, eos, junos, nxos) are primarily data-driven—command\_transcripts, context\_search, prompts—not separate full emulators of each vendor’s shell. Supporting arista.eos, junipernetworks.junos, or other collections end-to-end is not “reuse IOS transcripts as-is”; it requires substantial per-OS work: transcripts that match what those modules parse, vendor-accurate error strings for negative tests where asserted, and privilege / configuration flows that match that NOS (not IOS enable \+ show privilege alone).  
-* Fix / approach: Treat each target OS as its own integration effort: add and maintain command → transcript entries (and scenarios where order matters) under the appropriate platforms.\* (or scenarios.\*) blocks; align failure output with what each collection’s tests expect (IOS-style % errors may not satisfy Junos- or EOS-shaped asserts). Where cisshgo’s fixed unknown-command string is IOS-oriented, document or extend behavior for other vendors if those tests are in scope. Scope documentation honestly: cisshgo is a strong fit for bounded, CLI-heavy Cisco-style suites; full parity across all Ansible Network collections requires ongoing per-vendor transcript and validation work, not a single shared profile.  
+* What: cisshgo’s interactive SSH path is built around Cisco-style CLI behavior: IOS-like prompts, context handling (enable, config modes), and generic error lines such as % Invalid input detected at '^' marker. and % Ambiguous command: … when a command does not match the map. Platforms listed in transcript\_map.yaml (e.g. csr1000v, eos, junos, nxos) are primarily data-driven—command\_transcripts, context\_search, prompts—not separate full emulators of each vendor’s shell. Supporting arista.eos, junipernetworks.junos, or other collections end-to-end is not “reuse IOS transcripts as-is”; it requires substantial per-OS work: transcripts that match what those modules parse, vendor-accurate error strings for negative tests where asserted, and privilege / configuration flows that match that NOS (not IOS enable \+ show privilege alone).
+* Fix / approach: Treat each target OS as its own integration effort: add and maintain command → transcript entries (and scenarios where order matters) under the appropriate platforms.\* (or scenarios.\*) blocks; align failure output with what each collection’s tests expect (IOS-style % errors may not satisfy Junos- or EOS-shaped asserts). Where cisshgo’s fixed unknown-command string is IOS-oriented, document or extend behavior for other vendors if those tests are in scope. Scope documentation honestly: cisshgo is a strong fit for bounded, CLI-heavy Cisco-style suites; full parity across all Ansible Network collections requires ongoing per-vendor transcript and validation work, not a single shared profile.
 * Important: Negative tests are especially sensitive: many suites assert on vendor-specific error text. A message shaped for cisco.ios (see §8.2) may not match tests written for other NOSes—those may need different transcript or handler behavior, not only more command\_transcripts keys.
 
-## 
+##
 
-## 
+##
 
 ## **9\. Summary**
 

@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python3
 """Pre-validate a cisshgo scenario's transcript_map.yaml before running Molecule.
 
@@ -38,6 +37,7 @@ import ast
 import os
 import re
 import sys
+
 from pathlib import Path
 
 import yaml
@@ -49,6 +49,7 @@ def load_yaml(path: Path) -> dict:
 
 
 # ── Check 1: transcript file existence ──────────────────────────────────
+
 
 def check_transcript_files(tmap: dict, fixtures_dir: Path) -> list[str]:
     """Return list of error strings for missing transcript files."""
@@ -81,8 +82,11 @@ def check_transcript_files(tmap: dict, fixtures_dir: Path) -> list[str]:
 
 # ── Check 2: inventory ↔ map consistency ────────────────────────────────
 
+
 def check_inventory_map_consistency(
-    tmap: dict, inventory: dict, fixtures_dir: Path
+    tmap: dict,
+    inventory: dict,
+    fixtures_dir: Path,
 ) -> list[str]:
     errors = []
 
@@ -100,17 +104,17 @@ def check_inventory_map_consistency(
     for s in inv_scenarios - map_scenarios:
         errors.append(
             f"[inventory-mismatch] scenario '{s}' in cisshgo_inventory.yaml "
-            f"but not in transcript_map.yaml"
+            f"but not in transcript_map.yaml",
         )
     for s in map_scenarios - inv_scenarios:
         errors.append(
             f"[inventory-mismatch] scenario '{s}' in transcript_map.yaml "
-            f"but not in cisshgo_inventory.yaml"
+            f"but not in cisshgo_inventory.yaml",
         )
     for p in inv_platforms - map_platforms:
         errors.append(
             f"[inventory-mismatch] platform '{p}' in cisshgo_inventory.yaml "
-            f"but not in transcript_map.yaml"
+            f"but not in transcript_map.yaml",
         )
 
     return errors
@@ -118,15 +122,23 @@ def check_inventory_map_consistency(
 
 # ── Check 3: parser-order heuristic ─────────────────────────────────────
 
+
 def extract_parsers_from_source(
-    module_name: str, collection_root: Path | None = None,
+    module_name: str,
+    collection_root: Path | None = None,
 ) -> list[str] | None:
     """Extract self.parsers list from the module config class via AST."""
     if collection_root is None:
         return None
     config_py = (
-        collection_root / "plugins" / "module_utils" / "network" / "ios" / "config"
-        / module_name / f"{module_name}.py"
+        collection_root
+        / "plugins"
+        / "module_utils"
+        / "network"
+        / "ios"
+        / "config"
+        / module_name
+        / f"{module_name}.py"
     )
     if not config_py.exists():
         return None
@@ -209,7 +221,7 @@ def check_parser_order(tmap: dict, parsers: list[str]) -> list[str]:
                                 f"'{orig_cmd}' (parser #{pidx}) appears "
                                 f"after a parser #{last_idx} command. "
                                 f"May be intentional (runtime reorder) "
-                                f"or a sequence bug."
+                                f"or a sequence bug.",
                             )
                             break
                         last_idx = pidx
@@ -226,9 +238,10 @@ def check_parser_order(tmap: dict, parsers: list[str]) -> list[str]:
 
 # ── Main ────────────────────────────────────────────────────────────────
 
+
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Pre-validate cisshgo transcript_map.yaml"
+        description="Pre-validate cisshgo transcript_map.yaml",
     )
     parser.add_argument(
         "fixtures_dir",

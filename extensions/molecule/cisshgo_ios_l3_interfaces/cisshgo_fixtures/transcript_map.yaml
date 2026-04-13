@@ -32,7 +32,6 @@ platforms:
     end_context: "#"
 
 scenarios:
-
   ios-l3-interfaces-merged:
     platform: ios
     sequence:
@@ -209,7 +208,6 @@ scenarios:
         transcript: "transcripts/scenarios/ios-l3-interfaces-deleted/after.txt"
       - command: "show running-config | section ^interface"
         transcript: "transcripts/scenarios/ios-l3-interfaces-deleted/after.txt"
-
 
   ios-l3-interfaces-rtt:
     platform: ios

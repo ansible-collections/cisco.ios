@@ -27,7 +27,6 @@ platforms:
     end_context: "#"
 
 scenarios:
-
   ios-acl-interfaces-merged:
     platform: ios
     sequence:
