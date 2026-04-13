@@ -456,7 +456,7 @@ def edit_config_or_macro(connection, commands, config_prompt_lines):
 
 
 INTERFACE_RANGE_RE = re.compile(r"^interface\s+range\s+(.+)$", re.I)
-INTERFACE_TOKEN_RE = re.compile(r"^([A-Za-z][A-Za-z0-9.-]*)\s*([0-9].*)$")
+INTERFACE_TOKEN_RE = re.compile(r"^([A-Za-z][A-Za-z\d.-]*)\s*(\d.*)$")
 IDENTIFIER_SUFFIX_RE = re.compile(r"^(.*?)(\d+)$")
 
 
@@ -562,7 +562,7 @@ def expand_interface_range_parent(parent):
     return expanded_interfaces
 
 
-def build_expanded_range_candidate(module, expanded_parents, lines):
+def build_expanded_range_candidate(expanded_parents, lines):
     candidate_obj = NetworkConfig(indent=1)
     for parent in expanded_parents:
         candidate_obj.add(lines=lines, parents=[parent])
@@ -660,7 +660,7 @@ def main():
             expanded_range_parents = expand_interface_range_parent(path[0])
             use_expanded_idempotency = bool(expanded_range_parents)
         diff_candidate = (
-            build_expanded_range_candidate(module, expanded_range_parents, lines)
+            build_expanded_range_candidate(expanded_range_parents, lines)
             if use_expanded_idempotency
             else candidate
         )
