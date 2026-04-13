@@ -695,18 +695,29 @@ def main():
                 if commands:
                     configs = []
                     if module.params["lines"]:
-                        has_prompt_dicts = any(isinstance(item, dict) for item in module.params["lines"])
+                        has_prompt_dicts = any(
+                            isinstance(item, dict) for item in module.params["lines"]
+                        )
                         if has_prompt_dicts:
                             for item in module.params["lines"]:
                                 if isinstance(item, dict):
                                     for command in commands:
-                                        if (module.params["before"] and command in module.params["before"]):
+                                        if (
+                                            module.params["before"]
+                                            and command in module.params["before"]
+                                        ):
                                             configs[:0].append({"config_line": command})
-                                        if (module.params["parents"] and command in module.params["parents"]):
+                                        if (
+                                            module.params["parents"]
+                                            and command in module.params["parents"]
+                                        ):
                                             configs.append({"config_line": command})
                                         if command == item.get("config_line"):
                                             configs.append(item)
-                                        if module.params["after"] and command in module.params["after"]:
+                                        if (
+                                            module.params["after"]
+                                            and command in module.params["after"]
+                                        ):
                                             configs.append({"config_line": command})
                             edit_config_or_macro(connection, commands, configs)
                         else:
