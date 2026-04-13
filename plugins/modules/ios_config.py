@@ -465,12 +465,7 @@ def _interface_range_tail(line):
 
 
 def _is_interface_type_char(c):
-    return (
-        ("A" <= c <= "Z")
-        or ("a" <= c <= "z")
-        or ("0" <= c <= "9")
-        or c in ".-"
-    )
+    return ("A" <= c <= "Z") or ("a" <= c <= "z") or ("0" <= c <= "9") or c in ".-"
 
 
 def _split_interface_token(token):
