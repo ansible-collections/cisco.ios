@@ -461,7 +461,7 @@ def _interface_range_tail(line):
     m = re.match(r"^interface\s+range\s+", s, re.I)
     if not m:
         return None
-    return s[m.end():]
+    return s[m.end() :]
 
 
 def _is_interface_type_char(c):
@@ -498,7 +498,7 @@ def _split_identifier_suffix(s):
         i -= 1
     if i == len(s) - 1:
         return None
-    return s[: i + 1], s[i + 1:]
+    return s[: i + 1], s[i + 1 :]
 
 
 def normalize_parents(parents):
