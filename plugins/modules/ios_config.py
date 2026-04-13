@@ -695,33 +695,24 @@ def main():
                 if commands:
                     configs = []
                     if module.params["lines"]:
-                        for item in module.params["lines"]:
-                            if isinstance(item, dict):
-                                for command in commands:
-                                    if (
-                                        module.params["before"]
-                                        and command in module.params["before"]
-                                    ):
-                                        before_commands = {
-                                            "config_line": command,
-                                        }  # add before commands as dictonary type to config lines
-                                        configs[:0].append(before_commands)
-                                    if (
-                                        module.params["parents"]
-                                        and command in module.params["parents"]
-                                    ):
-                                        parent_lines = {"config_line": command}
-                                        configs.append(parent_lines)
-                                    if command == item.get("config_line"):
-                                        configs.append(item)
-                                    if module.params["after"] and command in module.params["after"]:
-                                        after_lines = {"config_line": command}
-                                        configs.extend(after_lines)
-                                edit_config_or_macro(connection, commands, configs)
-                            else:
-                                edit_config_or_macro(connection, commands, configs)
+                        has_prompt_dicts = any(isinstance(item, dict) for item in module.params["lines"])
+                        if has_prompt_dicts:
+                            for item in module.params["lines"]:
+                                if isinstance(item, dict):
+                                    for command in commands:
+                                        if (module.params["before"] and command in module.params["before"]):
+                                            configs[:0].append({"config_line": command})
+                                        if (module.params["parents"] and command in module.params["parents"]):
+                                            configs.append({"config_line": command})
+                                        if command == item.get("config_line"):
+                                            configs.append(item)
+                                        if module.params["after"] and command in module.params["after"]:
+                                            configs.append({"config_line": command})
+                            edit_config_or_macro(connection, commands, configs)
+                        else:
+                            edit_config_or_macro(connection, commands, None)
                     elif module.params["src"]:
-                        edit_config_or_macro(connection, commands, configs)
+                        edit_config_or_macro(connection, commands, None)
                 if banner_diff:
                     connection.edit_banner(
                         candidate=json.dumps(banner_diff),
