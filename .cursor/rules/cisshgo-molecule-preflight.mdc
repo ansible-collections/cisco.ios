@@ -1,0 +1,33 @@
+---
+description: Enforces mandatory pre-flight steps before creating or editing cisshgo molecule scenarios — read bundled docs for CISSHGO_BIN_PATH, and run or verify CML capture before authoring transcripts.
+globs: **/extensions/molecule/*cisshgo*/**
+alwaysApply: false
+---
+
+# cisshgo molecule pre-flight (BLOCKING)
+
+BEFORE creating or editing ANY file under `extensions/molecule/cisshgo_*/`, complete both steps below. Skipping either step is a defect — these are prerequisites, not suggestions.
+
+## STEP 0 — Read operational docs (BLOCKING)
+
+`Read` the file `.cursor/skills/cisco-ios-molecule-cisshgo-integration/docs/Molecule + Cisshgo.md`.
+
+Extract from **section 2.2** and use for all molecule runs:
+- `CISSHGO_BIN_PATH` (exact filesystem path to the pre-built binary)
+- `CISSHGO_PORT` (default starting port)
+
+Do NOT search the filesystem for the cisshgo binary. The path is documented.
+
+Also read as needed:
+- `docs/Cisshgo scenario.md` — platform vs scenario fixture structure
+- `docs/User Guide.md` — skill architecture, components, agent prompt; then env vars and `molecule test` / capture examples
+
+## STEP 1 — CML capture (BLOCKING)
+
+Before authoring `transcript_map.yaml` or any transcript `.txt` file, you MUST either:
+
+**(a)** Run `helpers/capture_cml.yml` against a CML device to produce fresh captured artifacts under `captured/<module>/`, OR
+
+**(b)** Verify that `captured/<module>/` artifacts already exist for the target module, confirm with the user that they are current, and explicitly state in your response that you are reusing pre-existing captures (not inventing content).
+
+If CML is unavailable **and** no captured artifacts exist, STOP and tell the user. Do NOT invent transcript content from module source or vars alone without explicit user acknowledgment of the risk.
