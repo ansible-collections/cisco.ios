@@ -680,7 +680,7 @@ def main():
         if use_expanded_idempotency and config_diff:
             config_diff = candidate
         if config_diff or banner_diff:
-            commands = config_diff.split("\n")
+            commands = [line.strip() for line in config_diff.split("\n") if line.strip()]
             if module.params["before"]:
                 commands[:0] = module.params["before"]
             if module.params["after"]:
