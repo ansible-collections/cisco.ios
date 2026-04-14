@@ -83,6 +83,16 @@ class TestIosConfigModule(TestIosModule):
         commands = ["hostname foo", "interface GigabitEthernet0/0", "no ip address"]
         self.execute_module(changed=True, commands=commands)
 
+    def test_ios_config_content(self):
+        content = "interface Loopback998\n shutdown"
+        set_module_args(dict(content=content))
+        self.conn.get_diff = MagicMock(
+            return_value=self.cliconf_obj.get_diff(content, self.running_config),
+        )
+        commands = ["interface Loopback998", "shutdown"]
+        self.execute_module(changed=True, commands=commands, sort=False)
+        self.assertEqual(self.conn.edit_config.call_count, 1)
+
     def test_ios_config_backup(self):
         set_module_args(dict(backup=True))
         result = self.execute_module()

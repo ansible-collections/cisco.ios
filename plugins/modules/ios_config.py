@@ -763,7 +763,7 @@ def main():
                             edit_config_or_macro(connection, commands, configs)
                         else:
                             edit_config_or_macro(connection, commands, None)
-                    elif module.params["src"]:
+                    elif module.params["src"] or module.params["content"]:
                         edit_config_or_macro(connection, commands, None)
                 if banner_diff:
                     connection.edit_banner(
