@@ -1,0 +1,3 @@
+---
+trivial:
+  - Remove Python 2 compatibility code from unit test helpers.
