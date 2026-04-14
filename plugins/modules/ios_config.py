@@ -39,6 +39,8 @@ notes:
     appear if present in the running configuration on device including the indentation.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
+  - The recommended way to use templated configurations is to render the template using C(ansible.builtin.template)
+    lookup and pass the result to the I(content) parameter. Using I(src) with Jinja2 templates is deprecated.
 options:
   lines:
     description:
@@ -48,22 +50,21 @@ options:
         some commands are automatically modified by the device config parser.
     type: list
     elements: raw
-    suboptions:
-      config_line:
-        required: false
-        type: str
-        description: use to specify config lines when options are required to declare,works sames as lines
-      prompt:
-        required: false
-        type: str
-        description: prompt message to handle while editng configurations on device in configration mode
-      answer:
-        required: false
-        type: str
-        description: answer to send to device in order to handle prompt on device in configration mode
-
     aliases:
       - commands
+    suboptions:
+      config_line:
+        description: use to specify config lines when options are required to declare,works sames as lines
+        required: false
+        type: str
+      prompt:
+        description: prompt message to handle while editng configurations on device in configration mode
+        required: false
+        type: str
+      answer:
+        description: answer to send to device in order to handle prompt on device in configration mode
+        required: false
+        type: str
   parents:
     description:
       - The ordered set of parents that uniquely identify the section or hierarchy the
@@ -76,9 +77,21 @@ options:
       - Specifies the source path to the file that contains the configuration or configuration
         template to load.  The path to the source file can either be the full path on
         the Ansible control host or a relative path from the playbook or role root directory. This
-        argument is mutually exclusive with I(lines), I(parents). The configuration lines in the
+        argument is mutually exclusive with I(lines), I(parents), and I(content). The configuration lines in the
         source file should be similar to how it will appear if present in the running-configuration
         of the device including the indentation to ensure idempotency and correct diff.
+      - "NOTE: The I(src) parameter will no longer process Jinja2 templates starting in January 2028.
+        To use templated configurations, render the template using C(ansible.builtin.template) lookup
+        and pass the result to the I(content) parameter instead."
+    type: str
+  content:
+    description:
+      - Configuration content to apply to the device. This should be the rendered configuration
+        text, not a file path.
+      - This is the recommended way to provide templated configurations. Use C(ansible.builtin.template)
+        lookup to render your Jinja2 template and pass the output to this parameter.
+      - This argument is mutually exclusive with I(src), I(lines), and I(parents).
+      - 'Example: C(content: "{{ lookup(''ansible.builtin.template'', ''config.j2'') }}")'
     type: str
   before:
     description:
@@ -317,7 +330,7 @@ EXAMPLES = """
     host: "{{ inventory_hostname }}"
   when: ansible_net_version != version
 
-- name: Render a Jinja2 template onto an IOS device
+- name: Render a Jinja2 template onto an IOS device (DEPRECATED - use content parameter)
   cisco.ios.ios_config:
     backup: true
     src: ios_template.j2
@@ -329,6 +342,27 @@ EXAMPLES = """
     backup_options:
       filename: backup.cfg
       dir_path: /home/user
+
+- name: Apply templated configuration using content parameter (RECOMMENDED)
+  cisco.ios.ios_config:
+    content: "{{ lookup('ansible.builtin.template', 'ios_template.j2') }}"
+    backup: true
+
+- name: Apply templated configuration with backup options (RECOMMENDED)
+  cisco.ios.ios_config:
+    content: "{{ lookup('ansible.builtin.template', 'ios_template.j2') }}"
+    backup: true
+    backup_options:
+      filename: backup.cfg
+      dir_path: /home/user
+
+- name: Load configuration from pre-rendered template
+  cisco.ios.ios_config:
+    content: |
+      interface GigabitEthernet0/1
+       description Uplink to Core
+       ip address 10.1.1.1 255.255.255.0
+       no shutdown
 
 - name: Configure Access Session Attributes while handlening prompt
   cisco.ios.ios_config:
@@ -443,8 +477,7 @@ def check_args(module, warnings):
 
 
 def edit_config_or_macro(connection, commands, config_prompt_lines):
-    # only catch the macro configuration command,
-    # not negated 'no' variation.
+
     if commands[0].startswith("macro name"):
         connection.edit_macro(candidate=commands)
     else:
@@ -456,7 +489,10 @@ def edit_config_or_macro(connection, commands, config_prompt_lines):
 
 def get_candidate_config(module):
     candidate = ""
-    if module.params["src"]:
+    if module.params["content"]:
+
+        candidate = module.params["content"]
+    elif module.params["src"]:
         candidate = module.params["src"]
     elif module.params["lines"]:
         lines = []
@@ -503,6 +539,7 @@ def main():
     )
     argument_spec = dict(
         src=dict(type="str"),
+        content=dict(type="str"),
         lines=dict(aliases=["commands"], type="list", elements="raw", options=line_spec),
         parents=dict(type="list", elements="str"),
         before=dict(type="list", elements="str"),
@@ -519,11 +556,17 @@ def main():
         diff_against=dict(choices=["startup", "intended", "running"]),
         diff_ignore_lines=dict(type="list", elements="str"),
     )
-    mutually_exclusive = [("lines", "src"), ("parents", "src")]
+    mutually_exclusive = [
+        ("lines", "src"),
+        ("lines", "content"),
+        ("parents", "src"),
+        ("parents", "content"),
+        ("src", "content"),
+    ]
     required_if = [
-        ("match", "strict", ["lines", "src"], True),
-        ("match", "exact", ["lines", "src"], True),
-        ("replace", "block", ["lines", "src"], True),
+        ("match", "strict", ["lines", "src", "content"], True),
+        ("match", "exact", ["lines", "src", "content"], True),
+        ("replace", "block", ["lines", "src", "content"], True),
         ("diff_against", "intended", ["intended_config"]),
     ]
     module = AnsibleModule(
@@ -546,7 +589,7 @@ def main():
         config = NetworkConfig(indent=1, contents=contents)
         if module.params["backup"]:
             result["__backup__"] = contents
-    if any((module.params["lines"], module.params["src"])):
+    if any((module.params["lines"], module.params["src"], module.params["content"])):
         match = module.params["match"]
         replace = module.params["replace"]
         path = module.params["parents"]
@@ -575,8 +618,6 @@ def main():
             result["updates"] = commands
             result["banners"] = banner_diff
 
-            # send the configuration commands to the device and merge
-            # them with the current running config
             if not module.check_mode:
                 if commands:
                     configs = []
@@ -590,7 +631,7 @@ def main():
                                     ):
                                         before_commands = {
                                             "config_line": command,
-                                        }  # add before commands as dictonary type to config lines
+                                        }
                                         configs[:0].append(before_commands)
                                     if (
                                         module.params["parents"]
@@ -606,7 +647,7 @@ def main():
                                 edit_config_or_macro(connection, commands, configs)
                             else:
                                 edit_config_or_macro(connection, commands, configs)
-                    elif module.params["src"]:
+                    elif module.params["src"] or module.params["content"]:
                         edit_config_or_macro(connection, commands, configs)
                 if banner_diff:
                     connection.edit_banner(
@@ -633,7 +674,6 @@ def main():
         else:
             contents = running_config
 
-        # recreate the object in order to process diff_ignore_lines
         running_config = NetworkConfig(indent=1, contents=contents, ignore_lines=diff_ignore_lines)
         if module.params["diff_against"] == "running":
             if module.check_mode:
@@ -663,13 +703,15 @@ def main():
                     {"changed": True, "diff": {"before": str(before), "after": str(after)}},
                 )
 
-    if result.get("changed") and any((module.params["src"], module.params["lines"])):
+    if result.get("changed") and any(
+        (module.params["src"], module.params["lines"], module.params["content"]),
+    ):
         msg = (
             "To ensure idempotency and correct diff the input configuration lines should be"
             " similar to how they appear if present in"
             " the running configuration on device"
         )
-        if module.params["src"]:
+        if module.params["src"] or module.params["content"]:
             msg += " including the indentation"
         if "warnings" in result:
             result["warnings"].append(msg)
