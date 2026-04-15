@@ -3183,3 +3183,46 @@ class TestIosAclsModule(TestIosModule):
             },
         ]
         self.assertEqual(result["gathered"], gathered)
+
+    def test_ios_acls_gathered_tcp_numeric_protocol_options(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            ip access-list extended test_acl
+             10 permit tcp host 192.168.1.1 eq 80 host 192.168.1.2 eq 443 8
+             20 permit tcp any any ack fin
+            """,
+        )
+
+        set_module_args(dict(state="gathered"))
+        result = self.execute_module(changed=False)
+
+        gathered = result.get("gathered", [])
+        self.assertEqual(len(gathered), 1)
+        self.assertEqual(gathered[0]["afi"], "ipv4")
+
+        acl = gathered[0]["acls"][0]
+        self.assertEqual(acl["name"], "test_acl")
+        self.assertEqual(len(acl["aces"]), 2)
+
+        ace_10 = acl["aces"][0]
+        self.assertEqual(ace_10["sequence"], 10)
+        self.assertEqual(ace_10["protocol"], "tcp")
+        self.assertNotIn("protocol_options", ace_10)
+
+        ace_20 = acl["aces"][1]
+        self.assertEqual(ace_20["sequence"], 20)
+        self.assertEqual(ace_20["protocol"], "tcp")
+        self.assertIn("protocol_options", ace_20)
+        self.assertEqual(ace_20["protocol_options"]["tcp"], {"ack": True, "fin": True})
+
+        self.execute_show_command.return_value = dedent(
+            """\
+            ip access-list extended test_acl
+             10 permit tcp host 192.168.1.1 eq 80 host 192.168.1.2 eq 443 8
+             20 permit tcp any any ack fin
+            """,
+        )
+        set_module_args(dict(config=gathered, state="overridden"))
+        result = self.execute_module(changed=False)
+
+        self.assertEqual(result["changed"], False)

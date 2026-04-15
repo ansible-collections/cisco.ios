@@ -173,8 +173,13 @@ class AclsFacts(object):
                     protocol_options = each_ace.get("protocol_options")
                     if protocol_options is not None:
                         if protocol == "tcp":
-                            flag_dict = {flag: True for flag in protocol_options.split()}
-                            each_ace["protocol_options"] = {"tcp": flag_dict}
+                            # Handle TCP protocol options - should be string flags like 'ack fin'
+                            # If numeric, it's invalid for TCP, so remove it
+                            if isinstance(protocol_options, int):
+                                each_ace.pop("protocol_options", None)
+                            else:
+                                flag_dict = {flag: True for flag in protocol_options.split()}
+                                each_ace["protocol_options"] = {"tcp": flag_dict}
                         if protocol == "icmp":
                             protocol_options = str(protocol_options).replace("-", "_")
                             each_ace["protocol_options"] = {"icmp": {protocol_options: True}}
