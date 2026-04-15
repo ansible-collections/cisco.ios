@@ -2,7 +2,7 @@
 # Preview check_mode on stateful hosts first, then gathered/parsed/rendered, then full
 # merged/deleted plays. Each new TCP session resets the CISSHGO scenario cursor.
 
-- name: "ios_vlans — merged check_mode (preview)"
+- name: "Ios_vlans — merged check_mode (preview)"
   hosts: ios_merged
   gather_facts: false
   vars_files:
@@ -27,7 +27,7 @@
           before: "{{ cm_merged_preview.before | default([]) }}"
           after: "{{ cm_merged_preview.after | default([]) }}"
 
-- name: "ios_vlans — deleted check_mode (preview)"
+- name: "Ios_vlans — deleted check_mode (preview)"
   hosts: ios_deleted
   gather_facts: false
   vars_files:
@@ -49,7 +49,7 @@
           before: "{{ cm_deleted_preview.before | default([]) }}"
           after: "{{ cm_deleted_preview.after | default([]) }}"
 
-- name: "ios_vlans — state: gathered"
+- name: "Ios_vlans — state: gathered"
   hosts: ios_gathered
   gather_facts: false
   vars_files:
@@ -71,7 +71,7 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — VLAN facts from CISSHGO fixture"
 
-- name: "ios_vlans — state: parsed (running_config from _parsed.cfg)"
+- name: "Ios_vlans — state: parsed (running_config from _parsed.cfg)"
   hosts: ios_parsed
   gather_facts: false
   vars_files:
@@ -94,7 +94,7 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — _parsed.cfg"
 
-- name: "ios_vlans — state: rendered"
+- name: "Ios_vlans — state: rendered"
   hosts: ios_rendered
   gather_facts: false
   vars_files:
@@ -127,7 +127,7 @@
       ansible.builtin.debug:
         msg: "rendered state test passed — offline CLI projection"
 
-- name: "ios_vlans — state: merged (check_mode, apply, idempotency)"
+- name: "Ios_vlans — state: merged (check_mode, apply, idempotency)"
   hosts: ios_merged
   gather_facts: false
   vars_files:
@@ -189,7 +189,7 @@
       ansible.builtin.debug:
         msg: "merged state test passed — check_mode + apply + idempotency"
 
-- name: "ios_vlans — state: deleted (check_mode, apply, idempotency)"
+- name: "Ios_vlans — state: deleted (check_mode, apply, idempotency)"
   hosts: ios_deleted
   gather_facts: false
   vars_files:

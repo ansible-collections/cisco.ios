@@ -62,11 +62,8 @@ scenarios:
       - command: "show access-lists | include access list"
         transcript: "transcripts/scenarios/ios-acls-merged/before_empty_acl_names.txt"
       # ── apply: push config (seq 6-16) ──
+      # CML emit order: ipv4 standard → ipv4 extended → ipv6
       - command: "configure terminal"
-        transcript: "transcripts/generic_empty_return.txt"
-      - command: "ipv6 access-list R1_TRAFFIC"
-        transcript: "transcripts/generic_empty_return.txt"
-      - command: "deny tcp any eq www any eq telnet ack dscp af11 sequence 10"
         transcript: "transcripts/generic_empty_return.txt"
       - command: "ip access-list standard std_acl"
         transcript: "transcripts/generic_empty_return.txt"
@@ -81,6 +78,10 @@ scenarios:
       - command: "10 deny tcp 198.51.100.0 0.0.0.255 198.51.101.0 0.0.0.255 eq telnet ack tos 12"
         transcript: "transcripts/generic_empty_return.txt"
       - command: "20 deny tcp 192.0.3.0 0.0.0.255 192.0.4.0 0.0.0.255 eq www ack dscp ef ttl lt 20"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ipv6 access-list R1_TRAFFIC"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "deny tcp any eq www any eq telnet ack dscp af11 sequence 10"
         transcript: "transcripts/generic_empty_return.txt"
       - command: "end"
         transcript: "transcripts/generic_empty_return.txt"

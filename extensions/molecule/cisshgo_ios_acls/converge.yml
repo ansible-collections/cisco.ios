@@ -2,7 +2,7 @@
 # Preview check_mode uses a fresh TCP session per play; merged/deleted multi-task plays
 # share one session (each get_facts issues both ACL getter commands).
 
-- name: "ios_acls — merged check_mode (preview)"
+- name: "Ios_acls — merged check_mode (preview)"
   hosts: ios_merged
   gather_facts: false
   vars_files:
@@ -104,7 +104,7 @@
           before: "{{ cm_merged_preview.before | default({}) }}"
           after: "{{ cm_merged_preview.after | default({}) }}"
 
-- name: "ios_acls — deleted check_mode (preview)"
+- name: "Ios_acls — deleted check_mode (preview)"
   hosts: ios_deleted
   gather_facts: false
   vars_files:
@@ -132,7 +132,7 @@
           before: "{{ cm_deleted_preview.before | default({}) }}"
           after: "{{ cm_deleted_preview.after | default({}) }}"
 
-- name: "ios_acls — state: gathered"
+- name: "Ios_acls — state: gathered"
   hosts: ios_gathered
   gather_facts: false
   vars_files:
@@ -155,7 +155,7 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — both ACL getters replayed from fixture"
 
-- name: "ios_acls — state: parsed (_parsed.cfg)"
+- name: "Ios_acls — state: parsed (_parsed.cfg)"
   hosts: ios_parsed
   gather_facts: false
   vars_files:
@@ -178,7 +178,7 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — offline parse of _parsed.cfg"
 
-- name: "ios_acls — state: rendered (merged projection)"
+- name: "Ios_acls — state: rendered (merged projection)"
   hosts: ios_rendered
   gather_facts: false
   vars_files:
@@ -282,7 +282,7 @@
       ansible.builtin.debug:
         msg: "rendered state test passed — offline CLI projection"
 
-- name: "ios_acls — state: merged (check_mode, apply, idempotency)"
+- name: "Ios_acls — state: merged (check_mode, apply, idempotency)"
   hosts: ios_merged
   gather_facts: false
   vars_files:
@@ -493,7 +493,7 @@
       ansible.builtin.debug:
         msg: "merged state test passed — check_mode + apply + idempotency"
 
-- name: "ios_acls — state: deleted (check_mode, apply, idempotency)"
+- name: "Ios_acls — state: deleted (check_mode, apply, idempotency)"
   hosts: ios_deleted
   gather_facts: false
   vars_files:

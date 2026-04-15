@@ -3,7 +3,7 @@
 # parsed/rendered plays follow, then full merged/deleted plays (each begins sequence
 # from the top on a new connection).
 
-- name: "ios_vrf_address_family — merged check_mode (preview)"
+- name: "Ios_vrf_address_family — merged check_mode (preview)"
   hosts: ios_merged
   gather_facts: false
   vars_files:
@@ -43,7 +43,7 @@
           before: "{{ cm_merged.before | default([]) }}"
           after: "{{ cm_merged.after | default([]) }}"
 
-- name: "ios_vrf_address_family — deleted check_mode (preview)"
+- name: "Ios_vrf_address_family — deleted check_mode (preview)"
   hosts: ios_deleted
   gather_facts: false
   vars_files:
@@ -68,7 +68,7 @@
           before: "{{ cm_deleted.before | default([]) }}"
           after: "{{ cm_deleted.after | default([]) }}"
 
-- name: "ios_vrf_address_family — state: gathered"
+- name: "Ios_vrf_address_family — state: gathered"
   hosts: ios_gathered
   gather_facts: false
   vars_files:
@@ -90,7 +90,7 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — facts from CISSHGO fixture"
 
-- name: "ios_vrf_address_family — state: parsed (_parsed.cfg)"
+- name: "Ios_vrf_address_family — state: parsed (_parsed.cfg)"
   hosts: ios_parsed
   gather_facts: false
   vars_files:
@@ -122,15 +122,21 @@
           - result.parsed[0].address_families[0].inter_as_hybrid.next_hop == '1.2.3.4'
           - result.parsed[0].address_families[0].mdt.auto_discovery.pim.pim_tlv_announce.mdt_hello_enable == true
           - result.parsed[0].address_families[0].mdt.auto_discovery.receiver_site == true
-          - result.parsed[0].address_families[0].route_target.exports | selectattr('rt_value', 'defined') | map(attribute='rt_value') | list | first == '10.12.0.1:20'
-          - result.parsed[0].address_families[0].route_target.imports | selectattr('rt_value', 'defined') | map(attribute='rt_value') | list | first == '10.0.0.1:30'
+          - >-
+            result.parsed[0].address_families[0].route_target.exports
+            | selectattr('rt_value', 'defined') | map(attribute='rt_value') | list | first
+            == '10.12.0.1:20'
+          - >-
+            result.parsed[0].address_families[0].route_target.imports
+            | selectattr('rt_value', 'defined') | map(attribute='rt_value') | list | first
+            == '10.0.0.1:30'
         quiet: true
 
     - name: "PASSED: parsed state"
       ansible.builtin.debug:
         msg: "parsed state test passed — _parsed.cfg parsed offline"
 
-- name: "ios_vrf_address_family — state: rendered (merged projection)"
+- name: "Ios_vrf_address_family — state: rendered (merged projection)"
   hosts: ios_rendered
   gather_facts: false
   vars_files:
@@ -172,7 +178,7 @@
       ansible.builtin.debug:
         msg: "rendered state test passed — offline CLI projection"
 
-- name: "ios_vrf_address_family — state: merged (check_mode, apply, idempotency)"
+- name: "Ios_vrf_address_family — state: merged (check_mode, apply, idempotency)"
   hosts: ios_merged
   gather_facts: false
   vars_files:
@@ -259,7 +265,7 @@
       ansible.builtin.debug:
         msg: "merged state test passed — check_mode + apply + idempotency"
 
-- name: "ios_vrf_address_family — state: deleted (check_mode, apply, idempotency)"
+- name: "Ios_vrf_address_family — state: deleted (check_mode, apply, idempotency)"
   hosts: ios_deleted
   gather_facts: false
   vars_files:

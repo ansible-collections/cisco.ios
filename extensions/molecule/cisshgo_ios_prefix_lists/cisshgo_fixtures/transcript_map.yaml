@@ -48,13 +48,8 @@ scenarios:
       - command: "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
         transcript: "transcripts/scenarios/ios-prefix-lists-merged/before_empty.txt"
       # edit_config: configure + 12 commands + end
-      # NOTE: dict_merge causes ipv6 to be emitted before ipv4
+      # CML emit order (PYTHONHASHSEED=0): ipv4 lists first, then ipv6
       - command: "configure terminal"
-        transcript: "transcripts/generic_empty_return.txt"
-      # ipv6 prefix-list "test_ipv6": description then entries (emitted FIRST due to dict_merge)
-      - command: "ipv6 prefix-list test_ipv6 description this is ipv6 prefix-list"
-        transcript: "transcripts/generic_empty_return.txt"
-      - command: "ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80"
         transcript: "transcripts/generic_empty_return.txt"
       # ipv4 prefix-list "10": description then entries (seq 5, 10, 15, 20)
       - command: "ip prefix-list 10 description this is test description"
@@ -78,6 +73,11 @@ scenarios:
       - command: "ip prefix-list test_prefix seq 5 deny 35.0.0.0/8 ge 10 le 15"
         transcript: "transcripts/generic_empty_return.txt"
       - command: "ip prefix-list test_prefix seq 10 deny 35.0.0.0/8 ge 20"
+        transcript: "transcripts/generic_empty_return.txt"
+      # ipv6 prefix-list "test_ipv6": description then entries
+      - command: "ipv6 prefix-list test_ipv6 description this is ipv6 prefix-list"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80"
         transcript: "transcripts/generic_empty_return.txt"
       - command: "end"
         transcript: "transcripts/generic_empty_return.txt"

@@ -545,14 +545,22 @@ The cisshgo process loads **`transcript_map.yaml`** at startup. If you edit the 
 
 The collection uses **ansible-lint** with **`profile: production`** (see [`ansible_collections/cisco/ios/.ansible-lint`](../../../ansible_collections/cisco/ios/.ansible-lint)).
 
-| Area | Practice |
-|------|----------|
-| **Play names** | Every play has a clear `name:` |
-| **Task names** | Every task has a `name:` |
-| **FQCN** | Use `ansible.builtin.*`, `cisco.ios.*`, etc. |
-| **YAML** | Valid YAML; no tabs |
+| Area | Rule | Practice |
+|------|------|----------|
+| **Play names** | `name[casing]` | Every `name:` **must start with an uppercase letter**. Write `"Ios_acls — state: merged"` not `"ios_acls — state: merged"`. This applies to both play-level and task-level names. |
+| **Task names** | `name[casing]` | Same rule — capitalize the first word: `"Merge ACL configuration"`, `"Assert gathered matches …"`. |
+| **Line length** | `yaml[line-length]` | Lines must be **≤ 160 characters**. For long Jinja2 assertions, use YAML folded/literal scalars (`>-` / `|`) or split into multiple `that:` entries. |
+| **FQCN** | `fqcn` | Use `ansible.builtin.*`, `cisco.ios.*`, etc. — never short module names. |
+| **YAML** | `yaml[*]` | Valid YAML; no tabs; consistent indentation (2 spaces). |
 
-Run **`ansible-lint`** on the new scenario directory before finishing.
+Run **`ansible-lint`** on the new scenario directory before finishing:
+
+```bash
+cd ansible_collections/cisco/ios/extensions
+ansible-lint molecule/cisshgo_ios_<module>/converge.yml
+```
+
+If any `name[casing]` or `yaml[line-length]` violations appear, fix them **before** committing.
 
 ## Troubleshooting
 

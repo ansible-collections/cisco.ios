@@ -2,7 +2,7 @@
 # Preview check_mode on stateful hosts first, then gathered/parsed/rendered, then full
 # merged/deleted plays. Each new TCP session resets the CISSHGO scenario cursor.
 
-- name: "ios_vxlan_vtep — merged check_mode (preview)"
+- name: "Ios_vxlan_vtep — merged check_mode (preview)"
   hosts: ios_merged
   gather_facts: false
   vars_files:
@@ -25,7 +25,7 @@
           before: "{{ cm_merged_preview.before | default([]) }}"
           after: "{{ cm_merged_preview.after | default([]) }}"
 
-- name: "ios_vxlan_vtep — deleted check_mode (preview)"
+- name: "Ios_vxlan_vtep — deleted check_mode (preview)"
   hosts: ios_deleted
   gather_facts: false
   vars_files:
@@ -47,7 +47,7 @@
           before: "{{ cm_deleted_preview.before | default([]) }}"
           after: "{{ cm_deleted_preview.after | default([]) }}"
 
-- name: "ios_vxlan_vtep — state: gathered"
+- name: "Ios_vxlan_vtep — state: gathered"
   hosts: ios_gathered
   gather_facts: false
   vars_files:
@@ -71,7 +71,7 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — VXLAN VTEP from CISSHGO fixture"
 
-- name: "ios_vxlan_vtep — state: parsed (running_config from _parsed.cfg)"
+- name: "Ios_vxlan_vtep — state: parsed (running_config from _parsed.cfg)"
   hosts: ios_parsed
   gather_facts: false
   vars_files:
@@ -94,7 +94,7 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — _parsed.cfg"
 
-- name: "ios_vxlan_vtep — state: rendered"
+- name: "Ios_vxlan_vtep — state: rendered"
   hosts: ios_rendered
   gather_facts: false
   vars_files:
@@ -123,7 +123,7 @@
       ansible.builtin.debug:
         msg: "rendered state test passed — offline CLI projection"
 
-- name: "ios_vxlan_vtep — state: merged (check_mode, apply, idempotency)"
+- name: "Ios_vxlan_vtep — state: merged (check_mode, apply, idempotency)"
   hosts: ios_merged
   gather_facts: false
   vars_files:
@@ -180,7 +180,7 @@
       ansible.builtin.debug:
         msg: "merged state test passed — check_mode + apply + idempotency"
 
-- name: "ios_vxlan_vtep — state: deleted (check_mode, apply, idempotency)"
+- name: "Ios_vxlan_vtep — state: deleted (check_mode, apply, idempotency)"
   hosts: ios_deleted
   gather_facts: false
   vars_files:

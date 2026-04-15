@@ -2,7 +2,7 @@
 # Preview check_mode on stateful hosts first, then gathered/parsed/rendered, then full
 # merged/deleted plays. Each new TCP session resets the CISSHGO scenario cursor.
 
-- name: "ios_evpn_global — merged check_mode (preview)"
+- name: "Ios_evpn_global — merged check_mode (preview)"
   hosts: ios_merged
   gather_facts: false
   vars_files:
@@ -24,7 +24,7 @@
           before: "{{ cm_merged_preview.before | default({}) }}"
           after: "{{ cm_merged_preview.after | default({}) }}"
 
-- name: "ios_evpn_global — deleted check_mode (preview)"
+- name: "Ios_evpn_global — deleted check_mode (preview)"
   hosts: ios_deleted
   gather_facts: false
   vars_files:
@@ -44,7 +44,7 @@
           before: "{{ cm_deleted_preview.before | default({}) }}"
           after: "{{ cm_deleted_preview.after | default({}) }}"
 
-- name: "ios_evpn_global — state: gathered"
+- name: "Ios_evpn_global — state: gathered"
   hosts: ios_gathered
   gather_facts: false
   vars_files:
@@ -66,7 +66,7 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — EVPN global from CISSHGO fixture"
 
-- name: "ios_evpn_global — state: parsed (running_config from _parsed.cfg)"
+- name: "Ios_evpn_global — state: parsed (running_config from _parsed.cfg)"
   hosts: ios_parsed
   gather_facts: false
   vars_files:
@@ -89,7 +89,7 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — _parsed.cfg"
 
-- name: "ios_evpn_global — state: rendered"
+- name: "Ios_evpn_global — state: rendered"
   hosts: ios_rendered
   gather_facts: false
   vars_files:
@@ -117,7 +117,7 @@
       ansible.builtin.debug:
         msg: "rendered state test passed — offline CLI projection"
 
-- name: "ios_evpn_global — state: merged (check_mode, apply, idempotency)"
+- name: "Ios_evpn_global — state: merged (check_mode, apply, idempotency)"
   hosts: ios_merged
   gather_facts: false
   vars_files:
@@ -172,7 +172,7 @@
       ansible.builtin.debug:
         msg: "merged state test passed — check_mode + apply + idempotency"
 
-- name: "ios_evpn_global — state: deleted (check_mode, apply, idempotency)"
+- name: "Ios_evpn_global — state: deleted (check_mode, apply, idempotency)"
   hosts: ios_deleted
   gather_facts: false
   vars_files:
