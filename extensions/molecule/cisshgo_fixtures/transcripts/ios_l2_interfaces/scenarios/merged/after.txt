@@ -1,0 +1,14 @@
+interface GigabitEthernet0/0
+!
+interface GigabitEthernet2
+ switchport access vlan 30
+ switchport voice vlan 40
+ switchport private-vlan association host 2000 2500
+!
+interface GigabitEthernet3
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 20
+ switchport trunk allowed vlan 15-20,40
+ switchport trunk pruning vlan 10,20
+ switchport mode trunk
+!

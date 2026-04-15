@@ -1,0 +1,169 @@
+---
+# Converge — ios_interfaces integration tests against CISSHGO.
+# Tests: gathered, merged (+ idempotent), replaced (+ idempotent), parsed, rendered.
+
+# ====================================================================
+# 1. GATHERED — stateless platform on port 10000
+# ====================================================================
+- name: "ios_interfaces — gathered"
+  hosts: ios_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/ios_interfaces/vars/main.yaml"
+  tasks:
+    - name: Gather ios_interfaces facts
+      register: result
+      cisco.ios.ios_interfaces:
+        state: gathered
+
+    - name: Assert gathered config matches expected
+      ansible.builtin.assert:
+        that:
+          - "{{ gathered['config'] | symmetric_difference(result['gathered']) | length == 0 }}"
+        fail_msg: "Gathered config does not match expected"
+        success_msg: "Gathered config matches expected"
+
+# ====================================================================
+# 2. MERGED — stateful scenario on port 10001
+# ====================================================================
+- name: "ios_interfaces — merged"
+  hosts: ios_interfaces_merged
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/ios_interfaces/vars/main.yaml"
+  tasks:
+    - name: Merge provided configuration with device configuration
+      register: result
+      cisco.ios.ios_interfaces: &merged_config
+        config:
+          - name: GigabitEthernet2
+            description: Configured and Merged by Ansible-Network
+            enabled: true
+          - name: GigabitEthernet3
+            description: 04j
+            enabled: false
+        state: merged
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - "{{ merged['before'] | symmetric_difference(result['before']) | length == 0 }}"
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - "{{ merged['after'] | symmetric_difference(result['after']) | length == 0 }}"
+
+    - name: Merge provided configuration (idempotent)
+      register: result
+      cisco.ios.ios_interfaces: *merged_config
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+# ====================================================================
+# 3. REPLACED — stateful scenario on port 10002
+# ====================================================================
+- name: "ios_interfaces — replaced"
+  hosts: ios_interfaces_replaced
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/ios_interfaces/vars/main.yaml"
+  tasks:
+    - name: Replace device configuration of listed interfaces
+      register: result
+      cisco.ios.ios_interfaces: &replaced_config
+        config:
+          - name: GigabitEthernet2
+            description: Configured and Replaced by Ansible-Network
+            speed: 1000
+        state: replaced
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - "{{ replaced['before'] | symmetric_difference(result['before']) | length == 0 }}"
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - "{{ replaced['after'] | symmetric_difference(result['after']) | length == 0 }}"
+
+    - name: Replace device configuration (idempotent)
+      register: result
+      cisco.ios.ios_interfaces: *replaced_config
+
+    - name: Assert that task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+# ====================================================================
+# 4. PARSED — offline parse of a config file.
+# The resource module does its work from `running_config` without calling
+# the device, but its action plugin still requires a network_cli context,
+# so we run against the same stateless cisshgo listener as `gathered`.
+# ====================================================================
+- name: "ios_interfaces — parsed"
+  hosts: ios_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/ios_interfaces/vars/main.yaml"
+  tasks:
+    - name: Parse interface configuration from file
+      register: result
+      cisco.ios.ios_interfaces:
+        running_config: "{{ lookup('file', playbook_dir + '/../../../tests/integration/targets/ios_interfaces/tests/cli/_parsed.cfg') }}"
+        state: parsed
+
+    - name: Assert parsed config matches expected
+      ansible.builtin.assert:
+        that:
+          - "{{ parsed['config'] | symmetric_difference(result['parsed']) | length == 0 }}"
+        fail_msg: "Parsed config does not match expected"
+        success_msg: "Parsed config matches expected"
+
+# ====================================================================
+# 5. RENDERED — offline render of commands from structured input.
+# Same rationale as parsed: offline work, but needs network_cli context.
+# ====================================================================
+- name: "ios_interfaces — rendered"
+  hosts: ios_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/ios_interfaces/vars/main.yaml"
+  tasks:
+    - name: Render platform specific commands from task input
+      register: result
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet2
+            description: Configured by Ansible-Network
+            mtu: 110
+            enabled: true
+          - name: GigabitEthernet3
+            description: Configured by Ansible-Network
+            mtu: 2800
+            speed: "100"
+            enabled: false
+        state: rendered
+
+    - name: Assert rendered commands match expected
+      ansible.builtin.assert:
+        that:
+          - "{{ rendered['commands'] | symmetric_difference(result['rendered']) | length == 0 }}"
+        fail_msg: "Rendered commands do not match expected"
+        success_msg: "Rendered commands match expected"
+...
