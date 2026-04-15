@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_acl - Fix handling of integer TCP protocol type values in ACL configuration.
