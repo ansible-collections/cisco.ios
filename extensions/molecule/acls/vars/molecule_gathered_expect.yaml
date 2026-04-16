@@ -1,0 +1,111 @@
+---
+# Expected ios_acls gathered facts for CISSHGO populated transcripts (no std_acl, no ACL_STANDARD_786).
+molecule_gathered_expect:
+  - afi: ipv4
+    acls:
+      - name: "110"
+        acl_type: extended
+        aces:
+          - grant: deny
+            sequence: 10
+            protocol: icmp
+            protocol_options:
+              icmp:
+                echo: true
+            source:
+              address: 192.0.2.0
+              wildcard_bits: 0.0.0.255
+            destination:
+              address: 192.0.3.0
+              wildcard_bits: 0.0.0.255
+            dscp: ef
+            ttl:
+              eq: 10
+      - name: "123"
+        acl_type: extended
+        aces:
+          - grant: deny
+            sequence: 10
+            protocol: tcp
+            protocol_options:
+              tcp:
+                ack: true
+            source:
+              address: 198.51.100.0
+              wildcard_bits: 0.0.0.255
+            destination:
+              address: 198.51.101.0
+              wildcard_bits: 0.0.0.255
+              port_protocol:
+                eq: telnet
+            tos:
+              service_value: 12
+          - grant: deny
+            sequence: 20
+            protocol: tcp
+            protocol_options:
+              tcp:
+                ack: true
+            source:
+              address: 192.0.3.0
+              wildcard_bits: 0.0.0.255
+            destination:
+              address: 192.0.4.0
+              wildcard_bits: 0.0.0.255
+              port_protocol:
+                eq: www
+            dscp: ef
+            ttl:
+              lt: 20
+      - name: test_acl
+        acl_type: extended
+        aces:
+          - grant: deny
+            sequence: 10
+            protocol: tcp
+            protocol_options:
+              tcp:
+                fin: true
+            source:
+              address: 192.0.4.0
+              wildcard_bits: 0.0.0.255
+            destination:
+              address: 192.0.5.0
+              wildcard_bits: 0.0.0.255
+              port_protocol:
+                eq: www
+            option:
+              traceroute: true
+            ttl:
+              eq: 10
+          - grant: deny
+            sequence: 21
+            protocol: igmp
+            protocol_options:
+              igmp:
+                host_report: true
+            source:
+              address: 192.0.2.0
+              wildcard_bits: 0.0.0.155
+            destination:
+              address: 192.0.3.0
+              wildcard_bits: 0.0.0.254
+  - afi: ipv6
+    acls:
+      - name: R1_TRAFFIC
+        aces:
+          - grant: deny
+            sequence: 10
+            protocol: tcp
+            protocol_options:
+              tcp:
+                ack: true
+            source:
+              any: true
+              port_protocol:
+                eq: www
+            destination:
+              any: true
+              port_protocol:
+                eq: telnet
+            dscp: af11
