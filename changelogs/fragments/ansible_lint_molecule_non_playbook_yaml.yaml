@@ -1,0 +1,3 @@
+---
+trivial:
+  - Exclude Molecule CISSHGO vars.yml and transcript_map.yaml from ansible-lint syntax-check; they are not playbooks.
