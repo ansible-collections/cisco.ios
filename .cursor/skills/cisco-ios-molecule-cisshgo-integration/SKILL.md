@@ -55,7 +55,7 @@ If CML is unavailable **and** no captured artifacts exist: **STOP** and tell the
 
 ## Bundled reference docs (verbatim copies)
 
-Long-form material lives in **`docs/`** next to this file so you can **`Read`** it on demand (progressive disclosure). These files are **full copies** of the repo’s `docs/` sources at the time they were added to the skill bundle:
+Long-form material lives in **`docs/`** next to this file so you can **`Read`** it on demand (progressive disclosure). These files are **full copies** of the repo's `docs/` sources at the time they were added to the skill bundle:
 
 | Doc | Role |
 |-----|------|

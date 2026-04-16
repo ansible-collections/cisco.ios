@@ -35,7 +35,7 @@
 | `cisshgo_ios_vrf_interfaces` | `ios_vrf_interfaces` | 3 | deleted, gathered, merged |
 | `cisshgo_ios_vxlan_vtep` | `ios_vxlan_vtep` | 5 | deleted, gathered, merged, parsed, rendered |
 
-Each scenario is its own Molecule project under `extensions/molecule/<scenario>/` (see that directory’s `molecule.yml`). Run from the scenario directory so `ANSIBLE_COLLECTIONS_PATH` in `molecule.yml` resolves correctly.
+Each scenario is its own Molecule project under `extensions/molecule/<scenario>/` (see that directory's `molecule.yml`). Run from the scenario directory so `ANSIBLE_COLLECTIONS_PATH` in `molecule.yml` resolves correctly.
 
 ```bash
 export CISSHGO_BIN_PATH=/path/to/cisshgo   # or CISSHGO_REPO_PATH for go build

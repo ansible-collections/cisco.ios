@@ -40,7 +40,7 @@ You (or CI) drive **Molecule**. Molecule drives **cisshgo** over SSH. **cisshgo*
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Takeaway:** the skill does **not** replace the collection’s Python. It supplies **transcripts + ordering** so Molecule can run **offline** with predictable I/O.
+**Takeaway:** the skill does **not** replace the collection's Python. It supplies **transcripts + ordering** so Molecule can run **offline** with predictable I/O.
 
 ---
 
@@ -92,7 +92,7 @@ Give the agent **paths + binary + task + rules** so it can execute **SKILL.md** 
 
 | Include | Why |
 |---------|-----|
-| **Skill** | “Follow **`.cursor/skills/cisco-ios-molecule-cisshgo-integration/SKILL.md`**” (or enable the skill in the product). |
+| **Skill** | "Follow **`.cursor/skills/cisco-ios-molecule-cisshgo-integration/SKILL.md`**" (or enable the skill in the product). |
 | **Task** | One line, e.g. scaffold **`cisshgo_ios_foo`**, fix **`cisshgo_ios_acls`**, or align transcripts to CML. |
 | **Paths** | Collection root, **`.../ios/extensions`** for Molecule, **`helpers/`** absolute path. |
 | **CISSHGO_BIN_PATH** | Documented in **Molecule + Cisshgo.md** § 2.2 — paste the real path. |

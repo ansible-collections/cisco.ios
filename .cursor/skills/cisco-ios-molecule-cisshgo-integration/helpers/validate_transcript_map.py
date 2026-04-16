@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Pre-validate a cisshgo scenario's transcript_map.yaml before running Molecule.
 
 Checks performed:
@@ -34,7 +33,6 @@ from __future__ import annotations
 
 import argparse
 import ast
-import os
 import re
 import sys
 
@@ -279,11 +277,13 @@ def main() -> int:
     else:
         # Auto-detect: walk up from fixtures_dir looking for plugins/
         candidate = fixtures_dir
-        for _ in range(10):
+        depth = 0
+        while depth < 10:
             candidate = candidate.parent
             if (candidate / "plugins" / "module_utils").is_dir():
                 collection_root = candidate
                 break
+            depth += 1
 
     tmap = load_yaml(tmap_path)
     inventory = load_yaml(inv_path)
@@ -307,16 +307,16 @@ def main() -> int:
             all_warnings.extend(check_parser_order(tmap, parsers))
 
     if all_warnings:
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"WARNINGS ({len(all_warnings)}):")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         for w in all_warnings:
             print(f"  {w}")
 
     if all_errors:
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(f"ERRORS ({len(all_errors)}):")
-        print(f"{'='*60}")
+        print(f"{'=' * 60}")
         for e in all_errors:
             print(f"  {e}")
         return 1
