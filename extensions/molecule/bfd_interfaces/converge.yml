@@ -1,0 +1,175 @@
+---
+# ============================================================================
+# Play 1: ios_bfd_interfaces — state: gathered
+# ============================================================================
+- name: "Gather ios_bfd_interfaces facts (gathered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_bfd_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Gather BFD interface facts from device"
+      cisco.ios.ios_bfd_interfaces:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered facts contain BFD-configured interfaces"
+      ansible.builtin.assert:
+        that:
+          - result.gathered | length >= 3
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — BFD interface config gathered from fixture"
+
+# ============================================================================
+# Play 2: ios_bfd_interfaces — state: merged (scenario mode, stateful)
+# ============================================================================
+- name: "Merge ios_bfd_interfaces configuration (merged state)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_bfd_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Merge BFD interface configuration"
+      cisco.ios.ios_bfd_interfaces: &merged_config
+        config:
+          - name: GigabitEthernet2
+            local_address: 10.0.1.2
+            interval:
+              input: 100
+              min_rx: 100
+              multiplier: 3
+          - name: GigabitEthernet3
+            interval:
+              input: 100
+              min_rx: 100
+              multiplier: 3
+            jitter: false
+          - name: GigabitEthernet4
+            template: ANSIBLE_Template
+        state: merged
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - merged['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Merge BFD interface configuration — idempotent run"
+      cisco.ios.ios_bfd_interfaces: *merged_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — config applied + idempotency verified"
+
+# ============================================================================
+# Play 3: ios_bfd_interfaces — state: deleted (scenario mode, stateful)
+# ============================================================================
+- name: "Delete ios_bfd_interfaces configuration (deleted state)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_bfd_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Delete all BFD interface configuration"
+      cisco.ios.ios_bfd_interfaces: &deleted_config
+        state: deleted
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - deleted['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Delete BFD interface configuration — idempotent run"
+      cisco.ios.ios_bfd_interfaces: *deleted_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: deleted state"
+      ansible.builtin.debug:
+        msg: "deleted state test passed — BFD config deleted + idempotency verified"
+
+# ============================================================================
+# Play 4: ios_bfd_interfaces — state: parsed (offline)
+# ============================================================================
+- name: "Parse ios_bfd_interfaces configuration from file (parsed state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_bfd_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Parse BFD interface configuration from file"
+      cisco.ios.ios_bfd_interfaces:
+        running_config: "{{ lookup('file', '../../../tests/integration/targets/ios_bfd_interfaces/tests/cli/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed facts match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed['config'] == result['parsed']
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — BFD interface config parsed from _parsed.cfg"
+
+# ============================================================================
+# Play 5: ios_bfd_interfaces — state: rendered (offline)
+# ============================================================================
+- name: "Render ios_bfd_interfaces configuration to CLI (rendered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_bfd_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Render BFD interface configuration to CLI commands"
+      cisco.ios.ios_bfd_interfaces:
+        config:
+          - name: GigabitEthernet2
+            local_address: 10.0.1.2
+            interval:
+              input: 100
+              min_rx: 100
+              multiplier: 3
+          - name: GigabitEthernet3
+            interval:
+              input: 100
+              min_rx: 100
+              multiplier: 3
+            jitter: false
+          - name: GigabitEthernet4
+            template: ANSIBLE_Template
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - rendered['commands'] | symmetric_difference(result['rendered']) | length == 0
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — {{ result['rendered'] | length }} CLI commands rendered"

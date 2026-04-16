@@ -1,0 +1,8 @@
+---
+minor_changes:
+  - >-
+    Add Molecule + CISSHGO offline tests (batch 1) for ``ios_acl_interfaces``,
+    ``ios_acls``, ``ios_bfd_interfaces``, ``ios_bfd_templates``, and
+    ``ios_bgp_address_family`` under ``extensions/molecule/``, with shared
+    lifecycle playbooks, centralized fixtures, and a GitHub Actions workflow to
+    run scenarios in parallel.
