@@ -3226,3 +3226,77 @@ class TestIosAclsModule(TestIosModule):
         result = self.execute_module(changed=False)
 
         self.assertEqual(result["changed"], False)
+
+    def test_ios_acls_gathered_protocol_options_type_handling(self):
+        """Test that protocol_options handles various data types correctly."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            ip access-list extended test_acl
+             10 permit tcp any any ack
+             20 permit tcp any any established
+             30 permit icmp any any echo
+             40 permit icmp any any echo-reply
+             50 permit igmp any any host-query
+            """,
+        )
+
+        set_module_args(dict(state="gathered"))
+        result = self.execute_module(changed=False)
+
+        gathered = result.get("gathered", [])
+        acl = gathered[0]["acls"][0]
+
+        # TCP with single flag
+        ace_10 = acl["aces"][0]
+        self.assertEqual(ace_10["protocol"], "tcp")
+        self.assertEqual(ace_10["protocol_options"]["tcp"], {"ack": True})
+
+        # TCP with established flag
+        ace_20 = acl["aces"][1]
+        self.assertEqual(ace_20["protocol"], "tcp")
+        self.assertEqual(ace_20["protocol_options"]["tcp"], {"established": True})
+
+        # ICMP with named option
+        ace_30 = acl["aces"][2]
+        self.assertEqual(ace_30["protocol"], "icmp")
+        self.assertEqual(ace_30["protocol_options"]["icmp"], {"echo": True})
+
+        # ICMP with another named option
+        ace_40 = acl["aces"][3]
+        self.assertEqual(ace_40["protocol"], "icmp")
+        self.assertEqual(ace_40["protocol_options"]["icmp"], {"echo_reply": True})
+
+        # IGMP with named option
+        ace_50 = acl["aces"][4]
+        self.assertEqual(ace_50["protocol"], "igmp")
+        self.assertEqual(ace_50["protocol_options"]["igmp"], {"host_query": True})
+
+        # Test idempotency - gathered config should be reapplied without changes
+        set_module_args(dict(config=gathered, state="overridden"))
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["changed"], False)
+
+    def test_ios_acls_gathered_tcp_invalid_numeric_removes_option(self):
+        """Test that TCP ACEs with invalid numeric protocol_options have it removed."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            ip access-list extended test_acl
+             10 permit tcp host 10.0.0.1 host 10.0.0.2 6
+             20 permit tcp any any 123
+            """,
+        )
+
+        set_module_args(dict(state="gathered"))
+        result = self.execute_module(changed=False)
+
+        gathered = result.get("gathered", [])
+        acl = gathered[0]["acls"][0]
+
+        # Both ACEs should have protocol_options removed (invalid for TCP)
+        ace_10 = acl["aces"][0]
+        self.assertEqual(ace_10["protocol"], "tcp")
+        self.assertNotIn("protocol_options", ace_10)
+
+        ace_20 = acl["aces"][1]
+        self.assertEqual(ace_20["protocol"], "tcp")
+        self.assertNotIn("protocol_options", ace_20)
