@@ -494,6 +494,7 @@ IDENTIFIER_SUFFIX_RE = re.compile(r"^(.*?)(\d+)$")
 
 
 def normalize_parents(parents):
+    """Normalize `parents` so split multi-range interface parents are recombined into one command."""
     parents = parents or []
     if len(parents) <= 1:
         return parents
@@ -509,6 +510,7 @@ def normalize_parents(parents):
 
 
 def extract_lines(module):
+    """Return the effective list of config lines from `module.params['lines']` (supporting both raw strings and dict items)."""
     lines = []
     for item in module.params["lines"] or []:
         if isinstance(item, dict):
@@ -538,6 +540,7 @@ def get_candidate_config(module, parents=None, lines=None):
 
 
 def _expand_range_identifier(identifier):
+    """Expand a numeric suffix range (e.g. `1/0/1-3`) into identifiers `1/0/1..1/0/3`."""
     if "-" not in identifier:
         return [identifier]
 
@@ -572,6 +575,7 @@ def _expand_range_identifier(identifier):
 
 
 def expand_interface_range_parent(parent):
+    """Expand an IOS `interface range ...` parent into individual `interface ...` parents for idempotency checks."""
     if not parent:
         return []
     match = INTERFACE_RANGE_RE.match(parent.strip())
@@ -599,6 +603,7 @@ def expand_interface_range_parent(parent):
 
 
 def build_expanded_range_candidate(expanded_parents, lines):
+    """Build a candidate config that applies `lines` under each expanded `interface ...` parent (for idempotency only)."""
     candidate_obj = NetworkConfig(indent=1)
     for parent in expanded_parents:
         candidate_obj.add(lines=lines, parents=[parent])
@@ -606,6 +611,7 @@ def build_expanded_range_candidate(expanded_parents, lines):
 
 
 def get_running_config(module, current_config=None, flags=None):
+    """Return running-config text from params, cached content, or live device (optionally with `flags`)."""
     running = module.params["running_config"]
     if not running:
         if not module.params["defaults"] and current_config:
