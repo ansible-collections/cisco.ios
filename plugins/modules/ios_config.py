@@ -453,6 +453,7 @@ time:
   sample: "22:28:34"
 """
 import json
+import re
 
 from ansible.module_utils._text import to_text
 from ansible.module_utils.basic import AnsibleModule
@@ -487,7 +488,40 @@ def edit_config_or_macro(connection, commands, config_prompt_lines):
             connection.edit_config(candidate=commands)
 
 
-def get_candidate_config(module):
+INTERFACE_RANGE_RE = re.compile(r"^interface\s+range\s+(.+)$", re.I)
+INTERFACE_TOKEN_RE = re.compile(r"^([A-Za-z][A-Za-z\d.-]*)\s*(\d.*)$")
+IDENTIFIER_SUFFIX_RE = re.compile(r"^(.*?)(\d+)$")
+
+
+def normalize_parents(parents):
+    """Normalize `parents` so split multi-range interface parents are recombined into one command."""
+    parents = parents or []
+    if len(parents) <= 1:
+        return parents
+
+    first_parent = parents[0].strip()
+    first_match = INTERFACE_RANGE_RE.match(first_parent)
+    if not first_match:
+        return parents
+
+    range_tokens = [first_match.group(1).strip()]
+    range_tokens.extend(str(parent).strip() for parent in parents[1:] if str(parent).strip())
+    return ["interface range {0}".format(", ".join(range_tokens))]
+
+
+def extract_lines(module):
+    """Return the effective list of config lines from `module.params['lines']` (supporting both raw strings and dict items)."""
+    lines = []
+    for item in module.params["lines"] or []:
+        if isinstance(item, dict):
+            if item.get("config_line"):
+                lines.append(item.get("config_line"))
+        else:
+            lines.append(item)
+    return lines
+
+
+def get_candidate_config(module, parents=None, lines=None):
     candidate = ""
     if module.params["content"]:
 
@@ -495,21 +529,89 @@ def get_candidate_config(module):
     elif module.params["src"]:
         candidate = module.params["src"]
     elif module.params["lines"]:
-        lines = []
-        for item in module.params["lines"]:
-            if isinstance(item, dict):
-                if item.get("config_line"):
-                    lines.append(item.get("config_line"))
-            else:
-                lines.append(item)
+        candidate_lines = lines if lines is not None else extract_lines(module)
         candidate_obj = NetworkConfig(indent=1)
-        parents = module.params["parents"] or list()
-        candidate_obj.add(lines=lines, parents=parents)
+        candidate_obj.add(
+            lines=candidate_lines,
+            parents=parents if parents is not None else (module.params["parents"] or []),
+        )
         candidate = dumps(candidate_obj, "raw")
     return candidate
 
 
+def _expand_range_identifier(identifier):
+    """Expand a numeric suffix range (e.g. `1/0/1-3`) into identifiers `1/0/1..1/0/3`."""
+    if "-" not in identifier:
+        return [identifier]
+
+    start, end = identifier.split("-", 1)
+    start = start.strip()
+    end = end.strip()
+    if not start or not end:
+        return []
+
+    start_match = IDENTIFIER_SUFFIX_RE.match(start)
+    if not start_match:
+        return []
+    start_prefix, start_num = start_match.groups()
+
+    if "/" in end or "." in end or ":" in end:
+        end_match = IDENTIFIER_SUFFIX_RE.match(end)
+        if not end_match:
+            return []
+        end_prefix, end_num = end_match.groups()
+    else:
+        end_prefix, end_num = start_prefix, end
+
+    if start_prefix != end_prefix:
+        return []
+
+    start_idx = int(start_num)
+    end_idx = int(end_num)
+    if end_idx < start_idx:
+        return []
+
+    return ["{0}{1}".format(start_prefix, idx) for idx in range(start_idx, end_idx + 1)]
+
+
+def expand_interface_range_parent(parent):
+    """Expand an IOS `interface range ...` parent into individual `interface ...` parents for idempotency checks."""
+    if not parent:
+        return []
+    match = INTERFACE_RANGE_RE.match(parent.strip())
+    if not match:
+        return []
+
+    expanded_interfaces = []
+    for token in match.group(1).split(","):
+        token = token.strip()
+        if not token:
+            continue
+        token_match = INTERFACE_TOKEN_RE.match(token)
+        if not token_match:
+            return []
+        interface_type, identifier = token_match.groups()
+        expanded_identifiers = _expand_range_identifier(identifier.strip())
+        if not expanded_identifiers:
+            return []
+        for expanded_identifier in expanded_identifiers:
+            expanded_interfaces.append(
+                "interface {0}{1}".format(interface_type.strip(), expanded_identifier),
+            )
+
+    return expanded_interfaces
+
+
+def build_expanded_range_candidate(expanded_parents, lines):
+    """Build a candidate config that applies `lines` under each expanded `interface ...` parent (for idempotency only)."""
+    candidate_obj = NetworkConfig(indent=1)
+    for parent in expanded_parents:
+        candidate_obj.add(lines=lines, parents=[parent])
+    return dumps(candidate_obj, "raw")
+
+
 def get_running_config(module, current_config=None, flags=None):
+    """Return running-config text from params, cached content, or live device (optionally with `flags`)."""
     running = module.params["running_config"]
     if not running:
         if not module.params["defaults"] and current_config:
@@ -592,12 +694,28 @@ def main():
     if any((module.params["lines"], module.params["src"], module.params["content"])):
         match = module.params["match"]
         replace = module.params["replace"]
-        path = module.params["parents"]
-        candidate = get_candidate_config(module)
+        path = normalize_parents(module.params["parents"])
+        lines = extract_lines(module)
+        candidate = get_candidate_config(module, parents=path, lines=lines)
         running = get_running_config(module, contents, flags=flags)
+        expanded_range_parents = []
+        use_expanded_idempotency = False
+        if (
+            module.params["lines"]
+            and len(path) == 1
+            and "interface range" in path[0].lower()
+            and match == "line"
+        ):
+            expanded_range_parents = expand_interface_range_parent(path[0])
+            use_expanded_idempotency = bool(expanded_range_parents)
+        diff_candidate = (
+            build_expanded_range_candidate(expanded_range_parents, lines)
+            if use_expanded_idempotency
+            else candidate
+        )
         try:
             response = connection.get_diff(
-                candidate=candidate,
+                candidate=diff_candidate,
                 running=running,
                 diff_match=match,
                 diff_ignore_lines=diff_ignore_lines,
@@ -608,8 +726,10 @@ def main():
             module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
         config_diff = response["config_diff"]
         banner_diff = response["banner_diff"]
+        if use_expanded_idempotency and config_diff:
+            config_diff = candidate
         if config_diff or banner_diff:
-            commands = config_diff.split("\n")
+            commands = [line.strip() for line in config_diff.split("\n") if line.strip()]
             if module.params["before"]:
                 commands[:0] = module.params["before"]
             if module.params["after"]:
@@ -622,33 +742,35 @@ def main():
                 if commands:
                     configs = []
                     if module.params["lines"]:
-                        for item in module.params["lines"]:
-                            if isinstance(item, dict):
-                                for command in commands:
-                                    if (
-                                        module.params["before"]
-                                        and command in module.params["before"]
-                                    ):
-                                        before_commands = {
-                                            "config_line": command,
-                                        }
-                                        configs[:0].append(before_commands)
-                                    if (
-                                        module.params["parents"]
-                                        and command in module.params["parents"]
-                                    ):
-                                        parent_lines = {"config_line": command}
-                                        configs.append(parent_lines)
-                                    if command == item.get("config_line"):
-                                        configs.append(item)
-                                    if module.params["after"] and command in module.params["after"]:
-                                        after_lines = {"config_line": command}
-                                        configs.extend(after_lines)
-                                edit_config_or_macro(connection, commands, configs)
-                            else:
-                                edit_config_or_macro(connection, commands, configs)
+                        has_prompt_dicts = any(
+                            isinstance(item, dict) for item in module.params["lines"]
+                        )
+                        if has_prompt_dicts:
+                            for item in module.params["lines"]:
+                                if isinstance(item, dict):
+                                    for command in commands:
+                                        if (
+                                            module.params["before"]
+                                            and command in module.params["before"]
+                                        ):
+                                            configs[:0].append({"config_line": command})
+                                        if (
+                                            module.params["parents"]
+                                            and command in module.params["parents"]
+                                        ):
+                                            configs.append({"config_line": command})
+                                        if command == item.get("config_line"):
+                                            configs.append(item)
+                                        if (
+                                            module.params["after"]
+                                            and command in module.params["after"]
+                                        ):
+                                            configs.append({"config_line": command})
+                            edit_config_or_macro(connection, commands, configs)
+                        else:
+                            edit_config_or_macro(connection, commands, None)
                     elif module.params["src"] or module.params["content"]:
-                        edit_config_or_macro(connection, commands, configs)
+                        edit_config_or_macro(connection, commands, None)
                 if banner_diff:
                     connection.edit_banner(
                         candidate=json.dumps(banner_diff),
