@@ -1,0 +1,487 @@
+---
+# ============================================================================
+# Play 1: ios_route_maps — state: gathered
+# ============================================================================
+- name: "Gather ios_route_maps facts (gathered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_route_maps/vars/main.yaml"
+  tasks:
+    - name: "Gather route-map facts from device"
+      cisco.ios.ios_route_maps:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered facts contain expected route maps"
+      ansible.builtin.assert:
+        that:
+          - result.gathered | length >= 2
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — route-map config gathered from fixture"
+
+# ============================================================================
+# Play 2: ios_route_maps — state: merged (scenario mode, stateful)
+# ============================================================================
+- name: "Merge ios_route_maps configuration (merged state)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_route_maps/vars/main.yaml"
+  tasks:
+    - name: "Merge route-map configuration"
+      cisco.ios.ios_route_maps: &merged_config
+        config:
+          - route_map: test_1
+            entries:
+              - sequence: 10
+                action: deny
+                description: this is test route
+                set:
+                  as_path:
+                    prepend:
+                      as_number:
+                        - "64512"
+                  community:
+                    number: "65000:100 65000:200"
+                match:
+                  community:
+                    name:
+                      - test_comm
+                  ip:
+                    next_hop:
+                      prefix_lists:
+                        - test_1_new
+                        - test_2_new
+                    route_source:
+                      acls:
+                        - "10"
+                  security_group:
+                    source:
+                      - 10
+                      - 20
+                  local_preference:
+                    value:
+                      - "50"
+                      - "100"
+                  mpls_label: true
+              - sequence: 20
+                action: deny
+                continue_entry:
+                  entry_sequence: 100
+                match:
+                  additional_paths:
+                    all: true
+                    group_best: true
+                  as_path:
+                    acls:
+                      - 100
+                      - 200
+                  ipv6:
+                    address:
+                      acl: test_acl_20
+                  route_type:
+                    level_1: true
+                  tag:
+                    tag_list:
+                      - test_match_tag
+                  track: 105
+          - route_map: test_2
+            entries:
+              - sequence: 10
+                action: deny
+                match:
+                  ipv6:
+                    address:
+                      acl: test_ip_acl
+                    next_hop:
+                      prefix_list: test_new
+                    route_source:
+                      acl: route_src_acl
+                  security_group:
+                    source:
+                      - 10
+                      - 20
+                  local_preference:
+                    value:
+                      - "55"
+                      - "105"
+                  mpls_label: true
+                set:
+                  aigp_metric:
+                    value: 100
+                  as_path:
+                    prepend:
+                      as_number:
+                        - "65111"
+                        - "65111"
+                  automatic_tag: true
+                  extcommunity:
+                    cost:
+                      id: "10"
+                      cost_value: 100
+                      pre_bestpath: true
+                  ip:
+                    address: 192.0.2.1
+                    df: 1
+                    next_hop:
+                      recursive:
+                        global_route: true
+                        address: 198.51.110.1
+                      verify_availability:
+                        address: 198.51.111.1
+                        sequence: 100
+                        track: 10
+                    precedence:
+                      critical: true
+        state: merged
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - merged['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Merge route-map configuration — idempotent run"
+      cisco.ios.ios_route_maps: *merged_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — config applied + idempotency verified"
+
+# ============================================================================
+# Play 3: ios_route_maps — state: replaced (scenario mode, stateful)
+# ============================================================================
+- name: "Replace ios_route_maps configuration (replaced state)"
+  hosts: ios_replaced
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_route_maps/vars/main.yaml"
+  tasks:
+    - name: "Replace route-map configuration"
+      cisco.ios.ios_route_maps: &replaced_config
+        config:
+          - route_map: test_1
+            entries:
+              - sequence: 10
+                action: deny
+                description: this is replaced route
+                match:
+                  community:
+                    name:
+                      - test_comm_replaced
+                  ip:
+                    next_hop:
+                      acls:
+                        - "10"
+                        - test1_acl
+                    flowspec:
+                      dest_pfx: true
+                      acls:
+                        - test_acl_1
+                        - test_acl_2
+                  length:
+                    minimum: 10
+                    maximum: 100
+                  metric:
+                    value: 10
+                    external: true
+                  security_group:
+                    source:
+                      - 10
+                      - 20
+                  mpls_label: true
+                set:
+                  extcommunity:
+                    vpn_distinguisher:
+                      address: "192.0.2.1:12"
+                      additive: true
+                  as_path:
+                    prepend:
+                      as_number:
+                        - "64512"
+                        - "64512"
+                  community:
+                    number: "65000:300"
+                  metric:
+                    metric_value: 100
+                    deviation: plus
+                    eigrp_delay: 100
+                    metric_reliability: 10
+                    metric_bandwidth: 20
+                    mtu: 30
+          - route_map: test_replaced
+            entries:
+              - sequence: 10
+                action: deny
+                match:
+                  ipv6:
+                    address:
+                      acl: test_acl
+                    next_hop:
+                      prefix_list: test_new
+                    route_source:
+                      acl: route_src_acl
+                  security_group:
+                    source:
+                      - 15
+                      - 20
+                  local_preference:
+                    value:
+                      - "105"
+                      - "110"
+                  mpls_label: true
+                set:
+                  aigp_metric:
+                    value: 100
+                  as_path:
+                    prepend:
+                      as_number:
+                        - "65111"
+                        - "65111"
+                  automatic_tag: true
+                  extcommunity:
+                    cost:
+                      id: "10"
+                      cost_value: 100
+                      pre_bestpath: true
+                  ip:
+                    address: 192.0.2.1
+                    df: 1
+                    next_hop:
+                      recursive:
+                        global_route: true
+                        address: 198.110.51.1
+                      verify_availability:
+                        address: 198.110.51.2
+                        sequence: 100
+                        track: 10
+                    precedence:
+                      critical: true
+        state: replaced
+      register: result
+
+    - name: "Assert replaced commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - replaced['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Replace route-map configuration — idempotent run"
+      cisco.ios.ios_route_maps: *replaced_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: replaced state"
+      ansible.builtin.debug:
+        msg: "replaced state test passed — config replaced + idempotency verified"
+
+# ============================================================================
+# Play 4: ios_route_maps — state: deleted (scenario mode, stateful)
+# ============================================================================
+- name: "Delete ios_route_maps configuration (deleted state)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_route_maps/vars/main.yaml"
+  tasks:
+    - name: "Delete route-map configuration"
+      cisco.ios.ios_route_maps: &deleted_config
+        config:
+          - route_map: test_1
+        state: deleted
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - deleted['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Delete route-map configuration — idempotent run"
+      cisco.ios.ios_route_maps: *deleted_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+        quiet: true
+
+    - name: "PASSED: deleted state"
+      ansible.builtin.debug:
+        msg: "deleted state test passed — route-map deleted + idempotency verified"
+
+# ============================================================================
+# Play 5: ios_route_maps — state: parsed (offline)
+# ============================================================================
+- name: "Parse ios_route_maps configuration from file (parsed state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_route_maps/vars/main.yaml"
+  tasks:
+    - name: "Parse route-map configuration from file"
+      cisco.ios.ios_route_maps:
+        running_config: "{{ lookup('file', '../../../tests/integration/targets/ios_route_maps/tests/cli/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed facts match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed['config'] | symmetric_difference(result['parsed']) | length == 0
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — route-map config parsed from _parsed.cfg"
+
+# ============================================================================
+# Play 6: ios_route_maps — state: rendered (offline)
+# ============================================================================
+- name: "Render ios_route_maps configuration to CLI (rendered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_route_maps/vars/main.yaml"
+  tasks:
+    - name: "Render route-map configuration to CLI commands"
+      cisco.ios.ios_route_maps:
+        config:
+          - route_map: test_1
+            entries:
+              - sequence: 10
+                action: deny
+                description: this is test route
+                set:
+                  as_path:
+                    prepend:
+                      as_number:
+                        - "64512"
+                  community:
+                    number: "65000:100 65000:200"
+                match:
+                  community:
+                    name:
+                      - test_comm
+                  ip:
+                    next_hop:
+                      prefix_lists:
+                        - test_1_new
+                        - test_2_new
+                    route_source:
+                      acls:
+                        - "10"
+                  security_group:
+                    source:
+                      - 10
+                      - 20
+                  local_preference:
+                    value:
+                      - "50"
+                      - "100"
+                  mpls_label: true
+              - sequence: 20
+                action: deny
+                continue_entry:
+                  entry_sequence: 100
+                match:
+                  additional_paths:
+                    all: true
+                    group_best: true
+                  as_path:
+                    acls:
+                      - 100
+                      - 200
+                  ipv6:
+                    address:
+                      acl: test_acl_20
+                  route_type:
+                    level_1: true
+                  tag:
+                    tag_list:
+                      - test_match_tag
+                  track: 105
+          - route_map: test_2
+            entries:
+              - sequence: 10
+                action: deny
+                match:
+                  ipv6:
+                    address:
+                      acl: test_ip_acl
+                    next_hop:
+                      prefix_list: test_new
+                    route_source:
+                      acl: route_src_acl
+                  security_group:
+                    source:
+                      - 10
+                      - 20
+                  local_preference:
+                    value:
+                      - "55"
+                      - "105"
+                  mpls_label: true
+                set:
+                  aigp_metric:
+                    value: 100
+                  as_path:
+                    prepend:
+                      as_number:
+                        - "65111"
+                        - "65111"
+                  automatic_tag: true
+                  extcommunity:
+                    cost:
+                      id: "10"
+                      cost_value: 100
+                      pre_bestpath: true
+                  ip:
+                    address: 192.0.2.1
+                    df: 1
+                    next_hop:
+                      recursive:
+                        global_route: true
+                        address: 198.51.110.1
+                      verify_availability:
+                        address: 198.51.111.1
+                        sequence: 100
+                        track: 10
+                    precedence:
+                      critical: true
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands contain expected entries"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - merged['commands'] | symmetric_difference(result['rendered']) | length == 0
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — {{ result['rendered'] | length }} CLI commands rendered"

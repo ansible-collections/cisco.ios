@@ -1,0 +1,496 @@
+---
+# CML Capture Playbook
+#
+# Runs cisco.ios resource module tasks against a real CML / lab device and
+# captures the exact CLI command sequences and show output needed to author
+# cisshgo transcript_map.yaml and scenario *.txt files.
+#
+# Usage:
+#   ansible-playbook helpers/capture_cml.yml \
+#     -i /path/to/inventory.ini \
+#     -e module_name=ios_l3_interfaces \
+#     -e "states=merged,replaced,overridden,deleted,gathered" \
+#     -e capture_dir=captured \
+#     -vvvv
+#
+# The -vvvv output itself is the primary artifact for transcript_map
+# command ordering.  This playbook also writes per-state show output
+# (before.txt / after.txt) and the result commands list to disk so you
+# can diff and paste directly into cisshgo fixtures.
+#
+# Required extra vars:
+#   module_name   - e.g. ios_l3_interfaces, ios_l2_interfaces, ios_interfaces
+#
+# Optional extra vars:
+#   states        - comma-separated list (default: all stateful + gathered)
+#   capture_dir   - output directory (default: captured)
+#   section_cmd   - the show command for this module
+#                   (default: show running-config | section ^interface)
+#   skip_populate - set to true to skip _populate_config before stateful states
+
+- name: "CML Capture — prepare environment"
+  hosts: localhost
+  gather_facts: false
+  vars:
+    module_name: "{{ module_name }}"
+    capture_dir: "{{ capture_dir | default('captured') }}"
+    states: "{{ states | default('gathered,merged,replaced,overridden,deleted') }}"
+  tasks:
+    - name: "Validate module_name is provided"
+      ansible.builtin.assert:
+        that:
+          - module_name is defined
+          - module_name | trim != ''
+        fail_msg: "Set -e module_name=ios_l3_interfaces (or the target module)"
+
+    - name: "Create capture output directories"
+      ansible.builtin.file:
+        path: "{{ capture_dir }}/{{ module_name }}/{{ item }}"
+        state: directory
+        mode: "0755"
+      loop: "{{ states.split(',') | map('trim') | list }}"
+
+    - name: "Resolve integration target directory"
+      ansible.builtin.set_fact:
+        integration_target: >-
+          {{ playbook_dir }}/../../../tests/integration/targets/{{ module_name }}
+        vars_file: >-
+          {{ playbook_dir }}/../../../tests/integration/targets/{{ module_name }}/vars/main.yaml
+        tests_cli_dir: >-
+          {{ playbook_dir }}/../../../tests/integration/targets/{{ module_name }}/tests/cli
+
+    - name: "Verify vars/main.yaml exists"
+      ansible.builtin.stat:
+        path: "{{ vars_file | trim }}"
+      register: vars_stat
+      failed_when: not vars_stat.stat.exists
+
+# ---------- gathered ----------
+- name: "CML Capture — gathered"
+  hosts: ios
+  gather_facts: false
+  vars:
+    module_name: "{{ hostvars['localhost']['module_name'] }}"
+    capture_dir: "{{ hostvars['localhost']['capture_dir'] | default('captured') }}"
+    section_cmd: "{{ section_cmd | default('show running-config | section ^interface') }}"
+    states_list: "{{ hostvars['localhost']['states'].split(',') | map('trim') | list }}"
+    tests_cli_dir: "{{ hostvars['localhost']['tests_cli_dir'] | trim }}"
+  tasks:
+    - name: "Skip gathered if not requested"
+      ansible.builtin.meta: end_play
+      when: "'gathered' not in states_list"
+
+    - name: "Populate config for gathered (same as integration)"
+      ansible.builtin.include_tasks: "{{ tests_cli_dir }}/_populate_config.yaml"
+
+    - name: "Capture show output (gathered baseline)"
+      ansible.netcommon.cli_command:
+        command: "{{ section_cmd }}"
+      register: gathered_show
+
+    - name: "Save gathered show output"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ gathered_show.stdout }}\n"
+        dest: "{{ capture_dir }}/{{ module_name }}/gathered/show_section.txt"
+        mode: "0644"
+
+    - name: "Run module with state=gathered"
+      cisco.ios.ios_l3_interfaces:
+        config:
+        state: gathered
+      register: gathered_result
+      when: module_name == 'ios_l3_interfaces'
+
+    - name: "Run module with state=gathered (ios_l2_interfaces)"
+      cisco.ios.ios_l2_interfaces:
+        config:
+        state: gathered
+      register: gathered_result
+      when: module_name == 'ios_l2_interfaces'
+
+    - name: "Run module with state=gathered (ios_interfaces)"
+      cisco.ios.ios_interfaces:
+        config:
+        state: gathered
+      register: gathered_result
+      when: module_name == 'ios_interfaces'
+
+    - name: "Save gathered result"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ gathered_result | to_nice_yaml }}\n"
+        dest: "{{ capture_dir }}/{{ module_name }}/gathered/result.yml"
+        mode: "0644"
+
+    - name: "Clean up after gathered"
+      ansible.builtin.include_tasks: "{{ tests_cli_dir }}/_remove_config.yaml"
+
+# ---------- merged ----------
+- name: "CML Capture — merged"
+  hosts: ios
+  gather_facts: false
+  vars_files:
+    - "{{ hostvars['localhost']['vars_file'] | trim }}"
+  vars:
+    module_name: "{{ hostvars['localhost']['module_name'] }}"
+    capture_dir: "{{ hostvars['localhost']['capture_dir'] | default('captured') }}"
+    section_cmd: "{{ section_cmd | default('show running-config | section ^interface') }}"
+    states_list: "{{ hostvars['localhost']['states'].split(',') | map('trim') | list }}"
+    tests_cli_dir: "{{ hostvars['localhost']['tests_cli_dir'] | trim }}"
+    skip_populate: "{{ skip_populate | default(false) }}"
+  tasks:
+    - name: "Skip merged if not requested"
+      ansible.builtin.meta: end_play
+      when: "'merged' not in states_list"
+
+    - name: "Remove existing config (clean slate for merged)"
+      ansible.builtin.include_tasks: "{{ tests_cli_dir }}/_remove_config.yaml"
+
+    - name: "Capture show output BEFORE merged"
+      ansible.netcommon.cli_command:
+        command: "{{ section_cmd }}"
+      register: before_show
+
+    - name: "Save before.txt"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ before_show.stdout }}\n"
+        dest: "{{ capture_dir }}/{{ module_name }}/merged/before.txt"
+        mode: "0644"
+
+    - name: "Run merged (uses config from vars)"
+      cisco.ios.ios_l3_interfaces:
+        config: "{{ merged.config if merged.config is defined else merged['config'] }}"
+        state: merged
+      register: merged_result
+      when: module_name == 'ios_l3_interfaces'
+
+    - name: "Run merged (ios_l2_interfaces)"
+      cisco.ios.ios_l2_interfaces:
+        config: "{{ merged.config if merged.config is defined else merged['config'] }}"
+        state: merged
+      register: merged_result
+      when: module_name == 'ios_l2_interfaces'
+
+    - name: "Run merged (ios_interfaces)"
+      cisco.ios.ios_interfaces:
+        config: "{{ merged.config if merged.config is defined else merged['config'] }}"
+        state: merged
+      register: merged_result
+      when: module_name == 'ios_interfaces'
+
+    - name: "Capture show output AFTER merged"
+      ansible.netcommon.cli_command:
+        command: "{{ section_cmd }}"
+      register: after_show
+
+    - name: "Save after.txt"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ after_show.stdout }}\n"
+        dest: "{{ capture_dir }}/{{ module_name }}/merged/after.txt"
+        mode: "0644"
+
+    - name: "Save ordered commands"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: |
+          # Commands emitted by {{ module_name }} state=merged
+          # Use this order (not vars commands) for transcript_map.yaml sequence.
+          {% for cmd in merged_result.commands | default([]) %}
+          {{ cmd }}
+          {% endfor %}
+        dest: "{{ capture_dir }}/{{ module_name }}/merged/commands_ordered.txt"
+        mode: "0644"
+
+    - name: "Save full result"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ merged_result | to_nice_yaml }}\n"
+        dest: "{{ capture_dir }}/{{ module_name }}/merged/result.yml"
+        mode: "0644"
+
+    - name: "Clean up after merged"
+      ansible.builtin.include_tasks: "{{ tests_cli_dir }}/_remove_config.yaml"
+
+# ---------- replaced ----------
+- name: "CML Capture — replaced"
+  hosts: ios
+  gather_facts: false
+  vars_files:
+    - "{{ hostvars['localhost']['vars_file'] | trim }}"
+  vars:
+    module_name: "{{ hostvars['localhost']['module_name'] }}"
+    capture_dir: "{{ hostvars['localhost']['capture_dir'] | default('captured') }}"
+    section_cmd: "{{ section_cmd | default('show running-config | section ^interface') }}"
+    states_list: "{{ hostvars['localhost']['states'].split(',') | map('trim') | list }}"
+    tests_cli_dir: "{{ hostvars['localhost']['tests_cli_dir'] | trim }}"
+  tasks:
+    - name: "Skip replaced if not requested"
+      ansible.builtin.meta: end_play
+      when: "'replaced' not in states_list"
+
+    - name: "Remove then populate config for replaced"
+      ansible.builtin.include_tasks: "{{ tests_cli_dir }}/_remove_config.yaml"
+    - name: "Populate baseline"
+      ansible.builtin.include_tasks: "{{ tests_cli_dir }}/_populate_config.yaml"
+
+    - name: "Capture show output BEFORE replaced"
+      ansible.netcommon.cli_command:
+        command: "{{ section_cmd }}"
+      register: before_show
+
+    - name: "Save before.txt"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ before_show.stdout }}\n"
+        dest: "{{ capture_dir }}/{{ module_name }}/replaced/before.txt"
+        mode: "0644"
+
+    - name: "Run replaced (ios_l3_interfaces)"
+      cisco.ios.ios_l3_interfaces:
+        config: "{{ replaced.config if replaced.config is defined else replaced['config'] }}"
+        state: replaced
+      register: replaced_result
+      when: module_name == 'ios_l3_interfaces'
+
+    - name: "Run replaced (ios_l2_interfaces)"
+      cisco.ios.ios_l2_interfaces:
+        config: "{{ replaced.config if replaced.config is defined else replaced['config'] }}"
+        state: replaced
+      register: replaced_result
+      when: module_name == 'ios_l2_interfaces'
+
+    - name: "Run replaced (ios_interfaces)"
+      cisco.ios.ios_interfaces:
+        config: "{{ replaced.config if replaced.config is defined else replaced['config'] }}"
+        state: replaced
+      register: replaced_result
+      when: module_name == 'ios_interfaces'
+
+    - name: "Capture show output AFTER replaced"
+      ansible.netcommon.cli_command:
+        command: "{{ section_cmd }}"
+      register: after_show
+
+    - name: "Save after.txt"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ after_show.stdout }}\n"
+        dest: "{{ capture_dir }}/{{ module_name }}/replaced/after.txt"
+        mode: "0644"
+
+    - name: "Save ordered commands"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: |
+          # Commands emitted by {{ module_name }} state=replaced
+          {% for cmd in replaced_result.commands | default([]) %}
+          {{ cmd }}
+          {% endfor %}
+        dest: "{{ capture_dir }}/{{ module_name }}/replaced/commands_ordered.txt"
+        mode: "0644"
+
+    - name: "Save full result"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ replaced_result | to_nice_yaml }}\n"
+        dest: "{{ capture_dir }}/{{ module_name }}/replaced/result.yml"
+        mode: "0644"
+
+    - name: "Clean up after replaced"
+      ansible.builtin.include_tasks: "{{ tests_cli_dir }}/_remove_config.yaml"
+
+# ---------- overridden ----------
+- name: "CML Capture — overridden"
+  hosts: ios
+  gather_facts: false
+  vars_files:
+    - "{{ hostvars['localhost']['vars_file'] | trim }}"
+  vars:
+    module_name: "{{ hostvars['localhost']['module_name'] }}"
+    capture_dir: "{{ hostvars['localhost']['capture_dir'] | default('captured') }}"
+    section_cmd: "{{ section_cmd | default('show running-config | section ^interface') }}"
+    states_list: "{{ hostvars['localhost']['states'].split(',') | map('trim') | list }}"
+    tests_cli_dir: "{{ hostvars['localhost']['tests_cli_dir'] | trim }}"
+  tasks:
+    - name: "Skip overridden if not requested"
+      ansible.builtin.meta: end_play
+      when: "'overridden' not in states_list"
+
+    - name: "Remove then populate config for overridden"
+      ansible.builtin.include_tasks: "{{ tests_cli_dir }}/_remove_config.yaml"
+    - name: "Populate baseline"
+      ansible.builtin.include_tasks: "{{ tests_cli_dir }}/_populate_config.yaml"
+
+    - name: "Capture show output BEFORE overridden"
+      ansible.netcommon.cli_command:
+        command: "{{ section_cmd }}"
+      register: before_show
+
+    - name: "Save before.txt"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ before_show.stdout }}\n"
+        dest: "{{ capture_dir }}/{{ module_name }}/overridden/before.txt"
+        mode: "0644"
+
+    - name: "Run overridden (ios_l3_interfaces)"
+      cisco.ios.ios_l3_interfaces:
+        config: "{{ overridden.config if overridden.config is defined else overridden['config'] }}"
+        state: overridden
+      register: overridden_result
+      when: module_name == 'ios_l3_interfaces'
+
+    - name: "Run overridden (ios_l2_interfaces)"
+      cisco.ios.ios_l2_interfaces:
+        config: "{{ overridden.config if overridden.config is defined else overridden['config'] }}"
+        state: overridden
+      register: overridden_result
+      when: module_name == 'ios_l2_interfaces'
+
+    - name: "Run overridden (ios_interfaces)"
+      cisco.ios.ios_interfaces:
+        config: "{{ overridden.config if overridden.config is defined else overridden['config'] }}"
+        state: overridden
+      register: overridden_result
+      when: module_name == 'ios_interfaces'
+
+    - name: "Capture show output AFTER overridden"
+      ansible.netcommon.cli_command:
+        command: "{{ section_cmd }}"
+      register: after_show
+
+    - name: "Save after.txt"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ after_show.stdout }}\n"
+        dest: "{{ capture_dir }}/{{ module_name }}/overridden/after.txt"
+        mode: "0644"
+
+    - name: "Save ordered commands"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: |
+          # Commands emitted by {{ module_name }} state=overridden
+          {% for cmd in overridden_result.commands | default([]) %}
+          {{ cmd }}
+          {% endfor %}
+        dest: "{{ capture_dir }}/{{ module_name }}/overridden/commands_ordered.txt"
+        mode: "0644"
+
+    - name: "Save full result"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ overridden_result | to_nice_yaml }}\n"
+        dest: "{{ capture_dir }}/{{ module_name }}/overridden/result.yml"
+        mode: "0644"
+
+    - name: "Clean up after overridden"
+      ansible.builtin.include_tasks: "{{ tests_cli_dir }}/_remove_config.yaml"
+
+# ---------- deleted ----------
+- name: "CML Capture — deleted"
+  hosts: ios
+  gather_facts: false
+  vars_files:
+    - "{{ hostvars['localhost']['vars_file'] | trim }}"
+  vars:
+    module_name: "{{ hostvars['localhost']['module_name'] }}"
+    capture_dir: "{{ hostvars['localhost']['capture_dir'] | default('captured') }}"
+    section_cmd: "{{ section_cmd | default('show running-config | section ^interface') }}"
+    states_list: "{{ hostvars['localhost']['states'].split(',') | map('trim') | list }}"
+    tests_cli_dir: "{{ hostvars['localhost']['tests_cli_dir'] | trim }}"
+  tasks:
+    - name: "Skip deleted if not requested"
+      ansible.builtin.meta: end_play
+      when: "'deleted' not in states_list"
+
+    - name: "Remove then populate config for deleted"
+      ansible.builtin.include_tasks: "{{ tests_cli_dir }}/_remove_config.yaml"
+    - name: "Populate baseline"
+      ansible.builtin.include_tasks: "{{ tests_cli_dir }}/_populate_config.yaml"
+
+    - name: "Capture show output BEFORE deleted"
+      ansible.netcommon.cli_command:
+        command: "{{ section_cmd }}"
+      register: before_show
+
+    - name: "Save before.txt"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ before_show.stdout }}\n"
+        dest: "{{ capture_dir }}/{{ module_name }}/deleted/before.txt"
+        mode: "0644"
+
+    - name: "Run deleted (ios_l3_interfaces)"
+      cisco.ios.ios_l3_interfaces:
+        config: "{{ deleted.config if deleted.config is defined else deleted['config'] }}"
+        state: deleted
+      register: deleted_result
+      when: module_name == 'ios_l3_interfaces'
+
+    - name: "Run deleted (ios_l2_interfaces)"
+      cisco.ios.ios_l2_interfaces:
+        config: "{{ deleted.config if deleted.config is defined else deleted['config'] }}"
+        state: deleted
+      register: deleted_result
+      when: module_name == 'ios_l2_interfaces'
+
+    - name: "Run deleted (ios_interfaces)"
+      cisco.ios.ios_interfaces:
+        config: "{{ deleted.config if deleted.config is defined else deleted['config'] }}"
+        state: deleted
+      register: deleted_result
+      when: module_name == 'ios_interfaces'
+
+    - name: "Capture show output AFTER deleted"
+      ansible.netcommon.cli_command:
+        command: "{{ section_cmd }}"
+      register: after_show
+
+    - name: "Save after.txt"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ after_show.stdout }}\n"
+        dest: "{{ capture_dir }}/{{ module_name }}/deleted/after.txt"
+        mode: "0644"
+
+    - name: "Save ordered commands"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: |
+          # Commands emitted by {{ module_name }} state=deleted
+          {% for cmd in deleted_result.commands | default([]) %}
+          {{ cmd }}
+          {% endfor %}
+        dest: "{{ capture_dir }}/{{ module_name }}/deleted/commands_ordered.txt"
+        mode: "0644"
+
+    - name: "Save full result"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ deleted_result | to_nice_yaml }}\n"
+        dest: "{{ capture_dir }}/{{ module_name }}/deleted/result.yml"
+        mode: "0644"
+
+    - name: "Clean up after deleted"
+      ansible.builtin.include_tasks: "{{ tests_cli_dir }}/_remove_config.yaml"
+
+# ---------- summary ----------
+- name: "CML Capture — summary"
+  hosts: localhost
+  gather_facts: false
+  vars:
+    module_name: "{{ module_name }}"
+    capture_dir: "{{ capture_dir | default('captured') }}"
+  tasks:
+    - name: "Capture complete"
+      ansible.builtin.debug:
+        msg: >-
+          CML capture finished for {{ module_name }}.
+          Artifacts in {{ capture_dir }}/{{ module_name }}/.
+          Use -vvvv console output for transcript_map command ordering.
+          Use before.txt / after.txt files for cisshgo scenario transcripts.
+          Use commands_ordered.txt for reference (but always prefer -vvvv order).

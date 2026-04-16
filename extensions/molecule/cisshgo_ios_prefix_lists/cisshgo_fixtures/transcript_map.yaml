@@ -1,0 +1,209 @@
+---
+# CISSHGO Transcript Map for cisco.ios.ios_prefix_lists integration tests
+#
+# Platform: ios
+# Getter: show running-config | section ^ip prefix-list|^ipv6 prefix-list
+#
+# Scenarios:
+#   ios-prefix-lists-merged:    empty → populated + idempotency
+#   ios-prefix-lists-replaced:  populated → replaced + idempotency
+#   ios-prefix-lists-overridden: populated → overridden + idempotency
+#   ios-prefix-lists-deleted:   populated → empty (deleted_all) + idempotency
+
+platforms:
+  ios:
+    vendor: "cisco"
+    hostname: "cisshgo-ios"
+    username: "admin"
+    password: "admin"
+    command_transcripts:
+      "show privilege": "transcripts/cisco/ios/show_privilege.txt"
+      "terminal length 0": "transcripts/generic_empty_return.txt"
+      "terminal width 512": "transcripts/generic_empty_return.txt"
+      "terminal width 0": "transcripts/generic_empty_return.txt"
+      "show version": "transcripts/cisco/ios/show_version.txt"
+      "show running-config": "transcripts/cisco/ios/show_running-config.txt"
+      "show running-config | section ^ip prefix-list|^ipv6 prefix-list": "transcripts/cisco/ios/show_running-config_section_prefix_list_populated.txt"
+      "show vlan": "transcripts/generic_empty_return.txt"
+      "write memory": "transcripts/generic_empty_return.txt"
+      "write mem": "transcripts/generic_empty_return.txt"
+
+    context_search:
+      "configure terminal": "(config)#"
+      "enable": "#"
+      "base": "#"
+
+    context_hierarchy:
+      "(config)#": "#"
+      "#": ">"
+
+    end_context: "#"
+
+scenarios:
+  # ── merged: empty → populated ────────────────────────────────────────
+  ios-prefix-lists-merged:
+    platform: ios
+    sequence:
+      # get_facts (have) — empty device
+      - command: "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
+        transcript: "transcripts/scenarios/ios-prefix-lists-merged/before_empty.txt"
+      # edit_config: configure + 12 commands + end
+      # CML emit order (PYTHONHASHSEED=0): ipv4 lists first, then ipv6
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      # ipv4 prefix-list "10": description then entries (seq 5, 10, 15, 20)
+      - command: "ip prefix-list 10 description this is test description"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ip prefix-list 10 seq 5 deny 1.0.0.0/8 le 15"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ip prefix-list 10 seq 10 deny 35.0.0.0/8 ge 10"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ip prefix-list 10 seq 15 deny 12.0.0.0/8 ge 15"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ip prefix-list 10 seq 20 deny 14.0.0.0/8 ge 20 le 21"
+        transcript: "transcripts/generic_empty_return.txt"
+      # ipv4 prefix-list "test": description then entries
+      - command: "ip prefix-list test description this is test"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ip prefix-list test seq 50 deny 12.0.0.0/8 ge 15"
+        transcript: "transcripts/generic_empty_return.txt"
+      # ipv4 prefix-list "test_prefix": description then entries
+      - command: "ip prefix-list test_prefix description this is for prefix-list"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ip prefix-list test_prefix seq 5 deny 35.0.0.0/8 ge 10 le 15"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ip prefix-list test_prefix seq 10 deny 35.0.0.0/8 ge 20"
+        transcript: "transcripts/generic_empty_return.txt"
+      # ipv6 prefix-list "test_ipv6": description then entries
+      - command: "ipv6 prefix-list test_ipv6 description this is ipv6 prefix-list"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
+        transcript: "transcripts/scenarios/ios-prefix-lists-merged/after_populated.txt"
+      # idempotent: get_facts (have)
+      - command: "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
+        transcript: "transcripts/scenarios/ios-prefix-lists-merged/after_populated.txt"
+      # idempotent: get_facts (after)
+      - command: "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
+        transcript: "transcripts/scenarios/ios-prefix-lists-merged/after_populated.txt"
+
+  # ── replaced: populated → replaced ───────────────────────────────────
+  ios-prefix-lists-replaced:
+    platform: ios
+    sequence:
+      # get_facts (have) — populated
+      - command: "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
+        transcript: "transcripts/scenarios/ios-prefix-lists-replaced/before_populated.txt"
+      # edit_config: configure + 8 commands + end
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      # ipv4 prefix-list "10": description change, then remove seq 5 and 10
+      - command: "ip prefix-list 10 description this is replace test"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no ip prefix-list 10 seq 5 deny 1.0.0.0/8 le 15"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no ip prefix-list 10 seq 10 deny 35.0.0.0/8 ge 10"
+        transcript: "transcripts/generic_empty_return.txt"
+      # ipv4 prefix-list "test_replace": new list
+      - command: "ip prefix-list test_replace description this is replace test"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ip prefix-list test_replace seq 10 deny 35.0.0.0/8 ge 20"
+        transcript: "transcripts/generic_empty_return.txt"
+      # ipv6 prefix-list "test_ipv6": remove description, replace seq 10
+      - command: "no ipv6 prefix-list test_ipv6 description this is ipv6 prefix-list"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80 le 100"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
+        transcript: "transcripts/scenarios/ios-prefix-lists-replaced/after_replaced.txt"
+      # idempotent: get_facts (have)
+      - command: "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
+        transcript: "transcripts/scenarios/ios-prefix-lists-replaced/after_replaced.txt"
+      # idempotent: get_facts (after)
+      - command: "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
+        transcript: "transcripts/scenarios/ios-prefix-lists-replaced/after_replaced.txt"
+
+  # ── overridden: populated → overridden ───────────────────────────────
+  ios-prefix-lists-overridden:
+    platform: ios
+    sequence:
+      # get_facts (have) — populated
+      - command: "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
+        transcript: "transcripts/scenarios/ios-prefix-lists-overridden/before_populated.txt"
+      # edit_config: configure + 10 commands + end
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      # ipv4 prefix-list "10": description change, remove seq 5 and 10
+      - command: "ip prefix-list 10 description this is override test"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no ip prefix-list 10 seq 5 deny 1.0.0.0/8 le 15"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no ip prefix-list 10 seq 10 deny 35.0.0.0/8 ge 10"
+        transcript: "transcripts/generic_empty_return.txt"
+      # ipv4 prefix-list "test_override": new list
+      - command: "ip prefix-list test_override description this is override test"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ip prefix-list test_override seq 10 deny 35.0.0.0/8 ge 20"
+        transcript: "transcripts/generic_empty_return.txt"
+      # overridden: remove surplus ipv4 prefix-lists
+      - command: "no ip prefix-list test"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no ip prefix-list test_prefix"
+        transcript: "transcripts/generic_empty_return.txt"
+      # ipv6 prefix-list "test_ipv6": remove description, replace seq 10
+      - command: "no ipv6 prefix-list test_ipv6 description this is ipv6 prefix-list"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80 le 100"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
+        transcript: "transcripts/scenarios/ios-prefix-lists-overridden/after_overridden.txt"
+      # idempotent: get_facts (have)
+      - command: "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
+        transcript: "transcripts/scenarios/ios-prefix-lists-overridden/after_overridden.txt"
+      # idempotent: get_facts (after)
+      - command: "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
+        transcript: "transcripts/scenarios/ios-prefix-lists-overridden/after_overridden.txt"
+
+  # ── deleted: populated → empty (deleted_all) ────────────────────────
+  ios-prefix-lists-deleted:
+    platform: ios
+    sequence:
+      # get_facts (have) — populated
+      - command: "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
+        transcript: "transcripts/scenarios/ios-prefix-lists-deleted/before_populated.txt"
+      # edit_config: configure + 4 negate commands + end
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no ip prefix-list 10"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no ip prefix-list test"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no ip prefix-list test_prefix"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no ipv6 prefix-list test_ipv6"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after) — empty
+      - command: "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
+        transcript: "transcripts/scenarios/ios-prefix-lists-deleted/after_empty.txt"
+      # idempotent: get_facts (have) — empty
+      - command: "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
+        transcript: "transcripts/scenarios/ios-prefix-lists-deleted/after_empty.txt"
+      # idempotent: get_facts (after) — empty
+      - command: "show running-config | section ^ip prefix-list|^ipv6 prefix-list"
+        transcript: "transcripts/scenarios/ios-prefix-lists-deleted/after_empty.txt"

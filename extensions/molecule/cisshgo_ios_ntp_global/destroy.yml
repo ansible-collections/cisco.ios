@@ -1,0 +1,64 @@
+---
+# Molecule destroy: Stop CISSHGO SSH fixture server and clean up
+
+- name: "CISSHGO — Stop and cleanup"
+  hosts: localhost
+  gather_facts: false
+  vars:
+    cisshgo_pid_file: "{{ playbook_dir }}/.cisshgo.pid"
+    cisshgo_log_file: "{{ playbook_dir }}/.cisshgo.log"
+    cisshgo_starting_port: "{{ lookup('env', 'CISSHGO_PORT') | default('10000', true) }}"
+    cisshgo_port_count: 5
+
+  tasks:
+    - name: "Check if PID file exists"
+      ansible.builtin.stat:
+        path: "{{ cisshgo_pid_file }}"
+      register: pid_stat
+
+    - name: "Stop cisshgo process"
+      when: pid_stat.stat.exists
+      block:
+        - name: "Read PID file"
+          ansible.builtin.slurp:
+            src: "{{ cisshgo_pid_file }}"
+          register: pid_content
+
+        - name: "Kill cisshgo process"
+          ansible.builtin.shell: |
+            kill {{ pid_content.content | b64decode | trim }} 2>/dev/null || true
+          changed_when: true
+
+        - name: "Wait for CISSHGO ports to be released"
+          ansible.builtin.wait_for:
+            host: 127.0.0.1
+            port: "{{ cisshgo_starting_port | int + item }}"
+            state: stopped
+            timeout: 10
+          loop: "{{ range(cisshgo_port_count | int) | list }}"
+          register: wait_for_ports_released
+          failed_when: false
+
+        - name: "Remove PID file"
+          ansible.builtin.file:
+            path: "{{ cisshgo_pid_file }}"
+            state: absent
+
+    - name: "Fallback — kill any process on CISSHGO ports"
+      when: not pid_stat.stat.exists
+      ansible.builtin.shell: |
+        pid=$(lsof -ti:{{ item }} 2>/dev/null || true)
+        if [ -n "$pid" ]; then
+          kill $pid 2>/dev/null || true
+        fi
+      loop: "{{ range(cisshgo_starting_port | int, cisshgo_starting_port | int + (cisshgo_port_count | int)) | list }}"
+      changed_when: false
+
+    - name: "Clean up log file"
+      ansible.builtin.file:
+        path: "{{ cisshgo_log_file }}"
+        state: absent
+
+    - name: "CISSHGO stopped and cleaned up"
+      ansible.builtin.debug:
+        msg: "CISSHGO fixture server stopped. All temporary files removed."

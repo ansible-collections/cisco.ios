@@ -1,0 +1,25 @@
+# From live ios_l3_interfaces replaced + cisshgo replaced/after transcript (ipv4 list order differs from integration vars).
+replaced_after_expected:
+  - name: GigabitEthernet1
+    ipv4:
+      - dhcp:
+          enable: true
+  - name: GigabitEthernet2
+    ipv4:
+      - address: 203.0.114.1/24
+    redirects: false
+    unreachables: false
+    ipv6_redirects: false
+    ipv6_unreachables: false
+  - name: GigabitEthernet3
+    ipv4:
+      - address: 198.51.100.2/24
+      - address: 198.51.100.1/24
+        secondary: true
+    ipv6:
+      - address: 2001:DB8:1:1::/64
+    redirects: false
+    unreachables: false
+    ipv6_redirects: false
+    ipv6_unreachables: false
+  - name: GigabitEthernet4

@@ -1,0 +1,13 @@
+---
+devices:
+  - platform: ios
+    count: 1
+
+  - scenario: ios-acls-merged
+    count: 1
+
+  - scenario: ios-acls-deleted
+    count: 1
+
+  - platform: ios
+    count: 2

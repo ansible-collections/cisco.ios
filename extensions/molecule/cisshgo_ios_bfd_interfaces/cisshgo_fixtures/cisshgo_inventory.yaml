@@ -1,0 +1,10 @@
+---
+devices:
+  - platform: ios
+    count: 1
+
+  - scenario: ios-bfd-intf-merged
+    count: 1
+
+  - scenario: ios-bfd-intf-deleted
+    count: 1

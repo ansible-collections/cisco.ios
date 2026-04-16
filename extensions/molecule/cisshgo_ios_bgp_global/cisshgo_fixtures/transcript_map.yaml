@@ -1,0 +1,187 @@
+---
+# CISSHGO Transcript Map for cisco.ios.ios_bgp_global integration tests
+#
+# Platform: ios
+# Getter: show running-config | section ^router bgp
+#
+# Emit order derived from source: compare(self.parsers) walks the parser list,
+# then _compare_generic_lists (distributes, aggregate_addresses, networks),
+# then _compare_neighbor_lists, then _compare_redistribute_lists.
+# "router bgp <asn>" is inserted at position 0 if commands were generated.
+#
+# _set_bgp_defaults(have) adds ipv4_unicast=True, route_target.filter=True
+# to have when have.bgp.default is empty. For merged: want explicitly sets
+# defaults to False, so "no bgp default ..." is emitted. For replaced/deleted:
+# defaults match on both sides (both True), so no command is generated.
+#
+# Scenarios:
+#   ios-bgp-global-merged:   empty → merged + idempotency
+#   ios-bgp-global-replaced: populated → replaced (no idempotent — known default bug)
+#   ios-bgp-global-deleted:  populated → deleted + idempotency
+#   ios-bgp-global-purged:   populated → purged + idempotency
+
+platforms:
+  ios:
+    vendor: "cisco"
+    hostname: "cisshgo-ios"
+    username: "admin"
+    password: "admin"
+    command_transcripts:
+      "show privilege": "transcripts/cisco/ios/show_privilege.txt"
+      "terminal length 0": "transcripts/generic_empty_return.txt"
+      "terminal width 512": "transcripts/generic_empty_return.txt"
+      "terminal width 0": "transcripts/generic_empty_return.txt"
+      "show version": "transcripts/cisco/ios/show_version.txt"
+      "show running-config": "transcripts/cisco/ios/show_running-config.txt"
+      "show running-config | section ^router bgp": "transcripts/cisco/ios/show_running-config_section_bgp_populated.txt"
+      "show vlan": "transcripts/generic_empty_return.txt"
+      "write memory": "transcripts/generic_empty_return.txt"
+      "write mem": "transcripts/generic_empty_return.txt"
+
+    context_search:
+      "configure terminal": "(config)#"
+      "enable": "#"
+      "base": "#"
+
+    context_hierarchy:
+      "(config)#": "#"
+      "#": ">"
+
+    end_context: "#"
+
+scenarios:
+  # ── merged: empty → merged ──────────────────────────────────────────────
+  ios-bgp-global-merged:
+    platform: ios
+    sequence:
+      # get_facts (have) — empty device
+      - command: "show running-config | section ^router bgp"
+        transcript: "transcripts/scenarios/ios-bgp-global-merged/before_empty.txt"
+      # edit_config: configure + 8 commands + end
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "router bgp 65000"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "timers bgp 100 200 150"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no bgp default ipv4-unicast"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no bgp default route-target filter"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "bgp graceful-shutdown all neighbors 50 local-preference 100 community 100"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "bgp log-neighbor-changes"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "neighbor 198.0.2.1 remote-as 100"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "neighbor 198.0.2.1 description merge neighbor"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^router bgp"
+        transcript: "transcripts/scenarios/ios-bgp-global-merged/after_merged.txt"
+      # idempotent: get_facts (have) — no changes expected
+      - command: "show running-config | section ^router bgp"
+        transcript: "transcripts/scenarios/ios-bgp-global-merged/after_merged.txt"
+
+  # ── replaced: populated → replaced ──────────────────────────────────────
+  ios-bgp-global-replaced:
+    platform: ios
+    sequence:
+      # get_facts (have) — populated
+      - command: "show running-config | section ^router bgp"
+        transcript: "transcripts/scenarios/ios-bgp-global-replaced/before_populated.txt"
+      # edit_config: configure + 11 commands + end
+      # parsers phase: timers, bestpath, dampening, graceful_shutdown, nopeerup
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "router bgp 65000"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no timers bgp 100 200 150"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no bgp bestpath compare-routerid"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "bgp bestpath med confed"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no bgp dampening 1 1 1 1"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no bgp graceful-shutdown all neighbors 50 local-preference 100 community 100"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "bgp nopeerup-delay cold-boot 20"
+        transcript: "transcripts/generic_empty_return.txt"
+      # _compare_neighbor_lists: new 192.0.2.2, remove old 192.0.2.1
+      - command: "neighbor 192.0.2.2 remote-as 100"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "neighbor 192.0.2.2 description replace neighbor"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "neighbor 192.0.2.2 slow-peer detection disable"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no neighbor 192.0.2.1"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^router bgp"
+        transcript: "transcripts/scenarios/ios-bgp-global-replaced/after_replaced.txt"
+
+  # ── deleted: populated → deleted ─────────────────────────────────────────
+  ios-bgp-global-deleted:
+    platform: ios
+    sequence:
+      # get_facts (have) — populated
+      - command: "show running-config | section ^router bgp"
+        transcript: "transcripts/scenarios/ios-bgp-global-deleted/before_populated.txt"
+      # edit_config: configure + 10 commands + end
+      # _set_bgp_defaults on both want and have → defaults match → skipped
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "router bgp 65000"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no timers bgp 100 200 150"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no bgp advertise-best-external"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no bgp bestpath compare-routerid"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no bgp dampening 1 1 1 1"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no bgp graceful-shutdown all neighbors 50 local-preference 100 community 100"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no bgp log-neighbor-changes"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no bgp nopeerup-delay post-boot 10"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no neighbor 192.0.2.1"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no redistribute connected"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^router bgp"
+        transcript: "transcripts/scenarios/ios-bgp-global-deleted/after_deleted.txt"
+      # idempotent: get_facts (have) — minimal config
+      - command: "show running-config | section ^router bgp"
+        transcript: "transcripts/scenarios/ios-bgp-global-deleted/after_deleted.txt"
+
+  # ── purged: populated → no BGP ───────────────────────────────────────────
+  ios-bgp-global-purged:
+    platform: ios
+    sequence:
+      # get_facts (have) — populated
+      - command: "show running-config | section ^router bgp"
+        transcript: "transcripts/scenarios/ios-bgp-global-purged/before_populated.txt"
+      # edit_config: configure + 1 command + end
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no router bgp 65000"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^router bgp"
+        transcript: "transcripts/scenarios/ios-bgp-global-purged/after_purged.txt"
+      # idempotent: get_facts (have) — empty
+      - command: "show running-config | section ^router bgp"
+        transcript: "transcripts/scenarios/ios-bgp-global-purged/after_purged.txt"

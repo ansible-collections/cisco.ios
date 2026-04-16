@@ -1,0 +1,122 @@
+---
+# CISSHGO transcript map for cisco.ios.ios_vrf_global Molecule tests.
+#
+# Getter: show running-config | section ^vrf definition
+#
+# Like ios_vrf_interfaces: check_mode + first real task share one SSH session and
+# each emit an extra "show ... section" while the device is unchanged, so scenarios
+# begin with three duplicate getter transcripts before configure terminal.
+#
+# Each new Ansible play should use a new TCP session so CISSHGO restarts the
+# sequence from the top (required for separate check_mode-only plays on the same port).
+
+platforms:
+  ios:
+    vendor: "cisco"
+    hostname: "cisshgo-ios"
+    username: "admin"
+    password: "admin"
+    command_transcripts:
+      "show privilege": "transcripts/cisco/ios/show_privilege.txt"
+      "terminal length 0": "transcripts/generic_empty_return.txt"
+      "terminal width 512": "transcripts/generic_empty_return.txt"
+      "terminal width 0": "transcripts/generic_empty_return.txt"
+      "show version": "transcripts/cisco/ios/show_version.txt"
+      "show running-config": "transcripts/cisco/ios/show_running-config.txt"
+      "show running-config | section ^vrf definition": "transcripts/cisco/ios/show_running-config_section_vrf_def_populated.txt"
+      "show vlan": "transcripts/generic_empty_return.txt"
+      "write memory": "transcripts/generic_empty_return.txt"
+      "write mem": "transcripts/generic_empty_return.txt"
+
+    context_search:
+      "configure terminal": "(config)#"
+      "enable": "#"
+      "base": "#"
+
+    context_hierarchy:
+      "(config)#": "#"
+      "#": ">"
+
+    end_context: "#"
+
+scenarios:
+  ios-vrf-global-merged:
+    platform: ios
+    sequence:
+      - command: "show running-config | section ^vrf definition"
+        transcript: "transcripts/scenarios/ios-vrf-global-merged/before_empty.txt"
+      - command: "show running-config | section ^vrf definition"
+        transcript: "transcripts/scenarios/ios-vrf-global-merged/before_empty.txt"
+      - command: "show running-config | section ^vrf definition"
+        transcript: "transcripts/scenarios/ios-vrf-global-merged/before_empty.txt"
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "vrf definition VRF2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "description This is a test VRF for merged state"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ipv4 multicast multitopology"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ipv6 multicast multitopology"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "rd 2:3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "vnet tag 200"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "vpn id 2:45"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "route-target export 198.51.100.5:400"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "route-target import 198.51.100.5:400"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "show running-config | section ^vrf definition"
+        transcript: "transcripts/scenarios/ios-vrf-global-merged/after_merged.txt"
+      - command: "show running-config | section ^vrf definition"
+        transcript: "transcripts/scenarios/ios-vrf-global-merged/after_merged.txt"
+
+  ios-vrf-global-deleted:
+    platform: ios
+    sequence:
+      - command: "show running-config | section ^vrf definition"
+        transcript: "transcripts/scenarios/ios-vrf-global-deleted/before_populated.txt"
+      - command: "show running-config | section ^vrf definition"
+        transcript: "transcripts/scenarios/ios-vrf-global-deleted/before_populated.txt"
+      - command: "show running-config | section ^vrf definition"
+        transcript: "transcripts/scenarios/ios-vrf-global-deleted/before_populated.txt"
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "vrf definition VRF2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no description This is a test VRF for merged state"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no ipv4 multicast multitopology"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no ipv6 multicast multitopology"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no rd 2:3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no vnet tag 200"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no vpn id 2:45"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no route-target export 198.51.100.5:400"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no route-target import 198.51.100.5:400"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "show running-config | section ^vrf definition"
+        transcript: "transcripts/scenarios/ios-vrf-global-deleted/after_deleted.txt"
+      # idempotent run: module still emits "vrf definition VRF2" (known quirk)
+      - command: "show running-config | section ^vrf definition"
+        transcript: "transcripts/scenarios/ios-vrf-global-deleted/after_deleted.txt"
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "vrf definition VRF2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "show running-config | section ^vrf definition"
+        transcript: "transcripts/scenarios/ios-vrf-global-deleted/after_deleted.txt"

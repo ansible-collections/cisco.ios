@@ -1,0 +1,22 @@
+# Molecule-only: ios_l3_interfaces replaced emit order (cisco.ios + PYTHONHASHSEED=0) differs from
+# tests/integration targets vars merged multiset (extra GE3 no-* lines + GE2 address swap).
+replaced_commands_expected:
+  - interface GigabitEthernet2
+  - no ip redirects
+  - no ip unreachables
+  - no ipv6 redirects
+  - no ipv6 unreachables
+  - ip address 203.0.114.1 255.255.255.0
+  - no ip address 203.0.113.27 255.255.255.0
+  - interface GigabitEthernet3
+  - no ip redirects
+  - no ip unreachables
+  - no ipv6 redirects
+  - no ipv6 unreachables
+  - ip address 198.51.100.2 255.255.255.0
+  - ip address 198.51.100.1 255.255.255.0 secondary
+  - no ip address 192.0.2.1 255.255.255.0 secondary
+  - no ip address 192.0.2.2 255.255.255.0
+  - ipv6 address 2001:db8:1:1::/64
+  - no ipv6 address autoconfig
+  - no ipv6 address 2001:db8:0:3::/64

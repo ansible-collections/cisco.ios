@@ -1,0 +1,6 @@
+ip prefix-list 10 description this is override test
+ip prefix-list 10 seq 15 deny 12.0.0.0/8 ge 15
+ip prefix-list 10 seq 20 deny 14.0.0.0/8 ge 20 le 21
+ip prefix-list test_override description this is override test
+ip prefix-list test_override seq 10 deny 35.0.0.0/8 ge 20
+ipv6 prefix-list test_ipv6 seq 10 deny 2001:DB8:0:4::/64 ge 80 le 100

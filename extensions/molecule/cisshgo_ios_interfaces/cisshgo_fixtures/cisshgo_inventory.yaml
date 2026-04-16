@@ -1,0 +1,29 @@
+---
+# CISSHGO device inventory for ios_interfaces integration tests
+#
+# Ports (starting --starting-port, default 10000):
+#   10000: platform (gathered, parsed, rendered)
+#   10001: scenario ios-interfaces-merged
+#   10002: scenario ios-interfaces-replaced
+#   10003: scenario ios-interfaces-overridden
+#   10004: scenario ios-interfaces-deleted
+#   10005: scenario ios-interfaces-rtt
+
+devices:
+  - platform: ios
+    count: 1
+
+  - scenario: ios-interfaces-merged
+    count: 1
+
+  - scenario: ios-interfaces-replaced
+    count: 1
+
+  - scenario: ios-interfaces-overridden
+    count: 1
+
+  - scenario: ios-interfaces-deleted
+    count: 1
+
+  - scenario: ios-interfaces-rtt
+    count: 1

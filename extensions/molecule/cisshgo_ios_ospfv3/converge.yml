@@ -1,0 +1,358 @@
+---
+# Molecule converge: Run ios_ospfv3 integration-style assertions against CISSHGO
+
+# ============================================================================
+# Play 1: ios_ospfv3 — state: gathered (platform mode, stateless)
+# ============================================================================
+- name: "Gather ios_ospfv3 facts (gathered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_ospfv3/vars/main.yaml"
+  tasks:
+    - name: "Gather OSPFv3 facts from device"
+      cisco.ios.ios_ospfv3:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered facts match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - merged['after']['processes'] | symmetric_difference(result['gathered']['processes']) | length == 0
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — OSPFv3 config gathered from fixture"
+
+# ============================================================================
+# Play 2: ios_ospfv3 — state: merged (scenario mode, stateful + idempotent)
+# ============================================================================
+- name: "Merge ios_ospfv3 configuration (merged state)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_ospfv3/vars/main.yaml"
+  tasks:
+    - name: "Merge OSPFv3 configuration"
+      cisco.ios.ios_ospfv3: &merged_config
+        config:
+          processes:
+            - process_id: 1
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 110
+              address_family:
+                - afi: ipv4
+                  unicast: true
+                  vrf: ospf_vrf
+                  adjacency:
+                    min_adjacency: 25
+                    max_adjacency: 25
+                  areas:
+                    - area_id: 25
+                      nssa:
+                        default_information_originate:
+                          metric: 25
+                          nssa_only: true
+              areas:
+                - area_id: "10"
+                  nssa:
+                    default_information_originate:
+                      metric: 10
+            - process_id: 200
+              address_family:
+                - afi: ipv4
+                  unicast: true
+                  adjacency:
+                    min_adjacency: 200
+                    max_adjacency: 200
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 100
+              auto_cost:
+                reference_bandwidth: 4
+        state: merged
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - merged['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Assert before state is empty"
+      ansible.builtin.assert:
+        that:
+          - merged['before'] == {}
+        quiet: true
+
+    - name: "Merge OSPFv3 configuration — idempotent run"
+      cisco.ios.ios_ospfv3: *merged_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — config applied + idempotency verified"
+
+# ============================================================================
+# Play 3: ios_ospfv3 — state: replaced (scenario mode, stateful + idempotent)
+# ============================================================================
+- name: "Replace ios_ospfv3 configuration (replaced state)"
+  hosts: ios_replaced
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_ospfv3/vars/main.yaml"
+  tasks:
+    - name: "Replace OSPFv3 configuration"
+      cisco.ios.ios_ospfv3: &replaced_config
+        config:
+          processes:
+            - process_id: 200
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 200
+              address_family:
+                - afi: ipv4
+                  unicast: true
+                  adjacency:
+                    min_adjacency: 50
+                    max_adjacency: 50
+                  areas:
+                    - area_id: 200
+                      nssa:
+                        default_information_originate:
+                          metric: 200
+                          nssa_only: true
+              areas:
+                - area_id: "10"
+                  nssa:
+                    default_information_originate:
+                      metric: 10
+        state: replaced
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - replaced['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Replace OSPFv3 configuration — idempotent run"
+      cisco.ios.ios_ospfv3: *replaced_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: replaced state"
+      ansible.builtin.debug:
+        msg: "replaced state test passed — config replaced + idempotency verified"
+
+# ============================================================================
+# Play 4: ios_ospfv3 — state: overridden (scenario mode, stateful + idempotent)
+# ============================================================================
+- name: "Override ios_ospfv3 configuration (overridden state)"
+  hosts: ios_overridden
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_ospfv3/vars/main.yaml"
+  tasks:
+    - name: "Override OSPFv3 configuration"
+      cisco.ios.ios_ospfv3: &overridden_config
+        config:
+          processes:
+            - process_id: 200
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 200
+              address_family:
+                - afi: ipv4
+                  unicast: true
+                  adjacency:
+                    min_adjacency: 50
+                    max_adjacency: 50
+                  areas:
+                    - area_id: 200
+                      nssa:
+                        default_information_originate:
+                          metric: 200
+                          nssa_only: true
+              areas:
+                - area_id: "10"
+                  nssa:
+                    default_information_originate:
+                      metric: 10
+        state: overridden
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - overridden['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Override OSPFv3 configuration — idempotent run"
+      cisco.ios.ios_ospfv3: *overridden_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: overridden state"
+      ansible.builtin.debug:
+        msg: "overridden state test passed — config overridden + idempotency verified"
+
+# ============================================================================
+# Play 5: ios_ospfv3 — state: deleted (scenario mode, stateful + idempotent)
+# ============================================================================
+- name: "Delete ios_ospfv3 configuration (deleted state)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_ospfv3/vars/main.yaml"
+  tasks:
+    - name: "Delete OSPFv3 processes"
+      cisco.ios.ios_ospfv3: &deleted_config
+        config:
+          processes:
+            - process_id: 1
+            - process_id: 200
+        state: deleted
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - deleted['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Assert after state is empty"
+      ansible.builtin.assert:
+        that:
+          - result['after'] == {}
+        quiet: true
+
+    - name: "Delete OSPFv3 processes — idempotent run"
+      cisco.ios.ios_ospfv3: *deleted_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: deleted state"
+      ansible.builtin.debug:
+        msg: "deleted state test passed — OSPFv3 processes removed + idempotency verified"
+
+# ============================================================================
+# Play 6: ios_ospfv3 — state: parsed (offline; platform host)
+# ============================================================================
+- name: "Parse ios_ospfv3 configuration from file (parsed state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_ospfv3/vars/main.yaml"
+  tasks:
+    - name: "Parse OSPFv3 configuration from file"
+      cisco.ios.ios_ospfv3:
+        running_config: "{{ lookup('file', '../../../tests/integration/targets/ios_ospfv3/tests/cli/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed facts match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - merged['after']['processes'] | symmetric_difference(result['parsed']['processes']) | length == 0
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — OSPFv3 config parsed from _parsed.cfg"
+
+# ============================================================================
+# Play 7: ios_ospfv3 — state: rendered (offline)
+# ============================================================================
+- name: "Render ios_ospfv3 configuration to CLI (rendered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_ospfv3/vars/main.yaml"
+  tasks:
+    - name: "Render OSPFv3 configuration to CLI commands"
+      cisco.ios.ios_ospfv3:
+        config:
+          processes:
+            - process_id: 1
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 110
+              address_family:
+                - afi: ipv4
+                  unicast: true
+                  vrf: ospf_vrf
+                  adjacency:
+                    min_adjacency: 25
+                    max_adjacency: 25
+                  areas:
+                    - area_id: 25
+                      nssa:
+                        default_information_originate:
+                          metric: 25
+                          nssa_only: true
+              areas:
+                - area_id: "10"
+                  nssa:
+                    default_information_originate:
+                      metric: 10
+            - process_id: 200
+              address_family:
+                - afi: ipv4
+                  unicast: true
+                  adjacency:
+                    min_adjacency: 200
+                    max_adjacency: 200
+              max_metric:
+                router_lsa: true
+                on_startup:
+                  time: 100
+              auto_cost:
+                reference_bandwidth: 4
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.rendered | symmetric_difference(merged.commands) == []
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — {{ result['rendered'] | length }} CLI commands rendered"
