@@ -1,0 +1,47 @@
+Building configuration...
+
+Current configuration : 2048 bytes
+!
+version 15.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname {{.Hostname}}
+!
+boot-start-marker
+boot-end-marker
+!
+no aaa new-model
+!
+ip cef
+no ipv6 cef
+!
+interface GigabitEthernet0/0
+ no ip address
+!
+interface GigabitEthernet1
+ description Management interface do not change
+ ip address 10.0.0.1 255.255.255.0
+ negotiation auto
+!
+interface GigabitEthernet2
+ switchport access vlan 30
+!
+interface GigabitEthernet3
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 10
+ switchport trunk allowed vlan 10-20,40
+ switchport trunk pruning vlan 10,20
+ switchport mode trunk
+!
+interface GigabitEthernet4
+ no ip address
+!
+line con 0
+ stopbits 1
+line vty 0 4
+ login
+ transport input ssh
+!
+end

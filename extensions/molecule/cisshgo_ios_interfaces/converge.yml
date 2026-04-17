@@ -1,0 +1,210 @@
+---
+# Molecule converge: Run ios_interfaces integration tests against CISSHGO
+
+# ============================================================================
+# Play 1: ios_interfaces — state: gathered (platform mode, stateless)
+# ============================================================================
+- name: "Gather ios_interfaces facts (gathered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Gather interface facts from device"
+      cisco.ios.ios_interfaces:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered facts match expected config"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - gathered['config'] | symmetric_difference(result['gathered']) | length == 0
+        quiet: true
+
+    - name: "Assert correct number of interfaces gathered"
+      ansible.builtin.assert:
+        that:
+          - result['gathered'] | length == 6
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — {{ result['gathered'] | length }} interfaces collected"
+
+# ============================================================================
+# Play 2: ios_interfaces — state: merged (scenario mode, stateful + idempotent)
+# ============================================================================
+- name: "Merge ios_interfaces configuration (merged state)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Merge interface configuration"
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet2
+            description: Configured and Merged by Ansible-Network
+            enabled: true
+          - name: GigabitEthernet3
+            description: 04j
+            enabled: false
+        state: merged
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - merged['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Assert before state matches expected"
+      ansible.builtin.assert:
+        that:
+          - merged['before'] | symmetric_difference(result['before']) | length == 0
+        quiet: true
+
+    - name: "Assert after state matches expected"
+      ansible.builtin.assert:
+        that:
+          - merged['after'] | symmetric_difference(result['after']) | length == 0
+        quiet: true
+
+    - name: "Merge interface configuration — idempotent run"
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet2
+            description: Configured and Merged by Ansible-Network
+            enabled: true
+          - name: GigabitEthernet3
+            description: 04j
+            enabled: false
+        state: merged
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — config applied + idempotency verified"
+
+# ============================================================================
+# Play 3: ios_interfaces — state: replaced (scenario mode, stateful + idempotent)
+# ============================================================================
+- name: "Replace ios_interfaces configuration (replaced state)"
+  hosts: ios_replaced
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Replace interface configuration"
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet2
+            description: Configured and Replaced by Ansible-Network
+            speed: "1000"
+        state: replaced
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - replaced['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Assert before state matches expected"
+      ansible.builtin.assert:
+        that:
+          - replaced['before'] | symmetric_difference(result['before']) | length == 0
+        quiet: true
+
+    - name: "Assert after state matches expected"
+      ansible.builtin.assert:
+        that:
+          - replaced['after'] | symmetric_difference(result['after']) | length == 0
+        quiet: true
+
+    - name: "Replace interface configuration — idempotent run"
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet2
+            description: Configured and Replaced by Ansible-Network
+            speed: "1000"
+        state: replaced
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: replaced state"
+      ansible.builtin.debug:
+        msg: "replaced state test passed — config replaced + idempotency verified"
+
+# ============================================================================
+# Play 4: ios_interfaces — state: parsed (offline)
+# ============================================================================
+- name: "Parse ios_interfaces configuration from file (parsed state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Parse interface configuration from file"
+      cisco.ios.ios_interfaces:
+        running_config: "{{ lookup('file', '../../../tests/integration/targets/ios_interfaces/tests/cli/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed facts match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed['config'] | symmetric_difference(result['parsed']) | length == 0
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — {{ result['parsed'] | length }} interfaces parsed from config file"
+
+# ============================================================================
+# Play 5: ios_interfaces — state: rendered (offline)
+# ============================================================================
+- name: "Render ios_interfaces configuration to CLI (rendered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Render interface configuration to CLI commands"
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet2
+            description: Configured by Ansible-Network
+            mtu: 110
+            enabled: true
+          - name: GigabitEthernet3
+            description: Configured by Ansible-Network
+            mtu: 2800
+            enabled: false
+            speed: "100"
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - rendered['commands'] | symmetric_difference(result['rendered']) | length == 0
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — {{ result['rendered'] | length }} CLI commands rendered"
