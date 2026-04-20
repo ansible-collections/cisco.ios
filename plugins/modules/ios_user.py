@@ -884,7 +884,6 @@ def find_set_difference(list1, list2, key):
 
 
 def main():
-    # import debugpy; debugpy.listen(3000); debugpy.wait_for_client()
     """main entry point for module execution"""
     hashed_password_spec = dict(
         type=dict(type="int", required=True),
