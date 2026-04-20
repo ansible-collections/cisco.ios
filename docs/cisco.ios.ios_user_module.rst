@@ -425,6 +425,26 @@ Parameters
             <tr>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>purge_keys</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Since cisco.ios devices have a max limit of 2 keys per user, this parameter allows removal of keys that are not passed in sshkey parameter as to write new keys being passed.</div>
+                        <div>Works only with &#x27;present&#x27; state</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>sshkey</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -590,6 +610,52 @@ Examples
     #    key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
     #    key-hash ssh-rsa 1985673DCF7FA9A0F374BB97DC2ABB27 test@fedora
 
+    # Using purge_keys: true
+
+    # Before state:
+    # -------------
+
+    # router-ios#show running-config | section ^username
+    # username admin privilege 15 password 0 password
+    # username testuser privilege 15 password 0 password
+    # username ansible nopassword
+    #   username ansible
+    #    key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
+
+    # Purge all users except admin play:
+    # ----------------------------------
+
+    - name: Remove all users except admin
+      cisco.ios.ios_user:
+        name: ansible
+        sshkey:
+          - "{{ lookup('file', '~/path/to/public_key') }}"
+        purge_keys: true
+
+    # Task Output
+    # -----------
+
+    # commands:
+    # - ip ssh pubkey-chain
+    # - username ansible
+    # - no key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
+    # - exit
+    # - exit
+    # - ip ssh pubkey-chain
+    # - username ansible
+    # - key-hash ssh-rsa B2C881222DB43D58A229EDF19D2228A2 test2@fedora
+    # - exit
+    # - exit
+
+    # After state:
+    # ------------
+
+    # router-ios#show running-config | section username
+    # username admin privilege 15 password 0 password
+    # username ansible nopassword
+    #   username ansible
+    #    key-hash ssh-rsa B2C881222DB43D58A229EDF19D2228A2 test2@fedora
+
     # Using Purge: true
 
     # Before state:
@@ -648,6 +714,7 @@ Examples
 
     # Task Output
     # -----------
+
 
     # commands:
     # - no username ansible
