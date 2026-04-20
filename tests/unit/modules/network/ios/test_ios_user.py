@@ -180,9 +180,6 @@ class TestIosUserModule(TestIosModule):
         result = self.execute_module(changed=True, commands=commands)
         self.assertEqual(result["commands"], commands)
 
-    # test2 - dGVzdDIK - 126A8A51B9D1BBD07FDDC65819A542C3
-    # test - dGVzdA== - 098F6BCD4621D373CADE4E832627B4F6
-    # idk - eHWacB2== - A019918340A1E9183388D9A675603036
     def test_ios_user_set_sshkey_purge_keys_true(self):
         set_module_args(dict(name="purger", sshkey="dGVzdA==", purge_keys=True))
         commands = [
