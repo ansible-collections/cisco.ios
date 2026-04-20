@@ -111,6 +111,12 @@ options:
           - This argument accepts a valid SSH key value.
         type: list
         elements: str
+      purge_keys:
+        description:
+          - Since cisco.ios devices have a max limit of 2 keys per user, this parameter allows
+            removal of keys that are not passed in sshkey parameter as to write new keys being passed.
+          - Works only with 'present' state
+        type: bool
       nopassword:
         description:
           - Defines the username without assigning a password. This will allow the user
@@ -637,11 +643,15 @@ def user_del_cmd(username):
 
 
 def remove_ssh(command, want, have):
+    """
+    Function responsible to add no key-hash commands
+    Compares want and have via set operations
+    """
     want_keys_set = set(want.get("sshkey", []))
     have_keys_set = set(have.get("sshkey", []))
 
     keys_to_be_removed = have_keys_set.difference(want_keys_set)
-
+    # Nothing to be removed if wanted keys are same as keys present
     if keys_to_be_removed:
         command.append("ip ssh pubkey-chain")
         command.append("username %s" % want["name"])
