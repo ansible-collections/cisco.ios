@@ -85,13 +85,13 @@ extensions/molecule/
 The harness is glued together by **one identifier** per scenario:
 `scenario_name` (set in `vars.yml`). Everything else is derived from it.
 
-| Artefact | Path |
-|----------|------|
-| Scenario dir | `extensions/molecule/<scenario_name>/` |
-| Ansible inventory | `cisshgo_fixtures/inventories/ansible/<scenario_name>.yaml` |
-| Cisshgo inventory | `cisshgo_fixtures/inventories/cisshgo/<scenario_name>.yaml` |
-| Cisshgo log | `/tmp/cisshgo-<scenario_name>.log` |
-| pgrep match | `cisshgo.*--inventory.*inventories/cisshgo/<scenario_name>.yaml` |
+| Artefact          | Path                                                             |
+| ----------------- | ---------------------------------------------------------------- |
+| Scenario dir      | `extensions/molecule/<scenario_name>/`                           |
+| Ansible inventory | `cisshgo_fixtures/inventories/ansible/<scenario_name>.yaml`      |
+| Cisshgo inventory | `cisshgo_fixtures/inventories/cisshgo/<scenario_name>.yaml`      |
+| Cisshgo log       | `/tmp/cisshgo-<scenario_name>.log`                               |
+| pgrep match       | `cisshgo.*--inventory.*inventories/cisshgo/<scenario_name>.yaml` |
 
 ---
 
@@ -200,12 +200,12 @@ cwd = cisco/ios/extensions
 
 ## 6. Troubleshooting
 
-| Symptom | Cause | Fix |
-|---------|-------|-----|
-| `glob failed` | Wrong cwd | `cd extensions` first |
-| `socket_path must be a value` on localhost | `ansible_network_os` leaked to `all:` | Keep network vars on `ios_cisshgo` child group |
-| `Permission denied` | `CISSHGO_BIN` points to directory | Point to the binary file inside the repo |
-| `unmarshal errors` | Wrong inventory format for cisshgo | Use `inventories/cisshgo/` format, not ansible |
-| `Timeout waiting for port` | cisshgo crashed | Check `/tmp/cisshgo-<scenario>.log` |
-| Assertion fails | Transcript doesn't match expected vars | Align transcript; `vars/main.yaml` is ground truth |
-| `% Invalid input` | Emit order mismatch in transcript_map | Re-capture emit order from CML with `check_mode: true` |
+| Symptom                                    | Cause                                  | Fix                                                    |
+| ------------------------------------------ | -------------------------------------- | ------------------------------------------------------ |
+| `glob failed`                              | Wrong cwd                              | `cd extensions` first                                  |
+| `socket_path must be a value` on localhost | `ansible_network_os` leaked to `all:`  | Keep network vars on `ios_cisshgo` child group         |
+| `Permission denied`                        | `CISSHGO_BIN` points to directory      | Point to the binary file inside the repo               |
+| `unmarshal errors`                         | Wrong inventory format for cisshgo     | Use `inventories/cisshgo/` format, not ansible         |
+| `Timeout waiting for port`                 | cisshgo crashed                        | Check `/tmp/cisshgo-<scenario>.log`                    |
+| Assertion fails                            | Transcript doesn't match expected vars | Align transcript; `vars/main.yaml` is ground truth     |
+| `% Invalid input`                          | Emit order mismatch in transcript_map  | Re-capture emit order from CML with `check_mode: true` |
