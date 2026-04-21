@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_config - Fix multi-range interface commands for ios_config module.
