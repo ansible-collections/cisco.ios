@@ -91,6 +91,7 @@ celerybeat-schedule
 # Environments
 .env
 .venv
+.venv-molecule2205/
 env/
 venv/
 ENV/
