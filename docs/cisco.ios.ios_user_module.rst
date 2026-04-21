@@ -211,7 +211,8 @@ Parameters
                 </td>
                 <td>
                         <div>Since cisco.ios devices have a max limit of 2 keys per user, this parameter allows removal of keys that are not passed in sshkey parameter as to write new keys being passed.</div>
-                        <div>Works only with &#x27;present&#x27; state</div>
+                        <div>It will remove any previously configured sshkeys for a user that doesn&#x27;t match with the provided sshkey list, with an exception for the `admin` user.</div>
+                        <div>Works only with &#x27;present&#x27; state and when &#x27;sshkey&#x27; is defined</div>
                 </td>
             </tr>
             <tr>
@@ -228,7 +229,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specifies one or more SSH public key(s) to configure for the given username.</div>
+                        <div>Specifies upto two SSH public key(s) to configure for the given username.</div>
                         <div>This argument accepts a valid SSH key value.</div>
                 </td>
             </tr>
@@ -460,7 +461,8 @@ Parameters
                 </td>
                 <td>
                         <div>Since cisco.ios devices have a max limit of 2 keys per user, this parameter allows removal of keys that are not passed in sshkey parameter as to write new keys being passed.</div>
-                        <div>Works only with &#x27;present&#x27; state</div>
+                        <div>It will remove any previously configured sshkeys for a user that doesn&#x27;t match with the provided sshkey list, with an exception for the `admin` user.</div>
+                        <div>Works only with &#x27;present&#x27; state and when &#x27;sshkey&#x27; is defined</div>
                 </td>
             </tr>
             <tr>
@@ -476,7 +478,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specifies one or more SSH public key(s) to configure for the given username.</div>
+                        <div>Specifies upto two SSH public key(s) to configure for the given username.</div>
                         <div>This argument accepts a valid SSH key value.</div>
                 </td>
             </tr>
@@ -643,10 +645,10 @@ Examples
     #   username ansible
     #    key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
 
-    # Purge all users except admin play:
+    # Purge existing keys for a user and write new keys:
     # ----------------------------------
 
-    - name: Remove all users except admin
+    - name: Update user by adding new key and purging existing keys
       cisco.ios.ios_user:
         name: ansible
         sshkey:

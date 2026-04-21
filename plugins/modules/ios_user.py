@@ -107,7 +107,7 @@ options:
         type: str
       sshkey:
         description:
-          - Specifies one or more SSH public key(s) to configure for the given username.
+          - Specifies upto two SSH public key(s) to configure for the given username.
           - This argument accepts a valid SSH key value.
         type: list
         elements: str
@@ -115,7 +115,9 @@ options:
         description:
           - Since cisco.ios devices have a max limit of 2 keys per user, this parameter allows
             removal of keys that are not passed in sshkey parameter as to write new keys being passed.
-          - Works only with 'present' state
+          - It will remove any previously configured sshkeys for a user that doesn't match with the provided sshkey list,
+            with an exception for the `admin` user.
+          - Works only with 'present' state and when 'sshkey' is defined
         type: bool
       nopassword:
         description:
@@ -194,7 +196,7 @@ options:
     type: str
   sshkey:
     description:
-      - Specifies one or more SSH public key(s) to configure for the given username.
+      - Specifies upto two SSH public key(s) to configure for the given username.
       - This argument accepts a valid SSH key value.
     type: list
     elements: str
@@ -202,7 +204,9 @@ options:
     description:
       - Since cisco.ios devices have a max limit of 2 keys per user, this parameter allows
         removal of keys that are not passed in sshkey parameter as to write new keys being passed.
-      - Works only with 'present' state
+      - It will remove any previously configured sshkeys for a user that doesn't match with the provided sshkey list,
+        with an exception for the `admin` user.
+      - Works only with 'present' state and when 'sshkey' is defined
     type: bool
     default: false
   nopassword:
@@ -322,10 +326,10 @@ EXAMPLES = """
 #   username ansible
 #    key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
 
-# Purge all users except admin play:
+# Purge existing keys for a user and write new keys:
 # ----------------------------------
 
-- name: Remove all users except admin
+- name: Update user by adding new key and purging existing keys
   cisco.ios.ios_user:
     name: ansible
     sshkey:
