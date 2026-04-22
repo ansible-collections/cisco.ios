@@ -459,3 +459,190 @@ class TestIosVrfInterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
+
+    def test_ios_vrf_interfaces_merged_ip_vrf_name(self):
+        self.maxDiff = None
+        run_cfg = dedent(
+            """\
+            interface GigabitEthernet1
+             ip address dhcp
+             no shutdown
+             !
+
+            interface GigabitEthernet2
+             no ip address
+             shutdown
+             !
+            """,
+        )
+        self.get_config.return_value = run_cfg
+        set_module_args(
+            dict(
+                config=[
+                    {"name": "GigabitEthernet2", "ip_vrf_name": "vrf_legacy"},
+                ],
+                state="merged",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet2",
+            "ip vrf forwarding vrf_legacy",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_vrf_interfaces_replaced_ip_vrf_name(self):
+        self.maxDiff = None
+        run_cfg = dedent(
+            """\
+            interface GigabitEthernet3
+             vrf forwarding vrf_old
+             no shutdown
+             !
+            """,
+        )
+        self.get_config.return_value = run_cfg
+        set_module_args(
+            dict(
+                config=[
+                    {"name": "GigabitEthernet3", "ip_vrf_name": "vrf_legacy"},
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet3",
+            "no vrf forwarding vrf_old",
+            "ip vrf forwarding vrf_legacy",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_vrf_interfaces_deleted_ip_vrf_name(self):
+        self.maxDiff = None
+        run_cfg = dedent(
+            """\
+            interface GigabitEthernet2
+             ip vrf forwarding vrf_legacy
+             shutdown
+             !
+            """,
+        )
+        self.get_config.return_value = run_cfg
+        set_module_args(
+            dict(
+                config=[
+                    {"name": "GigabitEthernet2"},
+                ],
+                state="deleted",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet2",
+            "no ip vrf forwarding vrf_legacy",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_vrf_interfaces_parsed_ip_vrf_name(self):
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    interface GigabitEthernet1
+                    ip address dhcp
+                    no shutdown
+                    !
+
+                    interface GigabitEthernet2
+                    vrf forwarding vrf_1
+                    shutdown
+                    !
+
+                    interface GigabitEthernet3
+                    ip vrf forwarding vrf_legacy
+                    shutdown
+                    !
+
+                    interface GigabitEthernet4
+                    no shutdown
+                    !
+                    """,
+                ),
+                state="parsed",
+            ),
+        )
+        parsed_list = [
+            {"name": "GigabitEthernet1"},
+            {"name": "GigabitEthernet2", "vrf_name": "vrf_1"},
+            {"name": "GigabitEthernet3", "ip_vrf_name": "vrf_legacy"},
+            {"name": "GigabitEthernet4"},
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"], parsed_list)
+
+    def test_ios_vrf_interfaces_gathered_ip_vrf_name(self):
+        self.maxDiff = None
+        run_cfg = dedent(
+            """\
+            interface GigabitEthernet1
+            ip address dhcp
+            no shutdown
+            !
+
+            interface GigabitEthernet2
+            vrf forwarding vrf_1
+            shutdown
+            !
+
+            interface GigabitEthernet3
+            ip vrf forwarding vrf_legacy
+            shutdown
+            !
+            """,
+        )
+        self.get_config.return_value = run_cfg
+        set_module_args(dict(state="gathered"))
+        gathered_list = [
+            {"name": "GigabitEthernet1"},
+            {"name": "GigabitEthernet2", "vrf_name": "vrf_1"},
+            {"name": "GigabitEthernet3", "ip_vrf_name": "vrf_legacy"},
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"], gathered_list)
+
+    def test_ios_vrf_interfaces_rendered_ip_vrf_name(self):
+        self.maxDiff = None
+        set_module_args(
+            dict(
+                config=[
+                    {"name": "GigabitEthernet2", "vrf_name": "vrf_1"},
+                    {"name": "GigabitEthernet3", "ip_vrf_name": "vrf_legacy"},
+                ],
+                state="rendered",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet2",
+            "vrf forwarding vrf_1",
+            "interface GigabitEthernet3",
+            "ip vrf forwarding vrf_legacy",
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+
+    def test_ios_vrf_interfaces_mutually_exclusive(self):
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "GigabitEthernet2",
+                        "vrf_name": "vrf_1",
+                        "ip_vrf_name": "vrf_legacy",
+                    },
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("mutually exclusive", result["msg"])
