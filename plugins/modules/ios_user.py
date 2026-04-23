@@ -793,6 +793,7 @@ def map_config_to_obj(module):
             "nopassword": "nopassword" in cfg,
             "configured_password": None,
             "hashed_password": None,
+            "purge_keys": False,
             "password_type": parse_password_type(cfg),
             "sshkey": ssh_key_list,
             "is_only_ssh_user": False if cfg.strip() and ssh_key_list else True,
