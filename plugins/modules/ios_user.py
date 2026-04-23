@@ -697,7 +697,6 @@ def map_obj_to_commands(updates, module):
     commands = list()
     update_password = module.params["update_password"]
     password_type = module.params["password_type"]
-    purge_keys = module.params["purge_keys"]
 
     def needs_update(want, have, x):
         return want.get(x) and want.get(x) != have.get(x)
@@ -722,6 +721,7 @@ def map_obj_to_commands(updates, module):
         if needs_update(want, have, "privilege"):
             add(commands, want, "privilege %s" % want["privilege"])
         if needs_update(want, have, "sshkey") and want["state"] == "present":
+            purge_keys = want["purge_keys"]
             if purge_keys:
                 if want["name"] == "admin":
                     module.warn("Purging of admin ssh keys is not allowed")
@@ -778,7 +778,7 @@ def parse_password_type(data):
 
 def map_config_to_obj(module):
     data = get_config(module, flags=["| section username"])
-    match = re.findall("(?:^(?:u|\\s{1,2}u))sername (\\S+)", data, re.M)
+    match = re.findall("^(?:u|\\s{1,2}u)sername (\\S+)", data, re.M)
     if not match:
         return list()
     instances = list()
@@ -847,6 +847,7 @@ def map_params_to_obj(module):
         item["nopassword"] = get_value("nopassword")
         item["privilege"] = get_value("privilege")
         item["view"] = get_value("view")
+        item["purge_keys"] = get_value("purge_keys")
         item["sshkey"] = render_key_list(get_value("sshkey"))
         if len(item["sshkey"]) > 2:
             module.fail_json(
