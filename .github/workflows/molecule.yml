@@ -67,7 +67,7 @@ jobs:
   # 2. Run each scenario in its own job (parallel + isolated)
   # ------------------------------------------------------------------
   molecule:
-    name: "molecule: ${{ matrix.scenario }}"
+    name: "molecule (${{ matrix.network_cli_ssh_type }}): ${{ matrix.scenario }}"
     needs: discover
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -75,6 +75,7 @@ jobs:
       fail-fast: false
       matrix:
         scenario: ${{ fromJson(needs.discover.outputs.scenarios) }}
+        network_cli_ssh_type: ["libssh", "paramiko"]
         python-version: ["3.12"]
         ansible-version: ["stable-2.20"]
     env:
@@ -128,13 +129,13 @@ jobs:
 
       - name: Run molecule scenario
         working-directory: cisco/ios/extensions
-        run: molecule test -s "${{ matrix.scenario }}"
+        run: molecule test -s "${{ matrix.scenario }}" -- -e ansible_network_cli_ssh_type=${{ matrix.network_cli_ssh_type }}
 
       - name: Upload cisshgo + molecule logs on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: molecule-${{ matrix.scenario }}-logs
+          name: molecule-${{ matrix.scenario }}-${{ matrix.network_cli_ssh_type }}-logs
           path: |
             /tmp/cisshgo-*.log
             cisco/ios/extensions/molecule/${{ matrix.scenario }}/molecule.log
