@@ -655,7 +655,6 @@ def remove_ssh(command, want, have):
     have_keys_set = set(have.get("sshkey", []))
 
     keys_to_be_removed = have_keys_set.difference(want_keys_set)
-    # Nothing to be removed if wanted keys are same as keys present
     if keys_to_be_removed:
         command.append("ip ssh pubkey-chain")
         command.append("username %s" % want["name"])
