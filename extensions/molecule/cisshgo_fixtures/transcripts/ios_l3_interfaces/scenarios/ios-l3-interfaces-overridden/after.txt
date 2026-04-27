@@ -1,0 +1,23 @@
+interface GigabitEthernet1
+ no ip redirects
+ no ip unreachables
+ no ipv6 redirects
+ no ipv6 unreachables
+ ip address dhcp
+!
+interface GigabitEthernet2
+!
+interface GigabitEthernet3
+ no ip redirects
+ no ip unreachables
+ no ipv6 redirects
+ no ipv6 unreachables
+ no ipv6 address autoconfig
+ no ipv6 address 2001:db8:0:3::/64
+ no ip address 192.0.2.2 255.255.255.0
+ no ip address 192.0.2.1 255.255.255.0 secondary
+ ip address 198.51.100.2 255.255.255.0 secondary
+ ip address 198.51.100.1 255.255.255.0
+!
+interface GigabitEthernet4
+!

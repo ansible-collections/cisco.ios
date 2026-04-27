@@ -1,0 +1,329 @@
+---
+# Molecule converge: Run ios_logging_global integration tests against CISSHGO
+
+- name: "Gather ios_logging_global facts (gathered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_logging_global/vars/main.yaml"
+  tasks:
+    - name: "Gather logging facts from device"
+      cisco.ios.ios_logging_global:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered task is a no-op"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — facts collected without changes"
+
+- name: "Merge ios_logging_global configuration (merged state)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_logging_global/vars/main.yaml"
+  tasks:
+    - name: "Merge logging configuration"
+      cisco.ios.ios_logging_global:
+        config:
+          buffered:
+            severity: notifications
+            size: 5099
+            xml: true
+          console:
+            severity: critical
+            xml: true
+          facility: local5
+          hosts:
+            - hostname: 192.0.2.12
+            - hostname: 192.0.2.11
+              xml: true
+            - hostname: 192.0.2.10
+              filtered: true
+              stream: 10
+            - hostname: 192.0.2.13
+              transport:
+                tcp:
+                  port: 514
+          monitor:
+            severity: warnings
+          message_counter:
+            - log
+            - syslog
+          trap: informational
+          userinfo: true
+          logging_on: enable
+          exception: 4099
+          dmvpn:
+            rate_limit: 10
+          cns_events: warnings
+        state: merged
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - merged['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Assert before state matches expected"
+      ansible.builtin.assert:
+        that:
+          - merged['before'] == result['before']
+        quiet: true
+
+    - name: "Assert after state matches expected"
+      ansible.builtin.assert:
+        that:
+          - merged['after'] == result['after']
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — config applied and assertions verified"
+
+- name: "Replace ios_logging_global configuration (replaced state)"
+  hosts: ios_replaced
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_logging_global/vars/main.yaml"
+  tasks:
+    - name: "Replace logging configuration"
+      cisco.ios.ios_logging_global: &logging_replaced
+        config:
+          buffered:
+            severity: alerts
+            size: 6025
+          facility: local6
+          hosts:
+            - host: 192.0.2.19
+            - host: 192.0.2.10
+              filtered: true
+              stream: 15
+          trap: errors
+        state: replaced
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - replaced['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Assert before state matches expected"
+      ansible.builtin.assert:
+        that:
+          - merged['after'] == result['before']
+        quiet: true
+
+    - name: "Assert after state matches expected"
+      ansible.builtin.assert:
+        that:
+          - replaced['after'] == result['after']
+        quiet: true
+
+    - name: "Replace logging configuration — idempotent run"
+      register: result
+      cisco.ios.ios_logging_global: *logging_replaced
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: replaced state"
+      ansible.builtin.debug:
+        msg: "replaced state test passed — config replaced + idempotency verified"
+
+- name: "Override ios_logging_global configuration (overridden state)"
+  hosts: ios_overridden
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_logging_global/vars/main.yaml"
+  tasks:
+    - name: "Override logging configuration"
+      cisco.ios.ios_logging_global: &logging_overridden
+        config:
+          monitor:
+            severity: critical
+          buffered:
+            severity: warnings
+            xml: true
+            size: 5099
+          facility: local6
+          hosts:
+            - host: 192.0.2.12
+              xml: true
+        state: overridden
+      register: result
+
+    - name: "Assert overridden commands"
+      ansible.builtin.assert:
+        that:
+          - overridden['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Assert overridden before"
+      ansible.builtin.assert:
+        that:
+          - merged['after'] == result['before']
+        quiet: true
+
+    - name: "Assert overridden after"
+      ansible.builtin.assert:
+        that:
+          - overridden['after'] == result['after']
+        quiet: true
+
+    - name: "Override logging configuration — idempotent run"
+      register: result
+      cisco.ios.ios_logging_global: *logging_overridden
+
+    - name: "Assert overridden idempotent"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: overridden state"
+      ansible.builtin.debug:
+        msg: "overridden state test passed"
+
+- name: "Delete ios_logging_global configuration (deleted state)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_logging_global/vars/main.yaml"
+  tasks:
+    - name: "Remove all logging configuration"
+      cisco.ios.ios_logging_global:
+        state: deleted
+      register: result
+
+    - name: "Assert deleted commands"
+      ansible.builtin.assert:
+        that:
+          - deleted['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Assert deleted after"
+      ansible.builtin.assert:
+        that:
+          - deleted['after'] == result['after']
+        quiet: true
+
+    - name: "PASSED: deleted state"
+      ansible.builtin.debug:
+        msg: "deleted state test passed"
+
+- name: "Parse ios_logging_global configuration from file (parsed state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_logging_global/vars/main.yaml"
+  tasks:
+    - name: "Parse logging configuration from file"
+      cisco.ios.ios_logging_global:
+        running_config: "{{ lookup('file', '../../../tests/integration/targets/ios_logging_global/tests/cli/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed facts match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed['after'] == result.parsed
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed"
+
+- name: "Render ios_logging_global configuration to CLI (rendered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_logging_global/vars/main.yaml"
+  tasks:
+    - name: "Render logging configuration to CLI commands"
+      cisco.ios.ios_logging_global:
+        config:
+          buginf: true
+          buffered:
+            severity: notifications
+            size: 5099
+            xml: true
+          cns_events: warnings
+          console:
+            severity: critical
+            xml: true
+          count: true
+          delimiter:
+            tcp: true
+          discriminator: msglog01 severity includes 5
+          dmvpn:
+            rate_limit: 10
+          esm:
+            config: true
+          exception: 4099
+          facility: local5
+          filter:
+            - url: tftp://192.0.2.18/ESM/elate.tcl
+              args: TESTInst2
+            - url: tftp://192.0.2.14/ESM/escalate.tcl
+              args: TESTInst
+          history:
+            severity: alerts
+          hosts:
+            - hostname: 192.0.2.1
+            - hostname: 192.0.2.11
+              xml: true
+              transport:
+                tcp:
+                  port: 514
+            - hostname: 192.0.2.10
+              filtered: true
+              stream: 10
+          message_counter:
+            - log
+            - syslog
+          monitor:
+            severity: warnings
+          origin_id:
+            tag: hostname
+          persistent:
+            batch: 4444
+          queue_limit:
+            esm: 150
+          rate_limit:
+            all: true
+            size: 2
+            except_severity: alerts
+          reload:
+            severity: alerts
+          server_arp: true
+          source_interface:
+            - interface: GBit1/0
+            - interface: CTunnel2
+          trap: informational
+          userinfo: true
+          logging_on: disable
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - rendered['commands'] | symmetric_difference(result['rendered']) | length == 0
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — {{ result['rendered'] | length }} CLI commands rendered"

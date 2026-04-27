@@ -1,0 +1,556 @@
+---
+# Preview check_mode uses a fresh TCP session per play; merged/deleted multi-task plays
+# share one session (each get_facts issues both ACL getter commands).
+
+- name: "Ios_acls — merged check_mode (preview)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_acls/vars/main.yaml"
+  tasks:
+    - name: "Merged — check_mode (preview)"
+      cisco.ios.ios_acls:
+        config:
+          - afi: ipv4
+            acls:
+              - name: std_acl
+                acl_type: standard
+                aces:
+                  - grant: deny
+                    sequence: 10
+                    source:
+                      address: 192.0.2.0
+                      wildcard_bits: 0.0.0.255
+              - name: 110
+                aces:
+                  - grant: deny
+                    sequence: 10
+                    protocol: icmp
+                    protocol_options:
+                      icmp:
+                        echo: true
+                    source:
+                      address: 192.0.2.0
+                      wildcard_bits: 0.0.0.255
+                    destination:
+                      address: 192.0.3.0
+                      wildcard_bits: 0.0.0.255
+                    dscp: ef
+                    ttl:
+                      eq: 10
+              - name: 123
+                aces:
+                  - grant: deny
+                    sequence: 10
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                    source:
+                      address: 198.51.100.0
+                      wildcard_bits: 0.0.0.255
+                    destination:
+                      address: 198.51.101.0
+                      wildcard_bits: 0.0.0.255
+                      port_protocol:
+                        eq: telnet
+                    tos:
+                      service_value: 12
+                  - grant: deny
+                    sequence: 20
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                    source:
+                      address: 192.0.3.0
+                      wildcard_bits: 0.0.0.255
+                    destination:
+                      address: 192.0.4.0
+                      wildcard_bits: 0.0.0.255
+                      port_protocol:
+                        eq: www
+                    dscp: ef
+                    ttl:
+                      lt: 20
+          - afi: ipv6
+            acls:
+              - name: R1_TRAFFIC
+                aces:
+                  - grant: deny
+                    sequence: 10
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                    source:
+                      any: true
+                      port_protocol:
+                        eq: www
+                    destination:
+                      any: true
+                      port_protocol:
+                        eq: telnet
+                    dscp: af11
+        state: merged
+      check_mode: true
+      register: cm_merged_preview
+
+    - name: "Debug merged check_mode (preview)"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_merged_preview.changed }}"
+          commands: "{{ cm_merged_preview.commands | default([]) }}"
+          before: "{{ cm_merged_preview.before | default({}) }}"
+          after: "{{ cm_merged_preview.after | default({}) }}"
+
+- name: "Ios_acls — deleted check_mode (preview)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_acls/vars/main.yaml"
+  tasks:
+    - name: "Deleted — check_mode (preview)"
+      cisco.ios.ios_acls:
+        config:
+          - afi: ipv4
+            acls:
+              - name: test_acl
+              - name: 110
+          - afi: ipv6
+            acls:
+              - name: R1_TRAFFIC
+        state: deleted
+      check_mode: true
+      register: cm_deleted_preview
+
+    - name: "Debug deleted check_mode (preview)"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_deleted_preview.changed }}"
+          commands: "{{ cm_deleted_preview.commands | default([]) }}"
+          before: "{{ cm_deleted_preview.before | default({}) }}"
+          after: "{{ cm_deleted_preview.after | default({}) }}"
+
+- name: "Ios_acls — state: gathered"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_acls/vars/main.yaml"
+    - "vars/molecule_gathered_expect.yaml"
+  tasks:
+    - name: "Gather ACL configuration from fixture"
+      cisco.ios.ios_acls:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered matches CISSHGO populated transcripts"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered | length > 0
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — both ACL getters replayed from fixture"
+
+- name: "Ios_acls — state: parsed (_parsed.cfg)"
+  hosts: ios_parsed
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_acls/vars/main.yaml"
+  tasks:
+    - name: "Parse ACL configuration from integration _parsed.cfg"
+      cisco.ios.ios_acls:
+        running_config: "{{ lookup('file', '../../../tests/integration/targets/ios_acls/tests/cli/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed matches vars/main.yaml parsed.config"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed['config'] | symmetric_difference(result.parsed) | length == 0
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — offline parse of _parsed.cfg"
+
+- name: "Ios_acls — state: rendered (merged projection)"
+  hosts: ios_rendered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_acls/vars/main.yaml"
+  tasks:
+    - name: "Render merged ACL configuration to CLI"
+      cisco.ios.ios_acls:
+        config:
+          - afi: ipv4
+            acls:
+              - name: std_acl
+                acl_type: standard
+                aces:
+                  - grant: deny
+                    sequence: 10
+                    source:
+                      address: 192.0.2.0
+                      wildcard_bits: 0.0.0.255
+              - name: 110
+                aces:
+                  - grant: deny
+                    sequence: 10
+                    protocol: icmp
+                    protocol_options:
+                      icmp:
+                        echo: true
+                    source:
+                      address: 192.0.2.0
+                      wildcard_bits: 0.0.0.255
+                    destination:
+                      address: 192.0.3.0
+                      wildcard_bits: 0.0.0.255
+                    dscp: ef
+                    ttl:
+                      eq: 10
+              - name: 123
+                aces:
+                  - grant: deny
+                    sequence: 10
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                    source:
+                      address: 198.51.100.0
+                      wildcard_bits: 0.0.0.255
+                    destination:
+                      address: 198.51.101.0
+                      wildcard_bits: 0.0.0.255
+                      port_protocol:
+                        eq: telnet
+                    tos:
+                      service_value: 12
+                  - grant: deny
+                    sequence: 20
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                    source:
+                      address: 192.0.3.0
+                      wildcard_bits: 0.0.0.255
+                    destination:
+                      address: 192.0.4.0
+                      wildcard_bits: 0.0.0.255
+                      port_protocol:
+                        eq: www
+                    dscp: ef
+                    ttl:
+                      lt: 20
+          - afi: ipv6
+            acls:
+              - name: R1_TRAFFIC
+                aces:
+                  - grant: deny
+                    sequence: 10
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                    source:
+                      any: true
+                      port_protocol:
+                        eq: www
+                    destination:
+                      any: true
+                      port_protocol:
+                        eq: telnet
+                    dscp: af11
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands match merged.commands"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - merged['commands'] | symmetric_difference(result['rendered']) | length == 0
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — offline CLI projection"
+
+- name: "Ios_acls — state: merged (check_mode, apply, idempotency)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_acls/vars/main.yaml"
+  tasks:
+    - name: "Merged — check_mode"
+      cisco.ios.ios_acls:
+        config:
+          - afi: ipv4
+            acls:
+              - name: std_acl
+                acl_type: standard
+                aces:
+                  - grant: deny
+                    sequence: 10
+                    source:
+                      address: 192.0.2.0
+                      wildcard_bits: 0.0.0.255
+              - name: 110
+                aces:
+                  - grant: deny
+                    sequence: 10
+                    protocol: icmp
+                    protocol_options:
+                      icmp:
+                        echo: true
+                    source:
+                      address: 192.0.2.0
+                      wildcard_bits: 0.0.0.255
+                    destination:
+                      address: 192.0.3.0
+                      wildcard_bits: 0.0.0.255
+                    dscp: ef
+                    ttl:
+                      eq: 10
+              - name: 123
+                aces:
+                  - grant: deny
+                    sequence: 10
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                    source:
+                      address: 198.51.100.0
+                      wildcard_bits: 0.0.0.255
+                    destination:
+                      address: 198.51.101.0
+                      wildcard_bits: 0.0.0.255
+                      port_protocol:
+                        eq: telnet
+                    tos:
+                      service_value: 12
+                  - grant: deny
+                    sequence: 20
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                    source:
+                      address: 192.0.3.0
+                      wildcard_bits: 0.0.0.255
+                    destination:
+                      address: 192.0.4.0
+                      wildcard_bits: 0.0.0.255
+                      port_protocol:
+                        eq: www
+                    dscp: ef
+                    ttl:
+                      lt: 20
+          - afi: ipv6
+            acls:
+              - name: R1_TRAFFIC
+                aces:
+                  - grant: deny
+                    sequence: 10
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                    source:
+                      any: true
+                      port_protocol:
+                        eq: www
+                    destination:
+                      any: true
+                      port_protocol:
+                        eq: telnet
+                    dscp: af11
+        state: merged
+      check_mode: true
+      register: cm_merged
+
+    - name: "Debug merged check_mode"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_merged.changed }}"
+          commands: "{{ cm_merged.commands | default([]) }}"
+          before: "{{ cm_merged.before | default({}) }}"
+          after: "{{ cm_merged.after | default({}) }}"
+
+    - name: "Merge ACL configuration"
+      cisco.ios.ios_acls: &merged_acl
+        config:
+          - afi: ipv4
+            acls:
+              - name: std_acl
+                acl_type: standard
+                aces:
+                  - grant: deny
+                    sequence: 10
+                    source:
+                      address: 192.0.2.0
+                      wildcard_bits: 0.0.0.255
+              - name: 110
+                aces:
+                  - grant: deny
+                    sequence: 10
+                    protocol: icmp
+                    protocol_options:
+                      icmp:
+                        echo: true
+                    source:
+                      address: 192.0.2.0
+                      wildcard_bits: 0.0.0.255
+                    destination:
+                      address: 192.0.3.0
+                      wildcard_bits: 0.0.0.255
+                    dscp: ef
+                    ttl:
+                      eq: 10
+              - name: 123
+                aces:
+                  - grant: deny
+                    sequence: 10
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                    source:
+                      address: 198.51.100.0
+                      wildcard_bits: 0.0.0.255
+                    destination:
+                      address: 198.51.101.0
+                      wildcard_bits: 0.0.0.255
+                      port_protocol:
+                        eq: telnet
+                    tos:
+                      service_value: 12
+                  - grant: deny
+                    sequence: 20
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                    source:
+                      address: 192.0.3.0
+                      wildcard_bits: 0.0.0.255
+                    destination:
+                      address: 192.0.4.0
+                      wildcard_bits: 0.0.0.255
+                      port_protocol:
+                        eq: www
+                    dscp: ef
+                    ttl:
+                      lt: 20
+          - afi: ipv6
+            acls:
+              - name: R1_TRAFFIC
+                aces:
+                  - grant: deny
+                    sequence: 10
+                    protocol: tcp
+                    protocol_options:
+                      tcp:
+                        ack: true
+                    source:
+                      any: true
+                      port_protocol:
+                        eq: www
+                    destination:
+                      any: true
+                      port_protocol:
+                        eq: telnet
+                    dscp: af11
+        state: merged
+      register: result
+
+    - name: "Assert merged first pass"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.before == {}
+          - merged['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Merge ACL configuration — idempotent run"
+      cisco.ios.ios_acls: *merged_acl
+      register: result
+
+    - name: "Assert merged idempotency"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — check_mode + apply + idempotency"
+
+- name: "Ios_acls — state: deleted (check_mode, apply, idempotency)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_acls/vars/main.yaml"
+  tasks:
+    - name: "Deleted — check_mode"
+      cisco.ios.ios_acls:
+        config:
+          - afi: ipv4
+            acls:
+              - name: test_acl
+              - name: 110
+          - afi: ipv6
+            acls:
+              - name: R1_TRAFFIC
+        state: deleted
+      check_mode: true
+      register: cm_deleted
+
+    - name: "Debug deleted check_mode"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_deleted.changed }}"
+          commands: "{{ cm_deleted.commands | default([]) }}"
+          before: "{{ cm_deleted.before | default({}) }}"
+          after: "{{ cm_deleted.after | default({}) }}"
+
+    - name: "Delete selected ACLs"
+      cisco.ios.ios_acls: &deleted_acl
+        config:
+          - afi: ipv4
+            acls:
+              - name: test_acl
+              - name: 110
+          - afi: ipv6
+            acls:
+              - name: R1_TRAFFIC
+        state: deleted
+      register: result
+
+    - name: "Assert deleted first pass"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - deleted['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Delete selected ACLs — idempotent run"
+      cisco.ios.ios_acls: *deleted_acl
+      register: result
+
+    - name: "Assert deleted idempotency"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: deleted state"
+      ansible.builtin.debug:
+        msg: "deleted state test passed — check_mode + apply + idempotency"

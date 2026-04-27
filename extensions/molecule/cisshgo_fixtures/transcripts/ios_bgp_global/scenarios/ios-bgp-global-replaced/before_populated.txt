@@ -1,0 +1,12 @@
+router bgp 65000
+ bgp log-neighbor-changes
+ bgp nopeerup-delay post-boot 10
+ bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+ bgp bestpath compare-routerid
+ bgp dampening 1 1 1 1
+ bgp advertise-best-external
+ timers bgp 100 200 150
+ redistribute connected metric 10
+ neighbor 192.0.2.1 remote-as 100
+ neighbor 192.0.2.1 description merge neighbor
+ neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive

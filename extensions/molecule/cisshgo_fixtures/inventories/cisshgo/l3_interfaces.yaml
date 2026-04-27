@@ -1,0 +1,29 @@
+---
+# CISSHGO device inventory for ios_l3_interfaces Molecule scenario
+#
+# Ports (starting --starting-port, default 10000):
+#   10000: platform (gathered, parsed, rendered)
+#   10001: ios-l3-interfaces-merged
+#   10002: ios-l3-interfaces-replaced
+#   10003: ios-l3-interfaces-overridden
+#   10004: ios-l3-interfaces-deleted
+#   10005: ios-l3-interfaces-rtt
+
+devices:
+  - platform: ios_l3_interfaces
+    count: 1
+
+  - scenario: ios-l3-interfaces-merged
+    count: 1
+
+  - scenario: ios-l3-interfaces-replaced
+    count: 1
+
+  - scenario: ios-l3-interfaces-overridden
+    count: 1
+
+  - scenario: ios-l3-interfaces-deleted
+    count: 1
+
+  - scenario: ios-l3-interfaces-rtt
+    count: 1

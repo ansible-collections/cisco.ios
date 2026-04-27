@@ -1,0 +1,301 @@
+---
+# Molecule converge: Run ios_ospf_interfaces integration-style assertions against CISSHGO
+
+# ============================================================================
+# Play 1: ios_ospf_interfaces — state: gathered (platform mode, stateless)
+# ============================================================================
+- name: "Gather ios_ospf_interfaces facts (gathered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_ospf_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Gather OSPF interface facts from device"
+      cisco.ios.ios_ospf_interfaces:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered facts match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - gathered['config'] | symmetric_difference(result['gathered']) | length == 0
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — OSPF interface config gathered from fixture"
+
+# ============================================================================
+# Play 2: ios_ospf_interfaces — state: merged (scenario mode, stateful + idempotent)
+# ============================================================================
+- name: "Merge ios_ospf_interfaces configuration (merged state)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_ospf_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Merge OSPF interface configuration"
+      cisco.ios.ios_ospf_interfaces: &merged_config
+        config:
+          - name: GigabitEthernet2
+            address_family:
+              - afi: ipv4
+                process:
+                  id: 10
+                  area_id: 30
+                adjacency: true
+                bfd: true
+                cost:
+                  interface_cost: 5
+                dead_interval:
+                  time: 5
+                demand_circuit:
+                  ignore: true
+                network:
+                  broadcast: true
+                priority: 25
+                resync_timeout: 10
+                shutdown: true
+                ttl_security:
+                  hops: 50
+              - afi: ipv6
+                adjacency: true
+                database_filter: true
+                priority: 55
+                transmit_delay: 45
+        state: merged
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - merged['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Merge OSPF interface configuration — idempotent run"
+      cisco.ios.ios_ospf_interfaces: *merged_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — config applied + idempotency verified"
+
+# ============================================================================
+# Play 3: ios_ospf_interfaces — state: replaced (scenario mode, stateful + idempotent)
+# ============================================================================
+- name: "Replace ios_ospf_interfaces configuration (replaced state)"
+  hosts: ios_replaced
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_ospf_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Replace OSPF interface configuration"
+      cisco.ios.ios_ospf_interfaces: &replaced_config
+        config:
+          - name: GigabitEthernet3
+            address_family:
+              - afi: ipv6
+                adjacency: true
+                priority: 20
+                transmit_delay: 30
+        state: replaced
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - replaced['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Replace OSPF interface configuration — idempotent run"
+      cisco.ios.ios_ospf_interfaces: *replaced_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: replaced state"
+      ansible.builtin.debug:
+        msg: "replaced state test passed — config replaced + idempotency verified"
+
+# ============================================================================
+# Play 4: ios_ospf_interfaces — state: overridden (scenario mode, stateful + idempotent)
+# ============================================================================
+- name: "Override ios_ospf_interfaces configuration (overridden state)"
+  hosts: ios_overridden
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_ospf_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Override OSPF interface configuration"
+      cisco.ios.ios_ospf_interfaces: &overridden_config
+        config:
+          - name: GigabitEthernet2
+            address_family:
+              - afi: ipv6
+                adjacency: true
+                priority: 20
+                transmit_delay: 30
+          - name: GigabitEthernet3
+            address_family:
+              - afi: ipv4
+                process:
+                  id: 10
+                  area_id: 20
+                adjacency: true
+                cost:
+                  interface_cost: 30
+                priority: 40
+                ttl_security:
+                  set: true
+                  hops: 50
+        state: overridden
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - overridden['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Override OSPF interface configuration — idempotent run"
+      cisco.ios.ios_ospf_interfaces: *overridden_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: overridden state"
+      ansible.builtin.debug:
+        msg: "overridden state test passed — config overridden + idempotency verified"
+
+# ============================================================================
+# Play 5: ios_ospf_interfaces — state: deleted (scenario mode, stateful + idempotent)
+# ============================================================================
+- name: "Delete ios_ospf_interfaces configuration (deleted state)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_ospf_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Delete OSPF interface configuration from GE2"
+      cisco.ios.ios_ospf_interfaces: &deleted_config
+        config:
+          - name: GigabitEthernet2
+        state: deleted
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - deleted['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Delete OSPF interface configuration — idempotent run"
+      cisco.ios.ios_ospf_interfaces: *deleted_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: deleted state"
+      ansible.builtin.debug:
+        msg: "deleted state test passed — OSPF interface config removed + idempotency verified"
+
+# ============================================================================
+# Play 6: ios_ospf_interfaces — state: parsed (offline; platform host)
+# ============================================================================
+- name: "Parse ios_ospf_interfaces configuration from file (parsed state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_ospf_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Parse OSPF interface configuration from file"
+      cisco.ios.ios_ospf_interfaces:
+        running_config: "{{ lookup('file', '../../../tests/integration/targets/ios_ospf_interfaces/tests/cli/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed facts match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed['config'] | symmetric_difference(result['parsed']) | length == 0
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — OSPF interface config parsed from _parsed.cfg"
+
+# ============================================================================
+# Play 7: ios_ospf_interfaces — state: rendered (offline)
+# ============================================================================
+- name: "Render ios_ospf_interfaces configuration to CLI (rendered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_ospf_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Render OSPF interface configuration to CLI commands"
+      cisco.ios.ios_ospf_interfaces:
+        config:
+          - name: GigabitEthernet2
+            address_family:
+              - afi: ipv4
+                process:
+                  id: 10
+                  area_id: 30
+                adjacency: true
+                bfd: true
+                cost:
+                  interface_cost: 5
+                dead_interval:
+                  time: 5
+                demand_circuit:
+                  ignore: true
+                network:
+                  broadcast: true
+                priority: 25
+                resync_timeout: 10
+                shutdown: true
+                ttl_security:
+                  hops: 50
+              - afi: ipv6
+                adjacency: true
+                database_filter: true
+                priority: 55
+                transmit_delay: 45
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.rendered | symmetric_difference(rendered.commands) == []
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — {{ result['rendered'] | length }} CLI commands rendered"

@@ -1,0 +1,73 @@
+---
+# ============================================================================
+# Play 1: ios_lldp_interfaces — state: gathered
+# ============================================================================
+- name: "Gather ios_lldp_interfaces facts (gathered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_lldp_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Gather LLDP interface facts from device"
+      cisco.ios.ios_lldp_interfaces:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered facts match expected fixture"
+      ansible.builtin.assert:
+        that:
+          - gathered['config'] | symmetric_difference(result.gathered) | length == 0
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — LLDP interface facts gathered from fixture"
+
+# ============================================================================
+# Play 2: ios_lldp_interfaces — merged (check_mode: discover emit order)
+# ============================================================================
+- name: "Discover merged emit order (check_mode)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_lldp_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Merge LLDP interface configuration (check_mode)"
+      cisco.ios.ios_lldp_interfaces:
+        config:
+          - name: GigabitEthernet1
+            receive: true
+            transmit: true
+          - name: GigabitEthernet2
+            receive: true
+            transmit: true
+          - name: GigabitEthernet3
+            receive: true
+            transmit: false
+        state: merged
+      check_mode: true
+      register: merged_check
+
+    - name: "Debug merged commands (emit order)"
+      ansible.builtin.debug:
+        var: merged_check.commands
+
+# ============================================================================
+# Play 3: ios_lldp_interfaces — deleted (check_mode: discover emit order)
+# ============================================================================
+- name: "Discover deleted emit order (check_mode)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_lldp_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Delete all LLDP interface configuration (check_mode)"
+      cisco.ios.ios_lldp_interfaces:
+        state: deleted
+      check_mode: true
+      register: deleted_check
+
+    - name: "Debug deleted commands (emit order)"
+      ansible.builtin.debug:
+        var: deleted_check.commands
