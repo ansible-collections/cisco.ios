@@ -137,18 +137,20 @@
   gather_facts: false
   vars_files:
     - "../../../tests/integration/targets/ios_acls/vars/main.yaml"
-    - "vars/molecule_gathered_expect.yaml"
   tasks:
     - name: "Gather ACL configuration from fixture"
       cisco.ios.ios_acls:
         state: gathered
       register: result
 
-    - name: "Assert gathered matches CISSHGO populated transcripts"
+    - name: "Assert gathered matches vars/main.yaml gathered.config"
+      vars:
+        expected: "{{ gathered['config'] | sort(attribute='afi') }}"
+        actual: "{{ result.gathered | sort(attribute='afi') }}"
       ansible.builtin.assert:
         that:
           - result.changed == false
-          - result.gathered | length > 0
+          - expected == actual
         quiet: true
 
     - name: "PASSED: gathered state"
@@ -168,10 +170,13 @@
       register: result
 
     - name: "Assert parsed matches vars/main.yaml parsed.config"
+      vars:
+        expected: "{{ parsed['config'] | sort(attribute='afi') }}"
+        actual: "{{ result.parsed | sort(attribute='afi') }}"
       ansible.builtin.assert:
         that:
           - result.changed == false
-          - parsed['config'] | symmetric_difference(result.parsed) | length == 0
+          - expected == actual
         quiet: true
 
     - name: "PASSED: parsed state"

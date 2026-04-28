@@ -9,17 +9,13 @@ interface GigabitEthernet2
  ip address 203.0.114.1 255.255.255.0
 !
 interface GigabitEthernet3
+ ip address 198.51.100.1 255.255.255.0 secondary
+ ip address 198.51.100.2 255.255.255.0
  no ip redirects
  no ip unreachables
+ ipv6 address 2001:DB8:1:1::/64
  no ipv6 redirects
  no ipv6 unreachables
- no ipv6 address autoconfig
- no ipv6 address 2001:db8:0:3::/64
- no ip address 192.0.2.2 255.255.255.0
- no ip address 192.0.2.1 255.255.255.0 secondary
- ipv6 address 2001:DB8:1:1::/64
- ip address 198.51.100.2 255.255.255.0
- ip address 198.51.100.1 255.255.255.0 secondary
 !
 interface GigabitEthernet4
 !

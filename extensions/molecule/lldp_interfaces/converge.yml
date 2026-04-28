@@ -71,3 +71,63 @@
     - name: "Debug deleted commands (emit order)"
       ansible.builtin.debug:
         var: deleted_check.commands
+
+# ============================================================================
+# Play 4: ios_lldp_interfaces — state: parsed
+# ============================================================================
+- name: "Parse ios_lldp_interfaces from file (parsed state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_lldp_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Parse LLDP interface configuration from _parsed.cfg"
+      cisco.ios.ios_lldp_interfaces:
+        running_config: "{{ lookup('file', '../../../tests/integration/targets/ios_lldp_interfaces/tests/cli/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed matches vars/main.yaml parsed.config"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed['config'] | symmetric_difference(result.parsed) | length == 0
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — offline parse of _parsed.cfg"
+
+# ============================================================================
+# Play 5: ios_lldp_interfaces — state: rendered
+# ============================================================================
+- name: "Render ios_lldp_interfaces CLI (rendered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_lldp_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Render LLDP interface configuration to CLI"
+      cisco.ios.ios_lldp_interfaces:
+        config:
+          - name: GigabitEthernet1
+            receive: true
+            transmit: true
+          - name: GigabitEthernet2
+            receive: true
+            transmit: true
+          - name: GigabitEthernet3
+            receive: true
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands match vars/main.yaml rendered.commands"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.rendered | symmetric_difference(rendered.commands) | length == 0
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — offline CLI projection"

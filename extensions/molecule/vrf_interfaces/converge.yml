@@ -135,3 +135,58 @@
     - name: "PASSED: deleted state"
       ansible.builtin.debug:
         msg: "deleted state test passed — VRF removed + idempotency verified"
+
+# ============================================================================
+# Play 4: ios_vrf_interfaces — state: parsed
+# ============================================================================
+- name: "Parse ios_vrf_interfaces from file (parsed state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Parse VRF interface configuration from _parsed.cfg"
+      cisco.ios.ios_vrf_interfaces:
+        running_config: "{{ lookup('file', '../../../tests/integration/targets/ios_vrf_interfaces/tests/common/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed matches vars/main.yaml parsed.after"
+      ansible.builtin.assert:
+        that:
+          - parsed['after'] == result['parsed']
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — offline parse of _parsed.cfg"
+
+# ============================================================================
+# Play 5: ios_vrf_interfaces — state: rendered
+# ============================================================================
+- name: "Render ios_vrf_interfaces CLI (rendered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Render VRF interface configuration to CLI"
+      cisco.ios.ios_vrf_interfaces:
+        config:
+          - name: GigabitEthernet1
+          - name: GigabitEthernet2
+            vrf_name: vrf_D
+          - name: GigabitEthernet3
+          - name: GigabitEthernet4
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands match vars/main.yaml merged.commands"
+      ansible.builtin.assert:
+        that:
+          - merged['commands'] == result['rendered']
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — offline CLI projection"

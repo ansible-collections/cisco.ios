@@ -270,18 +270,6 @@
   gather_facts: false
   vars_files:
     - "../../../tests/integration/targets/ios_vrf_address_family/vars/main.yaml"
-  vars:
-    molecule_deleted_before_expected:
-      - name: test1
-        address_families:
-          - afi: ipv4
-            safi: unicast
-            export:
-              map: testing-map
-            import_config:
-              map: import-map
-    molecule_deleted_after_expected:
-      - name: test1
   tasks:
     - name: "Deleted — check_mode"
       cisco.ios.ios_vrf_address_family:

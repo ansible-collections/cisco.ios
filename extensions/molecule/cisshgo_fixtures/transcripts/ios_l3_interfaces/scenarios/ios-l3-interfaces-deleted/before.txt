@@ -7,8 +7,8 @@ interface GigabitEthernet2
 interface GigabitEthernet3
  ip address 192.0.2.1 255.255.255.0 secondary
  ip address 192.0.2.2 255.255.255.0
+ ipv6 address 2001:DB8:0:3::/64
  ipv6 address autoconfig
- ipv6 address 2001:db8:0:3::/64
 !
 interface GigabitEthernet4
 !
