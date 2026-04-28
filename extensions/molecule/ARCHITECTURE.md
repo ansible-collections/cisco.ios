@@ -36,10 +36,10 @@ The cisco.ios collection already ships a large `tests/integration/` tree —
 those targets assume a live device and are intended for CML/vIOS in
 nightly CI. This harness is **complementary**, not a replacement:
 
-| Layer | Driver | Network | Use cases |
-|---|---|---|---|
-| `tests/integration/targets/ios_*` | `ansible-test integration` | real device (CML) | nightly + release gating |
-| `extensions/molecule/<module>/` | `molecule test` | cisshgo on 127.0.0.1 | every PR, fast feedback |
+| Layer                             | Driver                     | Network              | Use cases                |
+| --------------------------------- | -------------------------- | -------------------- | ------------------------ |
+| `tests/integration/targets/ios_*` | `ansible-test integration` | real device (CML)    | nightly + release gating |
+| `extensions/molecule/<module>/`   | `molecule test`            | cisshgo on 127.0.0.1 | every PR, fast feedback  |
 
 The molecule layer **reuses** the resource module's `vars/main.yaml` from
 the integration target (via `vars_files`) so the expected/desired state
@@ -101,13 +101,13 @@ extensions/molecule/
 The harness is glued together by **one identifier** per scenario:
 `scenario_name`. Everything else is derived from it.
 
-| artefact | path |
-|---|---|
-| scenario dir | `extensions/molecule/<scenario_name>/` |
-| ansible inventory | `cisshgo_fixtures/inventories/ansible/<scenario_name>.yaml` |
-| cisshgo inventory | `cisshgo_fixtures/inventories/cisshgo/<scenario_name>.yaml` |
-| cisshgo log | `/tmp/cisshgo-<scenario_name>.log` |
-| pgrep match | `cisshgo.*--inventory.*inventories/cisshgo/<scenario_name>.yaml` |
+| artefact          | path                                                             |
+| ----------------- | ---------------------------------------------------------------- |
+| scenario dir      | `extensions/molecule/<scenario_name>/`                           |
+| ansible inventory | `cisshgo_fixtures/inventories/ansible/<scenario_name>.yaml`      |
+| cisshgo inventory | `cisshgo_fixtures/inventories/cisshgo/<scenario_name>.yaml`      |
+| cisshgo log       | `/tmp/cisshgo-<scenario_name>.log`                               |
+| pgrep match       | `cisshgo.*--inventory.*inventories/cisshgo/<scenario_name>.yaml` |
 
 This is why the two inventory files must share the scenario name — the
 shared `create.yml` builds both paths from `vars.scenario_name` alone.
@@ -136,9 +136,9 @@ Runs on `localhost` with `connection: local`. It:
    - Pinned release download from
      `github.com/tbotnz/cisshgo/releases/download/<CISSHGO_VERSION>/` — the
      CI and fresh-clone path.
-   Falls into a `stat` + `assert` that the resolved path is a **regular
-   file** (catches the common mistake of `export CISSHGO_BIN=…/cisshgo`
-   pointing at the *repo* instead of the binary inside it).
+     Falls into a `stat` + `assert` that the resolved path is a **regular
+     file** (catches the common mistake of `export CISSHGO_BIN=…/cisshgo`
+     pointing at the _repo_ instead of the binary inside it).
 4. **Kills stale processes** for this scenario via
    `pkill -f "cisshgo.*--inventory.*inventories/cisshgo/<scenario_name>.yaml"`.
 5. **Starts cisshgo** via `nohup` — `cd`-ing into `cisshgo_fixtures/`
@@ -209,9 +209,9 @@ Consumed by the cisshgo Go binary via `--inventory`. Schema:
 
 ```yaml
 devices:
-  - platform: <platform_id_from_transcript_map>   # stateless
+  - platform: <platform_id_from_transcript_map> # stateless
     count: 1
-  - scenario: <scenario_id_from_transcript_map>   # stateful
+  - scenario: <scenario_id_from_transcript_map> # stateful
     count: 1
 ```
 
@@ -227,7 +227,7 @@ Consumed by `ansible-playbook` during `converge`. Schema:
 ```yaml
 all:
   children:
-    ios_cisshgo:                      # <-- network vars live here
+    ios_cisshgo: # <-- network vars live here
       vars:
         ansible_connection: ansible.netcommon.network_cli
         ansible_network_os: cisco.ios.ios
@@ -263,8 +263,8 @@ cisshgo hosts only.
 The **only** per-scenario input for `_shared/*.yml`. Two keys:
 
 ```yaml
-scenario_name: <name>            # e.g. interfaces, l2_interfaces
-listener_ports:                  # must match the cisshgo inventory order
+scenario_name: <name> # e.g. interfaces, l2_interfaces
+listener_ports: # must match the cisshgo inventory order
   - 10000
   - 10001
 ```
@@ -279,7 +279,7 @@ A minimal molecule config:
 
 ```yaml
 driver:
-  name: default                # we manage infra ourselves
+  name: default # we manage infra ourselves
 
 platforms:
   - name: cisshgo-<short>-gathered
@@ -295,10 +295,10 @@ ansible:
 provisioner:
   name: ansible
   playbooks:
-    create:   ../_shared/create.yml
+    create: ../_shared/create.yml
     converge: converge.yml
-    verify:   ../_shared/verify.yml
-    destroy:  ../_shared/destroy.yml
+    verify: ../_shared/verify.yml
+    destroy: ../_shared/destroy.yml
 
 scenario:
   test_sequence: [create, converge, verify, destroy]
@@ -480,6 +480,7 @@ For a hypothetical `cisco.ios.ios_vlans` with merged + gathered:
 
 1. **Capture transcripts** (or copy from the integration target's
    `_parsed.cfg` / runtime outputs):
+
    ```
    cisshgo_fixtures/transcripts/ios_vlans/gathered.txt
    cisshgo_fixtures/transcripts/ios_vlans/scenarios/merged/before.txt
@@ -497,6 +498,7 @@ For a hypothetical `cisco.ios.ios_vlans` with merged + gathered:
      `ios_vlans_gathered` (10000) and `ios_vlans_merged` (10001).
 
 4. **Create the scenario dir**:
+
    ```
    extensions/molecule/vlans/
      vars.yml       scenario_name: vlans, listener_ports: [10000, 10001]
@@ -505,6 +507,7 @@ For a hypothetical `cisco.ios.ios_vlans` with merged + gathered:
    ```
 
 5. **Local smoke**:
+
    ```bash
    cd cisco/ios/extensions
    molecule test -s vlans
@@ -516,15 +519,15 @@ For a hypothetical `cisco.ios.ios_vlans` with merged + gathered:
 
 ## 7. Troubleshooting
 
-| symptom | cause | fix |
-|---|---|---|
-| `'molecule/*/molecule.yml' glob failed` | running from wrong cwd | `cd extensions` first |
-| `socket_path must be a value` on localhost | `ansible_network_os` leaked to `all:` | keep network vars on the `ios_cisshgo` child group only |
-| `nohup: …/cisshgo: Permission denied` | `CISSHGO_BIN` pointed at the repo dir instead of the binary | `export CISSHGO_BIN=/path/to/cisshgo-repo/cisshgo` |
-| `yaml: unmarshal errors: line 11: field all not found in type config.Inventory` | passed the ansible-format inventory to cisshgo | ensure `--inventory` points at `inventories/cisshgo/<name>.yaml` |
-| `Connection type local is not valid for this module` on `parsed`/`rendered` | action plugin needs network_cli context | run the play against the gathered host, not `localhost` |
-| `Timeout when waiting for 127.0.0.1:10000` | cisshgo crashed on startup | look at the printed startup log snapshot, then `/tmp/cisshgo-<scenario>.log` |
-| gathered/after assertion fails | transcript parses to a dict that doesn't match the expected `vars/main.yaml` | align the transcript (preferred) — `vars/main.yaml` is shared with the real integration suite and is the ground truth |
+| symptom                                                                         | cause                                                                        | fix                                                                                                                   |
+| ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `'molecule/*/molecule.yml' glob failed`                                         | running from wrong cwd                                                       | `cd extensions` first                                                                                                 |
+| `socket_path must be a value` on localhost                                      | `ansible_network_os` leaked to `all:`                                        | keep network vars on the `ios_cisshgo` child group only                                                               |
+| `nohup: …/cisshgo: Permission denied`                                           | `CISSHGO_BIN` pointed at the repo dir instead of the binary                  | `export CISSHGO_BIN=/path/to/cisshgo-repo/cisshgo`                                                                    |
+| `yaml: unmarshal errors: line 11: field all not found in type config.Inventory` | passed the ansible-format inventory to cisshgo                               | ensure `--inventory` points at `inventories/cisshgo/<name>.yaml`                                                      |
+| `Connection type local is not valid for this module` on `parsed`/`rendered`     | action plugin needs network_cli context                                      | run the play against the gathered host, not `localhost`                                                               |
+| `Timeout when waiting for 127.0.0.1:10000`                                      | cisshgo crashed on startup                                                   | look at the printed startup log snapshot, then `/tmp/cisshgo-<scenario>.log`                                          |
+| gathered/after assertion fails                                                  | transcript parses to a dict that doesn't match the expected `vars/main.yaml` | align the transcript (preferred) — `vars/main.yaml` is shared with the real integration suite and is the ground truth |
 
 ---
 

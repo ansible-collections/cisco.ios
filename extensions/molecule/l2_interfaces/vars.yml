@@ -3,5 +3,5 @@
 # Inventory paths are derived from scenario_name.
 scenario_name: l2_interfaces
 listener_ports:
-  - 10000   # gathered / parsed / rendered
-  - 10001   # merged
+  - 10000 # gathered / parsed / rendered
+  - 10001 # merged

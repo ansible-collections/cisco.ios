@@ -40,10 +40,13 @@ import argparse
 import json
 import os
 import sys
+
 from pathlib import Path
+
 
 try:
     import yaml
+
     HAS_YAML = True
 except ImportError:
     HAS_YAML = False
@@ -74,6 +77,7 @@ OFFLINE_STATES = {"parsed", "rendered"}
 # JSONL loading
 # ======================================================================
 
+
 def load_recording(path):
     """Load JSONL recording into a list of {command, response, timestamp} dicts."""
     entries = []
@@ -88,6 +92,7 @@ def load_recording(path):
 # ======================================================================
 # Vars / test-task loading
 # ======================================================================
+
 
 def find_vars_file(module_name, cwd):
     """Auto-detect vars/main.yaml for the module under tests/integration/targets/."""
@@ -112,8 +117,22 @@ def load_vars(path):
 def find_test_task_file(module_name, state_name, cwd):
     """Find the integration test task file for a given state."""
     candidates = [
-        cwd / "tests" / "integration" / "targets" / module_name / "tests" / "cli" / ("%s.yaml" % state_name),
-        cwd / "tests" / "integration" / "targets" / module_name / "tests" / "cli" / ("%s.yml" % state_name),
+        cwd
+        / "tests"
+        / "integration"
+        / "targets"
+        / module_name
+        / "tests"
+        / "cli"
+        / ("%s.yaml" % state_name),
+        cwd
+        / "tests"
+        / "integration"
+        / "targets"
+        / module_name
+        / "tests"
+        / "cli"
+        / ("%s.yml" % state_name),
     ]
     for c in candidates:
         if c.exists():
@@ -160,6 +179,7 @@ def extract_module_config_from_test(test_file_path, module_name, collection):
 # ======================================================================
 # Recording segmentation
 # ======================================================================
+
 
 def is_boilerplate(command):
     cmd = command.strip().lower()
@@ -230,18 +250,22 @@ def segment_recording(entries, show_cmd):
                 if k < len(entries) and is_show_command(entries[k]["command"].strip(), show_cmd):
                     k += 1
 
-                phases.append({
-                    "type": "stateful",
-                    "show_before": show_response,
-                    "commands": config_commands,
-                    "show_after": show_after or show_response,
-                })
+                phases.append(
+                    {
+                        "type": "stateful",
+                        "show_before": show_response,
+                        "commands": config_commands,
+                        "show_after": show_after or show_response,
+                    }
+                )
                 i = k
             else:
-                phases.append({
-                    "type": "gathered",
-                    "show_response": show_response,
-                })
+                phases.append(
+                    {
+                        "type": "gathered",
+                        "show_response": show_response,
+                    }
+                )
                 i = j
         else:
             i += 1
@@ -252,6 +276,7 @@ def segment_recording(entries, show_cmd):
 # ======================================================================
 # Phase matching — the key improvement
 # ======================================================================
+
 
 def match_phases_to_states(phases, state_names, test_vars):
     """
@@ -294,12 +319,16 @@ def match_phases_to_states(phases, state_names, test_vars):
             if phase_normalized == expected_normalized:
                 matched[state_name] = phase
                 used_indices.add(idx)
-                print("  Matched state '%s' to phase %d (commands: %s)"
-                      % (state_name, idx, expected_commands))
+                print(
+                    "  Matched state '%s' to phase %d (commands: %s)"
+                    % (state_name, idx, expected_commands),
+                )
                 break
         else:
-            print("  WARNING: No matching phase found for state '%s' (expected: %s)"
-                  % (state_name, expected_commands))
+            print(
+                "  WARNING: No matching phase found for state '%s' (expected: %s)"
+                % (state_name, expected_commands),
+            )
 
     return matched
 
@@ -307,6 +336,7 @@ def match_phases_to_states(phases, state_names, test_vars):
 # ======================================================================
 # File generation helpers
 # ======================================================================
+
 
 def write_text(path, content):
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -330,6 +360,7 @@ def module_to_scenario_id(module_name, state):
 # ======================================================================
 # Transcript map generation
 # ======================================================================
+
 
 def generate_platform_entry(module_name, show_cmd):
     return """  %s:
@@ -356,7 +387,11 @@ def generate_platform_entry(module_name, show_cmd):
       "(config)#": "#"
       "#": ">"
     end_context: "#"
-""" % (module_name, show_cmd, module_name)
+""" % (
+        module_name,
+        show_cmd,
+        module_name,
+    )
 
 
 def generate_scenario_entry(module_name, state_name, show_cmd, phase):
@@ -367,8 +402,9 @@ def generate_scenario_entry(module_name, state_name, show_cmd, phase):
     lines.append("    platform: %s" % module_name)
     lines.append("    sequence:")
     lines.append('      - command: "%s"' % show_cmd)
-    lines.append('        transcript: "transcripts/%s/scenarios/%s/before.txt"'
-                 % (module_name, state_name))
+    lines.append(
+        '        transcript: "transcripts/%s/scenarios/%s/before.txt"' % (module_name, state_name),
+    )
     lines.append('      - command: "configure terminal"')
     lines.append('        transcript: "transcripts/generic_empty_return.txt"')
 
@@ -380,11 +416,13 @@ def generate_scenario_entry(module_name, state_name, show_cmd, phase):
     lines.append('      - command: "end"')
     lines.append('        transcript: "transcripts/generic_empty_return.txt"')
     lines.append('      - command: "%s"' % show_cmd)
-    lines.append('        transcript: "transcripts/%s/scenarios/%s/after.txt"'
-                 % (module_name, state_name))
+    lines.append(
+        '        transcript: "transcripts/%s/scenarios/%s/after.txt"' % (module_name, state_name),
+    )
     lines.append('      - command: "%s"' % show_cmd)
-    lines.append('        transcript: "transcripts/%s/scenarios/%s/after.txt"'
-                 % (module_name, state_name))
+    lines.append(
+        '        transcript: "transcripts/%s/scenarios/%s/after.txt"' % (module_name, state_name),
+    )
 
     return "\n".join(lines)
 
@@ -392,6 +430,7 @@ def generate_scenario_entry(module_name, state_name, show_cmd, phase):
 # ======================================================================
 # Inventory generation
 # ======================================================================
+
 
 def generate_cisshgo_inventory(module_name, state_names):
     scenario_name = module_to_scenario_name(module_name)
@@ -461,6 +500,7 @@ def generate_ansible_inventory(module_name, state_names):
 # ======================================================================
 # Molecule scenario file generation
 # ======================================================================
+
 
 def generate_molecule_yml(module_name, scenario_name, state_names):
     platforms = ["  - name: cisshgo-%s-gathered" % scenario_name]
@@ -561,16 +601,23 @@ def yaml_dump_config(config, indent=8):
     return " " * indent + str(config)
 
 
-def generate_converge_yml(module_name, collection, state_names, matched_phases,
-                          test_vars, cwd):
+def generate_converge_yml(
+    module_name,
+    collection,
+    state_names,
+    matched_phases,
+    test_vars,
+    cwd,
+):
     """
     Generate converge.yml with proper config blocks extracted from
     the actual integration test task files.
     """
     scenario_name = module_to_scenario_name(module_name)
     fqcn = "%s.%s" % (collection, module_name)
-    vars_path = ("{{ playbook_dir }}/../../../tests/integration/targets/%s/vars/main.yaml"
-                 % module_name)
+    vars_path = (
+        "{{ playbook_dir }}/../../../tests/integration/targets/%s/vars/main.yaml" % module_name
+    )
 
     plays = []
 
@@ -583,13 +630,14 @@ def generate_converge_yml(module_name, collection, state_names, matched_phases,
     gathered_config = gathered_vars.get("config")
     if isinstance(gathered_config, list):
         gathered_assert = (
-            '          - "{{ gathered[\'config\'] '
-            '| symmetric_difference(result[\'gathered\']) | length == 0 }}"'
+            "          - \"{{ gathered['config'] "
+            "| symmetric_difference(result['gathered']) | length == 0 }}\""
         )
     else:
         gathered_assert = "          - gathered['config'] == result['gathered']"
 
-    plays.append("""# ====================================================================
+    plays.append(
+        """# ====================================================================
 # 1. GATHERED — stateless platform on port 10000
 # ====================================================================
 - name: "%(module)s — gathered"
@@ -610,12 +658,14 @@ def generate_converge_yml(module_name, collection, state_names, matched_phases,
           - result['changed'] == false
         fail_msg: "Gathered config does not match expected"
         success_msg: "Gathered config matches expected"
-""" % {
-        "module": module_name,
-        "fqcn": fqcn,
-        "vars_path": vars_path,
-        "gathered_assert": gathered_assert,
-    })
+"""
+        % {
+            "module": module_name,
+            "fqcn": fqcn,
+            "vars_path": vars_path,
+            "gathered_assert": gathered_assert,
+        },
+    )
 
     # ------------------------------------------------------------------
     # Stateful plays
@@ -658,58 +708,80 @@ def generate_converge_yml(module_name, collection, state_names, matched_phases,
         if state in NO_CONFIG_STATES:
             module_call = "        state: %s" % state
         else:
-            module_call = "%s\n        state: %s" % (config_block, state) if config_block else "        state: %s" % state
+            module_call = (
+                "%s\n        state: %s" % (config_block, state)
+                if config_block
+                else "        state: %s" % state
+            )
 
         # Build assertion tasks
         assertions = []
 
         if has_commands:
             if isinstance(state_vars.get("commands"), list) and len(state_vars["commands"]) > 1:
-                assertions.append("""
+                assertions.append(
+                    """
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
           - "{{ %(state)s['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
-""" % {"state": state})
+"""
+                    % {"state": state},
+                )
             else:
-                assertions.append("""
+                assertions.append(
+                    """
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
           - "%(state)s['commands'] == result['commands']"
-""" % {"state": state})
+"""
+                    % {"state": state},
+                )
 
         if has_before:
             if isinstance(before_val, list):
-                assertions.append("""
+                assertions.append(
+                    """
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
           - "{{ %(state)s['before'] | symmetric_difference(result['before']) | length == 0 }}"
-""" % {"state": state})
+"""
+                    % {"state": state},
+                )
             else:
-                assertions.append("""
+                assertions.append(
+                    """
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
           - %(state)s['before'] == result['before']
-""" % {"state": state})
+"""
+                    % {"state": state},
+                )
 
         if has_after:
             if isinstance(after_val, list):
-                assertions.append("""
+                assertions.append(
+                    """
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
           - "{{ %(state)s['after'] | symmetric_difference(result['after']) | length == 0 }}"
-""" % {"state": state})
+"""
+                    % {"state": state},
+                )
             else:
-                assertions.append("""
+                assertions.append(
+                    """
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
           - %(state)s['after'] == result['after']
-""" % {"state": state})
+"""
+                    % {"state": state},
+                )
 
         assertions_str = "".join(assertions)
 
@@ -729,7 +801,8 @@ def generate_converge_yml(module_name, collection, state_names, matched_phases,
             "fqcn": fqcn,
         }
 
-        plays.append("""# ====================================================================
+        plays.append(
+            """# ====================================================================
 # %(num)d. %(STATE)s — stateful scenario on port %(port)d
 # ====================================================================
 - name: "%(module)s — %(state)s"
@@ -742,19 +815,21 @@ def generate_converge_yml(module_name, collection, state_names, matched_phases,
       register: result
       %(fqcn)s: &%(state)s_config
 %(module_call)s
-%(assertions)s%(idempotent)s""" % {
-            "num": section_num,
-            "STATE": state.upper(),
-            "state": state,
-            "module": module_name,
-            "module_cap": module_name.replace("_", " ").title(),
-            "fqcn": fqcn,
-            "vars_path": vars_path,
-            "port": port,
-            "module_call": module_call,
-            "assertions": assertions_str,
-            "idempotent": idempotent_block,
-        })
+%(assertions)s%(idempotent)s"""
+            % {
+                "num": section_num,
+                "STATE": state.upper(),
+                "state": state,
+                "module": module_name,
+                "module_cap": module_name.replace("_", " ").title(),
+                "fqcn": fqcn,
+                "vars_path": vars_path,
+                "port": port,
+                "module_call": module_call,
+                "assertions": assertions_str,
+                "idempotent": idempotent_block,
+            },
+        )
         section_num += 1
 
     return "---\n" + "\n".join(plays) + "...\n"
@@ -764,22 +839,35 @@ def generate_converge_yml(module_name, collection, state_names, matched_phases,
 # Main
 # ======================================================================
 
+
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate a complete Molecule scenario from a network_cli transcript recording"
+        description="Generate a complete Molecule scenario from a network_cli transcript recording",
     )
     parser.add_argument("recording", help="Path to the JSONL recording file")
     parser.add_argument("--module", required=True, help="Module name (e.g., ios_hostname)")
-    parser.add_argument("--show-command", required=True,
-                        help='Show command (e.g., "show running-config | section ^hostname")')
-    parser.add_argument("--collection", default="cisco.ios",
-                        help="Collection FQCN (default: cisco.ios)")
-    parser.add_argument("--molecule-dir",
-                        help="Molecule extensions directory (default: auto-detect from cwd)")
-    parser.add_argument("--state-names",
-                        help="Comma-separated stateful state names (default: auto-detect)")
-    parser.add_argument("--vars-file",
-                        help="Path to vars/main.yaml (default: auto-detect from module name)")
+    parser.add_argument(
+        "--show-command",
+        required=True,
+        help='Show command (e.g., "show running-config | section ^hostname")',
+    )
+    parser.add_argument(
+        "--collection",
+        default="cisco.ios",
+        help="Collection FQCN (default: cisco.ios)",
+    )
+    parser.add_argument(
+        "--molecule-dir",
+        help="Molecule extensions directory (default: auto-detect from cwd)",
+    )
+    parser.add_argument(
+        "--state-names",
+        help="Comma-separated stateful state names (default: auto-detect)",
+    )
+    parser.add_argument(
+        "--vars-file",
+        help="Path to vars/main.yaml (default: auto-detect from module name)",
+    )
 
     args = parser.parse_args()
 
@@ -825,11 +913,16 @@ def main():
         test_vars = load_vars(vars_path)
         print("Loaded test vars from %s" % vars_path)
         if test_vars:
-            available_states = [k for k in test_vars if isinstance(test_vars[k], dict)
-                                and "commands" in test_vars[k]]
+            available_states = [
+                k
+                for k in test_vars
+                if isinstance(test_vars[k], dict) and "commands" in test_vars[k]
+            ]
             print("  States with commands: %s" % ", ".join(available_states))
     else:
-        print("Warning: Could not find vars/main.yaml — phase matching will use positional fallback")
+        print(
+            "Warning: Could not find vars/main.yaml — phase matching will use positional fallback"
+        )
 
     # ------------------------------------------------------------------
     # Determine state names
@@ -838,10 +931,13 @@ def main():
         state_names = args.state_names.split(",")
     elif test_vars:
         # Auto-detect: states that have 'commands' key and are not offline
-        state_names = [k for k in test_vars
-                       if isinstance(test_vars[k], dict)
-                       and "commands" in test_vars[k]
-                       and k not in OFFLINE_STATES]
+        state_names = [
+            k
+            for k in test_vars
+            if isinstance(test_vars[k], dict)
+            and "commands" in test_vars[k]
+            and k not in OFFLINE_STATES
+        ]
         print("Auto-detected stateful states: %s" % ", ".join(state_names))
     else:
         state_names = ["merged", "replaced"]
@@ -853,8 +949,10 @@ def main():
     phases = segment_recording(entries, args.show_command)
     gathered_phases = [p for p in phases if p["type"] == "gathered"]
     stateful_phases = [p for p in phases if p["type"] == "stateful"]
-    print("\nDetected %d phases total: %d gathered, %d stateful"
-          % (len(phases), len(gathered_phases), len(stateful_phases)))
+    print(
+        "\nDetected %d phases total: %d gathered, %d stateful"
+        % (len(phases), len(gathered_phases), len(stateful_phases)),
+    )
 
     for i, phase in enumerate(phases):
         if phase["type"] == "gathered":
@@ -863,8 +961,10 @@ def main():
             cmds_str = ", ".join(phase["commands"][:3])
             if len(phase["commands"]) > 3:
                 cmds_str += "..."
-            print("  [%d] stateful (cmds: [%s], before: %d chars, after: %d chars)"
-                  % (i, cmds_str, len(phase["show_before"]), len(phase["show_after"])))
+            print(
+                "  [%d] stateful (cmds: [%s], before: %d chars, after: %d chars)"
+                % (i, cmds_str, len(phase["show_before"]), len(phase["show_after"])),
+            )
 
     # ------------------------------------------------------------------
     # Match phases to states using expected commands
@@ -908,8 +1008,10 @@ def main():
         sdir = transcripts_dir / "scenarios" / state
         write_text(sdir / "before.txt", phase["show_before"])
         write_text(sdir / "after.txt", phase["show_after"])
-        print("  Wrote transcripts/%s/scenarios/%s/ (before.txt, after.txt) — commands: %s"
-              % (args.module, state, phase["commands"]))
+        print(
+            "  Wrote transcripts/%s/scenarios/%s/ (before.txt, after.txt) — commands: %s"
+            % (args.module, state, phase["commands"]),
+        )
 
     # 2. Transcript map fragment
     print("\n--- Transcript map ---")
@@ -917,13 +1019,16 @@ def main():
     scenario_entries = []
     for state in matched_state_names:
         scenario_entries.append(
-            generate_scenario_entry(args.module, state, args.show_command, matched_phases[state])
+            generate_scenario_entry(args.module, state, args.show_command, matched_phases[state]),
         )
 
-    fragment = ("# Add this platform under 'platforms:' in transcript_map.yaml:\n\n"
-                + platform_entry
-                + "\n# Add these scenarios under 'scenarios:' in transcript_map.yaml:\n\n"
-                + "\n\n".join(scenario_entries) + "\n")
+    fragment = (
+        "# Add this platform under 'platforms:' in transcript_map.yaml:\n\n"
+        + platform_entry
+        + "\n# Add these scenarios under 'scenarios:' in transcript_map.yaml:\n\n"
+        + "\n\n".join(scenario_entries)
+        + "\n"
+    )
 
     fragment_path = fixtures_dir / ("transcript_map_fragment_%s.yaml" % scenario_name)
     write_text(fragment_path, fragment)
@@ -956,8 +1061,12 @@ def main():
     print("  Wrote %s/vars.yml" % scenario_name)
 
     converge_yml = generate_converge_yml(
-        args.module, args.collection, matched_state_names,
-        matched_phases, test_vars, cwd
+        args.module,
+        args.collection,
+        matched_state_names,
+        matched_phases,
+        test_vars,
+        cwd,
     )
     write_text(scenario_dir / "converge.yml", converge_yml)
     print("  Wrote %s/converge.yml" % scenario_name)

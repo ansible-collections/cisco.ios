@@ -5,6 +5,6 @@
 #   inventories/ansible/<scenario>.yaml   (for ansible-playbook converge)
 scenario_name: interfaces
 listener_ports:
-  - 10000   # gathered / parsed / rendered
-  - 10001   # merged
-  - 10002   # replaced
+  - 10000 # gathered / parsed / rendered
+  - 10001 # merged
+  - 10002 # replaced
