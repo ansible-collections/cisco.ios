@@ -1,9 +1,5 @@
 ---
-# Molecule converge: Run ios_bgp_global integration-style assertions against CISSHGO
 
-# ============================================================================
-# Play 1: ios_bgp_global — state: gathered (platform mode, stateless)
-# ============================================================================
 - name: "Gather ios_bgp_global facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false
@@ -30,9 +26,6 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — BGP global config gathered from fixture"
 
-# ============================================================================
-# Play 2: ios_bgp_global — state: merged (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Merge ios_bgp_global configuration (merged state)"
   hosts: ios_merged
   gather_facts: false
@@ -88,11 +81,8 @@
       ansible.builtin.debug:
         msg: "merged state test passed — config applied + idempotency verified"
 
-# ============================================================================
-# Play 3: ios_bgp_global — state: replaced (scenario mode, stateful)
 # Note: idempotent check skipped — _set_bgp_defaults causes extra default
 # commands that create a non-idempotent cycle for the replaced state.
-# ============================================================================
 - name: "Replace ios_bgp_global configuration (replaced state)"
   hosts: ios_replaced
   gather_facts: false
@@ -137,9 +127,6 @@
       ansible.builtin.debug:
         msg: "replaced state test passed — config replaced successfully"
 
-# ============================================================================
-# Play 4: ios_bgp_global — state: deleted (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Delete ios_bgp_global configuration (deleted state)"
   hosts: ios_deleted
   gather_facts: false
@@ -174,9 +161,6 @@
       ansible.builtin.debug:
         msg: "deleted state test passed — BGP config stripped + idempotency verified"
 
-# ============================================================================
-# Play 5: ios_bgp_global — state: purged (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Purge ios_bgp_global configuration (purged state)"
   hosts: ios_purged
   gather_facts: false
@@ -208,9 +192,6 @@
       ansible.builtin.debug:
         msg: "purged state test passed — BGP process removed + idempotency verified"
 
-# ============================================================================
-# Play 6: ios_bgp_global — state: parsed (offline; platform host)
-# ============================================================================
 - name: "Parse ios_bgp_global configuration from file (parsed state)"
   hosts: ios_gathered
   gather_facts: false
@@ -239,9 +220,6 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — BGP config parsed from _parsed.cfg"
 
-# ============================================================================
-# Play 7: ios_bgp_global — state: rendered (offline)
-# ============================================================================
 - name: "Render ios_bgp_global configuration to CLI (rendered state)"
   hosts: ios_gathered
   gather_facts: false

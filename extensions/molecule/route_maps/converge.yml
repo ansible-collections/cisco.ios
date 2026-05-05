@@ -1,7 +1,4 @@
 ---
-# ============================================================================
-# Play 1: ios_route_maps — state: gathered
-# ============================================================================
 - name: "Gather ios_route_maps facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false
@@ -23,9 +20,6 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — route-map config gathered from fixture"
 
-# ============================================================================
-# Play 2: ios_route_maps — state: merged (scenario mode, stateful)
-# ============================================================================
 - name: "Merge ios_route_maps configuration (merged state)"
   hosts: ios_merged
   gather_facts: false
@@ -161,9 +155,6 @@
       ansible.builtin.debug:
         msg: "merged state test passed — config applied + idempotency verified"
 
-# ============================================================================
-# Play 3: ios_route_maps — state: replaced (scenario mode, stateful)
-# ============================================================================
 - name: "Replace ios_route_maps configuration (replaced state)"
   hosts: ios_replaced
   gather_facts: false
@@ -294,9 +285,6 @@
       ansible.builtin.debug:
         msg: "replaced state test passed — config replaced + idempotency verified"
 
-# ============================================================================
-# Play 4: ios_route_maps — state: deleted (scenario mode, stateful)
-# ============================================================================
 - name: "Delete ios_route_maps configuration (deleted state)"
   hosts: ios_deleted
   gather_facts: false
@@ -332,9 +320,6 @@
       ansible.builtin.debug:
         msg: "deleted state test passed — route-map deleted + idempotency verified"
 
-# ============================================================================
-# Play 5: ios_route_maps — state: parsed (offline)
-# ============================================================================
 - name: "Parse ios_route_maps configuration from file (parsed state)"
   hosts: ios_gathered
   gather_facts: false
@@ -358,9 +343,6 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — route-map config parsed from _parsed.cfg"
 
-# ============================================================================
-# Play 6: ios_route_maps — state: rendered (offline)
-# ============================================================================
 - name: "Render ios_route_maps configuration to CLI (rendered state)"
   hosts: ios_gathered
   gather_facts: false

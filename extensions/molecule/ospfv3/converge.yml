@@ -1,9 +1,5 @@
 ---
-# Molecule converge: Run ios_ospfv3 integration-style assertions against CISSHGO
 
-# ============================================================================
-# Play 1: ios_ospfv3 — state: gathered (platform mode, stateless)
-# ============================================================================
 - name: "Gather ios_ospfv3 facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false
@@ -26,9 +22,6 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — OSPFv3 config gathered from fixture"
 
-# ============================================================================
-# Play 2: ios_ospfv3 — state: merged (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Merge ios_ospfv3 configuration (merged state)"
   hosts: ios_merged
   gather_facts: false
@@ -105,9 +98,6 @@
       ansible.builtin.debug:
         msg: "merged state test passed — config applied + idempotency verified"
 
-# ============================================================================
-# Play 3: ios_ospfv3 — state: replaced (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Replace ios_ospfv3 configuration (replaced state)"
   hosts: ios_replaced
   gather_facts: false
@@ -164,9 +154,6 @@
       ansible.builtin.debug:
         msg: "replaced state test passed — config replaced + idempotency verified"
 
-# ============================================================================
-# Play 4: ios_ospfv3 — state: overridden (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Override ios_ospfv3 configuration (overridden state)"
   hosts: ios_overridden
   gather_facts: false
@@ -223,9 +210,6 @@
       ansible.builtin.debug:
         msg: "overridden state test passed — config overridden + idempotency verified"
 
-# ============================================================================
-# Play 5: ios_ospfv3 — state: deleted (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Delete ios_ospfv3 configuration (deleted state)"
   hosts: ios_deleted
   gather_facts: false
@@ -268,9 +252,6 @@
       ansible.builtin.debug:
         msg: "deleted state test passed — OSPFv3 processes removed + idempotency verified"
 
-# ============================================================================
-# Play 6: ios_ospfv3 — state: parsed (offline; platform host)
-# ============================================================================
 - name: "Parse ios_ospfv3 configuration from file (parsed state)"
   hosts: ios_gathered
   gather_facts: false
@@ -294,9 +275,6 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — OSPFv3 config parsed from _parsed.cfg"
 
-# ============================================================================
-# Play 7: ios_ospfv3 — state: rendered (offline)
-# ============================================================================
 - name: "Render ios_ospfv3 configuration to CLI (rendered state)"
   hosts: ios_gathered
   gather_facts: false

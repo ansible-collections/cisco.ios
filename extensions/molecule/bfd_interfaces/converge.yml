@@ -1,7 +1,4 @@
 ---
-# ============================================================================
-# Play 1: ios_bfd_interfaces — state: gathered
-# ============================================================================
 - name: "Gather ios_bfd_interfaces facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false
@@ -23,9 +20,6 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — BFD interface config gathered from fixture"
 
-# ============================================================================
-# Play 2: ios_bfd_interfaces — state: merged (scenario mode, stateful)
-# ============================================================================
 - name: "Merge ios_bfd_interfaces configuration (merged state)"
   hosts: ios_merged
   gather_facts: false
@@ -73,9 +67,6 @@
       ansible.builtin.debug:
         msg: "merged state test passed — config applied + idempotency verified"
 
-# ============================================================================
-# Play 3: ios_bfd_interfaces — state: deleted (scenario mode, stateful)
-# ============================================================================
 - name: "Delete ios_bfd_interfaces configuration (deleted state)"
   hosts: ios_deleted
   gather_facts: false
@@ -108,9 +99,6 @@
       ansible.builtin.debug:
         msg: "deleted state test passed — BFD config deleted + idempotency verified"
 
-# ============================================================================
-# Play 4: ios_bfd_interfaces — state: parsed (offline)
-# ============================================================================
 - name: "Parse ios_bfd_interfaces configuration from file (parsed state)"
   hosts: ios_gathered
   gather_facts: false
@@ -134,9 +122,6 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — BFD interface config parsed from _parsed.cfg"
 
-# ============================================================================
-# Play 5: ios_bfd_interfaces — state: rendered (offline)
-# ============================================================================
 - name: "Render ios_bfd_interfaces configuration to CLI (rendered state)"
   hosts: ios_gathered
   gather_facts: false

@@ -1,6 +1,4 @@
 ---
-# Molecule converge: ios_l2_interfaces against CISSHGO (gathered, merged+merged_again, replaced, overridden, deleted, parsed, rendered)
-
 - name: "Gather ios_l2_interfaces facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false

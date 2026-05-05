@@ -1,7 +1,4 @@
 ---
-# ============================================================================
-# Play 1: ios_bgp_address_family — state: gathered
-# ============================================================================
 - name: "Gather ios_bgp_address_family facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false
@@ -24,9 +21,6 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — BGP AF config gathered from fixture"
 
-# ============================================================================
-# Play 2: ios_bgp_address_family — state: merged (scenario mode, stateful)
-# ============================================================================
 - name: "Merge ios_bgp_address_family configuration (merged state)"
   hosts: ios_merged
   gather_facts: false
@@ -231,9 +225,6 @@
       ansible.builtin.debug:
         msg: "merged state test passed — config applied + idempotency verified"
 
-# ============================================================================
-# Play 3: ios_bgp_address_family — state: replaced (scenario mode, stateful)
-# ============================================================================
 - name: "Replace ios_bgp_address_family configuration (replaced state)"
   hosts: ios_replaced
   gather_facts: false
@@ -367,9 +358,6 @@
       ansible.builtin.debug:
         msg: "replaced state test passed — config replaced + idempotency verified"
 
-# ============================================================================
-# Play 4: ios_bgp_address_family — state: deleted (scenario mode, stateful)
-# ============================================================================
 - name: "Delete ios_bgp_address_family configuration (deleted state)"
   hosts: ios_deleted
   gather_facts: false
@@ -422,9 +410,6 @@
       ansible.builtin.debug:
         msg: "deleted state test passed — BGP AFs deleted + idempotency verified"
 
-# ============================================================================
-# Play 5: ios_bgp_address_family — state: parsed (offline)
-# ============================================================================
 - name: "Parse ios_bgp_address_family configuration from file (parsed state)"
   hosts: ios_gathered
   gather_facts: false
@@ -448,9 +433,6 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — BGP AF config parsed from _parsed.cfg"
 
-# ============================================================================
-# Play 6: ios_bgp_address_family — state: rendered (offline)
-# ============================================================================
 - name: "Render ios_bgp_address_family configuration to CLI (rendered state)"
   hosts: ios_gathered
   gather_facts: false

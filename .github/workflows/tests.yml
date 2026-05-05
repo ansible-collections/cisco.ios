@@ -50,9 +50,6 @@ jobs:
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git
 
-  # ------------------------------------------------------------------
-  # Molecule (CISSHGO) — offline scenario tests for resource modules
-  # ------------------------------------------------------------------
   molecule-discover:
     name: Discover molecule scenarios
     runs-on: ubuntu-latest
@@ -124,13 +121,8 @@ jobs:
           pip install \
             "https://github.com/ansible/ansible/archive/${{ matrix.ansible-version }}.tar.gz" \
             "molecule>=24.0" \
-            "molecule-plugins>=23.5" \
-            "ansible-lint" \
-            "yamllint" \
             "paramiko" \
-            "ansible-pylibssh>=1.1.0" \
-            "netaddr" \
-            "jmespath"
+            "ansible-pylibssh>=1.1.0"
           ansible-galaxy collection install \
             git+https://github.com/ansible-collections/ansible.utils.git \
             git+https://github.com/ansible-collections/ansible.netcommon.git \

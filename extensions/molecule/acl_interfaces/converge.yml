@@ -1,5 +1,4 @@
 ---
-# ── gathered (platform listener) ──────────────────────────────────────────────
 - name: "Ios_acl_interfaces — gathered"
   hosts: ios_gathered
   gather_facts: false
@@ -18,7 +17,6 @@
           - gathered['config'] | symmetric_difference(result.gathered) == []
           - result['changed'] == false
 
-# ── merged ────────────────────────────────────────────────────────────────────
 - name: "Ios_acl_interfaces — merged"
   hosts: ios_merged
   gather_facts: false
@@ -70,7 +68,6 @@
           - result.commands | length == 0
           - result.changed == false
 
-# ── replaced ──────────────────────────────────────────────────────────────────
 - name: "Ios_acl_interfaces — replaced"
   hosts: ios_replaced
   gather_facts: false
@@ -107,7 +104,6 @@
           - result.commands | length == 0
           - result.changed == false
 
-# ── overridden ────────────────────────────────────────────────────────────────
 - name: "Ios_acl_interfaces — overridden"
   hosts: ios_overridden
   gather_facts: false
@@ -144,7 +140,6 @@
           - result.commands | length == 0
           - result.changed == false
 
-# ── deleted ───────────────────────────────────────────────────────────────────
 - name: "Ios_acl_interfaces — deleted"
   hosts: ios_deleted
   gather_facts: false
@@ -177,7 +172,6 @@
         that:
           - result.changed == false
 
-# ── parsed (offline — platform host) ─────────────────────────────────────────
 - name: "Ios_acl_interfaces — parsed"
   hosts: ios_gathered
   gather_facts: false
@@ -196,7 +190,6 @@
           - result.changed == false
           - parsed['config'] | symmetric_difference(result.parsed) == []
 
-# ── rendered (offline — platform host) ────────────────────────────────────────
 - name: "Ios_acl_interfaces — rendered"
   hosts: ios_gathered
   gather_facts: false
@@ -237,7 +230,6 @@
           - result.changed == false
           - result.rendered | symmetric_difference(merged.commands) == []
 
-# ── rtt (round-trip) ─────────────────────────────────────────────────────────
 - name: "Ios_acl_interfaces — rtt"
   hosts: ios_rtt
   gather_facts: false

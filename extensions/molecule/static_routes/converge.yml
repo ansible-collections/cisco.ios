@@ -1,9 +1,5 @@
 ---
-# Molecule converge: Run ios_static_routes integration-style assertions against CISSHGO
 
-# ============================================================================
-# Play 1: ios_static_routes — state: gathered (platform mode, stateless)
-# ============================================================================
 - name: "Gather ios_static_routes facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false
@@ -23,9 +19,6 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — static routes gathered from fixture"
 
-# ============================================================================
-# Play 2: ios_static_routes — state: merged (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Merge ios_static_routes configuration (merged state)"
   hosts: ios_merged
   gather_facts: false
@@ -107,9 +100,6 @@
       ansible.builtin.debug:
         msg: "merged state test passed — config applied + idempotency verified"
 
-# ============================================================================
-# Play 3: ios_static_routes — state: replaced (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Replace ios_static_routes configuration (replaced state)"
   hosts: ios_replaced
   gather_facts: false
@@ -178,9 +168,6 @@
       ansible.builtin.debug:
         msg: "replaced state test passed — config replaced + idempotency verified"
 
-# ============================================================================
-# Play 4: ios_static_routes — state: overridden (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Override ios_static_routes configuration (overridden state)"
   hosts: ios_overridden
   gather_facts: false
@@ -246,9 +233,6 @@
       ansible.builtin.debug:
         msg: "overridden state test passed — config overridden + idempotency verified"
 
-# ============================================================================
-# Play 5: ios_static_routes — state: deleted (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Delete ios_static_routes configuration (deleted state)"
   hosts: ios_deleted
   gather_facts: false
@@ -323,9 +307,6 @@
       ansible.builtin.debug:
         msg: "deleted state test passed — all specified routes removed + idempotency verified"
 
-# ============================================================================
-# Play 6: ios_static_routes — state: parsed (offline; platform host)
-# ============================================================================
 - name: "Parse ios_static_routes configuration from file (parsed state)"
   hosts: ios_gathered
   gather_facts: false
@@ -349,9 +330,6 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — static routes parsed from _parsed.cfg"
 
-# ============================================================================
-# Play 7: ios_static_routes — state: rendered (offline)
-# ============================================================================
 - name: "Render ios_static_routes configuration to CLI (rendered state)"
   hosts: ios_gathered
   gather_facts: false

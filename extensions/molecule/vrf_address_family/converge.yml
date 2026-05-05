@@ -1,7 +1,5 @@
 ---
-# Preview check_mode on stateful hosts first (new TCP session each play). Offline
-# parsed/rendered plays follow, then full merged/deleted plays (each begins sequence
-# from the top on a new connection).
+# Separate plays keep each CISSHGO session sequence-aligned.
 
 - name: "Ios_vrf_address_family — merged check_mode (preview)"
   hosts: ios_merged

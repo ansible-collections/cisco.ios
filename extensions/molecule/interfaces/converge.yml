@@ -1,9 +1,5 @@
 ---
-# Molecule converge: Run ios_interfaces integration tests against CISSHGO
 
-# ============================================================================
-# Play 1: ios_interfaces — state: gathered (platform mode, stateless)
-# ============================================================================
 - name: "Gather ios_interfaces facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false
@@ -32,9 +28,6 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — {{ result['gathered'] | length }} interfaces collected"
 
-# ============================================================================
-# Play 2: ios_interfaces — state: merged (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Merge ios_interfaces configuration (merged state)"
   hosts: ios_merged
   gather_facts: false
@@ -93,9 +86,6 @@
       ansible.builtin.debug:
         msg: "merged state test passed — config applied + idempotency verified"
 
-# ============================================================================
-# Play 3: ios_interfaces — state: replaced (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Replace ios_interfaces configuration (replaced state)"
   hosts: ios_replaced
   gather_facts: false
@@ -148,9 +138,6 @@
       ansible.builtin.debug:
         msg: "replaced state test passed — config replaced + idempotency verified"
 
-# ============================================================================
-# Play 4: ios_interfaces — state: overridden (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Override ios_interfaces configuration (overridden state)"
   hosts: ios_overridden
   gather_facts: false
@@ -231,9 +218,6 @@
       ansible.builtin.debug:
         msg: "overridden state test passed"
 
-# ============================================================================
-# Play 5: ios_interfaces — state: deleted (scenario mode)
-# ============================================================================
 - name: "Delete ios_interfaces attributes (deleted state)"
   hosts: ios_deleted
   gather_facts: false
@@ -272,9 +256,6 @@
       ansible.builtin.debug:
         msg: "deleted state test passed"
 
-# ============================================================================
-# Play 6: ios_interfaces — state: parsed (offline; platform host)
-# ============================================================================
 - name: "Parse ios_interfaces configuration from file (parsed state)"
   hosts: ios_gathered
   gather_facts: false
@@ -298,9 +279,6 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — {{ result['parsed'] | length }} interfaces parsed from config file"
 
-# ============================================================================
-# Play 7: ios_interfaces — state: rendered (offline)
-# ============================================================================
 - name: "Render ios_interfaces configuration to CLI (rendered state)"
   hosts: ios_gathered
   gather_facts: false
@@ -333,9 +311,6 @@
       ansible.builtin.debug:
         msg: "rendered state test passed — {{ result['rendered'] | length }} CLI commands rendered"
 
-# ============================================================================
-# Play 8: ios_interfaces — RTT (merged -> ios_facts -> replaced drift -> overridden revert)
-# ============================================================================
 - name: "Round-trip ios_interfaces (RTT)"
   hosts: ios_rtt
   gather_facts: false

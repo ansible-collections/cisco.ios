@@ -1,42 +1,19 @@
 ---
-# Shared CISSHGO start playbook used by every molecule scenario.
-#
-# Per-scenario inputs come from <scenario>/vars.yml (loaded automatically via
-# MOLECULE_SCENARIO_DIRECTORY). Required keys:
-#   scenario_name   : short id used for the log file, process matching, and
-#                     to derive inventory paths
-#                     (e.g. "interfaces" -> inventories/cisshgo/interfaces.yaml
-#                      and inventories/ansible/interfaces.yaml)
-#   listener_ports  : list of TCP ports the scenario expects cisshgo to bind
-#                     (e.g. [10000, 10001, 10002]). The first port is taken
-#                     as the --starting-port value.
-#
-# Binary resolution order:
-#   1. CISSHGO_BIN env var                       (developer override)
-#   2. ../../../../../cisshgo/cisshgo            (sibling repo checkout)
-#   3. Download pinned release archive           (CI / fresh clone path)
-#
-# The pinned release version lives in
-# cisshgo_fixtures/CISSHGO_VERSION and can be overridden with CISSHGO_VERSION env.
+# Starts CISSHGO for a scenario using <scenario>/vars.yml inputs.
 - name: "Create — Start CISSHGO ({{ scenario_name | default('unknown') }})"
   hosts: localhost
   connection: local
-  # gather_facts is done explicitly below via ansible.builtin.setup so we can
-  # force connection: local and avoid Ansible dispatching to ios_facts if
-  # ansible_network_os happens to leak onto localhost from another inventory.
+  # Avoid network fact gathering if ansible_network_os leaks onto localhost.
   gather_facts: false
   vars_files:
     - "{{ lookup('env', 'MOLECULE_SCENARIO_DIRECTORY') }}/vars.yml"
   vars:
-    # Hard-override: localhost is not a network device, even if some
-    # inventory accidentally scopes ansible_network_os to `all:`.
+    # Localhost is not a network device.
     ansible_network_os: ""
     ansible_connection: local
     molecule_dir: "{{ lookup('env', 'MOLECULE_SCENARIO_DIRECTORY') | dirname }}"
     fixtures_dir: "{{ molecule_dir }}/cisshgo_fixtures"
     transcript_map: "{{ fixtures_dir }}/transcript_map.yaml"
-    # Two inventories: one consumed by cisshgo (Go server config), one by
-    # ansible-playbook during converge. Both keyed by scenario_name.
     cisshgo_inventory_path: "{{ fixtures_dir }}/inventories/cisshgo/{{ scenario_name }}.yaml"
     ansible_inventory_path: "{{ fixtures_dir }}/inventories/ansible/{{ scenario_name }}.yaml"
     cisshgo_log: "/tmp/cisshgo-{{ scenario_name }}.log"
@@ -48,10 +25,6 @@
     cisshgo_download_dir: "/tmp/cisshgo-release/{{ cisshgo_version }}"
 
   tasks:
-    # ------------------------------------------------------------------
-    # 0. Gather just enough localhost facts for OS/arch detection,
-    #    without triggering network gather.
-    # ------------------------------------------------------------------
     - name: Gather localhost platform facts
       ansible.builtin.setup:
         gather_subset:
@@ -59,9 +32,6 @@
           - "!min"
           - "platform"
 
-    # ------------------------------------------------------------------
-    # 1. Resolve cisshgo binary
-    # ------------------------------------------------------------------
     - name: Check CISSHGO_BIN env override
       ansible.builtin.set_fact:
         cisshgo_bin: "{{ lookup('env', 'CISSHGO_BIN') }}"
@@ -148,20 +118,14 @@
       ansible.builtin.debug:
         msg: "Using cisshgo binary: {{ cisshgo_bin }} (version pin {{ cisshgo_version }})"
 
-    # ------------------------------------------------------------------
-    # 2. Stop any stale cisshgo, start fresh
-    # ------------------------------------------------------------------
     - name: Kill stale CISSHGO processes for this scenario
       ansible.builtin.shell: |
-        # Match v0.x and v1.x argv (flag style differs); avoid leaving listeners
-        # bound when re-running molecule locally or in CI.
         pkill -f "cisshgo.*inventories/cisshgo/{{ scenario_name }}.yaml" || true
       changed_when: false
       failed_when: false
 
     - name: Start CISSHGO
-      # Launch from fixtures_dir so relative transcript paths in
-      # transcript_map.yaml resolve against cisshgo_fixtures/.
+      # Relative transcript paths resolve from cisshgo_fixtures/.
       ansible.builtin.shell: |
         cd "{{ fixtures_dir }}" && \
         nohup "{{ cisshgo_bin }}" \

@@ -1,7 +1,4 @@
 ---
-# ============================================================================
-# Play 1: ios_bfd_templates — state: gathered
-# ============================================================================
 - name: "Gather ios_bfd_templates facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false
@@ -23,9 +20,6 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — BFD template config gathered from fixture"
 
-# ============================================================================
-# Play 2: ios_bfd_templates — state: merged (scenario mode, stateful)
-# ============================================================================
 - name: "Merge ios_bfd_templates configuration (merged state)"
   hosts: ios_merged
   gather_facts: false
@@ -80,9 +74,6 @@
       ansible.builtin.debug:
         msg: "merged state test passed — config applied + idempotency verified"
 
-# ============================================================================
-# Play 3: ios_bfd_templates — state: replaced (scenario mode, stateful)
-# ============================================================================
 - name: "Replace ios_bfd_templates configuration (replaced state)"
   hosts: ios_replaced
   gather_facts: false
@@ -125,9 +116,6 @@
       ansible.builtin.debug:
         msg: "replaced state test passed — config replaced + idempotency verified"
 
-# ============================================================================
-# Play 4: ios_bfd_templates — state: parsed (offline)
-# ============================================================================
 - name: "Parse ios_bfd_templates configuration from file (parsed state)"
   hosts: ios_gathered
   gather_facts: false
@@ -151,9 +139,6 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — BFD template config parsed from _parsed.cfg"
 
-# ============================================================================
-# Play 5: ios_bfd_templates — state: rendered (offline)
-# ============================================================================
 - name: "Render ios_bfd_templates configuration to CLI (rendered state)"
   hosts: ios_gathered
   gather_facts: false

@@ -1,7 +1,4 @@
 ---
-# ============================================================================
-# Play 1: ios_vrf_interfaces — state: gathered
-# ============================================================================
 - name: "Gather ios_vrf_interfaces facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false
@@ -24,9 +21,6 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — VRF interface config gathered from fixture"
 
-# ============================================================================
-# Play 2: ios_vrf_interfaces — state: merged (scenario mode, stateful)
-# ============================================================================
 - name: "Merge ios_vrf_interfaces configuration (merged state)"
   hosts: ios_merged
   gather_facts: false
@@ -81,9 +75,6 @@
       ansible.builtin.debug:
         msg: "merged state test passed — config applied + idempotency verified"
 
-# ============================================================================
-# Play 3: ios_vrf_interfaces — state: deleted (scenario mode, stateful)
-# ============================================================================
 - name: "Delete ios_vrf_interfaces configuration (deleted state)"
   hosts: ios_deleted
   gather_facts: false
@@ -136,9 +127,6 @@
       ansible.builtin.debug:
         msg: "deleted state test passed — VRF removed + idempotency verified"
 
-# ============================================================================
-# Play 4: ios_vrf_interfaces — state: parsed
-# ============================================================================
 - name: "Parse ios_vrf_interfaces from file (parsed state)"
   hosts: ios_gathered
   gather_facts: false
@@ -161,9 +149,6 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — offline parse of _parsed.cfg"
 
-# ============================================================================
-# Play 5: ios_vrf_interfaces — state: rendered
-# ============================================================================
 - name: "Render ios_vrf_interfaces CLI (rendered state)"
   hosts: ios_gathered
   gather_facts: false

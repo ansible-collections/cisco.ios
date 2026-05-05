@@ -1,9 +1,5 @@
 ---
-# Molecule converge: Run ios_prefix_lists integration-style assertions against CISSHGO
 
-# ============================================================================
-# Play 1: ios_prefix_lists — state: gathered (platform mode, stateless)
-# ============================================================================
 - name: "Gather ios_prefix_lists facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false
@@ -26,9 +22,6 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — prefix lists gathered from fixture"
 
-# ============================================================================
-# Play 2: ios_prefix_lists — state: merged (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Merge ios_prefix_lists configuration (merged state)"
   hosts: ios_merged
   gather_facts: false
@@ -117,9 +110,6 @@
       ansible.builtin.debug:
         msg: "merged state test passed — config applied + idempotency verified"
 
-# ============================================================================
-# Play 3: ios_prefix_lists — state: replaced (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Replace ios_prefix_lists configuration (replaced state)"
   hosts: ios_replaced
   gather_facts: false
@@ -194,9 +184,6 @@
       ansible.builtin.debug:
         msg: "replaced state test passed — config replaced + idempotency verified"
 
-# ============================================================================
-# Play 4: ios_prefix_lists — state: overridden (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Override ios_prefix_lists configuration (overridden state)"
   hosts: ios_overridden
   gather_facts: false
@@ -265,9 +252,6 @@
       ansible.builtin.debug:
         msg: "overridden state test passed — config overridden + idempotency verified"
 
-# ============================================================================
-# Play 5: ios_prefix_lists — state: deleted (scenario mode, deleted_all)
-# ============================================================================
 - name: "Delete ios_prefix_lists configuration (deleted state)"
   hosts: ios_deleted
   gather_facts: false
@@ -311,9 +295,6 @@
       ansible.builtin.debug:
         msg: "deleted state test passed — all prefix lists removed + idempotency verified"
 
-# ============================================================================
-# Play 6: ios_prefix_lists — state: parsed (offline; platform host)
-# ============================================================================
 - name: "Parse ios_prefix_lists configuration from file (parsed state)"
   hosts: ios_gathered
   gather_facts: false
@@ -337,9 +318,6 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — prefix lists parsed from _parsed.cfg"
 
-# ============================================================================
-# Play 7: ios_prefix_lists — state: rendered (offline)
-# ============================================================================
 - name: "Render ios_prefix_lists configuration to CLI (rendered state)"
   hosts: ios_gathered
   gather_facts: false

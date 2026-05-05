@@ -1,7 +1,4 @@
 ---
-# ============================================================================
-# Play 1: ios_lldp_interfaces — state: gathered
-# ============================================================================
 - name: "Gather ios_lldp_interfaces facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false
@@ -24,9 +21,6 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — LLDP interface facts gathered from fixture"
 
-# ============================================================================
-# Play 2: ios_lldp_interfaces — merged (check_mode: discover emit order)
-# ============================================================================
 - name: "Discover merged emit order (check_mode)"
   hosts: ios_merged
   gather_facts: false
@@ -53,9 +47,6 @@
       ansible.builtin.debug:
         var: merged_check.commands
 
-# ============================================================================
-# Play 3: ios_lldp_interfaces — deleted (check_mode: discover emit order)
-# ============================================================================
 - name: "Discover deleted emit order (check_mode)"
   hosts: ios_deleted
   gather_facts: false
@@ -72,9 +63,6 @@
       ansible.builtin.debug:
         var: deleted_check.commands
 
-# ============================================================================
-# Play 4: ios_lldp_interfaces — state: parsed
-# ============================================================================
 - name: "Parse ios_lldp_interfaces from file (parsed state)"
   hosts: ios_gathered
   gather_facts: false
@@ -98,9 +86,6 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — offline parse of _parsed.cfg"
 
-# ============================================================================
-# Play 5: ios_lldp_interfaces — state: rendered
-# ============================================================================
 - name: "Render ios_lldp_interfaces CLI (rendered state)"
   hosts: ios_gathered
   gather_facts: false

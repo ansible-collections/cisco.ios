@@ -1,5 +1,4 @@
 ---
-# Shared CISSHGO verify playbook — asserts no FATAL/panic in the scenario log.
 - name: "Verify — Inspect CISSHGO log ({{ scenario_name | default('unknown') }})"
   hosts: localhost
   connection: local

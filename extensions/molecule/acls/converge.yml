@@ -1,6 +1,5 @@
 ---
-# Preview check_mode uses a fresh TCP session per play; merged/deleted multi-task plays
-# share one session (each get_facts issues both ACL getter commands).
+# ACL facts use both running-config and access-list name getters.
 
 - name: "Ios_acls — merged check_mode (preview)"
   hosts: ios_merged

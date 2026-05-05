@@ -1,9 +1,5 @@
 ---
-# Molecule converge: Run ios_hostname integration tests against CISSHGO
 
-# ============================================================================
-# Play 1: ios_hostname — state: gathered (platform mode, stateless)
-# ============================================================================
 - name: "Gather ios_hostname facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false
@@ -26,9 +22,6 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — hostname: {{ result['gathered']['hostname'] }}"
 
-# ============================================================================
-# Play 2: ios_hostname — state: merged (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Merge ios_hostname configuration (merged state)"
   hosts: ios_merged
   gather_facts: false
@@ -71,9 +64,6 @@
       ansible.builtin.debug:
         msg: "merged state test passed — config applied + idempotency verified"
 
-# ============================================================================
-# Play 3: ios_hostname — state: deleted (scenario mode, stateful)
-# ============================================================================
 - name: "Delete ios_hostname configuration (deleted state)"
   hosts: ios_deleted
   gather_facts: false
@@ -102,9 +92,6 @@
       ansible.builtin.debug:
         msg: "deleted state test passed"
 
-# ============================================================================
-# Play 4: ios_hostname — state: parsed (offline; platform host)
-# ============================================================================
 - name: "Parse ios_hostname configuration from file (parsed state)"
   hosts: ios_gathered
   gather_facts: false
@@ -128,9 +115,6 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — hostname: {{ result['parsed']['hostname'] }}"
 
-# ============================================================================
-# Play 5: ios_hostname — state: rendered (offline)
-# ============================================================================
 - name: "Render ios_hostname configuration to CLI (rendered state)"
   hosts: ios_gathered
   gather_facts: false

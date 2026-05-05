@@ -1,9 +1,4 @@
 ---
-# Molecule converge: ios_l3_interfaces against CISSHGO (see tests/integration targets + vars)
-
-# ============================================================================
-# Play 1: gathered
-# ============================================================================
 - name: "Gather ios_l3_interfaces (gathered state)"
   hosts: ios_gathered
   gather_facts: false
@@ -24,9 +19,6 @@
             | symmetric_difference(gathered['config']) | length == 0
         quiet: true
 
-# ============================================================================
-# Play 2: merged (+ idempotency)
-# ============================================================================
 - name: "Merge ios_l3_interfaces (merged state)"
   hosts: ios_merged
   gather_facts: false
@@ -138,9 +130,6 @@
           - result.changed == false
         quiet: true
 
-# ============================================================================
-# Play 3: replaced (+ idempotency)
-# ============================================================================
 - name: "Replace ios_l3_interfaces (replaced state)"
   hosts: ios_replaced
   gather_facts: false
@@ -213,9 +202,6 @@
           - result.changed == false
         quiet: true
 
-# ============================================================================
-# Play 4: overridden (+ idempotency)
-# ============================================================================
 - name: "Override ios_l3_interfaces (overridden state)"
   hosts: ios_overridden
   gather_facts: false
@@ -286,9 +272,6 @@
           - result.changed == false
         quiet: true
 
-# ============================================================================
-# Play 5: deleted (+ idempotency)
-# ============================================================================
 - name: "Delete ios_l3_interfaces attributes (deleted state)"
   hosts: ios_deleted
   gather_facts: false
@@ -339,9 +322,6 @@
           - result.changed == false
         quiet: true
 
-# ============================================================================
-# Play 6: parsed (platform host)
-# ============================================================================
 - name: "Parse ios_l3_interfaces from file (parsed state)"
   hosts: ios_gathered
   gather_facts: false
@@ -361,9 +341,6 @@
           - parsed['config'] | symmetric_difference(result['parsed']) | length == 0
         quiet: true
 
-# ============================================================================
-# Play 7: rendered (platform host)
-# ============================================================================
 - name: "Render ios_l3_interfaces CLI (rendered state)"
   hosts: ios_gathered
   gather_facts: false
@@ -403,9 +380,6 @@
           - rendered['commands'] | symmetric_difference(result['rendered']) | length == 0
         quiet: true
 
-# ============================================================================
-# Play 8: RTT (merged -> ios_facts -> replaced drift -> overridden revert)
-# ============================================================================
 - name: "Round-trip ios_l3_interfaces (RTT)"
   hosts: ios_l3_rtt
   gather_facts: false

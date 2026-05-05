@@ -1,6 +1,4 @@
 ---
-# Molecule converge: Run ios_logging_global integration tests against CISSHGO
-
 - name: "Gather ios_logging_global facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false

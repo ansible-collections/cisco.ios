@@ -1,9 +1,5 @@
 ---
-# Molecule converge: Run ios_ospf_interfaces integration-style assertions against CISSHGO
 
-# ============================================================================
-# Play 1: ios_ospf_interfaces — state: gathered (platform mode, stateless)
-# ============================================================================
 - name: "Gather ios_ospf_interfaces facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false
@@ -26,9 +22,6 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — OSPF interface config gathered from fixture"
 
-# ============================================================================
-# Play 2: ios_ospf_interfaces — state: merged (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Merge ios_ospf_interfaces configuration (merged state)"
   hosts: ios_merged
   gather_facts: false
@@ -88,9 +81,6 @@
       ansible.builtin.debug:
         msg: "merged state test passed — config applied + idempotency verified"
 
-# ============================================================================
-# Play 3: ios_ospf_interfaces — state: replaced (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Replace ios_ospf_interfaces configuration (replaced state)"
   hosts: ios_replaced
   gather_facts: false
@@ -130,9 +120,6 @@
       ansible.builtin.debug:
         msg: "replaced state test passed — config replaced + idempotency verified"
 
-# ============================================================================
-# Play 4: ios_ospf_interfaces — state: overridden (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Override ios_ospf_interfaces configuration (overridden state)"
   hosts: ios_overridden
   gather_facts: false
@@ -185,9 +172,6 @@
       ansible.builtin.debug:
         msg: "overridden state test passed — config overridden + idempotency verified"
 
-# ============================================================================
-# Play 5: ios_ospf_interfaces — state: deleted (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Delete ios_ospf_interfaces configuration (deleted state)"
   hosts: ios_deleted
   gather_facts: false
@@ -222,9 +206,6 @@
       ansible.builtin.debug:
         msg: "deleted state test passed — OSPF interface config removed + idempotency verified"
 
-# ============================================================================
-# Play 6: ios_ospf_interfaces — state: parsed (offline; platform host)
-# ============================================================================
 - name: "Parse ios_ospf_interfaces configuration from file (parsed state)"
   hosts: ios_gathered
   gather_facts: false
@@ -248,9 +229,6 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — OSPF interface config parsed from _parsed.cfg"
 
-# ============================================================================
-# Play 7: ios_ospf_interfaces — state: rendered (offline)
-# ============================================================================
 - name: "Render ios_ospf_interfaces configuration to CLI (rendered state)"
   hosts: ios_gathered
   gather_facts: false

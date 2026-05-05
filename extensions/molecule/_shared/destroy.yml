@@ -1,9 +1,4 @@
 ---
-# Shared CISSHGO destroy playbook used by every molecule scenario.
-# Inputs (from <scenario>/vars.yml):
-#   scenario_name   : id used to find the right cisshgo process
-#                     (matches inventories/cisshgo/<scenario>.yaml in pgrep)
-#   listener_ports  : ports we wait to be released
 - name: "Destroy — Stop CISSHGO ({{ scenario_name | default('unknown') }})"
   hosts: localhost
   connection: local

@@ -1,9 +1,5 @@
 ---
-# Molecule converge: Run ios_lldp_global integration-style assertions against CISSHGO
 
-# ============================================================================
-# Play 1: ios_lldp_global — state: gathered (platform mode, stateless)
-# ============================================================================
 - name: "Gather ios_lldp_global facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false
@@ -26,9 +22,6 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — LLDP global resource gathered from fixture"
 
-# ============================================================================
-# Play 2: ios_lldp_global — state: merged (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Merge ios_lldp_global configuration (merged state)"
   hosts: ios_merged
   gather_facts: false
@@ -83,9 +76,6 @@
       ansible.builtin.debug:
         msg: "merged state test passed — config applied + idempotency verified"
 
-# ============================================================================
-# Play 3: ios_lldp_global — state: replaced (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Replace ios_lldp_global configuration (replaced state)"
   hosts: ios_replaced
   gather_facts: false
@@ -136,9 +126,6 @@
       ansible.builtin.debug:
         msg: "replaced state test passed — config replaced + idempotency verified"
 
-# ============================================================================
-# Play 4: ios_lldp_global — state: deleted (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Delete ios_lldp_global configuration (deleted state)"
   hosts: ios_deleted
   gather_facts: false
@@ -183,9 +170,6 @@
       ansible.builtin.debug:
         msg: "deleted state test passed"
 
-# ============================================================================
-# Play 5: ios_lldp_global — state: parsed (offline; platform host)
-# ============================================================================
 - name: "Parse ios_lldp_global configuration from file (parsed state)"
   hosts: ios_gathered
   gather_facts: false
@@ -209,9 +193,6 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — LLDP global parsed from _parsed.cfg"
 
-# ============================================================================
-# Play 6: ios_lldp_global — state: rendered (offline)
-# ============================================================================
 - name: "Render ios_lldp_global configuration to CLI (rendered state)"
   hosts: ios_gathered
   gather_facts: false

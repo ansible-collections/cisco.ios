@@ -1,9 +1,5 @@
 ---
-# Molecule converge: Run ios_snmp_server integration-style assertions against CISSHGO
 
-# ============================================================================
-# Play 1: ios_snmp_server — state: gathered (platform mode, stateless)
-# ============================================================================
 - name: "Gather ios_snmp_server facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false
@@ -26,9 +22,6 @@
       ansible.builtin.debug:
         msg: "gathered state test passed — SNMP server gathered from fixture"
 
-# ============================================================================
-# Play 2: ios_snmp_server — state: merged (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Merge ios_snmp_server configuration (merged state)"
   hosts: ios_merged
   gather_facts: false
@@ -84,9 +77,6 @@
       ansible.builtin.debug:
         msg: "merged state test passed — config applied + idempotency verified"
 
-# ============================================================================
-# Play 3: ios_snmp_server — state: overridden (scenario mode, stateful + idempotent)
-# ============================================================================
 - name: "Override ios_snmp_server configuration (overridden state)"
   hosts: ios_overridden
   gather_facts: false
@@ -137,9 +127,6 @@
       ansible.builtin.debug:
         msg: "overridden state test passed — config overridden + idempotency verified"
 
-# ============================================================================
-# Play 4: ios_snmp_server — state: deleted (scenario mode)
-# ============================================================================
 - name: "Delete ios_snmp_server configuration (deleted state)"
   hosts: ios_deleted
   gather_facts: false
@@ -177,9 +164,6 @@
       ansible.builtin.debug:
         msg: "deleted state test passed — SNMP server deleted + idempotency verified"
 
-# ============================================================================
-# Play 5: ios_snmp_server — state: parsed (offline; platform host)
-# ============================================================================
 - name: "Parse ios_snmp_server configuration from file (parsed state)"
   hosts: ios_gathered
   gather_facts: false
@@ -203,9 +187,6 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — SNMP server parsed from _parsed.cfg"
 
-# ============================================================================
-# Play 6: ios_snmp_server — state: rendered (offline)
-# ============================================================================
 - name: "Render ios_snmp_server configuration to CLI (rendered state)"
   hosts: ios_gathered
   gather_facts: false
