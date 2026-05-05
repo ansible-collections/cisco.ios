@@ -1,5 +1,4 @@
 ---
-
 - name: "Gather ios_lldp_global facts (gathered state)"
   hosts: ios_gathered
   gather_facts: false
