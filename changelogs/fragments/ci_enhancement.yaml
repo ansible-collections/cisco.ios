@@ -1,0 +1,4 @@
+---
+minor_changes:
+  - Updated ansible.netcommon dependency minimum required version from >=8.1.0 to >=8.5.1.
+  - ci - Updated integration test matrix to add stable-2.20 coverage and drop stable-2.16 for libssh integration tests.
