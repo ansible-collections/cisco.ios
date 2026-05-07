@@ -3300,3 +3300,47 @@ class TestIosAclsModule(TestIosModule):
         ace_20 = acl["aces"][1]
         self.assertEqual(ace_20["protocol"], "tcp")
         self.assertNotIn("protocol_options", ace_20)
+
+    def test_normalize_protocol_options_tcp_numeric_pop(self):
+        """Test _normalize_protocol_options removes non-string protocol_options for TCP."""
+        from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls import (
+            AclsFacts,
+        )
+
+        ace = {"protocol": "tcp", "protocol_options": 8}
+        AclsFacts._normalize_protocol_options(ace)
+        self.assertNotIn("protocol_options", ace)
+
+        ace_dict = {"protocol": "tcp", "protocol_options": {"unexpected": "value"}}
+        AclsFacts._normalize_protocol_options(ace_dict)
+        self.assertNotIn("protocol_options", ace_dict)
+
+    def test_normalize_protocol_options_tcp_string_flags(self):
+        """Test _normalize_protocol_options converts string TCP flags correctly."""
+        from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls import (
+            AclsFacts,
+        )
+
+        ace = {"protocol": "tcp", "protocol_options": "ack fin"}
+        AclsFacts._normalize_protocol_options(ace)
+        self.assertEqual(ace["protocol_options"], {"tcp": {"ack": True, "fin": True}})
+
+    def test_normalize_protocol_options_icmp(self):
+        """Test _normalize_protocol_options handles ICMP options."""
+        from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls import (
+            AclsFacts,
+        )
+
+        ace = {"protocol": "icmp", "protocol_options": "echo-reply"}
+        AclsFacts._normalize_protocol_options(ace)
+        self.assertEqual(ace["protocol_options"], {"icmp": {"echo_reply": True}})
+
+    def test_normalize_protocol_options_igmp(self):
+        """Test _normalize_protocol_options handles IGMP options with numeric mapping."""
+        from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.acls import (
+            AclsFacts,
+        )
+
+        ace = {"protocol": "igmp", "protocol_options": "1"}
+        AclsFacts._normalize_protocol_options(ace)
+        self.assertEqual(ace["protocol_options"], {"igmp": {"host_query": True}})
