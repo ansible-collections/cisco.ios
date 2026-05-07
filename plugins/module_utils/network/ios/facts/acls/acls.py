@@ -172,18 +172,11 @@ class AclsFacts(object):
                     protocol = each_ace.get("protocol")
                     protocol_options = each_ace.get("protocol_options")
                     if protocol_options is not None:
-                        # Skip if already processed into dict format
-                        if isinstance(protocol_options, dict):
-                            # Already processed (protocol_number case) or structured data
-                            pass
-                        elif protocol == "tcp":
-                            # Handle TCP protocol options - should be string flags like 'ack fin'
-                            # If numeric or non-string, it's invalid for TCP, so remove it
+                        if protocol == "tcp":
                             if isinstance(protocol_options, str):
                                 flag_dict = {flag: True for flag in protocol_options.split()}
                                 each_ace["protocol_options"] = {"tcp": flag_dict}
                             else:
-                                # Invalid type (int or other) for TCP flags
                                 each_ace.pop("protocol_options", None)
                         elif protocol == "icmp":
                             protocol_options = str(protocol_options).replace("-", "_")

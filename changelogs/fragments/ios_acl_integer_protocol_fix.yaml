@@ -1,3 +1,3 @@
 ---
 bugfixes:
-  - ios_acls - Fixed 'int' object has no attribute 'split' error when gathering ACL configurations with TCP entries that have invalid numeric protocol_options. The parser could incorrectly capture trailing numeric values (like precedence or ToS) as TCP protocol_options, causing type mismatches during processing. The fix adds proper type checking to handle dict, int, and string protocol_options before calling string methods (https://github.com/ansible-collections/cisco.ios/issues/XXXXX).
+  - ios_acls - Fixed ``'int' object has no attribute 'split'`` error when processing ACL configurations with TCP entries. The parser regex for ``icmp_igmp_protocol`` could capture trailing numeric values for non-ICMP/IGMP protocols. Fixed by restricting ``icmp_igmp_protocol`` to only apply when the protocol is ``icmp`` or ``igmp`` in the parser template, with a defensive type check in facts processing.
