@@ -1,0 +1,5 @@
+---
+minor_changes:
+  - ios_user module adds purge_keys parameter to manage multiple SSH keys per user.
+    Cisco IOS devices support maximum 2 SSH keys per user. The purge_keys parameter
+    enables removal of existing keys not in the sshkey list when provisioning new keys.
