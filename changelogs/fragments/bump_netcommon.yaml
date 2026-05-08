@@ -1,3 +1,0 @@
----
-minor_changes:
-  - Updated ansible.netcommon dependency minimum required version from >=8.5.1 to >=8.5.2.
