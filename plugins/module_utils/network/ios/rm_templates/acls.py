@@ -419,7 +419,9 @@ class AclsTemplate(NetworkTemplate):
                                 "evaluate": "{{ evaluate }}",
                                 "protocol": "{{ protocol }}",
                                 "protocol_number": "{{ protocol_num }}",
-                                "protocol_options": "{{ tcp_flags if tcp_flags is defined else icmp_igmp_protocol }}",
+                                "protocol_options": "{{ tcp_flags if tcp_flags is defined"
+                                " else (icmp_igmp_protocol if protocol is defined"
+                                " and protocol in ['icmp', 'igmp'] else undefined) }}",
                                 "source": {
                                     "address": "{{ source_address }}",
                                     "wildcard_bits": "{{ source_wildcard }}",
@@ -558,7 +560,9 @@ class AclsTemplate(NetworkTemplate):
                                 "evaluate": "{{ evaluate }}",
                                 "protocol": "{{ protocol }}",
                                 "protocol_number": "{{ protocol_num }}",
-                                "protocol_options": "{{ tcp_flags if tcp_flags is defined else icmp_igmp_protocol }}",
+                                "protocol_options": "{{ tcp_flags if tcp_flags is defined"
+                                " else (icmp_igmp_protocol if protocol is defined"
+                                " and protocol in ['icmp', 'igmp'] else undefined) }}",
                                 "source": {
                                     "address": "{{ ipv6_source_address }}",
                                     "wildcard_bits": "{{ source_wildcard_v6 }}",
