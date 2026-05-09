@@ -1,3 +1,0 @@
----
-bugfixes:
-  - terminal_stderr_re - Updated to support variation of command rejected error from appliance.

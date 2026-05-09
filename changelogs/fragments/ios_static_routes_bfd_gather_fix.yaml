@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_static_routes - Fix gather crash when "ip route static bfd" is present on the device.
