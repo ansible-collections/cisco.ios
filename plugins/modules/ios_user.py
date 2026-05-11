@@ -107,10 +107,18 @@ options:
         type: str
       sshkey:
         description:
-          - Specifies one or more SSH public key(s) to configure for the given username.
+          - Specifies upto two SSH public key(s) to configure for the given username.
           - This argument accepts a valid SSH key value.
         type: list
         elements: str
+      purge_keys:
+        description:
+          - Since cisco.ios devices have a max limit of 2 keys per user, this parameter allows
+            removal of keys that are not passed in sshkey parameter as to write new keys being passed.
+          - It will remove any previously configured sshkeys for a user that doesn't match with the provided sshkey list,
+            with an exception for the `admin` user.
+          - Works only with 'present' state and when 'sshkey' is defined
+        type: bool
       nopassword:
         description:
           - Defines the username without assigning a password. This will allow the user
@@ -188,10 +196,19 @@ options:
     type: str
   sshkey:
     description:
-      - Specifies one or more SSH public key(s) to configure for the given username.
+      - Specifies upto two SSH public key(s) to configure for the given username.
       - This argument accepts a valid SSH key value.
     type: list
     elements: str
+  purge_keys:
+    description:
+      - Since cisco.ios devices have a max limit of 2 keys per user, this parameter allows
+        removal of keys that are not passed in sshkey parameter as to write new keys being passed.
+      - It will remove any previously configured sshkeys for a user that doesn't match with the provided sshkey list,
+        with an exception for the `admin` user.
+      - Works only with 'present' state and when 'sshkey' is defined
+    type: bool
+    default: false
   nopassword:
     description:
       - Defines the username without assigning a password. This will allow the user
@@ -297,6 +314,52 @@ EXAMPLES = """
 #    key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
 #    key-hash ssh-rsa 1985673DCF7FA9A0F374BB97DC2ABB27 test@fedora
 
+# Using purge_keys: true
+
+# Before state:
+# -------------
+
+# router-ios#show running-config | section ^username
+# username admin privilege 15 password 0 password
+# username testuser privilege 15 password 0 password
+# username ansible nopassword
+#   username ansible
+#    key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
+
+# Purge existing keys for a user and write new keys:
+# ----------------------------------
+
+- name: Update user by adding new key and purging existing keys
+  cisco.ios.ios_user:
+    name: ansible
+    sshkey:
+      - "{{ lookup('file', '~/path/to/public_key') }}"
+    purge_keys: true
+
+# Task Output
+# -----------
+
+# commands:
+# - ip ssh pubkey-chain
+# - username ansible
+# - no key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
+# - exit
+# - exit
+# - ip ssh pubkey-chain
+# - username ansible
+# - key-hash ssh-rsa B2C881222DB43D58A229EDF19D2228A2 test2@fedora
+# - exit
+# - exit
+
+# After state:
+# ------------
+
+# router-ios#show running-config | section username
+# username admin privilege 15 password 0 password
+# username ansible nopassword
+#   username ansible
+#    key-hash ssh-rsa B2C881222DB43D58A229EDF19D2228A2 test2@fedora
+
 # Using Purge: true
 
 # Before state:
@@ -355,6 +418,7 @@ EXAMPLES = """
 
 # Task Output
 # -----------
+
 
 # commands:
 # - no username ansible
@@ -582,6 +646,24 @@ def user_del_cmd(username):
     }
 
 
+def remove_ssh(command, want, have):
+    """
+    Function responsible to add no key-hash commands
+    Compares want and have via set operations
+    """
+    want_keys_set = set(want.get("sshkey", []))
+    have_keys_set = set(have.get("sshkey", []))
+
+    keys_to_be_removed = have_keys_set.difference(want_keys_set)
+    if keys_to_be_removed:
+        command.append("ip ssh pubkey-chain")
+        command.append("username %s" % want["name"])
+        for item in keys_to_be_removed:
+            command.append("no key-hash %s" % item)
+        command.append("exit")
+        command.append("exit")
+
+
 def add_ssh(command, want, x=None):
     command.append("ip ssh pubkey-chain")
     if x:
@@ -637,7 +719,13 @@ def map_obj_to_commands(updates, module):
             add(commands, want, "view %s" % want["view"])
         if needs_update(want, have, "privilege"):
             add(commands, want, "privilege %s" % want["privilege"])
-        if needs_update(want, have, "sshkey"):
+        if needs_update(want, have, "sshkey") and want["state"] == "present":
+            purge_keys = want["purge_keys"]
+            if purge_keys:
+                if want["name"] == "admin":
+                    module.warn("Purging of admin ssh keys is not allowed")
+                else:
+                    remove_ssh(commands, want, have)
             add_ssh(commands, want, want["sshkey"])
         if needs_update(want, have, "configured_password"):
             if update_password == "always" or not have:
@@ -664,11 +752,11 @@ def parse_view(data):
 
 
 def parse_sshkey(data, user):
-    sshregex = "username %s(\\n\\s+key-hash .+$)+" % user
-    sshcfg = re.search(sshregex, data, re.M)
+    sshregex = re.compile(r"username %s((?:\n\s+key-hash .+)+)" % user, re.M)
+    sshcfg = re.search(sshregex, data)
     key_list = []
     if sshcfg:
-        match = re.findall("key-hash (\\S+ \\S+(?: .+)?)$", sshcfg.group(), re.M)
+        match = re.findall(r"key-hash\s+(\S+\s+\S+(?:\s+\S+)?)$", sshcfg.group(), re.M)
         if match:
             key_list = match
     return key_list
@@ -689,7 +777,7 @@ def parse_password_type(data):
 
 def map_config_to_obj(module):
     data = get_config(module, flags=["| section username"])
-    match = re.findall("(?:^(?:u|\\s{2}u))sername (\\S+)", data, re.M)
+    match = re.findall("^(?:u|\\s{1,2}u)sername (\\S+)", data, re.M)
     if not match:
         return list()
     instances = list()
@@ -704,6 +792,7 @@ def map_config_to_obj(module):
             "nopassword": "nopassword" in cfg,
             "configured_password": None,
             "hashed_password": None,
+            "purge_keys": False,
             "password_type": parse_password_type(cfg),
             "sshkey": ssh_key_list,
             "is_only_ssh_user": False if cfg.strip() and ssh_key_list else True,
@@ -758,7 +847,12 @@ def map_params_to_obj(module):
         item["nopassword"] = get_value("nopassword")
         item["privilege"] = get_value("privilege")
         item["view"] = get_value("view")
+        item["purge_keys"] = get_value("purge_keys")
         item["sshkey"] = render_key_list(get_value("sshkey"))
+        if len(item["sshkey"]) > 2:
+            module.fail_json(
+                msg="More than two ssh-keys supplied for a user. The length limit for ssh-keys is 2.",
+            )
         item["state"] = get_value("state")
         objects.append(item)
     return objects
@@ -782,6 +876,7 @@ def update_objects(want, have):
             for key, value in entry.items():
                 if value and value != item[key]:
                     updates.append((entry, item))
+                    break
     return updates
 
 
@@ -809,6 +904,7 @@ def main():
         privilege=dict(type="int"),
         view=dict(aliases=["role"]),
         sshkey=dict(type="list", elements="str", no_log=False),
+        purge_keys=dict(type="bool", default=False),
         state=dict(default="present", choices=["present", "absent"]),
     )
     aggregate_spec = deepcopy(element_spec)
