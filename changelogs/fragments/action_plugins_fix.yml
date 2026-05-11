@@ -5,6 +5,8 @@ bugfixes:
     sanity failures blocking Automation Hub certification.
   - meta/runtime.yml - Add ``plugin_routing.action`` redirects for all short-name
     aliases so alias-based invocations continue to resolve the renamed action plugins.
+  - action plugins - Remove orphaned legacy action plugins ``bgp.py``,
+    ``linkagg.py``, ``lldp.py`` and ``logging.py`` that had no corresponding module.
   - sanity - Remove stale ``action-plugin-docs`` ignore entries and delete
     ``ignore-2.14.txt`` and ``ignore-2.15.txt`` as the collection requires ``ansible>=2.16.0``.
   - plugins/action/ios.py - Remove unused ``warnings`` list and unreachable
