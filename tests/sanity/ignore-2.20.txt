@@ -1,5 +1,1 @@
 plugins/action/ios.py action-plugin-docs # base class for deprecated network platform modules using `connection: local`
-plugins/action/bgp.py action-plugin-docs
-plugins/action/linkagg.py action-plugin-docs
-plugins/action/lldp.py action-plugin-docs
-plugins/action/logging.py action-plugin-docs
