@@ -441,6 +441,24 @@ releases:
       - sanity-fix-222.yaml
       - snmp_users_auth_fix.yaml
     release_date: "2026-05-08"
+  11.4.1:
+    changes:
+      bugfixes:
+        - action plugins - Remove orphaned legacy action plugins ``bgp.py``, ``linkagg.py``,
+          ``lldp.py`` and ``logging.py`` that had no corresponding module.
+        - action plugins - Rename multiple resource module action plugins to use the
+          ``ios_`` prefix to match their module names and fix ``action-plugin-docs``
+          sanity failures blocking Automation Hub certification.
+        - meta/runtime.yml - Add ``plugin_routing.action`` redirects for all short-name
+          aliases so alias-based invocations continue to resolve the renamed action
+          plugins.
+        - plugins/action/ios.py - Remove unused ``warnings`` list and unreachable dead
+          code block that never executed due to ``warnings`` always being empty.
+        - sanity - Remove stale ``action-plugin-docs`` ignore entries and delete ``ignore-2.14.txt``
+          and ``ignore-2.15.txt`` as the collection requires ``ansible>=2.16.0``.
+    fragments:
+      - action_plugins_fix.yml
+    release_date: "2026-05-12"
   2.0.0:
     changes:
       bugfixes:
