@@ -1,0 +1,124 @@
+---
+name: "Molecule (CISSHGO) 🧪"
+
+concurrency:
+  group: ${{ github.head_ref || github.run_id }}-${{ github.event_name }}-molecule
+  cancel-in-progress: true
+
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches: [main]
+    paths:
+      - "plugins/**"
+      - "extensions/molecule/**"
+  pull_request_target:
+    branches: [main]
+    paths:
+      - "plugins/**"
+      - "extensions/molecule/**"
+  workflow_dispatch:
+  schedule:
+    - cron: '0 1 * * *'
+
+jobs:
+  discover:
+    name: Discover scenarios
+    runs-on: ubuntu-latest
+    outputs:
+      scenarios: ${{ steps.list.outputs.scenarios }}
+      cisshgo_version: ${{ steps.list.outputs.cisshgo_version }}
+    steps:
+      - name: Checkout collection
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: List scenarios
+        id: list
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd extensions/molecule
+          mapfile -t dirs < <(
+            find . -mindepth 2 -maxdepth 2 -name molecule.yml -printf '%h\n' \
+              | sed 's|^\./||' \
+              | grep -Ev '^(_shared|cisshgo_fixtures)(/|$)' \
+              | sort
+          )
+          if [ ${#dirs[@]} -eq 0 ]; then
+            echo "::error::No molecule scenarios found under extensions/molecule"
+            exit 1
+          fi
+          json=$(printf '%s\n' "${dirs[@]}" | jq -R . | jq -sc .)
+          echo "scenarios=${json}" >> "$GITHUB_OUTPUT"
+          ver=$(tr -d '[:space:]' < cisshgo_fixtures/CISSHGO_VERSION)
+          echo "cisshgo_version=${ver}" >> "$GITHUB_OUTPUT"
+
+  molecule:
+    name: "${{ matrix.scenario }}"
+    needs: discover
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        scenario: ${{ fromJson(needs.discover.outputs.scenarios) }}
+        ansible_version: ["stable-2.20"]
+    env:
+      ANSIBLE_FORCE_COLOR: "1"
+      PY_COLORS: "1"
+      CISSHGO_VERSION: ${{ needs.discover.outputs.cisshgo_version }}
+    steps:
+      - name: Checkout collection
+        uses: actions/checkout@v4
+        with:
+          path: cisco/ios
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install \
+            "https://github.com/ansible/ansible/archive/${{ matrix.ansible_version }}.tar.gz" \
+            "molecule>=24.0" \
+            "molecule-plugins>=23.5" \
+            "paramiko" \
+            "jmespath"
+          ansible-galaxy collection install \
+            git+https://github.com/ansible-collections/ansible.utils.git \
+            git+https://github.com/ansible-collections/ansible.netcommon.git \
+            --force
+
+      - name: Run molecule scenario
+        working-directory: cisco/ios/extensions
+        run: molecule test -s "${{ matrix.scenario }}"
+
+      - name: Upload logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: molecule-${{ matrix.scenario }}-logs
+          path: |
+            /tmp/cisshgo-*.log
+            cisco/ios/extensions/molecule/${{ matrix.scenario }}/molecule.log
+          if-no-files-found: ignore
+          retention-days: 7
+
+  all_green:
+    if: ${{ always() }}
+    needs:
+      - discover
+      - molecule
+    runs-on: ubuntu-latest
+    steps:
+      - run: >-
+          python -c "assert set([
+          '${{ needs.discover.result }}',
+          '${{ needs.molecule.result }}'
+          ]) == {'success'}"

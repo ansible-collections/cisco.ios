@@ -1,0 +1,45 @@
+---
+# Molecule scenario: interfaces
+# Runs cisco.ios.ios_interfaces integration tests against CISSHGO.
+# Lifecycle (create/destroy/verify) is shared from ../_shared/.
+# Scenario-specific knobs live in vars.yml.
+# Usage: cd cisco/ios/extensions && molecule test -s interfaces
+
+driver:
+  name: default
+
+platforms:
+  - name: cisshgo-ios-gathered
+  - name: cisshgo-ios-merged
+  - name: cisshgo-ios-replaced
+
+ansible:
+  executor:
+    args:
+      ansible_playbook:
+        - --inventory=${MOLECULE_SCENARIO_DIRECTORY}/../cisshgo_fixtures/inventories/ansible/interfaces.yaml
+  env:
+    ANSIBLE_FORCE_COLOR: "true"
+    ANSIBLE_HOST_KEY_CHECKING: "false"
+    ANSIBLE_DEPRECATION_WARNINGS: "false"
+
+provisioner:
+  name: ansible
+  playbooks:
+    create: ../_shared/create.yml
+    converge: converge.yml
+    verify: ../_shared/verify.yml
+    destroy: ../_shared/destroy.yml
+
+scenario:
+  test_sequence:
+    - create
+    - converge
+    - verify
+    - destroy
+
+prerun: false
+
+verifier:
+  name: ansible
+...
