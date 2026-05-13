@@ -1,0 +1,320 @@
+---
+# Separate plays keep each CISSHGO session sequence-aligned.
+
+- name: "Ios_vrf_address_family — merged check_mode (preview)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_address_family/vars/main.yaml"
+  tasks:
+    - name: "Merged — check_mode (preview)"
+      cisco.ios.ios_vrf_address_family:
+        config:
+          - name: test2
+            address_families:
+              - afi: ipv4
+                safi: unicast
+                export:
+                  map: testing-map1
+                import_config:
+                  map: import-map1
+                inter_as_hybrid:
+                  csc:
+                    next_hop: "1.2.3.4"
+          - name: test1
+            address_families:
+              - afi: ipv4
+                safi: unicast
+                export:
+                  map: testing-map
+                import_config:
+                  map: import-map
+        state: merged
+      check_mode: true
+      register: cm_merged
+
+    - name: "Debug merged check_mode (preview)"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_merged.changed }}"
+          commands: "{{ cm_merged.commands | default([]) }}"
+          before: "{{ cm_merged.before | default([]) }}"
+          after: "{{ cm_merged.after | default([]) }}"
+
+- name: "Ios_vrf_address_family — deleted check_mode (preview)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_address_family/vars/main.yaml"
+  tasks:
+    - name: "Deleted — check_mode (preview)"
+      cisco.ios.ios_vrf_address_family:
+        config:
+          - name: test1
+            address_families:
+              - afi: ipv4
+                safi: unicast
+        state: deleted
+      check_mode: true
+      register: cm_deleted
+
+    - name: "Debug deleted check_mode (preview)"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_deleted.changed }}"
+          commands: "{{ cm_deleted.commands | default([]) }}"
+          before: "{{ cm_deleted.before | default([]) }}"
+          after: "{{ cm_deleted.after | default([]) }}"
+
+- name: "Ios_vrf_address_family — state: gathered"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_address_family/vars/main.yaml"
+  tasks:
+    - name: "Gather VRF address-family configuration"
+      cisco.ios.ios_vrf_address_family:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered matches vars/main.yaml"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - gathered['after'] == result['gathered']
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — facts from CISSHGO fixture"
+
+- name: "Ios_vrf_address_family — state: parsed (_parsed.cfg)"
+  hosts: ios_parsed
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_address_family/vars/main.yaml"
+  tasks:
+    - name: "Parse VRF address-family configuration from integration _parsed.cfg"
+      cisco.ios.ios_vrf_address_family:
+        running_config: "{{ lookup('file', '../../../tests/integration/targets/ios_vrf_address_family/tests/common/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed structure reflects _parsed.cfg (vars parsed.after uses legacy route_target strings)"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.parsed | length == 1
+          - result.parsed[0].name == 'test'
+          - result.parsed[0].address_families | length == 1
+          - result.parsed[0].address_families[0].afi == 'ipv4'
+          - result.parsed[0].address_families[0].safi == 'unicast'
+          - result.parsed[0].address_families[0].bgp.next_hop.loopback == 23
+          - result.parsed[0].address_families[0].export.map == 'testing-map2'
+          - result.parsed[0].address_families[0].export.ipv4.unicast.prefix == 37
+          - result.parsed[0].address_families[0].export.ipv4.unicast.map == 'test'
+          - result.parsed[0].address_families[0].export.ipv4.unicast.allow_evpn == true
+          - result.parsed[0].address_families[0].import_config.ipv4.unicast.limit == 56
+          - result.parsed[0].address_families[0].import_config.ipv4.unicast.map == 'import'
+          - result.parsed[0].address_families[0].import_config.ipv4.unicast.allow_evpn == true
+          - result.parsed[0].address_families[0].inter_as_hybrid.next_hop == '1.2.3.4'
+          - result.parsed[0].address_families[0].mdt.auto_discovery.pim.pim_tlv_announce.mdt_hello_enable == true
+          - result.parsed[0].address_families[0].mdt.auto_discovery.receiver_site == true
+          - >-
+            result.parsed[0].address_families[0].route_target.exports
+            | selectattr('rt_value', 'defined') | map(attribute='rt_value') | list | first
+            == '10.12.0.1:20'
+          - >-
+            result.parsed[0].address_families[0].route_target.imports
+            | selectattr('rt_value', 'defined') | map(attribute='rt_value') | list | first
+            == '10.0.0.1:30'
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — _parsed.cfg parsed offline"
+
+- name: "Ios_vrf_address_family — state: rendered (merged projection)"
+  hosts: ios_rendered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_address_family/vars/main.yaml"
+  tasks:
+    - name: "Render merged VRF address-family configuration to CLI"
+      cisco.ios.ios_vrf_address_family:
+        config:
+          - name: test2
+            address_families:
+              - afi: ipv4
+                safi: unicast
+                export:
+                  map: testing-map1
+                import_config:
+                  map: import-map1
+                inter_as_hybrid:
+                  csc:
+                    next_hop: "1.2.3.4"
+          - name: test1
+            address_families:
+              - afi: ipv4
+                safi: unicast
+                export:
+                  map: testing-map
+                import_config:
+                  map: import-map
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands match merged.commands"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - merged['commands'] | symmetric_difference(result['rendered']) | length == 0
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — offline CLI projection"
+
+- name: "Ios_vrf_address_family — state: merged (check_mode, apply, idempotency)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_address_family/vars/main.yaml"
+  tasks:
+    - name: "Merged — check_mode"
+      cisco.ios.ios_vrf_address_family:
+        config:
+          - name: test2
+            address_families:
+              - afi: ipv4
+                safi: unicast
+                export:
+                  map: testing-map1
+                import_config:
+                  map: import-map1
+                inter_as_hybrid:
+                  csc:
+                    next_hop: "1.2.3.4"
+          - name: test1
+            address_families:
+              - afi: ipv4
+                safi: unicast
+                export:
+                  map: testing-map
+                import_config:
+                  map: import-map
+        state: merged
+      check_mode: true
+      register: cm_merged
+
+    - name: "Debug merged check_mode"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_merged.changed }}"
+          commands: "{{ cm_merged.commands | default([]) }}"
+          before: "{{ cm_merged.before | default([]) }}"
+          after: "{{ cm_merged.after | default([]) }}"
+
+    - name: "Merge VRF address-family configuration"
+      cisco.ios.ios_vrf_address_family: &merged_config
+        config:
+          - name: test2
+            address_families:
+              - afi: ipv4
+                safi: unicast
+                export:
+                  map: testing-map1
+                import_config:
+                  map: import-map1
+                inter_as_hybrid:
+                  csc:
+                    next_hop: "1.2.3.4"
+          - name: test1
+            address_families:
+              - afi: ipv4
+                safi: unicast
+                export:
+                  map: testing-map
+                import_config:
+                  map: import-map
+        state: merged
+      register: result
+
+    - name: "Assert merged first pass"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.before | length == 0
+          - merged['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Merge VRF address-family configuration — idempotent run"
+      cisco.ios.ios_vrf_address_family: *merged_config
+      register: result
+
+    - name: "Assert merged idempotency"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — check_mode + apply + idempotency"
+
+- name: "Ios_vrf_address_family — state: deleted (check_mode, apply, idempotency)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_address_family/vars/main.yaml"
+  tasks:
+    - name: "Deleted — check_mode"
+      cisco.ios.ios_vrf_address_family:
+        config:
+          - name: test1
+            address_families:
+              - afi: ipv4
+                safi: unicast
+        state: deleted
+      check_mode: true
+      register: cm_deleted
+
+    - name: "Debug deleted check_mode"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_deleted.changed }}"
+          commands: "{{ cm_deleted.commands | default([]) }}"
+          before: "{{ cm_deleted.before | default([]) }}"
+          after: "{{ cm_deleted.after | default([]) }}"
+
+    - name: "Remove ipv4 unicast address-family from test1"
+      cisco.ios.ios_vrf_address_family: &deleted_config
+        config:
+          - name: test1
+            address_families:
+              - afi: ipv4
+                safi: unicast
+        state: deleted
+      register: result
+
+    - name: "Assert deleted first pass"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | length > 0
+        quiet: true
+
+    - name: "Remove ipv4 unicast address-family from test1 — idempotent run"
+      cisco.ios.ios_vrf_address_family: *deleted_config
+      register: result
+
+    - name: "Assert deleted idempotency"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: deleted state"
+      ansible.builtin.debug:
+        msg: "deleted state test passed — check_mode + apply + idempotency"

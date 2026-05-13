@@ -1,0 +1,9 @@
+interface GigabitEthernet1
+ ip address dhcp
+!
+interface GigabitEthernet2
+!
+interface GigabitEthernet3
+!
+interface GigabitEthernet4
+!

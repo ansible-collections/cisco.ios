@@ -1,0 +1,10 @@
+---
+devices:
+  - platform: ios_lldp_interfaces
+    count: 1
+
+  - scenario: ios-lldp-intf-merged
+    count: 1
+
+  - scenario: ios-lldp-intf-deleted
+    count: 1

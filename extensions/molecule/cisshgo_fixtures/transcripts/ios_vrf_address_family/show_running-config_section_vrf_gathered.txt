@@ -1,0 +1,6 @@
+vrf definition test1
+ address-family ipv4 unicast
+  inter-as-hybrid next-hop 1.0.0.0
+  mdt auto-discovery pim pim-tlv-announce mdt-hello-enable
+ exit-address-family
+!

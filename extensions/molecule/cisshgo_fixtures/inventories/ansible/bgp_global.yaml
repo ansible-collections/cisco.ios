@@ -1,0 +1,53 @@
+---
+all:
+  children:
+    ios_gathered:
+      hosts:
+        cisshgo-ios-gathered:
+          ansible_host: 127.0.0.1
+          ansible_port: 10000
+          ansible_network_os: cisco.ios.ios
+          ansible_connection: ansible.netcommon.network_cli
+          ansible_user: admin
+          ansible_password: admin
+          ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+    ios_merged:
+      hosts:
+        cisshgo-ios-merged:
+          ansible_host: 127.0.0.1
+          ansible_port: 10001
+          ansible_network_os: cisco.ios.ios
+          ansible_connection: ansible.netcommon.network_cli
+          ansible_user: admin
+          ansible_password: admin
+          ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+    ios_replaced:
+      hosts:
+        cisshgo-ios-replaced:
+          ansible_host: 127.0.0.1
+          ansible_port: 10002
+          ansible_network_os: cisco.ios.ios
+          ansible_connection: ansible.netcommon.network_cli
+          ansible_user: admin
+          ansible_password: admin
+          ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+    ios_deleted:
+      hosts:
+        cisshgo-ios-deleted:
+          ansible_host: 127.0.0.1
+          ansible_port: 10003
+          ansible_network_os: cisco.ios.ios
+          ansible_connection: ansible.netcommon.network_cli
+          ansible_user: admin
+          ansible_password: admin
+          ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+    ios_purged:
+      hosts:
+        cisshgo-ios-purged:
+          ansible_host: 127.0.0.1
+          ansible_port: 10004
+          ansible_network_os: cisco.ios.ios
+          ansible_connection: ansible.netcommon.network_cli
+          ansible_user: admin
+          ansible_password: admin
+          ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
