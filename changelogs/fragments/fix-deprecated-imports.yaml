@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - Replace deprecated imports from ansible.module_utils._text with ansible.module_utils.common.text.converters for Ansible 2.24+ compatibility.
+  - Replace deprecated ansible.module_utils.common._collections_compat.Mapping with collections.abc.Mapping.
