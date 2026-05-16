@@ -185,8 +185,8 @@ class TestIosUserModule(TestIosModule):
         commands = [
             "ip ssh pubkey-chain",
             "username purger",
-            "no key-hash ssh-rsa A019918340A1E9183388D9A675603036",
             "no key-hash ssh-rsa A0806D49409C0B793776C76A870D9928",
+            "no key-hash ssh-rsa A019918340A1E9183388D9A675603036",
             "exit",
             "exit",
             "ip ssh pubkey-chain",
@@ -205,6 +205,7 @@ class TestIosUserModule(TestIosModule):
             "username purger",
             "key-hash ssh-rsa 098F6BCD4621D373CADE4E832627B4F6",
             "key-hash ssh-rsa A019918340A1E9183388D9A675603036",
+            "no key-hash ssh-rsa A0806D49409C0B793776C76A870D9928",
             "exit",
             "exit",
         ]
