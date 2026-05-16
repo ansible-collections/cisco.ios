@@ -185,8 +185,8 @@ class TestIosUserModule(TestIosModule):
         commands = [
             "ip ssh pubkey-chain",
             "username purger",
-            "no key-hash ssh-rsa A0806D49409C0B793776C76A870D9928",
             "no key-hash ssh-rsa A019918340A1E9183388D9A675603036",
+            "no key-hash ssh-rsa A0806D49409C0B793776C76A870D9928",
             "exit",
             "exit",
             "ip ssh pubkey-chain",
