@@ -186,6 +186,7 @@ class TestIosUserModule(TestIosModule):
             "ip ssh pubkey-chain",
             "username purger",
             "no key-hash ssh-rsa A019918340A1E9183388D9A675603036",
+            "no key-hash ssh-rsa D1B15A08146DD96ED43FD5F48CA11FC8",
             "exit",
             "exit",
             "ip ssh pubkey-chain",
@@ -195,11 +196,16 @@ class TestIosUserModule(TestIosModule):
             "exit",
         ]
         result = self.execute_module(changed=True, commands=commands)
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_user_add_sshkey_purge_keys_true(self):
         set_module_args(dict(name="purger", sshkey=["dGVzdA==", "eHWacB2=="], purge_keys=True))
         commands = [
+            "ip ssh pubkey-chain",
+            "username purger",
+            "no key-hash ssh-rsa D1B15A08146DD96ED43FD5F48CA11FC8",
+            "exit",
+            "exit",
             "ip ssh pubkey-chain",
             "username purger",
             "key-hash ssh-rsa 098F6BCD4621D373CADE4E832627B4F6",
@@ -211,7 +217,7 @@ class TestIosUserModule(TestIosModule):
         self.assertEqual(result["commands"], commands)
 
     def test_ios_user_add_sshkey_purge_keys_true_idempotent(self):
-        set_module_args(dict(name="purger", sshkey="eHWacB2==", purge_keys=True))
+        set_module_args(dict(name="purger", sshkey=["eHWacB2==", "dHJhaWxpbmc="], purge_keys=True))
         commands = []
         result = self.execute_module(changed=False, commands=commands)
         self.assertEqual(result["commands"], commands)

@@ -16,6 +16,7 @@ repos:
       - id: no-commit-to-branch
         args: [--branch, main]
       - id: trailing-whitespace
+        exclude: 'tests/unit/modules/network/ios/fixtures/ios_user_config\.cfg$'
 
   - repo: https://github.com/asottile/add-trailing-comma
     rev: v3.2.0

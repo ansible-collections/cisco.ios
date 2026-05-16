@@ -756,7 +756,7 @@ def parse_sshkey(data, user):
     sshcfg = re.search(sshregex, data)
     key_list = []
     if sshcfg:
-        match = re.findall(r"key-hash\s+(\S+\s+\S+(?:\s+\S+)?)$", sshcfg.group(), re.M)
+        match = re.findall(r"key-hash\s+(\S+\s+\S+(?:\s+\S+)?)\s*$", sshcfg.group(), re.M)
         if match:
             key_list = match
     return key_list
