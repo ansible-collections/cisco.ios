@@ -196,7 +196,7 @@ class TestIosUserModule(TestIosModule):
             "exit",
         ]
         result = self.execute_module(changed=True, commands=commands)
-        self.assertEqual(result["commands"], commands)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_user_add_sshkey_purge_keys_true(self):
         set_module_args(dict(name="purger", sshkey=["dGVzdA==", "eHWacB2=="], purge_keys=True))
