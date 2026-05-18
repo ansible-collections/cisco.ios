@@ -135,6 +135,24 @@ Parameters
             <tr>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>content</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Configuration content to apply to the device. This should be the rendered configuration text, not a file path.</div>
+                        <div>This is the recommended way to provide templated configurations. Use <code>ansible.builtin.template</code> lookup to render your Jinja2 template and pass the output to this parameter.</div>
+                        <div>This argument is mutually exclusive with <em>src</em>, <em>lines</em>, and <em>parents</em>.</div>
+                        <div>Example: <code>content: &quot;{{ lookup(&#x27;ansible.builtin.template&#x27;, &#x27;config.j2&#x27;</code> }}&quot;)</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>defaults</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -212,7 +230,7 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">list</span>
-                         / <span style="color: purple">elements=string</span>
+                         / <span style="color: purple">elements=raw</span>
                     </div>
                 </td>
                 <td>
@@ -222,6 +240,55 @@ Parameters
                         <div style="font-size: small; color: darkgreen"><br/>aliases: commands</div>
                 </td>
             </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>answer</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>answer to send to device in order to handle prompt on device in configration mode</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>config_line</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>use to specify config lines when options are required to declare,works sames as lines</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>prompt</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>prompt message to handle while editng configurations on device in configration mode</div>
+                </td>
+            </tr>
+
             <tr>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
@@ -343,7 +410,8 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specifies the source path to the file that contains the configuration or configuration template to load.  The path to the source file can either be the full path on the Ansible control host or a relative path from the playbook or role root directory. This argument is mutually exclusive with <em>lines</em>, <em>parents</em>. The configuration lines in the source file should be similar to how it will appear if present in the running-configuration of the device including the indentation to ensure idempotency and correct diff.</div>
+                        <div>Specifies the source path to the file that contains the configuration or configuration template to load.  The path to the source file can either be the full path on the Ansible control host or a relative path from the playbook or role root directory. This argument is mutually exclusive with <em>lines</em>, <em>parents</em>, and <em>content</em>. The configuration lines in the source file should be similar to how it will appear if present in the running-configuration of the device including the indentation to ensure idempotency and correct diff.</div>
+                        <div>NOTE: The <em>src</em> parameter will no longer process Jinja2 templates starting in January 2028. To use templated configurations, render the template using <code>ansible.builtin.template</code> lookup and pass the result to the <em>content</em> parameter instead.</div>
                 </td>
             </tr>
     </table>
@@ -358,6 +426,7 @@ Notes
    - Abbreviated commands are NOT idempotent, see https://docs.ansible.com/ansible/latest/network/user_guide/faq.html#why-do-the-config-modules-always-return-changed-true-with-abbreviated-commands
    - To ensure idempotency and correct diff the configuration lines in the relevant module options should be similar to how they appear if present in the running configuration on device including the indentation.
    - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
+   - The recommended way to use templated configurations is to render the template using ``ansible.builtin.template`` lookup and pass the result to the *content* parameter. Using *src* with Jinja2 templates is deprecated.
    - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
    - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
 
@@ -445,7 +514,7 @@ Examples
         host: "{{ inventory_hostname }}"
       when: ansible_net_version != version
 
-    - name: Render a Jinja2 template onto an IOS device
+    - name: Render a Jinja2 template onto an IOS device (DEPRECATED - use content parameter)
       cisco.ios.ios_config:
         backup: true
         src: ios_template.j2
@@ -457,6 +526,70 @@ Examples
         backup_options:
           filename: backup.cfg
           dir_path: /home/user
+
+    - name: Apply templated configuration using content parameter (RECOMMENDED)
+      cisco.ios.ios_config:
+        content: "{{ lookup('ansible.builtin.template', 'ios_template.j2') }}"
+        backup: true
+
+    - name: Apply templated configuration with backup options (RECOMMENDED)
+      cisco.ios.ios_config:
+        content: "{{ lookup('ansible.builtin.template', 'ios_template.j2') }}"
+        backup: true
+        backup_options:
+          filename: backup.cfg
+          dir_path: /home/user
+
+    - name: Load configuration from pre-rendered template
+      cisco.ios.ios_config:
+        content: |
+          interface GigabitEthernet0/1
+           description Uplink to Core
+           ip address 10.1.1.1 255.255.255.0
+           no shutdown
+
+    - name: Configure Access Session Attributes while handlening prompt
+      cisco.ios.ios_config:
+        lines:
+          - config_line: access-session authentication attributes filter-spec include list test_filter
+          - config_line: access-session accounting attributes filter-spec include list test_filter
+            prompt: "Do you wish to continue? [yes]:"
+            answer: "yes"
+        save_when: "changed"
+
+    # Task Output :
+    # --------
+    #
+    # banners: {}
+    #  commands:
+    #  - access-session authentication attributes filter-spec include list mylist
+    #  - access-session accounting attributes filter-spec include list mylist
+    #  invocation:
+    #    module_args:
+    #      after: null
+    #     backup: false
+    #      backup_options: null
+    #      before: null
+    #      defaults: false
+    #      diff_against: null
+    #      diff_ignore_lines: null
+    #      intended_config: null
+    #      lines:
+    #      - config_line: access-session authentication attributes filter-spec include list mylist
+    #      - answer: "yes"
+    #        config_line: access-session accounting attributes filter-spec include list mylist
+    #        prompt: "Do you wish to continue? [yes]:"
+    #      match: line
+    #      multiline_delimiter: '@'
+    #      parents: null
+    #      replace: line
+    #      running_config: null
+    #      save_when: changed
+    #      src: null
+    #  updates:
+    #  - access-session authentication attributes filter-spec include list mylist
+    #  - access-session accounting attributes filter-spec include list mylist
+
 
     # Example ios_template.j2
     # ip access-list extended test

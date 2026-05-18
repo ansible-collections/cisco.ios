@@ -17,12 +17,13 @@ DOCUMENTATION = """
 module: ios_l2_interfaces
 short_description: Resource module to configure L2 interfaces.
 description:
-  This module provides declarative management of Layer-2 interface on Cisco
-  IOS devices.
+  - This module provides declarative management of Layer-2 interface on Cisco
+    IOS devices.
 version_added: 1.0.0
 author:
   - Sagar Paul (@KB-petByte)
   - Sumit Jaiswal (@justjais)
+  - Nikhil Bhasin (@nickbhasin)
 notes:
   - Tested against Cisco IOSv Version 15.2 on CML.
   - This module works with connection C(network_cli).
@@ -126,6 +127,83 @@ options:
           - private_vlan_host
           - private_vlan_promiscuous
           - private_vlan_trunk
+      xconnect:
+        description:
+          - Configure xconnect reference for the interface.
+        type: dict
+        suboptions:
+          address:
+            description:
+              - Remote peer IP address.
+            type: str
+          vcid:
+            description:
+              - Virtual Circuit ID.
+            type: int
+          encapsulation:
+            description:
+              - Encapsulation type for xconnect.
+            type: str
+            choices:
+              - mpls
+              - l2tpv3
+          manual:
+            description:
+              - Manually configure the xconnect.
+            type: bool
+          pw_class:
+            description:
+              - Pseudowire class name.
+            type: str
+          sequencing:
+            description:
+              - Sequencing options for the xconnect.
+            type: str
+            choices:
+              - both
+              - receive
+              - transmit
+      private_vlan:
+        description:
+          - Set the private VLAN configuration.
+        type: dict
+        suboptions:
+          association:
+            description:
+              - Set the private VLAN association.
+            type: bool
+          host_association:
+            description:
+              - Set the private VLAN host association.
+            type: bool
+          mapping:
+            description:
+              - Set the private VLAN promiscuous mapping.
+            type: bool
+          host:
+            description:
+              - Set the private VLAN host association.
+            type: bool
+          primary_range:
+            description:
+              - Primary extended/normal range VLAN ID of the private VLAN promiscuous port mapping.
+            type: int
+          secondary_range:
+            description:
+              - Secondary extended/normal range VLAN ID of the private VLAN promiscuous port mapping.
+            type: int
+          add:
+            description:
+              - Add a VLAN to private VLAN list.
+            type: bool
+          remove:
+            description:
+              - Remove a VLAN from private VLAN list.
+            type: bool
+          secondary_vlan_id:
+            description:
+              - Secondary VLAN IDs of the private VLAN promiscuous port mapping.
+            type: str
       app_interface:
         description:
           - Enabling port for Application Hosting (switchport app-interface)
@@ -146,6 +224,19 @@ options:
         description:
           - Configure an interface to be a protected port (switchport protected)
         type: bool
+      encapsulation:
+        description:
+          - Configure encapsulation for the interface.
+        type: dict
+        suboptions:
+          type:
+            description:
+              - Encapsulation type (e.g., dot1q).
+            type: str
+          vlan_id:
+            description:
+              - VLAN ID for encapsulation.
+            type: int
       block_options:
         description:
           - Disable forwarding of unknown uni/multi cast addresses.

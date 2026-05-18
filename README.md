@@ -1,8 +1,7 @@
 # Cisco IOS Collection
 
-[![CI](https://zuul-ci.org/gated.svg)](https://dashboard.zuul.ansible.com/t/ansible/project/github.com/ansible-collections/cisco.ios)
-[![Codecov](https://codecov.io/gh/ansible-collections/cisco.ios/branch/main/graph/badge.svg)](https://codecov.io/gh/ansible-collections/cisco.ios)
 [![CI](https://github.com/ansible-collections/cisco.ios/actions/workflows/tests.yml/badge.svg?branch=main&event=schedule)](https://github.com/ansible-collections/cisco.ios/actions/workflows/tests.yml)
+[![Integration tests 💻](https://github.com/ansible-collections/cisco.ios/actions/workflows/integration-libssh.yml/badge.svg?branch=main)](https://github.com/ansible-collections/cisco.ios/actions/workflows/integration-libssh.yml)
 
 The Ansible Cisco IOS collection includes a variety of Ansible content to help automate the management of Cisco IOS and Cisco IOS XE network appliances.
 
@@ -59,6 +58,8 @@ Name | Description
 [cisco.ios.ios_acl_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_acl_interfaces_module.rst)|Resource module to configure ACL interfaces.
 [cisco.ios.ios_acls](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_acls_module.rst)|Resource module to configure ACLs.
 [cisco.ios.ios_banner](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_banner_module.rst)|Module to configure multiline banners.
+[cisco.ios.ios_bfd_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_bfd_interfaces_module.rst)|Resource module to configure bfd in interfaces.
+[cisco.ios.ios_bfd_templates](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_bfd_templates_module.rst)|Bidirectional Forwarding Detection (BFD) templates configurations
 [cisco.ios.ios_bgp_address_family](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_bgp_address_family_module.rst)|Resource module to configure BGP Address family.
 [cisco.ios.ios_bgp_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_bgp_global_module.rst)|Resource module to configure BGP.
 [cisco.ios.ios_command](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_command_module.rst)|Module to run commands on remote devices.
@@ -151,7 +152,7 @@ We welcome community contributions to this collection. If you find problems, ple
 You can also join us on:
 
 - IRC - the `#ansible-network` [libera.chat](https://libera.chat/) channel
-- Slack - https://ansiblenetwork.slack.com
+- Slack - [Ansible Network](https://ansiblenetwork.slack.com)
 
 See the [Ansible Community Guide](https://docs.ansible.com/ansible/latest/community/index.html) for details on contributing to Ansible.
 

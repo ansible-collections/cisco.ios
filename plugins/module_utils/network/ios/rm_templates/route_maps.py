@@ -17,7 +17,6 @@ the given network resource.
 
 import re
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
@@ -58,7 +57,7 @@ def _tmplt_route_map_match(config_data):
             cmd = "match as-path "
             if match["as_path"].get("acls"):
                 temp = []
-                for k, v in iteritems(match["as_path"]["acls"]):
+                for k, v in match["as_path"]["acls"].items():
                     temp.append(str(v))
                 cmd += " ".join(sorted(temp))
             command.append(cmd)
@@ -74,7 +73,7 @@ def _tmplt_route_map_match(config_data):
         if match.get("community"):
             cmd = "match community "
             temp = []
-            for k, v in iteritems(match["community"]["name"]):
+            for k, v in match["community"]["name"].items():
                 temp.append(v)
             cmd += " ".join(sorted(temp))
             if match["community"].get("exact_match"):
@@ -83,14 +82,14 @@ def _tmplt_route_map_match(config_data):
         if match.get("extcommunity"):
             cmd = "match extcommunity "
             temp = []
-            for k, v in iteritems(match["extcommunity"]):
+            for k, v in match["extcommunity"].items():
                 temp.append(v)
             cmd += " ".join(sorted(temp))
             command.append(cmd)
         if match.get("interfaces"):
             cmd = "match interface "
             temp = []
-            for k, v in iteritems(match["interfaces"]):
+            for k, v in match["interfaces"].items():
                 temp.append(v)
             cmd += " ".join(sorted(temp))
             command.append(cmd)
@@ -100,7 +99,7 @@ def _tmplt_route_map_match(config_data):
             cmd = "match local-preference "
             if match["local_preference"].get("value"):
                 temp = []
-                for k, v in iteritems(match["local_preference"]["value"]):
+                for k, v in match["local_preference"]["value"].items():
                     temp.append(v)
                 cmd += " ".join(sorted(temp))
             command.append(cmd)
@@ -108,7 +107,7 @@ def _tmplt_route_map_match(config_data):
             cmd = "match mdt-group "
             if match["mdt_group"].get("acls"):
                 temp = []
-                for k, v in iteritems(match["mdt_group"]["acls"]):
+                for k, v in match["mdt_group"]["acls"].items():
                     temp.append(v)
                 cmd += " ".join(sorted(temp))
             command.append(cmd)
@@ -128,7 +127,7 @@ def _tmplt_route_map_match(config_data):
         if match.get("policy_lists"):
             cmd = "match policy-list "
             temp = []
-            for k, v in iteritems(match["policy_lists"]):
+            for k, v in match["policy_lists"].items():
                 temp.append(v)
             cmd += " ".join(sorted(temp))
             command.append(cmd)
@@ -169,7 +168,7 @@ def _tmplt_route_map_match(config_data):
             if match["security_group"].get("source"):
                 cmd += " source tag "
                 temp = []
-                for k, v in iteritems(match["security_group"]["source"]):
+                for k, v in match["security_group"]["source"].items():
                     temp.append(str(v))
                 cmd += " ".join(sorted(temp))
             elif match["security_group"].get("destination"):
@@ -220,7 +219,7 @@ def _tmplt_route_map_match_ip(config_data):
 
         def construct_cmd_from_list(cmd, config):
             temp = []
-            for k, v in iteritems(config):
+            for k, v in config.items():
                 temp.append(v)
             cmd += " " + " ".join(sorted(temp))
             return cmd
@@ -445,7 +444,7 @@ def _tmplt_route_map_set(config_data):
         if set.get("interfaces"):
             cmd = "set interface "
             temp = []
-            for k, v in iteritems(set["interfaces"]):
+            for k, v in set["interfaces"].items():
                 temp.append(v)
             cmd += " ".join(sorted(temp))
             command.append(cmd)

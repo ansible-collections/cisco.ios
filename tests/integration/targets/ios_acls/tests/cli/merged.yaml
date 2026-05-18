@@ -31,6 +31,18 @@
                       traceroute: true
                     ttl:
                       eq: 10
+                  - grant: deny
+                    sequence: 21
+                    protocol: igmp
+                    protocol_options:
+                      igmp:
+                        host_report: true
+                    source:
+                      address: 192.0.2.0
+                      wildcard_bits: 0.0.0.155
+                    destination:
+                      address: 192.0.3.0
+                      wildcard_bits: 0.0.0.254
         state: merged
 
     - name: Merge new configuration with existing device configuration
@@ -68,6 +80,18 @@
                       traceroute: true
                     ttl:
                       eq: 10
+                  - grant: deny
+                    sequence: 21
+                    protocol: igmp
+                    protocol_options:
+                      igmp:
+                        host_report: true
+                    source:
+                      address: 192.0.2.0
+                      wildcard_bits: 0.0.0.155
+                    destination:
+                      address: 192.0.3.0
+                      wildcard_bits: 0.0.0.254
               - name: 110
                 aces:
                   - grant: deny

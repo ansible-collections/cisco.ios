@@ -4,6 +4,156 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v11.4.1
+=======
+
+Release Summary
+---------------
+
+This patch is a re-release of 11.4.0 with bug-fixes to action plugin symlinks.
+All action plugins have been renamed to use the `ios_`` prefix to match their module names.
+The previous release(11.4.0) fixed bugs across ios_acls (TCP ACL parsing), ios_config (multi-range interfaces), ios_snmp_users (authentication protocol), ios_static_routes (BFD crash), and terminal error handling.
+The previous release(11.4.0) deprecated the src parameter's automatic Jinja2 template processing in ios_config (removal March 2028), recommending migration to the new content parameter with ansible.builtin.template lookup.
+The previous release(11.4.0) added new features including the content parameter for pre-rendered configurations in ios_config and purge_keys parameter in ios_user for managing multiple SSH keys (max 2 per user).
+The previous release(11.4.0) updated dependencies and CI by bumping ansible.netcommon from >=8.1.0 to >=8.5.2 and modernizing integration tests to add stable-2.20 coverage while dropping stable-2.16.
+The previous release(11.4.0) fixed documentation in ios_bgp_global by updating stale EXAMPLES that referenced removed parameter names causing validation errors.
+
+Bugfixes
+--------
+
+- action plugins - Remove orphaned legacy action plugins ``bgp.py``, ``linkagg.py``, ``lldp.py`` and ``logging.py`` that had no corresponding module.
+- action plugins - Rename multiple resource module action plugins to use the ``ios_`` prefix to match their module names and fix ``action-plugin-docs`` sanity failures blocking Automation Hub certification.
+- meta/runtime.yml - Add ``plugin_routing.action`` redirects for all short-name aliases so alias-based invocations continue to resolve the renamed action plugins.
+- plugins/action/ios.py - Remove unused ``warnings`` list and unreachable dead code block that never executed due to ``warnings`` always being empty.
+- sanity - Remove stale ``action-plugin-docs`` ignore entries and delete ``ignore-2.14.txt`` and ``ignore-2.15.txt`` as the collection requires ``ansible>=2.16.0``.
+
+v11.4.0
+=======
+
+Minor Changes
+-------------
+
+- Updated ansible.netcommon dependency minimum required version from >=8.1.0 to >=8.5.1.
+- Updated ansible.netcommon dependency minimum required version from >=8.5.1 to >=8.5.2.
+- ci - Updated integration test matrix to add stable-2.20 coverage and drop stable-2.16 for libssh integration tests.
+- ios_config - Add ``content`` parameter to support pre-rendered template configurations. This provides a cleaner alternative to the deprecated template auto-processing behavior of the ``src`` parameter.
+- ios_user module adds purge_keys parameter to manage multiple SSH keys per user. Cisco IOS devices support maximum 2 SSH keys per user. The purge_keys parameter enables removal of existing keys not in the sshkey list when provisioning new keys.
+
+Deprecated Features
+-------------------
+
+- ios_config - The ``src`` parameter's automatic Jinja2 template processing is deprecated and will be removed in March 2028. Use the ``content`` parameter with ``ansible.builtin.template`` lookup instead.
+
+Bugfixes
+--------
+
+- ios_acls - Fixed ``'int' object has no attribute 'split'`` error when processing ACL configurations with TCP entries. The parser regex for ``icmp_igmp_protocol`` could capture trailing numeric values for non-ICMP/IGMP protocols. Fixed by restricting ``icmp_igmp_protocol`` to only apply when the protocol is ``icmp`` or ``igmp`` in the parser template, with a defensive type check in facts processing.
+- ios_config - Fix multi-range interface commands for ios_config module.
+- ios_snmp_users - Fixed authentication option to correctly handle authentication protocol configuration.
+- ios_static_routes - Fix gather crash when "ip route static bfd" is present on the device.
+- terminal_stderr_re - Updated to support variation of command rejected error from appliance.
+
+Documentation Changes
+---------------------
+
+- ios_bgp_global - Fix stale EXAMPLES that used removed parameter names (bestpath, nopeerup_delay, address, route_map) causing validation errors when copy-pasted. Updated to current argspec keys (bestpath_options, nopeerup_delay_options, neighbor_address, route_maps).
+
+v11.3.0
+=======
+
+Minor Changes
+-------------
+
+- Adds a new Resource Module `ios_bfd_interfaces` to configure BFD on interfaces.
+- Adds a new Resource Module `ios_bfd_templates` to configure BFD  using templates.
+- ios_l3_interfaces - Add support for 'redirects' and 'unreachables' attributes to configure ICMP redirect and unreachable messages.
+
+Bugfixes
+--------
+
+- Fixed delete and purged state function for ios_bfd_templates
+
+New Modules
+-----------
+
+- ios_bfd_interfaces - Resource module to configure bfd in interfaces.
+- ios_bfd_templates - Bidirectional Forwarding Detection (BFD) templates configurations
+
+v11.2.0
+=======
+
+Minor Changes
+-------------
+
+- ios_l2_interfaces - Added xconnect and encapsulation attributes for L2VPN pseudowire and MPLS services configuration.
+
+Bugfixes
+--------
+
+- cisco.ios.ios_acls - Added support for converting numeric protocol values to real protocol options when gathered from the device.
+- cisco.ios.ios_acls - Gathered state showing incomplete configuration.
+- cisco.ios.ios_hsrp_intefaces - Considers version 1 as default if configuration does not specify version.
+- cisco.ios.ios_hsrp_intefaces - Corrects idempotency issue when version is not specified in configuration.
+- cisco.ios.ios_l2_interfaces - Moved mode parser to below the trunk parsers.
+
+v11.1.1
+=======
+
+Bugfixes
+--------
+
+- cisco.ios.ios_bgp_address_family - Encrypted strings as password are not evaluated rather treated as string forcefully.
+- cisco.ios.ios_hsrp_interfaces - Fixed default values for version and priority.
+- cisco.ios.ios_hsrp_interfaces - Fixed overridden state to be idempotent with ipv6 configuration.
+- cisco.ios.ios_hsrp_interfaces - Fixed parsers to group HSRP configuration and optimize parsing time.
+- cisco.ios.ios_hsrp_interfaces - Fixed removal of HSRP configuration when state is deleted, replaced, overridden.
+- cisco.ios.ios_hsrp_interfaces - Fixed rendered output for standby redirect advertisement authentication key-chain.
+- cisco.ios.ios_hsrp_interfaces - Fixed rendered output for standby redirect advertisement authentication key-string with encryption.
+- cisco.ios.ios_hsrp_interfaces - Fixed rendered output for standby redirect advertisement authentication.
+- cisco.ios.ios_hsrp_interfaces - Handle operation of list attributes like ipv6, ip, track.
+- cisco.ios.ios_l2_interfaces - Add private-vlan support to switchport.
+
+Documentation Changes
+---------------------
+
+- Updated documentation for cisco.ios.ios_hsrp_interfaces module, with examples for all parameters.
+
+v11.1.0
+=======
+
+Minor Changes
+-------------
+
+- ios_config - added answering prompt functionality while working in config mode on ios device
+- ios_facts - Add chassis_id value to ansible_net_neighbors dictionary for lldp neighbours.
+
+Bugfixes
+--------
+
+- Fixed an issue where configuration within an address family (ipv6) was ignored by the parser.
+- cisco.ios.ios_vrf_global - fixed issue preventing idempotent configuration of multiple import/export route-targets for a VRF.
+- ios_hsrp_interfaces - Device defaults version to 1 if standby_groups is present but version is not configured. and module would also consider priority as 100 if not configured, to maintain idempotency.
+- ios_hsrp_interfaces - Fixed operation for ipv6 standby configuration.
+- ios_static_routes - Fix parsing of static routes with interface and distance in gathered state
+
+v11.0.0
+=======
+
+Release Summary
+---------------
+
+With this release, the minimum required version of `ansible.netcommon` for this collection is `>=8.1.0`. The last version known to be compatible with `ansible-core<=2.18.x` is ansible.netcommon `v8.0.1` and cisco.ios `v10.1.1`.
+
+Major Changes
+-------------
+
+- Bumping `dependencies` of ansible.netcommon to `>=8.1.0`, since previous versions of the dependency had compatibility issues with `ansible-core>=2.19`.
+
+Bugfixes
+--------
+
+- ios_vrf_address_family - fixed an issue where the module failed to gather `mdt` configuration options.
+
 v10.1.1
 =======
 

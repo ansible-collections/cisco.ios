@@ -133,7 +133,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 \s+route-target\sexport\s(?P<route_target_export>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "{% for item in route_target.exports %}route-target export {{ item }}{% endfor %}",
+            "setval": "route-target export {{ item }}",
             "result": {
                 "vrfs": {
                     '{{ name }}': {
@@ -149,16 +149,16 @@ class Vrf_globalTemplate(NetworkTemplate):
             "name": "route_target.imports",
             "getval": re.compile(
                 r"""
-                \s+route-target\simport\s(?P<route_target_import_config>\S+)
+                \s+route-target\simport\s(?P<route_target_import>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "{% for item in route_target.imports %}route-target import {{ item }}{% endfor %}",
+            "setval": "route-target import {{ item }}",
             "result": {
                 "vrfs": {
                     '{{ name }}': {
                         'name': '{{ name }}',
                         "route_target": {
-                            "imports": "{{ [route_target_import_config] }}",
+                            "imports": "{{ [route_target_import] }}",
                         },
                     },
                 },
@@ -171,7 +171,7 @@ class Vrf_globalTemplate(NetworkTemplate):
                 \s+route-target\sboth\s(?P<route_target_both>\S+)
                 $""", re.VERBOSE,
             ),
-            "setval": "{% for item in route_target.both %}route-target both {{ item }}{% endfor %}",
+            "setval": "route-target both {{ item }}",
             "result": {
                 "vrfs": {
                     '{{ name }}': {

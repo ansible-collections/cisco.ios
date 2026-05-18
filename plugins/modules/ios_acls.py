@@ -17,6 +17,7 @@ DOCUMENTATION = """
 author:
   - Sumit Jaiswal (@justjais)
   - Sagar Paul (@KB-perByte)
+  - Nikhil Bhasin (@nickbhasin)
 description: This module configures and manages the named or numbered ACLs on IOS platforms.
 module: ios_acls
 notes:
@@ -77,10 +78,10 @@ options:
                         suboptions:
                           end:
                             description: Specify the end of the port range.
-                            type: int
+                            type: str
                           start:
                             description: Specify the start of the port range.
-                            type: int
+                            type: str
                         type: dict
                     type: dict
                   wildcard_bits:
@@ -377,6 +378,9 @@ options:
                       host_query:
                         description: IGMP Membership Query(0)
                         type: bool
+                      host_report:
+                        description: IGMP Host report
+                        type: bool
                       mtrace_resp:
                         description: Multicast Traceroute Response(7)
                         type: bool
@@ -516,10 +520,10 @@ options:
                         suboptions:
                           end:
                             description: Specify the end of the port range.
-                            type: int
+                            type: str
                           start:
                             description: Specify the start of the port range.
-                            type: int
+                            type: str
                         type: dict
                     type: dict
                   wildcard_bits:

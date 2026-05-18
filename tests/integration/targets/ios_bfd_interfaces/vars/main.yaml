@@ -1,0 +1,132 @@
+parsed:
+  config:
+    - interval:
+        input: 100
+        min_rx: 100
+        multiplier: 3
+      local_address: 10.0.1.2
+      name: GigabitEthernet2
+    - interval:
+        input: 100
+        min_rx: 100
+        multiplier: 3
+      jitter: false
+      name: GigabitEthernet3
+    - name: GigabitEthernet4
+      template: ANSIBLE_Template
+rendered:
+  commands:
+    - interface GigabitEthernet2
+    - bfd local-address 10.0.1.2
+    - bfd interval 100 min_rx 100 multiplier 3
+    - interface GigabitEthernet3
+    - bfd interval 100 min_rx 100 multiplier 3
+    - no bfd jitter
+    - interface GigabitEthernet4
+    - bfd template ANSIBLE_Template
+overridden:
+  after:
+    - name: Loopback888
+    - name: GigabitEthernet1
+    - interval:
+        input: 100
+        min_rx: 100
+        multiplier: 3
+      local_address: 10.0.1.2
+      name: GigabitEthernet2
+    - interval:
+        input: 100
+        min_rx: 100
+        multiplier: 3
+      jitter: false
+      name: GigabitEthernet3
+    - name: GigabitEthernet4
+      template: ANSIBLE_Template
+  before:
+    - name: Loopback888
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
+    - name: GigabitEthernet4
+  changed: true
+  commands:
+    - interface GigabitEthernet2
+    - bfd local-address 10.0.1.2
+    - bfd interval 100 min_rx 100 multiplier 3
+    - interface GigabitEthernet3
+    - bfd interval 100 min_rx 100 multiplier 3
+    - no bfd jitter
+    - interface GigabitEthernet4
+    - bfd template ANSIBLE_Template
+deleted:
+  after:
+    - name: Loopback888
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
+    - name: GigabitEthernet4
+  before:
+    - name: Loopback888
+    - name: GigabitEthernet1
+    - interval:
+        input: 100
+        min_rx: 100
+        multiplier: 3
+      local_address: 10.0.1.2
+      name: GigabitEthernet2
+    - interval:
+        input: 100
+        min_rx: 100
+        multiplier: 3
+      jitter: false
+      name: GigabitEthernet3
+    - name: GigabitEthernet4
+      template: ANSIBLE_Template
+  changed: true
+  commands:
+    - interface GigabitEthernet2
+    - no bfd local-address 10.0.1.2
+    - no bfd interval 100 min_rx 100 multiplier 3
+    - interface GigabitEthernet3
+    - bfd jitter
+    - no bfd interval 100 min_rx 100 multiplier 3
+    - interface GigabitEthernet4
+    - no bfd template ANSIBLE_Template
+merged:
+  after:
+    - name: Loopback888
+    - name: GigabitEthernet1
+    - interval:
+        input: 100
+        min_rx: 100
+        multiplier: 3
+      local_address: 10.0.1.2
+      name: GigabitEthernet2
+    - interval:
+        input: 100
+        min_rx: 100
+        multiplier: 3
+      jitter: false
+      name: GigabitEthernet3
+    - name: GigabitEthernet4
+      template: ANSIBLE_Template
+  before:
+    - name: Loopback888
+    - name: GigabitEthernet1
+    - name: GigabitEthernet2
+    - name: GigabitEthernet3
+    - name: GigabitEthernet4
+  changed: true
+  commands:
+    - interface GigabitEthernet2
+    - bfd local-address 10.0.1.2
+    - bfd interval 100 min_rx 100 multiplier 3
+    - interface GigabitEthernet3
+    - bfd interval 100 min_rx 100 multiplier 3
+    - no bfd jitter
+    - interface GigabitEthernet4
+    - bfd template ANSIBLE_Template
+rtt:
+  commands:
+    - interface GigabitEthernet4
+    - bfd template ANSIBLE_Template

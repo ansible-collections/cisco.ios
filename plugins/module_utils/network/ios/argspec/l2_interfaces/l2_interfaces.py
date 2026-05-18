@@ -68,6 +68,23 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                         "pruning_vlans": {"type": "list", "elements": "str"},
                     },
                 },
+                "xconnect": {
+                    "type": "dict",
+                    "options": {
+                        "address": {"type": "str"},
+                        "vcid": {"type": "int"},
+                        "encapsulation": {
+                            "type": "str",
+                            "choices": ["mpls", "l2tpv3"],
+                        },
+                        "manual": {"type": "bool"},
+                        "pw_class": {"type": "str"},
+                        "sequencing": {
+                            "type": "str",
+                            "choices": ["both", "receive", "transmit"],
+                        },
+                    },
+                },
                 "mode": {
                     "type": "str",
                     "choices": [
@@ -82,11 +99,32 @@ class L2_interfacesArgs(object):  # pylint: disable=R0903
                         "private_vlan_trunk",
                     ],
                 },
+                "private_vlan": {
+                    "type": "dict",
+                    "options": {
+                        "association": {"type": "bool"},
+                        "host_association": {"type": "bool"},
+                        "mapping": {"type": "bool"},
+                        "host": {"type": "bool"},
+                        "primary_range": {"type": "int"},
+                        "secondary_range": {"type": "int"},
+                        "add": {"type": "bool"},
+                        "remove": {"type": "bool"},
+                        "secondary_vlan_id": {"type": "str"},
+                    },
+                },
                 "app_interface": {"type": "bool"},
                 "nonegotiate": {"type": "bool"},
                 "vepa": {"type": "bool"},
                 "host": {"type": "bool"},
                 "protected": {"type": "bool"},
+                "encapsulation": {
+                    "type": "dict",
+                    "options": {
+                        "type": {"type": "str"},
+                        "vlan_id": {"type": "int"},
+                    },
+                },
                 "block_options": {
                     "type": "dict",
                     "options": {

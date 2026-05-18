@@ -16,7 +16,6 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 from ansible.module_utils._text import to_text
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -84,27 +83,27 @@ class Acls(ResourceModule):
 
         # if state is deleted, empty out wantd and set haved to want
         if self.state == "deleted":
-            haved = {k: v for k, v in iteritems(haved) if k in wantd or not wantd}
+            haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
             if wantd.get("ipv4") and not haved.get("ipv4"):
                 haved["ipv4"] = {}
             if wantd.get("ipv6") and not haved.get("ipv6"):
                 haved["ipv6"] = {}
-            for key, hvalue in iteritems(haved):
+            for key, hvalue in haved.items():
                 wvalue = wantd.pop(key, {})
                 if wvalue:
                     wplists = wvalue.get("acls", {})
                     hplists = hvalue.get("acls", {})
                     hvalue["acls"] = {
-                        k: v for k, v in iteritems(hplists) if k in wplists or not wplists
+                        k: v for k, v in hplists.items() if k in wplists or not wplists
                     }
 
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
-            for k, have in iteritems(haved):
+            for k, have in haved.items():
                 if k not in wantd:
                     self._compare(want={}, have=have, afi=k)
 
-        for k, want in iteritems(wantd):
+        for k, want in wantd.items():
             self._compare(want=want, have=haved.pop(k, {}), afi=k)
 
     def _compare(self, want, have, afi):
@@ -128,7 +127,7 @@ class Acls(ResourceModule):
 
         wplists = want.get("acls", {})
         hplists = have.get("acls", {})
-        for wname, wentry in iteritems(wplists):
+        for wname, wentry in wplists.items():
             hentry = hplists.pop(wname, {})
             acl_type = wentry["acl_type"] if wentry.get("acl_type") else hentry.get("acl_type")
             # If ACLs type is different between existing and wanted ACL, we need first remove it
@@ -158,7 +157,7 @@ class Acls(ResourceModule):
 
         if self.state in ["overridden", "deleted"]:
             # remove remaining acls lists
-            for hname, hval in iteritems(hplists):
+            for hname, hval in hplists.items():
                 _cmd = self.acl_name_cmd(hname, afi, hval.get("acl_type", ""))
                 self.commands.append("no " + _cmd)
 
@@ -182,7 +181,7 @@ class Acls(ResourceModule):
                 return {}
 
         # case 1 - loop on want and compare with have data here
-        for wseq, wentry in iteritems(want):
+        for wseq, wentry in want.items():
             hentry = have.pop(wseq, {})
             rem_hentry, rem_wentry = {}, {}
 

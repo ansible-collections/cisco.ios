@@ -10,3 +10,4 @@
     lines:
       - no banner motd
       - no archive
+  ignore_errors: true

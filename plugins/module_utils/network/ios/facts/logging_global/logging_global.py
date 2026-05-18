@@ -15,7 +15,6 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.logging_global.logging_global import (
@@ -61,7 +60,7 @@ class Logging_globalFacts(object):
         objFinal = logging_global_parser.parse()
 
         if objFinal:
-            for k, v in iteritems(objFinal):
+            for k, v in objFinal.items():
                 if isinstance(v, list) and k not in ["hosts", "source_interface", "filter"]:
                     v.sort()
                     objFinal[k] = v

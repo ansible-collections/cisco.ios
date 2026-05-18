@@ -143,7 +143,6 @@ import time
 from ansible.errors import AnsibleConnectionFailure
 from ansible.module_utils._text import to_text
 from ansible.module_utils.common._collections_compat import Mapping
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     NetworkConfig,
     dumps,
@@ -348,6 +347,40 @@ class Cliconf(CliconfBase):
         resp["response"] = results
         return resp
 
+    @enable_mode
+    def edit_config_with_prompt(self, candidate=None, commit=True, replace=None, comment=None):
+        resp = {}
+        operations = self.get_device_operations()
+        self.check_edit_config_capability(operations, candidate, commit, replace, comment)
+
+        results = []
+        requests = []
+        # commit confirm specific attributes
+        commit_confirm = self.get_option("commit_confirm_immediate")
+        if commit:
+            self.configure()
+            for item_dict in candidate:
+                config_line = item_dict.get("config_line")
+                prompt = item_dict.get("prompt")
+                answer = item_dict.get("answer")
+
+                if config_line != "end" and config_line[0] != "!":
+                    results.append(
+                        self.send_command(command=config_line, prompt=prompt, answer=answer),
+                    )
+                    requests.append(config_line)
+
+            self.send_command("end")
+            if commit_confirm:
+                self.send_command("configure confirm")
+
+        else:
+            raise ValueError("check mode is not supported")
+
+        resp["request"] = requests
+        resp["response"] = results
+        return resp
+
     def edit_macro(self, candidate=None, commit=True, replace=None, comment=None):
         """
         ios_config:
@@ -502,7 +535,7 @@ class Cliconf(CliconfBase):
         results = []
         requests = []
         if commit:
-            for key, value in iteritems(banners_obj):
+            for key, value in banners_obj.items():
                 key += " %s" % multiline_delimiter
                 self.send_command("config terminal", sendonly=True)
                 for cmd in [key, value, multiline_delimiter]:
@@ -602,7 +635,7 @@ class Cliconf(CliconfBase):
 
     def _diff_banners(self, want, have):
         candidate = {}
-        for key, value in iteritems(want):
+        for key, value in want.items():
             if value != have.get(key):
                 candidate[key] = value
         return candidate

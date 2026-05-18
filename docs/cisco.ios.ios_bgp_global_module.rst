@@ -8546,8 +8546,8 @@ Examples
           as_number: 65000
           bgp:
             advertise_best_external: true
-            bestpath:
-              - compare_routerid: true
+            bestpath_options:
+              compare_routerid: true
             dampening:
               penalty_half_time: 1
               reuse_route_val: 1
@@ -8563,13 +8563,13 @@ Examples
               community: 100
               local_preference: 100
             log_neighbor_changes: true
-            nopeerup_delay:
-              - post_boot: 10
+            nopeerup_delay_options:
+              post_boot: 10
           networks:
             - address: 192.0.2.3
             - address: 192.0.2.2
-          neighbor:
-            - address: 192.0.2.1
+          neighbors:
+            - neighbor_address: 192.0.2.1
               description: merge neighbor
               remote_as: 100
               aigp:
@@ -8579,9 +8579,9 @@ Examples
                     poi:
                       igp_cost: true
                       transitive: true
-              route_map:
-                name: test-route
-                out: true
+              route_maps:
+                - name: test-route
+                  out: true
           redistribute:
             - connected:
                 metric: 10
@@ -8707,17 +8707,17 @@ Examples
           as_number: 65000
           bgp:
             advertise_best_external: true
-            bestpath:
-              - med:
-                  confed: true
+            bestpath_options:
+              med:
+                confed: true
             log_neighbor_changes: true
-            nopeerup_delay:
-              - post_boot: 10
-                cold_boot: 20
+            nopeerup_delay_options:
+              post_boot: 10
+              cold_boot: 20
           networks:
             - address: 192.0.2.4
-          neighbor:
-            - address: 192.0.2.5
+          neighbors:
+            - neighbor_address: 192.0.2.5
               description: replace neighbor
               remote_as: 100
               slow_peer:

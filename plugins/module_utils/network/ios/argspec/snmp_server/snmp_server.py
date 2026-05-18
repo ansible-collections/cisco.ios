@@ -800,8 +800,9 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                             "options": {
                                 "algorithm": {
                                     "type": "str",
-                                    "choices": ["md5", "sha"],
+                                    "choices": ["md5", "sha", "sha-2"],
                                 },
+                                "auth_option": {"type": "int"},
                                 "password": {
                                     "type": "str",
                                     "no_log": True,

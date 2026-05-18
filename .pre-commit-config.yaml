@@ -1,13 +1,13 @@
 ---
 repos:
   - repo: https://github.com/ansible-network/collection_prep
-    rev: 1.1.2
+    rev: da78082ea59b03ad16cd7dbee267f53e8ff50bb5
     hooks:
       # - id: autoversion # removed as being handled by GHA push and release drafter
       - id: update-docs
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
       - id: check-merge-conflict
       - id: check-symlinks
@@ -34,14 +34,14 @@ repos:
           - prettier-plugin-toml
 
   - repo: https://github.com/PyCQA/isort
-    rev: 6.0.1
+    rev: 6.1.0
     hooks:
       - id: isort
         name: Sort import statements using isort
         args: ["--filter-files"]
 
   - repo: https://github.com/psf/black
-    rev: 25.1.0
+    rev: 25.9.0
     hooks:
       - id: black
 

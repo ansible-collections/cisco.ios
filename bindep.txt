@@ -2,5 +2,3 @@
 # see https://docs.openstack.org/infra/bindep/ for additional information.
 
 gcc-c++ [doc test platform:rpm]
-python3-devel [test platform:rpm]
-python3 [test platform:rpm]

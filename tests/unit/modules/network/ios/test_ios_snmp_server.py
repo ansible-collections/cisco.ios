@@ -2141,6 +2141,106 @@ class TestIosSnmpServerModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(expected_commands))
 
+    def test_ios_snmpv3_user_sha2_merged(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            snmp-server group groupv3 v3 auth
+            """,
+        )
+        self.execute_show_command_user.return_value = ""
+
+        playbook = {
+            "config": {
+                "users": [
+                    {
+                        "username": "test_ansible",
+                        "group": "groupv3",
+                        "version": "v3",
+                        "authentication": {
+                            "algorithm": "sha-2",
+                            "auth_option": 256,
+                            "password": "test_pass123",
+                        },
+                    },
+                ],
+            },
+        }
+        merged = ["snmp-server user test_ansible groupv3 v3 auth sha-2 256 test_pass123"]
+
+        playbook["state"] = "merged"
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(merged))
+
+    def test_ios_snmpv3_user_sha2_512_merged(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            snmp-server group groupv3 v3 auth
+            """,
+        )
+        self.execute_show_command_user.return_value = ""
+
+        playbook = {
+            "config": {
+                "users": [
+                    {
+                        "username": "test_user_512",
+                        "group": "groupv3",
+                        "version": "v3",
+                        "authentication": {
+                            "algorithm": "sha-2",
+                            "auth_option": 512,
+                            "password": "secure_pass_512",
+                        },
+                    },
+                ],
+            },
+        }
+        merged = ["snmp-server user test_user_512 groupv3 v3 auth sha-2 512 secure_pass_512"]
+
+        playbook["state"] = "merged"
+        set_module_args(playbook)
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(merged))
+
+    def test_ios_snmpv3_user_sha2_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            snmp-server group groupv3 v3 auth
+            """,
+        )
+        self.execute_show_command_user.return_value = dedent(
+            """\
+            User name: test_ansible
+            Engine ID: 000000090200000000000A0B
+            storage-type: nonvolatile        active
+            Authentication Protocol: SHA-2-256
+            Privacy Protocol: None
+            Group-name: groupv3
+            """,
+        )
+
+        playbook = {
+            "config": {
+                "users": [
+                    {
+                        "username": "test_ansible",
+                        "group": "groupv3",
+                        "version": "v3",
+                        "authentication": {
+                            "algorithm": "sha-2",
+                            "auth_option": 256,
+                        },
+                    },
+                ],
+            },
+            "state": "merged",
+        }
+        set_module_args(playbook)
+        result = self.execute_module()
+        self.assertEqual(result["changed"], False)
+        self.assertEqual(result["commands"], [])
+
     def test_ios_snmp_server_configuration_idempotence(self):
         self.execute_show_command.return_value = dedent(
             """\

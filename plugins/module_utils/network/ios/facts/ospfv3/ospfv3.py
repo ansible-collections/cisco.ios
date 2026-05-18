@@ -17,7 +17,6 @@ import re
 
 from copy import deepcopy
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
@@ -52,7 +51,7 @@ class Ospfv3Facts(object):
                 if cap:
                     capdict = cap.groupdict()
                     temp = {}
-                    for k, v in iteritems(capdict):
+                    for k, v in capdict.items():
                         if v is not None:
                             temp.update({k: v})
                     capdict = temp
@@ -97,7 +96,7 @@ class Ospfv3Facts(object):
                         temp.append(temp_dict)
                         temp_dict = dict()
                 elif each.get("manet") and temp_dict.get("manet"):
-                    for k, v in iteritems(each.get("manet")):
+                    for k, v in each.get("manet").items():
                         if k in temp_dict.get("manet"):
                             temp_dict.get("manet")[k].update(v)
                         else:
@@ -128,7 +127,7 @@ class Ospfv3Facts(object):
         current = self.parse(ospfv3_parser)
         address_family = self.parse_for_address_family(current)
         if address_family:
-            for k, v in iteritems(current["processes"]):
+            for k, v in current["processes"].items():
                 temp = address_family.pop(k)
                 v.update({"address_family": temp})
         # convert some of the dicts to lists
