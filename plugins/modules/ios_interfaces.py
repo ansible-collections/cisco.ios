@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# Copyright 2022 Red Hat
+# Copyright 2025 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -48,7 +48,6 @@ options:
           - Set the value to C(true) to administratively enable the interface or C(false)
             to disable it.
         type: bool
-        default: true
       speed:
         description:
           - Interface link speed. Applicable for Ethernet interfaces only.
@@ -82,6 +81,154 @@ options:
         description:
           - IOS template name.
         type: str
+      mac_address:
+        description:
+          - H.H.H  MAC address.
+        type: str
+      service_policy:
+        description:
+          - Service policy configuration
+        type: dict
+        suboptions:
+          input:
+            description:
+              - Assign policy-map to the input of an interface
+            type: str
+          output:
+            description:
+              - Assign policy-map to the output of an interface
+            type: str
+          type_options:
+            description:
+              - Configure CPL Service Policy
+            type: dict
+            suboptions:
+              access_control:
+                description: access-control specific policy-map
+                type: dict
+                suboptions:
+                  input:
+                    description:
+                      - Assign policy-map to the input of an interface
+                    type: str
+                  output:
+                    description:
+                      - Assign policy-map to the output of an interface
+                    type: str
+              epbr:
+                description: Configure ePBR Service Policy
+                type: dict
+                suboptions:
+                  input:
+                    description:
+                      - Assign policy-map to the input of an interface
+                    type: str
+                  output:
+                    description:
+                      - Assign policy-map to the output of an interface
+                    type: str
+              nwpi:
+                description: Configure Network Wide Path Insight Service Policy
+                type: dict
+                suboptions:
+                  input:
+                    description:
+                      - Assign policy-map to the input of an interface
+                    type: str
+                  output:
+                    description:
+                      - Assign policy-map to the output of an interface
+                    type: str
+              packet_service:
+                description: Configure Packet-Service Service Policy
+                type: dict
+                suboptions:
+                  input:
+                    description:
+                      - Assign policy-map to the input of an interface
+                    type: str
+                  output:
+                    description:
+                      - Assign policy-map to the output of an interface
+                    type: str
+              service_chain:
+                description: Configure Service-chain Service Policy
+                type: dict
+                suboptions:
+                  input:
+                    description:
+                      - Assign policy-map to the input of an interface
+                    type: str
+                  output:
+                    description:
+                      - Assign policy-map to the output of an interface
+                    type: str
+      logging:
+        description:
+          - Logging interface events
+        type: dict
+        suboptions:
+          bundle_status:
+            description:
+              - BUNDLE/UNBUNDLE messages
+            type: bool
+          link_status:
+            description:
+              - UPDOWN and CHANGE messages
+            type: bool
+          nfas_status:
+            description:
+              - NFAS D-channel status messages
+            type: bool
+          spanning_tree:
+            description:
+              - Spanning-tree Interface events
+            type: bool
+          status:
+            description:
+              - Spanning-tree state change messages
+            type: bool
+          subif_link_status:
+            description:
+              - Sub-interface UPDOWN and CHANGE messages
+            type: bool
+          trunk_status:
+            description:
+              - TRUNK status messages
+            type: bool
+      snmp:
+        description:
+          - snmp trap configurations
+        type: dict
+        suboptions:
+          trap:
+            description:
+              - Allow a specific SNMP trap
+            type: dict
+            suboptions:
+              ip:
+                description: internet protocol (snmp trap ip verify drop-rate)
+                type: bool
+              link_status:
+                description: Allow SNMP LINKUP and LINKDOWN traps (snmp trap link-status permit duplicates)
+                type: bool
+              mac_notification_added:
+                description: MAC Address notification for the interface (snmp trap mac-notification change added)
+                type: bool
+              mac_notification_removed:
+                description: MAC Address notification for the interface (snmp trap mac-notification change removed)
+                type: bool
+          ifindex:
+            description:
+              - Persist ifindex for the interface
+            type: dict
+            suboptions:
+              clear:
+                description: Clear Enable/Disable ifIndex persistence
+                type: bool
+              persist:
+                description: Enable/Disable ifIndex persistence
+                type: bool
   running_config:
     description:
       - This option is used only with state I(parsed).
@@ -968,7 +1115,6 @@ parsed:
   sample: >
     This output will always be in the same format as the
     module argspec.
-
 """
 
 from ansible.module_utils.basic import AnsibleModule

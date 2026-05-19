@@ -87,6 +87,12 @@ class TestIosL2InterfacesModule(TestIosModule):
                         mode="access",
                         name="TwoGigabitEthernet1/0/1",
                         trunk=dict(pruning_vlans=["9-19", "20"]),
+                        private_vlan={
+                            "association": True,
+                            "host": True,
+                            "primary_range": 2000,
+                            "secondary_range": 2500,
+                        },
                     ),
                 ],
                 state="merged",
@@ -102,6 +108,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             "switchport trunk allowed vlan add 60",
             "switchport trunk pruning vlan add 9,11-15",
             "interface TwoGigabitEthernet1/0/1",
+            "switchport private-vlan association host 2000 2500",
             "switchport trunk pruning vlan 9-20",
         ]
         result = self.execute_module(changed=True)
@@ -353,6 +360,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             interface TwoGigabitEthernet1/0/1
              switchport mode access
              switchport access vlan 20
+             switchport private-vlan association mapping 2000 remove abc
             interface GigabitEthernet0/3
              switchport trunk allowed vlan 11,59,67,75,77,81,100,400-408,411-413,415,418
              switchport trunk allowed vlan add 461,674,675,696,931,935,951,952,973,974,979
@@ -382,6 +390,7 @@ class TestIosL2InterfacesModule(TestIosModule):
             "interface TwoGigabitEthernet1/0/1",
             "no switchport access vlan",
             "no switchport mode",
+            "no switchport private-vlan association mapping 2000 remove abc",
             "interface GigabitEthernet0/3",
             "no switchport mode",
             "no switchport trunk encapsulation",
@@ -593,6 +602,27 @@ class TestIosL2InterfacesModule(TestIosModule):
                      switchport trunk encapsulation dot1q
                      switchport trunk pruning vlan 10-15
                      switchport mode private-vlan trunk secondary
+                    interface GigabitEthernet1/0/1
+                     switchport mode access
+                     switchport nonegotiate
+                     switchport protected
+                     switchport block multicast
+                     switchport block unicast
+                     switchport vepa enabled
+                     switchport app-interface
+                     switchport voice vlan 22
+                     snmp trap mac-notification change added
+                     snmp trap mac-notification change removed
+                     snmp trap link-status permit duplicates
+                     spanning-tree portfast
+                     spanning-tree bpdufilter enable
+                     spanning-tree bpduguard disable
+                     spanning-tree link-type point-to-point
+                     spanning-tree vlan 9-11 cost 22
+                     spanning-tree guard root
+                     spanning-tree mst simulate pvst disable
+                     spanning-tree mst 0-1 cost 22
+                     spanning-tree cost 22
                     """,
                 ),
                 state="parsed",
@@ -611,11 +641,7 @@ class TestIosL2InterfacesModule(TestIosModule):
                 },
                 "mode": "trunk",
             },
-            {
-                "name": "TwoGigabitEthernet1/0/1",
-                "mode": "access",
-                "access": {"vlan": 20},
-            },
+            {"name": "TwoGigabitEthernet1/0/1", "mode": "access", "access": {"vlan": 20}},
             {
                 "name": "GigabitEthernet0/3",
                 "trunk": {
@@ -624,6 +650,23 @@ class TestIosL2InterfacesModule(TestIosModule):
                     "pruning_vlans": ["10-15"],
                 },
                 "mode": "private_vlan_trunk",
+            },
+            {
+                "name": "GigabitEthernet1/0/1",
+                "mode": "access",
+                "nonegotiate": True,
+                "protected": True,
+                "block_options": {"multicast": True, "unicast": True},
+                "vepa": True,
+                "app_interface": True,
+                "voice": {"vlan": 22},
+                "spanning_tree": {
+                    "link_type": {"point_to_point": True},
+                    "vlan": {"vlan_range": "9-11", "cost": "22"},
+                    "guard": {"none": False, "root": True},
+                    "mst": {"instance_range": "0-1", "cost": "22"},
+                    "cost": 22,
+                },
             },
         ]
         self.maxDiff = None
@@ -672,6 +715,64 @@ class TestIosL2InterfacesModule(TestIosModule):
                             pruning_vlans=["12-15", "20"],
                         ),
                     ),
+                    dict(
+                        name="GigabitEthernet1/0/1",
+                        mode="access",
+                        nonegotiate=True,
+                        protected=True,
+                        block_options={"multicast": True, "unicast": True},
+                        vepa=True,
+                        app_interface=True,
+                        voice={"vlan": 22},
+                        spanning_tree={
+                            "link_type": {"point_to_point": True},
+                            "vlan": {"vlan_range": "9-11", "cost": "22"},
+                            "guard": {"none": False, "root": True},
+                            "mst": {"instance_range": "0-1", "cost": "22"},
+                            "cost": 22,
+                        },
+                        private_vlan={
+                            "association": True,
+                            "host": True,
+                            "primary_range": 2000,
+                            "secondary_range": 2500,
+                        },
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/2",
+                        private_vlan={
+                            "association": True,
+                            "mapping": True,
+                            "primary_range": 2000,
+                            "secondary_vlan_id": "xyz",
+                        },
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/3",
+                        private_vlan={
+                            "host_association": True,
+                            "primary_range": 2000,
+                            "secondary_range": 2500,
+                        },
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/4",
+                        private_vlan={
+                            "mapping": True,
+                            "primary_range": 2000,
+                            "add": True,
+                            "secondary_vlan_id": "xyz",
+                        },
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/5",
+                        private_vlan={
+                            "mapping": True,
+                            "primary_range": 2000,
+                            "remove": True,
+                            "secondary_vlan_id": "xyz",
+                        },
+                    ),
                 ],
                 state="rendered",
             ),
@@ -682,11 +783,32 @@ class TestIosL2InterfacesModule(TestIosModule):
             "switchport voice vlan 40",
             "switchport mode access",
             "interface GigabitEthernet0/2",
-            "switchport mode trunk",
             "switchport trunk encapsulation isl",
+            "switchport mode trunk",
             "switchport trunk native vlan 20",
             "switchport trunk allowed vlan 10-20,40",
             "switchport trunk pruning vlan 12-15,20",
+            "interface GigabitEthernet1/0/1",
+            "switchport voice vlan 22",
+            "switchport mode access",
+            "switchport private-vlan association host 2000 2500",
+            "switchport app-interface",
+            "switchport nonegotiate",
+            "switchport vepa enabled",
+            "switchport protected",
+            "switchport block multicast",
+            "switchport block unicast",
+            "spanning-tree cost 22",
+            "spanning-tree guard root",
+            "spanning-tree link-type point-to-point",
+            "interface GigabitEthernet1/0/2",
+            "switchport private-vlan association mapping 2000 xyz",
+            "interface GigabitEthernet1/0/3",
+            "switchport private-vlan host-association 2000 2500",
+            "interface GigabitEthernet1/0/4",
+            "switchport private-vlan mapping 2000 add xyz",
+            "interface GigabitEthernet1/0/5",
+            "switchport private-vlan mapping 2000 remove xyz",
         ]
         result = self.execute_module(changed=False)
         self.maxDiff = None
@@ -977,4 +1099,479 @@ class TestIosL2InterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.maxDiff = None
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_l2_interfaces_deleted_trunk(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             switchport mode access
+             switchport access vlan 10
+            interface GigabitEthernet0/2
+             switchport trunk allowed vlan 10-20,40
+             switchport trunk encapsulation dot1q
+             switchport trunk native vlan 10
+             switchport trunk pruning vlan 10,20
+             switchport mode trunk
+            interface TwoGigabitEthernet1/0/1
+             switchport mode access
+             switchport access vlan 20
+            interface GigabitEthernet0/3
+             switchport trunk allowed vlan 11,59,67,75,77,81,100,400-408,411-413,415,418
+             switchport trunk allowed vlan add 461,674,675,696,931,935,951,952,973,974,979
+             switchport trunk allowed vlan add 982,986,988,993
+             switchport trunk encapsulation dot1q
+             switchport trunk pruning vlan 10-15
+             switchport mode trunk
+            """,
+        )
+        set_module_args(dict(config=[dict(name="GigabitEthernet0/2")], state="deleted"))
+        commands = [
+            "interface GigabitEthernet0/2",
+            "no switchport mode",
+            "no switchport trunk allowed vlan",
+            "no switchport trunk encapsulation",
+            "no switchport trunk native vlan",
+            "no switchport trunk pruning vlan",
+        ]
+        self.maxDiff = None
+        self.execute_module(changed=True, commands=commands)
+
+    def test_ios_l2_interfaces_replaced_trunk(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             switchport mode access
+             switchport access vlan 10
+            interface GigabitEthernet0/2
+            interface TwoGigabitEthernet1/0/1
+             switchport mode access
+             switchport access vlan 20
+            interface GigabitEthernet0/3
+             switchport trunk allowed vlan 11,59,67,75,77,81,100,400-408,411-413,415,418
+             switchport trunk allowed vlan add 461,674,675,696,931,935,951,952,973,974,979
+             switchport trunk allowed vlan add 982,986,988,993
+             switchport trunk encapsulation dot1q
+             switchport trunk pruning vlan 10-15
+             switchport mode trunk
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/2",
+                        trunk=dict(
+                            allowed_vlans=["20-25", "40"],
+                            encapsulation="isl",
+                            native_vlan=20,
+                            pruning_vlans=["10"],
+                        ),
+                        mode="trunk",
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/2",
+            "switchport trunk encapsulation isl",
+            "switchport mode trunk",
+            "switchport trunk native vlan 20",
+            "switchport trunk allowed vlan 20-25,40",
+            "switchport trunk pruning vlan 10",
+        ]
+        result = self.execute_module(changed=True)
+        self.maxDiff = None
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_l2_interfaces_replaced_trunk_reverse(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+                interface GigabitEthernet0/1
+                 switchport mode access
+                 switchport access vlan 10
+                interface GigabitEthernet0/2
+                 switchport mode trunk
+                interface TwoGigabitEthernet1/0/1
+                 switchport mode access
+                 switchport access vlan 20
+                interface GigabitEthernet0/3
+                 switchport trunk allowed vlan 11,59,67,75,77,81,100,400-408,411-413,415,418
+                 switchport trunk allowed vlan add 461,674,675,696,931,935,951,952,973,974,979
+                 switchport trunk allowed vlan add 982,986,988,993
+                 switchport trunk encapsulation dot1q
+                 switchport trunk pruning vlan 10-15
+                 switchport mode trunk
+                """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/2",
+                        trunk=dict(
+                            allowed_vlans=["20-25", "40"],
+                            encapsulation="isl",
+                            native_vlan=20,
+                            pruning_vlans=["10"],
+                        ),
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/2",
+            "no switchport mode",
+            "switchport trunk encapsulation isl",
+            "switchport trunk native vlan 20",
+            "switchport trunk allowed vlan 20-25,40",
+            "switchport trunk pruning vlan 10",
+        ]
+        result = self.execute_module(changed=True)
+        self.maxDiff = None
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_l2_interfaces_merged_trunk(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             switchport mode access
+             switchport access vlan 10
+            interface GigabitEthernet0/2
+             switchport trunk allowed vlan 10-20,40
+             switchport trunk encapsulation dot1q
+             switchport trunk native vlan 10
+             switchport trunk pruning vlan 10,20
+             switchport mode access
+            interface TwoGigabitEthernet1/0/1
+             switchport mode access
+             switchport access vlan 20
+            interface GigabitEthernet0/3
+             switchport trunk allowed vlan 11,59,67,75,77,81,100,400-408,411-413,415,418
+             switchport trunk allowed vlan add 461,674,675,696,931,935,951,952,973,974,979
+             switchport trunk allowed vlan add 982,986,988,993
+             switchport trunk encapsulation dot1q
+             switchport trunk pruning vlan 10-15
+             switchport mode trunk
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        access=dict(vlan=20),
+                        mode="access",
+                        name="GigabitEthernet0/1",
+                        voice=dict(vlan=40),
+                    ),
+                    dict(
+                        mode="trunk",
+                        name="GigabitEthernet0/2",
+                        trunk=dict(
+                            allowed_vlans=["60"],
+                            encapsulation="isl",
+                            native_vlan=20,
+                            pruning_vlans=["9-15", "20"],
+                        ),
+                    ),
+                    dict(
+                        access=dict(vlan=20),
+                        mode="access",
+                        name="TwoGigabitEthernet1/0/1",
+                        trunk=dict(pruning_vlans=["9-19", "20"]),
+                        private_vlan={
+                            "association": True,
+                            "host": True,
+                            "primary_range": 2000,
+                            "secondary_range": 2500,
+                        },
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/1",
+            "switchport access vlan 20",
+            "switchport voice vlan 40",
+            "interface GigabitEthernet0/2",
+            "switchport trunk encapsulation isl",
+            "switchport mode trunk",
+            "switchport trunk native vlan 20",
+            "switchport trunk allowed vlan add 60",
+            "switchport trunk pruning vlan add 9,11-15",
+            "interface TwoGigabitEthernet1/0/1",
+            "switchport private-vlan association host 2000 2500",
+            "switchport trunk pruning vlan 9-20",
+        ]
+        result = self.execute_module(changed=True)
+        self.maxDiff = None
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_l2_interfaces_merged_mixed_config(self):
+        """Test merging mixed configuration - access, trunk, xconnect, and encapsulation scenarios"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1/0/1
+             switchport mode access
+             switchport access vlan 10
+
+            interface GigabitEthernet1/0/2
+             switchport trunk allowed vlan 10-20
+             switchport mode trunk
+
+            interface GigabitEthernet1/0/3
+             description Empty interface
+
+            interface GigabitEthernet1/0/4
+             switchport mode trunk
+             switchport trunk allowed vlan 10-20
+             encapsulation dot1q 50
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet1/0/1",
+                        mode="access",
+                        access=dict(vlan=20),
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/2",
+                        mode="trunk",
+                        trunk=dict(
+                            allowed_vlans=["30-40"],
+                        ),
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/3",
+                        mode="access",
+                        xconnect=dict(
+                            address="10.1.1.1",
+                            vcid=300,
+                            encapsulation="mpls",
+                        ),
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/4",
+                        mode="trunk",
+                        encapsulation=dict(
+                            type="dot1q",
+                            vlan_id=100,
+                        ),
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet1/0/1",
+            "switchport access vlan 20",
+            "switchport mode access",
+            "interface GigabitEthernet1/0/2",
+            "switchport trunk allowed vlan add 30-40",
+            "interface GigabitEthernet1/0/3",
+            "xconnect 10.1.1.1 300 encapsulation mpls",
+            "interface GigabitEthernet1/0/4",
+            "encapsulation dot1q 100",
+        ]
+
+        result = self.execute_module(changed=True)
+        print(result["commands"])
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_l2_interfaces_merged_xconnect_config(self):
+        """
+        Test merging mixed configuration including new xconnect and encapsulation params.
+        """
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1/0/1
+             switchport mode access
+             switchport access vlan 10
+            interface GigabitEthernet1/0/3
+             description Empty interface
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet1/0/1",
+                        mode="access",
+                        access=dict(vlan=20),
+                    ),
+                    dict(
+                        name="GigabitEthernet1/0/3",
+                        xconnect=dict(
+                            address="10.1.1.1",
+                            vcid=300,
+                            encapsulation="mpls",
+                            manual=True,
+                            pw_class="TEST",
+                            sequencing="transmit",
+                        ),
+                    ),
+                    dict(
+                        name="HundredGigE1/0/41.123",
+                        encapsulation=dict(
+                            type="dot1Q",
+                            vlan_id=123,
+                        ),
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet1/0/1",
+            "switchport access vlan 20",
+            "interface GigabitEthernet1/0/3",
+            "xconnect 10.1.1.1 300 encapsulation mpls manual pw-class TEST sequencing transmit",
+            "interface HundredGigE1/0/41.123",
+            "encapsulation dot1Q 123",
+        ]
+
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_l2_interfaces_replaced_ordering_logic(self):
+        """
+        Verifies the priority logic:
+        1. Remove OLD xconnect (if changing)
+        2. Change Mode (L2/L3)
+        3. Add NEW xconnect
+        """
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             switchport mode trunk
+             xconnect 192.168.1.1 123 encapsulation mpls
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/1",
+                        mode="access",
+                        xconnect=dict(
+                            address="192.168.1.1",
+                            vcid=100,
+                            encapsulation="mpls",
+                            manual=True,
+                            pw_class="TEST",
+                            sequencing="transmit",
+                        ),
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/1",
+            "no xconnect 192.168.1.1 123 encapsulation mpls",
+            "switchport mode access",
+            "xconnect 192.168.1.1 100 encapsulation mpls manual pw-class TEST sequencing transmit",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_l2_interfaces_overridden_full_wipe(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             encapsulation dot1Q 500
+            interface GigabitEthernet0/2
+             xconnect 10.1.1.1 123 encapsulation mpls pw-class OLD_CLASS sequencing both
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/1",
+                    ),
+                    dict(
+                        name="GigabitEthernet0/2",
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/1",
+            "no encapsulation dot1Q 500",
+            "interface GigabitEthernet0/2",
+            "no xconnect 10.1.1.1 123 encapsulation mpls pw-class OLD_CLASS sequencing both",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_l2_interfaces_overridden_update_params(self):
+        """
+        Verifies updating parameters via overridden (e.g., changing VCID/Class).
+        """
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/1
+             xconnect 10.1.1.1 34 encapsulation mpls pw-class OLD_CLASS sequencing both
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/1",
+                        xconnect=dict(
+                            address="10.1.1.1",
+                            vcid=123,
+                            encapsulation="mpls",
+                            pw_class="NEW_CLASS",
+                            sequencing="transmit",
+                        ),
+                    ),
+                ],
+                state="overridden",
+            ),
+        )
+        commands = [
+            "interface GigabitEthernet0/1",
+            "no xconnect 10.1.1.1 34 encapsulation mpls pw-class OLD_CLASS sequencing both",
+            "xconnect 10.1.1.1 123 encapsulation mpls pw-class NEW_CLASS sequencing transmit",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_l2_interfaces_merged_encapsulation_update(self):
+        """
+        Verifies merging encapsulation updates.
+        """
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface HundredGigE1/0/1
+             description Test
+             encapsulation dot1q 300
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="HundredGigE1/0/1",
+                        encapsulation=dict(type="dot1q", vlan_id=200),
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        commands = [
+            "interface HundredGigE1/0/1",
+            "no encapsulation dot1q 300",
+            "encapsulation dot1q 200",
+        ]
+        result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)

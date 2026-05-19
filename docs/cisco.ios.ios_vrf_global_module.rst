@@ -269,6 +269,25 @@ Parameters
                 <td>
                 </td>
                 <td>
+                        <div>This option is DEPRECATED and is replaced with both_options which accepts list as input.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>both_options</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
                         <div>Both export and import target-VPN configuration.</div>
                 </td>
             </tr>
@@ -287,6 +306,25 @@ Parameters
                 <td>
                 </td>
                 <td>
+                        <div>This option is DEPRECATED and is replaced with exports which accepts list as input.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>exports</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
                         <div>Export target-VPN configuration.</div>
                 </td>
             </tr>
@@ -300,6 +338,25 @@ Parameters
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>This option is DEPRECATED and is replaced with imports which accepts list as input.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>imports</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=string</span>
                     </div>
                 </td>
                 <td>
@@ -426,7 +483,7 @@ Parameters
                         <div>The states <em>rendered</em>, <em>gathered</em> and <em>parsed</em> does not perform any change on the device.</div>
                         <div>The state <em>rendered</em> will transform the configuration in <code>config</code> option to platform specific CLI commands which will be returned in the <em>rendered</em> key within the result. For state <em>rendered</em> active connection to remote host is not required.</div>
                         <div>The state <em>gathered</em> will fetch the running configuration from device and transform it into structured data in the format as per the resource module argspec and the value is returned in the <em>gathered</em> key within the result.</div>
-                        <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into JSON format as per the resource module parameters and the value is returned in the <em>parsed</em> key within the result. The value of <code>running_config</code> option should be the same format as the output of command <em>show running-config | section vrf</em>. connection to remote host is not required.</div>
+                        <div>The state <em>parsed</em> reads the configuration from <code>running_config</code> option and transforms it into JSON format as per the module parameters and the value is returned in the <em>parsed</em> key within the result. The value of <code>running_config</code> option should be the same format as the output of command <em>show running-config | section vrf</em>. connection to remote host is not required.</div>
                         <div>The state <em>deleted</em> only removes the VRF attributes that this module manages and does not negate the VRF completely. Thereby, preserving address-family related configurations under VRF context.</div>
                         <div>The state <em>purged</em> removes all the VRF definitions from the target device. Use caution with this state.</div>
                         <div>Refer to examples for more details.</div>
@@ -472,8 +529,8 @@ Examples
                   multitopology: true
               rd: "2:3"
               route_target:
-                export: "192.0.2.0:100"
-                import_config: "192.0.2.3:200"
+                exports: "192.0.2.0:100"
+                imports: "192.0.2.3:200"
               vpn:
                 id: "2:45"
               vnet:
@@ -507,8 +564,8 @@ Examples
     #         multitopology: true
     #     rd: "2:3"
     #     route_target:
-    #       export: "192.0.2.0:100"
-    #       import_config: "192.0.2.3:200"
+    #       exports: "192.0.2.0:100"
+    #       imports: "192.0.2.3:200"
     #     vnet:
     #       tag: 200
     #     vpn:
@@ -558,8 +615,8 @@ Examples
                   multitopology: true
               rd: "7:8"
               route_target:
-                export: "198.51.100.112:500"
-                import_config: "192.0.2.4:400"
+                exports: "198.51.100.112:500"
+                imports: "192.0.2.4:400"
               vpn:
                 id: "5:45"
               vnet:
@@ -580,12 +637,12 @@ Examples
     #         multitopology: true
     #     rd: "2:3"
     #     route_target:
-    #       export: "192.0.2.0:100"
-    #       import_config: "192.0.2.3:200"
+    #       exports: "192.0.2.0:100"
+    #       imports: "192.0.2.3:200"
     #     vnet:
     #       tag: 200
     #     vpn:
-    #       id: "2:45"
+    #       id: "2:45
     #
     # commands:
     # - vrf definition VRF7
@@ -609,8 +666,8 @@ Examples
     #         multitopology: true
     #     rd: "2:3"
     #     route_target:
-    #       export: "192.0.2.0:100"
-    #       import_config: "192.0.2.3:200"
+    #       exports: "192.0.2.0:100"
+    #       imports: "192.0.2.3:200"
     #     vnet:
     #       tag: 200
     #     vpn:
@@ -625,8 +682,8 @@ Examples
     #         multitopology: true
     #     rd: "7:8"
     #     route_target:
-    #       export: "198.51.100.112:500"
-    #       import_config: "192.0.2.4:400"
+    #       exports: "198.51.100.112:500"
+    #       imports: "192.0.2.4:400"
     #     vnet:
     #       tag: 300
     #     vpn:
@@ -694,8 +751,8 @@ Examples
                   multitopology: true
               rd: "6:7"
               route_target:
-                export: "198.51.0.2:400"
-                import_config: "198.51.0.5:200"
+                exports: "198.51.0.2:400"
+                imports: "198.51.0.5:200"
               vpn:
                 id: "4:5"
               vnet:
@@ -716,8 +773,8 @@ Examples
     #         multitopology: true
     #     rd: "2:3"
     #     route_target:
-    #       export: "192.0.2.0:100"
-    #       import_config: "192.0.2.3:200"
+    #       exports: "192.0.2.0:100"
+    #       imports: "192.0.2.3:200"
     #     vnet:
     #       tag: 200
     #     vpn:
@@ -732,8 +789,8 @@ Examples
     #         multitopology: true
     #     rd: "7:8"
     #     route_target:
-    #       export: "198.51.100.112:500"
-    #       import_config: "192.0.2.4:400"
+    #       exports: "198.51.100.112:500"
+    #       imports: "192.0.2.4:400"
     #     vnet:
     #       tag: 300
     #     vpn:
@@ -780,8 +837,8 @@ Examples
     #         multitopology: true
     #     rd: "6:7"
     #     route_target:
-    #       export: "198.51.0.2:400"
-    #       import_config: "198.51.0.5:200"
+    #       exports: "198.51.0.2:400"
+    #       imports: "198.51.0.5:200"
     #     vnet:
     #       tag: 500
     #     vpn:
@@ -846,8 +903,8 @@ Examples
     #         multitopology: true
     #     rd: "6:7"
     #     route_target:
-    #       export: "198.51.0.2:400"
-    #       import_config: "198.51.0.5:200"
+    #       exports: "198.51.0.2:400"
+    #       imports: "198.51.0.5:200"
     #     vnet:
     #       tag: 500
     #     vpn:
@@ -917,8 +974,8 @@ Examples
     #         multitopology: true
     #     rd: "6:7"
     #     route_target:
-    #       export: "198.51.0.2:400"
-    #       import_config: "198.51.0.5:200"
+    #       exports: "198.51.0.2:400"
+    #       imports: "198.51.0.5:200"
     #     vnet:
     #       tag: 500
     #     vpn:
@@ -999,8 +1056,8 @@ Examples
                   multitopology: true
               rd: "2:3"
               route_target:
-                export: "192.0.2.0:100"
-                import_config: "192.0.2.3:200"
+                exports: "192.0.2.0:100"
+                imports: "192.0.2.3:200"
               vpn:
                 id: "2:45"
               vnet:
@@ -1057,8 +1114,8 @@ Examples
     #           multitopology: true
     #       rd: "2:3"
     #       route_target:
-    #         export: "192.0.2.0:100"
-    #         import_config: "192.0.2.3:200"
+    #         exports: "192.0.2.0:100"
+    #         imports: "192.0.2.3:200"
     #       vnet:
     #         tag: 200
     #       vpn:
@@ -1105,8 +1162,8 @@ Examples
     #           multitopology: true
     #       rd: "192.0.2.0:300"
     #       route_target:
-    #         export: "192.0.2.0:100"
-    #         import_config: "192.0.2.2:300"
+    #         exports: "192.0.2.0:100"
+    #         imports: "192.0.2.2:300"
     #       vnet:
     #         tag: 34
     #       vpn:

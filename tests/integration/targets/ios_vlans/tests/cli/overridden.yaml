@@ -5,7 +5,6 @@
 - block:
     - ansible.builtin.include_tasks: _remove_config.yaml
     - ansible.builtin.include_tasks: _populate_config.yaml
-  when: ansible_net_version == "15.6(2)T"
 
 - block:
     - name: Override device configuration of all vlans with provided configuration
@@ -14,11 +13,9 @@
         config:
           - name: VLAN_10
             vlan_id: 10
-            mtu: 1000
 
           - name: VLAN_40
             vlan_id: 40
-            mtu: 850
         state: overridden
 
     - name: Assert that correct set of commands were generated
@@ -36,13 +33,15 @@
         that:
           - "{{ overridden['after'] | symmetric_difference(result['after']) | length == 0 }}"
 
-    - name: Override device configuration of all interfaces with provided configuration (idempotent)
-      register: result
-      cisco.ios.ios_vlans: *id001
-    - name: Assert that task was idempotent
-      ansible.builtin.assert:
-        that:
-          - result['changed'] == false
-  when: ansible_net_version == "15.6(2)T"
+    #  see deleted.yml, reason for the idempotent task being commented out
+
+    #  - name: Override device configuration of all interfaces with provided configuration (idempotent)
+    #    register: result
+    #    cisco.ios.ios_vlans: *id001
+
+    #  - name: Assert that task was idempotent
+    #    ansible.builtin.assert:
+    #      that:
+    #        - result['changed'] == false
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

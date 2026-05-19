@@ -8,16 +8,29 @@
       - ip routing
       - ipv6 unicast-routing
 
+- name: Configure BGP neighbors using ios_config
+  cisco.ios.ios_config:
+    lines:
+      - router bgp 65000
+      - neighbor 10.1.1.1 remote-as 100
+      - neighbor 10.1.1.2 remote-as 200
+      - neighbor 10.1.1.3 remote-as 200
+
 - name: Populate BGP address family configuration
   cisco.ios.ios_bgp_address_family:
     config:
-      as_number: 65000
+      as_number: "65000"
       address_family:
         - afi: ipv4
           safi: multicast
-          # vrf: blue  # commented as c8000v throws topology error
+          neighbors:
+            - neighbor_address: "10.1.1.1"
+              activate: true
           aggregate_address:
             - address: 192.0.2.1
+              netmask: 255.255.255.255
+              as_confed_set: true
+            - address: 192.0.3.1
               netmask: 255.255.255.255
               as_confed_set: true
           bgp:
@@ -30,26 +43,21 @@
             slow_peer:
               - detection:
                   threshold: 150
-          neighbor:
-            - address: 198.51.100.1
-              aigp:
-                send:
-                  cost_community:
-                    id: 100
-                    poi:
-                      igp_cost: true
-                      transitive: true
-              slow_peer:
-                - detection:
-                    threshold: 150
-              remote_as: 10
-              route_maps:
-                - name: test-route
-                  out: true
           network:
             - address: 198.51.110.10
               mask: 255.255.255.255
               backdoor: true
+            - address: 198.51.111.11
+              mask: 255.255.255.255
+              route_map: test
+          default_metric: 12
+          distance:
+            external: 10
+            internal: 10
+            local: 100
+          table_map:
+            name: test_tableMap
+            filter: true
         - afi: ipv4
           safi: mdt
           bgp:
@@ -60,24 +68,6 @@
               suppress_route_val: 100
               max_suppress: 5
             soft_reconfig_backup: true
-        - afi: ipv4
-          safi: multicast
-          aggregate_address:
-            - address: 192.0.3.1
-              netmask: 255.255.255.255
-              as_confed_set: true
-          default_metric: 12
-          distance:
-            external: 10
-            internal: 10
-            local: 100
-          network:
-            - address: 198.51.111.11
-              mask: 255.255.255.255
-              route_map: test
-          table_map:
-            name: test_tableMap
-            filter: true
         - afi: ipv6
           redistribute:
             - ospf:

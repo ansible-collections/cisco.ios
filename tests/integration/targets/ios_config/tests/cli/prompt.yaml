@@ -1,0 +1,24 @@
+---
+- ansible.builtin.debug: msg="START cli/defaults.yaml on connection={{ ansible_connection }}"
+
+- name: "create filter list "
+  cisco.ios.ios_config:
+    lines:
+      - vlan-id
+      - cdp
+    parents: access-session attributes filter-list list mylist
+    save_when: "changed"
+
+- name: "Configure Access Session Attributes while handlening prompt"
+  register: result
+  cisco.ios.ios_config:
+    lines:
+      - config_line: access-session authentication attributes filter-spec include list mylist
+      - config_line: access-session accounting attributes filter-spec include list mylist
+        prompt: "Do you wish to continue\\? \\[yes]:"
+        answer: "yes"
+    save_when: "changed"
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == true

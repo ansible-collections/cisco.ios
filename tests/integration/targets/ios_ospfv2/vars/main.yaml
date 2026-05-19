@@ -1,7 +1,6 @@
 ---
 merged:
   before: {}
-
   commands:
     - router ospf 200 vrf blue
     - auto-cost reference-bandwidth 4
@@ -219,7 +218,6 @@ deleted:
     - no router ospf 1
 
   after: {}
-
 rtt:
   commands:
     - no router ospf 100 vrf blue

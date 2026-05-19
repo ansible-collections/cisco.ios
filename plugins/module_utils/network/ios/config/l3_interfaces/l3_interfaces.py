@@ -1,4 +1,3 @@
-#
 # -*- coding: utf-8 -*-
 # Copyright 2019 Red Hat Inc.
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -15,7 +14,6 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -52,6 +50,8 @@ class L3_interfaces(ResourceModule):
             "ipv4.pool",
             "ipv4.dhcp",
             "ipv4.source_interface",
+            "ipv4.mtu",
+            "ipv4.proxy_arp",
             "ipv6.address",
             "ipv6.autoconfig",
             "ipv6.dhcp",
@@ -114,13 +114,83 @@ class L3_interfaces(ResourceModule):
             self._compare(want=want, have=have)
 
     def _compare(self, want, have):
+        """Leverages the base class `compare()` method and
+        populates the list of commands to be run by comparing
+        the `want` and `have` data with the `parsers` defined
+        for the L3_interfaces network resource.
+        """
         begin = len(self.commands)
+        want_without_name = want.copy()
+        want_without_name.pop("name", None)
+        pre_pop_want = bool(want_without_name)
+
+        want_redirects = want.pop("redirects", None)
+        have_redirects = have.pop("redirects", None)
+        self.handle_defaults(want_redirects, have_redirects, "redirects", pre_pop_want)
+
+        want_unreachables = want.pop("unreachables", None)
+        have_unreachables = have.pop("unreachables", None)
+        self.handle_defaults(want_unreachables, have_unreachables, "unreachables", pre_pop_want)
+
+        want_redirects = want.pop("ipv6_redirects", None)
+        have_redirects = have.pop("ipv6_redirects", None)
+        self.handle_defaults(want_redirects, have_redirects, "ipv6_redirects", pre_pop_want)
+
+        want_unreachables = want.pop("ipv6_unreachables", None)
+        have_unreachables = have.pop("ipv6_unreachables", None)
+        self.handle_defaults(
+            want_unreachables,
+            have_unreachables,
+            "ipv6_unreachables",
+            pre_pop_want,
+        )
+
         self.compare(parsers=self.gen_parsers, want=want, have=have)
         self._compare_lists(want=want, have=have)
+
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "name", False))
 
+    def handle_defaults(self, want_defaults, have_defaults, parser, want):
+        if want_defaults is None and have_defaults is None:
+            if self.state == "replaced" or (self.state == "overridden" and want):
+                self.addcmd({parser: True}, parser, True)
+        else:
+            if want_defaults is True and have_defaults is False:
+                self.addcmd({parser: want_defaults}, parser, not want_defaults)
+            elif want_defaults is False and have_defaults is None:
+                self.addcmd({parser: not want_defaults}, parser, not want_defaults)
+            elif want_defaults is None and have_defaults is False:
+                if self.state in ["overridden", "deleted"] and not want:
+                    self.addcmd({parser: not have_defaults}, parser, have_defaults)
+
     def _compare_lists(self, want, have):
+        helper_address_dict_wantd = want.get("helper_addresses", {})
+        if helper_address_dict_wantd:
+            for value in ["ipv4"]:
+                for k, val in helper_address_dict_wantd.get(value, {}).items():
+                    hacl = have.get("helper_addresses", {}).get(value, {})
+                    hacl_val = hacl.pop(k, {})
+                    if hacl_val and hacl_val != val:
+                        self.compare(
+                            parsers=["helper_addresses_ipv4"],
+                            want={},
+                            have={value: hacl_val},
+                        )
+                    self.compare(
+                        parsers=["helper_addresses_ipv4"],
+                        want={value: val},
+                        have={value: hacl_val},
+                    )
+        helper_address_dict_haved = have.get("helper_addresses", {})
+        if helper_address_dict_haved:
+            for value in ["ipv4"]:
+                for k, val in helper_address_dict_haved.get(value, {}).items():
+                    self.compare(
+                        parsers=["helper_addresses_ipv4"],
+                        want={},
+                        have={value: val},
+                    )
         for afi in ("ipv4", "ipv6"):
             wacls = want.pop(afi, {})
             hacls = have.pop(afi, {})
@@ -191,9 +261,18 @@ class L3_interfaces(ResourceModule):
                 have["address"] = v4_addr_h
 
     def list_to_dict(self, param):
+        def list_to_dict_by_destination_ip(helper_list):
+            return {item["destination_ip"]: item for item in helper_list}
+
         if param:
-            for _k, val in iteritems(param):
+            for k, val in param.items():
                 val["name"] = normalize_interface(val["name"])
+                helper_addresses_dict = val.get("helper_addresses", {})
+                for value in ["ipv4"]:
+                    if value in helper_addresses_dict:
+                        helper_addresses_dict[value] = list_to_dict_by_destination_ip(
+                            helper_addresses_dict[value],
+                        )
                 if "ipv4" in val:
                     temp = {}
                     for each in val["ipv4"]:

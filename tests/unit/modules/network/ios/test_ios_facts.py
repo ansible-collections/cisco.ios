@@ -21,8 +21,6 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 from unittest.mock import patch
 
-from ansible.module_utils.six import assertCountEqual
-
 from ansible_collections.cisco.ios.plugins.modules import ios_facts
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
@@ -171,13 +169,11 @@ class TestIosFactsModule(TestIosModule):
     def test_ios_facts_neighbors(self):
         set_module_args(dict(gather_subset="interfaces"))
         result = self.execute_module()
-        assertCountEqual(
-            self,
+        self.assertCountEqual(
             result["ansible_facts"]["ansible_net_neighbors"].keys(),
             ["GigabitEthernet1", "GigabitEthernet3"],
         )
-        assertCountEqual(
-            self,
+        self.assertCountEqual(
             result["ansible_facts"]["ansible_net_neighbors"]["GigabitEthernet1"],
             [
                 {
@@ -194,8 +190,32 @@ class TestIosFactsModule(TestIosModule):
                 },
             ],
         )
-        assertCountEqual(
-            self,
+        self.assertCountEqual(
             result["ansible_facts"]["ansible_net_neighbors"]["GigabitEthernet3"],
-            [{"host": "Rtest", "port": "Gi1", "ip": "10.3.0.3"}],
+            [{"host": "Rtest", "port": "Gi1", "ip": "10.3.0.3", "chassis_id": "001e.e6c9.6d00"}],
+        )
+
+    def test_ios_facts_interfaces(self):
+        set_module_args(dict(gather_subset="interfaces"))
+        result = self.execute_module()
+        self.assertEqual(
+            result["ansible_facts"]["ansible_net_interfaces"]["GigabitEthernet2/5/5.1874"],
+            {"ipv4": [], "operstatus": "deleted"},
+        )
+        self.assertEqual(
+            result["ansible_facts"]["ansible_net_interfaces"]["Tunnel1110"],
+            {
+                "bandwidth": None,
+                "description": None,
+                "duplex": None,
+                "ipv4": [
+                    {"address": "10.10.10.2", "subnet": "30"},
+                ],
+                "lineprotocol": "up",
+                "macaddress": None,
+                "mediatype": None,
+                "mtu": None,
+                "operstatus": "up",
+                "type": None,
+            },
         )

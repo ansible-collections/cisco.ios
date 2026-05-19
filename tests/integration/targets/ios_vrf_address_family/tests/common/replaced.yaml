@@ -1,0 +1,54 @@
+---
+- ansible.builtin.debug:
+    msg: Start ios_vrf_address_family replaced integration tests connection={{ ansible_connection}}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- ansible.builtin.include_tasks: _populate.yaml
+
+- block:
+    - name: Replace given vrf configuration with provided configurations
+      cisco.ios.ios_vrf_address_family:
+        config:
+          - name: test1
+            address_families:
+              - afi: "ipv4"
+                safi: "unicast"
+                bgp:
+                  next_hop:
+                    loopback: 40
+                export:
+                  ipv4:
+                    multicast:
+                      map: "single"
+                      prefix: 345
+                    unicast:
+                      allow_evpn: true
+                      map: "test-map"
+                      prefix: 67
+                  map: "testing-map"
+                import_config:
+                  ipv4:
+                    multicast:
+                      map: "import-map"
+                      prefix: 89
+                    unicast:
+                      allow_evpn: true
+                      limit: 12
+                      map: "ran-map"
+                  map: "import-map"
+        state: replaced
+      register: result
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that before dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - "{{ replaced['before'] == result['before'] }}"
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

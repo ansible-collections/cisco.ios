@@ -1,0 +1,46 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_hsrp_interfaces round trip integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: HSRP_interface RTT - apply the provided configuration (base config)
+      register: result
+      cisco.ios.ios_hsrp_interfaces:
+        config:
+          - name: GigabitEthernet4
+            standby_groups:
+              - group_no: 0
+                priority: 6
+        state: merged
+
+    - name: HSRP_interface RTT - gather hsrp layer interfaces facts
+      cisco.ios.ios_facts:
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources:
+          - hsrp_interfaces
+
+    - name: HSRP_interface RTT - apply the provided configuration (config to be reverted)
+      cisco.ios.ios_hsrp_interfaces:
+        config:
+          - name: GigabitEthernet4
+            standby_groups:
+              - group_no: 0
+                priority: 5
+        state: replaced
+
+    - name: HSRP_interface RTT - revert back to base configuration using facts round trip
+      register: revert
+      cisco.ios.ios_hsrp_interfaces:
+        config: "{{ ansible_facts['network_resources']['hsrp_interfaces'] }}"
+        state: overridden
+
+    - ansible.builtin.assert:
+        that:
+          - revert.changed == true
+          - "{{ revert['commands'] | symmetric_difference(rtt['commands']) | length == 0 }}"
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

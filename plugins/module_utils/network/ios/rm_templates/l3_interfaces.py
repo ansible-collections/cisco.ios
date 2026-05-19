@@ -74,7 +74,7 @@ class L3_interfacesTemplate(NetworkTemplate):
         {
             "name": "mac_address",
             "getval": re.compile(
-                r"""^mac-address
+                r"""^\s*mac-address
                     (\s(?P<mac_address>\S+))
                     $""",
                 re.VERBOSE,
@@ -94,6 +94,35 @@ class L3_interfacesTemplate(NetworkTemplate):
             "setval": "interface {{ name }}",
             "result": {"{{ name }}": {"name": "{{ name }}"}},
             "shared": True,
+        },
+        {
+            "name": "helper_addresses_ipv4",
+            "getval": re.compile(
+                r"""
+                ^\s*ip\s+helper-address
+                (\s(?P<global>global))?
+                (\svrf\s(?P<vrf>\S+))?
+                \s+(?P<destination_ip>\S+)
+                \s*$
+                """,
+                re.VERBOSE,
+            ),
+            "setval": "ip helper-address "
+                      "{{ 'global ' if ipv4.global|d(False) else ''}}"
+                      "{{ 'vrf ' + ipv4.vrf|string + ' ' if ipv4.vrf is defined else ''}}"
+                      "{{ ipv4.destination_ip|string }}",
+            "compval": "ipv4",
+            "result": {
+                "{{ name }}": {
+                    "helper_addresses": {
+                        "ipv4": [{
+                            "destination_ip": "{{ destination_ip }}",
+                            "global": "{{ not not global }}",
+                            "vrf": "{{ vrf }}",
+                        }],
+                    },
+                },
+            },
         },
         {
             "name": "ipv4.address",
@@ -132,6 +161,191 @@ class L3_interfacesTemplate(NetworkTemplate):
                     "ipv4": [
                         {
                             "pool": "{{ pool }}",
+                        },
+                    ],
+                },
+            },
+        },
+        {
+            "name": "ipv4.mtu",
+            "getval": re.compile(
+                r"""
+                \s+ip\smtu\s(?P<mtu>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip mtu {{ ipv4.mtu }}",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": [
+                        {
+                            "mtu": "{{ mtu }}",
+                        },
+                    ],
+                },
+            },
+        },
+        {
+            "name": "ipv4.redirects",
+            "getval": re.compile(
+                r"""
+                \s+ip\sredirects
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip redirects",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": [
+                        {
+                            "redirects": True,
+                        },
+                    ],
+                },
+            },
+        },
+
+        {
+            "name": "redirects",
+            "getval": re.compile(
+                r"""
+                \s+ip\sredirects
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip redirects",
+            "result": {
+                "{{ name }}": {
+                    "redirects": True,
+                },
+            },
+        },
+        {
+            "name": "no_redirects",
+            "getval": re.compile(
+                r"""
+                \s+no\s+ip\sredirects
+                $""", re.VERBOSE,
+            ),
+            "setval": "no ip redirects",
+            "result": {
+                "{{ name }}": {
+                    "redirects": False,
+                },
+            },
+        },
+        {
+            "name": "unreachables",
+            "getval": re.compile(
+                r"""
+                \s+ip\sunreachables
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip unreachables",
+            "result": {
+                "{{ name }}": {
+                    "unreachables": True,
+                },
+            },
+        },
+        {
+            "name": "no_unreachables",
+            "getval": re.compile(
+                r"""
+                \s+no\s+ip\sunreachables
+                $""", re.VERBOSE,
+            ),
+            "setval": "no ip unreachables",
+            "result": {
+                "{{ name }}": {
+                    "unreachables": False,
+                },
+            },
+        },
+        {
+            "name": "ipv6_redirects",
+            "getval": re.compile(
+                r"""
+                \s+ipv6\sredirects
+                $""", re.VERBOSE,
+            ),
+            "setval": "ipv6 redirects",
+            "result": {
+                "{{ name }}": {
+                    "ipv6_redirects": True,
+                },
+            },
+        },
+        {
+            "name": "no_ipv6_redirects",
+            "getval": re.compile(
+                r"""
+                \s+no\s+ipv6\sredirects
+                $""", re.VERBOSE,
+            ),
+            "setval": "no ipv6 redirects",
+            "result": {
+                "{{ name }}": {
+                    "ipv6_redirects": False,
+                },
+            },
+        },
+        {
+            "name": "ipv6_unreachables",
+            "getval": re.compile(
+                r"""
+                \s+ipv6\sunreachables
+                $""", re.VERBOSE,
+            ),
+            "setval": "ipv6 unreachables",
+            "result": {
+                "{{ name }}": {
+                    "ipv6_unreachables": True,
+                },
+            },
+        },
+        {
+            "name": "no_ipv6_unreachables",
+            "getval": re.compile(
+                r"""
+                \s+no\s+ipv6\sunreachables
+                $""", re.VERBOSE,
+            ),
+            "setval": "no ipv6 unreachables",
+            "result": {
+                "{{ name }}": {
+                    "ipv6_unreachables": False,
+                },
+            },
+        },
+        {
+            "name": "ipv4.unreachables",
+            "getval": re.compile(
+                r"""
+                \s+ip\sunreachables
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip unreachables",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": [
+                        {
+                            "unreachables": True,
+                        },
+                    ],
+                },
+            },
+        },
+        {
+            "name": "ipv4.proxy_arp",
+            "getval": re.compile(
+                r"""
+                \s+ip\sproxy-arp
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip proxy-arp",
+            "result": {
+                "{{ name }}": {
+                    "ipv4": [
+                        {
+                            "proxy_arp": True,
                         },
                     ],
                 },

@@ -39,6 +39,8 @@ notes:
     appear if present in the running configuration on device including the indentation.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
+  - The recommended way to use templated configurations is to render the template using C(ansible.builtin.template)
+    lookup and pass the result to the I(content) parameter. Using I(src) with Jinja2 templates is deprecated.
 options:
   lines:
     description:
@@ -47,9 +49,22 @@ options:
         idempotency and correct diff. Be sure to note the configuration command syntax as
         some commands are automatically modified by the device config parser.
     type: list
-    elements: str
+    elements: raw
     aliases:
       - commands
+    suboptions:
+      config_line:
+        description: use to specify config lines when options are required to declare,works sames as lines
+        required: false
+        type: str
+      prompt:
+        description: prompt message to handle while editng configurations on device in configration mode
+        required: false
+        type: str
+      answer:
+        description: answer to send to device in order to handle prompt on device in configration mode
+        required: false
+        type: str
   parents:
     description:
       - The ordered set of parents that uniquely identify the section or hierarchy the
@@ -62,9 +77,21 @@ options:
       - Specifies the source path to the file that contains the configuration or configuration
         template to load.  The path to the source file can either be the full path on
         the Ansible control host or a relative path from the playbook or role root directory. This
-        argument is mutually exclusive with I(lines), I(parents). The configuration lines in the
+        argument is mutually exclusive with I(lines), I(parents), and I(content). The configuration lines in the
         source file should be similar to how it will appear if present in the running-configuration
         of the device including the indentation to ensure idempotency and correct diff.
+      - "NOTE: The I(src) parameter will no longer process Jinja2 templates starting in January 2028.
+        To use templated configurations, render the template using C(ansible.builtin.template) lookup
+        and pass the result to the I(content) parameter instead."
+    type: str
+  content:
+    description:
+      - Configuration content to apply to the device. This should be the rendered configuration
+        text, not a file path.
+      - This is the recommended way to provide templated configurations. Use C(ansible.builtin.template)
+        lookup to render your Jinja2 template and pass the output to this parameter.
+      - This argument is mutually exclusive with I(src), I(lines), and I(parents).
+      - 'Example: C(content: "{{ lookup(''ansible.builtin.template'', ''config.j2'') }}")'
     type: str
   before:
     description:
@@ -303,7 +330,7 @@ EXAMPLES = """
     host: "{{ inventory_hostname }}"
   when: ansible_net_version != version
 
-- name: Render a Jinja2 template onto an IOS device
+- name: Render a Jinja2 template onto an IOS device (DEPRECATED - use content parameter)
   cisco.ios.ios_config:
     backup: true
     src: ios_template.j2
@@ -315,6 +342,70 @@ EXAMPLES = """
     backup_options:
       filename: backup.cfg
       dir_path: /home/user
+
+- name: Apply templated configuration using content parameter (RECOMMENDED)
+  cisco.ios.ios_config:
+    content: "{{ lookup('ansible.builtin.template', 'ios_template.j2') }}"
+    backup: true
+
+- name: Apply templated configuration with backup options (RECOMMENDED)
+  cisco.ios.ios_config:
+    content: "{{ lookup('ansible.builtin.template', 'ios_template.j2') }}"
+    backup: true
+    backup_options:
+      filename: backup.cfg
+      dir_path: /home/user
+
+- name: Load configuration from pre-rendered template
+  cisco.ios.ios_config:
+    content: |
+      interface GigabitEthernet0/1
+       description Uplink to Core
+       ip address 10.1.1.1 255.255.255.0
+       no shutdown
+
+- name: Configure Access Session Attributes while handlening prompt
+  cisco.ios.ios_config:
+    lines:
+      - config_line: access-session authentication attributes filter-spec include list test_filter
+      - config_line: access-session accounting attributes filter-spec include list test_filter
+        prompt: "Do you wish to continue? [yes]:"
+        answer: "yes"
+    save_when: "changed"
+
+# Task Output :
+# --------
+#
+# banners: {}
+#  commands:
+#  - access-session authentication attributes filter-spec include list mylist
+#  - access-session accounting attributes filter-spec include list mylist
+#  invocation:
+#    module_args:
+#      after: null
+#     backup: false
+#      backup_options: null
+#      before: null
+#      defaults: false
+#      diff_against: null
+#      diff_ignore_lines: null
+#      intended_config: null
+#      lines:
+#      - config_line: access-session authentication attributes filter-spec include list mylist
+#      - answer: "yes"
+#        config_line: access-session accounting attributes filter-spec include list mylist
+#        prompt: "Do you wish to continue? [yes]:"
+#      match: line
+#      multiline_delimiter: '@'
+#      parents: null
+#      replace: line
+#      running_config: null
+#      save_when: changed
+#      src: null
+#  updates:
+#  - access-session authentication attributes filter-spec include list mylist
+#  - access-session accounting attributes filter-spec include list mylist
+
 
 # Example ios_template.j2
 # ip access-list extended test
@@ -362,6 +453,7 @@ time:
   sample: "22:28:34"
 """
 import json
+import re
 
 from ansible.module_utils._text import to_text
 from ansible.module_utils.basic import AnsibleModule
@@ -385,28 +477,141 @@ def check_args(module, warnings):
             module.fail_json(msg="multiline_delimiter value can only be a single character")
 
 
-def edit_config_or_macro(connection, commands):
-    # only catch the macro configuration command,
-    # not negated 'no' variation.
+def edit_config_or_macro(connection, commands, config_prompt_lines):
+
     if commands[0].startswith("macro name"):
         connection.edit_macro(candidate=commands)
     else:
-        connection.edit_config(candidate=commands)
+        if config_prompt_lines:
+            connection.edit_config_with_prompt(candidate=config_prompt_lines)
+        else:
+            connection.edit_config(candidate=commands)
 
 
-def get_candidate_config(module):
+INTERFACE_RANGE_RE = re.compile(r"^interface\s+range\s+(.+)$", re.I)
+INTERFACE_TOKEN_RE = re.compile(r"^([A-Za-z][A-Za-z\d.-]*)\s*(\d.*)$")
+IDENTIFIER_SUFFIX_RE = re.compile(r"^(.*?)(\d+)$")
+
+
+def normalize_parents(parents):
+    """Normalize `parents` so split multi-range interface parents are recombined into one command."""
+    parents = parents or []
+    if len(parents) <= 1:
+        return parents
+
+    first_parent = parents[0].strip()
+    first_match = INTERFACE_RANGE_RE.match(first_parent)
+    if not first_match:
+        return parents
+
+    range_tokens = [first_match.group(1).strip()]
+    range_tokens.extend(str(parent).strip() for parent in parents[1:] if str(parent).strip())
+    return ["interface range {0}".format(", ".join(range_tokens))]
+
+
+def extract_lines(module):
+    """Return the effective list of config lines from `module.params['lines']` (supporting both raw strings and dict items)."""
+    lines = []
+    for item in module.params["lines"] or []:
+        if isinstance(item, dict):
+            if item.get("config_line"):
+                lines.append(item.get("config_line"))
+        else:
+            lines.append(item)
+    return lines
+
+
+def get_candidate_config(module, parents=None, lines=None):
     candidate = ""
-    if module.params["src"]:
+    if module.params["content"]:
+
+        candidate = module.params["content"]
+    elif module.params["src"]:
         candidate = module.params["src"]
     elif module.params["lines"]:
+        candidate_lines = lines if lines is not None else extract_lines(module)
         candidate_obj = NetworkConfig(indent=1)
-        parents = module.params["parents"] or list()
-        candidate_obj.add(module.params["lines"], parents=parents)
+        candidate_obj.add(
+            lines=candidate_lines,
+            parents=parents if parents is not None else (module.params["parents"] or []),
+        )
         candidate = dumps(candidate_obj, "raw")
     return candidate
 
 
+def _expand_range_identifier(identifier):
+    """Expand a numeric suffix range (e.g. `1/0/1-3`) into identifiers `1/0/1..1/0/3`."""
+    if "-" not in identifier:
+        return [identifier]
+
+    start, end = identifier.split("-", 1)
+    start = start.strip()
+    end = end.strip()
+    if not start or not end:
+        return []
+
+    start_match = IDENTIFIER_SUFFIX_RE.match(start)
+    if not start_match:
+        return []
+    start_prefix, start_num = start_match.groups()
+
+    if "/" in end or "." in end or ":" in end:
+        end_match = IDENTIFIER_SUFFIX_RE.match(end)
+        if not end_match:
+            return []
+        end_prefix, end_num = end_match.groups()
+    else:
+        end_prefix, end_num = start_prefix, end
+
+    if start_prefix != end_prefix:
+        return []
+
+    start_idx = int(start_num)
+    end_idx = int(end_num)
+    if end_idx < start_idx:
+        return []
+
+    return ["{0}{1}".format(start_prefix, idx) for idx in range(start_idx, end_idx + 1)]
+
+
+def expand_interface_range_parent(parent):
+    """Expand an IOS `interface range ...` parent into individual `interface ...` parents for idempotency checks."""
+    if not parent:
+        return []
+    match = INTERFACE_RANGE_RE.match(parent.strip())
+    if not match:
+        return []
+
+    expanded_interfaces = []
+    for token in match.group(1).split(","):
+        token = token.strip()
+        if not token:
+            continue
+        token_match = INTERFACE_TOKEN_RE.match(token)
+        if not token_match:
+            return []
+        interface_type, identifier = token_match.groups()
+        expanded_identifiers = _expand_range_identifier(identifier.strip())
+        if not expanded_identifiers:
+            return []
+        for expanded_identifier in expanded_identifiers:
+            expanded_interfaces.append(
+                "interface {0}{1}".format(interface_type.strip(), expanded_identifier),
+            )
+
+    return expanded_interfaces
+
+
+def build_expanded_range_candidate(expanded_parents, lines):
+    """Build a candidate config that applies `lines` under each expanded `interface ...` parent (for idempotency only)."""
+    candidate_obj = NetworkConfig(indent=1)
+    for parent in expanded_parents:
+        candidate_obj.add(lines=lines, parents=[parent])
+    return dumps(candidate_obj, "raw")
+
+
 def get_running_config(module, current_config=None, flags=None):
+    """Return running-config text from params, cached content, or live device (optionally with `flags`)."""
     running = module.params["running_config"]
     if not running:
         if not module.params["defaults"] and current_config:
@@ -434,9 +639,15 @@ def trim_trailing_whitespace(multiline_str):
 def main():
     """main entry point for module execution"""
     backup_spec = dict(filename=dict(), dir_path=dict(type="path"))
+    line_spec = dict(
+        config_line=dict(type="str", required=False),
+        prompt=dict(type="str", required=False),
+        answer=dict(type="str", required=False),
+    )
     argument_spec = dict(
         src=dict(type="str"),
-        lines=dict(aliases=["commands"], type="list", elements="str"),
+        content=dict(type="str"),
+        lines=dict(aliases=["commands"], type="list", elements="raw", options=line_spec),
         parents=dict(type="list", elements="str"),
         before=dict(type="list", elements="str"),
         after=dict(type="list", elements="str"),
@@ -452,11 +663,17 @@ def main():
         diff_against=dict(choices=["startup", "intended", "running"]),
         diff_ignore_lines=dict(type="list", elements="str"),
     )
-    mutually_exclusive = [("lines", "src"), ("parents", "src")]
+    mutually_exclusive = [
+        ("lines", "src"),
+        ("lines", "content"),
+        ("parents", "src"),
+        ("parents", "content"),
+        ("src", "content"),
+    ]
     required_if = [
-        ("match", "strict", ["lines", "src"], True),
-        ("match", "exact", ["lines", "src"], True),
-        ("replace", "block", ["lines", "src"], True),
+        ("match", "strict", ["lines", "src", "content"], True),
+        ("match", "exact", ["lines", "src", "content"], True),
+        ("replace", "block", ["lines", "src", "content"], True),
         ("diff_against", "intended", ["intended_config"]),
     ]
     module = AnsibleModule(
@@ -479,15 +696,31 @@ def main():
         config = NetworkConfig(indent=1, contents=contents)
         if module.params["backup"]:
             result["__backup__"] = contents
-    if any((module.params["lines"], module.params["src"])):
+    if any((module.params["lines"], module.params["src"], module.params["content"])):
         match = module.params["match"]
         replace = module.params["replace"]
-        path = module.params["parents"]
-        candidate = get_candidate_config(module)
+        path = normalize_parents(module.params["parents"])
+        lines = extract_lines(module)
+        candidate = get_candidate_config(module, parents=path, lines=lines)
         running = get_running_config(module, contents, flags=flags)
+        expanded_range_parents = []
+        use_expanded_idempotency = False
+        if (
+            module.params["lines"]
+            and len(path) == 1
+            and "interface range" in path[0].lower()
+            and match == "line"
+        ):
+            expanded_range_parents = expand_interface_range_parent(path[0])
+            use_expanded_idempotency = bool(expanded_range_parents)
+        diff_candidate = (
+            build_expanded_range_candidate(expanded_range_parents, lines)
+            if use_expanded_idempotency
+            else candidate
+        )
         try:
             response = connection.get_diff(
-                candidate=candidate,
+                candidate=diff_candidate,
                 running=running,
                 diff_match=match,
                 diff_ignore_lines=diff_ignore_lines,
@@ -498,8 +731,10 @@ def main():
             module.fail_json(msg=to_text(exc, errors="surrogate_then_replace"))
         config_diff = response["config_diff"]
         banner_diff = response["banner_diff"]
+        if use_expanded_idempotency and config_diff:
+            config_diff = candidate
         if config_diff or banner_diff:
-            commands = config_diff.split("\n")
+            commands = [line.strip() for line in config_diff.split("\n") if line.strip()]
             if module.params["before"]:
                 commands[:0] = module.params["before"]
             if module.params["after"]:
@@ -508,11 +743,39 @@ def main():
             result["updates"] = commands
             result["banners"] = banner_diff
 
-            # send the configuration commands to the device and merge
-            # them with the current running config
             if not module.check_mode:
                 if commands:
-                    edit_config_or_macro(connection, commands)
+                    configs = []
+                    if module.params["lines"]:
+                        has_prompt_dicts = any(
+                            isinstance(item, dict) for item in module.params["lines"]
+                        )
+                        if has_prompt_dicts:
+                            for item in module.params["lines"]:
+                                if isinstance(item, dict):
+                                    for command in commands:
+                                        if (
+                                            module.params["before"]
+                                            and command in module.params["before"]
+                                        ):
+                                            configs[:0].append({"config_line": command})
+                                        if (
+                                            module.params["parents"]
+                                            and command in module.params["parents"]
+                                        ):
+                                            configs.append({"config_line": command})
+                                        if command == item.get("config_line"):
+                                            configs.append(item)
+                                        if (
+                                            module.params["after"]
+                                            and command in module.params["after"]
+                                        ):
+                                            configs.append({"config_line": command})
+                            edit_config_or_macro(connection, commands, configs)
+                        else:
+                            edit_config_or_macro(connection, commands, None)
+                    elif module.params["src"] or module.params["content"]:
+                        edit_config_or_macro(connection, commands, None)
                 if banner_diff:
                     connection.edit_banner(
                         candidate=json.dumps(banner_diff),
@@ -538,7 +801,6 @@ def main():
         else:
             contents = running_config
 
-        # recreate the object in order to process diff_ignore_lines
         running_config = NetworkConfig(indent=1, contents=contents, ignore_lines=diff_ignore_lines)
         if module.params["diff_against"] == "running":
             if module.check_mode:
@@ -574,13 +836,15 @@ def main():
                     },
                 )
 
-    if result.get("changed") and any((module.params["src"], module.params["lines"])):
+    if result.get("changed") and any(
+        (module.params["src"], module.params["lines"], module.params["content"]),
+    ):
         msg = (
             "To ensure idempotency and correct diff the input configuration lines should be"
             " similar to how they appear if present in"
             " the running configuration on device"
         )
-        if module.params["src"]:
+        if module.params["src"] or module.params["content"]:
             msg += " including the indentation"
         if "warnings" in result:
             result["warnings"].append(msg)

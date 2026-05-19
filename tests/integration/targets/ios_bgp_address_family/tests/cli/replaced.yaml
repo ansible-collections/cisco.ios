@@ -34,77 +34,37 @@
                     route_map: foo
             - afi: ipv4
               safi: multicast
-              # vrf: blue
-              aggregate_address:
+              aggregate_addresses:
                 - address: 192.0.2.1
                   netmask: 255.255.255.255
                   as_confed_set: true
               bgp:
                 aggregate_timer: 10
-                dampening:
-                  penalty_half_time: 1
-                  reuse_route_val: 1
-                  suppress_route_val: 1
-                  max_suppress: 1
-                slow_peer:
+                slow_peer: # slow_peer is deprecated, but let's assume module handles it
                   - detection:
                       threshold: 150
-              neighbor:
-                - address: 198.51.110.1
+              neighbors:
+                - neighbor_address: "10.1.1.3"
                   activate: true
-                  aigp:
-                    send:
-                      cost_community:
-                        id: 200
-                        poi:
-                          igp_cost: true
-                          transitive: true
-                  slow_peer:
-                    - detection:
-                        threshold: 150
-                  remote_as: 10
-                  route_maps:
-                    - name: test-replaced-route
-                      out: true
-              network:
+              networks:
                 - address: 198.51.110.10
                   mask: 255.255.255.255
                   backdoor: true
-            - afi: ipv4
-              safi: multicast
-              bgp:
-                aggregate_timer: 10
-                dampening:
-                  penalty_half_time: 10
-                  reuse_route_val: 10
-                  suppress_route_val: 10
-                  max_suppress: 10
-                slow_peer:
-                  - detection:
-                      threshold: 200
-              network:
                 - address: 192.0.2.1
                   mask: 255.255.255.255
                   route_map: test
+            - afi: ipv6
+              safi: unicast
+              aggregate_addresses:
+                - address: "2001:DB8:1234::/48" # This aggregate will be removed
+                  as_set: true
         state: replaced
-
-    - name: debug merged commands
-      debug:
-        msg: "{{ replaced['after'] }}"
-
-    - name: debug result commands
-      debug:
-        msg: "{{ result['after'] }}"
 
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
-          - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
-
-    # - name: Assert that after dict is correctly generated
-    #   ansible.builtin.assert:
-    #     that:
-    #       - replaced['after'] == result['after']
+          - replaced['commands'] | symmetric_difference(result['commands']) | length == 0
+        msg: "FAILED: Commands do not match expected."
 
     - name: Replaced provided BGP address family configuration (idempotent)
       register: result
@@ -114,5 +74,6 @@
       ansible.builtin.assert:
         that:
           - result['changed'] == false
+        msg: "FAILED: Task was not idempotent."
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

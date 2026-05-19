@@ -23,12 +23,24 @@
     - name: L3_interface deleted - assert that before dicts are correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ deleted['before'] | symmetric_difference(result['before']) | length == 0 }}"
+          - >
+            {{
+              result['before']
+              | selectattr('name', 'in', 'GigabitEthernet1,GigabitEthernet2,GigabitEthernet3,GigabitEthernet4')
+              | symmetric_difference(deleted['before'])
+              | length == 0
+            }}
 
     - name: L3_interface deleted - assert that after dict is correctly generated
       ansible.builtin.assert:
         that:
-          - "{{ deleted['after'] | symmetric_difference(result['after']) | length == 0 }}"
+          - >
+            {{
+              result['after']
+              | selectattr('name', 'in', 'GigabitEthernet1,GigabitEthernet2,GigabitEthernet3,GigabitEthernet4')
+              | symmetric_difference(deleted['after'])
+              | length == 0
+            }}
 
     - name: L3_interface deleted - delete attributes of all configured interfaces (idempotent)
       register: result

@@ -152,7 +152,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \saddress\s(?P<host>\S+)\s
-                (\sport-number(?P<port>\d+))
+                (\sport-number\s(?P<port>\d+))
                 $""",
                 re.VERBOSE,
             ),
@@ -1642,7 +1642,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 r"""
                 \sneighbor\s(?P<neighbor_address>\S+)\spassword
                 \s(?P<encryption>\d+)
-                (\s(?P<pass_key>.$))?
+                (\s(?P<pass_key>.+))?
                 $""",
                 re.VERBOSE,
             ),

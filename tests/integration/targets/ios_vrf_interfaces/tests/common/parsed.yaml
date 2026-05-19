@@ -1,0 +1,14 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_vrf_interfaces parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parse externally provided route-policy configuration
+  register: result
+  cisco.ios.ios_vrf_interfaces:
+    running_config: "{{ lookup('file', '_parsed.cfg') }}"
+    state: parsed
+
+- name: Assert that configuration was correctly parsed
+  ansible.builtin.assert:
+    that:
+      - parsed['after'] == result['parsed']

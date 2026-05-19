@@ -1,8 +1,8 @@
 ---
 merged:
   before:
-    - name: Loopback888
-    - name: Loopback999
+    # - name: Loopback888
+    # - name: Loopback999
     - name: GigabitEthernet1
     - name: GigabitEthernet2
     - name: GigabitEthernet3
@@ -25,8 +25,8 @@ merged:
     - ipv6 ospf priority 55
     - ipv6 ospf transmit-delay 45
   after:
-    - name: Loopback888
-    - name: Loopback999
+    # - name: Loopback888
+    # - name: Loopback999
     - name: GigabitEthernet1
     - address_family:
         - adjacency: true
@@ -61,8 +61,8 @@ merged:
 
 replaced:
   before:
-    - name: Loopback888
-    - name: Loopback999
+    # - name: Loopback888
+    # - name: Loopback999
     - name: GigabitEthernet1
     - address_family:
         - adjacency: true
@@ -100,8 +100,8 @@ replaced:
     - ipv6 ospf priority 20
     - ipv6 ospf transmit-delay 30
   after:
-    - name: Loopback888
-    - name: Loopback999
+    # - name: Loopback888
+    # - name: Loopback999
     - name: GigabitEthernet1
     - address_family:
         - adjacency: true
@@ -163,8 +163,8 @@ overridden:
     - ip ospf priority 40
     - ip ospf ttl-security hops 50
   after:
-    - name: Loopback888
-    - name: Loopback999
+    # - name: Loopback888
+    # - name: Loopback999
     - name: GigabitEthernet1
     - address_family:
         - adjacency: true
@@ -206,11 +206,10 @@ deleted:
     - no ipv6 ospf priority 55
     - no ipv6 ospf transmit-delay 45
   after: {}
-
 gathered:
   config:
-    - name: Loopback888
-    - name: Loopback999
+    # - name: Loopback888
+    # - name: Loopback999
     - name: GigabitEthernet1
     - address_family:
         - adjacency: true

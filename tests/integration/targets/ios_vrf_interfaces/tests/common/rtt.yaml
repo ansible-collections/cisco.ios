@@ -1,0 +1,88 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_vrf_interfaces round trip integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Configure vrf B
+      cisco.ios.ios_config:
+        lines:
+          - vrf definition vrf_B
+      retries: 2
+      delay: 10
+
+    - name: Wait for VRF
+      ansible.builtin.wait_for:
+        timeout: 2
+
+    - name: Configure vrf C
+      cisco.ios.ios_config:
+        lines:
+          - vrf definition vrf_C
+      retries: 2
+      delay: 10
+
+    - name: Wait for VRF
+      ansible.builtin.wait_for:
+        timeout: 2
+
+    - name: Configure vrf D
+      cisco.ios.ios_config:
+        lines:
+          - vrf definition vrf_D
+      retries: 2
+      delay: 10
+
+    - name: Wait for VRF
+      ansible.builtin.wait_for:
+        timeout: 2
+
+    - name: Apply the provided configuration (base config)
+      register: base_config
+      cisco.ios.ios_vrf_interfaces:
+        config:
+          - name: GigabitEthernet1
+          - name: GigabitEthernet2
+            vrf_name: vrf_B
+          - name: GigabitEthernet3
+          - name: GigabitEthernet4
+        state: merged
+
+    - name: Gather VRF interfaces facts
+      cisco.ios.ios_facts:
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources:
+          - vrf_interfaces
+
+    - name: Apply the provided configuration (config to be reverted)
+      register: result
+      cisco.ios.ios_vrf_interfaces:
+        config:
+          - name: GigabitEthernet1
+          - name: GigabitEthernet2
+          - name: GigabitEthernet3
+          - name: GigabitEthernet4
+            vrf_name: vrf_C
+        state: overridden
+
+    - ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands|symmetric_difference(overridden.commands) == []
+
+    - name: Revert back to base configuration using facts round trip
+      register: revert
+      cisco.ios.ios_vrf_interfaces:
+        config: "{{ ansible_facts['network_resources']['vrf_interfaces'] }}"
+        state: overridden
+
+    - ansible.builtin.assert:
+        that:
+          - revert.changed == true
+          - revert.commands|symmetric_difference(rtt.commands) == []
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

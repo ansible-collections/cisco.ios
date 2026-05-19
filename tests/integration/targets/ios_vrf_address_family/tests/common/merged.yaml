@@ -1,0 +1,57 @@
+---
+- ansible.builtin.debug:
+    msg: Start ios_vrf_address_family merged integration tests connection={{ ansible_connection}}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Merge provided configuration with device configuration
+      cisco.ios.ios_vrf_address_family: &merged
+        config:
+          - name: test1
+            address_families:
+              - afi: "ipv4"
+                safi: "unicast"
+                export:
+                  map: "testing-map"
+                import_config:
+                  map: "import-map"
+          - name: test2
+            address_families:
+              - afi: "ipv4"
+                safi: "unicast"
+                export:
+                  map: "testing-map1"
+                import_config:
+                  map: "import-map1"
+                inter_as_hybrid:
+                  csc:
+                    next_hop: "1.2.3.4"
+      register: result
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - merged['before'] == {}
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - merged['after'] == result['after']
+
+    - name: Merge the provided configuration with the existing running configuration (idempotent)
+      cisco.ios.ios_vrf_address_family: *merged
+      register: result
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - merged['after'] == result['after']
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

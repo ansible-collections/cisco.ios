@@ -20,7 +20,6 @@ __metaclass__ = type
 import platform
 import re
 
-from ansible.module_utils.six import iteritems
 from ansible.module_utils.six.moves import zip
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
@@ -267,7 +266,7 @@ class Interfaces(FactsBase):
 
     def populate_interfaces(self, interfaces):
         facts = dict()
-        for key, value in iteritems(interfaces):
+        for key, value in interfaces.items():
             intf = dict()
             intf["description"] = self.parse_description(value)
             intf["macaddress"] = self.parse_macaddress(value)
@@ -285,7 +284,12 @@ class Interfaces(FactsBase):
 
     def populate_ipv4_interfaces(self, data):
         for key, value in data.items():
-            self.facts["interfaces"][key]["ipv4"] = list()
+            try:
+                self.facts["interfaces"][key]["ipv4"] = list()
+            except KeyError:
+                self.facts["interfaces"][key] = dict()
+                self.facts["interfaces"][key]["ipv4"] = list()
+                self.parse_deleted_status(key, value)
             primary_address = addresses = []
             primary_address = re.findall(r"Internet address is (.+)$", value, re.M)
             addresses = re.findall(r"Secondary address (.+)$", value, re.M)
@@ -299,12 +303,13 @@ class Interfaces(FactsBase):
                 self.facts["interfaces"][key]["ipv4"].append(ipv4)
 
     def populate_ipv6_interfaces(self, data):
-        for key, value in iteritems(data):
+        for key, value in data.items():
             try:
                 self.facts["interfaces"][key]["ipv6"] = list()
             except KeyError:
                 self.facts["interfaces"][key] = dict()
                 self.facts["interfaces"][key]["ipv6"] = list()
+                self.parse_deleted_status(key, value)
             addresses = re.findall(r"\s+(.+), subnet", value, re.M)
             subnets = re.findall(r", subnet is (.+)$", value, re.M)
             for addr, subnet in zip(addresses, subnets):
@@ -333,6 +338,7 @@ class Interfaces(FactsBase):
             fact["host"] = self.parse_lldp_host(entry)
             fact["port"] = self.parse_lldp_port(entry)
             fact["ip"] = self.parse_lldp_ip(entry)
+            fact["chassis_id"] = self.parse_chassis_id(entry)
             facts[intf].append(fact)
         return facts
 
@@ -369,6 +375,11 @@ class Interfaces(FactsBase):
                     key = match.group(1)
                     parsed[key] = line
         return parsed
+
+    def parse_deleted_status(self, interface, value):
+        status = self.parse_operstatus(value)
+        if status == "deleted":
+            self.facts["interfaces"][interface]["operstatus"] = status
 
     def parse_description(self, data):
         match = re.search(r"Description: (.+)$", data, re.M)
@@ -438,6 +449,11 @@ class Interfaces(FactsBase):
 
     def parse_lldp_ip(self, data):
         match = re.search(r"^    IP: (.+)$", data, re.M)
+        if match:
+            return match.group(1)
+
+    def parse_chassis_id(self, data):
+        match = re.search(r"^Chassis id: (.+)$", data, re.M)
         if match:
             return match.group(1)
 

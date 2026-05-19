@@ -1,0 +1,50 @@
+---
+- ansible.builtin.debug:
+    msg: Start Deleted integration state for ios_vrf_interfaces ansible_connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Delete provided VRF interfaces
+      register: result
+      cisco.ios.ios_vrf_interfaces: &id001
+        config:
+          - name: GigabitEthernet2
+        state: deleted
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Delete provided VRF interfaces (idempotent)
+      register: result
+      cisco.ios.ios_vrf_interfaces: *id001
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    - ansible.builtin.include_tasks: _populate_config.yaml
+
+    - name: Delete provided VRF interfaces without any configuration
+      register: result
+      cisco.ios.ios_vrf_interfaces: &id002
+        state: deleted
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Delete provided VRF interfaces without any configuration (idempotent)
+      register: result
+      cisco.ios.ios_vrf_interfaces: *id002
+    - name: Assert that the delete task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

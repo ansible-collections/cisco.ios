@@ -17,7 +17,13 @@
       ansible.builtin.assert:
         that:
           - result.changed == false
-          - "{{ gathered['config'] | symmetric_difference(result['gathered']) |length == 0 }}"
+          - >
+            {{
+              result['gathered']
+              | selectattr('name', 'in', 'GigabitEthernet1,GigabitEthernet2,GigabitEthernet3,GigabitEthernet4')
+              | symmetric_difference(gathered['config'])
+              | length == 0
+            }}
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

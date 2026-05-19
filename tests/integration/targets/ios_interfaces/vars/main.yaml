@@ -1,16 +1,15 @@
----
 merged:
   before:
-    - enabled: true
+    - description: Management interface do not change
+      enabled: true
       name: GigabitEthernet1
-      description: Management interface do not change
     - enabled: true
       name: GigabitEthernet2
       speed: "1000"
     - enabled: true
       name: GigabitEthernet3
       speed: "1000"
-    - enabled: false
+    - enabled: true
       name: GigabitEthernet4
     - enabled: true
       name: Loopback888
@@ -23,8 +22,8 @@ merged:
     - description 04j
     - shutdown
   after:
-    - enabled: true
-      description: Management interface do not change
+    - description: Management interface do not change
+      enabled: true
       name: GigabitEthernet1
     - description: Configured and Merged by Ansible-Network
       enabled: true
@@ -34,7 +33,7 @@ merged:
       enabled: false
       name: GigabitEthernet3
       speed: "1000"
-    - enabled: false
+    - enabled: true
       name: GigabitEthernet4
     - enabled: true
       name: Loopback888
@@ -58,6 +57,7 @@ replaced:
       name: GigabitEthernet3
       speed: "1000"
     - enabled: false
+      description: "Auto_Cable_Testing_Ansible"
       name: GigabitEthernet4
     - enabled: true
       name: Loopback888
@@ -76,6 +76,7 @@ replaced:
       name: GigabitEthernet3
       speed: "1000"
     - enabled: false
+      description: "Auto_Cable_Testing_Ansible"
       name: GigabitEthernet4
     - enabled: true
       name: Loopback888
@@ -96,6 +97,7 @@ overridden:
       name: GigabitEthernet3
       speed: "1000"
     - enabled: false
+      description: "Auto_Cable_Testing_Ansible"
       name: GigabitEthernet4
     - enabled: true
       name: Loopback888
@@ -105,6 +107,8 @@ overridden:
     - interface GigabitEthernet3
     - description Configured and Overridden by Ansible-Network
     - no shutdown
+    - interface GigabitEthernet4
+    - no description Auto_Cable_Testing_Ansible
   after:
     - description: Management interface do not change
       enabled: true
@@ -138,6 +142,7 @@ deleted:
       name: GigabitEthernet3
       speed: "1000"
     - enabled: false
+      description: "Auto_Cable_Testing_Ansible"
       name: GigabitEthernet4
     - enabled: true
       name: Loopback888
@@ -151,6 +156,7 @@ deleted:
     - interface GigabitEthernet3
     - no description this is interface for testing
     - no speed 1000
+    - shutdown
   after:
     - description: Management interface do not change
       enabled: true
@@ -162,6 +168,7 @@ deleted:
       name: GigabitEthernet3
       speed: "1000"
     - enabled: false
+      description: "Auto_Cable_Testing_Ansible"
       name: GigabitEthernet4
     - enabled: true
       name: Loopback888
@@ -182,6 +189,7 @@ gathered:
       name: GigabitEthernet3
       speed: "1000"
     - enabled: false
+      description: "Auto_Cable_Testing_Ansible"
       name: GigabitEthernet4
     - enabled: true
       name: Loopback888

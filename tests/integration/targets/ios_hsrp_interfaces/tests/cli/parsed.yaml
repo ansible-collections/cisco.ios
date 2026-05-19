@@ -1,0 +1,15 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_hsrp_interfaces parsed integration tests on connection={{ ansible_connection }}
+
+- name: HSRP_interface parsed - parse the commands for provided configuration
+  become: true
+  register: result
+  cisco.ios.ios_hsrp_interfaces:
+    running_config: "{{ lookup('file', '_parsed.cfg') }}"
+    state: parsed
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - parsed['config']|symmetric_difference(result.parsed) == []

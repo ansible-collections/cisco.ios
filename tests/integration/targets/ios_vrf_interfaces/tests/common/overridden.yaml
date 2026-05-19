@@ -1,0 +1,44 @@
+---
+- ansible.builtin.debug:
+    msg: START Overridden ios_vrf_interfaces state for integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Override provided configuration with device configuration
+      register: result
+      cisco.ios.ios_vrf_interfaces: &id001
+        config:
+          - name: GigabitEthernet1
+          - name: GigabitEthernet2
+          - name: GigabitEthernet3
+          - name: GigabitEthernet4
+            vrf_name: vrf_C
+        state: overridden
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ overridden['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - overridden['before'] == result['before']
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - overridden['after'] == result['after']
+
+    - name: Override provided configuration with device configuration (idempotent)
+      register: result
+      cisco.ios.ios_vrf_interfaces: *id001
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

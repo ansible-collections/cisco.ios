@@ -15,7 +15,6 @@ for a given resource, parsed, and the facts tree is populated
 based on the configuration.
 """
 
-from ansible.module_utils.six import iteritems
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.logging_global.logging_global import (
@@ -34,7 +33,11 @@ class Logging_globalFacts(object):
         self.argument_spec = Logging_globalArgs.argument_spec
 
     def get_logging_data(self, connection):
-        return connection.get("show running-config | include logging")
+        data = connection.get("show running-config | include logging")
+        if "logging trap" not in data:
+            trap = connection.get("show logging | include Trap")
+            data = trap + "\n" + data
+        return data
 
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for Logging_global network resource
@@ -57,7 +60,7 @@ class Logging_globalFacts(object):
         objFinal = logging_global_parser.parse()
 
         if objFinal:
-            for k, v in iteritems(objFinal):
+            for k, v in objFinal.items():
                 if isinstance(v, list) and k not in ["hosts", "source_interface", "filter"]:
                     v.sort()
                     objFinal[k] = v

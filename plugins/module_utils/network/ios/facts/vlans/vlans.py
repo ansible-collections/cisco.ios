@@ -92,17 +92,13 @@ class VlansFacts(object):
         remote_objs = []
         final_objs = []
         pvlan_objs = []
-        conf_data = {}
-
-        if not data:
-            data = self.get_vlans_data(connection)
-
-        # deals with vlan configuration config only
-        conf_data = self.populate_vlans_config_facts(connection, data)
-
+        # Determine if we need to collect vlan data or config data
+        vlan_data = data if data else self.get_vlans_data(connection)
+        vlan_conf_data = None
+        vlan_conf_data = self.populate_vlans_config_facts(connection, data)
         # operate on a collection of resource x
-        config = data.split("\n")
-        # Get individual vlan configs separately
+        config = vlan_data.split("\n") if vlan_data else []
+
         vlan_info = ""
         temp = ""
         vlan_name = True
@@ -190,14 +186,14 @@ class VlansFacts(object):
 
         facts = {}
 
-        if conf_data:
+        if vlan_conf_data:
             for vlan in objs:
-                if conf_data.get(vlan.get("vlan_id")):
-                    member_data = conf_data.pop(vlan.get("vlan_id"))
+                if vlan_conf_data.get(vlan.get("vlan_id")):
+                    member_data = vlan_conf_data.pop(vlan.get("vlan_id"))
                     vlan.update(member_data)
 
-            if conf_data:  # if any vlan configuration data is pending add it to facts
-                for vlanid, conf in conf_data.items():
+            if vlan_conf_data:  # if any vlan configuration data is pending add it to facts
+                for vlanid, conf in vlan_conf_data.items():
                     objs.append(conf)
 
         if objs:

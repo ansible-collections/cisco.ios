@@ -23,13 +23,12 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 
 
 def vlan_associated_config(config):
-    cmd = ""
-    if len(config.get("private_vlan", {}).get("associated")) > 1:
-        for vlan in config.get("private_vlan", {}).get("associated"):
-            cmd += str(vlan) + ","
-        cmd = cmd[:-1]
-    else:
-        cmd = config.get("private_vlan", {}).get("associated")[0]
+    """Generate private-vlan association command with proper error handling"""
+    associated = config.get("private_vlan", {}).get("associated", [])
+    if not associated:
+        return ""
+    vlan_ids = [str(vlan) for vlan in associated]
+    cmd = ",".join(vlan_ids)
     return "private-vlan association " + cmd
 
 

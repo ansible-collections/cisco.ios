@@ -5,7 +5,7 @@
 - block:
     - name: Ios_vxlan_vtep rendered - play
       register: result
-      cisco.ios.ios_vxlan_vtep: &id001
+      cisco.ios.ios_vxlan_vtep:
         config:
           - interface: nve1
             source_interface: Loopback1

@@ -2,10 +2,14 @@
 - name: Remove configuration
   vars:
     lines:
-      "interface GigabitEthernet 2\nno switchport access vlan\nno switchport trunk encapsulation\nno switchport trunk native vlan\nno switchport trunk allowed\
-      \ vlan\nno switchport trunk pruning vlan\nno switchport mode\nno switchport voice vlan\ninterface GigabitEthernet 3\nno switchport access vlan\nno switchport\
-      \ trunk encapsulation\nno switchport trunk native vlan\nno switchport trunk allowed vlan\nno switchport trunk pruning vlan\nno switchport mode\nno switchport\
-      \ voice vlan\n"
+      "interface GigabitEthernet 2\nno switchport access vlan\nno switchport
+      trunk encapsulation\nno switchport trunk native vlan\nno switchport trunk allowed
+      vlan\nno switchport trunk pruning vlan\nno switchport mode\n
+      no switchport private-vlan association host 2000 2500\nno
+      switchport voice vlan\ninterface GigabitEthernet 3\nno switchport access vlan\nno switchport
+      trunk encapsulation\nno switchport trunk native vlan\nno switchport
+      trunk allowed vlan\nno switchport trunk pruning vlan\nno switchport mode\nno switchport
+      voice vlan\n"
   when: ansible_net_version != "15.6(2)T"
   ansible.netcommon.cli_config:
     config: "{{ lines }}"

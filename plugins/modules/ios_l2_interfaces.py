@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# Copyright 2022 Red Hat
+# Copyright 2025 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -17,12 +17,13 @@ DOCUMENTATION = """
 module: ios_l2_interfaces
 short_description: Resource module to configure L2 interfaces.
 description:
-  This module provides declarative management of Layer-2 interface on Cisco
-  IOS devices.
+  - This module provides declarative management of Layer-2 interface on Cisco
+    IOS devices.
 version_added: 1.0.0
 author:
   - Sagar Paul (@KB-petByte)
   - Sumit Jaiswal (@justjais)
+  - Nikhil Bhasin (@nickbhasin)
 notes:
   - Tested against Cisco IOSv Version 15.2 on CML.
   - This module works with connection C(network_cli).
@@ -126,6 +127,239 @@ options:
           - private_vlan_host
           - private_vlan_promiscuous
           - private_vlan_trunk
+      xconnect:
+        description:
+          - Configure xconnect reference for the interface.
+        type: dict
+        suboptions:
+          address:
+            description:
+              - Remote peer IP address.
+            type: str
+          vcid:
+            description:
+              - Virtual Circuit ID.
+            type: int
+          encapsulation:
+            description:
+              - Encapsulation type for xconnect.
+            type: str
+            choices:
+              - mpls
+              - l2tpv3
+          manual:
+            description:
+              - Manually configure the xconnect.
+            type: bool
+          pw_class:
+            description:
+              - Pseudowire class name.
+            type: str
+          sequencing:
+            description:
+              - Sequencing options for the xconnect.
+            type: str
+            choices:
+              - both
+              - receive
+              - transmit
+      private_vlan:
+        description:
+          - Set the private VLAN configuration.
+        type: dict
+        suboptions:
+          association:
+            description:
+              - Set the private VLAN association.
+            type: bool
+          host_association:
+            description:
+              - Set the private VLAN host association.
+            type: bool
+          mapping:
+            description:
+              - Set the private VLAN promiscuous mapping.
+            type: bool
+          host:
+            description:
+              - Set the private VLAN host association.
+            type: bool
+          primary_range:
+            description:
+              - Primary extended/normal range VLAN ID of the private VLAN promiscuous port mapping.
+            type: int
+          secondary_range:
+            description:
+              - Secondary extended/normal range VLAN ID of the private VLAN promiscuous port mapping.
+            type: int
+          add:
+            description:
+              - Add a VLAN to private VLAN list.
+            type: bool
+          remove:
+            description:
+              - Remove a VLAN from private VLAN list.
+            type: bool
+          secondary_vlan_id:
+            description:
+              - Secondary VLAN IDs of the private VLAN promiscuous port mapping.
+            type: str
+      app_interface:
+        description:
+          - Enabling port for Application Hosting (switchport app-interface)
+        type: bool
+      nonegotiate:
+        description:
+          - Device will not engage in negotiation protocol on this interface (switchport nonegotiate)
+        type: bool
+      vepa:
+        description:
+          - Reflective relay configuration (switchport vepa enabled)
+        type: bool
+      host:
+        description:
+          - Set port host (switchport host)
+        type: bool
+      protected:
+        description:
+          - Configure an interface to be a protected port (switchport protected)
+        type: bool
+      encapsulation:
+        description:
+          - Configure encapsulation for the interface.
+        type: dict
+        suboptions:
+          type:
+            description:
+              - Encapsulation type (e.g., dot1q).
+            type: str
+          vlan_id:
+            description:
+              - VLAN ID for encapsulation.
+            type: int
+      block_options:
+        description:
+          - Disable forwarding of unknown uni/multi cast addresses.
+        type: dict
+        suboptions:
+          multicast:
+            description:
+              - Block unknown multicast addresses
+            type: bool
+          unicast:
+            description:
+              - Block unknown unicast addresses
+            type: bool
+      spanning_tree:
+        description:
+          - Spanning tree options
+        type: dict
+        suboptions:
+          bpdufilter:
+            description: Don't send or receive BPDUs on this interface
+            type: dict
+            suboptions:
+              enabled:
+                description:
+                  - Enable BPDU filtering for this interface
+                type: bool
+              disabled:
+                description:
+                  - Disable BPDU filtering for this interface
+                type: bool
+          bpduguard:
+            description: Don't accept BPDUs on this interface
+            type: dict
+            suboptions:
+              enabled:
+                description:
+                  - Enable BPDU guard for this interface
+                type: bool
+              disabled:
+                description:
+                  - Disable BPDU guard for this interface
+                type: bool
+          cost:
+            description: Change an interface's spanning tree port path cost
+            type: int
+          guard:
+            description: Change an interface's spanning tree guard mode
+            type: dict
+            suboptions:
+              loop:
+                description:
+                  - Set guard mode to loop guard on interface
+                type: bool
+              none:
+                description:
+                  - Set guard mode to none
+                type: bool
+              root:
+                description:
+                  - Set guard mode to root guard on interface
+                type: bool
+          link_type:
+            description: Specify a link type for spanning tree protocol use
+            type: dict
+            suboptions:
+              point_to_point:
+                description:
+                  - Consider the interface as point-to-point
+                type: bool
+              shared:
+                description:
+                  - Consider the interface as shared
+                type: bool
+          mst:
+            description: Multiple spanning tree
+            type: dict
+            suboptions:
+              instance_range:
+                description:
+                  - MST instance list, example 0,2-4,6,8-12
+                type: str
+              cost:
+                description:
+                  - <1-200000000>  Change the interface spanning tree path cost for an instance
+                type: str
+              port_priority:
+                description:
+                  - Change the spanning tree port priority for an instance
+                type: int
+          port_priority:
+            description: Change an interface's spanning tree port priority
+            type: int
+          portfast:
+            description: Enable an interface to move directly to forwarding on link up
+            type: dict
+            suboptions:
+              disabled:
+                description:
+                  - Disable portfast for this interface
+                type: bool
+              trunk:
+                description:
+                  - Enable portfast on the interface even in trunk mode
+                type: bool
+          rootguard:
+            description: Enable root guard protection on the interface
+            type: bool
+          vlan:
+            description: VLAN Switch Spanning Tree
+            type: dict
+            suboptions:
+              vlan_range:
+                description:
+                  - MST instance list, example 1,3-5,7,9-11
+                type: str
+              cost:
+                description:
+                  - <1-200000000>  Change the interface spanning tree path cost for an instance
+                type: str
+              port_priority:
+                description:
+                  - Change the spanning tree port priority for an instance
+                type: int
   running_config:
     description:
       - This option is used only with state I(parsed).
@@ -715,7 +949,6 @@ parsed:
     This output will always be in the same format as the
     module argspec.
 """
-
 
 from ansible.module_utils.basic import AnsibleModule
 
