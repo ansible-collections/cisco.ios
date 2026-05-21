@@ -27,7 +27,10 @@ def remarks_with_sequence(remarks_data):
     if remarks_data.get("remarks"):
         cmd += " " + remarks_data.get("remarks")
     if remarks_data.get("sequence"):
-        cmd = to_text(remarks_data.get("sequence")) + " " + cmd
+        if remarks_data.get("afi") == "ipv6":
+            cmd = "sequence " + to_text(remarks_data.get("sequence")) + " " + cmd
+        else:
+            cmd = to_text(remarks_data.get("sequence")) + " " + cmd
     return cmd
 
 
@@ -258,7 +261,7 @@ class AclsTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            "setval": "remark {{ remarks }}",
+            "setval": remarks_with_sequence,
             "result": {
                 "acls": {
                     "{{ acl_name|d() }}": {
