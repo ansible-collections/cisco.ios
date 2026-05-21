@@ -156,7 +156,6 @@ deleted:
     - interface GigabitEthernet3
     - no description this is interface for testing
     - no speed 1000
-    - shutdown
   after:
     - description: Management interface do not change
       enabled: true
