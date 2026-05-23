@@ -24,7 +24,7 @@
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ deleted['commands'] | cisco.ios.commands_blocks_equal(result['commands'], 'router') }}"
 
     - name: Delete provided BGP address family (idempotent)
       register: result

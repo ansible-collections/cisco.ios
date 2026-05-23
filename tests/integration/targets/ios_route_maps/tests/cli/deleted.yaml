@@ -16,7 +16,7 @@
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ deleted['commands'] | cisco.ios.commands_blocks_equal(result['commands'], 'acl') }}"
 
     - name: Delete provided route maps configuration (idempotent)
       register: result
@@ -37,7 +37,7 @@
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
-          - "{{ deleted_all['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ deleted_all['commands'] | cisco.ios.commands_blocks_equal(result['commands'], 'acl') }}"
 
     - name: Delete all provided route maps configuration (idempotent)
       register: result
