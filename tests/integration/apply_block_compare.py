@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import re
 import sys
+
 from pathlib import Path
 
 import yaml
+
 
 ROOT = Path(__file__).resolve().parent
 TARGETS = ROOT / "targets"
@@ -15,7 +17,7 @@ CONFIG = yaml.safe_load((ROOT / "command_compare_config.yaml").read_text())
 PATTERNS = [
     (
         re.compile(
-            r"""\{\{\s*(\w+)\['commands'\]\s*\|\s*symmetric_difference\(result\['commands'\]\)\s*\|\s*length\s*==\s*0\s*\}\}"""
+            r"""\{\{\s*(\w+)\['commands'\]\s*\|\s*symmetric_difference\(result\['commands'\]\)\s*\|\s*length\s*==\s*0\s*\}\}""",
         ),
         lambda m, fam: (
             f"{{{{ {m.group(1)}['commands'] "
@@ -24,7 +26,7 @@ PATTERNS = [
     ),
     (
         re.compile(
-            r"""result\.commands\|symmetric_difference\((\w+)\.commands\)\s*==\s*\[\]"""
+            r"""result\.commands\|symmetric_difference\((\w+)\.commands\)\s*==\s*\[\]""",
         ),
         lambda m, fam: (
             f"{{{{ {m.group(1)}.commands "
@@ -33,7 +35,7 @@ PATTERNS = [
     ),
     (
         re.compile(
-            r"""(\w+)\.commands\|symmetric_difference\((\w+)\.commands\)\s*==\s*\[\]"""
+            r"""(\w+)\.commands\|symmetric_difference\((\w+)\.commands\)\s*==\s*\[\]""",
         ),
         lambda m, fam: (
             f"{{{{ {m.group(1)}.commands "
@@ -61,6 +63,7 @@ def process_file(path: Path) -> bool:
     new = text
     changed = False
     for regex, repl in PATTERNS:
+
         def _sub(m: re.Match[str]) -> str:
             return repl(m, fam)
 

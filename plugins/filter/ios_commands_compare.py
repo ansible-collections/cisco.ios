@@ -6,8 +6,10 @@
 from __future__ import annotations
 
 import re
+
 from collections import Counter
 from typing import Any
+
 
 BLOCK_PARENT_PATTERNS: dict[str, list[str]] = {
     "interface": [r"^interface "],
@@ -44,8 +46,7 @@ BLOCK_PARENT_PATTERNS: dict[str, list[str]] = {
 }
 
 _COMPILED: dict[str, list[re.Pattern[str]]] = {
-    family: [re.compile(p) for p in patterns]
-    for family, patterns in BLOCK_PARENT_PATTERNS.items()
+    family: [re.compile(p) for p in patterns] for family, patterns in BLOCK_PARENT_PATTERNS.items()
 }
 
 
@@ -54,7 +55,8 @@ def _is_parent(line: str, compiled: list[re.Pattern[str]]) -> bool:
 
 
 def _partition_commands(
-    commands: list[str] | None, family: str
+    commands: list[str] | None,
+    family: str,
 ) -> Counter[tuple[str, tuple[str, ...]]]:
     if commands is None:
         commands = []
@@ -75,7 +77,7 @@ def _partition_commands(
         if _is_parent(line, compiled):
             if current_parent is not None:
                 blocks.append(
-                    (current_parent, tuple(sorted(current_children)))
+                    (current_parent, tuple(sorted(current_children))),
                 )
             current_parent = line
             current_children = []
@@ -98,7 +100,8 @@ def commands_blocks_equal(
     if family not in BLOCK_PARENT_PATTERNS:
         family = "flat"
     return _partition_commands(expected, family) == _partition_commands(
-        actual, family
+        actual,
+        family,
     )
 
 
