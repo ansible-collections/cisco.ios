@@ -1,5 +1,5 @@
 ---
-bugfixes:
+trivial:
   - ios_interfaces - Align integration test ``deleted`` expected commands with device
     behavior; remove phantom ``shutdown`` on GigabitEthernet3 that the module skips
     when the interface is already shut down.
