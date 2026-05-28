@@ -42,6 +42,8 @@ import os
 import sys
 
 from pathlib import Path
+from collections import Counter
+
 
 
 try:
@@ -316,7 +318,9 @@ def match_phases_to_states(phases, state_names, test_vars):
 
             phase_normalized = [c.strip().lower() for c in phase["commands"]]
 
-            if phase_normalized == expected_normalized:
+            #if phase_normalized == expected_normalized:
+            if Counter(phase_normalized) == Counter(expected_normalized):
+ 
                 matched[state_name] = phase
                 used_indices.add(idx)
                 print(
