@@ -278,6 +278,7 @@ def segment_recording(entries, show_cmd):
 # Phase matching — the key improvement
 # ======================================================================
 
+
 def match_phases_to_states(phases, state_names, test_vars):
     matched = {}
     used_indices = set()
@@ -286,7 +287,7 @@ def match_phases_to_states(phases, state_names, test_vars):
     # These are the actual test phases (not setup/teardown)
     candidate_indices = []
     for i, phase in enumerate(phases):
-        if phase["type"] == "stateful" and i > 0 and phases[i-1]["type"] == "gathered":
+        if phase["type"] == "stateful" and i > 0 and phases[i - 1]["type"] == "gathered":
             candidate_indices.append(i)
 
     for state_name in state_names:
@@ -308,6 +309,7 @@ def match_phases_to_states(phases, state_names, test_vars):
                 break
 
     return matched
+
 
 # def match_phases_to_states(phases, state_names, test_vars):
 #     """
