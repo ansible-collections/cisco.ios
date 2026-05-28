@@ -278,62 +278,92 @@ def segment_recording(entries, show_cmd):
 # Phase matching — the key improvement
 # ======================================================================
 
-
 def match_phases_to_states(phases, state_names, test_vars):
-    """
-    Match recorded phases to test states using expected commands from vars.
-
-    For each state_name, look up test_vars[state_name]['commands'] and find the
-    FIRST unmatched phase whose config commands match exactly.
-
-    Returns: dict mapping state_name -> phase (only matched states)
-    """
-    if not test_vars:
-        # Fallback: assign phases to states in order (old behavior)
-        stateful = [p for p in phases if p["type"] == "stateful"]
-        matched = {}
-        for i, state in enumerate(state_names):
-            if i < len(stateful):
-                matched[state] = stateful[i]
-        return matched
-
     matched = {}
     used_indices = set()
-    stateful_phases = [(i, p) for i, p in enumerate(phases) if p["type"] == "stateful"]
+
+    # Build list of stateful phases that follow a gathered phase
+    # These are the actual test phases (not setup/teardown)
+    candidate_indices = []
+    for i, phase in enumerate(phases):
+        if phase["type"] == "stateful" and i > 0 and phases[i-1]["type"] == "gathered":
+            candidate_indices.append(i)
 
     for state_name in state_names:
-        state_vars = test_vars.get(state_name, {})
-        expected_commands = state_vars.get("commands", [])
-
+        expected_commands = test_vars.get(state_name, {}).get("commands", [])
         if not expected_commands:
             continue
 
-        # Normalize expected commands for comparison
-        expected_normalized = [c.strip().lower() for c in expected_commands]
+        expected_count = Counter([c.strip().lower() for c in expected_commands])
 
-        for idx, phase in stateful_phases:
+        for idx in candidate_indices:
             if idx in used_indices:
                 continue
+            phase = phases[idx]
+            phase_count = Counter([c.strip().lower() for c in phase["commands"]])
 
-            phase_normalized = [c.strip().lower() for c in phase["commands"]]
-
-            # if phase_normalized == expected_normalized:
-            if Counter(phase_normalized) == Counter(expected_normalized):
-
+            if phase_count == expected_count:
                 matched[state_name] = phase
                 used_indices.add(idx)
-                print(
-                    "  Matched state '%s' to phase %d (commands: %s)"
-                    % (state_name, idx, expected_commands),
-                )
                 break
-        else:
-            print(
-                "  WARNING: No matching phase found for state '%s' (expected: %s)"
-                % (state_name, expected_commands),
-            )
 
     return matched
+
+# def match_phases_to_states(phases, state_names, test_vars):
+#     """
+#     Match recorded phases to test states using expected commands from vars.
+
+#     For each state_name, look up test_vars[state_name]['commands'] and find the
+#     FIRST unmatched phase whose config commands match exactly.
+
+#     Returns: dict mapping state_name -> phase (only matched states)
+#     """
+#     if not test_vars:
+#         # Fallback: assign phases to states in order (old behavior)
+#         stateful = [p for p in phases if p["type"] == "stateful"]
+#         matched = {}
+#         for i, state in enumerate(state_names):
+#             if i < len(stateful):
+#                 matched[state] = stateful[i]
+#         return matched
+
+#     matched = {}
+#     used_indices = set()
+#     stateful_phases = [(i, p) for i, p in enumerate(phases) if p["type"] == "stateful"]
+
+#     for state_name in state_names:
+#         state_vars = test_vars.get(state_name, {})
+#         expected_commands = state_vars.get("commands", [])
+
+#         if not expected_commands:
+#             continue
+
+#         # Normalize expected commands for comparison
+#         expected_normalized = [c.strip().lower() for c in expected_commands]
+
+#         for idx, phase in stateful_phases:
+#             if idx in used_indices:
+#                 continue
+
+#             phase_normalized = [c.strip().lower() for c in phase["commands"]]
+
+#             # if phase_normalized == expected_normalized:
+#             if Counter(phase_normalized) == Counter(expected_normalized):
+
+#                 matched[state_name] = phase
+#                 used_indices.add(idx)
+#                 print(
+#                     "  Matched state '%s' to phase %d (commands: %s)"
+#                     % (state_name, idx, expected_commands),
+#                 )
+#                 break
+#         else:
+#             print(
+#                 "  WARNING: No matching phase found for state '%s' (expected: %s)"
+#                 % (state_name, expected_commands),
+#             )
+
+#     return matched
 
 
 # ======================================================================
