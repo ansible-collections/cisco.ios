@@ -246,7 +246,7 @@ nodes:
     hide_links: false
     id: n2
     image_definition: null
-    label: stable-2.18
+    label: stable-2.20
     node_definition: cat8000v
     parameters: {}
     ram: null
@@ -281,7 +281,7 @@ nodes:
     hide_links: false
     id: n3
     image_definition: null
-    label: stable-2.16
+    label: stable-2.21
     node_definition: cat8000v
     parameters: {}
     ram: null
@@ -439,14 +439,14 @@ links:
     i1: i3
     i2: i1
     conditioning: {}
-    label: unmanaged-switch-0-port3<->stable-2.18-GigabitEthernet1
+    label: unmanaged-switch-0-port3<->stable-2.20-GigabitEthernet1
   - id: l4
     n1: n5
     n2: n3
     i1: i4
     i2: i1
     conditioning: {}
-    label: unmanaged-switch-0-port4<->stable-2.16-GigabitEthernet1
+    label: unmanaged-switch-0-port4<->stable-2.21-GigabitEthernet1
   - id: l5
     n1: n5
     n2: n4

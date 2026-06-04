@@ -1,3 +1,0 @@
----
-bugfixes:
-  - ios_snmp_users - Fixed authentication option to correctly handle authentication protocol configuration.

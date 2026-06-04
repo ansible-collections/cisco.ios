@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - plugins/modules/ios_user.py - Fix matching existing SSH keys in running
+    configurations while allowing optional trailing whitespace  when using the purge_keys parameter.

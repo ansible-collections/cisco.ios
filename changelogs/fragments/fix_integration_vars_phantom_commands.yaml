@@ -1,0 +1,8 @@
+---
+trivial:
+  - ios_interfaces - Align integration test ``deleted`` expected commands with device
+    behavior; remove phantom ``shutdown`` on GigabitEthernet3 that the module skips
+    when the interface is already shut down.
+  - ios_l3_interfaces - Align integration test ``replaced`` expected commands with
+    device output; add missing redirect/unreachable negations on GigabitEthernet3
+    and correct command order to match the module.
