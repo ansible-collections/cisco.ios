@@ -81,6 +81,37 @@ class AclsFacts(object):
                 re_data += da + "\n"
         return re_data
 
+    IGMP_MAP = {
+        "1": "host_query",
+        "2": "host_report",
+        "3": "dvmrp",
+        "4": "pim",
+        "5": "trace",
+    }
+
+    @staticmethod
+    def _normalize_protocol_options(each_ace):
+        if each_ace.get("protocol_number"):
+            each_ace["protocol_options"] = {
+                "protocol_number": each_ace.pop("protocol_number"),
+            }
+        protocol = each_ace.get("protocol")
+        protocol_options = each_ace.get("protocol_options")
+        if protocol_options is not None:
+            if protocol == "tcp":
+                if isinstance(protocol_options, str):
+                    flag_dict = {flag: True for flag in protocol_options.split()}
+                    each_ace["protocol_options"] = {"tcp": flag_dict}
+                else:
+                    each_ace.pop("protocol_options", None)
+            elif protocol == "icmp":
+                protocol_options = str(protocol_options).replace("-", "_")
+                each_ace["protocol_options"] = {"icmp": {protocol_options: True}}
+            elif protocol == "igmp":
+                protocol_options = str(protocol_options).replace("-", "_")
+                mapping = AclsFacts.IGMP_MAP.get(protocol_options, protocol_options)
+                each_ace["protocol_options"] = {"igmp": {mapping: True}}
+
     def populate_facts(self, connection, ansible_facts, data=None):
         """Populate the facts for acls
         :param connection: the device connection
@@ -137,13 +168,6 @@ class AclsFacts(object):
                     ace[typ]["wildcard_bits"] = temp.get("wildcard_bits")
 
             def process_protocol_options(each):
-                IGMP_MAP = {
-                    "1": "host_query",
-                    "2": "host_report",
-                    "3": "dvmrp",
-                    "4": "pim",
-                    "5": "trace",
-                }
                 for each_ace in each.get("aces"):
                     if each.get("acl_type") == "standard":
                         if len(each_ace.get("source", {})) == 1 and each_ace.get(
@@ -165,23 +189,7 @@ class AclsFacts(object):
                         if each_ace.get("destination", {}):
                             factor_source_dest(each_ace, "destination")
 
-                    if each_ace.get("protocol_number"):
-                        each_ace["protocol_options"] = {
-                            "protocol_number": each_ace.pop("protocol_number"),
-                        }
-                    protocol = each_ace.get("protocol")
-                    protocol_options = each_ace.get("protocol_options")
-                    if protocol_options is not None:
-                        if protocol == "tcp":
-                            flag_dict = {flag: True for flag in protocol_options.split()}
-                            each_ace["protocol_options"] = {"tcp": flag_dict}
-                        if protocol == "icmp":
-                            protocol_options = str(protocol_options).replace("-", "_")
-                            each_ace["protocol_options"] = {"icmp": {protocol_options: True}}
-                        if protocol == "igmp":
-                            protocol_options = str(protocol_options).replace("-", "_")
-                            mapping = IGMP_MAP.get(protocol_options, protocol_options)
-                            each_ace["protocol_options"] = {"igmp": {mapping: True}}
+                    AclsFacts._normalize_protocol_options(each_ace)
 
             def collect_remarks(aces):
                 """makes remarks list per ace"""

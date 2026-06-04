@@ -4,6 +4,60 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v11.4.1
+=======
+
+Release Summary
+---------------
+
+This patch is a re-release of 11.4.0 with bug-fixes to action plugin symlinks.
+All action plugins have been renamed to use the `ios_`` prefix to match their module names.
+The previous release(11.4.0) fixed bugs across ios_acls (TCP ACL parsing), ios_config (multi-range interfaces), ios_snmp_users (authentication protocol), ios_static_routes (BFD crash), and terminal error handling.
+The previous release(11.4.0) deprecated the src parameter's automatic Jinja2 template processing in ios_config (removal March 2028), recommending migration to the new content parameter with ansible.builtin.template lookup.
+The previous release(11.4.0) added new features including the content parameter for pre-rendered configurations in ios_config and purge_keys parameter in ios_user for managing multiple SSH keys (max 2 per user).
+The previous release(11.4.0) updated dependencies and CI by bumping ansible.netcommon from >=8.1.0 to >=8.5.2 and modernizing integration tests to add stable-2.20 coverage while dropping stable-2.16.
+The previous release(11.4.0) fixed documentation in ios_bgp_global by updating stale EXAMPLES that referenced removed parameter names causing validation errors.
+
+Bugfixes
+--------
+
+- action plugins - Remove orphaned legacy action plugins ``bgp.py``, ``linkagg.py``, ``lldp.py`` and ``logging.py`` that had no corresponding module.
+- action plugins - Rename multiple resource module action plugins to use the ``ios_`` prefix to match their module names and fix ``action-plugin-docs`` sanity failures blocking Automation Hub certification.
+- meta/runtime.yml - Add ``plugin_routing.action`` redirects for all short-name aliases so alias-based invocations continue to resolve the renamed action plugins.
+- plugins/action/ios.py - Remove unused ``warnings`` list and unreachable dead code block that never executed due to ``warnings`` always being empty.
+- sanity - Remove stale ``action-plugin-docs`` ignore entries and delete ``ignore-2.14.txt`` and ``ignore-2.15.txt`` as the collection requires ``ansible>=2.16.0``.
+
+v11.4.0
+=======
+
+Minor Changes
+-------------
+
+- Updated ansible.netcommon dependency minimum required version from >=8.1.0 to >=8.5.1.
+- Updated ansible.netcommon dependency minimum required version from >=8.5.1 to >=8.5.2.
+- ci - Updated integration test matrix to add stable-2.20 coverage and drop stable-2.16 for libssh integration tests.
+- ios_config - Add ``content`` parameter to support pre-rendered template configurations. This provides a cleaner alternative to the deprecated template auto-processing behavior of the ``src`` parameter.
+- ios_user module adds purge_keys parameter to manage multiple SSH keys per user. Cisco IOS devices support maximum 2 SSH keys per user. The purge_keys parameter enables removal of existing keys not in the sshkey list when provisioning new keys.
+
+Deprecated Features
+-------------------
+
+- ios_config - The ``src`` parameter's automatic Jinja2 template processing is deprecated and will be removed in March 2028. Use the ``content`` parameter with ``ansible.builtin.template`` lookup instead.
+
+Bugfixes
+--------
+
+- ios_acls - Fixed ``'int' object has no attribute 'split'`` error when processing ACL configurations with TCP entries. The parser regex for ``icmp_igmp_protocol`` could capture trailing numeric values for non-ICMP/IGMP protocols. Fixed by restricting ``icmp_igmp_protocol`` to only apply when the protocol is ``icmp`` or ``igmp`` in the parser template, with a defensive type check in facts processing.
+- ios_config - Fix multi-range interface commands for ios_config module.
+- ios_snmp_users - Fixed authentication option to correctly handle authentication protocol configuration.
+- ios_static_routes - Fix gather crash when "ip route static bfd" is present on the device.
+- terminal_stderr_re - Updated to support variation of command rejected error from appliance.
+
+Documentation Changes
+---------------------
+
+- ios_bgp_global - Fix stale EXAMPLES that used removed parameter names (bestpath, nopeerup_delay, address, route_map) causing validation errors when copy-pasted. Updated to current argspec keys (bestpath_options, nopeerup_delay_options, neighbor_address, route_maps).
+
 v11.3.0
 =======
 

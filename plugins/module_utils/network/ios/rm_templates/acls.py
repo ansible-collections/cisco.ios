@@ -27,7 +27,10 @@ def remarks_with_sequence(remarks_data):
     if remarks_data.get("remarks"):
         cmd += " " + remarks_data.get("remarks")
     if remarks_data.get("sequence"):
-        cmd = to_text(remarks_data.get("sequence")) + " " + cmd
+        if remarks_data.get("afi") == "ipv6":
+            cmd = "sequence " + to_text(remarks_data.get("sequence")) + " " + cmd
+        else:
+            cmd = to_text(remarks_data.get("sequence")) + " " + cmd
     return cmd
 
 
@@ -260,7 +263,7 @@ class AclsTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            "setval": "remark {{ remarks }}",
+            "setval": remarks_with_sequence,
             "result": {
                 "acls": {
                     "{{ acl_name|d() }}": {
@@ -423,7 +426,9 @@ class AclsTemplate(NetworkTemplate):
                                 "protocol": "{{ protocol }}",
                                 "protocol_number": "{{ protocol_num }}",
                                 "service_object_group": "{{ service_obj_grp }}",
-                                "protocol_options": "{{ tcp_flags if tcp_flags is defined else icmp_igmp_protocol }}",
+                                "protocol_options": "{{ tcp_flags if tcp_flags is defined"
+                                " else (icmp_igmp_protocol if protocol is defined"
+                                " and protocol in ['icmp', 'igmp'] else undefined) }}",
                                 "source": {
                                     "address": "{{ source_address }}",
                                     "wildcard_bits": "{{ source_wildcard }}",
@@ -562,7 +567,9 @@ class AclsTemplate(NetworkTemplate):
                                 "evaluate": "{{ evaluate }}",
                                 "protocol": "{{ protocol }}",
                                 "protocol_number": "{{ protocol_num }}",
-                                "protocol_options": "{{ tcp_flags if tcp_flags is defined else icmp_igmp_protocol }}",
+                                "protocol_options": "{{ tcp_flags if tcp_flags is defined"
+                                " else (icmp_igmp_protocol if protocol is defined"
+                                " and protocol in ['icmp', 'igmp'] else undefined) }}",
                                 "source": {
                                     "address": "{{ ipv6_source_address }}",
                                     "wildcard_bits": "{{ source_wildcard_v6 }}",

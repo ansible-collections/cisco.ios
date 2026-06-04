@@ -197,6 +197,28 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="2">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>purge_keys</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Since cisco.ios devices have a max limit of 2 keys per user, this parameter allows removal of keys that are not passed in sshkey parameter as to write new keys being passed.</div>
+                        <div>It will remove any previously configured sshkeys for a user that doesn&#x27;t match with the provided sshkey list, with an exception for the `admin` user.</div>
+                        <div>Works only with &#x27;present&#x27; state and when &#x27;sshkey&#x27; is defined</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>sshkey</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -207,7 +229,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specifies one or more SSH public key(s) to configure for the given username.</div>
+                        <div>Specifies upto two SSH public key(s) to configure for the given username.</div>
                         <div>This argument accepts a valid SSH key value.</div>
                 </td>
             </tr>
@@ -425,6 +447,27 @@ Parameters
             <tr>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>purge_keys</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Since cisco.ios devices have a max limit of 2 keys per user, this parameter allows removal of keys that are not passed in sshkey parameter as to write new keys being passed.</div>
+                        <div>It will remove any previously configured sshkeys for a user that doesn&#x27;t match with the provided sshkey list, with an exception for the `admin` user.</div>
+                        <div>Works only with &#x27;present&#x27; state and when &#x27;sshkey&#x27; is defined</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>sshkey</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -435,7 +478,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specifies one or more SSH public key(s) to configure for the given username.</div>
+                        <div>Specifies upto two SSH public key(s) to configure for the given username.</div>
                         <div>This argument accepts a valid SSH key value.</div>
                 </td>
             </tr>
@@ -590,6 +633,52 @@ Examples
     #    key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
     #    key-hash ssh-rsa 1985673DCF7FA9A0F374BB97DC2ABB27 test@fedora
 
+    # Using purge_keys: true
+
+    # Before state:
+    # -------------
+
+    # router-ios#show running-config | section ^username
+    # username admin privilege 15 password 0 password
+    # username testuser privilege 15 password 0 password
+    # username ansible nopassword
+    #   username ansible
+    #    key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
+
+    # Purge existing keys for a user and write new keys:
+    # ----------------------------------
+
+    - name: Update user by adding new key and purging existing keys
+      cisco.ios.ios_user:
+        name: ansible
+        sshkey:
+          - "{{ lookup('file', '~/path/to/public_key') }}"
+        purge_keys: true
+
+    # Task Output
+    # -----------
+
+    # commands:
+    # - ip ssh pubkey-chain
+    # - username ansible
+    # - no key-hash ssh-rsa 2ABB27BBC33ED53EF7D55037952ABB27 test@fedora
+    # - exit
+    # - exit
+    # - ip ssh pubkey-chain
+    # - username ansible
+    # - key-hash ssh-rsa B2C881222DB43D58A229EDF19D2228A2 test2@fedora
+    # - exit
+    # - exit
+
+    # After state:
+    # ------------
+
+    # router-ios#show running-config | section username
+    # username admin privilege 15 password 0 password
+    # username ansible nopassword
+    #   username ansible
+    #    key-hash ssh-rsa B2C881222DB43D58A229EDF19D2228A2 test2@fedora
+
     # Using Purge: true
 
     # Before state:
@@ -648,6 +737,7 @@ Examples
 
     # Task Output
     # -----------
+
 
     # commands:
     # - no username ansible
