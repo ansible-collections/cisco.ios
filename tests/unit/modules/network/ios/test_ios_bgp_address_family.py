@@ -1603,3 +1603,40 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
 
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_bgp_address_family_merged_l2vpn_vpls(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 12345
+             bgp log-neighbor-changes
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="12345",
+                    address_family=[
+                        dict(
+                            afi="l2vpn",
+                            safi="vpls",
+                            neighbors=[
+                                dict(
+                                    neighbor_address="192.168.2.1",
+                                    activate=True,
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                state="merged",
+            ),
+        )
+        commands = [
+            "router bgp 12345",
+            "address-family l2vpn vpls",
+            "neighbor 192.168.2.1 activate",
+            "exit-address-family",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
