@@ -1,3 +1,0 @@
----
-trivial:
-  - adds a workflow in .github to close stale issues & PRs
