@@ -443,14 +443,6 @@ releases:
     release_date: "2026-05-08"
   11.4.1:
     changes:
-      release_summary: |
-        This patch is a re-release of 11.4.0 with bug-fixes to action plugin symlinks.
-        All action plugins have been renamed to use the `ios_`` prefix to match their module names.
-        The previous release(11.4.0) fixed bugs across ios_acls (TCP ACL parsing), ios_config (multi-range interfaces), ios_snmp_users (authentication protocol), ios_static_routes (BFD crash), and terminal error handling.
-        The previous release(11.4.0) deprecated the src parameter's automatic Jinja2 template processing in ios_config (removal March 2028), recommending migration to the new content parameter with ansible.builtin.template lookup.
-        The previous release(11.4.0) added new features including the content parameter for pre-rendered configurations in ios_config and purge_keys parameter in ios_user for managing multiple SSH keys (max 2 per user).
-        The previous release(11.4.0) updated dependencies and CI by bumping ansible.netcommon from >=8.1.0 to >=8.5.2 and modernizing integration tests to add stable-2.20 coverage while dropping stable-2.16.
-        The previous release(11.4.0) fixed documentation in ios_bgp_global by updating stale EXAMPLES that referenced removed parameter names causing validation errors.
       bugfixes:
         - action plugins - Remove orphaned legacy action plugins ``bgp.py``, ``linkagg.py``,
           ``lldp.py`` and ``logging.py`` that had no corresponding module.
@@ -464,9 +456,54 @@ releases:
           code block that never executed due to ``warnings`` always being empty.
         - sanity - Remove stale ``action-plugin-docs`` ignore entries and delete ``ignore-2.14.txt``
           and ``ignore-2.15.txt`` as the collection requires ``ansible>=2.16.0``.
+      release_summary:
+        "This patch is a re-release of 11.4.0 with bug-fixes to action
+        plugin symlinks.
+
+        All action plugins have been renamed to use the `ios_`` prefix to match their
+        module names.
+
+        The previous release(11.4.0) fixed bugs across ios_acls (TCP ACL parsing),
+        ios_config (multi-range interfaces), ios_snmp_users (authentication protocol),
+        ios_static_routes (BFD crash), and terminal error handling.
+
+        The previous release(11.4.0) deprecated the src parameter's automatic Jinja2
+        template processing in ios_config (removal March 2028), recommending migration
+        to the new content parameter with ansible.builtin.template lookup.
+
+        The previous release(11.4.0) added new features including the content parameter
+        for pre-rendered configurations in ios_config and purge_keys parameter in
+        ios_user for managing multiple SSH keys (max 2 per user).
+
+        The previous release(11.4.0) updated dependencies and CI by bumping ansible.netcommon
+        from >=8.1.0 to >=8.5.2 and modernizing integration tests to add stable-2.20
+        coverage while dropping stable-2.16.
+
+        The previous release(11.4.0) fixed documentation in ios_bgp_global by updating
+        stale EXAMPLES that referenced removed parameter names causing validation
+        errors.
+
+        "
     fragments:
       - action_plugins_fix.yml
     release_date: "2026-05-12"
+  11.4.2:
+    changes:
+      bugfixes:
+        - ios_acls - Fix incorrect CLI command generation for IPv6 ACL remarks. The
+          module now correctly generates ``sequence N remark`` syntax for IPv6 instead
+          of the IPv4-style ``N remark`` format. Negation also correctly uses ``no sequence
+          N remark``.
+        - plugins/modules/ios_user.py - Fix matching existing SSH keys in running configurations
+          while allowing optional trailing whitespace  when using the purge_keys parameter.
+    fragments:
+      - add_codecov.yml
+      - add_stale_closure_workflow.yml
+      - cleanup_unit_test_requirements.yaml
+      - fix_integration_vars_phantom_commands.yaml
+      - fix_ios_user_purge_keys.yaml
+      - fix_ipv6_acl_remarks.yaml
+    release_date: "2026-06-12"
   2.0.0:
     changes:
       bugfixes:
