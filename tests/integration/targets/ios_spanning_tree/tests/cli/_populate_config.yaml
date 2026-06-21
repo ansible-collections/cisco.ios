@@ -1,0 +1,5 @@
+---
+- name: Populate spanning-tree configuration
+  cisco.ios.ios_spanning_tree:
+    config: "{{ parsed['config'] }}"
+    state: merged

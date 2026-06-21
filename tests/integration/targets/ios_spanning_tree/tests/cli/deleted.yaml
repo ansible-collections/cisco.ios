@@ -1,0 +1,49 @@
+---
+- ansible.builtin.debug:
+    msg: Start Deleted integration state for ios_spanning_tree ansible_connection={{ ansible_connection }}
+
+- block:
+    - ansible.builtin.include_tasks: _remove_config.yaml
+    - ansible.builtin.include_tasks: _populate_config.yaml
+
+    - name: Delete provided spanning tree configuration
+      register: result
+      cisco.ios.ios_spanning_tree: &id001
+        config:
+          forward_time:
+            - value: 20
+              vlan_list: 4-9
+        state: deleted
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Delete provided spanning tree configuration (idempotent)
+      register: result
+      cisco.ios.ios_spanning_tree: *id001
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    - name: Delete all provided spanning tree configuration
+      register: result
+      cisco.ios.ios_spanning_tree: &id002
+        state: deleted
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ deleted['commands2'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Delete all provided spanning tree configuration (idempotent)
+      register: result
+      cisco.ios.ios_spanning_tree: *id002
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
