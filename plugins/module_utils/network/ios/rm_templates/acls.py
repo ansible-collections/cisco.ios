@@ -21,6 +21,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
+
 # For 1:1 mapping of options _ to - , Any new option with _ is required to be added in this mapping
 OPTION_TO_CLI = {
     "add_ext": "add-ext",
@@ -33,7 +34,7 @@ OPTION_TO_CLI = {
     "router_alert": "router-alert",
     "stream_id": "stream-id",
 }
-OPTION_FROM_CLI = {v: k for k, v in OPTION_TO_CLI.items()} 
+OPTION_FROM_CLI = {v: k for k, v in OPTION_TO_CLI.items()}
 
 
 def remarks_with_sequence(remarks_data):
@@ -146,7 +147,7 @@ def _tmplt_access_list_entries(aces):
         if aces.get("option"):
             option_val = list(aces.get("option").keys())[0]
             # Gets the value from OPTION_TO_CLI , fallbacks to default option_val if not present there
-            command += " option {0}".format(OPTION_TO_CLI.get(option_val, option_val)) 
+            command += " option {0}".format(OPTION_TO_CLI.get(option_val, option_val))
         if aces.get("precedence"):
             command += " precedence {precedence}".format(**aces)
         if aces.get("time_range"):
@@ -484,7 +485,7 @@ class AclsTemplate(NetworkTemplate):
                                     "set": "{{ True if log_input_only is defined or log_input is defined }}",
                                     "user_cookie": "{{ log_input if log_input is defined else None }}",
                                 },
-                                # Replaces - in device command to _ for want and have comparision (ipv4) 
+                                # Replaces - in device command to _ for want and have comparision (ipv4)
                                 "option": {
                                     "{{ option | replace('-','_') if option is defined else None }}": "{{ True if option is defined else None }}",
                                 },
@@ -626,7 +627,7 @@ class AclsTemplate(NetworkTemplate):
                                     "set": "{{ True if log_input_only is defined or log_input is defined }}",
                                     "user_cookie": "{{ log_input if log_input is defined else None }}",
                                 },
-                                # Replaces - in device command to _ for want and have comparision (ipv6) 
+                                # Replaces - in device command to _ for want and have comparision (ipv6)
                                 "option": {
                                     "{{ option | replace('-','_') if option is defined else None }}": "{{ True if option is defined else None }}",
                                 },
