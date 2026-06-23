@@ -55,7 +55,7 @@
         config:
           - name: GigabitEthernet2
             ipv4:
-              - address: 
+              - address:
                 dhcp:
                   enable: true
           - name: GigabitEthernet3
