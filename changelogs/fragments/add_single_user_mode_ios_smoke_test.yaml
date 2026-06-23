@@ -1,0 +1,5 @@
+---
+trivial:
+  - ios_smoke - Added single_user_mode integration test phase and fixed
+    ios_interfaces command count and ios_l3_interfaces DHCP idempotency
+    assertions in caching tests.
