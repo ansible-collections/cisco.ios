@@ -43,6 +43,14 @@ options:
         description:
           - Name of the VRF to be configured on the interface.
           - When configured, applies 'vrf forwarding <vrf_name>' under the interface.
+          - Mutually exclusive with O(config[].ip_vrf_name).
+        type: str
+      ip_vrf_name:
+        description:
+          - Name of the legacy IPv4-only VRF to be configured on the interface.
+          - When configured, applies 'ip vrf forwarding <ip_vrf_name>' under the interface.
+          - Mutually exclusive with O(config[].vrf_name); Cisco IOS only supports
+            one VRF-forwarding form per interface.
         type: str
   running_config:
     description:
@@ -145,6 +153,46 @@ EXAMPLES = """
 #  no ip address
 #  shutdown
 #  negotiation auto
+
+# Using merged with legacy ip vrf forwarding
+
+# Before state:
+# -------------
+#
+# vios#show running-config | section ^interface
+# interface GigabitEthernet2
+#  no ip address
+#  shutdown
+
+- name: Merge legacy ip vrf forwarding configuration
+  cisco.ios.ios_vrf_interfaces:
+    config:
+      - name: GigabitEthernet2
+        ip_vrf_name: vrf_legacy
+    state: merged
+
+# Task Output:
+# ------------
+#
+# before:
+#   - name: "GigabitEthernet2"
+#
+# commands:
+#   - interface GigabitEthernet2
+#   - ip vrf forwarding vrf_legacy
+#
+# after:
+#   - name: "GigabitEthernet2"
+#     ip_vrf_name: "vrf_legacy"
+
+# After state:
+# ------------
+#
+# vios#show running-config | section ^interface
+# interface GigabitEthernet2
+#  ip vrf forwarding vrf_legacy
+#  no ip address
+#  shutdown
 
 # Using overridden
 
@@ -286,14 +334,15 @@ EXAMPLES = """
 # ---------------
 #
 # interface GigabitEthernet1
-#  vrf vrf_C
+#  vrf forwarding vrf_C
 #  shutdown
 # !
 # interface GigabitEthernet2
-#  vrf vrf_D
+#  vrf forwarding vrf_D
 #  shutdown
 # !
 # interface GigabitEthernet3
+#  ip vrf forwarding vrf_legacy
 #  shutdown
 # !
 # interface GigabitEthernet4
@@ -314,6 +363,7 @@ EXAMPLES = """
 #   - name: "GigabitEthernet2"
 #     vrf_name: "vrf_D"
 #   - name: "GigabitEthernet3"
+#     ip_vrf_name: "vrf_legacy"
 #   - name: "GigabitEthernet4"
 
 # Using replaced
@@ -522,6 +572,8 @@ commands:
     - "interface GigabitEthernet2"
     - "vrf forwarding vrf_D"
     - "no vrf forwarding vrf_B"
+    - "ip vrf forwarding vrf_legacy"
+    - "no ip vrf forwarding vrf_legacy"
 
 rendered:
   description: The provided configuration in the task rendered in device-native format (offline).
@@ -532,6 +584,8 @@ rendered:
     - "vrf forwarding vrf_C"
     - "interface GigabitEthernet2"
     - "vrf forwarding vrf_D"
+    - "interface GigabitEthernet3"
+    - "ip vrf forwarding vrf_legacy"
 
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
@@ -572,7 +626,8 @@ parsed:
             "vrf_name": "vrf_D"
         },
         {
-            "name": "GigabitEthernet3"
+            "name": "GigabitEthernet3",
+            "ip_vrf_name": "vrf_legacy"
         },
         {
             "name": "GigabitEthernet4"
