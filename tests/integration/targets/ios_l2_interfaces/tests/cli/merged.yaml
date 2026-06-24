@@ -33,7 +33,7 @@
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
-          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ merged['commands'] | cisco.ios.commands_blocks_equal(result['commands'], 'interface') }}"
 
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
@@ -66,7 +66,7 @@
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
-          - "{{ merged_again['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ merged_again['commands'] | cisco.ios.commands_blocks_equal(result['commands'], 'interface') }}"
 
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:

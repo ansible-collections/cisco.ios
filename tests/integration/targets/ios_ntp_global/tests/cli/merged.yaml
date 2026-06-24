@@ -19,7 +19,7 @@
     - name: Ios_ntp_global merged - assert commands
       ansible.builtin.assert:
         that:
-          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ merged['commands'] | cisco.ios.commands_blocks_equal(result['commands'], 'flat') }}"
 
     - name: Ios_ntp_global merged - assert after
       ansible.builtin.assert:
