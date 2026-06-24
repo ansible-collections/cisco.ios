@@ -1,0 +1,8 @@
+router bgp 65000
+ no bgp default ipv4-unicast
+ no bgp default route-target filter
+ bgp log-neighbor-changes
+ bgp graceful-shutdown all neighbors 50 local-preference 100 community 100
+ timers bgp 100 200 150
+ neighbor 198.0.2.1 remote-as 100
+ neighbor 198.0.2.1 description merge neighbor

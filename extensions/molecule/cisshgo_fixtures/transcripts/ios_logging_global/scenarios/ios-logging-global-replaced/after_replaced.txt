@@ -1,0 +1,5 @@
+logging facility local6
+logging buffered 6025 alerts
+logging trap errors
+logging host 192.0.2.10 filtered stream 15
+logging host 192.0.2.19

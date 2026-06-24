@@ -1,0 +1,21 @@
+---
+# CISSHGO device inventory for ios_snmp_server integration tests
+#
+# Ports (starting --starting-port, default 10000):
+#   10000: platform (gathered, parsed, rendered)
+#   10001: scenario ios-snmp-server-merged
+#   10002: scenario ios-snmp-server-overridden
+#   10003: scenario ios-snmp-server-deleted
+
+devices:
+  - platform: ios_snmp_server
+    count: 1
+
+  - scenario: ios-snmp-server-merged
+    count: 1
+
+  - scenario: ios-snmp-server-overridden
+    count: 1
+
+  - scenario: ios-snmp-server-deleted
+    count: 1

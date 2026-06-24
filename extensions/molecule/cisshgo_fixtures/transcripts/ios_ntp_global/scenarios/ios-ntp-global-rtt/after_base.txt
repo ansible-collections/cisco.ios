@@ -1,0 +1,3 @@
+ntp panic update
+ntp orphan 4
+ntp mindistance 10

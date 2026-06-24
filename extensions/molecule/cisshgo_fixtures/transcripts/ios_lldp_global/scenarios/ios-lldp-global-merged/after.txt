@@ -1,0 +1,4 @@
+lldp timer 20
+lldp holdtime 10
+lldp reinit 3
+lldp run

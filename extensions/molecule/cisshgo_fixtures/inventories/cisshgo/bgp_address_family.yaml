@@ -1,0 +1,13 @@
+---
+devices:
+  - platform: ios_bgp_address_family
+    count: 1
+
+  - scenario: ios-bgp-af-merged
+    count: 1
+
+  - scenario: ios-bgp-af-replaced
+    count: 1
+
+  - scenario: ios-bgp-af-deleted
+    count: 1
