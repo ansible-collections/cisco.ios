@@ -1,0 +1,195 @@
+---
+# Converge — ios_l2_interfaces integration tests against CISSHGO.
+# Tests: gathered, merged (+ idempotent), parsed, rendered.
+# Note: version check (ansible_net_version == "15.6(2)T") is not needed here
+# because CISSHGO's show_version.txt returns 15.6(2)T.
+
+# ====================================================================
+# 1. GATHERED — stateless platform on port 10003
+# ====================================================================
+- name: "ios_l2_interfaces — gathered"
+  hosts: ios_l2_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/ios_l2_interfaces/vars/main.yaml"
+  tasks:
+    - name: Gather ios_l2_interfaces facts
+      register: result
+      cisco.ios.ios_l2_interfaces:
+        state: gathered
+
+    - name: Debug — show what cisshgo returned vs what the test expects
+      ansible.builtin.debug:
+        msg:
+          expected: "{{ gathered['config'] }}"
+          actual: "{{ result['gathered'] }}"
+          symmetric_diff: "{{ gathered['config'] | symmetric_difference(result['gathered']) }}"
+
+    - name: Assert gathered config matches expected
+      ansible.builtin.assert:
+        that:
+          - "{{ gathered['config'] | symmetric_difference(result['gathered']) | length == 0 }}"
+        fail_msg: |
+          Gathered L2 config does not match expected.
+          Expected entries: {{ gathered['config'] | length }}
+          Actual entries:   {{ result['gathered'] | length }}
+          Symmetric diff:   {{ gathered['config'] | symmetric_difference(result['gathered']) }}
+        success_msg: "Gathered L2 config matches expected"
+
+# ====================================================================
+# 2. MERGED — stateful scenario on port 10004
+# ====================================================================
+- name: "ios_l2_interfaces — merged"
+  hosts: ios_l2_interfaces_merged
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/ios_l2_interfaces/vars/main.yaml"
+  tasks:
+    - name: Merge provided L2 configuration with device configuration
+      register: result
+      cisco.ios.ios_l2_interfaces: &merged_config
+        config:
+          - name: GigabitEthernet2
+            access:
+              vlan: 30
+            voice:
+              vlan: 40
+            private_vlan:
+              association: true
+              host: true
+              primary_range: 2000
+              secondary_range: 2500
+          - name: GigabitEthernet3
+            trunk:
+              allowed_vlans: 15-20,40
+              native_vlan: 20
+              pruning_vlans: 10,20
+              encapsulation: dot1q
+            mode: trunk
+        state: merged
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that before dicts are correctly generated
+      ansible.builtin.assert:
+        that:
+          - "{{ merged['before'] | symmetric_difference(result['before']) | length == 0 }}"
+
+    - name: Debug — show the ORDER of commands the module actually issued
+      ansible.builtin.debug:
+        msg:
+          expected_order_in_cisshgo_sequence:
+            - interface GigabitEthernet2
+            - switchport access vlan 30
+            - switchport voice vlan 40
+            - switchport private-vlan association host 2000 2500
+            - interface GigabitEthernet3
+            - switchport trunk encapsulation dot1q
+            - switchport trunk native vlan 20
+            - switchport trunk allowed vlan 15-20,40
+            - switchport trunk pruning vlan 10,20
+            - switchport mode trunk
+          actual_order_from_module: "{{ result['commands'] }}"
+
+    - name: Debug — tail cisshgo log (localhost) to see what cisshgo actually received
+      delegate_to: localhost
+      vars:
+        ansible_connection: local
+        ansible_network_os: ""
+      ansible.builtin.command: tail -n 80 /tmp/cisshgo-l2_interfaces.log
+      register: _cisshgo_tail
+      changed_when: false
+      failed_when: false
+
+    - name: Show cisshgo log tail
+      ansible.builtin.debug:
+        var: _cisshgo_tail.stdout_lines
+
+    - name: Debug — merged.after expected vs actual
+      ansible.builtin.debug:
+        msg:
+          expected: "{{ merged['after'] }}"
+          actual: "{{ result['after'] }}"
+          symmetric_diff: "{{ merged['after'] | symmetric_difference(result['after']) }}"
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - "{{ merged['after'] | symmetric_difference(result['after']) | length == 0 }}"
+        fail_msg: |
+          Merged after dict does not match expected.
+          Expected entries: {{ merged['after'] | length }}
+          Actual entries:   {{ result['after'] | length }}
+          Symmetric diff:   {{ merged['after'] | symmetric_difference(result['after']) }}
+        success_msg: "Merged after dict matches expected"
+
+    - name: Merge provided L2 configuration (idempotent)
+      register: result
+      cisco.ios.ios_l2_interfaces: *merged_config
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+# ====================================================================
+# 3. PARSED — offline parse of a config file.
+# The resource module works from `running_config`, but its action plugin
+# still requires a network_cli context — run against the cisshgo platform
+# listener (same as gathered).
+# ====================================================================
+- name: "ios_l2_interfaces — parsed"
+  hosts: ios_l2_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/ios_l2_interfaces/vars/main.yaml"
+  tasks:
+    - name: Parse L2 interface configuration from file
+      register: result
+      cisco.ios.ios_l2_interfaces:
+        running_config: "{{ lookup('file', playbook_dir + '/../../../tests/integration/targets/ios_l2_interfaces/tests/cli/_parsed.cfg') }}"
+        state: parsed
+
+    - name: Assert parsed config matches expected
+      ansible.builtin.assert:
+        that:
+          - "{{ parsed['config'] | symmetric_difference(result['parsed']) | length == 0 }}"
+        fail_msg: "Parsed L2 config does not match expected"
+        success_msg: "Parsed L2 config matches expected"
+
+# ====================================================================
+# 4. RENDERED — offline render of commands from structured input.
+# Same rationale as parsed: offline work, but action plugin requires
+# network_cli context.
+# ====================================================================
+- name: "ios_l2_interfaces — rendered"
+  hosts: ios_l2_interfaces_gathered
+  gather_facts: false
+  vars_files:
+    - "{{ playbook_dir }}/../../../tests/integration/targets/ios_l2_interfaces/vars/main.yaml"
+  tasks:
+    - name: Render platform specific L2 commands from task input
+      register: result
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet2
+            access:
+              vlan: 30
+          - name: GigabitEthernet3
+            trunk:
+              allowed_vlans: 10-20,40
+              native_vlan: 20
+              pruning_vlans: 10,20
+              encapsulation: dot1q
+        state: rendered
+
+    - name: Assert rendered commands match expected
+      ansible.builtin.assert:
+        that:
+          - "{{ rendered['commands'] | symmetric_difference(result['rendered']) | length == 0 }}"
+        fail_msg: "Rendered L2 commands do not match expected"
+        success_msg: "Rendered L2 commands match expected"
+...
