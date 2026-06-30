@@ -139,6 +139,9 @@ overridden:
   commands:
     - router bgp 65000
     - no neighbor 10.1.1.1
+    - address-family l2vpn vpls
+    - no neighbor 10.1.1.1 activate
+    - exit-address-family
     - address-family ipv4 mdt
     - no bgp dmzlink-bw
     - no bgp soft-reconfig-backup
@@ -217,6 +220,8 @@ overridden:
         # vrf: "blue"
       - afi: "ipv4"
         safi: "mdt"
+      - afi: "l2vpn"
+        safi: "vpls"
       - afi: "ipv6"
       - afi: "ipv6"
         bgp:
@@ -338,6 +343,7 @@ deleted:
     - no address-family ipv4 mdt
     - no address-family ipv4 unicast
     - no address-family ipv6 unicast
+    - no address-family l2vpn vpls
 
 rendered:
   commands:

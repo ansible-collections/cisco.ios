@@ -18,6 +18,8 @@
               safi: mdt
             - afi: ipv4
             - afi: ipv6
+            - afi: l2vpn
+              safi: vpls
 
         state: deleted
 
