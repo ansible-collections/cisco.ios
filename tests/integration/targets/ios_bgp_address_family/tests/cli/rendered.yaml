@@ -8,6 +8,11 @@
       cisco.ios.ios_bgp_address_family:
         config:
           address_family:
+            - afi: l2vpn
+              safi: vpls
+              neighbors:
+                - neighbor_address: 10.1.1.1
+                  activate: true
             - afi: ipv4
               maximum_paths:
                 paths: 12
