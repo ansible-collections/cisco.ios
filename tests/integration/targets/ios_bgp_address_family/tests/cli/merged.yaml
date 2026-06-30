@@ -5,6 +5,12 @@
 - ansible.builtin.include_tasks: _initial_vrf_setup.yaml
 - ansible.builtin.include_tasks: _ospf_proc_setup.yaml
 
+- name: Define BGP neighbors globally (required for l2vpn vpls neighbor activation)
+  cisco.ios.ios_config:
+    lines:
+      - router bgp 65000
+      - neighbor 10.1.1.1 remote-as 100
+
 - block:
     - name: Merge provided configuration with device configuration
       register: result
