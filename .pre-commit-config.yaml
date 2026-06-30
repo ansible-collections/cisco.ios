@@ -1,4 +1,7 @@
 ---
+ci:
+  skip: [update-docs]
+
 repos:
   - repo: https://github.com/ansible-network/collection_prep
     rev: da78082ea59b03ad16cd7dbee267f53e8ff50bb5

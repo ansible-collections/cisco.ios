@@ -42,8 +42,7 @@
         that:
           - result.commands|length == 8
           - result.changed == true
-          - result.commands|symmetric_difference(merged.commands) == []
-
+          - "{{ merged.commands | cisco.ios.commands_blocks_equal(result.commands, 'interface') }}"
     - name: Merge the provided configuration with the existing running configuration (idempotent)
       register: result
       cisco.ios.ios_acl_interfaces: *id001

@@ -184,8 +184,7 @@
         that:
           - result.commands|length == 11
           - result.changed == true
-          - result.commands|symmetric_difference(rtt_overriden.commands) == []
-
+          - "{{ rtt_overriden.commands | cisco.ios.commands_blocks_equal(result.commands, 'acl') }}"
     - name: Revert back to base configuration using facts round trip
       register: revert
       cisco.ios.ios_acls:
@@ -196,6 +195,6 @@
         that:
           - revert.commands|length == 10
           - revert.changed == true
-          - revert.commands|symmetric_difference(rtt.commands) == []
+          - "{{ revert.commands | cisco.ios.commands_blocks_equal(rtt.commands, 'acl') }}"
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
