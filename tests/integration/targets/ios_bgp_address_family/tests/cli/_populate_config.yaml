@@ -58,6 +58,11 @@
           table_map:
             name: test_tableMap
             filter: true
+        - afi: l2vpn
+          safi: vpls
+          neighbors:
+            - neighbor_address: "10.1.1.1"
+              activate: true
         - afi: ipv4
           safi: mdt
           bgp:

@@ -48,7 +48,7 @@ options:
           safi:
             description: Address Family modifier
             type: str
-            choices: ["flowspec", "mdt", "multicast", "mvpn", "evpn", "unicast"]
+            choices: ["flowspec", "mdt", "multicast", "mvpn", "evpn", "unicast", "vpls"]
           vrf:
             description: Specify parameters for a VPN Routing/Forwarding instance
             type: str
