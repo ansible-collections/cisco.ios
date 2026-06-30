@@ -4,6 +4,15 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v11.4.2
+=======
+
+Bugfixes
+--------
+
+- ios_acls - Fix incorrect CLI command generation for IPv6 ACL remarks. The module now correctly generates ``sequence N remark`` syntax for IPv6 instead of the IPv4-style ``N remark`` format. Negation also correctly uses ``no sequence N remark``.
+- plugins/modules/ios_user.py - Fix matching existing SSH keys in running configurations while allowing optional trailing whitespace  when using the purge_keys parameter.
+
 v11.4.1
 =======
 
