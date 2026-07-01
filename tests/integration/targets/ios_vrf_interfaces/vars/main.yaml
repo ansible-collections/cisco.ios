@@ -57,6 +57,25 @@ parsed:
     - name: "GigabitEthernet2"
       vrf_name: "vrf_D"
     - name: "GigabitEthernet3"
+      ip_vrf_name: "vrf_legacy"
+    - name: "GigabitEthernet4"
+
+merged_ip_vrf:
+  commands:
+    - interface GigabitEthernet3
+    - ip vrf forwarding vrf_legacy
+  before:
+    - name: "Loopback888"
+    - name: "GigabitEthernet1"
+    - name: "GigabitEthernet2"
+    - name: "GigabitEthernet3"
+    - name: "GigabitEthernet4"
+  after:
+    - name: "Loopback888"
+    - name: "GigabitEthernet1"
+    - name: "GigabitEthernet2"
+    - name: "GigabitEthernet3"
+      ip_vrf_name: "vrf_legacy"
     - name: "GigabitEthernet4"
 
 replaced:
