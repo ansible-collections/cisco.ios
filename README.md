@@ -57,6 +57,7 @@ Name | Description
 --- | ---
 [cisco.ios.ios_acl_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_acl_interfaces_module.rst)|Resource module to configure ACL interfaces.
 [cisco.ios.ios_acls](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_acls_module.rst)|Resource module to configure ACLs.
+[cisco.ios.ios_atomic_vlan_migration](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_atomic_vlan_migration_module.rst)|Atomic migration of Management IP and Trunk Cleanup on Cisco IOS.
 [cisco.ios.ios_banner](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_banner_module.rst)|Module to configure multiline banners.
 [cisco.ios.ios_bfd_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_bfd_interfaces_module.rst)|Resource module to configure bfd in interfaces.
 [cisco.ios.ios_bfd_templates](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_bfd_templates_module.rst)|Bidirectional Forwarding Detection (BFD) templates configurations
