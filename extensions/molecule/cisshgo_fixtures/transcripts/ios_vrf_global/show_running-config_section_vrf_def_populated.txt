@@ -1,0 +1,10 @@
+vrf definition VRF2
+ vnet tag 200
+ description This is a test VRF for merged state
+ ipv4 multicast multitopology
+ ipv6 multicast multitopology
+ rd 2:3
+ vpn id 2:45
+ route-target export 198.51.100.5:400
+ route-target import 198.51.100.5:400
+!

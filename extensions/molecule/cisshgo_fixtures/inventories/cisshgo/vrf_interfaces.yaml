@@ -1,0 +1,10 @@
+---
+devices:
+  - platform: ios_vrf_interfaces
+    count: 1
+
+  - scenario: ios-vrf-intf-merged
+    count: 1
+
+  - scenario: ios-vrf-intf-deleted
+    count: 1

@@ -1,0 +1,4 @@
+logging facility local6
+logging buffered xml 5099 warnings
+logging monitor critical
+logging host 192.0.2.12 xml

@@ -1,0 +1,458 @@
+---
+- name: "Gather ios_l2_interfaces facts (gathered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_l2_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Gather L2 interface facts from device"
+      cisco.ios.ios_l2_interfaces:
+        config:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered facts match expected config"
+      ansible.builtin.assert:
+        that:
+          - gathered['config'] | symmetric_difference(result['gathered']) | length == 0
+          - result['changed'] == false
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed"
+
+- name: "Merge ios_l2_interfaces (merged + merged_again + idempotency)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_l2_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Merge provided configuration with device configuration"
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet2
+            access:
+              vlan: 30
+            voice:
+              vlan: 40
+            private_vlan:
+              association: true
+              host: true
+              primary_range: 2000
+              secondary_range: 2500
+          - name: GigabitEthernet3
+            trunk:
+              allowed_vlans: 15-20,40
+              native_vlan: 20
+              pruning_vlans: 10,20
+              encapsulation: dot1q
+            mode: trunk
+        state: merged
+      register: result
+
+    - name: "Assert merged commands"
+      ansible.builtin.assert:
+        that:
+          - merged['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Assert merged before"
+      ansible.builtin.assert:
+        that:
+          - merged['before'] | symmetric_difference(result['before']) | length == 0
+        quiet: true
+
+    - name: "Assert merged after"
+      ansible.builtin.assert:
+        that:
+          - merged['after'] | symmetric_difference(result['after']) | length == 0
+        quiet: true
+
+    - name: "Merge provided configuration (idempotent)"
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet2
+            access:
+              vlan: 30
+            voice:
+              vlan: 40
+            private_vlan:
+              association: true
+              host: true
+              primary_range: 2000
+              secondary_range: 2500
+          - name: GigabitEthernet3
+            trunk:
+              allowed_vlans: 15-20,40
+              native_vlan: 20
+              pruning_vlans: 10,20
+              encapsulation: dot1q
+            mode: trunk
+        state: merged
+      register: result
+
+    - name: "Assert merged idempotent"
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+        quiet: true
+
+    - name: "Merge incremental configuration (merged_again)"
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet3
+            trunk:
+              allowed_vlans: 200
+              pruning_vlans: 40-60
+        state: merged
+      register: result
+
+    - name: "Assert merged_again commands"
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - result['commands'] | length == merged_again['commands'] | length
+          - "'interface GigabitEthernet3' in result['commands']"
+        quiet: true
+
+    - name: "Assert merged_again before"
+      ansible.builtin.assert:
+        that:
+          - merged['after'] | symmetric_difference(result['before']) | length == 0
+        quiet: true
+
+    - name: "Assert merged_again after"
+      ansible.builtin.assert:
+        that:
+          - merged_again['after'] | symmetric_difference(result['after']) | length == 0
+        quiet: true
+
+    - name: "Merge incremental configuration (idempotent)"
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet3
+            trunk:
+              allowed_vlans: 200
+              pruning_vlans: 40-60
+        state: merged
+      register: result
+
+    - name: "Assert merged_again idempotent"
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+        quiet: true
+
+    - name: "PASSED: merged + merged_again"
+      ansible.builtin.debug:
+        msg: "merged and merged_again tests passed"
+
+- name: "Replace ios_l2_interfaces configuration (replaced state)"
+  hosts: ios_replaced
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_l2_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Replace L2 configuration on listed interfaces"
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet2
+            access:
+              vlan: 40
+            voice:
+              vlan: 20
+          - name: GigabitEthernet3
+            trunk:
+              native_vlan: 20
+              pruning_vlans: 10-20,30
+              encapsulation: dot1q
+        state: replaced
+      register: result
+
+    - name: "Assert replaced commands"
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - result['commands'] | length > 0
+        quiet: true
+
+    - name: "Assert replaced before"
+      ansible.builtin.assert:
+        that:
+          - replaced['before'] | symmetric_difference(result['before']) | length == 0
+        quiet: true
+
+    - name: "Assert replaced after"
+      ansible.builtin.assert:
+        that:
+          - replaced['after'] | symmetric_difference(result['after']) | length == 0
+        quiet: true
+
+    - name: "Replace L2 configuration (idempotent)"
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet2
+            access:
+              vlan: 40
+            voice:
+              vlan: 20
+          - name: GigabitEthernet3
+            trunk:
+              native_vlan: 20
+              pruning_vlans: 10-20,30
+              encapsulation: dot1q
+        state: replaced
+      register: result
+
+    - name: "Assert replaced idempotent"
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+        quiet: true
+
+    - name: "PASSED: replaced state"
+      ansible.builtin.debug:
+        msg: "replaced state test passed"
+
+- name: "Override ios_l2_interfaces configuration (overridden state)"
+  hosts: ios_overridden
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_l2_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Override L2 configuration on all interfaces"
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet3
+            trunk:
+              allowed_vlans: 30-35,40
+              native_vlan: 30
+              encapsulation: isl
+        state: overridden
+      register: result
+
+    - name: "Assert overridden commands"
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - result['commands'] | length > 0
+        quiet: true
+
+    - name: "Assert overridden before"
+      ansible.builtin.assert:
+        that:
+          - overridden['before'] | symmetric_difference(result['before']) | length == 0
+        quiet: true
+
+    - name: "Assert overridden after"
+      ansible.builtin.assert:
+        that:
+          - overridden['after'] | symmetric_difference(result['after']) | length == 0
+        quiet: true
+
+    - name: "Override L2 configuration (idempotent)"
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet3
+            trunk:
+              allowed_vlans: 30-35,40
+              native_vlan: 30
+              encapsulation: isl
+        state: overridden
+      register: result
+
+    - name: "Assert overridden idempotent"
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+        quiet: true
+
+    - name: "PASSED: overridden state"
+      ansible.builtin.debug:
+        msg: "overridden state test passed"
+
+- name: "Delete ios_l2_interfaces L2 attributes (deleted state)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_l2_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Delete L2 attributes from all configured interfaces"
+      cisco.ios.ios_l2_interfaces:
+        state: deleted
+      register: result
+
+    - name: "Assert deleted commands"
+      ansible.builtin.assert:
+        that:
+          - deleted['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Assert deleted before"
+      ansible.builtin.assert:
+        that:
+          - deleted['before'] | symmetric_difference(result['before']) | length == 0
+        quiet: true
+
+    - name: "Assert deleted after"
+      ansible.builtin.assert:
+        that:
+          - deleted['after'] | symmetric_difference(result['after']) | length == 0
+        quiet: true
+
+    - name: "Delete L2 attributes (idempotent)"
+      cisco.ios.ios_l2_interfaces:
+        state: deleted
+      register: result
+
+    - name: "Assert deleted idempotent"
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+        quiet: true
+
+    - name: "PASSED: deleted state"
+      ansible.builtin.debug:
+        msg: "deleted state test passed"
+
+- name: "Parse ios_l2_interfaces from static config (parsed state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_l2_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Parse L2 interface configuration from integration _parsed.cfg"
+      cisco.ios.ios_l2_interfaces:
+        running_config: "{{ lookup('file', '../../../tests/integration/targets/ios_l2_interfaces/tests/cli/_parsed.cfg') }}"
+        state: parsed
+      register: result
+      become: true
+
+    - name: "Assert parsed config"
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - parsed['config'] | symmetric_difference(result['parsed']) | length == 0
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed"
+
+- name: "Render ios_l2_interfaces CLI (rendered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_l2_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Render L2 configuration to CLI commands"
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet2
+            access:
+              vlan: 30
+
+          - name: GigabitEthernet3
+            trunk:
+              allowed_vlans: 10-20,40
+              native_vlan: 20
+              pruning_vlans: 10,20
+              encapsulation: dot1q
+        state: rendered
+      register: result
+      become: true
+
+    - name: "Assert rendered commands"
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result['rendered'] | symmetric_difference(rendered['commands']) | length == 0
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed"
+
+# RTT: merge base (integration rtt.yaml shape) -> ios_facts -> overridden drift -> overridden revert.
+# Drift/revert CLI uses vlan remove/add deltas; assertions use lists aligned with ResourceModule emit (not vars overridden.commands / rtt.commands verbatim).
+- name: "Round-trip ios_l2_interfaces (RTT)"
+  hosts: ios_l2_rtt
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_l2_interfaces/vars/main.yaml"
+  vars:
+    l2_rtt_drift_expected:
+      - interface GigabitEthernet2
+      - no switchport access vlan
+      - interface GigabitEthernet3
+      - no switchport mode
+      - switchport trunk encapsulation isl
+      - switchport trunk native vlan 30
+      - switchport trunk allowed vlan remove 15-20
+      - switchport trunk allowed vlan add 30-35
+      - no switchport trunk pruning vlan
+    l2_rtt_revert_expected:
+      - interface GigabitEthernet2
+      - switchport access vlan 30
+      - interface GigabitEthernet3
+      - switchport trunk encapsulation dot1q
+      - switchport mode trunk
+      - switchport trunk native vlan 20
+      - switchport trunk allowed vlan remove 30-35
+      - switchport trunk allowed vlan add 15-20
+      - switchport trunk pruning vlan 10,20
+  tasks:
+    - name: "RTT — apply base configuration"
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet2
+            access:
+              vlan: 30
+          - mode: trunk
+            name: GigabitEthernet3
+            trunk:
+              allowed_vlans: 15-20,40
+              native_vlan: 20
+              pruning_vlans: 10,20
+              encapsulation: dot1q
+        state: merged
+
+    - name: "RTT — gather l2_interfaces via ios_facts"
+      cisco.ios.ios_facts:
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources:
+          - l2_interfaces
+
+    - name: "RTT — drift (overridden on GigabitEthernet3)"
+      register: drift
+      cisco.ios.ios_l2_interfaces:
+        config:
+          - name: GigabitEthernet3
+            trunk:
+              allowed_vlans: 30-35,40
+              native_vlan: 30
+              encapsulation: isl
+        state: overridden
+
+    - name: "RTT — assert drift commands"
+      ansible.builtin.assert:
+        that:
+          - drift.changed == true
+          - l2_rtt_drift_expected | symmetric_difference(drift.commands) | length == 0
+        quiet: true
+
+    - name: "RTT — revert using gathered facts"
+      register: revert
+      cisco.ios.ios_l2_interfaces:
+        config: "{{ ansible_facts['network_resources']['l2_interfaces'] }}"
+        state: overridden
+
+    - name: "RTT — assert revert commands"
+      ansible.builtin.assert:
+        that:
+          - revert.changed == true
+          - l2_rtt_revert_expected | symmetric_difference(revert.commands) | length == 0
+        quiet: true

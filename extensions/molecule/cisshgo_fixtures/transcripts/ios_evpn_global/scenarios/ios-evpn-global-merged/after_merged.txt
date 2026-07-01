@@ -1,0 +1,2 @@
+l2vpn evpn
+ replication-type static

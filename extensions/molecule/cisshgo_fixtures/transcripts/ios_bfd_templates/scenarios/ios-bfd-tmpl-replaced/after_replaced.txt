@@ -1,0 +1,6 @@
+bfd-template single-hop template1
+ interval min-tx 300 min-rx 300 multiplier 4
+ authentication sha-1 keychain new_keychain
+bfd-template multi-hop template2
+ interval min-tx 500 min-rx 500 multiplier 5
+ dampening 30 2000 5000 54

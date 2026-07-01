@@ -1,0 +1,51 @@
+---
+driver:
+  name: default
+
+platforms:
+  - name: cisshgo-ios-gathered
+    groups:
+      - ios_gathered
+  - name: cisshgo-ios-merged
+    groups:
+      - ios_merged
+  - name: cisshgo-ios-replaced
+    groups:
+      - ios_replaced
+  - name: cisshgo-ios-overridden
+    groups:
+      - ios_overridden
+  - name: cisshgo-ios-deleted
+    groups:
+      - ios_deleted
+
+ansible:
+  executor:
+    args:
+      ansible_playbook:
+        - --inventory=${MOLECULE_SCENARIO_DIRECTORY}/../cisshgo_fixtures/inventories/ansible/prefix_lists.yaml
+  env:
+    ANSIBLE_FORCE_COLOR: "true"
+    ANSIBLE_HOST_KEY_CHECKING: "false"
+    ANSIBLE_DEPRECATION_WARNINGS: "false"
+
+provisioner:
+  name: ansible
+  playbooks:
+    create: ../_shared/create.yml
+    converge: converge.yml
+    verify: ../_shared/verify.yml
+    destroy: ../_shared/destroy.yml
+
+scenario:
+  test_sequence:
+    - create
+    - converge
+    - verify
+    - destroy
+
+prerun: false
+
+verifier:
+  name: ansible
+...

@@ -1,0 +1,6 @@
+vrf definition test1
+ address-family ipv4 unicast
+  export map testing-map
+  import map import-map
+ exit-address-family
+!
