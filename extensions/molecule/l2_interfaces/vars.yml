@@ -1,0 +1,7 @@
+---
+# Inputs for the shared _shared/{create,destroy,verify}.yml playbooks.
+# Inventory paths are derived from scenario_name.
+scenario_name: l2_interfaces
+listener_ports:
+  - 10000 # gathered / parsed / rendered
+  - 10001 # merged
