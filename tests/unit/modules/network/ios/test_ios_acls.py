@@ -3400,3 +3400,153 @@ class TestIosAclsModule(TestIosModule):
         ace = {"protocol": "igmp", "protocol_options": "1"}
         AclsFacts._normalize_protocol_options(ace)
         self.assertEqual(ace["protocol_options"], {"igmp": {"host_query": True}})
+
+    def test_ios_acls_rendered_option_hyphen_conversion(self):
+        """setval: option keys with underscores are converted to hyphens for CLI (ipv4 + ipv6)"""
+        self.execute_show_command_name.return_value = dedent("")
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "test_option",
+                                "acl_type": "extended",
+                                "aces": [
+                                    {
+                                        "sequence": 10,
+                                        "grant": "deny",
+                                        "protocol": "ip",
+                                        "source": {"any": True},
+                                        "destination": {"any": True},
+                                        "option": {"any_options": True},
+                                    },
+                                    {
+                                        "sequence": 20,
+                                        "grant": "deny",
+                                        "protocol": "ip",
+                                        "source": {"any": True},
+                                        "destination": {"any": True},
+                                        "option": {"stream_id": True},
+                                    },
+                                    {
+                                        "sequence": 30,
+                                        "grant": "deny",
+                                        "protocol": "ip",
+                                        "source": {"any": True},
+                                        "destination": {"any": True},
+                                        "option": {"security": True},
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        "afi": "ipv6",
+                        "acls": [
+                            {
+                                "name": "test_v6_option",
+                                "aces": [
+                                    {
+                                        "sequence": 10,
+                                        "grant": "deny",
+                                        "protocol": "ip",
+                                        "source": {"any": True},
+                                        "destination": {"any": True},
+                                        "option": {"record_route": True},
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+                state="rendered",
+            ),
+        )
+        commands = [
+            "ip access-list extended test_option",
+            "10 deny ip any any option any-options",
+            "20 deny ip any any option stream-id",
+            "30 deny ip any any option security",
+            "ipv6 access-list test_v6_option",
+            "deny ip any any sequence 10 option record-route",
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+
+    def test_ios_acls_parsed_option_underscore_conversion(self):
+        """getval: option values with hyphens from CLI are converted to underscores (ipv4 + ipv6)"""
+        self.execute_show_command_name.return_value = dedent("")
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    ip access-list extended test_option
+                        10 deny ip any any option any-options
+                        20 deny ip any any option stream-id
+                        30 deny ip any any option security
+                    ipv6 access-list test_v6_option
+                        sequence 10 deny ip any any option record-route
+                    """,
+                ),
+                state="parsed",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        parsed_list = [
+            {
+                "afi": "ipv4",
+                "acls": [
+                    {
+                        "name": "test_option",
+                        "acl_type": "extended",
+                        "aces": [
+                            {
+                                "sequence": 10,
+                                "grant": "deny",
+                                "protocol": "ip",
+                                "source": {"any": True},
+                                "destination": {"any": True},
+                                "option": {"any_options": True},
+                            },
+                            {
+                                "sequence": 20,
+                                "grant": "deny",
+                                "protocol": "ip",
+                                "source": {"any": True},
+                                "destination": {"any": True},
+                                "option": {"stream_id": True},
+                            },
+                            {
+                                "sequence": 30,
+                                "grant": "deny",
+                                "protocol": "ip",
+                                "source": {"any": True},
+                                "destination": {"any": True},
+                                "option": {"security": True},
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
+                "afi": "ipv6",
+                "acls": [
+                    {
+                        "name": "test_v6_option",
+                        "aces": [
+                            {
+                                "sequence": 10,
+                                "grant": "deny",
+                                "protocol": "ip",
+                                "source": {"any": True},
+                                "destination": {"any": True},
+                                "option": {"record_route": True},
+                            },
+                        ],
+                    },
+                ],
+            },
+        ]
+        self.assertEqual(parsed_list, result["parsed"])
