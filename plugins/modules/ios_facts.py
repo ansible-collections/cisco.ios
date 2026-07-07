@@ -217,6 +217,9 @@ ansible_net_neighbors:
 """
 from ansible.module_utils.basic import AnsibleModule
 
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    warn_and_exit,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.facts.facts import (
     FactsArgs,
 )
@@ -243,7 +246,7 @@ def main():
     additional_facts, additional_warnings = result
     ansible_facts.update(additional_facts)
     warnings.extend(additional_warnings)
-    module.exit_json(ansible_facts=ansible_facts, warnings=warnings)
+    warn_and_exit(module, {"ansible_facts": ansible_facts, "warnings": warnings})
 
 
 if __name__ == "__main__":

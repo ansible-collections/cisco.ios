@@ -624,6 +624,7 @@ from functools import partial
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     remove_default_spec,
+    warn_and_exit,
 )
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
@@ -952,7 +953,7 @@ def main():
         if not module.check_mode:
             load_config(module, commands)
         result["changed"] = True
-    module.exit_json(**result)
+    warn_and_exit(module, result)
 
 
 if __name__ == "__main__":

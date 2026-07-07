@@ -462,6 +462,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.c
     NetworkConfig,
     dumps,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    warn_and_exit,
+)
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
@@ -838,9 +841,9 @@ def main():
         if "warnings" in result:
             result["warnings"].append(msg)
         else:
-            result["warnings"] = msg
+            result["warnings"] = [msg]
 
-    module.exit_json(**result)
+    warn_and_exit(module, result)
 
 
 if __name__ == "__main__":

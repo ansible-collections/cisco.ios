@@ -1,0 +1,5 @@
+---
+minor_changes:
+  - ios_command, ios_config, ios_facts, ios_user - Use ``warn_and_exit`` from
+    ``ansible.netcommon`` instead of passing ``warnings`` to ``exit_json``, which
+    is deprecated in ansible-core 2.23.
