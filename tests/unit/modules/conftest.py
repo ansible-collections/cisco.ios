@@ -7,10 +7,11 @@ __metaclass__ = type
 
 import json
 
+from collections.abc import MutableMapping
+
 import pytest
 
 from ansible.module_utils.common.text.converters import to_bytes
-from collections.abc import MutableMapping
 
 
 @pytest.fixture

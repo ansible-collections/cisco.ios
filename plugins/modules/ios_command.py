@@ -358,15 +358,15 @@ failed_conditions:
 """
 import time
 
-from ansible.module_utils.common.text.converters import to_text
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.common.text.converters import to_text
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.parsing import (
     Conditional,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
     to_lines,
     transform_commands,
-    emit_warnings,
 )
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import run_commands

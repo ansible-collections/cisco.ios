@@ -349,13 +349,12 @@ import time
 from functools import partial
 
 from ansible.module_utils.basic import AnsibleModule
-
-from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
-    emit_warnings,
-)
 from ansible.module_utils.connection import exec_command
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     NetworkConfig,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
 )
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
