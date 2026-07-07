@@ -1,0 +1,7 @@
+---
+minor_changes:
+  - Replace deprecated ``ansible.module_utils._text`` imports with
+    ``ansible.module_utils.common.text.converters``, replace
+    ``ansible.module_utils.common._collections_compat`` with ``collections.abc``,
+    and remove ``ansible.module_utils.six`` usage in favour of Python 3 builtins
+    to prepare for ansible-core 2.24 removal.
