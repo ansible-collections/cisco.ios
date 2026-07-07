@@ -349,6 +349,10 @@ import time
 from functools import partial
 
 from ansible.module_utils.basic import AnsibleModule
+
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
+)
 from ansible.module_utils.connection import exec_command
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     NetworkConfig,
@@ -979,6 +983,7 @@ def main():
             load_config(module, commands)
         result["changed"] = True
     check_declarative_intent_params(want, module, result)
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

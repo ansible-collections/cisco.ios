@@ -366,6 +366,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.p
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
     to_lines,
     transform_commands,
+    emit_warnings,
 )
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import run_commands
@@ -423,6 +424,7 @@ def main():
         msg = "One or more conditional statements have not been satisfied"
         module.fail_json(msg=msg, failed_conditions=failed_conditions)
     result.update({"stdout": responses, "stdout_lines": list(to_lines(responses))})
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 
