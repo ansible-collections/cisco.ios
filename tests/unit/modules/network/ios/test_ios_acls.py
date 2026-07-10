@@ -577,16 +577,72 @@ class TestIosAclsModule(TestIosModule):
             "permit ipv6 2001:ABAD:BEEF:1221::/64 any sequence 10",
             "deny tcp host 2001:ABAD:BEEF:2345::1 host 2001:ABAD:BEEF:1212::1 eq www sequence 20",
             "ipv6 access-list empty_ipv6_acl",
-            "10 remark empty remark 1",
-            "20 remark empty remark 2",
-            "30 remark empty remark never ends",
+            "sequence 10 remark empty remark 1",
+            "sequence 20 remark empty remark 2",
+            "sequence 30 remark empty remark never ends",
             "ipv6 access-list ipv6_acl",
-            "10 remark I am a ipv6 ace",
-            "20 remark I am test",
+            "sequence 10 remark I am a ipv6 ace",
+            "sequence 20 remark I am test",
             "permit tcp any any sequence 30",
             "permit udp any any sequence 40",
-            "50 remark I am new set of ipv6 ace",
+            "sequence 50 remark I am new set of ipv6 ace",
             "permit icmp any any sequence 60",
+        ]
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_acls_replaced_ipv6_remarks(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            ipv6 access-list TEST_IPV6_ACL
+                sequence 10 remark Old remark line 1
+                sequence 10 remark Old remark line 2
+                sequence 10 permit tcp any any
+                sequence 20 remark Another old remark
+                sequence 20 deny udp any any
+            """,
+        )
+        self.execute_show_command_name.return_value = dedent("")
+
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "afi": "ipv6",
+                        "acls": [
+                            {
+                                "name": "TEST_IPV6_ACL",
+                                "aces": [
+                                    {
+                                        "sequence": 10,
+                                        "remarks": ["New remark line 1"],
+                                        "grant": "permit",
+                                        "protocol": "tcp",
+                                        "source": {"any": True},
+                                        "destination": {"any": True},
+                                    },
+                                    {
+                                        "sequence": 20,
+                                        "remarks": ["Updated remark"],
+                                        "grant": "deny",
+                                        "protocol": "udp",
+                                        "source": {"any": True},
+                                        "destination": {"any": True},
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+                state="replaced",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = [
+            "ipv6 access-list TEST_IPV6_ACL",
+            "no sequence 10 remark",
+            "sequence 10 remark New remark line 1",
+            "no sequence 20 remark",
+            "sequence 20 remark Updated remark",
         ]
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
@@ -3344,3 +3400,153 @@ class TestIosAclsModule(TestIosModule):
         ace = {"protocol": "igmp", "protocol_options": "1"}
         AclsFacts._normalize_protocol_options(ace)
         self.assertEqual(ace["protocol_options"], {"igmp": {"host_query": True}})
+
+    def test_ios_acls_rendered_option_hyphen_conversion(self):
+        """setval: option keys with underscores are converted to hyphens for CLI (ipv4 + ipv6)"""
+        self.execute_show_command_name.return_value = dedent("")
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "afi": "ipv4",
+                        "acls": [
+                            {
+                                "name": "test_option",
+                                "acl_type": "extended",
+                                "aces": [
+                                    {
+                                        "sequence": 10,
+                                        "grant": "deny",
+                                        "protocol": "ip",
+                                        "source": {"any": True},
+                                        "destination": {"any": True},
+                                        "option": {"any_options": True},
+                                    },
+                                    {
+                                        "sequence": 20,
+                                        "grant": "deny",
+                                        "protocol": "ip",
+                                        "source": {"any": True},
+                                        "destination": {"any": True},
+                                        "option": {"stream_id": True},
+                                    },
+                                    {
+                                        "sequence": 30,
+                                        "grant": "deny",
+                                        "protocol": "ip",
+                                        "source": {"any": True},
+                                        "destination": {"any": True},
+                                        "option": {"security": True},
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        "afi": "ipv6",
+                        "acls": [
+                            {
+                                "name": "test_v6_option",
+                                "aces": [
+                                    {
+                                        "sequence": 10,
+                                        "grant": "deny",
+                                        "protocol": "ip",
+                                        "source": {"any": True},
+                                        "destination": {"any": True},
+                                        "option": {"record_route": True},
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+                state="rendered",
+            ),
+        )
+        commands = [
+            "ip access-list extended test_option",
+            "10 deny ip any any option any-options",
+            "20 deny ip any any option stream-id",
+            "30 deny ip any any option security",
+            "ipv6 access-list test_v6_option",
+            "deny ip any any sequence 10 option record-route",
+        ]
+        result = self.execute_module(changed=False)
+        self.assertEqual(sorted(result["rendered"]), sorted(commands))
+
+    def test_ios_acls_parsed_option_underscore_conversion(self):
+        """getval: option values with hyphens from CLI are converted to underscores (ipv4 + ipv6)"""
+        self.execute_show_command_name.return_value = dedent("")
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    ip access-list extended test_option
+                        10 deny ip any any option any-options
+                        20 deny ip any any option stream-id
+                        30 deny ip any any option security
+                    ipv6 access-list test_v6_option
+                        sequence 10 deny ip any any option record-route
+                    """,
+                ),
+                state="parsed",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        parsed_list = [
+            {
+                "afi": "ipv4",
+                "acls": [
+                    {
+                        "name": "test_option",
+                        "acl_type": "extended",
+                        "aces": [
+                            {
+                                "sequence": 10,
+                                "grant": "deny",
+                                "protocol": "ip",
+                                "source": {"any": True},
+                                "destination": {"any": True},
+                                "option": {"any_options": True},
+                            },
+                            {
+                                "sequence": 20,
+                                "grant": "deny",
+                                "protocol": "ip",
+                                "source": {"any": True},
+                                "destination": {"any": True},
+                                "option": {"stream_id": True},
+                            },
+                            {
+                                "sequence": 30,
+                                "grant": "deny",
+                                "protocol": "ip",
+                                "source": {"any": True},
+                                "destination": {"any": True},
+                                "option": {"security": True},
+                            },
+                        ],
+                    },
+                ],
+            },
+            {
+                "afi": "ipv6",
+                "acls": [
+                    {
+                        "name": "test_v6_option",
+                        "aces": [
+                            {
+                                "sequence": 10,
+                                "grant": "deny",
+                                "protocol": "ip",
+                                "source": {"any": True},
+                                "destination": {"any": True},
+                                "option": {"record_route": True},
+                            },
+                        ],
+                    },
+                ],
+            },
+        ]
+        self.assertEqual(parsed_list, result["parsed"])
