@@ -631,6 +631,11 @@ def save_config(module, result):
         )
 
 
+def _trim_trailing_whitespace(value):
+    """Remove trailing spaces and tabs from each line."""
+    return re.sub(r"[ \t]+(?=\r?\n|$)", "", value)
+
+
 def main():
     """main entry point for module execution"""
     backup_spec = dict(filename=dict(), dir_path=dict(type="path"))
@@ -822,7 +827,13 @@ def main():
                     before = base_config
                     after = running_config
                 result.update(
-                    {"changed": True, "diff": {"before": str(before), "after": str(after)}},
+                    {
+                        "changed": True,
+                        "diff": {
+                            "before": _trim_trailing_whitespace(str(before)),
+                            "after": _trim_trailing_whitespace(str(after)),
+                        },
+                    },
                 )
 
     if result.get("changed") and any(
