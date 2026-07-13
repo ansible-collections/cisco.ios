@@ -2,11 +2,11 @@
 
 ## Test Types and When to Use Each
 
-| Type | Command | When |
-|------|---------|------|
-| Sanity | `ansible-test sanity` | Always — runs on every PR |
-| Unit | `tox --ansible` or `pytest` | Always — mocked, no device needed |
-| Integration | CML lab or `-e` flags | For new modules or RM changes |
+| Type        | Command                     | When                              |
+| ----------- | --------------------------- | --------------------------------- |
+| Sanity      | `ansible-test sanity`       | Always — runs on every PR         |
+| Unit        | `tox --ansible` or `pytest` | Always — mocked, no device needed |
+| Integration | CML lab or `-e` flags       | For new modules or RM changes     |
 
 ---
 
@@ -34,13 +34,17 @@ ignore file consistency.
 ## Unit Tests
 
 ### Galaxy variant (matches `unit-galaxy` CI job)
+
 Uses the last published Galaxy release of netcommon:
+
 ```bash
 python -m tox --ansible -e sanity-py3.12-2.19 --conf tox-ansible.ini
 ```
 
 ### Source variant (matches `unit-source` CI job)
+
 Uses the latest `main` branch of netcommon:
+
 ```bash
 pip install git+https://github.com/ansible-collections/ansible.netcommon.git
 pytest tests/unit -v
@@ -50,11 +54,13 @@ If `unit-source` passes but `unit-galaxy` fails → **Pattern 1 (Galaxy Version 
 See `ci-patterns.md`.
 
 ### Running a single unit test
+
 ```bash
 pytest tests/unit/modules/network/ios/test_ios_vlans.py -v
 ```
 
 ### Unit test structure
+
 ```
 tests/unit/modules/network/ios/
   test_ios_<rm>.py          # One file per module
@@ -71,6 +77,7 @@ Unit tests use `unittest.mock` to mock the device connection — no real device 
 Integration tests run against **real CML lab devices** (IOS / IOS-XE).
 
 ### Structure
+
 ```
 tests/integration/targets/ios_<rm>/
   tasks/
@@ -91,6 +98,7 @@ tests/integration/targets/ios_<rm>/
 ```
 
 ### Running integration tests locally (with device access)
+
 ```bash
 # Requires access to CML lab
 ansible-test integration ios_vlans -v \
@@ -99,6 +107,7 @@ ansible-test integration ios_vlans -v \
 ```
 
 ### Offline tests (rendered/parsed — no device needed)
+
 ```bash
 ansible-test integration ios_vlans -v \
   --tags rendered,parsed
@@ -119,6 +128,7 @@ devel          (main branch)
 ```
 
 Two transport variants per version:
+
 - `libssh` (primary — more sensitive to stale connection state)
 - `paramiko` (parallel CI for coverage)
 
@@ -141,6 +151,7 @@ gh run rerun <run-id> --failed
 ```
 
 ### Common pytest flags for debugging
+
 ```bash
 pytest tests/unit/modules/network/ios/test_ios_vlans.py \
   -v \                      # verbose

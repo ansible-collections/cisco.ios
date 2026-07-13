@@ -13,6 +13,7 @@ Check this file before investigating any CI failure. Most failures match a known
 but a new Galaxy release hasn't been cut yet, galaxy tests fail.
 
 **Diagnosis:**
+
 ```bash
 # Check if fix exists in netcommon main but isn't released
 gh pr list --repo ansible-collections/ansible.netcommon --state merged --limit 10
@@ -29,6 +30,7 @@ gh pr list --repo ansible-collections/ansible.netcommon --state merged --limit 1
 appears on the task **after** the deliberate timeout test — not on the test itself.
 
 **Root Cause (4-step trace):**
+
 1. `include_tasks vars: ansible_command_timeout: 61` — task_executor passes 61 to the
    persistent daemon via `conn.set_options(direct=options)`
 2. The daemon caches `persistent_command_timeout = 61` in memory
@@ -37,12 +39,14 @@ appears on the task **after** the deliberate timeout test — not on the test it
    then checks `61 > 60` → raises `ValueError`
 
 **Files Involved:**
+
 - `plugins/cliconf/ios.py` line ~294 — validation that raises the error
 - `tests/integration/targets/ios_cliconf/tests/common/commit_conf.yaml` — where to add fix
 - `tests/integration/targets/ios_cliconf/vars/main.yaml` — baseline `ansible_command_timeout: 30`
 - `ansible.netcommon/plugins/connection/network_cli.py` lines ~1172/1321 — daemon timeout handling
 
 **Fix:**
+
 ```yaml
 # Add after the assert task in commit_conf.yaml
 - name: Reset persistent connection to clear cached timeout
@@ -70,11 +74,13 @@ Stable versions (2.16, 2.18, 2.19) all pass.
 
 **Why:** ansible-core introduced a deprecation or API change that we haven't adapted to yet.
 Common examples:
+
 - `exit_json(warnings=[...])` deprecated → use `module.warn()` instead
 - Python version requirement bumped (devel requires ≥3.13)
 - Internal plugin API changed
 
 **Diagnosis:**
+
 ```bash
 # Check ansible-core changelog for the failing version
 gh release list --repo ansible/ansible --limit 5
@@ -111,6 +117,7 @@ Settings → Branches if the team decides to enforce it.
 ## Pattern 7: Python Version Mismatch (devel only)
 
 **Symptom:**
+
 ```
 ERROR: Package 'ansible-core' requires a different Python: 3.12.x not in '>=3.13'
 ```
@@ -119,6 +126,7 @@ ERROR: Package 'ansible-core' requires a different Python: 3.12.x not in '>=3.13
 but the GitHub Actions runner still uses Python 3.12 by default.
 
 **Fix:** Update `.github/workflows/tests.yml` to use Python 3.13 when testing against devel:
+
 ```yaml
 python-version: "${{ matrix.ansible == 'devel' && '3.13' || '3.12' }}"
 ```

@@ -24,6 +24,7 @@ A breaking change in `ansible.netcommon` or `ansible.utils` can fail CI across a
 downstream collections simultaneously. This is called a **cascade failure**.
 
 **If netcommon CI breaks:**
+
 1. Check if it's a Galaxy lag issue (Pattern 1 in `ci-patterns.md`)
 2. Check if a recent netcommon PR introduced a regression
 3. Check `ansible.utils` version — a utils bump can cascade through netcommon to ios
@@ -51,6 +52,7 @@ downstream collections simultaneously. This is called a **cascade failure**.
 ### When to add `Depends-On`
 
 If a cisco.ios PR depends on an open netcommon PR, add to the PR description:
+
 ```
 Depends-On: https://github.com/ansible-collections/ansible.netcommon/pull/<number>
 ```
@@ -62,6 +64,7 @@ This prevents accidental merge before the dependency is ready.
 ## Current Pinned Versions
 
 From `galaxy.yml` (as of 11.4.2):
+
 ```yaml
 dependencies:
   ansible.netcommon: ">=8.1.0"
@@ -69,6 +72,7 @@ dependencies:
 ```
 
 From `requirements.txt` (test installs):
+
 ```
 ansible-core>=2.16
 ansible.netcommon>=8.1.0
@@ -79,14 +83,14 @@ ansible.utils>=5.0.0
 
 ## netcommon Plugins Used by cisco.ios
 
-| Plugin | Purpose | Relevant when |
-|--------|---------|---------------|
-| `connection/network_cli.py` | Main connection mechanism for IOS | Any connection-level bug |
-| `connection/persistent.py` | Underlying persistent socket | Timeout/state leak bugs |
-| `module_utils/network/common/rm_templates.py` | Base class for RM parsers | Adding/fixing resource modules |
-| `module_utils/network/common/utils.py` | Utility functions | Parsing, comparison logic |
-| `plugins/action/network.py` | Network action plugin base | Action-level failures |
-| `plugins/filter/*.py` | Jinja2 filters (ipaddr, etc.) | Template-based tasks |
+| Plugin                                        | Purpose                           | Relevant when                  |
+| --------------------------------------------- | --------------------------------- | ------------------------------ |
+| `connection/network_cli.py`                   | Main connection mechanism for IOS | Any connection-level bug       |
+| `connection/persistent.py`                    | Underlying persistent socket      | Timeout/state leak bugs        |
+| `module_utils/network/common/rm_templates.py` | Base class for RM parsers         | Adding/fixing resource modules |
+| `module_utils/network/common/utils.py`        | Utility functions                 | Parsing, comparison logic      |
+| `plugins/action/network.py`                   | Network action plugin base        | Action-level failures          |
+| `plugins/filter/*.py`                         | Jinja2 filters (ipaddr, etc.)     | Template-based tasks           |
 
 When one of these breaks, all collections using them break simultaneously.
 
@@ -94,10 +98,10 @@ When one of these breaks, all collections using them break simultaneously.
 
 ## ansible.utils Plugins Used
 
-| Plugin | Purpose |
-|--------|---------|
-| `validate` module | Validate device data against JSON Schema |
-| `fact_diff` module | Show diffs in gathered/rendered output |
-| `get_path` / `set_path` filters | Navigate nested data structures |
+| Plugin                          | Purpose                                  |
+| ------------------------------- | ---------------------------------------- |
+| `validate` module               | Validate device data against JSON Schema |
+| `fact_diff` module              | Show diffs in gathered/rendered output   |
+| `get_path` / `set_path` filters | Navigate nested data structures          |
 
 ansible.utils version bumps occasionally drop Python 3.9 support — check when updating.

@@ -33,13 +33,13 @@ gh pr checks <number>
 gh run view <run-id> --log-failed
 ```
 
-| What | Where |
-|------|-------|
-| 45 resource modules | `plugins/modules/ios_*.py` |
-| RM shared logic | `plugins/module_utils/network/ios/` |
-| CLI connection plugin | `plugins/cliconf/ios.py` |
-| Integration tests | `tests/integration/targets/ios_*/` |
-| Main CI | `.github/workflows/tests.yml` |
+| What                  | Where                               |
+| --------------------- | ----------------------------------- |
+| 45 resource modules   | `plugins/modules/ios_*.py`          |
+| RM shared logic       | `plugins/module_utils/network/ios/` |
+| CLI connection plugin | `plugins/cliconf/ios.py`            |
+| Integration tests     | `tests/integration/targets/ios_*/`  |
+| Main CI               | `.github/workflows/tests.yml`       |
 
 ---
 
@@ -49,12 +49,12 @@ Before investigating any CI failure, read **`context/ci-patterns.md`**.
 
 Known patterns (quick reference):
 
-| Symptom | Pattern | Fix |
-|---------|---------|-----|
-| `unit-galaxy` fails, `unit-source` passes | Galaxy version lag | Cut netcommon release |
+| Symptom                                                                           | Pattern                          | Fix                                                |
+| --------------------------------------------------------------------------------- | -------------------------------- | -------------------------------------------------- |
+| `unit-galaxy` fails, `unit-source` passes                                         | Galaxy version lag               | Cut netcommon release                              |
 | `ansible_command_timeout > commit_confirm_timeout` on task AFTER the timeout test | Persistent connection state leak | Add `meta: reset_connection` in `commit_conf.yaml` |
-| `remove_internal_keys` error | netcommon Galaxy lag | Same as pattern 1 |
-| Only `devel`/`milestone` fails | ansible-core API change | Adapt to new API |
+| `remove_internal_keys` error                                                      | netcommon Galaxy lag             | Same as pattern 1                                  |
+| Only `devel`/`milestone` fails                                                    | ansible-core API change          | Adapt to new API                                   |
 
 ---
 
@@ -97,14 +97,14 @@ See **`context/resource-modules.md`** for the full pattern.
 
 Installed via Carbonite from harness + content-ai-skills:
 
-| Trigger | Skill | What it does |
-|---------|-------|--------------|
-| `triage network issue` | network-triage-workflow | Triage CI failures and GitHub issues with known patterns |
-| `run collection tests` | network-test-workflow | Run sanity/unit/integration with ansible-test |
-| `fix bug` | bugfix-workflow | Root cause → fix → regression test → PR |
-| `implement story` | story-implementation-workflow | Jira story → code → PR |
-| `review PR` | review-pr-workflow | Structured PR review with severity findings |
-| `scan network issues` | network-collection-triage | Weekly bulk triage across all network repos |
+| Trigger                | Skill                         | What it does                                             |
+| ---------------------- | ----------------------------- | -------------------------------------------------------- |
+| `triage network issue` | network-triage-workflow       | Triage CI failures and GitHub issues with known patterns |
+| `run collection tests` | network-test-workflow         | Run sanity/unit/integration with ansible-test            |
+| `fix bug`              | bugfix-workflow               | Root cause → fix → regression test → PR                  |
+| `implement story`      | story-implementation-workflow | Jira story → code → PR                                   |
+| `review PR`            | review-pr-workflow            | Structured PR review with severity findings              |
+| `scan network issues`  | network-collection-triage     | Weekly bulk triage across all network repos              |
 
 ---
 

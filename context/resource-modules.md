@@ -26,15 +26,16 @@ tests/
 
 Underscores are **kept** in class names — do not camel-case across underscores.
 
-| Resource | Module class | ArgSpec | Facts | Template |
-|----------|-------------|---------|-------|----------|
-| `vlans` | `Vlans` | `VlansArgs` | `VlansFacts` | `VlansTemplate` |
-| `bgp_global` | `Bgp_global` | `Bgp_globalArgs` | `Bgp_globalFacts` | `Bgp_globalTemplate` |
+| Resource        | Module class    | ArgSpec             | Facts                | Template                |
+| --------------- | --------------- | ------------------- | -------------------- | ----------------------- |
+| `vlans`         | `Vlans`         | `VlansArgs`         | `VlansFacts`         | `VlansTemplate`         |
+| `bgp_global`    | `Bgp_global`    | `Bgp_globalArgs`    | `Bgp_globalFacts`    | `Bgp_globalTemplate`    |
 | `l2_interfaces` | `L2_interfaces` | `L2_interfacesArgs` | `L2_interfacesFacts` | `L2_interfacesTemplate` |
 
 ## Resource Types
 
 ### Dict-based (single-instance)
+
 For resources where there is exactly one instance on the device: `hostname`, `logging_global`, `ntp_global`.
 
 - `self.want` / `self.have` are dicts
@@ -42,6 +43,7 @@ For resources where there is exactly one instance on the device: `hostname`, `lo
 - Facts returns a single dict
 
 ### List-based (multi-instance)
+
 For resources where multiple entries are identified by a key: `vlans`, `interfaces`, `acls`, `bgp_address_family`.
 
 - Indexed by `list_key` (e.g. `vlan_id`, `name`, `afi`)
@@ -96,15 +98,15 @@ When reviewing a PR, always cross-check `compval` against the `result` structure
 
 All resource modules must support these states:
 
-| State | Behavior |
-|-------|---------|
-| `merged` | Merge want into have — add/update, no deletes |
-| `replaced` | Replace specific entries — delete entries not in want |
-| `overridden` | Replace ALL entries — delete anything not in want |
-| `deleted` | Delete specified entries (or all if none specified) |
-| `gathered` | Parse running config into structured data (no changes) |
-| `rendered` | Render CLI from want without connecting to device |
-| `parsed` | Parse provided text into structured data (offline) |
+| State        | Behavior                                               |
+| ------------ | ------------------------------------------------------ |
+| `merged`     | Merge want into have — add/update, no deletes          |
+| `replaced`   | Replace specific entries — delete entries not in want  |
+| `overridden` | Replace ALL entries — delete anything not in want      |
+| `deleted`    | Delete specified entries (or all if none specified)    |
+| `gathered`   | Parse running config into structured data (no changes) |
+| `rendered`   | Render CLI from want without connecting to device      |
+| `parsed`     | Parse provided text into structured data (offline)     |
 
 ## Registering a New Facts Class
 
