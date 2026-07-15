@@ -1,0 +1,3 @@
+---
+trivial:
+  - ci - Run secret-free test jobs on pull_request and limit SonarCloud to push events.

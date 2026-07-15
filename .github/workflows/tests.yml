@@ -8,7 +8,7 @@ concurrency:
 on:  # yamllint disable-line rule:truthy
   push:
     branches: [main]
-  pull_request_target:
+  pull_request:
     branches: [main]
   workflow_dispatch:
   schedule:
@@ -17,6 +17,7 @@ on:  # yamllint disable-line rule:truthy
 jobs:
   sonar:
     name: SonarCloud
+    if: github.event_name == 'push'
     uses: ansible/ansible-content-actions/.github/workflows/sonarcloud.yaml@main
     with:
       python_version: "3.12"
@@ -29,7 +30,7 @@ jobs:
 
   changelog:
     uses: ansible/ansible-content-actions/.github/workflows/changelog.yaml@main
-    if: github.event_name == 'pull_request_target'
+    if: github.event_name == 'pull_request'
 
   build-import:
     uses: ansible/ansible-content-actions/.github/workflows/build_import.yaml@main
