@@ -19,9 +19,6 @@ on:  # yamllint disable-line rule:truthy
 jobs:
   sonar:
     name: SonarCloud
-    if: >-
-      github.event_name == 'push' ||
-      contains(github.event.pull_request.labels.*.name, 'safe to test')
     uses: ansible/ansible-content-actions/.github/workflows/sonarcloud.yaml@main
     with:
       python_version: "3.12"
