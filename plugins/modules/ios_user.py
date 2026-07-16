@@ -64,7 +64,9 @@ options:
           - Since passwords are encrypted in the device running config, this argument will
             instruct the module when to change the password.  When set to C(always), the
             password will always be updated in the device and when set to C(on_create) the
-            password will be updated only if the username is created.
+            password will be updated only if the username is created. This is applicable for
+            C(configured_password), while C(hashed_password) will undergo hash and type
+            comparision to check whether a change is required.
         choices:
           - on_create
           - always
@@ -151,7 +153,9 @@ options:
       - Since passwords are encrypted in the device running config, this argument will
         instruct the module when to change the password.  When set to C(always), the
         password will always be updated in the device and when set to C(on_create) the
-        password will be updated only if the username is created.
+        password will be updated only if the username is created. This is applicable for
+        C(configured_password), while C(hashed_password) will undergo hash and type
+        comparision to check whether a change is required.
     default: always
     choices:
       - on_create
@@ -768,6 +772,13 @@ def parse_privilege(data):
         return int(match.group(1))
 
 
+def parse_hashed_password(data):
+    hashed_password = None
+    if data and data.split()[-3] in ["password", "secret"]:
+        hashed_password = {"type": int(data.split()[-2]), "value": str(data.split()[-1])}
+    return hashed_password
+
+
 def parse_password_type(data):
     type = None
     if data and data.split()[-3] in ["password", "secret"]:
@@ -791,7 +802,7 @@ def map_config_to_obj(module):
             "state": "present",
             "nopassword": "nopassword" in cfg,
             "configured_password": None,
-            "hashed_password": None,
+            "hashed_password": parse_hashed_password(cfg),
             "purge_keys": False,
             "update_password": None,
             "password_type": parse_password_type(cfg),
@@ -893,6 +904,10 @@ def find_set_difference(list1, list2, key):
 
 def main():
     """main entry point for module execution"""
+    import debugpy
+
+    debugpy.listen(3000)
+    debugpy.wait_for_client()
     hashed_password_spec = dict(
         type=dict(type="int", required=True),
         value=dict(no_log=True, required=True),
