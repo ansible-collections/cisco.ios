@@ -8619,10 +8619,29 @@ Parameters
                         <ul style="margin: 0; padding: 0"><b>Choices:</b>
                                     <li>md5</li>
                                     <li>sha</li>
+                                    <li>sha-2</li>
                         </ul>
                 </td>
                 <td>
                         <div>Select algorithm for authentication.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>auth_option</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Add extra option for specific auth algorithm if any (e.g.256, 384, 512 for sha-2).</div>
                 </td>
             </tr>
             <tr>
@@ -9163,6 +9182,45 @@ Examples
     # snmp-server password-policy MergedPolicy define max-len 24 upper-case 12 lower-case 12 special-char 32 digits 23 change 3
     # snmp-server password-policy MergedPolicy2 define min-len 12 upper-case 12 special-char 22 change 43
     # snmp-server password-policy policy3 define min-len 12 max-len 12 upper-case 12 special-char 22 digits 23 change 11
+
+    # Using merged to configure SNMPv3 user with SHA-2 authentication
+    # ----------------------------------------------------------------
+
+    # Before state:
+    # -------------
+
+    # router-ios#show running-config | section ^snmp-server
+    # snmp-server group groupv3 v3 auth
+
+    # Merged play:
+    # ------------
+
+    - name: Configure SNMPv3 user with SHA-2 authentication
+      cisco.ios.ios_snmp_server:
+        config:
+          users:
+            - username: test_ansible
+              group: groupv3
+              version: v3
+              authentication:
+                algorithm: sha-2
+                auth_option: 256
+                password: test_pass123
+        state: merged
+
+    # Commands Fired:
+    # ---------------
+
+    # "commands": [
+    #     "snmp-server user test_ansible groupv3 v3 auth sha-2 256 test_pass123"
+    # ]
+
+    # After state:
+    # ------------
+
+    # router-ios#show running-config | section ^snmp-server
+    # snmp-server group groupv3 v3 auth
+    # snmp-server user test_ansible groupv3 v3 auth sha-2 256 <password>
 
     # Using state: deleted
 

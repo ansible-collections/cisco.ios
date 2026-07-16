@@ -1,3 +1,0 @@
----
-minor_changes:
-  - ios_l2_interfaces - Added xconnect and encapsulation attributes for L2VPN pseudowire and MPLS services configuration.

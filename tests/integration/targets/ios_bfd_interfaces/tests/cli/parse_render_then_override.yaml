@@ -1,0 +1,73 @@
+- name: START ios_bfd_interfaces parse_render_override.yaml integration tests
+  ansible.builtin.debug:
+    msg: START ios_bfd_interfaces parse_render_override.yaml integration tests on connection={{ ansible_connection }}
+
+- name: ios_bfd_interfaces parse, render and override configuration
+  block:
+    - name: Delete any existing BFD interface configuration - no granularity
+      cisco.ios.ios_bfd_interfaces:
+        state: deleted
+
+    - name: Parse the provided configuration
+      cisco.ios.ios_bfd_interfaces:
+        running_config: "{{ lookup('file', '_parsed.cfg') }}"
+        state: parsed
+      register: result_parsed
+
+    - name: Render the provided configuration
+      cisco.ios.ios_bfd_interfaces:
+        config: "{{ result_parsed.parsed }}"
+        state: rendered
+      register: result_rendered
+
+    - name: Override the provided configuration
+      cisco.ios.ios_bfd_interfaces:
+        config: "{{ result_parsed.parsed }}"
+        state: overridden
+      register: result_overridden
+
+    - name: Override the provided configuration (IDEMPOTENT)
+      cisco.ios.ios_bfd_interfaces:
+        config: "{{ result_parsed.parsed }}"
+        state: overridden
+      register: result_overridden_idempotent
+
+    - name: Delete any existing BFD interface configuration again - no granularity
+      cisco.ios.ios_bfd_interfaces:
+        state: deleted
+      register: result_deleted
+
+- name: Assets ios_bfd_interfaces parse, render and override configuration
+  block:
+    - name: Assert parsed, rendered, overridden and deleted results
+      ansible.builtin.assert:
+        that:
+          - result_parsed.parsed | length > 0
+          - result_rendered.rendered | length > 0
+          - result_overridden.changed == true
+          - result_overridden_idempotent.changed == false
+          - result_deleted.changed == true
+
+    - name: Assert parsed - verify against expected parsed output
+      ansible.builtin.assert:
+        that:
+          - parsed['config'] == result_parsed['parsed']
+
+    - name: Assert rendered - verify against expected rendered output
+      ansible.builtin.assert:
+        that:
+          - result_rendered.rendered|symmetric_difference(rendered.commands) == []
+
+    - name: Assert overridden - verify against expected execution output
+      ansible.builtin.assert:
+        that:
+          - overridden['after'] == result_overridden['after']
+          - overridden['before'] == result_overridden['before']
+          - overridden['commands']|symmetric_difference(result_overridden['commands']) == []
+
+    - name: Assert deleted - verify against expected execution output
+      ansible.builtin.assert:
+        that:
+          - deleted['after'] == result_deleted['after']
+          - deleted['before'] == result_deleted['before']
+          - deleted['commands']|symmetric_difference(result_deleted['commands']) == []

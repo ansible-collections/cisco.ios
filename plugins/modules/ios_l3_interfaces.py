@@ -22,6 +22,7 @@ version_added: 1.0.0
 author:
   - Sagar Paul (@KB-perByte)
   - Sumit Jaiswal (@justjais)
+  - Aayush Anand (@AAYUSH2091)
 notes:
   - Tested against Cisco IOSXE Version 17.3 on CML.
   - Using deleted state without config will delete all l3 attributes from all the interfaces.
@@ -48,6 +49,18 @@ options:
         description:
           - Manually set interface MAC address.
         type: str
+      redirects:
+            description: Enable sending ICMP Redirect messages.
+            type: bool
+      unreachables:
+        description: Enable sending ICMP Unreachable messages.
+        type: bool
+      ipv6_redirects:
+        description: Enable sending ICMP Redirect messages for IPv6.
+        type: bool
+      ipv6_unreachables:
+        description: Enable sending ICMP Unreachable messages for IPv6.
+        type: bool
       helper_addresses:
         description: Specify a destination address for UDP broadcasts
         type: dict
@@ -114,10 +127,16 @@ options:
             description: IP Address auto-configured from a local DHCP pool.
             type: str
           redirects:
-            description: Enable sending ICMP Redirect messages.
+            description:
+              - Enable sending ICMP Redirect messages.
+              - This option is DEPRECATED and is replaced with redirects at the interface
+                level. This attribute will be removed after 2028-01-30.
             type: bool
           unreachables:
-            description: Enable sending ICMP Unreachable messages.
+            description:
+              - Enable sending ICMP Unreachable messages.
+              - This option is DEPRECATED and is replaced with unreachables at the interface
+                level. This attribute will be removed after 2028-01-30.
             type: bool
           proxy_arp:
             description: Enable proxy_arp.

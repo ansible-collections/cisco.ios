@@ -130,5 +130,91 @@
     - ansible.builtin.assert:
         that:
           - base_config_overridden.commands|symmetric_difference(remarks_check_override.commands) == []
+
+    - name: Apply IPv6 ACL configuration with remarks (merged)
+      register: ipv6_remarks_merged
+      cisco.ios.ios_acls:
+        config:
+          - afi: ipv6
+            acls:
+              - name: TEST_IPV6
+                aces:
+                  - sequence: 10
+                    remarks:
+                      - "FIRST REMARK BEFORE SEQUENCE 10"
+                      - "============"
+                      - "REMARKS FOR SEQUENCE 10 NO FOLLOWING ACE"
+                  - sequence: 20
+                    remarks:
+                      - "FIRST REMARK BEFORE SEQUENCE 20"
+                      - "============"
+                      - "ALLOW HOST FROM SEQUENCE 20"
+                    grant: permit
+                    protocol: ipv6
+                    source:
+                      any: true
+                    destination:
+                      any: true
+                  - sequence: 30
+                    remarks:
+                      - "FIRST REMARK BEFORE SEQUENCE 30"
+                      - "============"
+                      - "ALLOW HOST FROM SEQUENCE 30"
+                    grant: permit
+                    protocol: ipv6
+                    source:
+                      host: 2001:db8::1
+                    destination:
+                      any: true
+        state: merged
+
+    - ansible.builtin.assert:
+        that:
+          - ipv6_remarks_merged.changed == true
+          - ipv6_remarks_merged.commands|symmetric_difference(remarks_ipv6_merged.commands) == []
+          - ipv6_remarks_merged.before|symmetric_difference(remarks_ipv6_merged.before) == []
+          - ipv6_remarks_merged.after|symmetric_difference(remarks_ipv6_merged.after) == []
+
+    - name: Replace IPv6 ACL remarks
+      register: ipv6_remarks_replaced
+      cisco.ios.ios_acls:
+        config:
+          - afi: ipv6
+            acls:
+              - name: TEST_IPV6
+                aces:
+                  - sequence: 10
+                    remarks:
+                      - "FIRST REMARK BEFORE SEQUENCE 10"
+                      - "============"
+                      - "REMARKS FOR SEQUENCE 10 NO FOLLOWING ACE"
+                  - sequence: 20
+                    remarks:
+                      - "FIRST REMARK BEFORE SEQUENCE 20"
+                      - "============"
+                      - "ALLOW HOST FROM SEQUENCE 20"
+                    grant: permit
+                    protocol: ipv6
+                    source:
+                      host: 2001:db8::2
+                    destination:
+                      any: true
+                  - sequence: 30
+                    remarks:
+                      - "FIRST REMARK BEFORE SEQUENCE 30"
+                      - "============"
+                      - "ALLOW HOST FROM SEQUENCE 30 updated"
+                    grant: permit
+                    protocol: ipv6
+                    source:
+                      host: 2001:db8::1
+                    destination:
+                      any: true
+        state: replaced
+
+    - ansible.builtin.assert:
+        that:
+          - ipv6_remarks_replaced.changed == true
+          - ipv6_remarks_replaced.commands|symmetric_difference(remarks_ipv6_replaced.commands) == []
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

@@ -1,0 +1,59 @@
+---
+- ansible.builtin.debug:
+    msg: "START cli/interface_range_multi.yaml on connection={{ ansible_connection }}"
+
+- name: Setup - clear test description on range
+  cisco.ios.ios_config:
+    lines:
+      - no description
+    parents: "interface range {{ test_interface }}, {{ test_interface2 }}"
+    match: none
+
+- name: Configure lines under interface range (split parents list, comma-separated range)
+  register: result
+  cisco.ios.ios_config:
+    lines:
+      - description Ansible ios_config interface range multi test
+    parents:
+      - "interface range {{ test_interface }}"
+      - "{{ test_interface2 }}"
+
+- ansible.builtin.assert:
+    that:
+      - result.changed | bool
+      - result.updates is defined
+      - "'interface range' in (result.updates | join(' '))"
+
+- name: Idempotent when running-config already has child lines on each expanded interface
+  register: result
+  cisco.ios.ios_config:
+    lines:
+      - description Ansible ios_config interface range multi test
+    parents:
+      - "interface range {{ test_interface }}"
+      - "{{ test_interface2 }}"
+
+- ansible.builtin.assert:
+    that:
+      - not (result.changed | bool)
+
+- name: Configure using full single-string parents (native range command)
+  register: result
+  cisco.ios.ios_config:
+    lines:
+      - description Ansible ios_config interface range multi test
+    parents: "interface range {{ test_interface }}, {{ test_interface2 }}"
+
+- ansible.builtin.assert:
+    that:
+      - not (result.changed | bool)
+
+- name: Teardown - remove description from range
+  cisco.ios.ios_config:
+    lines:
+      - no description
+    parents: "interface range {{ test_interface }}, {{ test_interface2 }}"
+    match: none
+
+- ansible.builtin.debug:
+    msg: "END cli/interface_range_multi.yaml on connection={{ ansible_connection }}"

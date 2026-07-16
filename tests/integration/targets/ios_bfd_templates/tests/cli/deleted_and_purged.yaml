@@ -1,0 +1,124 @@
+---
+- name: START ios_bfd_templates deleted and purged states integration tests
+  ansible.builtin.debug:
+    msg: START ios_bfd_templates deleted and purged states integration tests on connection={{ ansible_connection }}
+
+- name: ios_bfd_templates deleted and purged states tests
+  block:
+    - name: Purge any existing BFD template configuration
+      cisco.ios.ios_bfd_templates:
+        state: purged
+
+    - name: Create keychain for BFD authentication
+      cisco.ios.ios_config:
+        lines:
+          - key 1
+          - key-string bfd_test_key
+        parents: key chain bfd_keychain
+
+    - name: Setup - Create base BFD templates for testing
+      cisco.ios.ios_bfd_templates:
+        config:
+          - name: template1
+            hop: single_hop
+            interval:
+              min_tx: 200
+              min_rx: 200
+              multiplier: 3
+            authentication:
+              type: sha_1
+              keychain: bfd_keychain
+            echo: true
+          - name: template2
+            hop: multi_hop
+            interval:
+              min_tx: 500
+              min_rx: 500
+              multiplier: 5
+        state: merged
+
+    - name: Test deleted state , deletion of specific template
+      cisco.ios.ios_bfd_templates:
+        config:
+          - name: template1
+            hop: single_hop
+        state: deleted
+      register: result_deleted_specific
+
+    - name: Gather facts after deleted state
+      cisco.ios.ios_bfd_templates:
+        state: gathered
+      register: result_after_deleted
+
+    - name: Assert deleted state -  deletion leaves empty template
+      ansible.builtin.assert:
+        that:
+          - result_deleted_specific.changed == true
+          - "'bfd-template single-hop template1' in result_deleted_specific.commands"
+          - "'no echo' in result_deleted_specific.commands"
+          - "'no interval min-tx 200 min-rx 200 multiplier 3' in result_deleted_specific.commands"
+          - "'no authentication sha-1 keychain bfd_keychain' in result_deleted_specific.commands"
+          - "'no bfd-template' not in (result_deleted_specific.commands | join(' '))"
+          - result_after_deleted.gathered | selectattr('name', 'equalto', 'template1') | list | length == 1
+          - result_after_deleted.gathered | selectattr('name', 'equalto', 'template2') | list | length == 1
+
+    - name: Test purged state - complete removal of specific template
+      cisco.ios.ios_bfd_templates:
+        config:
+          - name: template1
+            hop: single_hop
+        state: purged
+      register: result_purged_specific
+
+    - name: Gather facts after purged state
+      cisco.ios.ios_bfd_templates:
+        state: gathered
+      register: result_after_purged
+
+    - name: Assert purged state - complete removal
+      ansible.builtin.assert:
+        that:
+          - result_purged_specific.changed == true
+          - result_purged_specific.commands == ['no bfd-template single-hop template1']
+          - result_after_purged.gathered | selectattr('name', 'equalto', 'template1') | list | length == 0
+          - result_after_purged.gathered | selectattr('name', 'equalto', 'template2') | list | length == 1
+
+    - name: Setup - Recreate templates for testing delete all
+      cisco.ios.ios_bfd_templates:
+        config:
+          - name: template1
+            hop: single_hop
+            interval:
+              min_tx: 200
+              min_rx: 200
+              multiplier: 3
+          - name: template3
+            hop: single_hop
+            echo: true
+        state: merged
+
+    - name: Test deleted state without config , deletion of all templates
+      cisco.ios.ios_bfd_templates:
+        state: deleted
+      register: result_deleted_all
+
+    - name: Gather facts after deleted all
+      cisco.ios.ios_bfd_templates:
+        state: gathered
+      register: result_after_deleted_all
+
+    - name: Assert deleted all - deletion of all templates
+      ansible.builtin.assert:
+        that:
+          - result_deleted_all.changed == true
+          - "'no bfd-template' not in (result_deleted_all.commands | join(' '))"
+          - result_after_deleted_all.gathered | length > 0
+
+    - name: Cleanup - Purge all BFD template configuration
+      cisco.ios.ios_bfd_templates:
+        state: purged
+
+    - name: Cleanup keychain
+      cisco.ios.ios_config:
+        lines:
+          - no key chain bfd_keychain

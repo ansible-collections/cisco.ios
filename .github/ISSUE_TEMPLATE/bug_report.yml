@@ -1,0 +1,60 @@
+---
+name: Bug Report
+description: "🐞 Create a report to help us improve"
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Bug Report issues are for **concrete, actionable bugs** only.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Bug Summary
+      description: Briefly describe the problem.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: components
+    attributes:
+      label: Select the relevant components
+      options:
+        - label: Module
+        - label: Action Plugin
+        - label: Connection Plugin (cliconf)
+        - label: Terminal Plugin
+        - label: Module Utils
+        - label: Documentation
+        - label: Integration Tests
+        - label: Unit Tests
+        - label: Collection Release
+        - label: CI Maintenance
+        - label: Workflow Maintenance
+
+  - type: input
+    id: ios_version
+    attributes:
+      label: IOS Version
+      description: Version of IOS running on the device (e.g., 15.2, 16.9, 17.3)
+      placeholder: 15.x / 16.x / 17.x
+    validations:
+      required: false
+
+  - type: input
+    id: hardware_platform
+    attributes:
+      label: Hardware Platform
+      description: Hardware platform if applicable (e.g., ISR, ASR, Catalyst, CSR1000v)
+      placeholder: ISR / ASR / Catalyst / CSR1000v
+    validations:
+      required: false
+
+  - type: input
+    id: module_name
+    attributes:
+      label: Module/Plugin Name
+      description: If applicable, specify the module or plugin name (e.g., ios_config, ios_bgp_global)
+      placeholder: ios_xxx
+    validations:
+      required: false

@@ -1,0 +1,30 @@
+---
+name: "SonarCloud 🔍"
+
+concurrency:
+  group: sonar-${{ github.head_ref || github.run_id }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+on:  # yamllint disable-line rule:truthy
+  push:
+    branches: [main]
+  pull_request_target:
+    branches: [main]
+    types:
+      - labeled
+      - opened
+      - synchronize
+  workflow_dispatch:
+
+jobs:
+  sonar:
+    name: SonarCloud
+    uses: ansible/ansible-content-actions/.github/workflows/sonarcloud.yaml@main
+    with:
+      python_version: "3.12"
+      galaxy_dependencies: |
+        git+https://github.com/ansible-collections/ansible.utils.git
+        git+https://github.com/ansible-collections/ansible.netcommon.git
+      sonar_scanner_java_opts: "-Xss2m"
+    secrets:
+      SONAR_TOKEN: ${{ secrets.ANSIBLE_COLLECTIONS_ORG_SONAR_TOKEN_CICD_BOT }}

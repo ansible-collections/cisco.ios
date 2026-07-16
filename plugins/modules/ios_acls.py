@@ -378,6 +378,9 @@ options:
                       host_query:
                         description: IGMP Membership Query(0)
                         type: bool
+                      host_report:
+                        description: IGMP Host report
+                        type: bool
                       mtrace_resp:
                         description: Multicast Traceroute Response(7)
                         type: bool

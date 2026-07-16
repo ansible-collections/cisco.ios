@@ -1,0 +1,59 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_bfd_interfaces round trip integration tests on connection={{ ansible_connection }}
+
+- name: Delete any existing BFD interface configuration - no granularity
+  cisco.ios.ios_bfd_interfaces:
+    state: deleted
+
+- block:
+    - name: ios_bfd_interfaces RTT - play (base config)
+      register: result
+      cisco.ios.ios_bfd_interfaces:
+        config:
+          - name: GigabitEthernet1
+          - interval:
+              input: 100
+              min_rx: 100
+              multiplier: 3
+            local_address: 10.0.1.2
+            name: GigabitEthernet2
+          - interval:
+              input: 100
+              min_rx: 100
+              multiplier: 3
+            jitter: false
+            name: GigabitEthernet3
+          - name: GigabitEthernet4
+            template: ANSIBLE_Template
+        state: merged
+
+    - name: ios_bfd_interfaces RTT - gather bfd_interfaces facts
+      cisco.ios.ios_facts:
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources:
+          - bfd_interfaces
+
+    - name: ios_bfd_interfaces RTT - apply the provided configuration (config to be reverted)
+      cisco.ios.ios_bfd_interfaces:
+        config:
+          - name: GigabitEthernet4
+            template: ANSIBLE_Template_UPDATED
+        state: merged
+
+    - name: ios_bfd_interfaces RTT - revert back to base configuration using facts round trip
+      register: revert
+      cisco.ios.ios_bfd_interfaces:
+        config: "{{ ansible_facts['network_resources']['bfd_interfaces'] }}"
+        state: replaced
+
+    - ansible.builtin.assert:
+        that:
+          - revert.changed == true
+          - revert['commands'] == rtt['commands']
+
+- name: Delete any existing BFD interface configuration - no granularity
+  cisco.ios.ios_bfd_interfaces:
+    state: deleted

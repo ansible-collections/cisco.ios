@@ -1,14 +1,15 @@
 ---
 name: "Code Coverage 🎯"
 
-on: # yamllint disable-line rule:truthy
+on:  # yamllint disable-line rule:truthy
   push:
     branches: [main]
   pull_request:
     branches: [main]
+
 jobs:
   codecoverage:
-    uses: ansible-network/github_actions/.github/workflows/coverage_network_devices.yml@main
+    uses: ansible/ansible-content-actions/.github/workflows/coverage_network_devices.yml@main
     with:
       collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git

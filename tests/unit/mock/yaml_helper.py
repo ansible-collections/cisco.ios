@@ -1,9 +1,4 @@
-from __future__ import absolute_import, division, print_function
-
-
-__metaclass__ = type
 import io
-import sys
 
 import yaml
 
@@ -20,24 +15,10 @@ class YamlTestUtils(object):
         Vault cases should setup a AnsibleLoader that has the vault password."""
         return AnsibleLoader(stream)
 
-    def _dump_stream(self, obj, stream, dumper=None):
-        """Dump to a py2-unicode or py3-string stream."""
-        if sys.version_info[0] == 3:
-            return yaml.dump(obj, stream, Dumper=dumper)
-        else:
-            return yaml.dump(obj, stream, Dumper=dumper, encoding=None)
-
-    def _dump_string(self, obj, dumper=None):
-        """Dump to a py2-unicode or py3-string"""
-        if sys.version_info[0] == 3:
-            return yaml.dump(obj, Dumper=dumper)
-        else:
-            return yaml.dump(obj, Dumper=dumper, encoding=None)
-
     def _dump_load_cycle(self, obj):
         # Each pass though a dump or load revs the 'generation'
         # obj to yaml string
-        string_from_object_dump = self._dump_string(obj, dumper=AnsibleDumper)
+        string_from_object_dump = yaml.dump(obj, Dumper=AnsibleDumper)
 
         # wrap a stream/file like StringIO around that yaml
         stream_from_object_dump = io.StringIO(string_from_object_dump)
@@ -46,7 +27,7 @@ class YamlTestUtils(object):
         obj_2 = loader.get_data()
 
         # dump the gen 2 objects directory to strings
-        string_from_object_dump_2 = self._dump_string(obj_2, dumper=AnsibleDumper)
+        string_from_object_dump_2 = yaml.dump(obj_2, Dumper=AnsibleDumper)
 
         # The gen 1 and gen 2 yaml strings
         self.assertEqual(string_from_object_dump, string_from_object_dump_2)
@@ -58,7 +39,7 @@ class YamlTestUtils(object):
         loader_3 = self._loader(stream_3)
         obj_3 = loader_3.get_data()
 
-        string_from_object_dump_3 = self._dump_string(obj_3, dumper=AnsibleDumper)
+        string_from_object_dump_3 = yaml.dump(obj_3, Dumper=AnsibleDumper)
 
         self.assertEqual(obj, obj_3)
         # should be transitive, but...
@@ -69,8 +50,8 @@ class YamlTestUtils(object):
         """Dump the passed in object to yaml, load it back up, dump again, compare."""
         stream = io.StringIO()
 
-        yaml_string = self._dump_string(obj, dumper=AnsibleDumper)
-        self._dump_stream(obj, stream, dumper=AnsibleDumper)
+        yaml_string = yaml.dump(obj, Dumper=AnsibleDumper)
+        yaml.dump(obj, stream, Dumper=AnsibleDumper)
 
         yaml_string_from_stream = stream.getvalue()
 
@@ -89,12 +70,8 @@ class YamlTestUtils(object):
         stream_obj_from_stream = io.StringIO()
         stream_obj_from_string = io.StringIO()
 
-        if sys.version_info[0] == 3:
-            yaml.dump(obj_from_stream, stream_obj_from_stream, Dumper=AnsibleDumper)
-            yaml.dump(obj_from_stream, stream_obj_from_string, Dumper=AnsibleDumper)
-        else:
-            yaml.dump(obj_from_stream, stream_obj_from_stream, Dumper=AnsibleDumper, encoding=None)
-            yaml.dump(obj_from_stream, stream_obj_from_string, Dumper=AnsibleDumper, encoding=None)
+        yaml.dump(obj_from_stream, stream_obj_from_stream, Dumper=AnsibleDumper)
+        yaml.dump(obj_from_string, stream_obj_from_string, Dumper=AnsibleDumper)
 
         yaml_string_stream_obj_from_stream = stream_obj_from_stream.getvalue()
         yaml_string_stream_obj_from_string = stream_obj_from_string.getvalue()
@@ -102,20 +79,8 @@ class YamlTestUtils(object):
         stream_obj_from_stream.seek(0)
         stream_obj_from_string.seek(0)
 
-        if sys.version_info[0] == 3:
-            yaml_string_obj_from_stream = yaml.dump(obj_from_stream, Dumper=AnsibleDumper)
-            yaml_string_obj_from_string = yaml.dump(obj_from_string, Dumper=AnsibleDumper)
-        else:
-            yaml_string_obj_from_stream = yaml.dump(
-                obj_from_stream,
-                Dumper=AnsibleDumper,
-                encoding=None,
-            )
-            yaml_string_obj_from_string = yaml.dump(
-                obj_from_string,
-                Dumper=AnsibleDumper,
-                encoding=None,
-            )
+        yaml_string_obj_from_stream = yaml.dump(obj_from_stream, Dumper=AnsibleDumper)
+        yaml_string_obj_from_string = yaml.dump(obj_from_string, Dumper=AnsibleDumper)
 
         assert yaml_string == yaml_string_obj_from_stream
         assert yaml_string == yaml_string_obj_from_stream == yaml_string_obj_from_string
