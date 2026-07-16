@@ -97,7 +97,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specifies the type of hash (e.g., 5 for MD5, 8 for PBKDF2, etc.)</div>
+                        <div>Specifies the type of hash (e.g., 5 for MD5, 8 for PBKDF2, 9 for scrypt.)</div>
                         <div>For this to work, the device needs to support the desired hash type</div>
                 </td>
             </tr>
@@ -335,7 +335,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specifies the type of hash (e.g., 5 for MD5, 8 for PBKDF2, etc.)</div>
+                        <div>Specifies the type of hash (e.g., 5 for MD5, 8 for PBKDF2, 9 for scrypt.)</div>
                         <div>For this to work, the device needs to support the desired hash type</div>
                 </td>
             </tr>
