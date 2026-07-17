@@ -158,6 +158,59 @@
       - result.changed == true
       - "'username ansibleuser6 secret' in result.commands[0]"
 
+- name: Create aggregate users - per-item passwords and on_create overrides module always
+  become: true
+  register: result
+  cisco.ios.ios_user: &aggregate_mixed_users
+    aggregate:
+      - name: ansibletest4
+        configured_password: secret4
+        update_password: on_create
+      - name: ansibletest5
+        configured_password: secret5
+        update_password: on_create
+      - name: ansibletest6
+        hashed_password:
+          type: 9
+          value: $9$B/6NVV7joWJ9w.$XueHQxIOZk0GhNC3lxUFioUeowJrtLmXxouXfTuoNpc
+        update_password: on_create
+      - name: ansibletest7
+        hashed_password:
+          type: 9
+          value: $9$9T5dvp5mSW0IWk.$yETpRHqxTJOPH7RZW.pBjuNn3PsJHtPcQFX4NHjHV5A
+        update_password: on_create
+    update_password: always
+    state: present
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == true
+      - "'username ansibletest4 secret secret4' in result.commands | string"
+      - "'username ansibletest5 secret secret5' in result.commands | string"
+      - "'username ansibletest6 secret 9' in result.commands | string"
+      - "'username ansibletest7 secret 9' in result.commands | string"
+
+- name: Repeat same aggregate task - idempotency
+  become: true
+  register: result
+  cisco.ios.ios_user: *aggregate_mixed_users
+
+- ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.commands | length == 0
+
+- name: Teardown aggregate test users
+  become: true
+  cisco.ios.ios_user:
+    aggregate:
+      - name: ansibletest4
+      - name: ansibletest5
+      - name: ansibletest6
+      - name: ansibletest7
+      - name: ansibletest8
+    state: absent
+
 - name: Ensure SSH keys are not world readable
   ansible.builtin.file:
     path: "{{ item }}"

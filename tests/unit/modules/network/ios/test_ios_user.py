@@ -256,3 +256,81 @@ class TestIosUserModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["username ansible password 0 test"])
+
+    def test_add_hashed_password_idempotent(self):
+        # Same type and value as in fixture -> no commands
+        set_module_args(
+            dict(
+                name="ansible",
+                hashed_password={
+                    "type": 5,
+                    "value": "$1$3yWSXiIi$VdzV59ChiurrNdGxlDeAW/",
+                },
+            ),
+        )
+        self.execute_module(changed=False)
+
+    def test_ios_user_aggregate_update_password_on_create(self):
+        # Per-item on_create overrides module-level always.
+        # ansible (exists in fixture): on_create -> no password command.
+        # newuser (new): on_create still applies, but not-have path triggers creation.
+        set_module_args(
+            dict(
+                aggregate=[
+                    {
+                        "name": "ansible",
+                        "configured_password": "pass_ansible",
+                        "update_password": "on_create",
+                    },
+                    {
+                        "name": "newuser",
+                        "configured_password": "pass_newuser",
+                        "update_password": "on_create",
+                    },
+                ],
+                update_password="always",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertNotIn("username ansible secret pass_ansible", result["commands"])
+        self.assertIn("username newuser secret pass_newuser", result["commands"])
+
+    def test_ios_user_aggregate_update_password_always(self):
+        # Per-item always: both existing (ansible) and new (newuser) get password commands.
+        set_module_args(
+            dict(
+                aggregate=[
+                    {
+                        "name": "ansible",
+                        "configured_password": "pass_ansible",
+                        "update_password": "always",
+                    },
+                    {
+                        "name": "newuser",
+                        "configured_password": "pass_newuser",
+                        "update_password": "always",
+                    },
+                ],
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("username ansible secret pass_ansible", result["commands"])
+        self.assertIn("username newuser secret pass_newuser", result["commands"])
+
+    def test_aggregate_per_item_password_type(self):
+        # password_type per aggregate item applies independently to each user's command.
+        set_module_args(
+            dict(
+                aggregate=[
+                    {
+                        "name": "newuser1",
+                        "configured_password": "pass1",
+                        "password_type": "password",
+                    },
+                    {"name": "newuser2", "configured_password": "pass2"},
+                ],
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("username newuser1 password pass1", result["commands"])
+        self.assertIn("username newuser2 secret pass2", result["commands"])
