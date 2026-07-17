@@ -209,7 +209,6 @@
       - name: ansibletest5
       - name: ansibletest6
       - name: ansibletest7
-      - name: ansibletest8
     state: absent
 
 - name: Ensure SSH keys are not world readable
@@ -241,7 +240,7 @@
 
 - ansible.builtin.assert:
     that:
-      - result.changed == true
+      - result_purge.changed == true
 
 # SSH Key Purge Test Cases
 - name: Ensure purge_keys_user(s) does not exist
