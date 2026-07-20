@@ -33,7 +33,7 @@ except ImportError:
 
 from unittest import TestCase
 
-from ansible.module_utils._text import to_bytes
+from ansible.module_utils.common.text.converters import to_bytes
 
 from ansible_collections.cisco.ios.plugins.cliconf import ios
 
