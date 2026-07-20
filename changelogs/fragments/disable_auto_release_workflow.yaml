@@ -1,4 +1,0 @@
----
-trivial:
-  - ci - Disable automatic release workflow on GitHub release publish;
-    trigger manually via workflow_dispatch.
