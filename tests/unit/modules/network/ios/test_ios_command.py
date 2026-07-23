@@ -124,16 +124,17 @@ class TestIosCommandModule(TestIosModule):
     def test_ios_command_configure_check_warning(self):
         commands = ["configure terminal"]
         set_module_args({"commands": commands, "_ansible_check_mode": True})
-        result = self.execute_module()
-        self.assertEqual(
-            result["warnings"],
-            [
+        with patch("ansible.module_utils.basic.AnsibleModule.warn") as mock_warn:
+            result = self.execute_module()
+            mock_warn.assert_called_once_with(
                 "Only show commands are supported when using check mode, not executing configure terminal",
-            ],
-        )
+            )
+        self.assertNotIn("warnings", result)
 
     def test_ios_command_configure_not_warning(self):
         commands = ["configure terminal"]
         set_module_args(dict(commands=commands))
-        result = self.execute_module()
-        self.assertEqual(result["warnings"], [])
+        with patch("ansible.module_utils.basic.AnsibleModule.warn") as mock_warn:
+            result = self.execute_module()
+            mock_warn.assert_not_called()
+        self.assertNotIn("warnings", result)

@@ -475,6 +475,9 @@ commands:
   sample: ['interface GigabitEthernet 0/1', 'lacp port-priority 30']
 """
 from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
+)
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.lacp_interfaces.lacp_interfaces import (
     Lacp_InterfacesArgs,
@@ -506,6 +509,7 @@ def main():
         supports_check_mode=True,
     )
     result = Lacp_Interfaces(module).execute_module()
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

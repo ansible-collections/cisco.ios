@@ -23,7 +23,7 @@ from contextlib import contextmanager
 from io import BytesIO, StringIO
 from unittest import TestCase
 
-from ansible.module_utils._text import to_bytes
+from ansible.module_utils.common.text.converters import to_bytes
 
 
 @contextmanager

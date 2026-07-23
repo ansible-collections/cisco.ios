@@ -2322,6 +2322,9 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
+)
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.route_maps.route_maps import (
     Route_mapsArgs,
@@ -2351,6 +2354,7 @@ def main():
     )
 
     result = Route_maps(module).execute_module()
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 
