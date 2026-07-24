@@ -2646,6 +2646,9 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
+)
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.snmp_server.snmp_server import (
     Snmp_serverArgs,
@@ -2675,6 +2678,7 @@ def main():
     )
 
     result = Snmp_server(module).execute_module()
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 
