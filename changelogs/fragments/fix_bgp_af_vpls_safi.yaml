@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - ios_bgp_address_family - Add ``vpls`` as a valid ``safi`` choice for the
+    ``l2vpn`` address family configuration.

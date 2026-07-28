@@ -1,4 +1,15 @@
 ---
+# l2vpn vpls is populated/asserted via its own dedicated call in
+# merged.yaml (requires a platform license, e.g. 'ax' on CSR1000v or
+# 'network-advantage addon dna-advantage' on Catalyst 8000v/9000), so it's
+# skipped independently and kept separate from the main `merged` commands.
+merged_vpls:
+  commands:
+    - router bgp 65000
+    - address-family l2vpn vpls
+    - neighbor 10.1.1.1 activate
+    - exit-address-family
+
 merged:
   before: {}
   commands:
@@ -132,41 +143,54 @@ merged:
               route_map: bar
     as_number: "65000"
 
+# l2vpn vpls is only populated by _populate_config.yaml when the platform
+# license is available (see l2vpn_vpls_supported), so these commands only
+# show up in the overridden diff on devices/images that support it.
+overridden_vpls_commands:
+  - address-family l2vpn vpls
+  - no neighbor 10.1.1.1 activate
+  - exit-address-family
+
+overridden_commands_static:
+  - address-family ipv4 mdt
+  - no bgp dmzlink-bw
+  - no bgp soft-reconfig-backup
+  - no bgp dampening 1 10 100 5
+  - exit-address-family
+  - address-family ipv6 unicast
+  - no redistribute ospf 124
+  - exit-address-family
+  - address-family ipv4 unicast
+  - no redistribute connected
+  - no redistribute ospf 123
+  - redistribute ospf 123 metric 15 match external 1 nssa-external 2 route-map foo
+  - no redistribute ospf 124
+  - no redistribute ospfv3 123
+  - redistribute ospfv3 123 metric 15 match internal external 2 nssa-external 1 route-map foo
+  - exit-address-family
+  - address-family ipv4 multicast
+  - no default-metric 12
+  - no distance bgp 10 10 100
+  - no table-map test_tableMap filter
+  - bgp dampening 10 10 100 50
+  - neighbor 10.1.1.2 activate
+  - no network 198.51.111.11 mask 255.255.255.255 route-map test
+  - no aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
+  - exit-address-family
+  - address-family ipv6 multicast
+  - bgp aggregate-timer 10
+  - bgp dampening 10 10 10 10
+  - bgp slow-peer detection threshold 200
+  - network 2001:DB8:0:3::/64 route-map test_ipv6
+  - exit-address-family
+
 overridden:
-  commands:
-    - router bgp 65000
-    - no neighbor 10.1.1.1
-    - address-family ipv4 mdt
-    - no bgp dmzlink-bw
-    - no bgp soft-reconfig-backup
-    - no bgp dampening 1 10 100 5
-    - exit-address-family
-    - address-family ipv6 unicast
-    - no redistribute ospf 124
-    - exit-address-family
-    - address-family ipv4 unicast
-    - no redistribute connected
-    - no redistribute ospf 123
-    - redistribute ospf 123 metric 15 match external 1 nssa-external 2 route-map foo
-    - no redistribute ospf 124
-    - no redistribute ospfv3 123
-    - redistribute ospfv3 123 metric 15 match internal external 2 nssa-external 1 route-map foo
-    - exit-address-family
-    - address-family ipv4 multicast
-    - no default-metric 12
-    - no distance bgp 10 10 100
-    - no table-map test_tableMap filter
-    - bgp dampening 10 10 100 50
-    - neighbor 10.1.1.2 activate
-    - no network 198.51.111.11 mask 255.255.255.255 route-map test
-    - no aggregate-address 192.0.3.1 255.255.255.255 as-confed-set
-    - exit-address-family
-    - address-family ipv6 multicast
-    - bgp aggregate-timer 10
-    - bgp dampening 10 10 10 10
-    - bgp slow-peer detection threshold 200
-    - network 2001:DB8:0:3::/64 route-map test_ipv6
-    - exit-address-family
+  commands: >-
+    {{
+      ['router bgp 65000', 'no neighbor 10.1.1.1']
+      + (overridden_vpls_commands if l2vpn_vpls_supported | default(true) else [])
+      + overridden_commands_static
+    }}
 
   after:
     address_family:
@@ -214,6 +238,8 @@ overridden:
         # vrf: "blue"
       - afi: "ipv4"
         safi: "mdt"
+      - afi: "l2vpn"
+        safi: "vpls"
       - afi: "ipv6"
       - afi: "ipv6"
         bgp:
@@ -328,17 +354,26 @@ replaced:
           - address: "2001:DB8:1234::/48"
             as_set: true
 
+# l2vpn vpls is only populated by _populate_config.yaml when the platform
+# license is available (see l2vpn_vpls_supported), so there's nothing to
+# delete for it on devices/images that don't support it.
+deleted_vpls_commands:
+  - no address-family l2vpn vpls
+
 deleted:
-  commands:
-    - router bgp 65000
-    - no address-family ipv4 multicast
-    - no address-family ipv4 mdt
-    - no address-family ipv4 unicast
-    - no address-family ipv6 unicast
+  commands: >-
+    {{
+      ['router bgp 65000', 'no address-family ipv4 multicast', 'no address-family ipv4 mdt',
+       'no address-family ipv4 unicast', 'no address-family ipv6 unicast']
+      + (deleted_vpls_commands if l2vpn_vpls_supported | default(true) else [])
+    }}
 
 rendered:
   commands:
     - router bgp 65000
+    - address-family l2vpn vpls
+    - neighbor 10.1.1.1 activate
+    - exit-address-family
     - address-family ipv4 unicast
     - maximum-paths 12
     - maximum-secondary-paths eibgp 2
@@ -390,4 +425,9 @@ parsed:
             summary_only: true
           - address: 2001:DB8:5678::/48
             as_confed_set: true
+      - afi: l2vpn
+        safi: vpls
+        neighbors:
+          - activate: true
+            neighbor_address: 198.51.110.212
     as_number: "65536"

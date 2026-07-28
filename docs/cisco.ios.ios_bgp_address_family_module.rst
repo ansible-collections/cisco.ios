@@ -7502,6 +7502,7 @@ Parameters
                                     <li>mvpn</li>
                                     <li>evpn</li>
                                     <li>unicast</li>
+                                    <li>vpls</li>
                         </ul>
                 </td>
                 <td>

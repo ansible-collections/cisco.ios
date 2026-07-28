@@ -18,8 +18,11 @@ necessary to bring the current configuration to its desired end-state is
 created.
 """
 
+import re
+
 from copy import deepcopy
 
+from ansible.module_utils.connection import ConnectionError
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -100,6 +103,8 @@ class Bgp_address_family(ResourceModule):
             tmplt=Bgp_address_familyTemplate(),
         )
 
+    _TOPOLOGY_INIT_RE = re.compile(r"Error initializing topology", re.I)
+
     def execute_module(self):
         """Execute the module
 
@@ -110,6 +115,28 @@ class Bgp_address_family(ResourceModule):
             self.generate_commands()
             self.run_commands()
         return self.result
+
+    def run_commands(self):
+        """Send commands to the device, with a human-friendly error
+        when an address-family requires a platform license that is
+        not active (e.g. l2vpn vpls needs DNA-Advantage)."""
+        try:
+            super().run_commands()
+        except ConnectionError as exc:
+            if self._TOPOLOGY_INIT_RE.search(str(exc)):
+                self._module.fail_json(
+                    msg=(
+                        "The device rejected an address-family with "
+                        "'%% BGP: Error initializing topology'. "
+                        "This typically means the required platform license "
+                        "is not active (e.g. 'license boot level ax' on "
+                        "CSR1000v, or 'license boot level network-advantage "
+                        "addon dna-advantage' on Catalyst 8000v/9000). "
+                        "Enable the appropriate license and reload the device."
+                    ),
+                    commands=self.commands,
+                )
+            raise
 
     def generate_commands(self):
         """Generate configuration commands to send based on
