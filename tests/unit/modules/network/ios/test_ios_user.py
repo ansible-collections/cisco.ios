@@ -334,3 +334,67 @@ class TestIosUserModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertIn("username newuser1 password pass1", result["commands"])
         self.assertIn("username newuser2 secret pass2", result["commands"])
+
+    def test_aggregate_hashed_password_type_and_value_mismatch(self):
+        # ansible (exists in fixture with type=5): same hash → no command.
+        # newuser1: different type (9) → update required.
+        # newuser2: same type (5) but different value → update required.
+        set_module_args(
+            dict(
+                aggregate=[
+                    {
+                        "name": "ansible",
+                        "hashed_password": {
+                            "type": 5,
+                            "value": "$1$3yWSXiIi$VdzV59ChiurrNdGxlDeAW/",
+                        },
+                    },
+                    {
+                        "name": "newuser1",
+                        "hashed_password": {"type": 9, "value": "newscryptvalue"},
+                    },
+                    {
+                        "name": "newuser2",
+                        "hashed_password": {"type": 5, "value": "differenthash"},
+                    },
+                ],
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertNotIn(
+            "username ansible secret 5 $1$3yWSXiIi$VdzV59ChiurrNdGxlDeAW/",
+            result["commands"],
+        )
+        self.assertIn("username newuser1 secret 9 newscryptvalue", result["commands"])
+        self.assertIn("username newuser2 secret 5 differenthash", result["commands"])
+
+    def test_aggregate_hashed_password_on_create_does_not_suppress_hash_comparison(self):
+        # update_password=on_create does NOT suppress hashed_password updates (unlike
+        # configured_password). Hash+type comparison always runs.
+        # ansible (exists): same hash + on_create → no change.
+        # newuser: different hash + on_create → still generates command.
+        set_module_args(
+            dict(
+                aggregate=[
+                    {
+                        "name": "ansible",
+                        "hashed_password": {
+                            "type": 5,
+                            "value": "$1$3yWSXiIi$VdzV59ChiurrNdGxlDeAW/",
+                        },
+                        "update_password": "on_create",
+                    },
+                    {
+                        "name": "newuser",
+                        "hashed_password": {"type": 9, "value": "scryptvalue"},
+                        "update_password": "on_create",
+                    },
+                ],
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertNotIn(
+            "username ansible secret 5 $1$3yWSXiIi$VdzV59ChiurrNdGxlDeAW/",
+            result["commands"],
+        )
+        self.assertIn("username newuser secret 9 scryptvalue", result["commands"])
