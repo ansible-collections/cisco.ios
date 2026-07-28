@@ -10,6 +10,8 @@ __metaclass__ = type
 from textwrap import dedent
 from unittest.mock import patch
 
+from ansible.module_utils.connection import ConnectionError
+
 from ansible_collections.cisco.ios.plugins.modules import ios_bgp_address_family
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
@@ -1603,3 +1605,98 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
 
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_bgp_address_family_merged_l2vpn_vpls(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 12345
+             bgp log-neighbor-changes
+            """,
+        )
+
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="12345",
+                    address_family=[
+                        dict(
+                            afi="l2vpn",
+                            safi="vpls",
+                            neighbors=[
+                                dict(
+                                    neighbor_address="192.168.2.1",
+                                    activate=True,
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                state="merged",
+            ),
+        )
+        commands = [
+            "router bgp 12345",
+            "address-family l2vpn vpls",
+            "neighbor 192.168.2.1 activate",
+            "exit-address-family",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    @patch(
+        "ansible_collections.ansible.netcommon.plugins.module_utils.network.common."
+        "rm_base.resource_module.ResourceModule.run_commands",
+    )
+    def test_ios_bgp_address_family_topology_init_error(self, mock_run):
+        """Module should fail with a license hint when the device returns
+        '% BGP: Error initializing topology'."""
+        mock_run.side_effect = ConnectionError(
+            "address-family l2vpn vpls\r\n% BGP: Error initializing topology",
+        )
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp log-neighbor-changes
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    address_family=[
+                        dict(afi="l2vpn", safi="vpls"),
+                    ],
+                ),
+                state="merged",
+            ),
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("Error initializing topology", result["msg"])
+        self.assertIn("license", result["msg"])
+
+    @patch(
+        "ansible_collections.ansible.netcommon.plugins.module_utils.network.common."
+        "rm_base.resource_module.ResourceModule.run_commands",
+    )
+    def test_ios_bgp_address_family_non_topology_connection_error(self, mock_run):
+        """Non-topology ConnectionError should be re-raised, not swallowed."""
+        mock_run.side_effect = ConnectionError("some other connection problem")
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp log-neighbor-changes
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    address_family=[
+                        dict(afi="l2vpn", safi="vpls"),
+                    ],
+                ),
+                state="merged",
+            ),
+        )
+        with self.assertRaises(ConnectionError):
+            self.module.main()

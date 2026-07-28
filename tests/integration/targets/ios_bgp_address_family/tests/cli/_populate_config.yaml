@@ -16,6 +16,12 @@
       - neighbor 10.1.1.2 remote-as 200
       - neighbor 10.1.1.3 remote-as 200
 
+# Probes device capability and sets the `l2vpn_vpls_supported` fact. Some
+# platforms/images used in CI don't have the license required for l2vpn
+# vpls (see _check_l2vpn_vpls_support.yaml), so that piece of the baseline
+# is populated separately below and skipped gracefully when unsupported.
+- ansible.builtin.include_tasks: _check_l2vpn_vpls_support.yaml
+
 - name: Populate BGP address family configuration
   cisco.ios.ios_bgp_address_family:
     config:
@@ -114,4 +120,21 @@
                 metric: 10
                 route_map: bar
 
+    state: merged
+
+# l2vpn vpls requires a platform license (e.g. 'ax' on CSR1000v or
+# 'network-advantage addon dna-advantage' on Catalyst 8000v/9000). Kept as
+# its own call so it can be skipped independently of the rest of the
+# baseline on devices/images that lack the license.
+- name: Populate l2vpn vpls address family (requires platform license)
+  when: l2vpn_vpls_supported
+  cisco.ios.ios_bgp_address_family:
+    config:
+      as_number: "65000"
+      address_family:
+        - afi: l2vpn
+          safi: vpls
+          neighbors:
+            - neighbor_address: "10.1.1.1"
+              activate: true
     state: merged
