@@ -1,0 +1,6 @@
+---
+bugfixes:
+  - terminal - Add ``% IPv6 routing not enabled`` to ``terminal_stderr_re`` so
+    that configuring BGP IPv6/VPNv6 address-family without ``ipv6 unicast-routing``
+    correctly raises an error instead of silently succeeding
+    (https://github.com/ansible-collections/cisco.ios/issues/1301).

@@ -216,6 +216,9 @@ ansible_net_neighbors:
   type: dict
 """
 from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
+)
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.facts.facts import (
     FactsArgs,
@@ -243,7 +246,9 @@ def main():
     additional_facts, additional_warnings = result
     ansible_facts.update(additional_facts)
     warnings.extend(additional_warnings)
-    module.exit_json(ansible_facts=ansible_facts, warnings=warnings)
+    result = {"ansible_facts": ansible_facts, "warnings": warnings}
+    emit_warnings(module, result)
+    module.exit_json(**result)
 
 
 if __name__ == "__main__":

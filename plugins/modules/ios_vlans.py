@@ -1324,6 +1324,9 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
+)
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.vlans.vlans import (
     VlansArgs,
@@ -1363,6 +1366,7 @@ def main():
 
     if _is_l2_device(module) or module.params.get("state") in ["rendered", "parsed"]:
         result = Vlans(module).execute_module()
+        emit_warnings(module, result)
         module.exit_json(**result)
     else:
         module.fail_json("""Resource VLAN is not valid for the target device.""")

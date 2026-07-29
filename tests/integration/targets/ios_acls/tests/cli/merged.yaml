@@ -92,6 +92,15 @@
                     destination:
                       address: 192.0.3.0
                       wildcard_bits: 0.0.0.254
+                  - grant: deny
+                    sequence: 30
+                    protocol: ip
+                    source:
+                      any: true
+                    destination:
+                      any: true
+                    option:
+                      any_options: true
               - name: 110
                 aces:
                   - grant: deny
@@ -167,7 +176,7 @@
 
     - ansible.builtin.assert:
         that:
-          - result.commands|length == 9
+          - result.commands|length == 11
           - result.changed == true
           - result.commands|symmetric_difference(merged.commands) == []
 

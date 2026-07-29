@@ -54,7 +54,15 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                         },
                         "safi": {
                             "type": "str",
-                            "choices": ["flowspec", "mdt", "multicast", "mvpn", "evpn", "unicast"],
+                            "choices": [
+                                "flowspec",
+                                "mdt",
+                                "multicast",
+                                "mvpn",
+                                "evpn",
+                                "unicast",
+                                "vpls",
+                            ],
                         },
                         "vrf": {"type": "str"},
                         "aggregate_addresses": {
