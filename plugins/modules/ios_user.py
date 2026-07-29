@@ -64,7 +64,9 @@ options:
           - Since passwords are encrypted in the device running config, this argument will
             instruct the module when to change the password.  When set to C(always), the
             password will always be updated in the device and when set to C(on_create) the
-            password will be updated only if the username is created.
+            password will be updated only if the username is created. This is applicable for
+            C(configured_password), while C(hashed_password) will undergo hash and type
+            comparision to check whether a change is required.
         choices:
           - on_create
           - always
@@ -83,7 +85,7 @@ options:
         suboptions:
           type:
             description:
-              - Specifies the type of hash (e.g., 5 for MD5, 8 for PBKDF2, etc.)
+              - Specifies the type of hash (e.g., 5 for MD5, 8 for PBKDF2, 9 for scrypt.)
               - For this to work, the device needs to support the desired hash type
             type: int
             required: true
@@ -151,7 +153,9 @@ options:
       - Since passwords are encrypted in the device running config, this argument will
         instruct the module when to change the password.  When set to C(always), the
         password will always be updated in the device and when set to C(on_create) the
-        password will be updated only if the username is created.
+        password will be updated only if the username is created. This is applicable for
+        C(configured_password), while C(hashed_password) will undergo hash and type
+        comparision to check whether a change is required.
     default: always
     choices:
       - on_create
@@ -172,7 +176,7 @@ options:
     suboptions:
       type:
         description:
-          - Specifies the type of hash (e.g., 5 for MD5, 8 for PBKDF2, etc.)
+          - Specifies the type of hash (e.g., 5 for MD5, 8 for PBKDF2, 9 for scrypt.)
           - For this to work, the device needs to support the desired hash type
         type: int
         required: true
@@ -695,8 +699,6 @@ def sshkey_fingerprint(sshkey):
 
 def map_obj_to_commands(updates, module):
     commands = list()
-    update_password = module.params["update_password"]
-    password_type = module.params["password_type"]
 
     def needs_update(want, have, x):
         return want.get(x) and want.get(x) != have.get(x)
@@ -711,6 +713,8 @@ def map_obj_to_commands(updates, module):
 
     for update in updates:
         want, have = update
+        update_password = want["update_password"]
+        password_type = want["password_type"]
         if want["state"] == "absent":
             if have["sshkey"]:
                 add_ssh(commands, want)
@@ -769,6 +773,13 @@ def parse_privilege(data):
         return int(match.group(1))
 
 
+def parse_hashed_password(data):
+    hashed_password = None
+    if data and data.split()[-3] in ["password", "secret"]:
+        hashed_password = {"type": int(data.split()[-2]), "value": str(data.split()[-1])}
+    return hashed_password
+
+
 def parse_password_type(data):
     type = None
     if data and data.split()[-3] in ["password", "secret"]:
@@ -792,8 +803,9 @@ def map_config_to_obj(module):
             "state": "present",
             "nopassword": "nopassword" in cfg,
             "configured_password": None,
-            "hashed_password": None,
+            "hashed_password": parse_hashed_password(cfg),
             "purge_keys": False,
+            "update_password": None,
             "password_type": parse_password_type(cfg),
             "sshkey": ssh_key_list,
             "is_only_ssh_user": False if cfg.strip() and ssh_key_list else True,
@@ -854,6 +866,8 @@ def map_params_to_obj(module):
             module.fail_json(
                 msg="More than two ssh-keys supplied for a user. The length limit for ssh-keys is 2.",
             )
+        item["update_password"] = get_value("update_password")
+        item["password_type"] = get_value("password_type")
         item["state"] = get_value("state")
         objects.append(item)
     return objects
