@@ -266,6 +266,18 @@
                     source:
                       address: 192.0.2.0
                       wildcard_bits: 0.0.0.255
+              - name: test_acl
+                acl_type: extended
+                aces:
+                  - grant: deny
+                    sequence: 30
+                    protocol: ip
+                    source:
+                      any: true
+                    destination:
+                      any: true
+                    option:
+                      any_options: true
               - name: 110
                 aces:
                   - grant: deny
@@ -362,6 +374,18 @@
                     source:
                       address: 192.0.2.0
                       wildcard_bits: 0.0.0.255
+              - name: test_acl
+                acl_type: extended
+                aces:
+                  - grant: deny
+                    sequence: 30
+                    protocol: ip
+                    source:
+                      any: true
+                    destination:
+                      any: true
+                    option:
+                      any_options: true
               - name: 110
                 aces:
                   - grant: deny
