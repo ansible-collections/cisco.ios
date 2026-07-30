@@ -363,6 +363,10 @@
   gather_facts: false
   vars_files:
     - "../../../tests/integration/targets/ios_bgp_address_family/vars/main.yaml"
+  vars:
+    # Molecule/cisshgo fixtures do not include l2vpn vpls (license-gated on real gear).
+    # Integration vars template deleted.commands with optional VPLS lines when this is true.
+    l2vpn_vpls_supported: false
   tasks:
     - name: "Delete BGP AF configuration"
       cisco.ios.ios_bgp_address_family:

@@ -182,104 +182,65 @@
       ansible.builtin.debug:
         msg: "parsed state test passed — offline parse of _parsed.cfg"
 
-- name: "Ios_acls — state: rendered (merged projection)"
+- name: "Ios_acls — state: rendered"
   hosts: ios_rendered
   gather_facts: false
   vars_files:
     - "../../../tests/integration/targets/ios_acls/vars/main.yaml"
   tasks:
-    - name: "Render merged ACL configuration to CLI"
+    # Mirror tests/cli/rendered.yaml — assert against rendered.commands (not merged).
+    - name: "Render ACL configuration to CLI"
       cisco.ios.ios_acls:
         config:
           - afi: ipv4
             acls:
-              - name: std_acl
-                acl_type: standard
-                aces:
-                  - grant: deny
-                    sequence: 10
-                    source:
-                      address: 192.0.2.0
-                      wildcard_bits: 0.0.0.255
               - name: 110
                 aces:
                   - grant: deny
                     sequence: 10
-                    protocol: icmp
+                    protocol: tcp
                     protocol_options:
-                      icmp:
-                        echo: true
+                      tcp:
+                        syn: true
                     source:
                       address: 192.0.2.0
                       wildcard_bits: 0.0.0.255
                     destination:
                       address: 192.0.3.0
                       wildcard_bits: 0.0.0.255
+                      port_protocol:
+                        eq: www
                     dscp: ef
                     ttl:
                       eq: 10
-              - name: 123
+              - name: 150
                 aces:
                   - grant: deny
-                    sequence: 10
                     protocol: tcp
                     protocol_options:
                       tcp:
-                        ack: true
+                        syn: true
                     source:
                       address: 198.51.100.0
                       wildcard_bits: 0.0.0.255
+                      port_protocol:
+                        eq: telnet
                     destination:
-                      address: 198.51.101.0
+                      address: 198.51.110.0
                       wildcard_bits: 0.0.0.255
                       port_protocol:
                         eq: telnet
-                    tos:
-                      service_value: 12
-                  - grant: deny
-                    sequence: 20
-                    protocol: tcp
-                    protocol_options:
-                      tcp:
-                        ack: true
-                    source:
-                      address: 192.0.3.0
-                      wildcard_bits: 0.0.0.255
-                    destination:
-                      address: 192.0.4.0
-                      wildcard_bits: 0.0.0.255
-                      port_protocol:
-                        eq: www
                     dscp: ef
                     ttl:
-                      lt: 20
-          - afi: ipv6
-            acls:
-              - name: R1_TRAFFIC
-                aces:
-                  - grant: deny
-                    sequence: 10
-                    protocol: tcp
-                    protocol_options:
-                      tcp:
-                        ack: true
-                    source:
-                      any: true
-                      port_protocol:
-                        eq: www
-                    destination:
-                      any: true
-                      port_protocol:
-                        eq: telnet
-                    dscp: af11
+                      eq: 10
         state: rendered
       register: result
 
-    - name: "Assert rendered commands match merged.commands"
+    - name: "Assert rendered commands match rendered.commands"
       ansible.builtin.assert:
         that:
           - result.changed == false
-          - merged['commands'] | symmetric_difference(result['rendered']) | length == 0
+          - rendered['commands'] | symmetric_difference(result['rendered']) | length == 0
         quiet: true
 
     - name: "PASSED: rendered state"
