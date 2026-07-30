@@ -8,28 +8,16 @@ concurrency:
 on:  # yamllint disable-line rule:truthy
   push:
     branches: [main]
-  pull_request_target:
+  pull_request:
     branches: [main]
   workflow_dispatch:
   schedule:
     - cron: '0 0 * * *'
 
 jobs:
-  sonar:
-    name: SonarCloud
-    uses: ansible/ansible-content-actions/.github/workflows/sonarcloud.yaml@main
-    with:
-      python_version: "3.12"
-      galaxy_dependencies: |
-        git+https://github.com/ansible-collections/ansible.utils.git
-        git+https://github.com/ansible-collections/ansible.netcommon.git
-      sonar_scanner_java_opts: "-Xss2m"
-    secrets:
-      SONAR_TOKEN: ${{ secrets.ANSIBLE_COLLECTIONS_ORG_SONAR_TOKEN_CICD_BOT }}
-
   changelog:
     uses: ansible/ansible-content-actions/.github/workflows/changelog.yaml@main
-    if: github.event_name == 'pull_request_target'
+    if: github.event_name == 'pull_request'
 
   build-import:
     uses: ansible/ansible-content-actions/.github/workflows/build_import.yaml@main
@@ -50,12 +38,16 @@ jobs:
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git
 
+  # Official reusable Molecule (CISSHGO) workflow — ansible-network/github_actions#195
   molecule:
-    uses: malikdotexe/ansible-content-actions/.github/workflows/molecule.yaml@feat/molecule-workflow
+    needs: [build-import]
+    uses: ansible-network/github_actions/.github/workflows/molecule.yml@main
     with:
       collection_pre_install: >-
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git
+      molecule_scenarios_path: extensions/molecule
+      ssh_backends: '["libssh", "paramiko"]'
 
   report-status:
     if: ${{ always() && github.event_name == 'schedule' }}
@@ -84,7 +76,6 @@ jobs:
       - sanity
       - unit-galaxy
       - ansible-lint
-      - sonar
       - report-status
       - molecule
     runs-on: ubuntu-latest
@@ -98,6 +89,5 @@ jobs:
           '${{ needs.unit-galaxy.result }}',
           '${{ needs.ansible-lint.result }}',
           '${{ needs.unit-source.result }}',
-          '${{ needs.sonar.result }}',
           '${{ needs.molecule.result }}'
           ])"

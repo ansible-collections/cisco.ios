@@ -97,7 +97,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specifies the type of hash (e.g., 5 for MD5, 8 for PBKDF2, etc.)</div>
+                        <div>Specifies the type of hash (e.g., 5 for MD5, 8 for PBKDF2, 9 for scrypt.)</div>
                         <div>For this to work, the device needs to support the desired hash type</div>
                 </td>
             </tr>
@@ -270,7 +270,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Since passwords are encrypted in the device running config, this argument will instruct the module when to change the password.  When set to <code>always</code>, the password will always be updated in the device and when set to <code>on_create</code> the password will be updated only if the username is created.</div>
+                        <div>Since passwords are encrypted in the device running config, this argument will instruct the module when to change the password.  When set to <code>always</code>, the password will always be updated in the device and when set to <code>on_create</code> the password will be updated only if the username is created. This is applicable for <code>configured_password</code>, while <code>hashed_password</code> will undergo hash and type comparision to check whether a change is required.</div>
                 </td>
             </tr>
             <tr>
@@ -335,7 +335,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specifies the type of hash (e.g., 5 for MD5, 8 for PBKDF2, etc.)</div>
+                        <div>Specifies the type of hash (e.g., 5 for MD5, 8 for PBKDF2, 9 for scrypt.)</div>
                         <div>For this to work, the device needs to support the desired hash type</div>
                 </td>
             </tr>
@@ -517,7 +517,7 @@ Parameters
                         </ul>
                 </td>
                 <td>
-                        <div>Since passwords are encrypted in the device running config, this argument will instruct the module when to change the password.  When set to <code>always</code>, the password will always be updated in the device and when set to <code>on_create</code> the password will be updated only if the username is created.</div>
+                        <div>Since passwords are encrypted in the device running config, this argument will instruct the module when to change the password.  When set to <code>always</code>, the password will always be updated in the device and when set to <code>on_create</code> the password will be updated only if the username is created. This is applicable for <code>configured_password</code>, while <code>hashed_password</code> will undergo hash and type comparision to check whether a change is required.</div>
                 </td>
             </tr>
             <tr>

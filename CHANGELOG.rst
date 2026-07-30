@@ -4,6 +4,24 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v11.5.0
+=======
+
+Minor Changes
+-------------
+
+- Remediate deprecated ``warnings`` parameter in ``exit_json`` calls by using ``emit_warnings`` from ``ansible.netcommon`` across cisco.ios modules to address deprecation warning from ansible-core 2.23.
+- Remove ``ansible.module_utils.six`` usage in favour of Python 3 builtins to prepare for ansible-core 2.24 removal.
+- Replace deprecated ``ansible.module_utils._text`` imports with ``ansible.module_utils.common.text.converters``.
+- Replace deprecated ``ansible.module_utils.common._collections_compat`` with ``collections.abc`` from the Python standard library.
+- Updated all ``ResourceModule``-based resource modules to emit warnings via ``AnsibleModule.warn()`` before calling ``exit_json``.
+- Updated standalone modules (``ios_banner``, ``ios_command``, ``ios_config``, ``ios_facts``, ``ios_ping``, ``ios_system``, ``ios_user``, ``ios_vrf``) to emit warnings via ``AnsibleModule.warn()`` before calling ``exit_json``.
+
+Bugfixes
+--------
+
+- ios_acls - Fixed ACL option fields with multi-word names (e.g, any_options, stream_id , no_op) failing due to missing underscore to hyphen conversion and vice-versa in setval and getval respectively
+
 v11.4.2
 =======
 

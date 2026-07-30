@@ -48,7 +48,7 @@ options:
           safi:
             description: Address Family modifier
             type: str
-            choices: ["flowspec", "mdt", "multicast", "mvpn", "evpn", "unicast"]
+            choices: ["flowspec", "mdt", "multicast", "mvpn", "evpn", "unicast", "vpls"]
           vrf:
             description: Specify parameters for a VPN Routing/Forwarding instance
             type: str
@@ -3000,6 +3000,9 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
+)
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_address_family.bgp_address_family import (
     Bgp_address_familyArgs,
@@ -3029,6 +3032,7 @@ def main():
     )
 
     result = Bgp_address_family(module).execute_module()
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

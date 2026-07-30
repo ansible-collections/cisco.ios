@@ -4,6 +4,14 @@
 
 - ansible.builtin.include_tasks: _initial_vrf_setup.yaml
 - ansible.builtin.include_tasks: _ospf_proc_setup.yaml
+- ansible.builtin.include_tasks: _check_l2vpn_vpls_support.yaml
+
+- name: Define BGP neighbors globally (required for l2vpn vpls neighbor activation)
+  when: l2vpn_vpls_supported
+  cisco.ios.ios_config:
+    lines:
+      - router bgp 65000
+      - neighbor 10.1.1.1 remote-as 100
 
 - block:
     - name: Merge provided configuration with device configuration
@@ -137,6 +145,41 @@
         that:
           - result['changed'] == false
           - result.commands|length == 0
+
+    # l2vpn vpls requires a platform license (e.g. 'ax' on CSR1000v or
+    # 'network-advantage addon dna-advantage' on Catalyst 8000v/9000), kept
+    # as its own call/assertion so it can be skipped independently of the
+    # rest of this scenario on devices/images that lack the license.
+    - name: Merge l2vpn vpls address family (requires platform license)
+      when: l2vpn_vpls_supported
+      register: vpls_result
+      cisco.ios.ios_bgp_address_family: &id002
+        config:
+          address_family:
+            - afi: l2vpn
+              safi: vpls
+              neighbors:
+                - neighbor_address: 10.1.1.1
+                  activate: true
+          as_number: "65000"
+        state: merged
+
+    - name: Assert that correct l2vpn vpls commands were generated
+      when: l2vpn_vpls_supported
+      ansible.builtin.assert:
+        that:
+          - "{{ merged_vpls['commands'] | symmetric_difference(vpls_result['commands']) | length == 0 }}"
+
+    - name: Merge l2vpn vpls address family (idempotent)
+      when: l2vpn_vpls_supported
+      register: vpls_result
+      cisco.ios.ios_bgp_address_family: *id002
+
+    - name: Assert that the previous l2vpn vpls task was idempotent
+      when: l2vpn_vpls_supported
+      ansible.builtin.assert:
+        that:
+          - vpls_result['changed'] == false
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
