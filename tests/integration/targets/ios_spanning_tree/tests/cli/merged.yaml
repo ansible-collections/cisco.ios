@@ -1,0 +1,159 @@
+---
+- ansible.builtin.debug:
+    msg: START Merged ios_spanning_tree state for integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Test 1. Merge provided spanning tree configuration with device configuration
+      register: result
+      cisco.ios.ios_spanning_tree: &id001
+        config:
+          mst:
+            forward_time: 25
+            hello_time: 4
+            max_age: 33
+        state: merged
+
+    - name: Assert that the previous task has no changes made
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+    - name: Test 2. Merge provided spanning tree configuration with device configuration
+      register: result
+      cisco.ios.ios_spanning_tree:
+        config:
+          mode: "mst"
+          mst:
+            forward_time: 25
+            hello_time: 4
+            max_age: 33
+        state: merged
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Assert that after dict is correctly generated
+      ansible.builtin.assert:
+        that:
+          - merged['after'] == result['after']
+
+    - name: Test 3. Merge provided spanning tree configuration with device configuration (idempotent)
+      register: result
+      cisco.ios.ios_spanning_tree: *id001
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+    - name: Test 4. Merge provided spanning tree configuration with device configuration
+      register: result
+      ignore_errors: true
+      cisco.ios.ios_spanning_tree:
+        config:
+          mode: "rapid-pvst"
+          mst:
+            forward_time: 25
+            hello_time: 4
+            max_age: 33
+        state: merged
+
+    - name: Assert that the previous task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+    - name: Populate spanning tree configuration
+      register: result
+      cisco.ios.ios_spanning_tree:
+        config:
+          mode: mst
+          bridge_assurance: false
+          transmit_hold_count: 5
+          logging: true
+          loopguard_default: true
+          portfast:
+            bpdufilter_default: true
+            default: true
+          uplinkfast:
+            enabled: true
+            max_update_rate: 32
+          pathcost_method: long
+          hello_time:
+            - value: 4
+              vlan_list: 1,3,9
+            - value: 5
+              vlan_list: 4,6-8
+          mst:
+            forward_time: 25
+            hello_time: 4
+            max_age: 33
+            max_hops: 33
+            priority:
+              - instance: "0"
+                value: 12288
+              - instance: "1"
+                value: 4096
+              - instance: 5,7-9
+                value: 57344
+            configuration:
+              instances:
+                - instance: 1
+                  vlan_list: 40-50
+                - instance: 2
+                  vlan_list: 10-20
+              name: NAME
+              revision: 34
+        state: merged
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ merged['commands2'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+    - name: Test 5. Merge provided spanning tree configuration with device configuration
+      register: result
+      cisco.ios.ios_spanning_tree:
+        config:
+          backbonefast: true
+          bridge_assurance: true
+          portfast:
+            bpdufilter_default: true
+            default: true
+          mst:
+            configuration:
+              instances:
+                - instance: 1
+                  vlan_list: 40-50
+                - instance: 2
+                  vlan_list: 20-30
+              name: NAME
+              revision: 35
+            simulate_pvst_global: false
+            forward_time: 25
+            hello_time: 4
+            max_age: 33
+            max_hops: 33
+            priority:
+              - instance: "0"
+                value: 12288
+              - instance: "1"
+                value: 4096
+              - instance: 5-7,9
+                value: 57344
+          hello_time:
+            - value: 6
+              vlan_list: 1-3,5-6
+        state: merged
+
+    - name: Assert that correct set of commands were generated
+      ansible.builtin.assert:
+        that:
+          - "{{ merged['commands3'] | symmetric_difference(result['commands']) | length == 0 }}"
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
