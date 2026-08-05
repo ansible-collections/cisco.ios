@@ -1,0 +1,44 @@
+---
+# Molecule scenario: l2_interfaces
+# Runs cisco.ios.ios_l2_interfaces integration tests against CISSHGO.
+# Lifecycle (create/destroy/verify) is shared from ../_shared/.
+# Scenario-specific knobs live in vars.yml.
+# Usage: cd cisco/ios/extensions && molecule test -s l2_interfaces
+
+driver:
+  name: default
+
+platforms:
+  - name: cisshgo-l2-gathered
+  - name: cisshgo-l2-merged
+
+ansible:
+  executor:
+    args:
+      ansible_playbook:
+        - --inventory=${MOLECULE_SCENARIO_DIRECTORY}/../cisshgo_fixtures/inventories/ansible/l2_interfaces.yaml
+  env:
+    ANSIBLE_FORCE_COLOR: "true"
+    ANSIBLE_HOST_KEY_CHECKING: "false"
+    ANSIBLE_DEPRECATION_WARNINGS: "false"
+
+provisioner:
+  name: ansible
+  playbooks:
+    create: ../_shared/create.yml
+    converge: converge.yml
+    verify: ../_shared/verify.yml
+    destroy: ../_shared/destroy.yml
+
+scenario:
+  test_sequence:
+    - create
+    - converge
+    - verify
+    - destroy
+
+prerun: false
+
+verifier:
+  name: ansible
+...

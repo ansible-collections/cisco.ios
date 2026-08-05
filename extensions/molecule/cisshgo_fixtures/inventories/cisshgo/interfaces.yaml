@@ -1,0 +1,16 @@
+---
+# CISSHGO server inventory for the ios_interfaces scenario.
+# Consumed by the cisshgo binary via --inventory. Entries are bound to
+# consecutive TCP ports starting at --starting-port (10000).
+#
+# Port layout:
+#   10000 — ios_interfaces platform      (gathered / parsed / rendered)
+#   10001 — ios-interfaces-merged        (stateful merged scenario)
+#   10002 — ios-interfaces-replaced      (stateful replaced scenario)
+devices:
+  - platform: ios_interfaces
+    count: 1
+  - scenario: ios-interfaces-merged
+    count: 1
+  - scenario: ios-interfaces-replaced
+    count: 1

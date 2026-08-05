@@ -1,0 +1,36 @@
+---
+# Shared CISSHGO destroy playbook used by every molecule scenario.
+# Inputs (from <scenario>/vars.yml):
+#   scenario_name   : id used to find the right cisshgo process
+#                     (matches inventories/cisshgo/<scenario>.yaml in pgrep)
+#   listener_ports  : ports we wait to be released
+- name: "Destroy — Stop CISSHGO ({{ scenario_name | default('unknown') }})"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - "{{ lookup('env', 'MOLECULE_SCENARIO_DIRECTORY') }}/vars.yml"
+  vars:
+    ansible_network_os: ""
+    ansible_connection: local
+  tasks:
+    - name: Find scenario CISSHGO process(es)
+      ansible.builtin.shell: |
+        pgrep -f "cisshgo.*--inventory.*inventories/cisshgo/{{ scenario_name }}.yaml" || true
+      register: _pids
+      changed_when: false
+
+    - name: Stop CISSHGO
+      ansible.builtin.command: "kill {{ item }}"
+      loop: "{{ _pids.stdout_lines }}"
+      when: _pids.stdout_lines | length > 0
+      changed_when: true
+      failed_when: false
+
+    - name: Wait for listener ports to close
+      ansible.builtin.wait_for:
+        port: "{{ item }}"
+        state: stopped
+        timeout: 10
+      loop: "{{ listener_ports }}"
+      failed_when: false

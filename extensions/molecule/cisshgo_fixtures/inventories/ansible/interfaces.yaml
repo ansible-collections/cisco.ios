@@ -1,0 +1,36 @@
+---
+# Inventory for the cisco.ios.ios_interfaces molecule scenario.
+# Three listeners are required:
+#   10000 — gathered / parsed / rendered (platform/stateless)
+#   10001 — merged scenario (stateful)
+#   10002 — replaced scenario (stateful)
+#
+# IMPORTANT: network vars live on the ios_cisshgo group, NOT on `all:`,
+# so implicit localhost (used by the shared create/destroy playbooks)
+# does not inherit ansible_network_os and trigger ios_facts on localhost.
+all:
+  children:
+    ios_cisshgo:
+      vars:
+        ansible_connection: ansible.netcommon.network_cli
+        ansible_network_os: cisco.ios.ios
+        ansible_user: admin
+        ansible_password: admin
+        ansible_host: 127.0.0.1
+        ansible_become: true
+        ansible_become_method: enable
+        ansible_become_password: admin
+        ansible_ssh_common_args: "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null"
+      children:
+        ios_interfaces_gathered:
+          hosts:
+            cisshgo-ios-gathered:
+              ansible_port: 10000
+        ios_interfaces_merged:
+          hosts:
+            cisshgo-ios-merged:
+              ansible_port: 10001
+        ios_interfaces_replaced:
+          hosts:
+            cisshgo-ios-replaced:
+              ansible_port: 10002

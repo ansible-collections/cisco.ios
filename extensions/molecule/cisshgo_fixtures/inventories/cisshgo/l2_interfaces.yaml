@@ -1,0 +1,12 @@
+---
+# CISSHGO server inventory for the ios_l2_interfaces scenario.
+# Consumed by the cisshgo binary via --inventory.
+#
+# Port layout:
+#   10000 — ios_l2_interfaces platform    (gathered / parsed / rendered)
+#   10001 — ios-l2-interfaces-merged      (stateful merged scenario)
+devices:
+  - platform: ios_l2_interfaces
+    count: 1
+  - scenario: ios-l2-interfaces-merged
+    count: 1

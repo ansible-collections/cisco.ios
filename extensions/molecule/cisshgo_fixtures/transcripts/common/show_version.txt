@@ -1,0 +1,24 @@
+Cisco IOS Software, Version 15.6(2)T, RELEASE SOFTWARE (fc2)
+Technical Support: http://www.cisco.com/techsupport
+Copyright (c) 1986-2017 by Cisco Systems, Inc.
+Compiled Wed 29-Mar-17 14:09 by prod_rel_team
+
+ROM: System Bootstrap, Version 15.6(3r)M1, RELEASE SOFTWARE
+
+{{.Hostname}} uptime is 2 weeks, 3 days, 14 hours, 22 minutes
+System returned to ROM by power-on
+System image file is "flash0:isr4300-universalk9.16.06.01.SPA.bin"
+Last reload reason: power-on
+
+Cisco ISR4321/K9 (1RU) processor with 1687137K/6147K bytes of memory.
+Processor board ID FLM2041W0LB
+4 Gigabit Ethernet interfaces
+32768K bytes of non-volatile configuration memory.
+4194304K bytes of physical memory.
+3223551K bytes of flash memory at bootflash:.
+
+License Level: ax
+License Type: Default. No valid license found.
+Next reload license Level: ax
+
+Configuration register is 0x2102

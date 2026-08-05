@@ -1,0 +1,30 @@
+---
+# Shared CISSHGO verify playbook — asserts no FATAL/panic in the scenario log.
+- name: "Verify — Inspect CISSHGO log ({{ scenario_name | default('unknown') }})"
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    - "{{ lookup('env', 'MOLECULE_SCENARIO_DIRECTORY') }}/vars.yml"
+  vars:
+    ansible_network_os: ""
+    ansible_connection: local
+    cisshgo_log: "/tmp/cisshgo-{{ scenario_name }}.log"
+  tasks:
+    - name: Read CISSHGO log
+      ansible.builtin.command: cat {{ cisshgo_log }}
+      register: _log
+      changed_when: false
+      failed_when: false
+
+    - name: Show CISSHGO log
+      ansible.builtin.debug:
+        var: _log.stdout_lines
+
+    - name: Assert no critical CISSHGO errors
+      ansible.builtin.assert:
+        that:
+          - "'FATAL' not in _log.stdout"
+          - "'panic' not in _log.stdout"
+        fail_msg: "CISSHGO encountered errors during {{ scenario_name }} run"
+        success_msg: "CISSHGO ran without critical errors"

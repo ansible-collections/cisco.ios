@@ -1,0 +1,152 @@
+---
+# CISSHGO Transcript Map — cisco.ios integration tests
+#
+# Platforms (stateless):
+#   ios_interfaces      — serves gathered/parsed/rendered for ios_interfaces module
+#   ios_l2_interfaces   — serves gathered/parsed/rendered for ios_l2_interfaces module
+#
+# Scenarios (stateful):
+#   ios-interfaces-merged     — merged state with before/after/idempotent
+#   ios-interfaces-replaced   — replaced state with before/after/idempotent
+#   ios-l2-interfaces-merged  — merged state with before/after/idempotent
+
+platforms:
+  # ======================================================================
+  # ios_interfaces — Layer 3 interface config (description, speed, mtu, etc.)
+  # ======================================================================
+  ios_interfaces:
+    vendor: "cisco"
+    hostname: "cisshgo-ios"
+    username: "admin"
+    password: "admin"
+    command_transcripts:
+      "show privilege": "transcripts/common/show_privilege.txt"
+      "terminal length 0": "transcripts/generic_empty_return.txt"
+      "terminal width 512": "transcripts/generic_empty_return.txt"
+      "terminal width 0": "transcripts/generic_empty_return.txt"
+      "show version": "transcripts/common/show_version.txt"
+      "show running-config | section ^interface": "transcripts/ios_interfaces/gathered.txt"
+      "write memory": "transcripts/generic_empty_return.txt"
+      "write mem": "transcripts/generic_empty_return.txt"
+    context_search:
+      "configure terminal": "(config)#"
+      "interface": "(config-if)#"
+      "enable": "#"
+      "base": "#"
+    context_hierarchy:
+      "(config-if)#": "(config)#"
+      "(config)#": "#"
+      "#": ">"
+    end_context: "#"
+
+  # ======================================================================
+  # ios_l2_interfaces — Layer 2 switchport config (access, trunk, private-vlan)
+  # ======================================================================
+  ios_l2_interfaces:
+    vendor: "cisco"
+    hostname: "cisshgo-ios"
+    username: "admin"
+    password: "admin"
+    command_transcripts:
+      "show privilege": "transcripts/common/show_privilege.txt"
+      "terminal length 0": "transcripts/generic_empty_return.txt"
+      "terminal width 512": "transcripts/generic_empty_return.txt"
+      "terminal width 0": "transcripts/generic_empty_return.txt"
+      "show version": "transcripts/common/show_version.txt"
+      "show running-config | section ^interface": "transcripts/ios_l2_interfaces/gathered.txt"
+      "write memory": "transcripts/generic_empty_return.txt"
+      "write mem": "transcripts/generic_empty_return.txt"
+    context_search:
+      "configure terminal": "(config)#"
+      "interface": "(config-if)#"
+      "enable": "#"
+      "base": "#"
+    context_hierarchy:
+      "(config-if)#": "(config)#"
+      "(config)#": "#"
+      "#": ">"
+    end_context: "#"
+
+# ========================================================================
+# SCENARIOS
+# ========================================================================
+
+scenarios:
+  # --- ios_interfaces: merged ---
+  ios-interfaces-merged:
+    platform: ios_interfaces
+    sequence:
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/ios_interfaces/scenarios/merged/before.txt"
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "description Configured and Merged by Ansible-Network"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "description 04j"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "shutdown"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/ios_interfaces/scenarios/merged/after.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/ios_interfaces/scenarios/merged/after.txt"
+
+  # --- ios_interfaces: replaced ---
+  ios-interfaces-replaced:
+    platform: ios_interfaces
+    sequence:
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/ios_interfaces/scenarios/replaced/before.txt"
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "description Configured and Replaced by Ansible-Network"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/ios_interfaces/scenarios/replaced/after.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/ios_interfaces/scenarios/replaced/after.txt"
+
+  # --- ios_l2_interfaces: merged ---
+  ios-l2-interfaces-merged:
+    platform: ios_l2_interfaces
+    sequence:
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/ios_l2_interfaces/scenarios/merged/before.txt"
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "switchport access vlan 30"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "switchport voice vlan 40"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "switchport private-vlan association host 2000 2500"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface GigabitEthernet3"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "switchport trunk encapsulation dot1q"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "switchport trunk native vlan 20"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "switchport trunk allowed vlan 15-20,40"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "switchport trunk pruning vlan 10,20"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "switchport mode trunk"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/ios_l2_interfaces/scenarios/merged/after.txt"
+      - command: "show running-config | section ^interface"
+        transcript: "transcripts/ios_l2_interfaces/scenarios/merged/after.txt"
