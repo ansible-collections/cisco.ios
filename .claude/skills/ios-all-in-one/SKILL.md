@@ -36,7 +36,7 @@ Detailed context is split into topic-specific files. Read the relevant file(s) f
 | RM architecture, 5-file pattern, creating new modules, coding conventions | `rm_architecture.md` | Creating/modifying resource modules |
 | Want/have state logic, comparison tables, list_to_dict, compval, plain-language flow | `want_have_logic.md` | Understanding or debugging state behavior |
 | IOS CLI commands, show commands, parser generation guide | `ios_commands.md` | Building parsers, mapping CLI to structured data |
-| GitHub issue triage & reproduction | `github_issue_triage.md` | Reproducing or validating a reported issue |
+| Reproduce & validate GitHub issues | `reproduce_github_issue.md` | Reproducing or validating a reported issue |
 | CI failure debugging | `ci_debugging.md` | Diagnosing test/build/lint failures |
 | Testing patterns & coverage gaps | `testing.md` | Writing or finding missing tests |
 | Documentation review & typo fixing | `documentation_review.md` | Fixing docs, examples, or RETURN blocks |
