@@ -1,7 +1,7 @@
 ---
-name: ios-onboarding
+name: ios-all-in-one
 description: >
-  Cisco IOS collection onboarding skill — provides full context about collection structure,
+  Cisco IOS collection all-in-one skill — provides full context about collection structure,
   resource module development, IOS CLI commands, GitHub issue triage, CI failure debugging,
   documentation review, test coverage gaps, and plain-language explanation of the RM flow.
   Trigger when the user mentions:
@@ -42,7 +42,7 @@ Detailed context is split into topic-specific files. Read the relevant file(s) f
 | Documentation review & typo fixing | `documentation_review.md` | Fixing docs, examples, or RETURN blocks |
 | Quick-reference cheatsheet | `cheatsheet.md` | Fast lookup of directories, commands, patterns |
 
-All files are in `.claude/skills/ios-onboarding/`.
+All files are in `.claude/skills/ios-all-in-one/`.
 
 ---
 
