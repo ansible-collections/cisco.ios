@@ -1,0 +1,8 @@
+snmp-server community integrationComm RW test_Acl
+snmp-server contact contact updated using play
+snmp-server engineID remote 192.0.2.12 udp-port 25 AB0C5342FF0F
+snmp-server inform pending 2
+snmp-server ip dscp 2
+snmp-server location location entry for snmp
+snmp-server packetsize 500
+snmp-server system-shutdown

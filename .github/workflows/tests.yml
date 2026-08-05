@@ -38,6 +38,17 @@ jobs:
         git+https://github.com/ansible-collections/ansible.utils.git
         git+https://github.com/ansible-collections/ansible.netcommon.git
 
+  # Official reusable Molecule (CISSHGO) workflow — ansible-network/github_actions#195
+  molecule:
+    needs: [build-import]
+    uses: ansible-network/github_actions/.github/workflows/molecule.yml@main
+    with:
+      collection_pre_install: >-
+        git+https://github.com/ansible-collections/ansible.utils.git
+        git+https://github.com/ansible-collections/ansible.netcommon.git
+      molecule_scenarios_path: extensions/molecule
+      ssh_backends: '["libssh", "paramiko"]'
+
   report-status:
     if: ${{ always() && github.event_name == 'schedule' }}
     needs:
@@ -47,6 +58,7 @@ jobs:
       - unit-galaxy
       - ansible-lint
       - unit-source
+      - molecule
     uses: ansible/ansible-content-actions/.github/workflows/upload_upstream_results.yaml@main
     with:
       job_context: ${{ toJSON(needs) }}
@@ -65,6 +77,7 @@ jobs:
       - unit-galaxy
       - ansible-lint
       - report-status
+      - molecule
     runs-on: ubuntu-latest
     steps:
       - run: >-
@@ -75,5 +88,6 @@ jobs:
           '${{ needs.sanity.result }}',
           '${{ needs.unit-galaxy.result }}',
           '${{ needs.ansible-lint.result }}',
-          '${{ needs.unit-source.result }}'
+          '${{ needs.unit-source.result }}',
+          '${{ needs.molecule.result }}'
           ])"

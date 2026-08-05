@@ -1,0 +1,4 @@
+ntp panic update
+ntp orphan 4
+ntp mindistance 10
+ntp maxdistance 3

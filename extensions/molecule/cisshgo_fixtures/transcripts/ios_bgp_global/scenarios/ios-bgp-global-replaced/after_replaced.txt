@@ -1,0 +1,12 @@
+router bgp 65000
+ no bgp default ipv4-unicast
+ no bgp default route-target filter
+ bgp log-neighbor-changes
+ bgp nopeerup-delay post-boot 10
+ bgp nopeerup-delay cold-boot 20
+ bgp advertise-best-external
+ bgp bestpath med confed
+ redistribute connected metric 10
+ neighbor 192.0.2.2 remote-as 100
+ neighbor 192.0.2.2 description replace neighbor
+ neighbor 192.0.2.2 slow-peer detection disable

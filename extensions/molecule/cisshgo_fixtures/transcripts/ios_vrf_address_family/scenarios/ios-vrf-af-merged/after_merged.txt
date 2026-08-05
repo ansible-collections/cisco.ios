@@ -1,0 +1,13 @@
+vrf definition test1
+ address-family ipv4 unicast
+  export map testing-map
+  import map import-map
+ exit-address-family
+!
+vrf definition test2
+ address-family ipv4 unicast
+  export map testing-map1
+  import map import-map1
+  inter-as-hybrid csc next-hop 1.2.3.4
+ exit-address-family
+!

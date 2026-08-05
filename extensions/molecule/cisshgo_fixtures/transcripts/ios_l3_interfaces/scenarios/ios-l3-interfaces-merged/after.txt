@@ -1,0 +1,31 @@
+interface GigabitEthernet1
+ ip address dhcp
+!
+interface GigabitEthernet2
+ ipv6 address autoconfig
+!
+interface GigabitEthernet3
+ ip helper-address global 10.0.0.1
+ ip helper-address 10.0.0.2
+ ip address 198.51.100.1 255.255.255.0 secondary
+ ip address 198.51.100.2 255.255.255.0
+ ipv6 address 2001:DB8:0:3::/64
+!
+interface GigabitEthernet4
+!
+interface Loopback1
+!
+interface Loopback999
+ ip address 192.0.2.1 255.255.255.0
+!
+interface Vlan101
+ no autostate
+!
+interface Vlan901
+ no autostate
+ ip unnumbered Loopback1
+ ipv6 enable
+!
+interface Vlan902
+ ipv6 enable
+!
