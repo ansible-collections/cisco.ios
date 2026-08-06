@@ -1131,3 +1131,31 @@ class TestIosHSRPInterfaceModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_hsrp_interfaces_use_bia_set_false_emits_negate(self):
+        """use_bia.set:false with have.use_bia.set=true must emit no standby use-bia.
+
+        Without compval="use_bia.set", compare() evaluates the parent dict
+        {set:False} (truthy) and fires setval ("standby use-bia scope interface")
+        instead of remval. With the fix, the False leaf is evaluated, remval fires.
+        """
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet3
+             standby use-bia
+            !
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "name": "GigabitEthernet3",
+                        "use_bia": {"set": False},
+                    },
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("no standby use-bia", result["commands"])

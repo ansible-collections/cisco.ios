@@ -111,6 +111,7 @@ class Hsrp_interfacesTemplate(NetworkTemplate):
                 (\s(?P<bia>\sscope\sinterface))?
                 $""", re.VERBOSE,
             ),
+            "compval": "use_bia.set",
             "remval": "standby use-bia",
             "setval": "standby use-bia"
             "{{ ' scope interface' if use_bia.scope|d(False) is defined else ''}}",
