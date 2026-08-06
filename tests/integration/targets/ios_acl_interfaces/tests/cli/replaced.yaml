@@ -24,8 +24,7 @@
     - ansible.builtin.assert:
         that:
           - result.changed == true
-          - result.commands|symmetric_difference(replaced.commands) == []
-
+          - "{{ replaced.commands | cisco.ios.commands_blocks_equal(result.commands, 'interface') }}"
     - name: Replaces device configuration of listed acl_interfaces with provided configuration (idempotent)
       become: true
       register: result

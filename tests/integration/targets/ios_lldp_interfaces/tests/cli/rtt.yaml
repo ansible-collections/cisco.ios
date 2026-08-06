@@ -45,8 +45,7 @@
         that:
           - result.commands|length == 5
           - result.changed == true
-          - result.commands|symmetric_difference(overridden.commands) == []
-
+          - "{{ overridden.commands | cisco.ios.commands_blocks_equal(result.commands, 'interface') }}"
     - name: Revert back to base configuration using facts round trip
       register: revert
       cisco.ios.ios_lldp_interfaces:
@@ -57,6 +56,6 @@
         that:
           - revert.commands|length == 5
           - revert.changed == true
-          - revert.commands|symmetric_difference(rtt.commands) == []
+          - "{{ revert.commands | cisco.ios.commands_blocks_equal(rtt.commands, 'interface') }}"
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

@@ -120,7 +120,7 @@
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
-          - "{{ overridden['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ overridden['commands'] | cisco.ios.commands_blocks_equal(result['commands'], 'acl') }}"
 
     - name: Assert that after dict is correctly generated
       ansible.builtin.assert:
