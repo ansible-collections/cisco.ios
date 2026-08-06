@@ -48,6 +48,7 @@ class Vrf_interfaces(ResourceModule):
         self.parsers = [
             "interface",
             "vrf_name",
+            "ip_vrf_name",
         ]
 
     def execute_module(self):

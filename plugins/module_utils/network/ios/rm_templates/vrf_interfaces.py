@@ -47,7 +47,7 @@ class Vrf_interfacesTemplate(NetworkTemplate):
             "name": "vrf_name",
             "getval": re.compile(
                 r"""
-                \s*vrf\sforwarding\s(?P<vrf_name>\S+)$
+                ^\s*vrf\sforwarding\s(?P<vrf_name>\S+)$
                 """,
                 re.VERBOSE,
             ),
@@ -55,6 +55,21 @@ class Vrf_interfacesTemplate(NetworkTemplate):
             "result": {
                 '{{ name }}': {
                     'vrf_name': '{{ vrf_name }}',
+                },
+            },
+        },
+        {
+            "name": "ip_vrf_name",
+            "getval": re.compile(
+                r"""
+                ^\s*ip\svrf\sforwarding\s(?P<ip_vrf_name>\S+)$
+                """,
+                re.VERBOSE,
+            ),
+            "setval": "ip vrf forwarding {{ ip_vrf_name }}",
+            "result": {
+                '{{ name }}': {
+                    'ip_vrf_name': '{{ ip_vrf_name }}',
                 },
             },
         },

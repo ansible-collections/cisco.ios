@@ -11,6 +11,25 @@
       - no vrf forwarding vrf_B
     parents: interface GigabitEthernet2
 
+- name: Clear ip vrf forwarding on GigabitEthernet3
+  cisco.ios.ios_config:
+    lines:
+      - no ip vrf forwarding vrf_legacy
+    parents: interface GigabitEthernet3
+  ignore_errors: true
+
+- name: Remove VRF definition legacy
+  cisco.ios.ios_config:
+    lines:
+      - no vrf definition vrf_legacy
+  ignore_errors: true
+  retries: 2
+  delay: 10
+
+- name: Wait for VRF
+  ansible.builtin.wait_for:
+    timeout: 2
+
 - name: Remove VRF definition B
   cisco.ios.ios_config:
     lines:
