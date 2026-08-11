@@ -516,8 +516,7 @@ releases:
           deprecation warning from ansible-core 2.23.
         - Remove ``ansible.module_utils.six`` usage in favour of Python 3 builtins to
           prepare for ansible-core 2.24 removal.
-        - Replace deprecated ``ansible.module_utils._text`` imports with
-          ``ansible.module_utils.common.text.converters``.
+        - Replace deprecated ``ansible.module_utils._text`` imports with ``ansible.module_utils.common.text.converters``.
         - Replace deprecated ``ansible.module_utils.common._collections_compat`` with
           ``collections.abc`` from the Python standard library.
         - Updated all ``ResourceModule``-based resource modules to emit warnings via
@@ -533,6 +532,36 @@ releases:
       - remediate_deprecated_module_utils_imports.yaml
       - tox_skip_cleanup.yml
     release_date: "2026-07-20"
+  11.5.1:
+    changes:
+      bugfixes:
+        - ios_acls - Correct port to protocol mapping for port 5001 and 5002.
+        - ios_bgp_address_family - Add ``vpls`` as a valid ``safi`` choice for the ``l2vpn``
+          address family configuration.
+        - ios_user - fixed hashed_password idempotency so that re-applying the same
+          type/value pair against an already-configured user produces no commands, preventing
+          unnecessary password updates on repeat runs.
+        - ios_user - parse_hashed_password  helper now extracts the stored hash type,
+          hash value from running config, enabling proper diff-based idempotency checks
+          for hashed_password.
+        - ios_user - update_password and password_type are now resolved per aggregate
+          item via get_param_value, allowing each entry in the aggregate list to independently
+          override the module-level defaults
+        - terminal - Add ``% IPv6 routing not enabled`` to ``terminal_stderr_re`` so
+          that configuring BGP IPv6/VPNv6 address-family without ``ipv6 unicast-routing``
+          correctly raises an error instead of silently succeeding (https://github.com/ansible-collections/cisco.ios/issues/1301).
+      doc_changes:
+        - ios_user - clarified that update_password (on_create/always) applies only
+          to configured_password; hashed_password always uses hash type and value comparison
+          to determine whether a change is required.
+        - ios_user - documented type 9 (scrypt) as a valid hash type alongside the existing
+          type 5 (MD5) and type 8 (PBKDF2) examples for hashed_password.
+    fragments:
+      - fix_bgp_af_vpls_safi.yaml
+      - fix_ipv6_routing_not_enabled_terminal_error.yaml
+      - fix_port_acl_mappings.yaml
+      - ios_user_aggregate_password_fixes.yaml
+    release_date: "2026-08-10"
   2.0.0:
     changes:
       bugfixes:

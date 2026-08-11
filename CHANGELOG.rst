@@ -4,6 +4,25 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v11.5.1
+=======
+
+Bugfixes
+--------
+
+- ios_acls - Correct port to protocol mapping for port 5001 and 5002.
+- ios_bgp_address_family - Add ``vpls`` as a valid ``safi`` choice for the ``l2vpn`` address family configuration.
+- ios_user - fixed hashed_password idempotency so that re-applying the same type/value pair against an already-configured user produces no commands, preventing unnecessary password updates on repeat runs.
+- ios_user - parse_hashed_password  helper now extracts the stored hash type, hash value from running config, enabling proper diff-based idempotency checks for hashed_password.
+- ios_user - update_password and password_type are now resolved per aggregate item via get_param_value, allowing each entry in the aggregate list to independently override the module-level defaults
+- terminal - Add ``% IPv6 routing not enabled`` to ``terminal_stderr_re`` so that configuring BGP IPv6/VPNv6 address-family without ``ipv6 unicast-routing`` correctly raises an error instead of silently succeeding (https://github.com/ansible-collections/cisco.ios/issues/1301).
+
+Documentation Changes
+---------------------
+
+- ios_user - clarified that update_password (on_create/always) applies only to configured_password; hashed_password always uses hash type and value comparison to determine whether a change is required.
+- ios_user - documented type 9 (scrypt) as a valid hash type alongside the existing type 5 (MD5) and type 8 (PBKDF2) examples for hashed_password.
+
 v11.5.0
 =======
 
