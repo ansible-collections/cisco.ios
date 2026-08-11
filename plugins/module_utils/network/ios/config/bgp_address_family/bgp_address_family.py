@@ -250,7 +250,7 @@ class Bgp_address_family(ResourceModule):
 
         # remove remaining items in have for replaced state
         for hkey, hentry in h_attr.items():
-            self.addcmd(hentry, "redistribute.ospf", True)
+            self.addcmd(hentry, f"redistribute.{_parser}", True)
 
     def _compare_neighbor_lists(self, want, have):
         """Compare neighbor list of dict"""

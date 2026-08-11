@@ -116,8 +116,9 @@
 
     - name: Clean up regression test neighbor config
       cisco.ios.ios_config:
-        lines:
+        parents:
           - router bgp 65000
+        lines:
           - no address-family ipv4
 
   always:
