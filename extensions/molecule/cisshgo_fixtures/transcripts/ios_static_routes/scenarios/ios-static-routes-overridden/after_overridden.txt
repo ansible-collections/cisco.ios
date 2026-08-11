@@ -1,0 +1,4 @@
+ip route vrf ansible_temp_vrf 192.0.2.0 255.255.255.0 192.0.2.1 tag 50 name override_vrf track 150
+ip route 198.51.100.0 255.255.255.0 198.51.101.3 name override_route
+ipv6 route 2001:DB8:0:3::/64 2001:DB8:0:3::2 tag 175 name override_v6
+ipv6 route vrf ansible_temp_vrf 2001:DB8:0:4::/64 2001:DB8:0:4::2 tag 135 name override_v6_vrf

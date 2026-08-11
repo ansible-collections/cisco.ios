@@ -63,6 +63,7 @@ class TerminalModule(TerminalBase):
         ),
         re.compile(rb"% BGP: Error initializing topology", re.I),
         re.compile(rb"%SNMP agent not enabled", re.I),
+        re.compile(rb"% ?IPv6 routing not enabled", re.I),
         re.compile(rb"% Invalid", re.I),
         re.compile(
             rb"%You must disable VTPv1 and VTPv2 or switch to VTPv3 before configuring a VLAN name longer than 32 characters",

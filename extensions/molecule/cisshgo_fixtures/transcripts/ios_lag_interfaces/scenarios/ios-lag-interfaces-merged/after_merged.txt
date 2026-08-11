@@ -1,0 +1,11 @@
+interface GigabitEthernet0/0
+ negotiation auto
+interface GigabitEthernet0/1
+ channel-group 1 mode active
+ negotiation auto
+interface GigabitEthernet0/2
+ negotiation auto
+interface GigabitEthernet0/3
+ negotiation auto
+interface Vlan1
+ ip address dhcp

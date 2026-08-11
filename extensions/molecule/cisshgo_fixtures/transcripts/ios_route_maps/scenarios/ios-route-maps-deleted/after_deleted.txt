@@ -1,0 +1,16 @@
+route-map test_2 deny 10
+ match security-group source tag 10 20
+ match local-preference 105 55
+ match mpls-label
+ match ipv6 address test_ip_acl
+ match ipv6 next-hop prefix-list test_new
+ match ipv6 route-source route_src_acl
+ set automatic-tag
+ set ip precedence critical
+ set ip address prefix-list 192.0.2.1
+ set aigp-metric 100
+ set as-path prepend 65111 65111
+ set extcommunity cost pre-bestpath 10 100
+ set ip df 1
+ set ip next-hop verify-availability 198.51.111.1 100 track 10
+ set ip next-hop recursive global 198.51.110.1

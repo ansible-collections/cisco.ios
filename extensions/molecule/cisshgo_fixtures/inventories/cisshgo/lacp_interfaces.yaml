@@ -1,0 +1,29 @@
+---
+# CISSHGO device inventory for ios_lacp_interfaces Molecule tests.
+#
+# Stateful scenarios: ios-lacp-interfaces-merged, ios-lacp-interfaces-deleted.
+# Extra platform rows back the gathered / parsed / rendered hosts on ports
+# 10000 and 10003–10004 (see inventory/hosts.yml).
+#
+# Port map (CISSHGO_PORT default 10000):
+#   10000: platform — cisshgo-ios-gathered
+#   10001: ios-lacp-interfaces-merged — cisshgo-ios-merged
+#   10002: ios-lacp-interfaces-deleted — cisshgo-ios-deleted
+#   10003: platform — cisshgo-ios-parsed
+#   10004: platform — cisshgo-ios-rendered
+
+devices:
+  - platform: ios_lacp_interfaces
+    count: 1
+
+  - scenario: ios-lacp-interfaces-merged
+    count: 1
+
+  - scenario: ios-lacp-interfaces-deleted
+    count: 1
+
+  - platform: ios_lacp_interfaces
+    count: 1
+
+  - platform: ios_lacp_interfaces
+    count: 1

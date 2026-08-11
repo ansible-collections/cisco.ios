@@ -1,0 +1,4 @@
+interface GigabitEthernet2
+interface GigabitEthernet3
+ ip access-group 110 in
+ ip access-group 123 out

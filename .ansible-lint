@@ -2,6 +2,10 @@
 
 profile: production
 
-# exclude_paths:
-
-# - changelogs/changelog.yaml
+exclude_paths:
+  # Generated changelog (not a playbook)
+  - changelogs/changelog.yaml
+  # Molecule scenario variable maps (not playbooks; loaded via vars_files)
+  - extensions/molecule/**/vars.yml
+  # CISSHGO transcript routing data (not a playbook)
+  - extensions/molecule/cisshgo_fixtures/transcript_map.yaml
