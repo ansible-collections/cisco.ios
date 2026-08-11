@@ -1702,7 +1702,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             self.module.main()
 
     def test_ios_bgp_address_family_replaced_routemap_removed(self):
-        """Regression: state=replaced must negate a route-map absent from want (GH#1253)."""
+        """Regression: state=replaced must negate a route-map absent from want."""
         self.execute_show_command.return_value = dedent(
             """\
             router bgp 65000
@@ -1741,7 +1741,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_bgp_address_family_replaced_routemap_moved(self):
-        """Regression: moving a route-map from neighbor A to B must negate it on A (GH#1253)."""
+        """Regression: moving a route-map from neighbor A to B must negate it on A."""
         self.execute_show_command.return_value = dedent(
             """\
             router bgp 65000
@@ -1789,7 +1789,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
     def test_ios_bgp_address_family_replaced_routemap_partial_removal(self):
-        """Regression: keep in-direction route-map but negate out-direction absent from want (GH#1253)."""
+        """Regression: keep in-direction route-map but negate out-direction absent from want."""
         self.execute_show_command.return_value = dedent(
             """\
             router bgp 65000

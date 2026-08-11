@@ -76,7 +76,6 @@
           - result['changed'] == false
         msg: "FAILED: Task was not idempotent."
 
-    # Regression scenario: state=replaced must negate route-map absent from want (GH#1253)
     - name: Set up neighbor with route-map for regression test
       cisco.ios.ios_config:
         lines:
@@ -86,7 +85,7 @@
           - neighbor 10.1.1.3 route-map AS-PATH-PREPEND out
           - exit-address-family
 
-    - name: "Regression GH#1253: replaced with neighbor having no route_maps removes it"
+    - name: "Regression: replaced with neighbor having no route_maps removes it"
       register: routemap_remove_result
       cisco.ios.ios_bgp_address_family: &routemap_remove
         config:
@@ -105,7 +104,7 @@
           - "'no neighbor 10.1.1.3 route-map AS-PATH-PREPEND out' in routemap_remove_result['commands']"
         msg: "FAILED: route-map negation command not generated (GH#1253)."
 
-    - name: "Regression GH#1253: idempotency after route-map removal"
+    - name: "Regression: idempotency after route-map removal"
       register: routemap_remove_result
       cisco.ios.ios_bgp_address_family: *routemap_remove
 
