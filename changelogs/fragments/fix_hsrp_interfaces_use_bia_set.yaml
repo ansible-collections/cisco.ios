@@ -1,0 +1,5 @@
+---
+bugfixes:
+  - ios_hsrp_interfaces - Fixed use_bia.set:false not generating "no standby use-bia"
+    by adding compval "use_bia.set" to the parser so comparison evaluates the boolean
+    leaf instead of the parent dict (which is always truthy).
