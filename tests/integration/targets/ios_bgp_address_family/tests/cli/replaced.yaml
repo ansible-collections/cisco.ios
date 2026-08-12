@@ -84,6 +84,8 @@
         lines:
           - neighbor 10.1.1.3 activate
           - neighbor 10.1.1.3 route-map AS-PATH-PREPEND out
+          - redistribute ospf 123 metric 15 match external 1 nssa-external 2 route-map foo
+          - redistribute ospfv3 124 metric 15 match internal external 2 nssa-external 1 route-map foo
 
     - name: "Regression: replaced with neighbor having no route_maps removes it"
       register: routemap_remove_result
@@ -102,7 +104,9 @@
         that:
           - routemap_remove_result['changed'] == true
           - "'no neighbor 10.1.1.3 route-map AS-PATH-PREPEND out' in routemap_remove_result['commands']"
-        msg: "FAILED: route-map negation command not generated (GH#1253)."
+          - "'no redistribute ospf 123' in routemap_remove_result['commands']"
+          - "'no redistribute ospfv3 124' in routemap_remove_result['commands']"
+        msg: "FAILED: route-map/redistribute negation commands not generated."
 
     - name: "Regression: idempotency after route-map removal"
       register: routemap_remove_result
