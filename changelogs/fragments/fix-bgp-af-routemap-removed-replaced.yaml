@@ -1,0 +1,5 @@
+---
+bugfixes:
+  - ios_bgp_address_family - Fix replaced state not generating ``no neighbor X route-map/prefix-list`` commands
+    when a route-map or prefix-list is present in have but absent from want.
+  - ios_bgp_address_family - Update `_compare_redist_ospf` loop to read both ospf and ospfv3 as parser inputs

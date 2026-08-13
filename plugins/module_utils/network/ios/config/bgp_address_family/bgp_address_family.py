@@ -250,7 +250,7 @@ class Bgp_address_family(ResourceModule):
 
         # remove remaining items in have for replaced state
         for hkey, hentry in h_attr.items():
-            self.addcmd(hentry, "redistribute.ospf", True)
+            self.addcmd(hentry, f"redistribute.{_parser}", True)
 
     def _compare_neighbor_lists(self, want, have):
         """Compare neighbor list of dict"""
@@ -328,14 +328,17 @@ class Bgp_address_family(ResourceModule):
             for i in ["route_maps", "prefix_lists"]:  # handles route_maps, prefix_lists
                 want_route_or_prefix = w_neighbor.pop(i, {})
                 have_route_or_prefix = have_nbr.pop(i, {})
-                if want_route_or_prefix:
-                    for k_rmps, w_rmps in want_route_or_prefix.items():
-                        have_rmps = have_route_or_prefix.pop(k_rmps, {})
-                        w_rmps["neighbor_address"] = w_neighbor.get("neighbor_address")
-                        if have_rmps:
-                            have_rmps["neighbor_address"] = have_nbr.get("neighbor_address")
-                            have_rmps = {i: have_rmps}
-                        self.compare(parsers=[i], want={i: w_rmps}, have=have_rmps)
+                for k_rmps, w_rmps in want_route_or_prefix.items():
+                    have_rmps = have_route_or_prefix.pop(k_rmps, {})
+                    w_rmps["neighbor_address"] = w_neighbor.get("neighbor_address")
+                    if have_rmps:
+                        have_rmps["neighbor_address"] = have_nbr.get("neighbor_address")
+                        have_rmps = {i: have_rmps}
+                    self.compare(parsers=[i], want={i: w_rmps}, have=have_rmps)
+                # negate have entries absent from want (covers both defects)
+                for k_rmps, h_rmps in have_route_or_prefix.items():
+                    h_rmps["neighbor_address"] = have_nbr.get("neighbor_address")
+                    self.compare(parsers=[i], want={}, have={i: h_rmps})
 
     def _compare_network_lists(self, w_attr, h_attr):
         """Handling of network list options."""
