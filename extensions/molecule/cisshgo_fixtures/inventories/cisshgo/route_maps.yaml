@@ -1,0 +1,13 @@
+---
+devices:
+  - platform: ios_route_maps
+    count: 1
+
+  - scenario: ios-route-maps-merged
+    count: 1
+
+  - scenario: ios-route-maps-replaced
+    count: 1
+
+  - scenario: ios-route-maps-deleted
+    count: 1

@@ -1,0 +1,392 @@
+---
+- name: "Gather ios_static_routes facts (gathered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  tasks:
+    - name: "Gather static routes facts from device"
+      cisco.ios.ios_static_routes:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered returned no changes"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — static routes gathered from fixture"
+
+- name: "Merge ios_static_routes configuration (merged state)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_static_routes/vars/main.yaml"
+  tasks:
+    - name: "Merge static routes configuration"
+      cisco.ios.ios_static_routes: &merged_config
+        config:
+          - vrf: ansible_temp_vrf
+            address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.0/24
+                    next_hops:
+                      - forward_router_address: 192.0.2.1
+                        name: merged_vrf
+                        tag: 50
+                        track: 150
+                  - dest: 192.51.110.0/32
+                    next_hops:
+                      - distance_metric: 10
+                        forward_router_address: 192.51.111.1
+                        interface: GigabitEthernet3
+                        name: partner_vrf
+              - afi: ipv6
+                routes:
+                  - dest: 2001:DB8:0:4::/64
+                    next_hops:
+                      - forward_router_address: 2001:DB8:0:4::2
+                        name: merged_v6_vrf
+                        tag: 115
+
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 198.51.100.0/24
+                    next_hops:
+                      - forward_router_address: 198.51.101.1
+                        name: merged_route_1
+                        distance_metric: 110
+                        tag: 40
+                        multicast: true
+                      - forward_router_address: 198.51.101.2
+                        name: merged_route_2
+                        distance_metric: 30
+                      - forward_router_address: 198.51.101.3
+                        name: merged_route_3
+              - afi: ipv6
+                routes:
+                  - dest: 2001:DB8:0:3::/64
+                    next_hops:
+                      - forward_router_address: 2001:DB8:0:3::2
+                        name: merged_v6
+                        tag: 105
+        state: merged
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | length == 7
+          - result.commands | symmetric_difference(merged.commands) == []
+        quiet: true
+
+    - name: "Merge static routes configuration — idempotent run"
+      cisco.ios.ios_static_routes: *merged_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — config applied + idempotency verified"
+
+- name: "Replace ios_static_routes configuration (replaced state)"
+  hosts: ios_replaced
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_static_routes/vars/main.yaml"
+  tasks:
+    - name: "Replace static routes configuration"
+      cisco.ios.ios_static_routes: &replaced_config
+        config:
+          - vrf: ansible_temp_vrf
+            address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.0/24
+                    next_hops:
+                      - forward_router_address: 192.0.2.1
+                        name: replaced_vrf
+                        tag: 75
+                        track: 155
+              - afi: ipv6
+                routes:
+                  - dest: 2001:DB8:0:4::/64
+                    next_hops:
+                      - forward_router_address: 2001:DB8:0:4::2
+                        name: replaced_v6_vrf
+                        tag: 115
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 198.51.100.0/24
+                    next_hops:
+                      - forward_router_address: 198.51.101.1
+                        name: replaced_route
+                        distance_metric: 175
+                        tag: 70
+                        multicast: true
+              - afi: ipv6
+                routes:
+                  - dest: 2001:DB8:0:3::/64
+                    next_hops:
+                      - forward_router_address: 2001:DB8:0:3::2
+                        name: replaced_v6
+                        tag: 110
+        state: replaced
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | symmetric_difference(replaced.commands) == []
+        quiet: true
+
+    - name: "Replace static routes configuration — idempotent run"
+      cisco.ios.ios_static_routes: *replaced_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+        quiet: true
+
+    - name: "PASSED: replaced state"
+      ansible.builtin.debug:
+        msg: "replaced state test passed — config replaced + idempotency verified"
+
+- name: "Override ios_static_routes configuration (overridden state)"
+  hosts: ios_overridden
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_static_routes/vars/main.yaml"
+  tasks:
+    - name: "Override static routes configuration"
+      cisco.ios.ios_static_routes: &overridden_config
+        config:
+          - vrf: ansible_temp_vrf
+            address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.0/24
+                    next_hops:
+                      - forward_router_address: 192.0.2.1
+                        name: override_vrf
+                        tag: 50
+                        track: 150
+              - afi: ipv6
+                routes:
+                  - dest: 2001:DB8:0:4::/64
+                    next_hops:
+                      - forward_router_address: 2001:DB8:0:4::2
+                        name: override_v6_vrf
+                        tag: 135
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 198.51.100.0/24
+                    next_hops:
+                      - forward_router_address: 198.51.101.3
+                        name: override_route
+              - afi: ipv6
+                routes:
+                  - dest: 2001:DB8:0:3::/64
+                    next_hops:
+                      - forward_router_address: 2001:DB8:0:3::2
+                        name: override_v6
+                        tag: 175
+        state: overridden
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | symmetric_difference(overridden.commands) == []
+        quiet: true
+
+    - name: "Override static routes configuration — idempotent run"
+      cisco.ios.ios_static_routes: *overridden_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+        quiet: true
+
+    - name: "PASSED: overridden state"
+      ansible.builtin.debug:
+        msg: "overridden state test passed — config overridden + idempotency verified"
+
+- name: "Delete ios_static_routes configuration (deleted state)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_static_routes/vars/main.yaml"
+  tasks:
+    - name: "Delete static routes configuration"
+      cisco.ios.ios_static_routes: &deleted_config
+        config:
+          - vrf: ansible_temp_vrf
+            address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.0/24
+                    next_hops:
+                      - forward_router_address: 192.0.2.1
+                        name: test_vrf
+                        tag: 50
+                        track: 150
+              - afi: ipv6
+                routes:
+                  - dest: 2001:DB8:0:4::/64
+                    next_hops:
+                      - forward_router_address: 2001:DB8:0:4::2
+                        name: test_v6_vrf
+                        tag: 115
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 198.51.100.0/24
+                    next_hops:
+                      - forward_router_address: 198.51.101.1
+                        name: route_1
+                        distance_metric: 110
+                        tag: 40
+                        multicast: true
+                      - forward_router_address: 198.51.101.2
+                        name: route_2
+                        distance_metric: 30
+                      - forward_router_address: 198.51.101.3
+                        name: route_3
+              - afi: ipv6
+                routes:
+                  - dest: 2001:DB8:0:3::/64
+                    next_hops:
+                      - forward_router_address: 2001:DB8:0:3::2
+                        name: test_v6
+                        tag: 105
+        state: deleted
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands | length == 6
+          - result.commands | symmetric_difference(deleted.commands) == []
+        quiet: true
+
+    - name: "Delete static routes configuration — idempotent run"
+      cisco.ios.ios_static_routes: *deleted_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands | length == 0
+        quiet: true
+
+    - name: "PASSED: deleted state"
+      ansible.builtin.debug:
+        msg: "deleted state test passed — all specified routes removed + idempotency verified"
+
+- name: "Parse ios_static_routes configuration from file (parsed state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_static_routes/vars/main.yaml"
+  tasks:
+    - name: "Parse static routes configuration from file"
+      cisco.ios.ios_static_routes:
+        running_config: "{{ lookup('file', '../../../tests/integration/targets/ios_static_routes/tests/cli/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed facts match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed_data == result['parsed']
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — static routes parsed from _parsed.cfg"
+
+- name: "Render ios_static_routes configuration to CLI (rendered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_static_routes/vars/main.yaml"
+  tasks:
+    - name: "Render static routes configuration to CLI commands"
+      cisco.ios.ios_static_routes:
+        config:
+          - vrf: ansible_temp_vrf
+            address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 192.0.2.0/24
+                    next_hops:
+                      - forward_router_address: 192.0.2.1
+                        name: test_vrf
+                        tag: 50
+                        track: 150
+              - afi: ipv6
+                routes:
+                  - dest: 2001:DB8:0:4::/64
+                    next_hops:
+                      - forward_router_address: 2001:DB8:0:4::2
+                        name: test_v6_vrf
+                        tag: 115
+          - address_families:
+              - afi: ipv4
+                routes:
+                  - dest: 198.51.100.0/24
+                    next_hops:
+                      - forward_router_address: 198.51.101.1
+                        name: route_1
+                        distance_metric: 110
+                        tag: 40
+                        multicast: true
+                      - forward_router_address: 198.51.101.2
+                        name: route_2
+                        distance_metric: 30
+                      - forward_router_address: 198.51.101.3
+                        name: route_3
+              - afi: ipv6
+                routes:
+                  - dest: 2001:DB8:0:3::/64
+                    next_hops:
+                      - forward_router_address: 2001:DB8:0:3::2
+                        name: test_v6
+                        tag: 105
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.rendered | symmetric_difference(rendered.commands) == []
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — {{ result['rendered'] | length }} CLI commands rendered"

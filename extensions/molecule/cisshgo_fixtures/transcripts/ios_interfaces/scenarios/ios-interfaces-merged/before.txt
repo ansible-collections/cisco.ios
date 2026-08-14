@@ -1,0 +1,31 @@
+interface GigabitEthernet1
+ description Management interface do not change
+ ip address 10.0.0.1 255.255.255.0
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet2
+ ip address 192.168.1.1 255.255.255.252
+ speed 1000
+ no negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet3
+ no ip address
+ speed 1000
+ no negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet4
+ no ip address
+ no mop enabled
+ no mop sysid
+!
+interface Loopback888
+ no ip address
+!
+interface Loopback999
+ no ip address
