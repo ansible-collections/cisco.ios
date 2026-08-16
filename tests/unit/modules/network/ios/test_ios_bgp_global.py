@@ -797,3 +797,53 @@ class TestIosBgpGlobalModule(TestIosModule):
             commands = ["router bgp 6500", "no neighbor 192.0.2.2 shutdown"]
             result = self.execute_module(changed=True)
             self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_bgp_global_asdot_local_as_parsed(self):
+        """local_as.number must be returned as string "501.65083" (not float) for ASDOT notation."""
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    router bgp 65000
+                     bgp asnotation dot
+                     neighbor 192.0.2.1 remote-as 100
+                     neighbor 192.0.2.1 local-as 501.65083
+                    """,
+                ),
+                state="parsed",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        neighbor = next(
+            n for n in result["parsed"]["neighbors"] if n["neighbor_address"] == "192.0.2.1"
+        )
+        self.assertEqual(neighbor["local_as"]["number"], "501.65083")
+        self.assertIsInstance(neighbor["local_as"]["number"], str)
+
+    def test_ios_bgp_global_asdot_local_as_merged_idempotent(self):
+        """merged state with ASDOT local_as must be idempotent when device already has it."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp asnotation dot
+             neighbor 192.0.2.1 remote-as 100
+             neighbor 192.0.2.1 local-as 501.65083
+            """,
+        )
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "bgp": {"asnotation": True},
+                    "neighbors": [
+                        {
+                            "neighbor_address": "192.0.2.1",
+                            "remote_as": "100",
+                            "local_as": {"set": True, "number": "501.65083"},
+                        },
+                    ],
+                },
+                "state": "merged",
+            },
+        )
+        self.execute_module(changed=False, commands=[])

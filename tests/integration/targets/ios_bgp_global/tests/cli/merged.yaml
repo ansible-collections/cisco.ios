@@ -57,3 +57,48 @@
           - result['changed'] == false
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
+
+- name: TEST ASDOT local-as
+  block:
+    - name: Setup ASDOT BGP config using ios_config
+      cisco.ios.ios_config:
+        lines:
+          - bgp asnotation dot
+          - neighbor 192.0.2.1 remote-as 100
+          - neighbor 192.0.2.1 local-as 501.65083
+        parents: router bgp 65000
+
+    - name: Gather bgp_global with ASDOT local-as (must not fail with type error)
+      cisco.ios.ios_bgp_global:
+        state: gathered
+      register: asdot_result
+
+    - name: Assert local_as.number is gathered as string not float
+      ansible.builtin.assert:
+        that:
+          - asdot_result.changed == false
+          - asdot_result.gathered.neighbors | length > 0
+          - (asdot_result.gathered.neighbors | selectattr('neighbor_address', 'equalto', '192.0.2.1') | list | first).local_as.number == "501.65083"
+
+    - name: Merged with ASDOT local_as.number must be idempotent
+      cisco.ios.ios_bgp_global:
+        config:
+          as_number: "65000"
+          bgp:
+            asnotation: true
+          neighbors:
+            - neighbor_address: 192.0.2.1
+              remote_as: "100"
+              local_as:
+                set: true
+                number: "501.65083"
+        state: merged
+      register: asdot_merged_result
+
+    - name: Assert merged is idempotent for ASDOT local_as
+      ansible.builtin.assert:
+        that:
+          - asdot_merged_result.changed == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
