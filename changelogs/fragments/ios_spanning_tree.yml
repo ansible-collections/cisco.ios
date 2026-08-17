@@ -1,0 +1,3 @@
+---
+major_changes:
+  - ios_spanning_tree - Added a new resource module to manage spanning-tree configuration.
