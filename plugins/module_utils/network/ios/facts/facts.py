@@ -11,7 +11,6 @@ calls the appropriate facts gathering function
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 
@@ -123,7 +122,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vrf_in
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vxlan_vtep.vxlan_vtep import (
     Vxlan_vtepFacts,
 )
-
 
 FACT_LEGACY_SUBSETS = dict(
     default=Default,
