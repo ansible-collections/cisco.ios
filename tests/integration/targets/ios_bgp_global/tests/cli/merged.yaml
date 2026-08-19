@@ -74,11 +74,29 @@
         state: gathered
       register: asdot_result
 
-    - name: Assert ASDOT local_as.number gathered as string and merged idempotent
+    - name: Assert ASDOT local_as.number gathered as string
       ansible.builtin.assert:
         that:
           - asdot_result.changed == false
           - (asdot_result.gathered.neighbors | selectattr('neighbor_address', 'equalto', '192.0.2.1') | list | first).local_as.number == "501.65083"
+
+    - name: Merged with ASDOT local_as.number string must be idempotent
+      cisco.ios.ios_bgp_global:
+        config:
+          as_number: "65000"
+          neighbors:
+            - neighbor_address: 192.0.2.1
+              remote_as: "100"
+              local_as:
+                set: true
+                number: "501.65083"
+        state: merged
+      register: asdot_merged_result
+
+    - name: Assert merged with ASDOT local_as.number is idempotent
+      ansible.builtin.assert:
+        that:
+          - asdot_merged_result.changed == false
 
     - ansible.builtin.include_tasks: _remove_config.yaml
 
