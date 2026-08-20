@@ -191,6 +191,12 @@ class Bgp_address_family(ResourceModule):
                             self._tmplt.render(wantd["address_family"].get(k, {}), "afi", True),
                         )
                 else:  # to clear off all afs
+                    # IOS auto-creates an empty address-family ipv4 unicast when
+                    # global neighbor statements exist; it re-appears on every
+                    # config read and cannot be durably removed while those
+                    # statements remain, so skip it to keep delete-all idempotent.
+                    if global_neighbors and not (set(have.keys()) - {"afi", "safi", "vrf"}):
+                        continue
                     self.commands.append(self._tmplt.render(have, "afi", True))
 
         # remove superfluous config
