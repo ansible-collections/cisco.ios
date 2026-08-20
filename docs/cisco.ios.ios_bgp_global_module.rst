@@ -4892,13 +4892,14 @@ Parameters
                     <b>number</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">integer</span>
+                        <span style="color: purple">string</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
                         <div>AS number used as local AS</div>
+                        <div>Accepts plain integers (e.g. <code>65000</code>) and ASDOT notation (e.g. <code>501.65083</code>)</div>
                         <div>Please refer vendor documentation for valid values</div>
                 </td>
             </tr>

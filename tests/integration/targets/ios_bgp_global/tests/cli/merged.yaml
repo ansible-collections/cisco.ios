@@ -57,3 +57,97 @@
           - result['changed'] == false
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
+
+- name: TEST ASDOT notation — local-as, backward compat, combined remote+local
+  block:
+    # Scenario 1: ASDOT local-as gathered as string + merged idempotent
+    - name: Setup ASDOT asnotation dot with local-as 501.65083
+      cisco.ios.ios_config:
+        lines:
+          - bgp asnotation dot
+          - neighbor 192.0.2.1 remote-as 100
+          - neighbor 192.0.2.1 local-as 501.65083
+        parents: router bgp 65000
+
+    - name: Gather — local_as.number must be string "501.65083" (not float)
+      cisco.ios.ios_bgp_global:
+        state: gathered
+      register: asdot_result
+
+    - name: Assert ASDOT local_as.number gathered as string
+      ansible.builtin.assert:
+        that:
+          - asdot_result.changed == false
+          - (asdot_result.gathered.neighbors | selectattr('neighbor_address', 'equalto', '192.0.2.1') | list | first).local_as.number == "501.65083"
+
+    - name: Merged with ASDOT local_as.number string must be idempotent
+      cisco.ios.ios_bgp_global:
+        config:
+          as_number: "65000"
+          neighbors:
+            - neighbor_address: 192.0.2.1
+              remote_as: "100"
+              local_as:
+                set: true
+                number: "501.65083"
+        state: merged
+      register: asdot_merged_result
+
+    - name: Assert merged with ASDOT local_as.number is idempotent
+      ansible.builtin.assert:
+        that:
+          - asdot_merged_result.changed == false
+
+    - ansible.builtin.include_tasks: _remove_config.yaml
+
+    # Scenario 2: Integer local_as.number backward compat (int coerced to str)
+    - name: Setup plain integer local-as 234
+      cisco.ios.ios_config:
+        lines:
+          - neighbor 192.0.2.1 remote-as 100
+          - neighbor 192.0.2.1 local-as 234
+        parents: router bgp 65000
+
+    - name: Merged with integer local_as.number=234 must be idempotent (backward compat)
+      cisco.ios.ios_bgp_global:
+        config:
+          as_number: "65000"
+          neighbors:
+            - neighbor_address: 192.0.2.1
+              remote_as: "100"
+              local_as:
+                set: true
+                number: 234
+        state: merged
+      register: int_result
+
+    - name: Assert integer local_as.number accepted without error
+      ansible.builtin.assert:
+        that:
+          - int_result.changed == false
+
+    - ansible.builtin.include_tasks: _remove_config.yaml
+
+    # Scenario 3: Combined ASDOT remote-as and local-as both returned as strings
+    - name: Setup ASDOT remote-as 501.65083 and local-as 300.65
+      cisco.ios.ios_config:
+        lines:
+          - bgp asnotation dot
+          - neighbor 192.0.2.1 remote-as 501.65083
+          - neighbor 192.0.2.1 local-as 300.65
+        parents: router bgp 65000
+
+    - name: Gather — both remote_as and local_as.number must be strings
+      cisco.ios.ios_bgp_global:
+        state: gathered
+      register: combined_result
+
+    - name: Assert both ASDOT fields gathered as strings
+      ansible.builtin.assert:
+        that:
+          - combined_result.changed == false
+          - (combined_result.gathered.neighbors | selectattr('neighbor_address', 'equalto', '192.0.2.1') | list | first).remote_as == "501.65083"
+          - (combined_result.gathered.neighbors | selectattr('neighbor_address', 'equalto', '192.0.2.1') | list | first).local_as.number == "300.65"
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

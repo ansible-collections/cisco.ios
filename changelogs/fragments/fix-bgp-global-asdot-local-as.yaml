@@ -1,0 +1,4 @@
+bugfixes:
+  - ios_bgp_global - fix ios_bgp_global and ios_facts crash on ASDOT (4-byte dotted) local_as
+    notation (e.g. "501.65083") by changing local_as.number argspec type from int to str,
+    consistent with remote_as which already accepts ASDOT values

@@ -971,8 +971,9 @@ options:
               number:
                 description:
                   - AS number used as local AS
+                  - Accepts plain integers (e.g. C(65000)) and ASDOT notation (e.g. C(501.65083))
                   - Please refer vendor documentation for valid values
-                type: int
+                type: str
               dual_as:
                 description: Accept either real AS or local AS from the ebgp peer
                 type: bool
