@@ -273,6 +273,7 @@ class Bgp_address_family(ResourceModule):
 
     def _compare_neighbor_lists(self, want, have, global_neighbors=None):
         """Compare neighbor list of dict"""
+        global_neighbors = global_neighbors or {}
         neig_parses = [
             "peer_group",
             "peer_group_name",
@@ -345,7 +346,7 @@ class Bgp_address_family(ResourceModule):
             have_nbr = have.pop(name, {})
             # remote_as lives in global_neighbors ("__" AF); pull it into have_nbr
             # when want specifies it but the AF-specific have does not, so idempotency works.
-            global_nbr = (global_neighbors or {}).get(name, {})
+            global_nbr = global_neighbors.get(name, {})
             if all(
                 (
                     w_neighbor.get("remote_as"),
