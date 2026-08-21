@@ -53,6 +53,24 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>ip_vrf_name</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Name of the legacy IPv4-only VRF to be configured on the interface.</div>
+                        <div>When configured, applies &#x27;ip vrf forwarding &lt;ip_vrf_name&gt;&#x27; under the interface.</div>
+                        <div>Mutually exclusive with O(config[].vrf_name); Cisco IOS only supports one VRF-forwarding form per interface.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>name</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -82,6 +100,7 @@ Parameters
                 <td>
                         <div>Name of the VRF to be configured on the interface.</div>
                         <div>When configured, applies &#x27;vrf forwarding &lt;vrf_name&gt;&#x27; under the interface.</div>
+                        <div>Mutually exclusive with O(config[].ip_vrf_name).</div>
                 </td>
             </tr>
 
@@ -224,6 +243,46 @@ Examples
     #  shutdown
     #  negotiation auto
 
+    # Using merged with legacy ip vrf forwarding
+
+    # Before state:
+    # -------------
+    #
+    # vios#show running-config | section ^interface
+    # interface GigabitEthernet2
+    #  no ip address
+    #  shutdown
+
+    - name: Merge legacy ip vrf forwarding configuration
+      cisco.ios.ios_vrf_interfaces:
+        config:
+          - name: GigabitEthernet2
+            ip_vrf_name: vrf_legacy
+        state: merged
+
+    # Task Output:
+    # ------------
+    #
+    # before:
+    #   - name: "GigabitEthernet2"
+    #
+    # commands:
+    #   - interface GigabitEthernet2
+    #   - ip vrf forwarding vrf_legacy
+    #
+    # after:
+    #   - name: "GigabitEthernet2"
+    #     ip_vrf_name: "vrf_legacy"
+
+    # After state:
+    # ------------
+    #
+    # vios#show running-config | section ^interface
+    # interface GigabitEthernet2
+    #  ip vrf forwarding vrf_legacy
+    #  no ip address
+    #  shutdown
+
     # Using overridden
 
     # Before state:
@@ -364,14 +423,15 @@ Examples
     # ---------------
     #
     # interface GigabitEthernet1
-    #  vrf vrf_C
+    #  vrf forwarding vrf_C
     #  shutdown
     # !
     # interface GigabitEthernet2
-    #  vrf vrf_D
+    #  vrf forwarding vrf_D
     #  shutdown
     # !
     # interface GigabitEthernet3
+    #  ip vrf forwarding vrf_legacy
     #  shutdown
     # !
     # interface GigabitEthernet4
@@ -392,6 +452,7 @@ Examples
     #   - name: "GigabitEthernet2"
     #     vrf_name: "vrf_D"
     #   - name: "GigabitEthernet3"
+    #     ip_vrf_name: "vrf_legacy"
     #   - name: "GigabitEthernet4"
 
     # Using replaced
@@ -638,7 +699,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>The set of commands pushed to the remote device.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface GigabitEthernet2&#x27;, &#x27;vrf forwarding vrf_D&#x27;, &#x27;no vrf forwarding vrf_B&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface GigabitEthernet2&#x27;, &#x27;vrf forwarding vrf_D&#x27;, &#x27;no vrf forwarding vrf_B&#x27;, &#x27;ip vrf forwarding vrf_legacy&#x27;, &#x27;no ip vrf forwarding vrf_legacy&#x27;]</div>
                 </td>
             </tr>
             <tr>
@@ -699,7 +760,8 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
             &quot;vrf_name&quot;: &quot;vrf_D&quot;
         },
         {
-            &quot;name&quot;: &quot;GigabitEthernet3&quot;
+            &quot;name&quot;: &quot;GigabitEthernet3&quot;,
+            &quot;ip_vrf_name&quot;: &quot;vrf_legacy&quot;
         },
         {
             &quot;name&quot;: &quot;GigabitEthernet4&quot;
@@ -721,7 +783,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>The provided configuration in the task rendered in device-native format (offline).</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface GigabitEthernet1&#x27;, &#x27;vrf forwarding vrf_C&#x27;, &#x27;interface GigabitEthernet2&#x27;, &#x27;vrf forwarding vrf_D&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface GigabitEthernet1&#x27;, &#x27;vrf forwarding vrf_C&#x27;, &#x27;interface GigabitEthernet2&#x27;, &#x27;vrf forwarding vrf_D&#x27;, &#x27;interface GigabitEthernet3&#x27;, &#x27;ip vrf forwarding vrf_legacy&#x27;]</div>
                 </td>
             </tr>
     </table>

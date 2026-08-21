@@ -36,9 +36,11 @@ class Vrf_interfacesArgs(object):  # pylint: disable=R0903
         "config": {
             "type": "list",
             "elements": "dict",
+            "mutually_exclusive": [["vrf_name", "ip_vrf_name"]],
             "options": {
                 "name": {"type": "str", "required": True},
                 "vrf_name": {"type": "str"},
+                "ip_vrf_name": {"type": "str"},
             },
         },
         "running_config": {"type": "str"},

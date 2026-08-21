@@ -1,0 +1,9 @@
+---
+minor_changes:
+  - ios_vrf_interfaces - add ``ip_vrf_name`` option to manage the legacy
+    ``ip vrf forwarding <name>`` interface command. Mutually exclusive with
+    the existing ``vrf_name`` option on the same interface.
+bugfixes:
+  - ios_vrf_interfaces - anchor the ``vrf forwarding`` parser to the start
+    of the line so ``ip vrf forwarding ...`` lines are no longer mis-parsed
+    as ``vrf_name``.
