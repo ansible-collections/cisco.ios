@@ -4217,8 +4217,10 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Specify a BGP neighbor</div>
-                        <div>AS of remote neighbor</div>
+                        <div>Specify a BGP neighbor remote AS number.</div>
+                        <div>On IOS, <code>neighbor X remote-as Y</code> always resides at the global BGP level not inside an address-family block.</div>
+                        <div>This module reads the global-level value for idempotency so that specifying <code>remote_as</code> here does not generate a spurious <code>neighbor X remote-as Y</code> command on every run.</div>
+                        <div><code>ios_bgp_address_family</code> does not add, change, or remove the global <code>neighbor X remote-as Y</code> statement. Use <span class='module'>cisco.ios.ios_bgp_global</span> to manage that statement. The deleted and replaced states will not remove a global remote-as.</div>
                 </td>
             </tr>
             <tr>

@@ -46,6 +46,7 @@
               neighbors:
                 - neighbor_address: "10.1.1.3"
                   activate: true
+                  remote_as: "200"
               networks:
                 - address: 198.51.110.10
                   mask: 255.255.255.255
@@ -97,6 +98,7 @@
               neighbors:
                 - neighbor_address: "10.1.1.3"
                   activate: true
+                  remote_as: "200"
         state: replaced
 
     - name: "Assert: route-map removal command was generated"
