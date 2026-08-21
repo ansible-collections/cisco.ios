@@ -1,0 +1,14 @@
+---
+bugfixes:
+  - ios_bgp_address_family - Fix idempotency issue where specifying ``remote_as`` for a neighbor
+    caused the module to emit ``neighbor X remote-as Y`` on every run.  It can be specified at
+    address-family and at global level, but always resides at the global level. Hence, the
+    config class now correctly associates global-level attributes with the corresponding
+    address-family during have-facts comparison.
+doc_changes:
+  - >-
+    ios_bgp_address_family - Document the ``remote_as`` lifecycle gap. On IOS,
+    ``neighbor X remote-as Y`` lives at the global BGP level, not inside an address-family
+    block. This module reads the global value for idempotency but does not add, change, or
+    remove it; use ``ios_bgp_global`` to manage the global remote-as statement.
+    The ``deleted`` and ``replaced`` states will not remove a global remote-as entry.

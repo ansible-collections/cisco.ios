@@ -678,7 +678,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "name": "remote_as",
             "getval": re.compile(
                 r"""
-                \s\sneighbor\s(?P<neighbor_address>\S+)\s(?P<remote_as>remote-as)
+                \s+neighbor\s(?P<neighbor_address>\S+)\s(?P<remote_as>remote-as)
                 (\s(?P<number>\S+))?
                 $""",
                 re.VERBOSE,
