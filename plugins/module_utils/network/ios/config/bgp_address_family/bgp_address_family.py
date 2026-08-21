@@ -346,12 +346,13 @@ class Bgp_address_family(ResourceModule):
             # remote_as lives in global_neighbors ("__" AF); pull it into have_nbr
             # when want specifies it but the AF-specific have does not, so idempotency works.
             global_nbr = (global_neighbors or {}).get(name, {})
-            need_remote_as = (
-                w_neighbor.get("remote_as")
-                and not have_nbr.get("remote_as")
-                and global_nbr.get("remote_as")
-            )
-            if need_remote_as:
+            if all(
+                (
+                    w_neighbor.get("remote_as"),
+                    not have_nbr.get("remote_as"),
+                    global_nbr.get("remote_as"),
+                ),
+            ):
                 have_nbr["remote_as"] = global_nbr["remote_as"]
             self.compare(parsers=neig_parses, want=w_neighbor, have=have_nbr)
             for i in ["route_maps", "prefix_lists"]:  # handles route_maps, prefix_lists
