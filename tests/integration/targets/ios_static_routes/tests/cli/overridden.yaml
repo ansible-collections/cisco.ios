@@ -49,8 +49,7 @@
     - ansible.builtin.assert:
         that:
           - result.changed == true
-          - result.commands|symmetric_difference(overridden.commands) == []
-
+          - "{{ overridden.commands | cisco.ios.commands_blocks_equal(result.commands, 'route') }}"
     - name: Override device configuration of all interfaces with provided configuration (idempotent)
       register: result
       cisco.ios.ios_static_routes: *id001

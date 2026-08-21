@@ -178,8 +178,7 @@
         that:
           - result.commands|length == 11
           - result.changed == true
-          - result.commands|symmetric_difference(merged.commands) == []
-
+          - "{{ merged.commands | cisco.ios.commands_blocks_equal(result.commands, 'acl') }}"
     - name: Merge provided configuration with device configuration (idempotent)
       register: result
       cisco.ios.ios_acls: *id001
