@@ -271,9 +271,23 @@ class Bgp_address_family(ResourceModule):
         for hkey, hentry in h_attr.items():
             self.addcmd(hentry, f"redistribute.{_parser}", True)
 
+    def _get_nbr_remote_as(self, global_neighbors, name, w_neighbor, have_nbr):
+        """Inject remote_as from global BGP neighbors into have_nbr for idempotency.
+        On IOS, neighbor remote-as lives at the global BGP level, not inside an AF.
+        Pull it into the AF-level have dict so compare() sees the correct existing value.
+        """
+        if not global_neighbors:
+            return
+        if not w_neighbor.get("remote_as"):
+            return
+        if have_nbr.get("remote_as"):
+            return
+        remote_as = global_neighbors.get(name, {}).get("remote_as")
+        if remote_as:
+            have_nbr["remote_as"] = remote_as
+
     def _compare_neighbor_lists(self, want, have, global_neighbors=None):
         """Compare neighbor list of dict"""
-        global_neighbors = global_neighbors or {}
         neig_parses = [
             "peer_group",
             "peer_group_name",
@@ -344,17 +358,7 @@ class Bgp_address_family(ResourceModule):
 
         for name, w_neighbor in want.items():
             have_nbr = have.pop(name, {})
-            # remote_as lives in global_neighbors ("__" AF); pull it into have_nbr
-            # when want specifies it but the AF-specific have does not, so idempotency works.
-            global_nbr = global_neighbors.get(name, {})
-            if all(
-                (
-                    w_neighbor.get("remote_as"),
-                    not have_nbr.get("remote_as"),
-                    global_nbr.get("remote_as"),
-                ),
-            ):
-                have_nbr["remote_as"] = global_nbr["remote_as"]
+            self._get_nbr_remote_as(global_neighbors, name, w_neighbor, have_nbr)
             self.compare(parsers=neig_parses, want=w_neighbor, have=have_nbr)
             for i in ["route_maps", "prefix_lists"]:  # handles route_maps, prefix_lists
                 want_route_or_prefix = w_neighbor.pop(i, {})
