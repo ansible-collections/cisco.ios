@@ -102,6 +102,14 @@ class Interfaces(ResourceModule):
             haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
             wantd = {}
 
+        # if state is overridden, delete logical interfaces (VLAN/subinterfaces) first so that
+        # IOS does not prompt for confirmation when a parent interface is reconfigured (e.g. switchport)
+        if self.state == "overridden":
+            logical_to_purge = {k: v for k, v in haved.items() if k not in wantd and self._is_logical_interface(v.get("name", ""))}
+            haved = {k: v for k, v in haved.items() if k not in logical_to_purge}
+            for k, have in logical_to_purge.items():
+                self.purge(have)
+
         # remove superfluous config for overridden and deleted
         if self.state in ["overridden", "deleted"]:
             for k, have in haved.items():
@@ -114,6 +122,12 @@ class Interfaces(ResourceModule):
         else:
             for k, want in wantd.items():
                 self._compare(want=want, have=haved.pop(k, {}))
+
+    @staticmethod
+    def _is_logical_interface(name):
+        """Return True for interfaces that can be fully deleted (VLAN and subinterfaces)."""
+        norm = name.lower()
+        return norm.startswith("vlan") or ("." in name and name.rsplit(".", 1)[-1].isdigit())
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
