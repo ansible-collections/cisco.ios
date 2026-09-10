@@ -105,7 +105,11 @@ class Interfaces(ResourceModule):
         # if state is overridden, delete logical interfaces (VLAN/subinterfaces) first so that
         # IOS does not prompt for confirmation when a parent interface is reconfigured (e.g. switchport)
         if self.state == "overridden":
-            logical_to_purge = {k: v for k, v in haved.items() if k not in wantd and self._is_logical_interface(v.get("name", ""))}
+            logical_to_purge = {
+                k: v
+                for k, v in haved.items()
+                if k not in wantd and self._is_logical_interface(v.get("name", ""))
+            }
             haved = {k: v for k, v in haved.items() if k not in logical_to_purge}
             for k, have in logical_to_purge.items():
                 self.purge(have)
