@@ -132,7 +132,8 @@ class Interfaces(ResourceModule):
                 else:
                     self.addcmd(want, "enabled", False)
         elif not want and self.state == "overridden":
-            self.addcmd(have, "enabled", False)
+            if have_enabled is not False:
+                self.addcmd(have, "enabled", False)
         elif not want and self.state == "deleted":
             if have_enabled:
                 self.addcmd(have, "enabled", False)
