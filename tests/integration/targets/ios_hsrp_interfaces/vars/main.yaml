@@ -1,8 +1,4 @@
 ---
-hsrp_password_text: >-
-  {{ '$REDACTED$' if ansible_version.full is version('2.22', '>=') else
-  'VALUE_SPECIFIED_IN_NO_LOG_PARAMETER' }}
-
 merged:
   before:
     - name: Loopback888
@@ -551,7 +547,7 @@ parsed:
       name: Vlan100
       standby_options:
         - authentication:
-            password_text: "{{ hsrp_password_text }}"
+            password_text: $REDACTED$
           group_name: BACKUP_GROUP
           group_no: 5
           ip:
