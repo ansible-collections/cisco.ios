@@ -13,7 +13,6 @@
     that:
       - result.changed == false
       - >-
-        parsed['config'] | to_json | replace('VALUE_SPECIFIED_IN_NO_LOG_PARAMETER',
-        '$REDACTED$') | from_json |
-        symmetric_difference(result.parsed | to_json | replace(
-        'VALUE_SPECIFIED_IN_NO_LOG_PARAMETER', '$REDACTED$') | from_json) == []
+        parsed['config'] | symmetric_difference(result.parsed | to_json |
+        replace('$REDACTED$', 'VALUE_SPECIFIED_IN_NO_LOG_PARAMETER') |
+        from_json) == []

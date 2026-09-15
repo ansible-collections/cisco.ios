@@ -547,7 +547,7 @@ parsed:
       name: Vlan100
       standby_options:
         - authentication:
-            password_text: $REDACTED$
+            password_text: VALUE_SPECIFIED_IN_NO_LOG_PARAMETER
           group_name: BACKUP_GROUP
           group_no: 5
           ip:
