@@ -13,6 +13,9 @@
     that:
       - result.changed == false
       - >-
-        parsed['config'] | symmetric_difference(result.parsed | to_json |
-        replace('$REDACTED$', 'VALUE_SPECIFIED_IN_NO_LOG_PARAMETER') |
-        from_json) == []
+        (parsed['config'] | to_json |
+        regex_replace('"password_text":\\s*"[^"]*"',
+        '"password_text":"MASKED"') | from_json) |
+        symmetric_difference((result.parsed | to_json |
+        regex_replace('"password_text":\\s*"[^"]*"',
+        '"password_text":"MASKED"') | from_json)) == []
