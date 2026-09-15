@@ -2299,6 +2299,21 @@ class TestIosSnmpServerModule(TestIosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(result["parsed"]["traps"]["vrrpv3"], True)
 
+    def test_ios_snmp_server_vrrpv3_does_not_set_vrrp(self):
+        """vrrpv3 line must not bleed into traps.vrrp (regex-anchor regression guard)."""
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    snmp-server enable traps vrrpv3
+                    """,
+                ),
+                state="parsed",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertFalse(result["parsed"].get("traps", {}).get("vrrp"))
+
     def test_ios_snmp_server_vrrpv3_merged(self):
         self.execute_show_command.return_value = ""
         self.execute_show_command_user.return_value = ""
