@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_hsrp_interfaces - Fixed integration tests with Ansible-core devel by supporting the ``$REDACTED$`` no_log value alongside the legacy ``VALUE_SPECIFIED_IN_NO_LOG_PARAMETER`` value.
