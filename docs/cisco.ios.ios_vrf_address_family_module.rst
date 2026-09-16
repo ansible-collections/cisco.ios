@@ -7647,41 +7647,50 @@ Examples
     #     name: test
 
     # Using a bare address-family entry alongside top-level route-targets
+    # (Multiprotocol VRF Configuration with Common Policies)
     #
-    # This pattern uses ios_vrf_global for the VRF definition and top-level
-    # route-targets, and ios_vrf_address_family to ensure the address-family
-    # block exists on the device even when no AF-level sub-configuration is needed.
+    # This pattern mirrors the Cisco IOS-XE "common policies" example from the
+    # MPLS Layer 3 VPNs Configuration Guide: route-targets are defined at the VRF
+    # level so they apply to all address families, and each address-family block
+    # is declared without repeating the route-target policy.
+    #
+    # Reference: https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/mp_l3_vpns/
+    #   configuration/xe-3s/mp-l3-vpns-xe-3s-book/mp-vpn-ipv4-ipv6.html
     #
     # The two tasks together produce:
     #
-    #   vrf definition EXAMPLE_VRF
-    #    rd 65000:100
-    #    route-target export 65000:100
-    #    route-target import 65000:100
+    #   vrf definition vrf2
+    #    rd 2:2
+    #    route-target export 2:2
+    #    route-target import 2:2
     #    !
     #    address-family ipv4
     #    exit-address-family
+    #    !
+    #    address-family ipv6
+    #    exit-address-family
     #   !
 
-    - name: Create VRF with top-level route-targets via ios_vrf_global
+    - name: Create VRF with common top-level route-targets via ios_vrf_global
       cisco.ios.ios_vrf_global:
         config:
           vrfs:
-            - name: EXAMPLE_VRF
-              rd: "65000:100"
+            - name: vrf2
+              rd: "2:2"
               route_target:
                 exports:
-                  - "65000:100"
+                  - "2:2"
                 imports:
-                  - "65000:100"
+                  - "2:2"
         state: merged
 
-    - name: Ensure address-family ipv4 block exists via ios_vrf_address_family
+    - name: Declare address-family blocks via ios_vrf_address_family
       cisco.ios.ios_vrf_address_family:
         config:
-          - name: EXAMPLE_VRF
+          - name: vrf2
             address_families:
               - afi: "ipv4"
+              - afi: "ipv6"
         state: merged
 
     # Task Output (ios_vrf_address_family):
@@ -7690,13 +7699,15 @@ Examples
     # before: []
     #
     # commands:
-    # - vrf definition EXAMPLE_VRF
+    # - vrf definition vrf2
     # - address-family ipv4
+    # - address-family ipv6
     #
     # after:
-    # - name: EXAMPLE_VRF
+    # - name: vrf2
     #   address_families:
     #     - afi: ipv4
+    #     - afi: ipv6
 
 
 
