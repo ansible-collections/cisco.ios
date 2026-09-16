@@ -75,6 +75,25 @@ Parameters
             <tr>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>preserve_empty_lines</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li><div style="color: blue"><b>no</b>&nbsp;&larr;</div></li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>When set to true, preserves leading and trailing empty lines in the banner text. This is useful for ASCII art banners that require specific spacing.</div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>state</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -103,7 +122,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>The banner text that should be present in the remote device running configuration.  This argument accepts a multiline string, with no empty lines. Requires <em>state=present</em>.</div>
+                        <div>The banner text that should be present in the remote device running configuration.  This argument accepts a multiline string, including empty lines. Requires <em>state=present</em>.</div>
                 </td>
             </tr>
     </table>
@@ -151,6 +170,17 @@ Examples
         banner: login
         multiline_delimiter: x
         text: this is my login banner
+        state: present
+
+    - name: Configure ASCII art banner with empty lines
+      cisco.ios.ios_banner:
+        banner: login
+        preserve_empty_lines: true
+        text: |
+
+          _   _   _                                      _   _   _
+          | |_| |_| |          Network Test              | |_| |_| |
+
         state: present
 
 
