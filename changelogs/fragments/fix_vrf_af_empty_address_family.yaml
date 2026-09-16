@@ -1,2 +1,2 @@
 bugfixes:
-  - ios_vrf_address_family - fix module not generating address-family block when no sub-configuration is present but the address-family is absent from the device (https://github.com/ansible-collections/cisco.ios/issues/XXXX).
+  - ios_vrf_address_family - fix module not generating address-family block when no sub-configuration is present but the address-family is absent from the device.
