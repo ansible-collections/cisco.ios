@@ -1,7 +1,0 @@
-minor_changes:
-  - ios_snmp_server - add ``traps.vrrpv3`` bool parameter to configure
-    ``snmp-server enable traps vrrpv3``.
-bugfixes:
-  - ios_snmp_server - anchor the ``traps.vrrp`` parser regex with ``$`` so that
-    ``snmp-server enable traps vrrpv3`` lines are not incorrectly parsed as
-    ``traps.vrrp``.
