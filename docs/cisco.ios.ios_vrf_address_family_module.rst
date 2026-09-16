@@ -7646,6 +7646,58 @@ Examples
     #       safi: unicast
     #     name: test
 
+    # Using a bare address-family entry alongside top-level route-targets
+    #
+    # This pattern uses ios_vrf_global for the VRF definition and top-level
+    # route-targets, and ios_vrf_address_family to ensure the address-family
+    # block exists on the device even when no AF-level sub-configuration is needed.
+    #
+    # The two tasks together produce:
+    #
+    #   vrf definition EXAMPLE_VRF
+    #    rd 65000:100
+    #    route-target export 65000:100
+    #    route-target import 65000:100
+    #    !
+    #    address-family ipv4
+    #    exit-address-family
+    #   !
+
+    - name: Create VRF with top-level route-targets via ios_vrf_global
+      cisco.ios.ios_vrf_global:
+        config:
+          vrfs:
+            - name: EXAMPLE_VRF
+              rd: "65000:100"
+              route_target:
+                exports:
+                  - "65000:100"
+                imports:
+                  - "65000:100"
+        state: merged
+
+    - name: Ensure address-family ipv4 block exists via ios_vrf_address_family
+      cisco.ios.ios_vrf_address_family:
+        config:
+          - name: EXAMPLE_VRF
+            address_families:
+              - afi: "ipv4"
+        state: merged
+
+    # Task Output (ios_vrf_address_family):
+    # ------------
+    #
+    # before: []
+    #
+    # commands:
+    # - vrf definition EXAMPLE_VRF
+    # - address-family ipv4
+    #
+    # after:
+    # - name: EXAMPLE_VRF
+    #   address_families:
+    #     - afi: ipv4
+
 
 
 Return Values
