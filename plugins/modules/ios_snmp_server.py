@@ -1347,6 +1347,9 @@ options:
           vrrp:
             description: Enable SNMP vrrp traps
             type: bool
+          vrrpv3:
+            description: Enable SNMP vrrpv3 traps
+            type: bool
           vswitch:
             description: Allow SNMP Virtual Switch notifications
             suboptions:
