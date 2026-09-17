@@ -4,6 +4,32 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v11.6.0
+=======
+
+Minor Changes
+-------------
+
+- ios_snmp_server - add ``traps.vrrpv3`` bool parameter to configure ``snmp-server enable traps vrrpv3``.
+
+Bugfixes
+--------
+
+- ios_bgp_address_family - Fix idempotency issue where specifying ``remote_as`` for a neighbor caused the module to emit ``neighbor X remote-as Y`` on every run.  It can be specified at address-family and at global level, but always resides at the global level. Hence, the config class now correctly associates global-level attributes with the corresponding address-family during have-facts comparison.
+- ios_bgp_address_family - Fix replaced state not generating ``no neighbor X route-map/prefix-list`` commands when a route-map or prefix-list is present in have but absent from want.
+- ios_bgp_address_family - Update `_compare_redist_ospf` loop to read both ospf and ospfv3 as parser inputs
+- ios_bgp_global - fix ios_bgp_global and ios_facts crash on ASDOT (4-byte dotted) local_as notation (e.g. "501.65083") by changing local_as.number argspec type from int to str, consistent with remote_as which already accepts ASDOT values
+- ios_hsrp_interfaces - Fixed parsed-state integration tests to handle Ansible-core masking ``$REDACTED$`` values while retaining compatibility with older ``VALUE_SPECIFIED_IN_NO_LOG_PARAMETER`` results.
+- ios_hsrp_interfaces - Fixed use_bia.set:false not generating "no standby use-bia" by adding compval "use_bia.set" to the parser so comparison evaluates the boolean leaf instead of the parent dict (which is always truthy).
+- ios_route_maps - fix bare entries (action+sequence only) being silently dropped; the cmd_len guard in entries_compare() now emits the route-map header command even when no sub-commands are generated (description/match/set absent), so catch-all rules like ``route-map MYMAP deny 6`` are correctly applied.
+- ios_route_maps - fix continue_entry.set=true silently ignored; bare "continue" command was never generated because the setval template raised UndefinedError when entry_sequence was absent.
+- ios_snmp_server - anchor the ``traps.vrrp`` parser regex with ``$`` so that ``snmp-server enable traps vrrpv3`` lines are not incorrectly parsed as ``traps.vrrp``.
+
+Documentation Changes
+---------------------
+
+- ios_bgp_address_family - Document the ``remote_as`` lifecycle gap. On IOS, ``neighbor X remote-as Y`` lives at the global BGP level, not inside an address-family block. This module reads the global value for idempotency but does not add, change, or remove it; use ``ios_bgp_global`` to manage the global remote-as statement. The ``deleted`` and ``replaced`` states will not remove a global remote-as entry.
+
 v11.5.1
 =======
 
