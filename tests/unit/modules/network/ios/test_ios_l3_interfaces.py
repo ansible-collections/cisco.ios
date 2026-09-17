@@ -1014,6 +1014,37 @@ class TestIosL3InterfacesModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
+    def test_ios_l3_interfaces_replaced_ip_address_order(self):
+        """no ip address must precede ip address when the same host IP changes subnet mask.
+
+        On some IOS versions 'no ip address X' can match by host address alone, so
+        issuing the no-command after the new address has already been applied would
+        nuke the just-configured address.
+        """
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet0/3.100
+             encapsulation dot1Q 20
+             ip address 192.168.1.1 255.255.255.252
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="GigabitEthernet0/3.100",
+                        ipv4=[dict(address="192.168.1.1/31")],
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        cmds = result["commands"]
+        no_idx = cmds.index("no ip address 192.168.1.1 255.255.255.252")
+        ip_idx = cmds.index("ip address 192.168.1.1 255.255.255.254")
+        self.assertLess(no_idx, ip_idx, "no ip address must come before ip address")
+
     def test_ios_l3_interfaces_replaced_ipv6_only(self):
         """Test replaced state with IPv6 only - should not set IPv4 defaults."""
         self.execute_show_command.return_value = dedent(
