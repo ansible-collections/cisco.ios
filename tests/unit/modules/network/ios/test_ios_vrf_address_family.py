@@ -634,3 +634,58 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(expected_commands))
+
+    def test_ios_vrf_address_family_merged_bare_af_new(self):
+        """Test that a bare address-family entry (no sub-config) generates the
+        address-family block when the AF is not yet present on the device.
+
+        Regression test for: ios_vrf_address_family silently drops address-family
+        header when no sub-commands are generated for a new AF.
+        """
+        self.get_config.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="TEST_VRF_01",
+                        address_families=[
+                            dict(afi="ipv4"),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        commands = [
+            "vrf definition TEST_VRF_01",
+            "address-family ipv4",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_vrf_address_family_merged_bare_af_idempotent(self):
+        """Test that a bare address-family entry is idempotent when the AF is
+        already present on the device with no sub-configuration.
+        """
+        run_cfg = dedent(
+            """\
+            vrf definition TEST_VRF_01
+             address-family ipv4
+             exit-address-family
+            """,
+        )
+        self.get_config.return_value = run_cfg
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="TEST_VRF_01",
+                        address_families=[
+                            dict(afi="ipv4"),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        self.execute_module(changed=False, commands=[])
