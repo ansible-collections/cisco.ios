@@ -845,3 +845,107 @@ class TestIosInterfacesModule(TestIosModule):
         self.assertEqual(result["commands"], expected_commands)
         # Explicitly assert changed is True as well
         self.assertTrue(result["changed"])
+
+    def test_ios_interfaces_overridden_deletes_subinterface(self):
+        """Subinterfaces absent from desired state must be removed with 'no interface', not just unconfigured.
+
+        Previously, overridden state would only strip config attributes and issue 'shutdown',
+        leaving the subinterface itself on the device.
+        """
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1
+             description Ansible UT parent
+             no shutdown
+             negotiation auto
+            interface GigabitEthernet1.100
+             description Ansible UT subinterface
+             shutdown
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "GigabitEthernet1",
+                        "description": "Ansible UT parent",
+                        "enabled": True,
+                    },
+                ],
+                "state": "overridden",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("no interface GigabitEthernet1.100", result["commands"])
+        self.assertNotIn("interface GigabitEthernet1.100", result["commands"])
+
+    def test_ios_interfaces_overridden_deletes_vlan_interface(self):
+        """VLAN interfaces absent from desired state must be removed with 'no interface'."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1
+             description Ansible UT interface
+             no shutdown
+             negotiation auto
+            interface Vlan10
+             description Ansible UT VLAN
+             no shutdown
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "GigabitEthernet1",
+                        "description": "Ansible UT interface",
+                        "enabled": True,
+                    },
+                ],
+                "state": "overridden",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("no interface Vlan10", result["commands"])
+        self.assertNotIn("interface Vlan10", result["commands"])
+
+    def test_ios_interfaces_overridden_subinterface_purged_before_parent(self):
+        """'no interface <subinterface>' must precede parent interface commands.
+
+        IOS prompts for confirmation when a parent interface is reconfigured (e.g. to switchport
+        mode) while a subinterface still exists on the device. Purging the subinterface first
+        avoids the prompt entirely.
+        """
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1.100
+             description Ansible UT subinterface
+             shutdown
+            interface GigabitEthernet1
+             description Ansible UT parent
+             no switchport
+             no shutdown
+             negotiation auto
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "GigabitEthernet1",
+                        "description": "Ansible UT parent",
+                        "enabled": True,
+                        "mode": "layer2",
+                    },
+                ],
+                "state": "overridden",
+            },
+        )
+        result = self.execute_module(changed=True)
+        cmds = result["commands"]
+        no_subint_idx = cmds.index("no interface GigabitEthernet1.100")
+        parent_idx = cmds.index("interface GigabitEthernet1")
+        self.assertLess(
+            no_subint_idx,
+            parent_idx,
+            "'no interface GigabitEthernet1.100' must appear before 'interface GigabitEthernet1'",
+        )
