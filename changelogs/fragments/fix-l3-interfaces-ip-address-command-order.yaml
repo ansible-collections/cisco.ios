@@ -1,4 +1,4 @@
 bugfixes:
-  - ios_l3_interfaces - fix ``state: replaced`` to emit ``no ip address`` before
+  - ios_l3_interfaces - fix ``replaced`` state to emit ``no ip address`` before
     ``ip address`` when changing an interface's IP, preventing potential address
     removal when the same host IP moves between subnet masks on some IOS versions.
