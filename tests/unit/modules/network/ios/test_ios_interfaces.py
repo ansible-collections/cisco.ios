@@ -846,47 +846,22 @@ class TestIosInterfacesModule(TestIosModule):
         # Explicitly assert changed is True as well
         self.assertTrue(result["changed"])
 
-    def test_ios_interfaces_overridden_deletes_subinterface(self):
-        """Subinterfaces absent from desired state must be removed with 'no interface', not just unconfigured.
+    def test_ios_interfaces_overridden_deletes_logical_interfaces(self):
+        """Logical interfaces (subinterfaces and VLANs) absent from desired state must be removed
+        with 'no interface', not just unconfigured and shut down.
 
-        Previously, overridden state would only strip config attributes and issue 'shutdown',
-        leaving the subinterface itself on the device.
+        Covers both branches of _is_logical_interface: the '.N' suffix (subinterface) and
+        the 'vlan' prefix (VLAN interface).
         """
-        self.execute_show_command.return_value = dedent(
-            """\
-            interface GigabitEthernet1
-             description Ansible UT parent
-             no shutdown
-             negotiation auto
-            interface GigabitEthernet1.100
-             description Ansible UT subinterface
-             shutdown
-            """,
-        )
-        set_module_args(
-            {
-                "config": [
-                    {
-                        "name": "GigabitEthernet1",
-                        "description": "Ansible UT parent",
-                        "enabled": True,
-                    },
-                ],
-                "state": "overridden",
-            },
-        )
-        result = self.execute_module(changed=True)
-        self.assertIn("no interface GigabitEthernet1.100", result["commands"])
-        self.assertNotIn("interface GigabitEthernet1.100", result["commands"])
-
-    def test_ios_interfaces_overridden_deletes_vlan_interface(self):
-        """VLAN interfaces absent from desired state must be removed with 'no interface'."""
         self.execute_show_command.return_value = dedent(
             """\
             interface GigabitEthernet1
              description Ansible UT interface
              no shutdown
              negotiation auto
+            interface GigabitEthernet1.100
+             description Ansible UT subinterface
+             shutdown
             interface Vlan10
              description Ansible UT VLAN
              no shutdown
@@ -905,7 +880,9 @@ class TestIosInterfacesModule(TestIosModule):
             },
         )
         result = self.execute_module(changed=True)
+        self.assertIn("no interface GigabitEthernet1.100", result["commands"])
         self.assertIn("no interface Vlan10", result["commands"])
+        self.assertNotIn("interface GigabitEthernet1.100", result["commands"])
         self.assertNotIn("interface Vlan10", result["commands"])
 
     def test_ios_interfaces_overridden_subinterface_purged_before_parent(self):
