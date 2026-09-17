@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - Fix syntax for spanning-tree bpduguard, bpdufilter and portfast interface attributes
