@@ -55,8 +55,7 @@
         that:
           - result.commands|length == 6
           - result.changed == true
-          - result.commands|symmetric_difference(deleted.commands) == []
-
+          - "{{ deleted.commands | cisco.ios.commands_blocks_equal(result.commands, 'route') }}"
     - name: Delete attributes of all configured interfaces (idempotent)
       register: result
       cisco.ios.ios_static_routes: *id001

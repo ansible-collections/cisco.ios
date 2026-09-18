@@ -14,7 +14,7 @@
     - name: Test - [deleted] assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ deleted['commands'] | cisco.ios.commands_blocks_equal(result['commands'], 'logging') }}"
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

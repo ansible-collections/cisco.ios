@@ -99,8 +99,7 @@
         that:
           - result.commands|length == 11
           - result.changed == true
-          - result.commands|symmetric_difference(overridden.commands) == []
-
+          - "{{ overridden.commands | cisco.ios.commands_blocks_equal(result.commands, 'acl') }}"
     - name: Override device configuration of all interfaces with provided configuration (idempotent)
       register: result
       cisco.ios.ios_acls: *id001

@@ -113,8 +113,7 @@
         that:
           - result.commands|length == 18
           - result.changed == true
-          - result.commands|symmetric_difference(overridden.commands) == []
-
+          - "{{ overridden.commands | cisco.ios.commands_blocks_equal(result.commands, 'router') }}"
     - name: Revert back to base configuration using facts round trip
       register: revert
       cisco.ios.ios_ospfv2:
@@ -130,6 +129,6 @@
         that:
           - revert.commands|length == 23
           - revert.changed == true
-          - revert.commands|symmetric_difference(rtt.commands) == []
+          - "{{ revert.commands | cisco.ios.commands_blocks_equal(rtt.commands, 'router') }}"
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

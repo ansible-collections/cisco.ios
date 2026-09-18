@@ -1,0 +1,3 @@
+---
+trivial:
+  - experiment - add block-aware commands_blocks_equal filter for integration tests (PR C only)

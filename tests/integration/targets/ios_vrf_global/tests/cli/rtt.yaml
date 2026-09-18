@@ -60,8 +60,7 @@
         that:
           - result.commands|length == 18
           - result.changed == true
-          - result.commands|symmetric_difference(rtt.commands) == []
-
+          - "{{ rtt.commands | cisco.ios.commands_blocks_equal(result.commands, 'router') }}"
     - name: Revert back to base configuration using facts round trip
       register: revert
       cisco.ios.ios_vrf_global:

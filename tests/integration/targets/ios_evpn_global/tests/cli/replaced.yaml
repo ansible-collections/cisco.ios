@@ -22,7 +22,7 @@
     - name: Ios_evpn_global replaced - assert commands
       ansible.builtin.assert:
         that:
-          - "{{ replaced['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ replaced['commands'] | cisco.ios.commands_blocks_equal(result['commands'], 'evpn') }}"
 
     - name: Ios_evpn_global replaced - assert before
       ansible.builtin.assert:

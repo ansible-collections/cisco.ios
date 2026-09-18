@@ -96,8 +96,7 @@
         that:
           - result.commands|length == 10
           - result.changed == true
-          - result.commands|symmetric_difference(replaced.commands) == []
-
+          - "{{ replaced.commands | cisco.ios.commands_blocks_equal(result.commands, 'acl') }}"
     - name: Replaces device configuration of listed interfaces with provided configuration (idempotent)
       register: result
       cisco.ios.ios_acls: *id001
@@ -150,8 +149,7 @@
         that:
           - result.commands|length == 6
           - result.changed == true
-          - result.commands|symmetric_difference(replaced_changetype.commands) == []
-
+          - "{{ replaced_changetype.commands | cisco.ios.commands_blocks_equal(result.commands, 'acl') }}"
     - name: Replaces device configuration of ACL with provided configuration (idempotent)
       register: result
       cisco.ios.ios_acls: *id002
