@@ -1,0 +1,63 @@
+---
+- ansible.builtin.debug:
+    msg: START vrrpv3_traps ios_snmp_server integration tests on connection={{ ansible_connection }}
+
+- name: Configure fhrp version vrrp v3 (prerequisite for vrrpv3 traps)
+  cisco.ios.ios_config:
+    lines:
+      - fhrp version vrrp v3
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Ios_snmp_server vrrpv3 traps merged - play
+      register: result
+      cisco.ios.ios_snmp_server: &id001
+        config:
+          traps:
+            vrrpv3: true
+        state: merged
+
+    - name: Ios_snmp_server vrrpv3 traps merged - assert commands
+      ansible.builtin.assert:
+        that:
+          - result['commands'] == ['snmp-server enable traps vrrpv3']
+
+    - name: Ios_snmp_server vrrpv3 traps merged - assert changed
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+
+    - name: Ios_snmp_server vrrpv3 traps merged - play (idempotent)
+      register: result
+      cisco.ios.ios_snmp_server: *id001
+
+    - name: Ios_snmp_server vrrpv3 traps merged - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+          - result['commands'] == []
+
+    - name: Ios_snmp_server vrrpv3 traps deleted - play
+      register: result
+      cisco.ios.ios_snmp_server:
+        config:
+        state: deleted
+
+    - name: Ios_snmp_server vrrpv3 traps deleted - assert no command generated
+      ansible.builtin.assert:
+        that:
+          - "'no snmp-server enable traps vrrpv3' in result['commands']"
+
+    - name: Ios_snmp_server vrrpv3 traps deleted - assert changed
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
+
+    - name: Remove fhrp version vrrp v3
+      cisco.ios.ios_config:
+        lines:
+          - no fhrp version vrrp v3
