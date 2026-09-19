@@ -103,6 +103,12 @@ replaced:
         vnet:
           tag: 300
 
+replaced_change_rd:
+  commands:
+    - vrf definition VRF2
+    - no rd 2:3
+    - rd 2:4
+
 overridden:
   before:
     vrfs:
