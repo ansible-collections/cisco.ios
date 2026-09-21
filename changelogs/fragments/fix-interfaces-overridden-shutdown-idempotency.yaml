@@ -1,0 +1,5 @@
+---
+bugfixes:
+  - ios_interfaces - Fixed overridden state emitting redundant "shutdown" commands
+    for interfaces that are already shut down, causing every playbook run to report
+    changed regardless of actual device state.
