@@ -1129,6 +1129,69 @@ EXAMPLES = """
 #              map: "ran-map"
 #       safi: unicast
 #     name: test
+
+# Using a bare address-family entry alongside top-level route-targets
+# (Multiprotocol VRF Configuration with Common Policies)
+#
+# This pattern mirrors the Cisco IOS-XE "common policies" example from the
+# MPLS Layer 3 VPNs Configuration Guide: route-targets are defined at the VRF
+# level so they apply to all address families, and each address-family block
+# is declared without repeating the route-target policy.
+#
+# Reference: https://www.cisco.com/c/en/us/td/docs/ios-xml/ios/mp_l3_vpns/
+#   configuration/xe-3s/mp-l3-vpns-xe-3s-book/mp-vpn-ipv4-ipv6.html
+#
+# The two tasks together produce:
+#
+#   vrf definition vrf2
+#    rd 2:2
+#    route-target export 2:2
+#    route-target import 2:2
+#    !
+#    address-family ipv4
+#    exit-address-family
+#    !
+#    address-family ipv6
+#    exit-address-family
+#   !
+
+- name: Create VRF with common top-level route-targets via ios_vrf_global
+  cisco.ios.ios_vrf_global:
+    config:
+      vrfs:
+        - name: vrf2
+          rd: "2:2"
+          route_target:
+            exports:
+              - "2:2"
+            imports:
+              - "2:2"
+    state: merged
+
+- name: Declare address-family blocks via ios_vrf_address_family
+  cisco.ios.ios_vrf_address_family:
+    config:
+      - name: vrf2
+        address_families:
+          - afi: "ipv4"
+          - afi: "ipv6"
+    state: merged
+
+# Task Output (ios_vrf_address_family):
+# ------------
+#
+# before: []
+#
+# commands:
+# - vrf definition vrf2
+# - address-family ipv4
+# - address-family ipv6
+#
+# after:
+# - name: vrf2
+#   address_families:
+#     - afi: ipv4
+#     - afi: ipv6
 """
 
 RETURN = """

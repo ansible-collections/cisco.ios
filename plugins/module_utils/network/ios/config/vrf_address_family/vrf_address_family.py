@@ -189,7 +189,7 @@ class Vrf_address_family(ResourceModule):
         for afk, afv in waafs.items():
             begin = len(self.commands)
             self._compare_single_af(want=afv, have=haafs.get(afk, {}))
-            if len(self.commands) != begin:
+            if len(self.commands) != begin or afk not in haafs:
                 af_cmd = f"address-family {afv.get('afi')}"
                 if afv.get("safi"):
                     af_cmd += f" {afv.get('safi')}"
