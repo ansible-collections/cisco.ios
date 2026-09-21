@@ -63,7 +63,7 @@
     - ansible.builtin.assert:
         that:
           - base_config.changed == true
-          - base_config.commands|symmetric_difference(remarks_check.commands) == []
+          - "{{ base_config.commands | cisco.ios.commands_blocks_equal(remarks_check.commands, 'acl') }}"
           - base_config.before|symmetric_difference(remarks_check.before) == []
           - base_config.after|symmetric_difference(remarks_check.after) == []
 
@@ -129,8 +129,7 @@
 
     - ansible.builtin.assert:
         that:
-          - base_config_overridden.commands|symmetric_difference(remarks_check_override.commands) == []
-
+          - "{{ base_config_overridden.commands | cisco.ios.commands_blocks_equal(remarks_check_override.commands, 'acl') }}"
     - name: Apply IPv6 ACL configuration with remarks (merged)
       register: ipv6_remarks_merged
       cisco.ios.ios_acls:
@@ -171,7 +170,7 @@
     - ansible.builtin.assert:
         that:
           - ipv6_remarks_merged.changed == true
-          - ipv6_remarks_merged.commands|symmetric_difference(remarks_ipv6_merged.commands) == []
+          - "{{ ipv6_remarks_merged.commands | cisco.ios.commands_blocks_equal(remarks_ipv6_merged.commands, 'acl') }}"
           - ipv6_remarks_merged.before|symmetric_difference(remarks_ipv6_merged.before) == []
           - ipv6_remarks_merged.after|symmetric_difference(remarks_ipv6_merged.after) == []
 
@@ -215,6 +214,6 @@
     - ansible.builtin.assert:
         that:
           - ipv6_remarks_replaced.changed == true
-          - ipv6_remarks_replaced.commands|symmetric_difference(remarks_ipv6_replaced.commands) == []
+          - "{{ ipv6_remarks_replaced.commands | cisco.ios.commands_blocks_equal(remarks_ipv6_replaced.commands, 'acl') }}"
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

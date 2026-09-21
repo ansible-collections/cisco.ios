@@ -27,7 +27,7 @@
     - name: Ios_evpn_global merged - assert commands
       ansible.builtin.assert:
         that:
-          - "{{ merged['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ merged['commands'] | cisco.ios.commands_blocks_equal(result['commands'], 'evpn') }}"
 
     - name: Ios_evpn_global merged - assert before
       ansible.builtin.assert:

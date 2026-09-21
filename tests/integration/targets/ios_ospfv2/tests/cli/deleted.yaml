@@ -20,7 +20,7 @@
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ deleted['commands'] | cisco.ios.commands_blocks_equal(result['commands'], 'router') }}"
 
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:
@@ -50,7 +50,7 @@
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ deleted['commands'] | cisco.ios.commands_blocks_equal(result['commands'], 'router') }}"
 
     - name: Assert that before dicts are correctly generated
       ansible.builtin.assert:

@@ -24,8 +24,7 @@
         that:
           - result.commands|length == 3
           - result.changed == true
-          - result.commands|symmetric_difference(deleted.commands) == []
-
+          - "{{ deleted.commands | cisco.ios.commands_blocks_equal(result.commands, 'acl') }}"
     - name: Delete configured acls (idempotent)
       register: result
       cisco.ios.ios_acls: *id001
@@ -50,8 +49,7 @@
         that:
           - result.commands|length == 3
           - result.changed == true
-          - result.commands|symmetric_difference(deleted_afi.commands) == []
-
+          - "{{ deleted_afi.commands | cisco.ios.commands_blocks_equal(result.commands, 'acl') }}"
     - name: Delete ACL attributes based on AFI (idempotent)
       register: result
       cisco.ios.ios_acls: *id002
@@ -74,8 +72,7 @@
         that:
           - result.commands|length == 4
           - result.changed == true
-          - result.commands|symmetric_difference(deleted_all.commands) == []
-
+          - "{{ deleted_all.commands | cisco.ios.commands_blocks_equal(result.commands, 'acl') }}"
     - name: Delete all configured acls (idempotent)
       register: result
       cisco.ios.ios_acls: *id003
