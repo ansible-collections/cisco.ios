@@ -189,6 +189,7 @@ class Snmp_server(ResourceModule):
             "traps.vlandelete",
             "traps.vrfmib",
             "traps.vrrp",
+            "traps.vrrpv3",
             "traps.vswitch",
             "traps.vtp",
         ]
