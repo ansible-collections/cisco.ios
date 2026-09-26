@@ -217,6 +217,7 @@ class AclsArgs(object):  # pylint: disable=R0903
                                 },
                                 "remarks": {"elements": "str", "type": "list"},
                                 "sequence": {"type": "int"},
+                                "service_object_group": {"type": "str"},
                                 "source": {
                                     "options": {
                                         "address": {"type": "str"},
