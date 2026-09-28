@@ -7,7 +7,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 """
@@ -29,7 +28,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.evpn_global import (
     Evpn_globalTemplate,
 )
-
 
 EVPN_GLOBAL_PARENT = "l2vpn evpn"
 
