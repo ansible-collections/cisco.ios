@@ -156,6 +156,11 @@ class Bgp_address_family(ResourceModule):
         wantd = self.want
         haved = self.have
 
+        # "neighbor X remote-as Y" is global BGP (1-space indent), not AF-level (2-space).
+        # _bgp_add_fam_list_to_dict keys AFs as afi+"_"+safi+"_"+vrf; all empty → "__".
+        # Pop it to avoid treating it as a real AF; pass neighbors to _compare for idempotency.
+        global_neighbors = haved.get("address_family", {}).pop("__", {}).get("neighbors", {})
+
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
 
@@ -186,17 +191,27 @@ class Bgp_address_family(ResourceModule):
                             self._tmplt.render(wantd["address_family"].get(k, {}), "afi", True),
                         )
                 else:  # to clear off all afs
+                    # IOS auto-creates an empty address-family ipv4 unicast when
+                    # global neighbor statements exist; it re-appears on every
+                    # config read and cannot be durably removed while those
+                    # statements remain, so skip it to keep delete-all idempotent.
+                    if global_neighbors and not (set(have.keys()) - {"afi", "safi", "vrf"}):
+                        continue
                     self.commands.append(self._tmplt.render(have, "afi", True))
 
         # remove superfluous config
         if self.state in ["overridden"]:
             for k, have in haved.get("address_family").items():
                 if k not in wantd.get("address_family", {}):
-                    self._compare(want={}, have=have)
+                    self._compare(want={}, have=have, global_neighbors=global_neighbors)
 
         if self.state != "deleted":  # not deleted state
             for k, want in wantd.get("address_family", {}).items():
-                self._compare(want=want, have=haved["address_family"].pop(k, {}))
+                self._compare(
+                    want=want,
+                    have=haved["address_family"].pop(k, {}),
+                    global_neighbors=global_neighbors,
+                )
 
         # adds router bgp AS_NUMB command
         if len(self.commands) > 0:
@@ -206,12 +221,16 @@ class Bgp_address_family(ResourceModule):
                 as_number = self.have
             self.commands.insert(0, self._tmplt.render(as_number, "as_number", False))
 
-    def _compare(self, want, have):
+    def _compare(self, want, have, global_neighbors=None):
         begin = len(self.commands)
         # for everything else
         self.compare(parsers=self.parsers, want=want, have=have)
         # for neighbors
-        self._compare_neighbor_lists(want.get("neighbors", {}), have.get("neighbors", {}))
+        self._compare_neighbor_lists(
+            want.get("neighbors", {}),
+            have.get("neighbors", {}),
+            global_neighbors=global_neighbors,
+        )
         # for networks
         self._compare_network_lists(want.get("networks", {}), have.get("networks", {}))
         # for aggregate_addresses
@@ -252,7 +271,22 @@ class Bgp_address_family(ResourceModule):
         for hkey, hentry in h_attr.items():
             self.addcmd(hentry, f"redistribute.{_parser}", True)
 
-    def _compare_neighbor_lists(self, want, have):
+    def _get_nbr_remote_as(self, global_neighbors, name, w_neighbor, have_nbr):
+        """Inject remote_as from global BGP neighbors into have_nbr for idempotency.
+        On IOS, neighbor remote-as lives at the global BGP level, not inside an AF.
+        Pull it into the AF-level have dict so compare() sees the correct existing value.
+        """
+        if not global_neighbors:
+            return
+        if not w_neighbor.get("remote_as"):
+            return
+        if have_nbr.get("remote_as"):
+            return
+        remote_as = global_neighbors.get(name, {}).get("remote_as")
+        if remote_as:
+            have_nbr["remote_as"] = remote_as
+
+    def _compare_neighbor_lists(self, want, have, global_neighbors=None):
         """Compare neighbor list of dict"""
         neig_parses = [
             "peer_group",
@@ -324,6 +358,7 @@ class Bgp_address_family(ResourceModule):
 
         for name, w_neighbor in want.items():
             have_nbr = have.pop(name, {})
+            self._get_nbr_remote_as(global_neighbors, name, w_neighbor, have_nbr)
             self.compare(parsers=neig_parses, want=w_neighbor, have=have_nbr)
             for i in ["route_maps", "prefix_lists"]:  # handles route_maps, prefix_lists
                 want_route_or_prefix = w_neighbor.pop(i, {})

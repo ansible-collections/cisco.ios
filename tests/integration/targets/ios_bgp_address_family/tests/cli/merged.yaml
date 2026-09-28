@@ -161,6 +161,7 @@
               neighbors:
                 - neighbor_address: 10.1.1.1
                   activate: true
+                  remote_as: "100"
           as_number: "65000"
         state: merged
 

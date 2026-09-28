@@ -825,6 +825,7 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
              neighbor TEST-PEER-GROUP peer-group
              neighbor 2001:db8::1 peer-group TEST-PEER-GROUP
              neighbor 2001:db8::1 description TEST-PEER-GROUP-DESCRIPTION
+             neighbor 2001:db8::1 remote-as 100
              !
              address-family ipv4
               bgp redistribute-internal
@@ -1830,3 +1831,42 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_bgp_address_family_remote_as_global_idempotent(self):
+        """Regression — specifying remote_as for a neighbor must not generate
+        spurious commands when the device already has ``neighbor X remote-as Y``
+        at the BGP global level (one leading space).  The getval regex was previously
+        anchored to two leading spaces (address-family context only), so have.remote_as
+        was always None and compare() emitted the command on every run."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp log-neighbor-changes
+             neighbor 192.0.2.1 remote-as 100
+             !
+             address-family ipv4
+              neighbor 192.0.2.1 activate
+             exit-address-family
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    address_family=[
+                        dict(
+                            afi="ipv4",
+                            neighbors=[
+                                dict(
+                                    neighbor_address="192.0.2.1",
+                                    activate=True,
+                                    remote_as="100",
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                state="replaced",
+            ),
+        )
+        self.execute_module(changed=False, commands=[])

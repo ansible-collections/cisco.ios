@@ -886,3 +886,134 @@ class TestIosRouteMapsModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_route_maps_merged_bare_entry(self):
+        """Bare entries (action+sequence only) must emit the route-map header command.
+
+        Regression test: entries_compare() cmd_len guard silently dropped entries that
+        had no sub-commands (description/match/set absent).
+        """
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="MYMAP",
+                        entries=[
+                            dict(action="deny", sequence=6),
+                            dict(action="permit", sequence=10),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        commands = [
+            "route-map MYMAP deny 6",
+            "route-map MYMAP permit 10",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_route_maps_merged_bare_entry_idempotent(self):
+        """Bare entries already on device must produce no commands (idempotency).
+
+        Regression test: verify that once bare entries are applied,
+        a second identical run with state=merged reports changed=False.
+        """
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="BARE_MAP",
+                        entries=[
+                            dict(action="deny", sequence=6),
+                            dict(action="permit", sequence=10),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        # load_fixtures() resets the side_effect; override it after to use the bare fixture
+        self.load_fixtures()
+        self.execute_show_command.side_effect = lambda *args, **kwargs: load_fixture(
+            "ios_route_maps_bare.cfg",
+        )
+        result = self.changed(False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_route_maps_continue_entry_bare(self):
+        """continue_entry.set=True must emit bare 'continue' command (no entry_sequence)."""
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_CONTINUE_ENTRY",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                continue_entry=dict(set=True),
+                                description="Test bare continue",
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("continue", result["commands"])
+        self.assertNotIn("continue 20", result["commands"])
+
+    def test_ios_route_maps_continue_entry_bare_idempotent(self):
+        """Device already has bare 'continue' — second merged run must be idempotent."""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_CONTINUE_ENTRY",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                continue_entry=dict(set=True),
+                                description="Test bare continue",
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        self.load_fixtures()
+        self.execute_show_command.side_effect = lambda *args, **kwargs: load_fixture(
+            "ios_route_maps_continue.cfg",
+        )
+        result = self.changed(False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_route_maps_continue_entry_with_sequence(self):
+        """continue_entry.entry_sequence=20 must emit 'continue 20' (no regression)."""
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_CONTINUE_ENTRY",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                continue_entry=dict(entry_sequence=20),
+                                description="Test continue with seq",
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("continue 20", result["commands"])

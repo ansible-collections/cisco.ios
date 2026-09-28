@@ -32,6 +32,7 @@
           neighbors:
             - neighbor_address: "10.1.1.1"
               activate: true
+              remote_as: "100"
           aggregate_address:
             - address: 192.0.2.1
               netmask: 255.255.255.255
@@ -137,4 +138,5 @@
           neighbors:
             - neighbor_address: "10.1.1.1"
               activate: true
+              remote_as: "100"
     state: merged

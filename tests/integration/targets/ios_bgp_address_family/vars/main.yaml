@@ -405,7 +405,13 @@ deleted_all:
 parsed:
   config:
     address_family:
+      - neighbors:
+          - neighbor_address: 198.51.110.212
+            remote_as: "65536"
+          - neighbor_address: 198.51.110.206
+            remote_as: "65536"
       - afi: ipv4
+        safi: unicast
         neighbors:
           - activate: true
             neighbor_address: 198.51.110.212
@@ -417,7 +423,6 @@ parsed:
           - address: 192.0.2.0
           - address: 192.0.3.0
           - address: 192.0.4.0
-        safi: unicast
       - afi: ipv6
         safi: unicast
         aggregate_addresses:

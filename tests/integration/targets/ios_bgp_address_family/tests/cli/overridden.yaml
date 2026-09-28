@@ -53,6 +53,7 @@
               neighbors:
                 - neighbor_address: "10.1.1.2"
                   activate: true
+                  remote_as: "200"
               network:
                 - address: 198.51.110.10
                   mask: 255.255.255.255

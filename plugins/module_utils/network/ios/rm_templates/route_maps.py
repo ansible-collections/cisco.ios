@@ -686,7 +686,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "continue {{ continue_entry.entry_sequence }}",
+            "setval": "{% if continue_entry.entry_sequence is defined %}continue {{ continue_entry.entry_sequence }}{% else %}continue{% endif %}",
             "result": {
                 "{{ route_map }}": {
                     "{{ action|d() + '_' + sequence|d() }}": {

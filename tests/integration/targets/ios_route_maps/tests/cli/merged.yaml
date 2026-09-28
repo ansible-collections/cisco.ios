@@ -139,3 +139,88 @@
           - result['changed'] == false
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
+
+# Regression test: bare entries (action+sequence only) must be applied
+- block:
+    - ansible.builtin.include_tasks: _remove_config.yaml
+    - name: Merge bare route-map entries (action+sequence only, no sub-commands)
+      register: result
+      cisco.ios.ios_route_maps: &id_bare
+        config:
+          - route_map: BARE_TEST
+            entries:
+              - action: deny
+                sequence: 6
+              - action: permit
+                sequence: 10
+        state: merged
+
+    - name: Assert that bare entries generated the route-map header commands
+      ansible.builtin.assert:
+        that:
+          - "{{ merged_bare['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - result['changed'] == true
+
+    - name: Merge bare entries again (idempotency check)
+      register: result
+      cisco.ios.ios_route_maps: *id_bare
+    - name: Assert that bare entries are idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
+
+# Regression test: continue_entry.set=true must emit bare "continue" command
+- block:
+    - ansible.builtin.include_tasks: _remove_config.yaml
+
+    - name: Merge continue_entry.set=true — bare continue must be generated
+      register: result
+      cisco.ios.ios_route_maps: &id_continue
+        config:
+          - route_map: TEST_CONTINUE_ENTRY
+            entries:
+              - sequence: 10
+                action: permit
+                continue_entry:
+                  set: true
+                description: Test bare continue
+        state: merged
+
+    - name: Assert bare continue command generated
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - "'continue' in result['commands']"
+
+    - name: Merge continue_entry.set=true again (idempotency)
+      register: result
+      cisco.ios.ios_route_maps: *id_continue
+
+    - name: Assert idempotent with bare continue
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+
+    - name: Merge continue_entry.entry_sequence=20 — must generate "continue 20"
+      register: result
+      cisco.ios.ios_route_maps:
+        config:
+          - route_map: TEST_CONTINUE_ENTRY
+            entries:
+              - sequence: 10
+                action: permit
+                continue_entry:
+                  entry_sequence: 20
+                description: Test bare continue
+        state: merged
+
+    - name: Assert continue 20 generated
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          - "'continue 20' in result['commands']"
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

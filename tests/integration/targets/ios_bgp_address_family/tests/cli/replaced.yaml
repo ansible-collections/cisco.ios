@@ -46,6 +46,7 @@
               neighbors:
                 - neighbor_address: "10.1.1.3"
                   activate: true
+                  remote_as: "200"
               networks:
                 - address: 198.51.110.10
                   mask: 255.255.255.255
@@ -97,6 +98,7 @@
               neighbors:
                 - neighbor_address: "10.1.1.3"
                   activate: true
+                  remote_as: "200"
         state: replaced
 
     - name: "Assert: route-map removal command was generated"
@@ -120,10 +122,67 @@
 
     - name: Clean up regression test neighbor config
       cisco.ios.ios_config:
+        lines:
+          - no router bgp 65000
+
+    # Ensure specifying remote_as for a neighbor that already has it configured at the
+    # global BGP level (one leading space in show running-config) does not generate
+    # a spurious "neighbor X remote-as Y" command on every run.
+    # Tested in isolation (BGP wiped above) so only ONE AF exists on the device;
+    # this prevents the multi-AF dict_merge path in state:merged from generating
+    # spurious AF blocks that produce a double exit-address-family error.
+    - name: "Regression setup: add global neighbor remote-as"
+      cisco.ios.ios_config:
         parents:
           - router bgp 65000
         lines:
-          - no address-family ipv4
+          - neighbor 10.1.1.3 remote-as 200
+
+    - name: "Regression setup: add ipv4 AF with neighbor activate"
+      cisco.ios.ios_config:
+        parents:
+          - router bgp 65000
+          - address-family ipv4 unicast
+        lines:
+          - neighbor 10.1.1.3 activate
+
+    - name: "Regression: remote_as at global level must be idempotent in AF module (run 1)"
+      register: remote_as_result
+      cisco.ios.ios_bgp_address_family: &remote_as_idem
+        config:
+          as_number: "65000"
+          address_family:
+            - afi: ipv4
+              neighbors:
+                - neighbor_address: "10.1.1.3"
+                  activate: true
+                  remote_as: "200"
+        state: replaced
+
+    - name: "Assert: run 1 is idempotent when remote_as already configured at global level"
+      ansible.builtin.assert:
+        that:
+          - remote_as_result['changed'] == false
+          - remote_as_result['commands'] | default([]) == []
+        msg: >-
+          FAILED: spurious remote-as command generated: {{ remote_as_result['commands'] | default([]) }}.
+          remote_as not captured in have-facts from global BGP section (1 leading space).
+
+    - name: "Regression: remote_as idempotency — run 2"
+      register: remote_as_result2
+      cisco.ios.ios_bgp_address_family: *remote_as_idem
+
+    - name: "Assert: run 2 is also idempotent"
+      ansible.builtin.assert:
+        that:
+          - remote_as_result2['changed'] == false
+          - remote_as_result2['commands'] | default([]) == []
+        msg: "FAILED: run 2 still changed: {{ remote_as_result2['commands'] | default([]) }}"
+
+    - name: Clean up regression AF config
+      cisco.ios.ios_config:
+        lines:
+          - no router bgp 65000
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

@@ -105,6 +105,14 @@ class Route_maps(ResourceModule):
         if want != have and self.state != "deleted":
             self.entries_compare(want, have)
 
+    def _route_map_entry_cmd(self, route_map_name, entry, negate=False):
+        cmd = ("no " if negate else "") + "route-map {0}".format(route_map_name)
+        if entry.get("action"):
+            cmd += " {0}".format(entry["action"])
+        if entry.get("sequence"):
+            cmd += " {0}".format(entry["sequence"])
+        return cmd
+
     def entries_compare(self, want, have):
         if want.get("entries"):
             cmd_len = len(self.commands)
@@ -136,14 +144,18 @@ class Route_maps(ResourceModule):
                         elif not have_set and want_set:
                             self.list_type_compare("set", want=want_set, have=dict())
 
-                    if cmd_len != len(self.commands):
-                        route_map_cmd = "route-map {route_map}".format(**want)
-                        if want["entries"][k].get("action"):
-                            route_map_cmd += " {action}".format(**want["entries"][k])
-                        if want["entries"][k].get("sequence"):
-                            route_map_cmd += " {sequence}".format(**want["entries"][k])
-                        self.commands.insert(cmd_len, route_map_cmd)
-                        cmd_len = len(self.commands)
+                        # Emit header when the entry is new (have_entry is empty, so no
+                        # device counterpart exists — bare entries included) or when
+                        # parsers produced actual CLI sub-commands.  Existing entries
+                        # whose only difference is a non-CLI-affecting representation
+                        # (e.g. int vs str for the same value) produce no sub-commands
+                        # and must not emit the header to preserve idempotency.
+                        if not have_entry or cmd_len != len(self.commands):
+                            self.commands.insert(
+                                cmd_len,
+                                self._route_map_entry_cmd(want["route_map"], want["entries"][k]),
+                            )
+                            cmd_len = len(self.commands)
             else:
                 for k, v in want["entries"].items():
                     self.compare(parsers=self.parsers, want=want["entries"][k], have=dict())
@@ -153,24 +165,19 @@ class Route_maps(ResourceModule):
                     want_set = v.get("set")
                     if want_set:
                         self.list_type_compare("set", want=want_set, have=dict())
-                    if cmd_len != len(self.commands):
-                        route_map_cmd = "route-map {route_map}".format(**want)
-                        if want["entries"][k].get("action"):
-                            route_map_cmd += " {action}".format(**want["entries"][k])
-                        if want["entries"][k].get("sequence"):
-                            route_map_cmd += " {sequence}".format(**want["entries"][k])
-                        self.commands.insert(cmd_len, route_map_cmd)
-                        cmd_len = len(self.commands)
+                    self.commands.insert(
+                        cmd_len,
+                        self._route_map_entry_cmd(want["route_map"], want["entries"][k]),
+                    )
+                    cmd_len = len(self.commands)
 
         if (self.state == "replaced" or self.state == "overridden") and have.get("entries"):
             cmd_len = len(self.commands)
             for k, v in have["entries"].items():
-                route_map_cmd = "no route-map {route_map}".format(**have)
-                if have["entries"][k].get("action"):
-                    route_map_cmd += " {action}".format(**have["entries"][k])
-                if have["entries"][k].get("sequence"):
-                    route_map_cmd += " {sequence}".format(**have["entries"][k])
-                self.commands.insert(cmd_len, route_map_cmd)
+                self.commands.insert(
+                    cmd_len,
+                    self._route_map_entry_cmd(have["route_map"], have["entries"][k], negate=True),
+                )
 
     def list_type_compare(self, compare_type, want, have):
         parsers = [
