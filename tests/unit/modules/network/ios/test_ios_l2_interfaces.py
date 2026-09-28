@@ -666,6 +666,9 @@ class TestIosL2InterfacesModule(TestIosModule):
                     "guard": {"none": False, "root": True},
                     "mst": {"instance_range": "0-1", "cost": "22"},
                     "cost": 22,
+                    "bpdufilter": {"enabled": True},
+                    "bpduguard": {"disabled": True},
+                    "portfast": {"disabled": False},
                 },
             },
         ]
