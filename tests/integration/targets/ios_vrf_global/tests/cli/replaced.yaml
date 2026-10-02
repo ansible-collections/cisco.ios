@@ -55,5 +55,44 @@
       ansible.builtin.assert:
         that:
           - result['changed'] == false
+
+    - name: Change the RD of an existing VRF using replaced state
+      register: result
+      cisco.ios.ios_vrf_global: &id002
+        config:
+          vrfs:
+            - name: VRF2
+              description: This is a test VRF for merged state
+              ipv4:
+                multicast:
+                  multitopology: true
+              ipv6:
+                multicast:
+                  multitopology: true
+              rd: "2:4"
+              route_target:
+                exports:
+                  - "198.51.100.5:400"
+                imports:
+                  - "198.51.100.5:400"
+              vpn:
+                id: "2:45"
+              vnet:
+                tag: 200
+        state: replaced
+
+    - name: Assert that the old RD is removed before the new RD is set
+      ansible.builtin.assert:
+        that:
+          - "{{ replaced_change_rd['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "result['commands'].index('no rd 2:3') < result['commands'].index('rd 2:4')"
+
+    - name: Change the RD of an existing VRF using replaced state (idempotent)
+      register: result
+      cisco.ios.ios_vrf_global: *id002
+    - name: Assert that RD change task was idempotent
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

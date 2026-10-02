@@ -290,6 +290,34 @@ class TestIosVrfGlobalModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
+    def test_ios_vrf_global_replaced_change_rd(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            vrf definition vlan222-vrf
+             rd 10.202.200.97:222
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    vrfs=[
+                        dict(
+                            name="vlan222-vrf",
+                            rd="10.202.200.97:223",
+                        ),
+                    ],
+                ),
+                state="replaced",
+            ),
+        )
+        commands = [
+            "vrf definition vlan222-vrf",
+            "no rd 10.202.200.97:222",
+            "rd 10.202.200.97:223",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
     def test_ios_vrf_global_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\

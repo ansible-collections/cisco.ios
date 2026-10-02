@@ -46,11 +46,15 @@ class Vrf_global(ResourceModule):
             resource="vrf_global",
             tmplt=Vrf_globalTemplate(),
         )
+        # "rd" is handled by _compare_rd between these two groups so that a
+        # changed RD is removed before the new one is set while the order of
+        # the generated commands stays the same as before.
         self.parsers = [
             "description",
             "ipv4.multicast.multitopology",
             "ipv6.multicast.multitopology",
-            "rd",
+        ]
+        self.parsers_after_rd = [
             "vnet.tag",
             "vpn.id",
         ]
@@ -130,7 +134,25 @@ class Vrf_global(ResourceModule):
 
         self.addcmd(want or have, "name", False)
         self.compare(self.parsers, want, have)
+        self._compare_rd(want, have)
+        self.compare(self.parsers_after_rd, want, have)
         self._compare_route_targets(want, have)
+
+    def _compare_rd(self, want, have):
+        """IOS-XE requires removing the existing RD before setting a new one."""
+        want_rd = want.get("rd")
+        have_rd = have.get("rd")
+
+        if want_rd == have_rd:
+            return
+
+        if have_rd and want_rd:
+            self.addcmd({"rd": have_rd}, "rd", negate=True)
+            self.addcmd({"rd": want_rd}, "rd", negate=False)
+        elif have_rd:
+            self.addcmd({"rd": have_rd}, "rd", negate=True)
+        elif want_rd:
+            self.addcmd({"rd": want_rd}, "rd", negate=False)
 
     def _compare_route_targets(self, want, have):
         """Specialized comparison for route-target lists using set logic."""
