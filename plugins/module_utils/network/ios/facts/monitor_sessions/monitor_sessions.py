@@ -8,6 +8,8 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
+import re
+
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.monitor_sessions.monitor_sessions import (
@@ -16,6 +18,15 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.moni
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.monitor_sessions import (
     Monitor_sessionsTemplate,
 )
+
+
+def _expand_range(iface_str):
+    """Expand IOS range notation 'Gi1/0/1 - 3' into individual interface names."""
+    m = re.match(r"^(.+?)(\d+)\s*-\s*(\d+)$", iface_str.strip())
+    if m:
+        prefix, start, end = m.group(1), int(m.group(2)), int(m.group(3))
+        return ["{0}{1:d}".format(prefix, i) for i in range(start, end + 1)]
+    return [iface_str.strip()]
 
 
 class Monitor_sessionsFacts(object):
@@ -54,7 +65,7 @@ class Monitor_sessionsFacts(object):
             for source in session.get("sources", []):
                 if "interface" in source:
                     iface_str = source.pop("interface")
-                    source["interfaces"] = [s.strip() for s in iface_str.split(",")]
+                    source["interfaces"] = [iface for s in iface_str.split(",") for iface in _expand_range(s)]
 
         objs = sorted(parsed.values(), key=lambda x: int(x["session"]))
 

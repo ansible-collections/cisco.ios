@@ -360,7 +360,8 @@ class TestIosMonitorSessionsModule(TestIosModule):
         session = gathered[0]
         self.assertEqual(session["session"], 1)
         source_with_dir = next(s for s in session["sources"] if s.get("direction") == "rx")
-        self.assertIn("Gi1/0/1 - 2", source_with_dir["interfaces"])
+        self.assertIn("Gi1/0/1", source_with_dir["interfaces"])
+        self.assertIn("Gi1/0/2", source_with_dir["interfaces"])
 
     def test_ios_monitor_sessions_merged_destination_update(self):
         """Merged updates destination when it changes."""
