@@ -120,6 +120,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vrf_gl
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vrf_interfaces.vrf_interfaces import (
     Vrf_interfacesFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.monitor_sessions.monitor_sessions import (
+    Monitor_sessionsFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vxlan_vtep.vxlan_vtep import (
     Vxlan_vtepFacts,
 )
@@ -167,6 +170,7 @@ FACT_RESOURCE_SUBSETS = dict(
     hsrp_interfaces=Hsrp_interfacesFacts,
     bfd_interfaces=Bfd_interfacesFacts,
     bfd_templates=Bfd_templatesFacts,
+    monitor_sessions=Monitor_sessionsFacts,
 )
 
 
