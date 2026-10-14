@@ -23,7 +23,7 @@ description:
     mirrored to a destination interface.
 version_added: "9.0.0"
 author:
-  - Ansible Network Eng Team
+  - Jorgen Spange (@jorgenspange)
 notes:
   - Tested against Cisco IOS-XE on Cat9k switches.
   - This module works with connection C(network_cli).
