@@ -81,6 +81,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lldp_i
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.logging_global.logging_global import (
     Logging_globalFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.monitor_sessions.monitor_sessions import (
+    Monitor_sessionsFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ntp_global.ntp_global import (
     Ntp_globalFacts,
 )
@@ -119,9 +122,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vrf_gl
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vrf_interfaces.vrf_interfaces import (
     Vrf_interfacesFacts,
-)
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.monitor_sessions.monitor_sessions import (
-    Monitor_sessionsFacts,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vxlan_vtep.vxlan_vtep import (
     Vxlan_vtepFacts,

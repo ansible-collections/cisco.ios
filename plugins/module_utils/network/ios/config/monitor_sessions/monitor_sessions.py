@@ -119,7 +119,8 @@ class Monitor_sessions(ResourceModule):
 
             if replace and to_remove:
                 cmd = "no monitor session {0} source interface {1}".format(
-                    session_id, " , ".join(sorted(to_remove)),
+                    session_id,
+                    " , ".join(sorted(to_remove)),
                 )
                 if direction != "both":
                     cmd += " {0}".format(direction)
@@ -127,14 +128,18 @@ class Monitor_sessions(ResourceModule):
 
             if to_add:
                 # Preserve user-specified order; fall back to sorted
-                ordered = [i for s in want_sources
-                           if self._norm_dir(s.get("direction")) == direction
-                           for i in s["interfaces"]
-                           if i in to_add]
+                ordered = [
+                    i
+                    for s in want_sources
+                    if self._norm_dir(s.get("direction")) == direction
+                    for i in s["interfaces"]
+                    if i in to_add
+                ]
                 if not ordered:
                     ordered = sorted(to_add)
                 cmd = "monitor session {0} source interface {1}".format(
-                    session_id, " , ".join(ordered),
+                    session_id,
+                    " , ".join(ordered),
                 )
                 if direction != "both":
                     cmd += " {0}".format(direction)
@@ -160,7 +165,7 @@ class Monitor_sessions(ResourceModule):
     @staticmethod
     def _expand_range(iface_str):
         """Expand 'Gi1/0/1 - 3' → ['Gi1/0/1', 'Gi1/0/2', 'Gi1/0/3']."""
-        m = re.match(r'^(.+?)(\d+)\s*-\s*(\d+)$', iface_str.strip())
+        m = re.match(r"^(.+?)(\d+)\s*-\s*(\d+)$", iface_str.strip())
         if m:
             prefix, start, end = m.group(1), int(m.group(2)), int(m.group(3))
             return ["{0}{1:d}".format(prefix, i) for i in range(start, end + 1)]
