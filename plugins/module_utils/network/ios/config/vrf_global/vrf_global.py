@@ -134,25 +134,36 @@ class Vrf_global(ResourceModule):
 
         self.addcmd(want or have, "name", False)
         self.compare(self.parsers, want, have)
-        self._compare_rd(want, have)
+        if self._compare_rd(want, have):
+            # IOS-XE deletes route-targets when an existing RD is removed.
+            # Drop them from have so wanted targets are configured again after
+            # the new RD, and targets already removed are not negated.
+            have = deepcopy(have)
+            have.pop("route_target", None)
         self.compare(self.parsers_after_rd, want, have)
         self._compare_route_targets(want, have)
 
     def _compare_rd(self, want, have):
-        """IOS-XE requires removing the existing RD before setting a new one."""
+        """IOS-XE requires removing the existing RD before setting a new one.
+
+        :return: True when an existing RD is replaced. That removal also
+            deletes route-targets on the device.
+        """
         want_rd = want.get("rd")
         have_rd = have.get("rd")
 
         if want_rd == have_rd:
-            return
+            return False
 
         if have_rd and want_rd:
             self.addcmd({"rd": have_rd}, "rd", negate=True)
             self.addcmd({"rd": want_rd}, "rd", negate=False)
+            return True
         elif have_rd:
             self.addcmd({"rd": have_rd}, "rd", negate=True)
         elif want_rd:
             self.addcmd({"rd": want_rd}, "rd", negate=False)
+        return False
 
     def _compare_route_targets(self, want, have):
         """Specialized comparison for route-target lists using set logic."""
