@@ -461,7 +461,7 @@ def _tmplt_route_map_set(config_data):
                 cmd += " none"
             else:
                 if set["large_community"].get("communities"):
-                    cmd += " " + " ".join(set["large_community"]["communities"])
+                    cmd += " " + " ".join(sorted(set["large_community"]["communities"]))
                 if set["large_community"].get("additive"):
                     cmd += " additive"
             command.append(cmd)
