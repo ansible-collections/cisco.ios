@@ -1074,11 +1074,6 @@ class TestIosRouteMapsModule(TestIosModule):
 
     def test_ios_route_maps_large_community_idempotent(self):
         """Merged with existing large-community config is idempotent."""
-        self.execute_show_command.side_effect = None
-        self.execute_show_command.return_value = (
-            "route-map TEST_LARGE_COMM permit 10\n"
-            " set large-community 65000:100:0 65000:200:0 additive\n"
-        )
         set_module_args(
             dict(
                 config=[
@@ -1101,7 +1096,13 @@ class TestIosRouteMapsModule(TestIosModule):
                 state="merged",
             ),
         )
-        self.execute_module(changed=False, commands=[])
+        self.load_fixtures()
+        self.execute_show_command.side_effect = (
+            lambda *args, **kwargs: "route-map TEST_LARGE_COMM permit 10\n"
+            + " set large-community 65000:100:0 65000:200:0 additive\n"
+        )
+        result = self.changed(False)
+        self.assertEqual(result["commands"], [])
 
     def test_ios_route_maps_large_community_parsed(self):
         """Parsed state extracts large-community values correctly."""
@@ -1154,10 +1155,6 @@ class TestIosRouteMapsModule(TestIosModule):
 
     def test_ios_route_maps_match_large_community_idempotent(self):
         """Merged with existing match large-community config is idempotent."""
-        self.execute_show_command.side_effect = None
-        self.execute_show_command.return_value = (
-            "route-map TEST_MATCH_LC permit 10\n" " match large-community 65000:100:0 65000:200:0\n"
-        )
         set_module_args(
             dict(
                 config=[
@@ -1177,7 +1174,13 @@ class TestIosRouteMapsModule(TestIosModule):
                 state="merged",
             ),
         )
-        self.execute_module(changed=False, commands=[])
+        self.load_fixtures()
+        self.execute_show_command.side_effect = (
+            lambda *args, **kwargs: "route-map TEST_MATCH_LC permit 10\n"
+            + " match large-community 65000:100:0 65000:200:0\n"
+        )
+        result = self.changed(False)
+        self.assertEqual(result["commands"], [])
 
     def test_ios_route_maps_match_large_community_parsed(self):
         """Parsed state extracts match large-community values correctly."""
