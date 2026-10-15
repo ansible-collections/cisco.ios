@@ -86,6 +86,13 @@ def _tmplt_route_map_match(config_data):
                 temp.append(v)
             cmd += " ".join(sorted(temp))
             command.append(cmd)
+        if match.get("large_community"):
+            cmd = "match large-community"
+            temp = []
+            for k, v in match["large_community"].items():
+                temp.append(v)
+            cmd += " " + " ".join(sorted(temp))
+            command.append(cmd)
         if match.get("interfaces"):
             cmd = "match interface "
             temp = []
@@ -739,6 +746,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s*(?P<clns>clns\s(address\s\S+|next-hop\s\S+|route-source\s\S+))*
                 \s*(?P<community>community\s\S.*)*
                 \s*(?P<extcommunity>extcommunity\s\S.*)*
+                \s*(?P<large_community_match>large-community\s\S.*)*
                 \s*(?P<interfaces>interface\s\S.*)*
                 \s*(?P<length>length\s\d+\s\d+)*
                 \s*(?P<local_preference>local-preference\s\d.*|local-preference)*
@@ -787,6 +795,7 @@ class Route_mapsTemplate(NetworkTemplate):
                                     "exact_match": "{{ True if community is defined and 'exact-match' in community }}",
                                 },
                                 "extcommunity": "{{ extcommunity.split('extcommunity ')[1].split(' ') if extcommunity is defined }}",
+                                "large_community": "{{ large_community_match.split('large-community ')[1].split(' ') if large_community_match is defined }}",
                                 "interfaces": "{{ interfaces.split('interface ')[1].split(' ') if interfaces is defined }}",
                                 "length": {
                                     "minimum": "{{ length.split(' ')[1] if length is defined }}",

@@ -1122,3 +1122,79 @@ class TestIosRouteMapsModule(TestIosModule):
             ["65000:100:0", "65000:200:0"],
         )
         self.assertTrue(entry["set"]["large_community"]["additive"])
+
+    def test_ios_route_maps_match_large_community_merged(self):
+        """match large-community generates correct command."""
+        self.execute_show_command.side_effect = None
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_MATCH_LC",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                match=dict(
+                                    large_community=["65000:100:0", "65000:200:0"],
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn(
+            "match large-community 65000:100:0 65000:200:0",
+            result["commands"],
+        )
+
+    def test_ios_route_maps_match_large_community_idempotent(self):
+        """Merged with existing match large-community config is idempotent."""
+        self.execute_show_command.side_effect = None
+        self.execute_show_command.return_value = (
+            "route-map TEST_MATCH_LC permit 10\n"
+            " match large-community 65000:100:0 65000:200:0\n"
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_MATCH_LC",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                match=dict(
+                                    large_community=["65000:100:0", "65000:200:0"],
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        self.execute_module(changed=False, commands=[])
+
+    def test_ios_route_maps_match_large_community_parsed(self):
+        """Parsed state extracts match large-community values correctly."""
+        set_module_args(
+            dict(
+                running_config=(
+                    "route-map TEST_MATCH_LC permit 10\n"
+                    " match large-community 65000:100:0 65000:200:0\n"
+                ),
+                state="parsed",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        parsed = result["parsed"]
+        entry = parsed[0]["entries"][0]
+        self.assertEqual(
+            sorted(entry["match"]["large_community"]),
+            ["65000:100:0", "65000:200:0"],
+        )

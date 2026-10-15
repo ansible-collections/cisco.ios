@@ -92,6 +92,7 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                     },
                                 },
                                 "extcommunity": {"type": "list", "elements": "str"},
+                                "large_community": {"type": "list", "elements": "str"},
                                 "interfaces": {"type": "list", "elements": "str"},
                                 "ip": {
                                     "type": "dict",

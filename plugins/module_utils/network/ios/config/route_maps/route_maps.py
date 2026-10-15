@@ -307,6 +307,11 @@ class Route_maps(ResourceModule):
                                     match["extcommunity"],
                                     "num",
                                 )
+                            if match.get("large_community"):
+                                match["large_community"] = convert_to_dict(
+                                    match["large_community"],
+                                    "lc",
+                                )
                             if match.get("interfaces"):
                                 match["interfaces"] = convert_to_dict(
                                     match["interfaces"],

@@ -137,6 +137,13 @@ options:
                   - Please refer vendor documentation for valid values
                 type: list
                 elements: str
+              large_community:
+                description:
+                  - Match BGP large community list or inline large-community values
+                  - Accepts named large-community lists (e.g. C(ISP_IN)) or inline values
+                    in C(ASN:LD1:LD2) format (e.g. C(65000:100:0))
+                type: list
+                elements: str
               interfaces:
                 description: Match first hop interface of route
                 type: list
