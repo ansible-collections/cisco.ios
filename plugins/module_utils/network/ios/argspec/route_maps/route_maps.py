@@ -501,6 +501,14 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                         },
                                     },
                                 },
+                                "large_community": {
+                                    "type": "dict",
+                                    "options": {
+                                        "communities": {"type": "list", "elements": "str"},
+                                        "additive": {"type": "bool"},
+                                        "none": {"type": "bool"},
+                                    },
+                                },
                                 "level": {
                                     "type": "dict",
                                     "options": {

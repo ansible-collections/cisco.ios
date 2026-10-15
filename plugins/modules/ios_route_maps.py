@@ -917,6 +917,23 @@ options:
                               - tracked object number
                               - Please refer vendor documentation for valid values
                             type: int
+              large_community:
+                description:
+                  - BGP large community attribute
+                  - C(set large-community <ASN>:<LocalData1>:<LocalData2> [additive]) or C(set large-community none)
+                type: dict
+                suboptions:
+                  communities:
+                    description:
+                      - List of large-community values in ASN:LD1:LD2 format (e.g. 65000:100:0)
+                    type: list
+                    elements: str
+                  additive:
+                    description: Add to existing large-community values rather than replacing them
+                    type: bool
+                  none:
+                    description: Remove all large-community attributes
+                    type: bool
               level:
                 description: Where to import route
                 type: dict

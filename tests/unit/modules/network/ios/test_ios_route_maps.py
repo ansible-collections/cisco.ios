@@ -1017,3 +1017,107 @@ class TestIosRouteMapsModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         self.assertIn("continue 20", result["commands"])
+
+    def test_ios_route_maps_large_community_merged(self):
+        """set large-community generates correct command with multiple values and additive."""
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_LARGE_COMM",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                set=dict(
+                                    large_community=dict(
+                                        communities=["65000:100:0", "65000:200:0"],
+                                        additive=True,
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn(
+            "set large-community 65000:100:0 65000:200:0 additive",
+            result["commands"],
+        )
+
+    def test_ios_route_maps_large_community_none(self):
+        """set large-community none generates correct command."""
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_LARGE_COMM_NONE",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                set=dict(large_community=dict(none=True)),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("set large-community none", result["commands"])
+
+    def test_ios_route_maps_large_community_idempotent(self):
+        """Merged with existing large-community config is idempotent."""
+        self.execute_show_command.return_value = (
+            "route-map TEST_LARGE_COMM permit 10\n"
+            " set large-community 65000:100:0 65000:200:0 additive\n"
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_LARGE_COMM",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                set=dict(
+                                    large_community=dict(
+                                        communities=["65000:100:0", "65000:200:0"],
+                                        additive=True,
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        self.execute_module(changed=False, commands=[])
+
+    def test_ios_route_maps_large_community_parsed(self):
+        """Parsed state extracts large-community values correctly."""
+        set_module_args(
+            dict(
+                running_config=(
+                    "route-map TEST_LARGE_COMM permit 10\n"
+                    " set large-community 65000:100:0 65000:200:0 additive\n"
+                ),
+                state="parsed",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        parsed = result["parsed"]
+        entry = parsed[0]["entries"][0]
+        self.assertEqual(
+            sorted(entry["set"]["large_community"]["communities"]),
+            ["65000:100:0", "65000:200:0"],
+        )
+        self.assertTrue(entry["set"]["large_community"]["additive"])
