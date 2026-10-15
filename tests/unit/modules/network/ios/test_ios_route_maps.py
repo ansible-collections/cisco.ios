@@ -1074,6 +1074,7 @@ class TestIosRouteMapsModule(TestIosModule):
 
     def test_ios_route_maps_large_community_idempotent(self):
         """Merged with existing large-community config is idempotent."""
+        self.execute_show_command.side_effect = None
         self.execute_show_command.return_value = (
             "route-map TEST_LARGE_COMM permit 10\n"
             " set large-community 65000:100:0 65000:200:0 additive\n"
