@@ -2270,3 +2270,82 @@ class TestIosSnmpServerModule(TestIosModule):
         result = self.execute_module()
         self.assertEqual(result["changed"], False)
         self.assertEqual(result["commands"], [])
+
+    def test_ios_snmp_server_vrrpv3_rendered(self):
+        set_module_args(
+            {
+                "config": {
+                    "traps": {
+                        "vrrpv3": True,
+                    },
+                },
+                "state": "rendered",
+            },
+        )
+        result = self.execute_module(changed=False)
+        self.assertIn("snmp-server enable traps vrrpv3", result["rendered"])
+
+    def test_ios_snmp_server_vrrpv3_parsed(self):
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    snmp-server enable traps vrrpv3
+                    """,
+                ),
+                state="parsed",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"]["traps"]["vrrpv3"], True)
+
+    def test_ios_snmp_server_vrrpv3_does_not_set_vrrp(self):
+        """vrrpv3 line must not bleed into traps.vrrp (regex-anchor regression guard)."""
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    snmp-server enable traps vrrpv3
+                    """,
+                ),
+                state="parsed",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertFalse(result["parsed"].get("traps", {}).get("vrrp"))
+
+    def test_ios_snmp_server_vrrpv3_merged(self):
+        self.execute_show_command.return_value = ""
+        self.execute_show_command_user.return_value = ""
+        set_module_args(
+            {
+                "config": {
+                    "traps": {
+                        "vrrpv3": True,
+                    },
+                },
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["snmp-server enable traps vrrpv3"])
+
+    def test_ios_snmp_server_vrrpv3_merged_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            snmp-server enable traps vrrpv3
+            """,
+        )
+        self.execute_show_command_user.return_value = ""
+        set_module_args(
+            {
+                "config": {
+                    "traps": {
+                        "vrrpv3": True,
+                    },
+                },
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])

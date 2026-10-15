@@ -1,4 +1,0 @@
-bugfixes:
-  - ios_route_maps - fix continue_entry.set=true silently ignored; bare "continue" command
-    was never generated because the setval template raised UndefinedError when entry_sequence
-    was absent.
