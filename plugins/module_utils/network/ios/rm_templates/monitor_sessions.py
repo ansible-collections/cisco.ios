@@ -14,6 +14,7 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
+
 _SESSION_KEY = "{{ session }}"
 _IFACE_KEY = "{{ interface }}"
 
