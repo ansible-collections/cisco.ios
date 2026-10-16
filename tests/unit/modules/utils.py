@@ -8,7 +8,7 @@ from unittest import TestCase
 from unittest.mock import patch
 
 from ansible.module_utils import basic
-from ansible.module_utils._text import to_bytes
+from ansible.module_utils.common.text.converters import to_bytes
 
 
 cur_context = None

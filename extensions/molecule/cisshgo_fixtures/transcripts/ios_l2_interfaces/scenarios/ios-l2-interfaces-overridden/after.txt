@@ -1,0 +1,9 @@
+interface GigabitEthernet0/0
+!
+interface GigabitEthernet2
+!
+interface GigabitEthernet3
+ switchport trunk encapsulation isl
+ switchport trunk native vlan 30
+ switchport trunk allowed vlan 30-35,40
+!

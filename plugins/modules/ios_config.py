@@ -455,12 +455,15 @@ time:
 import json
 import re
 
-from ansible.module_utils._text import to_text
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.common.text.converters import to_text
 from ansible.module_utils.connection import ConnectionError
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     NetworkConfig,
     dumps,
+)
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
 )
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
@@ -838,7 +841,9 @@ def main():
         if "warnings" in result:
             result["warnings"].append(msg)
         else:
-            result["warnings"] = msg
+            result["warnings"] = [msg]
+
+    emit_warnings(module, result)
 
     module.exit_json(**result)
 

@@ -1,0 +1,118 @@
+---
+- name: "Gather ios_lldp_interfaces facts (gathered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_lldp_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Gather LLDP interface facts from device"
+      cisco.ios.ios_lldp_interfaces:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered facts match expected fixture"
+      ansible.builtin.assert:
+        that:
+          - gathered['config'] | symmetric_difference(result.gathered) | length == 0
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — LLDP interface facts gathered from fixture"
+
+- name: "Discover merged emit order (check_mode)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_lldp_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Merge LLDP interface configuration (check_mode)"
+      cisco.ios.ios_lldp_interfaces:
+        config:
+          - name: GigabitEthernet1
+            receive: true
+            transmit: true
+          - name: GigabitEthernet2
+            receive: true
+            transmit: true
+          - name: GigabitEthernet3
+            receive: true
+            transmit: false
+        state: merged
+      check_mode: true
+      register: merged_check
+
+    - name: "Debug merged commands (emit order)"
+      ansible.builtin.debug:
+        var: merged_check.commands
+
+- name: "Discover deleted emit order (check_mode)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_lldp_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Delete all LLDP interface configuration (check_mode)"
+      cisco.ios.ios_lldp_interfaces:
+        state: deleted
+      check_mode: true
+      register: deleted_check
+
+    - name: "Debug deleted commands (emit order)"
+      ansible.builtin.debug:
+        var: deleted_check.commands
+
+- name: "Parse ios_lldp_interfaces from file (parsed state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_lldp_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Parse LLDP interface configuration from _parsed.cfg"
+      cisco.ios.ios_lldp_interfaces:
+        running_config: "{{ lookup('file', '../../../tests/integration/targets/ios_lldp_interfaces/tests/cli/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed matches vars/main.yaml parsed.config"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed['config'] | symmetric_difference(result.parsed) | length == 0
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — offline parse of _parsed.cfg"
+
+- name: "Render ios_lldp_interfaces CLI (rendered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_lldp_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Render LLDP interface configuration to CLI"
+      cisco.ios.ios_lldp_interfaces:
+        config:
+          - name: GigabitEthernet1
+            receive: true
+            transmit: true
+          - name: GigabitEthernet2
+            receive: true
+            transmit: true
+          - name: GigabitEthernet3
+            receive: true
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands match vars/main.yaml rendered.commands"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.rendered | symmetric_difference(rendered.commands) | length == 0
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — offline CLI projection"

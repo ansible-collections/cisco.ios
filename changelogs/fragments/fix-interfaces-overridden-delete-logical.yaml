@@ -1,0 +1,5 @@
+---
+bugfixes:
+  - ios_interfaces - Fixed overridden state not deleting logical interfaces (subinterfaces
+    and VLAN interfaces) that are absent from the desired config; they are now removed
+    with "no interface <name>" instead of only being unconfigured and shut down.

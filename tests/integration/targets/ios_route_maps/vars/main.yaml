@@ -589,3 +589,16 @@ parsed:
               precedence:
                 critical: true
       route_map: test_2
+
+merged_bare:
+  before: {}
+  commands:
+    - route-map BARE_TEST deny 6
+    - route-map BARE_TEST permit 10
+  after:
+    - entries:
+        - action: deny
+          sequence: 6
+        - action: permit
+          sequence: 10
+      route_map: BARE_TEST

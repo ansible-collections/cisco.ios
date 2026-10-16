@@ -1,0 +1,7 @@
+---
+scenario_name: snmp_server
+listener_ports:
+  - 10000
+  - 10001
+  - 10002
+  - 10003

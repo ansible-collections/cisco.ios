@@ -1,0 +1,57 @@
+Building configuration...
+
+Current configuration : 2048 bytes
+!
+version 15.6
+service timestamps debug datetime msec
+service timestamps log datetime msec
+no service password-encryption
+!
+hostname {{.Hostname}}
+!
+boot-start-marker
+boot-end-marker
+!
+no aaa new-model
+!
+ip cef
+no ipv6 cef
+!
+interface GigabitEthernet1
+ description Management interface do not change
+ ip address 10.0.0.1 255.255.255.0
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet2
+ ip address 192.168.1.1 255.255.255.252
+ speed 1000
+ no negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet3
+ no ip address
+ speed 1000
+ no negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet4
+ no ip address
+ no mop enabled
+ no mop sysid
+!
+ip forward-protocol nd
+!
+ip http server
+ip http secure-server
+!
+line con 0
+ stopbits 1
+line vty 0 4
+ login
+ transport input ssh
+!
+end

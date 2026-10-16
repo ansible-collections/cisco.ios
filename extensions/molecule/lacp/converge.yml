@@ -1,0 +1,222 @@
+---
+# Preview check_mode on stateful hosts first, then gathered/parsed/rendered, then full
+# merged/deleted plays. Each new TCP session resets the CISSHGO scenario cursor.
+
+- name: "Ios_lacp — merged check_mode (preview)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_lacp/vars/main.yaml"
+  tasks:
+    - name: "Merged — check_mode (preview)"
+      cisco.ios.ios_lacp:
+        config:
+          system:
+            priority: 10
+        state: merged
+      check_mode: true
+      register: cm_merged_preview
+
+    - name: "Debug merged check_mode (preview)"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_merged_preview.changed }}"
+          commands: "{{ cm_merged_preview.commands | default([]) }}"
+          before: "{{ cm_merged_preview.before | default({}) }}"
+          after: "{{ cm_merged_preview.after | default({}) }}"
+
+- name: "Ios_lacp — deleted check_mode (preview)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_lacp/vars/main.yaml"
+  tasks:
+    - name: "Deleted — check_mode (preview)"
+      cisco.ios.ios_lacp:
+        state: deleted
+      check_mode: true
+      register: cm_deleted_preview
+
+    - name: "Debug deleted check_mode (preview)"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_deleted_preview.changed }}"
+          commands: "{{ cm_deleted_preview.commands | default([]) }}"
+          before: "{{ cm_deleted_preview.before | default({}) }}"
+          after: "{{ cm_deleted_preview.after | default({}) }}"
+
+- name: "Ios_lacp — state: gathered"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_lacp/vars/main.yaml"
+  tasks:
+    - name: "Gather LACP system configuration"
+      cisco.ios.ios_lacp:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered matches vars/main.yaml"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - gathered['config'] == result['gathered']
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — sys-id from CISSHGO fixture"
+
+- name: "Ios_lacp — state: parsed (inline running_config)"
+  hosts: ios_parsed
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_lacp/vars/main.yaml"
+  vars:
+    ios_lacp_parsed_inline: "123, 5e00.0000.8000"
+  tasks:
+    - name: "Parse LACP sys-id output from inline running_config"
+      cisco.ios.ios_lacp:
+        running_config: "{{ ios_lacp_parsed_inline }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed structure"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed['config'] == result['parsed']
+          - result['parsed']['system']['priority'] == 123
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — inline show lacp sys-id format"
+
+- name: "Ios_lacp — state: rendered"
+  hosts: ios_rendered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_lacp/vars/main.yaml"
+  tasks:
+    - name: "Render LACP configuration to CLI"
+      cisco.ios.ios_lacp:
+        config:
+          system:
+            priority: 10
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands match merged"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - merged['commands'] | symmetric_difference(result['rendered']) | length == 0
+          - result['rendered'] == ["lacp system-priority 10"]
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — offline CLI projection"
+
+- name: "Ios_lacp — state: merged (check_mode, apply, idempotency)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_lacp/vars/main.yaml"
+  tasks:
+    - name: "Merged — check_mode"
+      cisco.ios.ios_lacp:
+        config:
+          system:
+            priority: 10
+        state: merged
+      check_mode: true
+      register: cm_merged
+
+    - name: "Debug merged check_mode"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_merged.changed }}"
+          commands: "{{ cm_merged.commands | default([]) }}"
+          before: "{{ cm_merged.before | default({}) }}"
+          after: "{{ cm_merged.after | default({}) }}"
+
+    - name: "Merge LACP system priority"
+      cisco.ios.ios_lacp: &merged_lacp
+        config:
+          system:
+            priority: 10
+        state: merged
+      register: result
+
+    - name: "Assert merged first apply"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - merged['before'] == result['before']
+          - merged['commands'] | symmetric_difference(result['commands']) | length == 0
+          - result['after']['system']['priority'] == 10
+        quiet: true
+
+    - name: "Merge LACP system priority — idempotent run"
+      cisco.ios.ios_lacp: *merged_lacp
+      register: result
+
+    - name: "Assert merged idempotency"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — check_mode + apply + idempotency"
+
+- name: "Ios_lacp — state: deleted (check_mode, apply, idempotency)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_lacp/vars/main.yaml"
+  tasks:
+    - name: "Deleted — check_mode"
+      cisco.ios.ios_lacp:
+        state: deleted
+      check_mode: true
+      register: cm_deleted
+
+    - name: "Debug deleted check_mode"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_deleted.changed }}"
+          commands: "{{ cm_deleted.commands | default([]) }}"
+          before: "{{ cm_deleted.before | default({}) }}"
+          after: "{{ cm_deleted.after | default({}) }}"
+
+    - name: "Delete LACP system priority override"
+      cisco.ios.ios_lacp: &deleted_lacp
+        state: deleted
+      register: result
+
+    - name: "Assert deleted first apply"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - deleted['commands'] | symmetric_difference(result['commands']) | length == 0
+          - deleted['before'] == result['before']
+          - deleted['after'] == result['after']
+        quiet: true
+
+    - name: "Delete LACP system priority — idempotent run"
+      cisco.ios.ios_lacp: *deleted_lacp
+      register: result
+
+    - name: "Assert deleted idempotency"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: deleted state"
+      ansible.builtin.debug:
+        msg: "deleted state test passed — check_mode + apply + idempotency"

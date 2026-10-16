@@ -1,0 +1,139 @@
+---
+- name: "Gather ios_hostname facts (gathered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_hostname/vars/main.yaml"
+  tasks:
+    - name: "Gather hostname facts from device"
+      cisco.ios.ios_hostname:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered facts match expected config"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - gathered['config'] == result['gathered']
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — hostname: {{ result['gathered']['hostname'] }}"
+
+- name: "Merge ios_hostname configuration (merged state)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_hostname/vars/main.yaml"
+  tasks:
+    - name: "Merge hostname configuration"
+      cisco.ios.ios_hostname:
+        config:
+          hostname: "boxTest"
+        state: merged
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - merged['commands'] == result['commands']
+        quiet: true
+
+    - name: "Assert after state matches expected"
+      ansible.builtin.assert:
+        that:
+          - merged['after'] == result['after']
+        quiet: true
+
+    - name: "Merge hostname configuration — idempotent run"
+      cisco.ios.ios_hostname:
+        config:
+          hostname: "boxTest"
+        state: merged
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == false
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — config applied + idempotency verified"
+
+- name: "Delete ios_hostname configuration (deleted state)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_hostname/vars/main.yaml"
+  tasks:
+    - name: "Delete hostname configuration"
+      cisco.ios.ios_hostname:
+        config:
+        state: deleted
+      register: result
+
+    - name: "Assert deleted commands match expected"
+      ansible.builtin.assert:
+        that:
+          - deleted['commands'] == result['commands']
+        quiet: true
+
+    - name: "Assert deleted before state matches expected"
+      ansible.builtin.assert:
+        that:
+          - deleted['before'] == result['before']
+        quiet: true
+
+    - name: "PASSED: deleted state"
+      ansible.builtin.debug:
+        msg: "deleted state test passed"
+
+- name: "Parse ios_hostname configuration from file (parsed state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_hostname/vars/main.yaml"
+  tasks:
+    - name: "Parse hostname configuration from file"
+      cisco.ios.ios_hostname:
+        running_config: "{{ lookup('file', '../../../tests/integration/targets/ios_hostname/tests/cli/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed facts match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed['config'] == result['parsed']
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — hostname: {{ result['parsed']['hostname'] }}"
+
+- name: "Render ios_hostname configuration to CLI (rendered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_hostname/vars/main.yaml"
+  tasks:
+    - name: "Render hostname configuration to CLI commands"
+      cisco.ios.ios_hostname:
+        config:
+          hostname: "testname"
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - rendered['commands'] == result['rendered']
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — {{ result['rendered'] | length }} CLI commands rendered"

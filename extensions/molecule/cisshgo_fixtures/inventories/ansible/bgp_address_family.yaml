@@ -1,0 +1,35 @@
+---
+all:
+  children:
+    ios:
+      children:
+        ios_gathered:
+          hosts:
+            cisshgo-ios-gathered:
+              ansible_host: 127.0.0.1
+              ansible_port: 10000
+        ios_merged:
+          hosts:
+            cisshgo-ios-merged:
+              ansible_host: 127.0.0.1
+              ansible_port: 10001
+        ios_replaced:
+          hosts:
+            cisshgo-ios-replaced:
+              ansible_host: 127.0.0.1
+              ansible_port: 10002
+        ios_deleted:
+          hosts:
+            cisshgo-ios-deleted:
+              ansible_host: 127.0.0.1
+              ansible_port: 10003
+      vars:
+        ansible_network_os: cisco.ios.ios
+        ansible_connection: ansible.netcommon.network_cli
+        ansible_user: admin
+        ansible_password: admin
+        ansible_become: true
+        ansible_become_password: admin
+        ansible_network_cli_ssh_type: libssh
+        ansible_ssh_host_key_checking: false
+        ansible_libssh_host_key_checking: false

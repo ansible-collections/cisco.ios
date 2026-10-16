@@ -77,3 +77,49 @@
           - result['changed'] == false
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
+
+- ansible.builtin.debug:
+    msg: "START merged ios_hsrp_interfaces use_bia.set:false regression test"
+
+- block:
+    - name: "SETUP - configure standby use-bia on GigabitEthernet3 as pre-condition"
+      cisco.ios.ios_config:
+        lines:
+          - standby use-bia
+        parents: interface GigabitEthernet3
+
+    - name: "MERGED use_bia.set:false - must emit 'no standby use-bia' when device has use-bia"
+      register: result
+      cisco.ios.ios_hsrp_interfaces: &id_use_bia_false
+        config:
+          - name: GigabitEthernet3
+            use_bia:
+              set: false
+        state: merged
+
+    - name: "Assert that 'no standby use-bia' is generated and task changed"
+      ansible.builtin.assert:
+        that:
+          - result.changed
+          - "'no standby use-bia' in result.commands"
+        fail_msg: "FAIL: expected 'no standby use-bia' in commands={{ result.commands }}"
+        success_msg: "PASS: 'no standby use-bia' correctly generated"
+
+    - name: "MERGED use_bia.set:false - idempotency: second run must not change (idempotent)"
+      register: result_idempotent
+      cisco.ios.ios_hsrp_interfaces: *id_use_bia_false
+
+    - name: "Assert idempotency: second use_bia.set:false run must not change"
+      ansible.builtin.assert:
+        that:
+          - not result_idempotent.changed
+        fail_msg: "FAIL: second run was not idempotent, commands={{ result_idempotent.commands }}"
+        success_msg: "PASS: idempotent (changed=false on second run)"
+
+  always:
+    - name: "TEARDOWN - remove standby use-bia from GigabitEthernet3 if still present"
+      cisco.ios.ios_config:
+        lines:
+          - no standby use-bia
+        parents: interface GigabitEthernet3
+      ignore_errors: true

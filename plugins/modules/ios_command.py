@@ -358,12 +358,13 @@ failed_conditions:
 """
 import time
 
-from ansible.module_utils._text import to_text
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.common.text.converters import to_text
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.parsing import (
     Conditional,
 )
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
     to_lines,
     transform_commands,
 )
@@ -423,6 +424,7 @@ def main():
         msg = "One or more conditional statements have not been satisfied"
         module.fail_json(msg=msg, failed_conditions=failed_conditions)
     result.update({"stdout": responses, "stdout_lines": list(to_lines(responses))})
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

@@ -1,0 +1,36 @@
+interface GigabitEthernet1
+ description Management interface do not change
+ ip address 10.0.0.1 255.255.255.0
+ negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet2
+ description Configured and Replaced by Ansible-Network
+ ip address 192.168.1.1 255.255.255.252
+ speed 1000
+ no negotiation auto
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet3
+ description this is interface for testing
+ no ip address
+ speed 1000
+ no negotiation auto
+ shutdown
+ no mop enabled
+ no mop sysid
+!
+interface GigabitEthernet4
+ description Auto_Cable_Testing_Ansible
+ no ip address
+ shutdown
+ no mop enabled
+ no mop sysid
+!
+interface Loopback888
+ no ip address
+!
+interface Loopback999
+ no ip address

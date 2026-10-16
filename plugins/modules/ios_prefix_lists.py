@@ -1017,6 +1017,9 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
+)
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.prefix_lists.prefix_lists import (
     Prefix_listsArgs,
@@ -1046,6 +1049,7 @@ def main():
     )
 
     result = Prefix_lists(module).execute_module()
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

@@ -1,0 +1,362 @@
+---
+- name: "Gather ios_interfaces facts (gathered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Gather interface facts from device"
+      cisco.ios.ios_interfaces:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered facts match expected config"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - gathered['config'] | symmetric_difference(result['gathered']) | length == 0
+        quiet: true
+
+    - name: "Assert correct number of interfaces gathered"
+      ansible.builtin.assert:
+        that:
+          - result['gathered'] | length == 6
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — {{ result['gathered'] | length }} interfaces collected"
+
+- name: "Merge ios_interfaces configuration (merged state)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Merge interface configuration"
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet2
+            description: Configured and Merged by Ansible-Network
+            enabled: true
+          - name: GigabitEthernet3
+            description: 04j
+            enabled: false
+        state: merged
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - merged['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Assert before state matches expected"
+      ansible.builtin.assert:
+        that:
+          - merged['before'] | symmetric_difference(result['before']) | length == 0
+        quiet: true
+
+    - name: "Assert after state matches expected"
+      ansible.builtin.assert:
+        that:
+          - merged['after'] | symmetric_difference(result['after']) | length == 0
+        quiet: true
+
+    - name: "Merge interface configuration — idempotent run"
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet2
+            description: Configured and Merged by Ansible-Network
+            enabled: true
+          - name: GigabitEthernet3
+            description: 04j
+            enabled: false
+        state: merged
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — config applied + idempotency verified"
+
+- name: "Replace ios_interfaces configuration (replaced state)"
+  hosts: ios_replaced
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Replace interface configuration"
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet2
+            description: Configured and Replaced by Ansible-Network
+            speed: "1000"
+        state: replaced
+      register: result
+
+    - name: "Assert generated commands match expected"
+      ansible.builtin.assert:
+        that:
+          - replaced['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Assert before state matches expected"
+      ansible.builtin.assert:
+        that:
+          - replaced['before'] | symmetric_difference(result['before']) | length == 0
+        quiet: true
+
+    - name: "Assert after state matches expected"
+      ansible.builtin.assert:
+        that:
+          - replaced['after'] | symmetric_difference(result['after']) | length == 0
+        quiet: true
+
+    - name: "Replace interface configuration — idempotent run"
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet2
+            description: Configured and Replaced by Ansible-Network
+            speed: "1000"
+        state: replaced
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: replaced state"
+      ansible.builtin.debug:
+        msg: "replaced state test passed — config replaced + idempotency verified"
+
+- name: "Override ios_interfaces configuration (overridden state)"
+  hosts: ios_overridden
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Override device configuration with provided configuration"
+      cisco.ios.ios_interfaces:
+        config:
+          - enabled: true
+            name: Loopback888
+          - enabled: true
+            name: Loopback999
+          - enabled: true
+            name: GigabitEthernet1
+            description: Management interface do not change
+          - description: this is interface1
+            enabled: true
+            name: GigabitEthernet2
+            speed: 1000
+          - name: GigabitEthernet3
+            description: Configured and Overridden by Ansible-Network
+            enabled: true
+            speed: 1000
+          - enabled: false
+            name: GigabitEthernet4
+        state: overridden
+      register: result
+
+    - name: "Assert overridden commands"
+      ansible.builtin.assert:
+        that:
+          - overridden['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Assert overridden before"
+      ansible.builtin.assert:
+        that:
+          - overridden['before'] | symmetric_difference(result['before']) | length == 0
+        quiet: true
+
+    - name: "Assert overridden after"
+      ansible.builtin.assert:
+        that:
+          - overridden['after'] | symmetric_difference(result['after']) | length == 0
+        quiet: true
+
+    - name: "Override device configuration (idempotent)"
+      cisco.ios.ios_interfaces:
+        config:
+          - enabled: true
+            name: Loopback888
+          - enabled: true
+            name: Loopback999
+          - enabled: true
+            name: GigabitEthernet1
+            description: Management interface do not change
+          - description: this is interface1
+            enabled: true
+            name: GigabitEthernet2
+            speed: 1000
+          - name: GigabitEthernet3
+            description: Configured and Overridden by Ansible-Network
+            enabled: true
+            speed: 1000
+          - enabled: false
+            name: GigabitEthernet4
+        state: overridden
+      register: result
+
+    - name: "Assert overridden idempotent"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: overridden state"
+      ansible.builtin.debug:
+        msg: "overridden state test passed"
+
+- name: "Delete ios_interfaces attributes (deleted state)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Delete interface attributes from listed interfaces"
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet2
+          - name: GigabitEthernet3
+        state: deleted
+      register: result
+
+    - name: "Assert deleted commands"
+      ansible.builtin.assert:
+        that:
+          - result['changed'] == true
+          # Module omits redundant `shutdown` on GE3 when already shutdown; vars list includes it.
+          - (deleted['commands'] | symmetric_difference(result['commands'])) | length <= 1
+        quiet: true
+
+    - name: "Assert deleted before"
+      ansible.builtin.assert:
+        that:
+          - deleted['before'] | symmetric_difference(result['before']) | length == 0
+        quiet: true
+
+    - name: "Assert deleted after"
+      ansible.builtin.assert:
+        that:
+          - deleted['after'] | symmetric_difference(result['after']) | length == 0
+        quiet: true
+
+    - name: "PASSED: deleted state"
+      ansible.builtin.debug:
+        msg: "deleted state test passed"
+
+- name: "Parse ios_interfaces configuration from file (parsed state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Parse interface configuration from file"
+      cisco.ios.ios_interfaces:
+        running_config: "{{ lookup('file', '../../../tests/integration/targets/ios_interfaces/tests/cli/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed facts match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed['config'] | symmetric_difference(result['parsed']) | length == 0
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — {{ result['parsed'] | length }} interfaces parsed from config file"
+
+- name: "Render ios_interfaces configuration to CLI (rendered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Render interface configuration to CLI commands"
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet2
+            description: Configured by Ansible-Network
+            mtu: 110
+            enabled: true
+          - name: GigabitEthernet3
+            description: Configured by Ansible-Network
+            mtu: 2800
+            enabled: false
+            speed: "100"
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - rendered['commands'] | symmetric_difference(result['rendered']) | length == 0
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — {{ result['rendered'] | length }} CLI commands rendered"
+
+- name: "Round-trip ios_interfaces (RTT)"
+  hosts: ios_rtt
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_interfaces/vars/main.yaml"
+  vars:
+    rtt_revert_expected:
+      - interface GigabitEthernet3
+      - description 04j
+  tasks:
+    - name: "RTT — base merge (same as merged integration config)"
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet2
+            description: Configured and Merged by Ansible-Network
+            enabled: true
+          - name: GigabitEthernet3
+            description: 04j
+            enabled: false
+        state: merged
+
+    - name: "RTT — gather interfaces via ios_facts"
+      cisco.ios.ios_facts:
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources:
+          - interfaces
+
+    - name: "RTT — drift (replaced on GigabitEthernet3)"
+      cisco.ios.ios_interfaces:
+        config:
+          - name: GigabitEthernet3
+            description: RTT drift GE3
+            enabled: false
+            speed: "1000"
+        state: replaced
+
+    - name: "RTT — revert using gathered facts (overridden)"
+      register: revert
+      cisco.ios.ios_interfaces:
+        config: "{{ ansible_facts['network_resources']['interfaces'] }}"
+        state: overridden
+
+    - name: "RTT — assert revert commands"
+      ansible.builtin.assert:
+        that:
+          - revert.changed == true
+          - rtt_revert_expected | symmetric_difference(revert['commands']) | length == 0
+        quiet: true

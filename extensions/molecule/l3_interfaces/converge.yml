@@ -1,0 +1,439 @@
+---
+- name: "Gather ios_l3_interfaces (gathered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_l3_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Gather L3 interface facts from device"
+      cisco.ios.ios_l3_interfaces:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered matches expected (GE1–4)"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - >-
+            result.gathered | selectattr('name', 'match', '^GigabitEthernet[1-4]$') | list
+            | symmetric_difference(gathered['config']) | length == 0
+        quiet: true
+
+- name: "Merge ios_l3_interfaces (merged state)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_l3_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Merge L3 interface configuration"
+      cisco.ios.ios_l3_interfaces:
+        config:
+          - name: Loopback999
+            ipv4:
+              - address: 192.0.2.1/24
+          - name: GigabitEthernet2
+            ipv6:
+              - autoconfig:
+                  enable: true
+          - name: GigabitEthernet3
+            helper_addresses:
+              ipv4:
+                - destination_ip: 10.0.0.1
+                  global: true
+                - destination_ip: 10.0.0.2
+            ipv4:
+              - address: 198.51.100.1/24
+                secondary: true
+              - address: 198.51.100.2/24
+            ipv6:
+              - address: 2001:db8:0:3::/64
+          - name: Vlan901
+            autostate: false
+            ipv4:
+              - source_interface:
+                  name: Loopback1
+            ipv6:
+              - enable: true
+          - name: Vlan902
+            autostate: true
+            ipv6:
+              - enable: true
+          - name: Vlan101
+            autostate: false
+        state: merged
+      register: result
+
+    - name: "Assert merged commands"
+      ansible.builtin.assert:
+        that:
+          - merged['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Assert merged before (GE1–4)"
+      ansible.builtin.assert:
+        that:
+          - >-
+            result.before | selectattr('name', 'match', '^GigabitEthernet[1-4]$') | list
+            | symmetric_difference(merged.before) | length == 0
+        quiet: true
+
+    - name: "Assert merged after (excluding loopback test interfaces)"
+      ansible.builtin.assert:
+        that:
+          - >-
+            result.after | rejectattr('name', 'in', ['Loopback999', 'Loopback888']) | list
+            | symmetric_difference(merged.after | rejectattr('name', 'in', ['Loopback999', 'Loopback888']))
+            | length == 0
+        quiet: true
+
+    - name: "Merge again (idempotent)"
+      cisco.ios.ios_l3_interfaces:
+        config:
+          - name: Loopback999
+            ipv4:
+              - address: 192.0.2.1/24
+          - name: GigabitEthernet2
+            ipv6:
+              - autoconfig:
+                  enable: true
+          - name: GigabitEthernet3
+            helper_addresses:
+              ipv4:
+                - destination_ip: 10.0.0.1
+                  global: true
+                - destination_ip: 10.0.0.2
+            ipv4:
+              - address: 198.51.100.1/24
+                secondary: true
+              - address: 198.51.100.2/24
+            ipv6:
+              - address: 2001:db8:0:3::/64
+          - name: Vlan901
+            autostate: false
+            ipv4:
+              - source_interface:
+                  name: Loopback1
+            ipv6:
+              - enable: true
+          - name: Vlan902
+            autostate: true
+            ipv6:
+              - enable: true
+          - name: Vlan101
+            autostate: false
+        state: merged
+      register: result
+
+    - name: "Assert idempotent"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+- name: "Replace ios_l3_interfaces (replaced state)"
+  hosts: ios_replaced
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_l3_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Replace L3 configuration for listed interfaces"
+      cisco.ios.ios_l3_interfaces:
+        config:
+          - name: GigabitEthernet2
+            ipv4:
+              - address: 203.0.114.1/24
+          - name: GigabitEthernet3
+            ipv4:
+              - address: 198.51.100.1/24
+                secondary: true
+              - address: 198.51.100.2/24
+            ipv6:
+              - address: 2001:db8:1:1::/64
+        state: replaced
+      register: result
+
+    - name: "Assert replaced commands"
+      ansible.builtin.assert:
+        that:
+          - replaced['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Assert replaced before"
+      ansible.builtin.assert:
+        that:
+          - >-
+            result.before | rejectattr('name', 'in', ['Loopback888', 'Loopback999']) | list
+            | symmetric_difference(
+              replaced.before | rejectattr('name', 'in', ['Loopback888', 'Loopback999'])
+            )
+            | length == 0
+        quiet: true
+
+    - name: "Assert replaced after"
+      ansible.builtin.assert:
+        that:
+          - >-
+            result.after | rejectattr('name', 'in', ['Loopback888', 'Loopback999']) | list
+            | symmetric_difference(
+              replaced.after | rejectattr('name', 'in', ['Loopback888', 'Loopback999'])
+            )
+            | length == 0
+        quiet: true
+
+    - name: "Replace again (idempotent)"
+      cisco.ios.ios_l3_interfaces:
+        config:
+          - name: GigabitEthernet2
+            ipv4:
+              - address: 203.0.114.1/24
+          - name: GigabitEthernet3
+            ipv4:
+              - address: 198.51.100.1/24
+                secondary: true
+              - address: 198.51.100.2/24
+            ipv6:
+              - address: 2001:db8:1:1::/64
+        state: replaced
+      register: result
+
+    - name: "Assert replaced idempotent"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+- name: "Override ios_l3_interfaces (overridden state)"
+  hosts: ios_overridden
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_l3_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Override L3 configuration"
+      cisco.ios.ios_l3_interfaces:
+        config:
+          - name: GigabitEthernet1
+            ipv4:
+              - dhcp:
+                  enable: true
+          - name: GigabitEthernet3
+            ipv4:
+              - address: 198.51.100.1/24
+              - address: 198.51.100.2/24
+                secondary: true
+        state: overridden
+      register: result
+
+    - name: "Assert overridden commands"
+      ansible.builtin.assert:
+        that:
+          - overridden['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Assert overridden before"
+      ansible.builtin.assert:
+        that:
+          - >-
+            result.before | rejectattr('name', 'in', ['Loopback888', 'Loopback999']) | list
+            | symmetric_difference(
+              overridden.before | rejectattr('name', 'in', ['Loopback888', 'Loopback999'])
+            )
+            | length == 0
+        quiet: true
+
+    - name: "Assert overridden after"
+      ansible.builtin.assert:
+        that:
+          - >-
+            result.after | rejectattr('name', 'in', ['Loopback888', 'Loopback999']) | list
+            | symmetric_difference(
+              overridden.after | rejectattr('name', 'in', ['Loopback888', 'Loopback999'])
+            )
+            | length == 0
+        quiet: true
+
+    - name: "Override again (idempotent)"
+      cisco.ios.ios_l3_interfaces:
+        config:
+          - name: GigabitEthernet1
+            ipv4:
+              - dhcp:
+                  enable: true
+          - name: GigabitEthernet3
+            ipv4:
+              - address: 198.51.100.1/24
+              - address: 198.51.100.2/24
+                secondary: true
+        state: overridden
+      register: result
+
+    - name: "Assert overridden idempotent"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+- name: "Delete ios_l3_interfaces attributes (deleted state)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_l3_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Delete L3 attributes on listed interfaces"
+      cisco.ios.ios_l3_interfaces:
+        config:
+          - name: GigabitEthernet2
+          - name: GigabitEthernet3
+        state: deleted
+      register: result
+
+    - name: "Assert deleted commands"
+      ansible.builtin.assert:
+        that:
+          - deleted['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Assert deleted before"
+      ansible.builtin.assert:
+        that:
+          - >-
+            result.before | selectattr('name', 'match', '^GigabitEthernet[1-4]$') | list
+            | symmetric_difference(deleted.before) | length == 0
+        quiet: true
+
+    - name: "Assert deleted after"
+      ansible.builtin.assert:
+        that:
+          - >-
+            result.after | selectattr('name', 'match', '^GigabitEthernet[1-4]$') | list
+            | symmetric_difference(deleted.after) | length == 0
+        quiet: true
+
+    - name: "Delete again (idempotent)"
+      cisco.ios.ios_l3_interfaces:
+        config:
+          - name: GigabitEthernet2
+          - name: GigabitEthernet3
+        state: deleted
+      register: result
+
+    - name: "Assert deleted idempotent"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+- name: "Parse ios_l3_interfaces from file (parsed state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_l3_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Parse L3 interface configuration"
+      cisco.ios.ios_l3_interfaces:
+        running_config: "{{ lookup('file', '../../../tests/integration/targets/ios_l3_interfaces/tests/cli/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed['config'] | symmetric_difference(result['parsed']) | length == 0
+        quiet: true
+
+- name: "Render ios_l3_interfaces CLI (rendered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_l3_interfaces/vars/main.yaml"
+  tasks:
+    - name: "Render L3 configuration to CLI"
+      cisco.ios.ios_l3_interfaces:
+        config:
+          - name: Loopback999
+            ipv4:
+              - address: 192.0.2.1/24
+          - name: GigabitEthernet2
+            ipv4:
+              - dhcp:
+                  client_id: GigabitEthernet0/0
+                  hostname: test.com
+            ipv6:
+              - autoconfig:
+                  enable: true
+          - name: GigabitEthernet3
+            ipv4:
+              - address: 198.51.100.1/24
+                secondary: true
+              - address: 198.51.100.2/24
+            ipv6:
+              - dhcp:
+                  enable: true
+              - address: 2001:db8:0:3::/64
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - rendered['commands'] | symmetric_difference(result['rendered']) | length == 0
+        quiet: true
+
+- name: "Round-trip ios_l3_interfaces (RTT)"
+  hosts: ios_l3_rtt
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_l3_interfaces/vars/main.yaml"
+  tasks:
+    - name: "RTT — apply base configuration"
+      cisco.ios.ios_l3_interfaces:
+        config:
+          - name: Loopback999
+            ipv4:
+              - address: 192.0.2.1/24
+          - name: GigabitEthernet1
+            ipv4:
+              - dhcp:
+                  enable: true
+          - name: GigabitEthernet3
+            ipv4:
+              - address: 198.51.100.1/24
+                secondary: true
+              - address: 198.51.100.2/24
+            ipv6:
+              - address: 2001:db8:0:3::/64
+        state: merged
+
+    - name: "RTT — gather l3_interfaces via ios_facts"
+      cisco.ios.ios_facts:
+        gather_subset:
+          - "!all"
+          - "!min"
+        gather_network_resources:
+          - l3_interfaces
+
+    - name: "RTT — drift (replaced)"
+      cisco.ios.ios_l3_interfaces:
+        config:
+          - name: Loopback999
+            ipv4:
+              - address: 192.0.2.2/24
+          - name: GigabitEthernet1
+            ipv4:
+              - dhcp:
+                  enable: true
+        state: replaced
+
+    - name: "RTT — revert using gathered facts"
+      register: revert
+      cisco.ios.ios_l3_interfaces:
+        config: "{{ ansible_facts['network_resources']['l3_interfaces'] }}"
+        state: overridden
+
+    - name: "RTT — assert revert"
+      ansible.builtin.assert:
+        that:
+          - revert.changed == true
+          - rtt['commands'] | symmetric_difference(revert['commands']) | length == 0
+        quiet: true

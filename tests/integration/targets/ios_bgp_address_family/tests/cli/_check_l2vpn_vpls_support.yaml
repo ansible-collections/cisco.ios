@@ -1,0 +1,34 @@
+---
+# Probe whether the device has the platform license required for the
+# l2vpn vpls address-family active (e.g. DNA-Advantage / 'ax'). Devices
+# without the license reject this with '% BGP: Error initializing
+# topology'. This lets l2vpn vpls specific scenarios skip gracefully on
+# unlicensed platforms instead of failing CI.
+- name: Probe l2vpn vpls address-family support
+  register: l2vpn_vpls_probe
+  ignore_errors: true
+  cisco.ios.ios_config:
+    lines:
+      - address-family l2vpn vpls
+      - exit-address-family
+    parents: router bgp 65000
+
+- name: Remove the probe address-family so it doesn't leak into facts
+  when: not (l2vpn_vpls_probe.failed | default(false))
+  cisco.ios.ios_config:
+    lines:
+      - no address-family l2vpn vpls
+    parents: router bgp 65000
+
+- name: Set fact for l2vpn vpls support
+  ansible.builtin.set_fact:
+    l2vpn_vpls_supported: "{{ not (l2vpn_vpls_probe.failed | default(false)) }}"
+
+- name: Notice when l2vpn vpls scenarios will be skipped
+  when: not l2vpn_vpls_supported
+  ansible.builtin.debug:
+    msg: >-
+      Skipping l2vpn vpls scenarios: device rejected the address-family
+      (likely missing platform license, e.g. 'license boot level ax' on
+      CSR1000v, or 'license boot level network-advantage addon
+      dna-advantage' on Catalyst 8000v/9000).

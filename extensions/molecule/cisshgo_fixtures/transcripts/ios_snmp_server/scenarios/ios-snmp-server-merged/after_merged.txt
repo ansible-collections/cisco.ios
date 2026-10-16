@@ -1,0 +1,10 @@
+snmp-server community community_name RO ADMIN-SUP
+snmp-server community integrationComm RW test_Acl
+snmp-server contact john@doe.org
+snmp-server engineID remote 192.0.2.12 udp-port 25 AB0C5342FF0F
+snmp-server host 192.0.2.10 informs version 2c integrationComm isis
+snmp-server inform pending 2
+snmp-server ip dscp 2
+snmp-server location in the racks
+snmp-server packetsize 900
+snmp-server system-shutdown

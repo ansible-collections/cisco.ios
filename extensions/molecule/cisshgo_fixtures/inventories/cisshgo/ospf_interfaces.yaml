@@ -1,0 +1,25 @@
+---
+# CISSHGO device inventory for ios_ospf_interfaces integration tests
+#
+# Ports (starting --starting-port, default 10000):
+#   10000: platform (gathered, parsed, rendered)
+#   10001: scenario ios-ospf-intf-merged
+#   10002: scenario ios-ospf-intf-replaced
+#   10003: scenario ios-ospf-intf-overridden
+#   10004: scenario ios-ospf-intf-deleted
+
+devices:
+  - platform: ios_ospf_interfaces
+    count: 1
+
+  - scenario: ios-ospf-intf-merged
+    count: 1
+
+  - scenario: ios-ospf-intf-replaced
+    count: 1
+
+  - scenario: ios-ospf-intf-overridden
+    count: 1
+
+  - scenario: ios-ospf-intf-deleted
+    count: 1

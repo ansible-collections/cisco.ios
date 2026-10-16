@@ -353,6 +353,9 @@ from ansible.module_utils.connection import exec_command
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.config import (
     NetworkConfig,
 )
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
+)
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.ios import (
     get_config,
@@ -979,6 +982,7 @@ def main():
             load_config(module, commands)
         result["changed"] = True
     check_declarative_intent_params(want, module, result)
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

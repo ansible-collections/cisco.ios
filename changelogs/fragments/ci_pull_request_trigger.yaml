@@ -1,4 +1,0 @@
----
-trivial:
-  - ci - Run secret-free test jobs on pull_request and move SonarCloud to a
-    label-gated pull_request_target workflow.

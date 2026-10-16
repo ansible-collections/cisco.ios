@@ -1,0 +1,10 @@
+---
+name: "Remove needs_info label on reporter reply"
+
+on:  # yamllint disable-line rule:truthy
+  issue_comment:
+    types: [created]
+
+jobs:
+  remove_label:
+    uses: ansible/ansible-content-actions/.github/workflows/remove_needs_info.yml@main

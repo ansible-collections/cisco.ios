@@ -504,6 +504,9 @@ commands:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
+)
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.evpn_evi.evpn_evi import (
     Evpn_eviArgs,
@@ -533,6 +536,7 @@ def main():
     )
 
     result = Evpn_evi(module).execute_module()
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

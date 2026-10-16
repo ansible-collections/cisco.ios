@@ -4,6 +4,69 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v11.6.0
+=======
+
+Minor Changes
+-------------
+
+- ios_snmp_server - add ``traps.vrrpv3`` bool parameter to configure ``snmp-server enable traps vrrpv3``.
+
+Bugfixes
+--------
+
+- ios_bgp_address_family - Fix idempotency issue where specifying ``remote_as`` for a neighbor caused the module to emit ``neighbor X remote-as Y`` on every run.  It can be specified at address-family and at global level, but always resides at the global level. Hence, the config class now correctly associates global-level attributes with the corresponding address-family during have-facts comparison.
+- ios_bgp_address_family - Fix replaced state not generating ``no neighbor X route-map/prefix-list`` commands when a route-map or prefix-list is present in have but absent from want.
+- ios_bgp_address_family - Update `_compare_redist_ospf` loop to read both ospf and ospfv3 as parser inputs
+- ios_bgp_global - fix ios_bgp_global and ios_facts crash on ASDOT (4-byte dotted) local_as notation (e.g. "501.65083") by changing local_as.number argspec type from int to str, consistent with remote_as which already accepts ASDOT values
+- ios_hsrp_interfaces - Fixed parsed-state integration tests to handle Ansible-core masking ``$REDACTED$`` values while retaining compatibility with older ``VALUE_SPECIFIED_IN_NO_LOG_PARAMETER`` results.
+- ios_hsrp_interfaces - Fixed use_bia.set:false not generating "no standby use-bia" by adding compval "use_bia.set" to the parser so comparison evaluates the boolean leaf instead of the parent dict (which is always truthy).
+- ios_route_maps - fix bare entries (action+sequence only) being silently dropped; the cmd_len guard in entries_compare() now emits the route-map header command even when no sub-commands are generated (description/match/set absent), so catch-all rules like ``route-map MYMAP deny 6`` are correctly applied.
+- ios_route_maps - fix continue_entry.set=true silently ignored; bare "continue" command was never generated because the setval template raised UndefinedError when entry_sequence was absent.
+- ios_snmp_server - anchor the ``traps.vrrp`` parser regex with ``$`` so that ``snmp-server enable traps vrrpv3`` lines are not incorrectly parsed as ``traps.vrrp``.
+
+Documentation Changes
+---------------------
+
+- ios_bgp_address_family - Document the ``remote_as`` lifecycle gap. On IOS, ``neighbor X remote-as Y`` lives at the global BGP level, not inside an address-family block. This module reads the global value for idempotency but does not add, change, or remove it; use ``ios_bgp_global`` to manage the global remote-as statement. The ``deleted`` and ``replaced`` states will not remove a global remote-as entry.
+
+v11.5.1
+=======
+
+Bugfixes
+--------
+
+- ios_acls - Correct port to protocol mapping for port 5001 and 5002.
+- ios_bgp_address_family - Add ``vpls`` as a valid ``safi`` choice for the ``l2vpn`` address family configuration.
+- ios_user - fixed hashed_password idempotency so that re-applying the same type/value pair against an already-configured user produces no commands, preventing unnecessary password updates on repeat runs.
+- ios_user - parse_hashed_password  helper now extracts the stored hash type, hash value from running config, enabling proper diff-based idempotency checks for hashed_password.
+- ios_user - update_password and password_type are now resolved per aggregate item via get_param_value, allowing each entry in the aggregate list to independently override the module-level defaults
+- terminal - Add ``% IPv6 routing not enabled`` to ``terminal_stderr_re`` so that configuring BGP IPv6/VPNv6 address-family without ``ipv6 unicast-routing`` correctly raises an error instead of silently succeeding (https://github.com/ansible-collections/cisco.ios/issues/1301).
+
+Documentation Changes
+---------------------
+
+- ios_user - clarified that update_password (on_create/always) applies only to configured_password; hashed_password always uses hash type and value comparison to determine whether a change is required.
+- ios_user - documented type 9 (scrypt) as a valid hash type alongside the existing type 5 (MD5) and type 8 (PBKDF2) examples for hashed_password.
+
+v11.5.0
+=======
+
+Minor Changes
+-------------
+
+- Remediate deprecated ``warnings`` parameter in ``exit_json`` calls by using ``emit_warnings`` from ``ansible.netcommon`` across cisco.ios modules to address deprecation warning from ansible-core 2.23.
+- Remove ``ansible.module_utils.six`` usage in favour of Python 3 builtins to prepare for ansible-core 2.24 removal.
+- Replace deprecated ``ansible.module_utils._text`` imports with ``ansible.module_utils.common.text.converters``.
+- Replace deprecated ``ansible.module_utils.common._collections_compat`` with ``collections.abc`` from the Python standard library.
+- Updated all ``ResourceModule``-based resource modules to emit warnings via ``AnsibleModule.warn()`` before calling ``exit_json``.
+- Updated standalone modules (``ios_banner``, ``ios_command``, ``ios_config``, ``ios_facts``, ``ios_ping``, ``ios_system``, ``ios_user``, ``ios_vrf``) to emit warnings via ``AnsibleModule.warn()`` before calling ``exit_json``.
+
+Bugfixes
+--------
+
+- ios_acls - Fixed ACL option fields with multi-word names (e.g, any_options, stream_id , no_op) failing due to missing underscore to hyphen conversion and vice-versa in setval and getval respectively
+
 v11.4.2
 =======
 

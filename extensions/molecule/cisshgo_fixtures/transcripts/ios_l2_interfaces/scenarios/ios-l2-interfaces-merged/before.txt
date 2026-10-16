@@ -1,0 +1,6 @@
+interface GigabitEthernet0/0
+!
+interface GigabitEthernet2
+!
+interface GigabitEthernet3
+!

@@ -1,0 +1,319 @@
+---
+# Preview check_mode on stateful hosts first, then offline plays, then full merged/deleted
+# plays (each stateful play starts with check_mode again). CISSHGO should reset its
+# scenario cursor on each new TCP session so each play begins at the top of the sequence.
+
+- name: "Ios_vrf_global — merged check_mode (preview)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_global/vars/main.yaml"
+  tasks:
+    - name: "Merged — check_mode (preview)"
+      cisco.ios.ios_vrf_global:
+        config:
+          vrfs:
+            - name: VRF2
+              description: This is a test VRF for merged state
+              ipv4:
+                multicast:
+                  multitopology: true
+              ipv6:
+                multicast:
+                  multitopology: true
+              rd: "2:3"
+              route_target:
+                exports:
+                  - "198.51.100.5:400"
+                imports:
+                  - "198.51.100.5:400"
+              vpn:
+                id: "2:45"
+              vnet:
+                tag: 200
+        state: merged
+      check_mode: true
+      register: cm_merged
+
+    - name: "Debug merged check_mode (preview)"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_merged.changed }}"
+          commands: "{{ cm_merged.commands | default([]) }}"
+          before: "{{ cm_merged.before | default({}) }}"
+          after: "{{ cm_merged.after | default({}) }}"
+
+- name: "Ios_vrf_global — deleted check_mode (preview)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_global/vars/main.yaml"
+  tasks:
+    - name: "Deleted — check_mode (preview)"
+      cisco.ios.ios_vrf_global:
+        config:
+          vrfs:
+            - name: VRF2
+        state: deleted
+      check_mode: true
+      register: cm_deleted
+
+    - name: "Debug deleted check_mode (preview)"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_deleted.changed }}"
+          commands: "{{ cm_deleted.commands | default([]) }}"
+          before: "{{ cm_deleted.before | default({}) }}"
+          after: "{{ cm_deleted.after | default({}) }}"
+
+- name: "Ios_vrf_global — state: gathered"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_global/vars/main.yaml"
+  tasks:
+    - name: "Gather VRF global configuration"
+      cisco.ios.ios_vrf_global:
+        config:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered matches vars/main.yaml"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - gathered['after'] == result['gathered']
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — facts from CISSHGO fixture"
+
+- name: "Ios_vrf_global — state: parsed (inline running_config)"
+  hosts: ios_parsed
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_global/vars/main.yaml"
+  vars:
+    ios_vrf_global_parsed_cfg: |
+      vrf definition test
+       vnet tag 34
+       description This is test VRF
+       ipv4 multicast multitopology
+       ipv6 multicast multitopology
+       rd 2:3
+       vpn id 3:4
+       route-target export 192.0.2.0:100
+       route-target import 192.0.2.3:300
+      !
+      end
+  tasks:
+    - name: "Parse VRF global configuration from inline running_config"
+      cisco.ios.ios_vrf_global:
+        running_config: "{{ ios_vrf_global_parsed_cfg }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed structure"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - parsed['after'] == result['parsed']
+          - result['parsed']['vrfs'] | length == 1
+          - result['parsed']['vrfs'][0]['name'] == 'test'
+          - result['parsed']['vrfs'][0]['description'] == 'This is test VRF'
+          - result['parsed']['vrfs'][0]['ipv4']['multicast']['multitopology'] == true
+          - result['parsed']['vrfs'][0]['ipv6']['multicast']['multitopology'] == true
+          - result['parsed']['vrfs'][0]['rd'] == '2:3'
+          - result['parsed']['vrfs'][0]['route_target']['exports'] == ['192.0.2.0:100']
+          - result['parsed']['vrfs'][0]['route_target']['imports'] == ['192.0.2.3:300']
+          - result['parsed']['vrfs'][0]['vpn']['id'] == '3:4'
+          - result['parsed']['vrfs'][0]['vnet']['tag'] == 34
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — inline _parsed.cfg content"
+
+- name: "Ios_vrf_global — state: rendered"
+  hosts: ios_rendered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_global/vars/main.yaml"
+  tasks:
+    - name: "Render merged VRF global configuration to CLI"
+      cisco.ios.ios_vrf_global:
+        config:
+          vrfs:
+            - name: VRF2
+              description: This is a test VRF for merged state
+              ipv4:
+                multicast:
+                  multitopology: true
+              ipv6:
+                multicast:
+                  multitopology: true
+              rd: "2:3"
+              route_target:
+                exports:
+                  - "198.51.100.5:400"
+                imports:
+                  - "198.51.100.5:400"
+              vpn:
+                id: "2:45"
+              vnet:
+                tag: 200
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands match merged.commands"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - merged['commands'] | symmetric_difference(result['rendered']) | length == 0
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — offline CLI projection"
+
+- name: "Ios_vrf_global — state: merged (check_mode, apply, idempotency)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_global/vars/main.yaml"
+  tasks:
+    - name: "Merged — check_mode"
+      cisco.ios.ios_vrf_global:
+        config:
+          vrfs:
+            - name: VRF2
+              description: This is a test VRF for merged state
+              ipv4:
+                multicast:
+                  multitopology: true
+              ipv6:
+                multicast:
+                  multitopology: true
+              rd: "2:3"
+              route_target:
+                exports:
+                  - "198.51.100.5:400"
+                imports:
+                  - "198.51.100.5:400"
+              vpn:
+                id: "2:45"
+              vnet:
+                tag: 200
+        state: merged
+      check_mode: true
+      register: cm_merged
+
+    - name: "Debug merged check_mode"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_merged.changed }}"
+          commands: "{{ cm_merged.commands | default([]) }}"
+          before: "{{ cm_merged.before | default({}) }}"
+          after: "{{ cm_merged.after | default({}) }}"
+
+    - name: "Merge VRF global configuration"
+      cisco.ios.ios_vrf_global: &merged_config
+        config:
+          vrfs:
+            - name: VRF2
+              description: This is a test VRF for merged state
+              ipv4:
+                multicast:
+                  multitopology: true
+              ipv6:
+                multicast:
+                  multitopology: true
+              rd: "2:3"
+              route_target:
+                exports:
+                  - "198.51.100.5:400"
+                imports:
+                  - "198.51.100.5:400"
+              vpn:
+                id: "2:45"
+              vnet:
+                tag: 200
+        state: merged
+      register: result
+
+    - name: "Assert merged commands"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - merged['before'] == result['before']
+          - merged['commands'] | symmetric_difference(result['commands']) | length == 0
+        quiet: true
+
+    - name: "Merge VRF global configuration — idempotent run"
+      cisco.ios.ios_vrf_global: *merged_config
+      register: result
+
+    - name: "Assert merged idempotency"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — check_mode + apply + idempotency"
+
+- name: "Ios_vrf_global — state: deleted (check_mode, apply, idempotency)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vrf_global/vars/main.yaml"
+  tasks:
+    - name: "Deleted — check_mode"
+      cisco.ios.ios_vrf_global:
+        config:
+          vrfs:
+            - name: VRF2
+        state: deleted
+      check_mode: true
+      register: cm_deleted
+
+    - name: "Debug deleted check_mode"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_deleted.changed }}"
+          commands: "{{ cm_deleted.commands | default([]) }}"
+          before: "{{ cm_deleted.before | default({}) }}"
+          after: "{{ cm_deleted.after | default({}) }}"
+
+    - name: "Delete managed attributes under VRF2"
+      cisco.ios.ios_vrf_global: &deleted_config
+        config:
+          vrfs:
+            - name: VRF2
+        state: deleted
+      register: result
+
+    - name: "Assert deleted first pass"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - deleted['commands'] | symmetric_difference(result['commands']) | length == 0
+          - merged['after'] == result['before']
+          - deleted['after'] == result['after']
+        quiet: true
+
+    - name: "Delete VRF2 managed attributes — idempotent run"
+      cisco.ios.ios_vrf_global: *deleted_config
+      register: result
+
+    - name: "Assert deleted idempotency (module quirk: always emits VRF header)"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+        quiet: true
+
+    - name: "PASSED: deleted state"
+      ansible.builtin.debug:
+        msg: "deleted state test passed — check_mode + apply + idempotency"

@@ -1,4 +1,0 @@
----
-trivial:
-  - removed the skip section within tox-ansible.ini as they were
-    cleaned up from ansible/tox-ansible.

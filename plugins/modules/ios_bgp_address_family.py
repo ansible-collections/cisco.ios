@@ -48,7 +48,7 @@ options:
           safi:
             description: Address Family modifier
             type: str
-            choices: ["flowspec", "mdt", "multicast", "mvpn", "evpn", "unicast"]
+            choices: ["flowspec", "mdt", "multicast", "mvpn", "evpn", "unicast", "vpls"]
           vrf:
             description: Specify parameters for a VPN Routing/Forwarding instance
             type: str
@@ -799,8 +799,16 @@ options:
                     type: bool
               remote_as:
                 description:
-                  - Specify a BGP neighbor
-                  - AS of remote neighbor
+                  - Specify a BGP neighbor remote AS number.
+                  - On IOS, C(neighbor X remote-as Y) always resides at the
+                    global BGP level not inside an address-family block.
+                  - This module reads the global-level value for idempotency so
+                    that specifying C(remote_as) here does not generate a
+                    spurious C(neighbor X remote-as Y) command on every run.
+                  - C(ios_bgp_address_family) does not add, change, or remove the
+                    global C(neighbor X remote-as Y) statement. Use M(cisco.ios.ios_bgp_global)
+                    to manage that statement. The deleted and replaced states
+                    will not remove a global remote-as.
                 type: str
               remove_private_as:
                 description: Remove private AS number from outbound updates
@@ -3000,6 +3008,9 @@ parsed:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.utils import (
+    emit_warnings,
+)
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.bgp_address_family.bgp_address_family import (
     Bgp_address_familyArgs,
@@ -3029,6 +3040,7 @@ def main():
     )
 
     result = Bgp_address_family(module).execute_module()
+    emit_warnings(module, result)
     module.exit_json(**result)
 
 

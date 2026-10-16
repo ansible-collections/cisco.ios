@@ -2861,13 +2861,27 @@ class Snmp_serverTemplate(NetworkTemplate):
             "name": "traps.vrrp",
             "getval": re.compile(
                 r"""
-                ^snmp-server\senable\straps\svrrp
+                ^snmp-server\senable\straps\svrrp$
                 """, re.VERBOSE,
             ),
             "setval": "snmp-server enable traps vrrp",
             "result": {
                 "traps": {
                     "vrrp": True,
+                },
+            },
+        },
+        {
+            "name": "traps.vrrpv3",
+            "getval": re.compile(
+                r"""
+                ^snmp-server\senable\straps\svrrpv3
+                """, re.VERBOSE,
+            ),
+            "setval": "snmp-server enable traps vrrpv3",
+            "result": {
+                "traps": {
+                    "vrrpv3": True,
                 },
             },
         },

@@ -1,0 +1,2 @@
+lldp holdtime 20
+lldp reinit 5

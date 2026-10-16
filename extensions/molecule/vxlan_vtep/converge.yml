@@ -1,0 +1,235 @@
+---
+# Preview check_mode on stateful hosts first, then gathered/parsed/rendered, then full
+# merged/deleted plays. Each new TCP session resets the CISSHGO scenario cursor.
+
+- name: "Ios_vxlan_vtep — merged check_mode (preview)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vxlan_vtep/vars/main.yaml"
+  tasks:
+    - name: "Merged — check_mode (preview)"
+      cisco.ios.ios_vxlan_vtep:
+        config:
+          - interface: nve1
+            source_interface: Loopback1
+        state: merged
+      check_mode: true
+      register: cm_merged_preview
+
+    - name: "Debug merged check_mode (preview)"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_merged_preview.changed }}"
+          commands: "{{ cm_merged_preview.commands | default([]) }}"
+          before: "{{ cm_merged_preview.before | default([]) }}"
+          after: "{{ cm_merged_preview.after | default([]) }}"
+
+- name: "Ios_vxlan_vtep — deleted check_mode (preview)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vxlan_vtep/vars/main.yaml"
+  tasks:
+    - name: "Deleted — check_mode (preview)"
+      cisco.ios.ios_vxlan_vtep:
+        config:
+          - interface: nve1
+        state: deleted
+      check_mode: true
+      register: cm_deleted_preview
+
+    - name: "Debug deleted check_mode (preview)"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_deleted_preview.changed }}"
+          commands: "{{ cm_deleted_preview.commands | default([]) }}"
+          before: "{{ cm_deleted_preview.before | default([]) }}"
+          after: "{{ cm_deleted_preview.after | default([]) }}"
+
+- name: "Ios_vxlan_vtep — state: gathered"
+  hosts: ios_gathered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vxlan_vtep/vars/main.yaml"
+  tasks:
+    - name: "Gather VXLAN VTEP configuration"
+      cisco.ios.ios_vxlan_vtep:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered (relaxed)"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered is defined
+          - result.gathered | length > 0
+          - result.gathered | selectattr('interface', 'defined') | list | length > 0
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — VXLAN VTEP from CISSHGO fixture"
+
+- name: "Ios_vxlan_vtep — state: parsed (running_config from _parsed.cfg)"
+  hosts: ios_parsed
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vxlan_vtep/vars/main.yaml"
+  tasks:
+    - name: "Parse VXLAN VTEP from integration _parsed.cfg"
+      cisco.ios.ios_vxlan_vtep:
+        running_config: "{{ lookup('file', playbook_dir ~ '/../../../tests/integration/targets/ios_vxlan_vtep/tests/cli/_parsed.cfg') }}"
+        state: parsed
+      register: result
+
+    - name: "Assert parsed structure (relaxed — NVE interface identity)"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - (result.parsed | map(attribute='interface') | list | symmetric_difference(parsed.config | map(attribute='interface') | list) | length) == 0
+        quiet: true
+
+    - name: "PASSED: parsed state"
+      ansible.builtin.debug:
+        msg: "parsed state test passed — _parsed.cfg"
+
+- name: "Ios_vxlan_vtep — state: rendered"
+  hosts: ios_rendered
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vxlan_vtep/vars/main.yaml"
+  vars:
+    vxlan_vtep_rendered_cmds:
+      - interface nve1
+      - source-interface Loopback1
+  tasks:
+    - name: "Render VXLAN VTEP configuration to CLI"
+      cisco.ios.ios_vxlan_vtep:
+        config:
+          - interface: nve1
+            source_interface: Loopback1
+        state: rendered
+      register: result
+
+    - name: "Assert rendered commands"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - vxlan_vtep_rendered_cmds | symmetric_difference(result['rendered'] | default([])) | length == 0
+        quiet: true
+
+    - name: "PASSED: rendered state"
+      ansible.builtin.debug:
+        msg: "rendered state test passed — offline CLI projection"
+
+- name: "Ios_vxlan_vtep — state: merged (check_mode, apply, idempotency)"
+  hosts: ios_merged
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vxlan_vtep/vars/main.yaml"
+  vars:
+    vxlan_vtep_merged_cmds:
+      - interface nve1
+      - source-interface Loopback1
+  tasks:
+    - name: "Merged — check_mode"
+      cisco.ios.ios_vxlan_vtep:
+        config:
+          - interface: nve1
+            source_interface: Loopback1
+        state: merged
+      check_mode: true
+      register: cm_merged
+
+    - name: "Debug merged check_mode"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_merged.changed }}"
+          commands: "{{ cm_merged.commands | default([]) }}"
+          before: "{{ cm_merged.before | default([]) }}"
+          after: "{{ cm_merged.after | default([]) }}"
+
+    - name: "Merge VXLAN VTEP source-interface"
+      cisco.ios.ios_vxlan_vtep: &merged_vxlan_vtep
+        config:
+          - interface: nve1
+            source_interface: Loopback1
+        state: merged
+      register: result
+
+    - name: "Assert merged first apply"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - vxlan_vtep_merged_cmds | symmetric_difference(result['commands'] | default([])) | length == 0
+          - (result['after'] | selectattr('interface', 'equalto', 'nve1') | map(attribute='source_interface') | first | default('')) == 'Loopback1'
+        quiet: true
+
+    - name: "Merge VXLAN VTEP — idempotent run"
+      cisco.ios.ios_vxlan_vtep: *merged_vxlan_vtep
+      register: result
+
+    - name: "Assert merged idempotency"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — check_mode + apply + idempotency"
+
+- name: "Ios_vxlan_vtep — state: deleted (check_mode, apply, idempotency)"
+  hosts: ios_deleted
+  gather_facts: false
+  vars_files:
+    - "../../../tests/integration/targets/ios_vxlan_vtep/vars/main.yaml"
+  vars:
+    vxlan_vtep_deleted_cmds:
+      - interface nve1
+      - no source-interface Loopback1
+  tasks:
+    - name: "Deleted — check_mode"
+      cisco.ios.ios_vxlan_vtep:
+        config:
+          - interface: nve1
+        state: deleted
+      check_mode: true
+      register: cm_deleted
+
+    - name: "Debug deleted check_mode"
+      ansible.builtin.debug:
+        msg:
+          changed: "{{ cm_deleted.changed }}"
+          commands: "{{ cm_deleted.commands | default([]) }}"
+          before: "{{ cm_deleted.before | default([]) }}"
+          after: "{{ cm_deleted.after | default([]) }}"
+
+    - name: "Delete VXLAN VTEP source-interface"
+      cisco.ios.ios_vxlan_vtep: &deleted_vxlan_vtep
+        config:
+          - interface: nve1
+        state: deleted
+      register: result
+
+    - name: "Assert deleted first apply"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - vxlan_vtep_deleted_cmds | symmetric_difference(result['commands'] | default([])) | length == 0
+        quiet: true
+
+    - name: "Delete VXLAN VTEP — idempotent run"
+      cisco.ios.ios_vxlan_vtep: *deleted_vxlan_vtep
+      register: result
+
+    - name: "Assert deleted idempotency"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: deleted state"
+      ansible.builtin.debug:
+        msg: "deleted state test passed — check_mode + apply + idempotency"

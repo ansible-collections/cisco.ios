@@ -1,0 +1,10 @@
+interface GigabitEthernet2
+ switchport access vlan 30
+!
+interface GigabitEthernet3
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 10
+ switchport trunk allowed vlan 10-20,40
+ switchport trunk pruning vlan 10,20
+ switchport mode trunk
+!

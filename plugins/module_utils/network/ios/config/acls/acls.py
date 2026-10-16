@@ -15,7 +15,7 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-from ansible.module_utils._text import to_text
+from ansible.module_utils.common.text.converters import to_text
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -416,8 +416,8 @@ class Acls(ResourceModule):
             "515": "lpd",
             "135": "msrpc",
             "119": "nntp",
-            "5001": "onep-plain",
-            "5002": "onep-tls",
+            "15001": "onep-plain",
+            "15002": "onep-tls",
             "496": "pim-auto-rp",
             "109": "pop2",
             "110": "pop3",

@@ -91,6 +91,7 @@ celerybeat-schedule
 # Environments
 .env
 .venv
+.venv-molecule2205/
 env/
 venv/
 ENV/
@@ -117,3 +118,8 @@ venv.bak/
 
 changelogs/.plugin-cache.yaml
 .ansible/.lock
+
+# cisshgo / Molecule ephemeral files
+extensions/molecule/*/.cisshgo.log
+extensions/molecule/*/.cisshgo.pid
+extensions/molecule/captured/

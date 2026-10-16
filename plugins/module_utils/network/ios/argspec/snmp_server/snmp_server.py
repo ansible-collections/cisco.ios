@@ -777,6 +777,7 @@ class Snmp_serverArgs(object):  # pylint: disable=R0903
                             "type": "dict",
                         },
                         "vrrp": {"type": "bool"},
+                        "vrrpv3": {"type": "bool"},
                         "vswitch": {
                             "options": {
                                 "dual_active": {"type": "bool"},
