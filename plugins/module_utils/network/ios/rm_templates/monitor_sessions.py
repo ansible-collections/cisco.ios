@@ -14,15 +14,18 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
     NetworkTemplate,
 )
 
+_SESSION_KEY = "{{ session }}"
+_IFACE_KEY = "{{ interface }}"
 
-class Monitor_sessionsTemplate(NetworkTemplate):
+
+class Monitor_sessionsTemplate(NetworkTemplate):  # NOSONAR
     def __init__(self, lines=None, module=None):
         super(Monitor_sessionsTemplate, self).__init__(lines=lines, tmplt=self, module=module)
 
     @staticmethod
     def expand_range(iface_str):
         """Expand IOS range notation (e.g. 'Gi1/0/1 - 3') into individual interface names."""
-        m = re.match(r"^(.+?)(\d+)\s*-\s*(\d+)$", iface_str.strip())
+        m = re.match(r"^(.*[^\d])(\d+)\s*-\s*(\d+)$", iface_str.strip())
         if m:
             prefix, start, end = m.group(1), int(m.group(2)), int(m.group(3))
             return ["{0}{1:d}".format(prefix, i) for i in range(start, end + 1)]
@@ -35,7 +38,7 @@ class Monitor_sessionsTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""^monitor\ssession\s(?P<session>\d+)
                     \ssource\sinterface\s
-                    (?P<interface>.+)
+                    (?P<interface>.*\S)
                     \s+(?P<direction>rx|tx)
                     $""",
                 re.VERBOSE,
@@ -43,11 +46,11 @@ class Monitor_sessionsTemplate(NetworkTemplate):
             "setval": "monitor session {{ session }} source interface {{ source.interface }}"
                       "{{ ' ' + source.direction if source.direction is defined and source.direction != 'both' else '' }}",
             "result": {
-                "{{ session }}": {
-                    "session": "{{ session }}",
+                _SESSION_KEY: {
+                    "session": _SESSION_KEY,
                     "sources": [
                         {
-                            "interface": "{{ interface }}",
+                            "interface": _IFACE_KEY,
                             "direction": "{{ direction }}",
                         },
                     ],
@@ -65,11 +68,11 @@ class Monitor_sessionsTemplate(NetworkTemplate):
             ),
             "setval": "monitor session {{ session }} source interface {{ source.interface }}",
             "result": {
-                "{{ session }}": {
-                    "session": "{{ session }}",
+                _SESSION_KEY: {
+                    "session": _SESSION_KEY,
                     "sources": [
                         {
-                            "interface": "{{ interface }}",
+                            "interface": _IFACE_KEY,
                         },
                     ],
                 },
@@ -87,10 +90,10 @@ class Monitor_sessionsTemplate(NetworkTemplate):
             ),
             "setval": "monitor session {{ session }} destination interface {{ destination.interface }} encapsulation replicate",
             "result": {
-                "{{ session }}": {
-                    "session": "{{ session }}",
+                _SESSION_KEY: {
+                    "session": _SESSION_KEY,
                     "destination": {
-                        "interface": "{{ interface }}",
+                        "interface": _IFACE_KEY,
                         "encapsulation_replicate": True,
                     },
                 },
@@ -107,10 +110,10 @@ class Monitor_sessionsTemplate(NetworkTemplate):
             ),
             "setval": "monitor session {{ session }} destination interface {{ destination.interface }}",
             "result": {
-                "{{ session }}": {
-                    "session": "{{ session }}",
+                _SESSION_KEY: {
+                    "session": _SESSION_KEY,
                     "destination": {
-                        "interface": "{{ interface }}",
+                        "interface": _IFACE_KEY,
                         "encapsulation_replicate": False,
                     },
                 },

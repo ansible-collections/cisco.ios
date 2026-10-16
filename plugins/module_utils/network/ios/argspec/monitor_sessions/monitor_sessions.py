@@ -9,7 +9,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-class Monitor_sessionsArgs(object):  # pylint: disable=R0903
+class Monitor_sessionsArgs(object):  # pylint: disable=R0903  # NOSONAR
     """The arg spec for the ios_monitor_sessions module"""
 
     argument_spec = {

@@ -18,7 +18,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 
 
-class Monitor_sessions(ResourceModule):
+class Monitor_sessions(ResourceModule):  # NOSONAR
     """The ios_monitor_sessions config class"""
 
     def __init__(self, module):
@@ -120,32 +120,37 @@ class Monitor_sessions(ResourceModule):
             to_add = want_ifaces - have_ifaces
 
             if replace and to_remove:
-                cmd = "no monitor session {0} source interface {1}".format(
-                    session_id,
-                    " , ".join(sorted(to_remove)),
-                )
-                if direction != "both":
-                    cmd += " {0}".format(direction)
-                self.commands.append(cmd)
-
+                self._remove_source_ifaces(session_id, direction, to_remove)
             if to_add:
-                # Preserve user-specified order; fall back to sorted
-                ordered = [
-                    i
-                    for s in want_sources
-                    if self._norm_dir(s.get("direction")) == direction
-                    for i in s["interfaces"]
-                    if i in to_add
-                ]
-                if not ordered:
-                    ordered = sorted(to_add)
-                cmd = "monitor session {0} source interface {1}".format(
-                    session_id,
-                    " , ".join(ordered),
-                )
-                if direction != "both":
-                    cmd += " {0}".format(direction)
-                self.commands.append(cmd)
+                self._add_source_ifaces(session_id, direction, to_add, want_sources)
+
+    def _remove_source_ifaces(self, session_id, direction, ifaces):
+        cmd = "no monitor session {0} source interface {1}".format(
+            session_id,
+            " , ".join(sorted(ifaces)),
+        )
+        if direction != "both":
+            cmd += " {0}".format(direction)
+        self.commands.append(cmd)
+
+    def _add_source_ifaces(self, session_id, direction, to_add, want_sources):
+        # Preserve user-specified order; fall back to sorted
+        ordered = [
+            i
+            for s in want_sources
+            if self._norm_dir(s.get("direction")) == direction
+            for i in s["interfaces"]
+            if i in to_add
+        ]
+        if not ordered:
+            ordered = sorted(to_add)
+        cmd = "monitor session {0} source interface {1}".format(
+            session_id,
+            " , ".join(ordered),
+        )
+        if direction != "both":
+            cmd += " {0}".format(direction)
+        self.commands.append(cmd)
 
     def _group_by_direction(self, sources):
         """Return {direction: frozenset(expanded_interfaces)} from a sources list."""

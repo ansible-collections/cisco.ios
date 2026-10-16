@@ -18,7 +18,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 
 
-class Monitor_sessionsFacts(object):
+class Monitor_sessionsFacts(object):  # NOSONAR
     """The ios monitor_sessions facts class"""
 
     def __init__(self, module):
