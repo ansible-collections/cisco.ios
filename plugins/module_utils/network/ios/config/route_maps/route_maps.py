@@ -187,6 +187,14 @@ class Route_maps(ResourceModule):
         ]
         for k, v in want.items():
             have_v = have.pop(k, {})
+            # dict_merge uses set() on lists, which destroys order; normalize before comparing
+            if k == "large_community" and compare_type == "set":
+                if isinstance(v, dict) and v.get("communities"):
+                    v = dict(v)
+                    v["communities"] = sorted(v["communities"])
+                if isinstance(have_v, dict) and have_v.get("communities"):
+                    have_v = dict(have_v)
+                    have_v["communities"] = sorted(have_v["communities"])
             if v != have_v and k not in ["ip", "ipv6", "action", "sequence", "community"]:
                 if have_v:
                     self.compare(
@@ -306,6 +314,11 @@ class Route_maps(ResourceModule):
                                 match["extcommunity"] = convert_to_dict(
                                     match["extcommunity"],
                                     "num",
+                                )
+                            if match.get("large_community"):
+                                match["large_community"] = convert_to_dict(
+                                    match["large_community"],
+                                    "lc",
                                 )
                             if match.get("interfaces"):
                                 match["interfaces"] = convert_to_dict(

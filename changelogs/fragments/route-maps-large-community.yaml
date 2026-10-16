@@ -1,0 +1,4 @@
+---
+minor_changes:
+  - ios_route_maps - Add support for C(set large-community) in route-map entries,
+    including multi-value lists, the additive flag, and large-community none.
