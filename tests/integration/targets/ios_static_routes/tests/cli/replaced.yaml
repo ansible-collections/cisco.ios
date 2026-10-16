@@ -51,8 +51,7 @@
     - ansible.builtin.assert:
         that:
           - result.changed == true
-          - result.commands|symmetric_difference(replaced.commands) == []
-
+          - "{{ replaced.commands | cisco.ios.commands_blocks_equal(result.commands, 'route') }}"
     - name: Replaces device configuration of listed interfaces with provided configuration (idempotent)
       register: result
       cisco.ios.ios_static_routes: *id001

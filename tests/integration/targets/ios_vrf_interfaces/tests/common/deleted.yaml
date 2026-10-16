@@ -16,7 +16,7 @@
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ deleted['commands'] | cisco.ios.commands_blocks_equal(result['commands'], 'interface') }}"
 
     - name: Delete provided VRF interfaces (idempotent)
       register: result
@@ -36,7 +36,7 @@
     - name: Assert that correct set of commands were generated
       ansible.builtin.assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ deleted['commands'] | cisco.ios.commands_blocks_equal(result['commands'], 'interface') }}"
 
     - name: Delete provided VRF interfaces without any configuration (idempotent)
       register: result

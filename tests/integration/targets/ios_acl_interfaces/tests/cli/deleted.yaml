@@ -18,8 +18,7 @@
         that:
           - result.commands|length == 5
           - result.changed == true
-          - result.commands|symmetric_difference(deleted.commands) == []
-
+          - "{{ deleted.commands | cisco.ios.commands_blocks_equal(result.commands, 'interface') }}"
     - name: Delete module attributes of given interface (idempotent)
       register: result
       cisco.ios.ios_acl_interfaces:

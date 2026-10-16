@@ -15,7 +15,7 @@
     - name: Ios_evpn_global deleted - assert commands
       ansible.builtin.assert:
         that:
-          - "{{ deleted['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "{{ deleted['commands'] | cisco.ios.commands_blocks_equal(result['commands'], 'evpn') }}"
 
     - name: Ios_evpn_global deleted - assert before
       ansible.builtin.assert:
