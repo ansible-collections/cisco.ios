@@ -1,0 +1,23 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_monitor_sessions rendered integration tests on connection={{ ansible_connection }}
+
+- name: Ios_monitor_sessions rendered - render commands without device
+  register: result
+  cisco.ios.ios_monitor_sessions:
+    config:
+      - session: 1
+        sources:
+          - interfaces:
+              - Gi1/0/1
+        destination:
+          interface: Gi1/0/10
+          encapsulation_replicate: true
+    state: rendered
+
+- name: Ios_monitor_sessions rendered - assert commands generated
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - "'monitor session 1 source interface Gi1/0/1' in result.rendered"
+      - "'monitor session 1 destination interface Gi1/0/10 encapsulation replicate' in result.rendered"

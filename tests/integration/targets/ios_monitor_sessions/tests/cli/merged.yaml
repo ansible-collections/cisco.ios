@@ -1,0 +1,73 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_monitor_sessions merged integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Ios_monitor_sessions merged - create session
+      register: result
+      cisco.ios.ios_monitor_sessions: &id001
+        config:
+          - session: 1
+            sources:
+              - interfaces:
+                  - Gi1/0/1
+                  - Gi1/0/2
+            destination:
+              interface: Gi1/0/10
+        state: merged
+
+    - name: Ios_monitor_sessions merged - assert changed
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'monitor session 1 source interface' in result.commands | join(' ')"
+          - "'monitor session 1 destination interface Gi1/0/10' in result.commands"
+
+    - name: Ios_monitor_sessions merged - idempotent
+      register: result
+      cisco.ios.ios_monitor_sessions: *id001
+
+    - name: Ios_monitor_sessions merged - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    - name: Ios_monitor_sessions merged - dest interface change negates old dest
+      register: result
+      cisco.ios.ios_monitor_sessions:
+        config:
+          - session: 1
+            sources:
+              - interfaces:
+                  - Gi1/0/1
+                  - Gi1/0/2
+            destination:
+              interface: Gi1/0/9
+        state: merged
+
+    - name: Ios_monitor_sessions merged - assert dest change negate
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no monitor session 1 destination interface Gi1/0/10' in result.commands"
+          - "'monitor session 1 destination interface Gi1/0/9' in result.commands"
+
+    - name: Ios_monitor_sessions merged - sources only preserves existing dest
+      register: result
+      cisco.ios.ios_monitor_sessions:
+        config:
+          - session: 1
+            sources:
+              - interfaces:
+                  - Gi1/0/3
+        state: merged
+
+    - name: Ios_monitor_sessions merged - assert dest preserved
+      ansible.builtin.assert:
+        that:
+          - "'no monitor session 1 destination' not in result.commands | join(' ')"
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

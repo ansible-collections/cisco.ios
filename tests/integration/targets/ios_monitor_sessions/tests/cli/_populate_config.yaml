@@ -1,0 +1,11 @@
+---
+- name: Populate base monitor session configuration
+  cisco.ios.ios_monitor_sessions:
+    config:
+      - session: 1
+        sources:
+          - interfaces:
+              - Gi1/0/1
+        destination:
+          interface: Gi1/0/10
+    state: merged
