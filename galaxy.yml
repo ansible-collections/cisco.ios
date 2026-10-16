@@ -13,7 +13,10 @@ issues: https://github.com/ansible-collections/cisco.ios/issues
 tags: [cisco, ios, iosxe, networking]
 version: "11.6.0"
 build_ignore:
-  - .ansible-lint
+  - changelogs
+  - docs
+  - .github
+  - extensions/molecule
   - .venv
   - collections
   - .tox

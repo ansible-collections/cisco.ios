@@ -7,15 +7,21 @@ The Ansible Cisco IOS collection includes a variety of Ansible content to help a
 
 This collection has been tested against Cisco IOS XE Version 17.3 on CML.
 
+## Requirements
+
+- Ansible Core 2.16.0 or later.
+- Python 3.10 or later.
+- The `ansible.netcommon` collection, version 8.5.2 or later.
+- The `ansible.utils` collection, required transitively by `ansible.netcommon` as declared in its [collection metadata](https://github.com/ansible-collections/ansible.netcommon/blob/main/galaxy.yml).
+- Python packages declared in this collection's [`requirements.txt`](https://github.com/ansible-collections/cisco.ios/blob/main/requirements.txt) and [`ansible.netcommon`'s requirements.txt](https://github.com/ansible-collections/ansible.netcommon/blob/main/requirements.txt): `ansible-pylibssh` 1.4.0 or later, `jxmlease`, `ncclient`, `paramiko`, `xmltodict`, `grpcio`, and `protobuf`.
+
+`ansible-pylibssh` provides the libssh backend for `ansible.netcommon.network_cli`. The Paramiko backend is deprecated; use the libssh backend for new deployments. See the [`network_cli` SSH type documentation](https://docs.ansible.com/projects/ansible/latest/collections/ansible/netcommon/network_cli_connection.html#parameter-ssh_type).
+
 ## Support
 
-As a Red Hat Ansible [Certified Content](https://catalog.redhat.com/software/search?target_platforms=Red%20Hat%20Ansible%20Automation%20Platform), this collection is entitled to [support](https://access.redhat.com/support/) through [Ansible Automation Platform](https://www.redhat.com/en/technologies/management/ansible) (AAP).
+As Red Hat Ansible [Certified Content](https://catalog.redhat.com/software/search?target_platforms=Red%20Hat%20Ansible%20Automation%20Platform), this collection is entitled to support through [Ansible Automation Platform](https://www.redhat.com/en/technologies/management/ansible) (AAP). Open a support case using the **Create issue** button in the top-right corner of this collection's page in Red Hat Ansible Automation Hub.
 
-If a support case cannot be opened with Red Hat and the collection has been obtained either from [Galaxy](https://galaxy.ansible.com/ui/) or [GitHub](https://github.com/ansible-collections/cisco.ios), there is community support available at no charge.
-
-You can join us on [#network:ansible.com](https://matrix.to/#/#network:ansible.com) room or the [Ansible Forum Network Working Group](https://forum.ansible.com/g/network-wg).
-
-For more information you can check the communication section below.
+Community help is also available on [#network:ansible.com](https://matrix.to/#/#network:ansible.com) or the [Ansible Forum Network Working Group](https://forum.ansible.com/g/network-wg).
 
 ## Communication
 
@@ -100,13 +106,48 @@ Name | Description
 
 <!--end collection content-->
 
-## Installing this collection
+## Installation
 
-You can install the Cisco IOS collection with the Ansible Galaxy CLI:
+Install the certified Cisco IOS collection from Red Hat Ansible Automation Hub. Access to certified content requires a Red Hat account with an active Ansible Automation Platform subscription and an Automation Hub offline token. In the Red Hat Hybrid Cloud Console, go to **Automation Hub > Connect Hub**, load the offline token, and store it securely. See the [Red Hat token management instructions](https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.6/secure-token_management_hub).
 
-    ansible-galaxy collection install cisco.ios
+Configure your `ansible.cfg` to use the hosted Automation Hub service:
 
-You can also include it in a `requirements.yml` file and install it with `ansible-galaxy collection install -r requirements.yml`, using the format:
+```ini
+[galaxy]
+server_list = automation_hub
+
+[galaxy_server.automation_hub]
+url = https://console.redhat.com/api/automation-hub/content/published/
+auth_url = https://sso.redhat.com/auth/realms/redhat-external/protocol/openid-connect/token
+token = <your_automation_hub_token>
+```
+
+Keep the token secret and out of source control. Then install the collection:
+
+```bash
+ansible-galaxy collection install cisco.ios --server automation_hub
+```
+
+For a `requirements.yml` file, identify Automation Hub as the source:
+
+```yaml
+---
+collections:
+  - name: cisco.ios
+    source: automation_hub
+```
+
+Install the requirements with `ansible-galaxy collection install -r requirements.yml`.
+
+### Installing from Ansible Galaxy for community use
+
+For community use outside Red Hat supported environments, you can install the collection from Ansible Galaxy:
+
+```bash
+ansible-galaxy collection install cisco.ios
+```
+
+You can also add it to a `requirements.yml` file:
 
 ```yaml
 ---
