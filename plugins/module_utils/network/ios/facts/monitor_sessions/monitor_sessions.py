@@ -55,7 +55,9 @@ class Monitor_sessionsFacts(object):
                 if "interface" in source:
                     iface_str = source.pop("interface")
                     source["interfaces"] = [
-                        iface for s in iface_str.split(",") for iface in Monitor_sessionsTemplate.expand_range(s)
+                        iface
+                        for s in iface_str.split(",")
+                        for iface in Monitor_sessionsTemplate.expand_range(s)
                     ]
 
         objs = sorted(parsed.values(), key=lambda x: int(x["session"]))
