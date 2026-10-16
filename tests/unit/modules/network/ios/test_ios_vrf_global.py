@@ -290,6 +290,80 @@ class TestIosVrfGlobalModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
 
+    def test_ios_vrf_global_replaced_change_rd(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            vrf definition vlan222-vrf
+             rd 10.202.200.97:222
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    vrfs=[
+                        dict(
+                            name="vlan222-vrf",
+                            rd="10.202.200.97:223",
+                        ),
+                    ],
+                ),
+                state="replaced",
+            ),
+        )
+        commands = [
+            "vrf definition vlan222-vrf",
+            "no rd 10.202.200.97:222",
+            "rd 10.202.200.97:223",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
+    def test_ios_vrf_global_replaced_change_rd_reapplies_route_targets(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            vrf definition VRF2
+             description This is a test VRF for merged state
+             ipv4 multicast multitopology
+             ipv6 multicast multitopology
+             rd 2:3
+             route-target export 198.51.100.5:400
+             route-target import 198.51.100.5:400
+             vnet tag 200
+             vpn id 2:45
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    vrfs=[
+                        dict(
+                            name="VRF2",
+                            description="This is a test VRF for merged state",
+                            ipv4=dict(multicast=dict(multitopology=True)),
+                            ipv6=dict(multicast=dict(multitopology=True)),
+                            rd="2:4",
+                            route_target=dict(
+                                exports=["198.51.100.5:400"],
+                                imports=["198.51.100.5:400"],
+                            ),
+                            vnet=dict(tag=200),
+                            vpn=dict(id="2:45"),
+                        ),
+                    ],
+                ),
+                state="replaced",
+            ),
+        )
+        commands = [
+            "vrf definition VRF2",
+            "no rd 2:3",
+            "rd 2:4",
+            "route-target export 198.51.100.5:400",
+            "route-target import 198.51.100.5:400",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
     def test_ios_vrf_global_replaced_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
