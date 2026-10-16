@@ -15,13 +15,15 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_monitor_sessions
-short_description: Resource module to configure SPAN/RSPAN monitor sessions.
+short_description: Resource module to configure SPAN monitor sessions.
 description:
   - This module provides declarative management of SPAN (Switched Port Analyzer)
     monitor sessions on Cisco IOS-XE devices.
   - Each monitor session defines one or more source interfaces whose traffic is
     mirrored to a destination interface.
-version_added: "9.0.0"
+  - Only local SPAN (source interface to destination interface) is supported.
+    VLAN-based sources, RSPAN (remote SPAN), and ERSPAN are not covered by this module.
+version_added: "11.7.0"
 author:
   - Jorgen Spange (@jorgenspange)
 notes:
@@ -138,8 +140,7 @@ EXAMPLES = """
 
 # Commands fired:
 # ---------------
-# monitor session 1 source interface Twe1/0/2 , Twe1/0/12 , Twe1/0/45
-# monitor session 1 source interface Po2
+# monitor session 1 source interface Twe1/0/2 , Twe1/0/12 , Twe1/0/45 , Po2
 # monitor session 1 destination interface Po3 encapsulation replicate
 
 # After state:
@@ -170,7 +171,7 @@ EXAMPLES = """
 
 # Commands fired:
 # ---------------
-# monitor session 2 source interface Gi1/0/1 - 3 rx
+# monitor session 2 source interface Gi1/0/1 , Gi1/0/2 , Gi1/0/3 rx
 # monitor session 2 source interface Gi1/0/5
 # monitor session 2 destination interface Gi1/0/48
 

@@ -19,6 +19,15 @@ class Monitor_sessionsTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Monitor_sessionsTemplate, self).__init__(lines=lines, tmplt=self, module=module)
 
+    @staticmethod
+    def expand_range(iface_str):
+        """Expand IOS range notation (e.g. 'Gi1/0/1 - 3') into individual interface names."""
+        m = re.match(r"^(.+?)(\d+)\s*-\s*(\d+)$", iface_str.strip())
+        if m:
+            prefix, start, end = m.group(1), int(m.group(2)), int(m.group(3))
+            return ["{0}{1:d}".format(prefix, i) for i in range(start, end + 1)]
+        return [iface_str.strip()]
+
     # fmt: off
     PARSERS = [
         {

@@ -1,0 +1,41 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_monitor_sessions range idempotency integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Ios_monitor_sessions range idempotency - populate with individual interfaces
+      cisco.ios.ios_monitor_sessions:
+        config:
+          - session: 1
+            sources:
+              - interfaces:
+                  - Gi1/0/1
+                  - Gi1/0/2
+                  - Gi1/0/3
+            destination:
+              interface: Gi1/0/10
+        state: merged
+
+    - name: Ios_monitor_sessions range idempotency - re-apply same config
+      register: result
+      cisco.ios.ios_monitor_sessions:
+        config:
+          - session: 1
+            sources:
+              - interfaces:
+                  - Gi1/0/1
+                  - Gi1/0/2
+                  - Gi1/0/3
+            destination:
+              interface: Gi1/0/10
+        state: merged
+
+    - name: Ios_monitor_sessions range idempotency - assert idempotent even if device stored as range
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

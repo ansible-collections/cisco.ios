@@ -8,8 +8,6 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 
-import re
-
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.resource_module import (
     ResourceModule,
 )
@@ -74,17 +72,21 @@ class Monitor_sessions(ResourceModule):
         want_dest = want.get("destination")
         have_dest = have.get("destination")
 
-        replace = self.state == "replaced"
+        replace = self.state in ["replaced", "overridden"]
         self._generate_source_commands(session_id, want_sources, have_sources, replace=replace)
 
         if want_dest != have_dest:
-            if have_dest and (self.state in ["replaced", "overridden"] or not want_dest):
-                self.commands.append(
-                    "no monitor session {0} destination interface {1}".format(
-                        session_id,
-                        have_dest["interface"],
-                    ),
+            if have_dest:
+                should_negate = (not want_dest and self.state in ["replaced", "overridden"]) or (
+                    want_dest and want_dest["interface"] != have_dest["interface"]
                 )
+                if should_negate:
+                    self.commands.append(
+                        "no monitor session {0} destination interface {1}".format(
+                            session_id,
+                            have_dest["interface"],
+                        ),
+                    )
             if want_dest:
                 cmd = "monitor session {0} destination interface {1}".format(
                     session_id,
@@ -159,17 +161,8 @@ class Monitor_sessions(ResourceModule):
         """Expand IOS range notation (e.g. 'Gi1/0/1 - 3') into individual names."""
         result = []
         for iface in iface_list:
-            result.extend(Monitor_sessions._expand_range(iface))
+            result.extend(Monitor_sessionsTemplate.expand_range(iface))
         return result
-
-    @staticmethod
-    def _expand_range(iface_str):
-        """Expand 'Gi1/0/1 - 3' → ['Gi1/0/1', 'Gi1/0/2', 'Gi1/0/3']."""
-        m = re.match(r"^(.+?)(\d+)\s*-\s*(\d+)$", iface_str.strip())
-        if m:
-            prefix, start, end = m.group(1), int(m.group(2)), int(m.group(3))
-            return ["{0}{1:d}".format(prefix, i) for i in range(start, end + 1)]
-        return [iface_str.strip()]
 
     @staticmethod
     def _norm_dir(direction):

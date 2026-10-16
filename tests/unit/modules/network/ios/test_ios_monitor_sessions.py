@@ -391,3 +391,78 @@ class TestIosMonitorSessionsModule(TestIosModule):
             "monitor session 1 destination interface Gi1/0/48 encapsulation replicate",
             result["commands"],
         )
+
+    def test_ios_monitor_sessions_overridden_extra_sources(self):
+        """Overridden strips extra sources from sessions that stay in want."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            monitor session 1 source interface Gi1/0/1
+            monitor session 1 source interface Gi1/0/2
+            monitor session 1 destination interface Gi1/0/48
+            monitor session 2 source interface Gi1/0/3
+            monitor session 2 destination interface Gi1/0/47
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "session": 1,
+                        "sources": [{"interfaces": ["Gi1/0/1"]}],
+                        "destination": {"interface": "Gi1/0/48"},
+                    },
+                ],
+                state="overridden",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("no monitor session 1 source interface Gi1/0/2", result["commands"])
+        self.assertIn("no monitor session 2", result["commands"])
+        self.assertNotIn("no monitor session 1 source interface Gi1/0/1", result["commands"])
+
+    def test_ios_monitor_sessions_merged_sources_only_preserves_dest(self):
+        """Merged with sources only (no destination) does not negate existing destination."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            monitor session 1 source interface Gi1/0/1
+            monitor session 1 destination interface Gi1/0/48
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "session": 1,
+                        "sources": [{"interfaces": ["Gi1/0/2"]}],
+                    },
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("monitor session 1 source interface Gi1/0/2", result["commands"])
+        self.assertNotIn("no monitor session 1 destination interface Gi1/0/48", result["commands"])
+
+    def test_ios_monitor_sessions_merged_dest_interface_change(self):
+        """Merged negates old destination and adds new one when interface changes."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            monitor session 1 source interface Gi1/0/1
+            monitor session 1 destination interface Gi1/0/48
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "session": 1,
+                        "sources": [{"interfaces": ["Gi1/0/1"]}],
+                        "destination": {"interface": "Gi1/0/47"},
+                    },
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("no monitor session 1 destination interface Gi1/0/48", result["commands"])
+        self.assertIn("monitor session 1 destination interface Gi1/0/47", result["commands"])
