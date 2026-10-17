@@ -354,7 +354,6 @@ class TestIosInterfacesModule(TestIosModule):
             "shutdown",
             "interface GigabitEthernet4",
             "no description Ansible UT interface 4",
-            "shutdown",
             "interface GigabitEthernet5",
             "no description Ansible UT interface 5",
             "no duplex full",
@@ -376,6 +375,35 @@ class TestIosInterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
+
+    def test_ios_interfaces_overridden_idempotent_shutdown(self):
+        """overridden must not re-emit 'shutdown' for already-shutdown interfaces"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1
+             description Ansible UT interface 1
+             no shutdown
+            interface GigabitEthernet2
+             shutdown
+            interface GigabitEthernet3
+             shutdown
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "description": "Ansible UT interface 1",
+                        "name": "GigabitEthernet1",
+                        "enabled": True,
+                    },
+                ],
+                "state": "overridden",
+            },
+        )
+        # GigabitEthernet2 and GigabitEthernet3 are already shut down;
+        # overridden should not re-emit 'shutdown' for them
+        self.execute_module(changed=False, commands=[])
 
     def test_ios_interfaces_deleted(self):
         self.execute_show_command.return_value = dedent(
@@ -845,3 +873,84 @@ class TestIosInterfacesModule(TestIosModule):
         self.assertEqual(result["commands"], expected_commands)
         # Explicitly assert changed is True as well
         self.assertTrue(result["changed"])
+
+    def test_ios_interfaces_overridden_deletes_logical_interfaces(self):
+        """Logical interfaces (subinterfaces and VLANs) absent from desired state must be removed
+        with 'no interface', not just unconfigured and shut down.
+
+        Covers both branches of _is_logical_interface: the '.N' suffix (subinterface) and
+        the 'vlan' prefix (VLAN interface).
+        """
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1
+             description Ansible UT interface
+             no shutdown
+             negotiation auto
+            interface GigabitEthernet1.100
+             description Ansible UT subinterface
+             shutdown
+            interface Vlan10
+             description Ansible UT VLAN
+             no shutdown
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "GigabitEthernet1",
+                        "description": "Ansible UT interface",
+                        "enabled": True,
+                    },
+                ],
+                "state": "overridden",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("no interface GigabitEthernet1.100", result["commands"])
+        self.assertIn("no interface Vlan10", result["commands"])
+        self.assertNotIn("interface GigabitEthernet1.100", result["commands"])
+        self.assertNotIn("interface Vlan10", result["commands"])
+
+    def test_ios_interfaces_overridden_subinterface_purged_before_parent(self):
+        """'no interface <subinterface>' must precede parent interface commands.
+
+        IOS prompts for confirmation when a parent interface is reconfigured (e.g. to switchport
+        mode) while a subinterface still exists on the device. Purging the subinterface first
+        avoids the prompt entirely.
+        """
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1.100
+             description Ansible UT subinterface
+             shutdown
+            interface GigabitEthernet1
+             description Ansible UT parent
+             no switchport
+             no shutdown
+             negotiation auto
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "GigabitEthernet1",
+                        "description": "Ansible UT parent",
+                        "enabled": True,
+                        "mode": "layer2",
+                    },
+                ],
+                "state": "overridden",
+            },
+        )
+        result = self.execute_module(changed=True)
+        cmds = result["commands"]
+        no_subint_idx = cmds.index("no interface GigabitEthernet1.100")
+        parent_idx = cmds.index("interface GigabitEthernet1")
+        self.assertLess(
+            no_subint_idx,
+            parent_idx,
+            "'no interface GigabitEthernet1.100' must appear before 'interface GigabitEthernet1'",
+        )
