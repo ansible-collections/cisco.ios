@@ -90,6 +90,12 @@ class Vrf_global(ResourceModule):
             haved = {k: v for k, v in haved.items() if k in wantd or not wantd}
             wantd = {}
 
+        if self.state == "overridden":
+            vrfs_to_purge = {k: v for k, v in haved.items() if k not in wantd}
+            haved = {k: v for k, v in haved.items() if k not in vrfs_to_purge}
+            for k, have in vrfs_to_purge.items():
+                self.purge(have)
+
         if self.state in ["overridden", "deleted"]:
             for k, have in haved.items():
                 if k not in wantd:

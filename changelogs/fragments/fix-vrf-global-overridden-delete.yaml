@@ -1,0 +1,5 @@
+---
+bugfixes:
+  - ios_vrf_global - Fixed overridden state not deleting VRFs that are absent from the
+    desired config; they are now removed with "no vrf definition <name>" instead of only
+    having their attributes stripped.
