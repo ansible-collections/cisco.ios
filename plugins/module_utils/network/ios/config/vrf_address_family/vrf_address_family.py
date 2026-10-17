@@ -188,12 +188,24 @@ class Vrf_address_family(ResourceModule):
         haafs = have.get("address_families", {})
         for afk, afv in waafs.items():
             begin = len(self.commands)
-            self._compare_single_af(want=afv, have=haafs.get(afk, {}))
-            if len(self.commands) != begin:
+            have_af = haafs.get(afk) or self._find_bare_af_in_have(afk, haafs)
+            self._compare_single_af(want=afv, have=have_af or {})
+            af_absent = not (afk in haafs or self._find_bare_af_in_have(afk, haafs))
+            if len(self.commands) != begin or af_absent:
                 af_cmd = f"address-family {afv.get('afi')}"
                 if afv.get("safi"):
                     af_cmd += f" {afv.get('safi')}"
                 self.commands.insert(begin, af_cmd)
+
+    def _find_bare_af_in_have(self, afk, haafs):
+        """When safi is None (bare AF spec), find a matching have entry by afi alone."""
+        afi, safi = afk
+        if safi is not None:
+            return None
+        for k, v in haafs.items():
+            if k[0] == afi:
+                return v
+        return None
 
     def _compare_single_af(self, want, have):
         """Custom handling of single af option
