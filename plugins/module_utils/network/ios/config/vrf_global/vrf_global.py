@@ -146,8 +146,10 @@ class Vrf_global(ResourceModule):
     def _compare_rd(self, want, have):
         """IOS-XE requires removing the existing RD before setting a new one.
 
-        :return: True when an existing RD is replaced. That removal also
-            deletes route-targets on the device.
+        :return: True when the removal of an existing RD also drops route-targets
+            that the wanted config still asks for, so they must be configured
+            again. A removal with nothing wanted back (``deleted``/``overridden``)
+            returns False, because there ``have``'s targets must still be negated.
         """
         want_rd = want.get("rd")
         have_rd = have.get("rd")
@@ -161,6 +163,10 @@ class Vrf_global(ResourceModule):
             return True
         elif have_rd:
             self.addcmd({"rd": have_rd}, "rd", negate=True)
+            # Removing the RD deletes the route-targets too, so wanted ones have
+            # to be applied again. When nothing is wanted back the targets still
+            # need their ``no`` commands, so leave ``have`` alone.
+            return bool(want.get("route_target"))
         elif want_rd:
             self.addcmd({"rd": want_rd}, "rd", negate=False)
         return False

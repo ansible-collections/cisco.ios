@@ -4,4 +4,6 @@ bugfixes:
     ios_vrf_global - Fix ``state: replaced`` failing to update the RD of an existing VRF
     on IOS-XE, which requires ``no rd <old>`` before ``rd <new>``. The module now emits
     the removal command first whenever the route distinguisher changes, then configures
-    route-targets again because IOS-XE deletes them with the RD.
+    route-targets again because IOS-XE deletes them with the RD. The same re-apply
+    happens when ``state: replaced`` removes the RD while route-targets are still
+    wanted.

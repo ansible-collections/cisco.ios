@@ -94,5 +94,23 @@
       ansible.builtin.assert:
         that:
           - result['changed'] == false
+
+    - name: Remove the RD while keeping the route-targets
+      register: result
+      cisco.ios.ios_vrf_global:
+        config:
+          vrfs:
+            - name: VRF2
+              route_target:
+                exports:
+                  - "198.51.100.5:400"
+                imports:
+                  - "198.51.100.5:400"
+        state: replaced
+
+    - name: Assert that removing the RD re-applies the route-targets
+      ansible.builtin.assert:
+        that:
+          - "{{ replaced_remove_rd['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

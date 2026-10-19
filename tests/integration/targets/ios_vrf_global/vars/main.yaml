@@ -111,6 +111,13 @@ replaced_change_rd:
     - route-target export 198.51.100.5:400
     - route-target import 198.51.100.5:400
 
+replaced_remove_rd:
+  commands:
+    - vrf definition VRF2
+    - no rd 2:4
+    - route-target export 198.51.100.5:400
+    - route-target import 198.51.100.5:400
+
 overridden:
   before:
     vrfs:
