@@ -111,6 +111,10 @@
     - name: Assert that removing the RD re-applies the route-targets
       ansible.builtin.assert:
         that:
-          - "{{ replaced_remove_rd['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - "'no rd 2:4' in result['commands']"
+          # IOS-XE drops the route-targets with the RD, so they must be configured again.
+          - "'route-target export 198.51.100.5:400' in result['commands']"
+          - "'route-target import 198.51.100.5:400' in result['commands']"
+          - "result['commands'].index('no rd 2:4') < result['commands'].index('route-target export 198.51.100.5:400')"
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
