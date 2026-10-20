@@ -510,7 +510,6 @@ class TestIosVlansModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
-            "no vlan 1",
             "no vlan 150",
             "no vlan 888",
             "vlan 200",
@@ -569,7 +568,6 @@ class TestIosVlansModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
-            "no vlan 1",
             "no vlan 501",
             "no vlan 502",
             "vlan 500",
@@ -620,7 +618,6 @@ class TestIosVlansModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
-            "no vlan 1",
             "vlan 500",
             "name Test_VLAN",
             "no state active",
@@ -682,7 +679,6 @@ class TestIosVlansModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
-            "no vlan 1",
             "vlan 500",
             "name Primary_VLAN_Updated",
             "private-vlan isolated",

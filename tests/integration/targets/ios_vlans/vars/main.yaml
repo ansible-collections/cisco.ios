@@ -281,7 +281,6 @@ overridden:
       state: active
       vlan_id: 1005
   commands:
-    - no vlan 1
     - no vlan 20
     - no vlan 30
     - vlan 10

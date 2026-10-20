@@ -402,7 +402,6 @@ EXAMPLES = """
 #   vlan_id: 1005
 
 # commands:
-# - no vlan 1
 # - no vlan 10
 # - no vlan 30
 # - no vlan 44
