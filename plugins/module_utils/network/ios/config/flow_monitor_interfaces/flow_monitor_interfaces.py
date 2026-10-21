@@ -105,16 +105,35 @@ class Flow_monitor_interfaces(ResourceModule):
 
         for key, want_m in want_monitors.items():
             have_m = have_monitors.get(key, {})
-            if want_m != have_m:
-                proto = want_m.get("protocol", "ip")
+            # Normalize protocol default before comparison — gathered always returns
+            # 'protocol: ip' but want often omits it; they are semantically equal.
+            want_norm = dict(want_m)
+            want_norm.setdefault("protocol", "ip")
+            have_norm = dict(have_m)
+            have_norm.setdefault("protocol", "ip")
+            if want_norm == have_norm:
+                continue
+            # Sampler changed on an existing (monitor, direction): remove old assignment
+            # first so IOS-XE does not keep both or toggle the entry off.
+            if have_m and have_m.get("sampler") != want_m.get("sampler"):
+                proto = have_m.get("protocol", "ip")
                 cmds.append(
-                    "{0} flow monitor {1} sampler {2} {3}".format(
+                    "no {0} flow monitor {1} sampler {2} {3}".format(
                         proto,
-                        want_m["monitor"],
-                        want_m["sampler"],
-                        want_m["direction"],
+                        have_m["monitor"],
+                        have_m["sampler"],
+                        have_m["direction"],
                     ),
                 )
+            proto = want_m.get("protocol", "ip")
+            cmds.append(
+                "{0} flow monitor {1} sampler {2} {3}".format(
+                    proto,
+                    want_m["monitor"],
+                    want_m["sampler"],
+                    want_m["direction"],
+                ),
+            )
 
         if cmds:
             self.commands.append("interface {0}".format(intf_name))
