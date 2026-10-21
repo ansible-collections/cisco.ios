@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# Copyright 2024 Red Hat
+# Copyright 2026 Red Hat
 # GNU General Public License v3.0+
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
@@ -341,7 +341,7 @@ after:
     of the parameters above.
 commands:
   description: The set of commands pushed to the remote device.
-  returned: when I(state) is C(merged), C(replaced), C(overridden), C(deleted) or C(purged)
+  returned: when I(state) is C(merged), C(replaced), C(overridden), or C(deleted)
   type: list
   sample:
     - monitor session 1 source interface Po2
