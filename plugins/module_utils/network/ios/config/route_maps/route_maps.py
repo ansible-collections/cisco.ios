@@ -195,7 +195,16 @@ class Route_maps(ResourceModule):
                 if isinstance(have_v, dict) and have_v.get("communities"):
                     have_v = dict(have_v)
                     have_v["communities"] = sorted(have_v["communities"])
-            if v != have_v and k not in ["ip", "ipv6", "action", "sequence", "community"]:
+            if (
+                k == "large_community"
+                and v != have_v
+                and have_v
+                and self.state in ["replaced", "overridden"]
+            ):
+                # IOS appends to an existing large-community line, so remove it first
+                self.compare(parsers=parsers, want={}, have={compare_type: {k: have_v}})
+                self.compare(parsers=parsers, want={compare_type: {k: v}}, have=dict())
+            elif v != have_v and k not in ["ip", "ipv6", "action", "sequence", "community"]:
                 if have_v:
                     self.compare(
                         parsers=parsers,

@@ -1104,6 +1104,44 @@ class TestIosRouteMapsModule(TestIosModule):
         result = self.changed(False)
         self.assertEqual(result["commands"], [])
 
+    def test_ios_route_maps_large_community_replaced(self):
+        """Replaced removes existing match/set large-community lines before applying new values."""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_LC_REPL",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                match=dict(large_community=["65000:100:0"]),
+                                set=dict(large_community=dict(communities=["65000:400:0"])),
+                            ),
+                        ],
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        self.load_fixtures()
+        self.execute_show_command.side_effect = (
+            lambda *args, **kwargs: "route-map TEST_LC_REPL permit 10\n"
+            + " match large-community 65000:100:0 65000:200:0\n"
+            + " set large-community 65000:100:0 65000:300:0 additive\n"
+        )
+        result = self.changed(True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "route-map TEST_LC_REPL permit 10",
+                "no match large-community 65000:100:0 65000:200:0",
+                "match large-community 65000:100:0",
+                "no set large-community 65000:100:0 65000:300:0 additive",
+                "set large-community 65000:400:0",
+            ],
+        )
+
     def test_ios_route_maps_large_community_parsed(self):
         """Parsed state extracts large-community values correctly."""
         set_module_args(
