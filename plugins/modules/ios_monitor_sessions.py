@@ -19,18 +19,21 @@ short_description: Resource module to configure SPAN monitor sessions.
 description:
   - This module provides declarative management of SPAN (Switched Port Analyzer)
     monitor sessions on Cisco IOS-XE devices.
-  - Each monitor session defines one or more source interfaces whose traffic is
-    mirrored to a destination interface.
-  - Only local SPAN (source interface to destination interface) is supported.
-    VLAN-based sources, RSPAN (remote SPAN), and ERSPAN are not covered by this module.
+  - Local SPAN (source interface to destination interface) is supported on
+    Catalyst switches.
+  - ERSPAN source sessions are supported on IOS-XE routers such as C8000V,
+    where local SPAN is rejected (NGIO switch only).
+  - VLAN-based sources and RSPAN are not covered by this module.
 version_added: "11.7.0"
 author:
   - Jorgen Spange (@jorgenspange)
 notes:
-  - Tested against Cisco IOS-XE on Cat9k switches.
+  - Tested against Cisco IOS-XE on Cat9k switches (local SPAN) and C8000V (ERSPAN).
   - This module works with connection C(network_cli).
   - Interface names in C(config) must match the abbreviated form used in the
-    running configuration (e.g. C(Gi1/0/1), C(Po2), C(Twe1/0/2)).
+    running configuration (e.g. C(Gi1/0/1), C(Gi2), C(Po2), C(Twe1/0/2)).
+  - Local SPAN is not supported on IOS-XE routers without an NGIO switch module.
+    Use C(session_type=erspan-source) on those platforms.
 options:
   config:
     description: List of monitor session configurations.
@@ -41,6 +44,16 @@ options:
         description: Monitor session number.
         type: int
         required: true
+      session_type:
+        description:
+          - Session type as configured on the device.
+          - C(local) is the Catalyst one-line SPAN syntax.
+          - C(erspan-source) is required on IOS-XE routers (C8000V, ISR, C8300)
+            that reject local SPAN.
+        type: str
+        choices:
+          - local
+          - erspan-source
       sources:
         description: List of source interface specifications.
         type: list
@@ -67,17 +80,25 @@ options:
               - both
             default: both
       destination:
-        description: Destination interface configuration.
+        description: Destination configuration (local SPAN interface or ERSPAN).
         type: dict
         suboptions:
           interface:
-            description: Destination interface name.
+            description: Destination interface name for local SPAN.
             type: str
-            required: true
           encapsulation_replicate:
             description: Replicate the encapsulation of the monitored traffic.
             type: bool
             default: false
+          erspan_id:
+            description: ERSPAN ID for C(session_type=erspan-source).
+            type: int
+          ip_address:
+            description: ERSPAN destination IP address.
+            type: str
+          origin_ip_address:
+            description: ERSPAN origin IP address.
+            type: str
   running_config:
     description:
       - This option is used only with state I(parsed).
@@ -148,6 +169,33 @@ EXAMPLES = """
 # monitor session 1 source interface Twe1/0/2 , Twe1/0/12 , Twe1/0/45
 # monitor session 1 source interface Po2
 # monitor session 1 destination interface Po3 encapsulation replicate
+
+# Using state: merged (ERSPAN on IOS-XE routers)
+
+- name: Configure ERSPAN source session on C8000V
+  cisco.ios.ios_monitor_sessions:
+    config:
+      - session: 1
+        session_type: erspan-source
+        sources:
+          - interfaces:
+              - Gi2
+              - Gi3
+        destination:
+          erspan_id: 10
+          ip_address: 192.0.2.1
+          origin_ip_address: 192.0.2.2
+    state: merged
+
+# Commands fired:
+# ---------------
+# monitor session 1 type erspan-source
+# source interface Gi2 , Gi3
+# monitor session 1 type erspan-source
+# destination
+# erspan-id 10
+# ip address 192.0.2.1
+# origin ip address 192.0.2.2
 
 # Using state: merged with direction
 

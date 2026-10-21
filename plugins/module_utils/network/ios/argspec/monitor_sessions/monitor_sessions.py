@@ -18,6 +18,10 @@ class Monitor_sessionsArgs(object):  # pylint: disable=R0903  # NOSONAR
             "elements": "dict",
             "options": {
                 "session": {"type": "int", "required": True},
+                "session_type": {
+                    "type": "str",
+                    "choices": ["local", "erspan-source"],
+                },
                 "sources": {
                     "type": "list",
                     "elements": "dict",
@@ -37,8 +41,11 @@ class Monitor_sessionsArgs(object):  # pylint: disable=R0903  # NOSONAR
                 "destination": {
                     "type": "dict",
                     "options": {
-                        "interface": {"type": "str", "required": True},
+                        "interface": {"type": "str"},
                         "encapsulation_replicate": {"type": "bool", "default": False},
+                        "erspan_id": {"type": "int"},
+                        "ip_address": {"type": "str"},
+                        "origin_ip_address": {"type": "str"},
                     },
                 },
             },

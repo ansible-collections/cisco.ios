@@ -9,12 +9,15 @@
       cisco.ios.ios_monitor_sessions:
         config:
           - session: 1
+            session_type: erspan-source
             sources:
               - interfaces:
-                  - "{{ test_interface }}"
-                  - "{{ test_interface2 }}"
+                  - "{{ monitor_if1 }}"
+                  - "{{ monitor_if2 }}"
             destination:
-              interface: "{{ monitor_dest }}"
+              erspan_id: "{{ erspan_id }}"
+              ip_address: "{{ erspan_ip }}"
+              origin_ip_address: "{{ erspan_origin }}"
         state: merged
 
     - name: Ios_monitor_sessions replaced - swap sources
@@ -22,21 +25,24 @@
       cisco.ios.ios_monitor_sessions: &id001
         config:
           - session: 1
+            session_type: erspan-source
             sources:
               - interfaces:
-                  - "{{ test_interface2 }}"
-                  - "{{ monitor_if_src3 }}"
+                  - "{{ monitor_if2 }}"
+                  - "{{ monitor_if3 }}"
             destination:
-              interface: "{{ monitor_dest }}"
+              erspan_id: "{{ erspan_id }}"
+              ip_address: "{{ erspan_ip }}"
+              origin_ip_address: "{{ erspan_origin }}"
         state: replaced
 
     - name: Ios_monitor_sessions replaced - assert
       ansible.builtin.assert:
         that:
           - result.changed == true
-          - "'no monitor session 1 source interface ' + test_interface in result.commands"
-          - "'monitor session 1 source interface ' + monitor_if_src3 in result.commands"
-          - "'no monitor session 1 source interface ' + test_interface2 not in result.commands"
+          - "'no source interface ' ~ monitor_if1 in result.commands"
+          - "'source interface ' ~ monitor_if3 in result.commands"
+          - "'no source interface ' ~ monitor_if2 not in result.commands"
 
     - name: Ios_monitor_sessions replaced - idempotent
       register: result

@@ -14,4 +14,6 @@
       - result.changed == false
       - result.parsed | length == 1
       - result.parsed[0].session == 1
-      - result.parsed[0].destination.interface == monitor_dest
+      - result.parsed[0].session_type == "erspan-source"
+      - result.parsed[0].destination.ip_address == erspan_ip
+      - result.parsed[0].destination.erspan_id == erspan_id

@@ -1,11 +1,14 @@
 ---
-- name: Populate base monitor session configuration
+- name: Populate base ERSPAN monitor session configuration
   cisco.ios.ios_monitor_sessions:
     config:
       - session: 1
+        session_type: erspan-source
         sources:
           - interfaces:
-              - "{{ test_interface }}"
+              - "{{ monitor_if1 }}"
         destination:
-          interface: "{{ monitor_dest }}"
+          erspan_id: "{{ erspan_id }}"
+          ip_address: "{{ erspan_ip }}"
+          origin_ip_address: "{{ erspan_origin }}"
     state: merged

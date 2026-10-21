@@ -9,13 +9,16 @@
       cisco.ios.ios_monitor_sessions:
         config:
           - session: 1
+            session_type: erspan-source
             sources:
               - interfaces:
-                  - "{{ test_interface }}"
-                  - "{{ test_interface2 }}"
-                  - "{{ monitor_if_src3 }}"
+                  - "{{ monitor_if1 }}"
+                  - "{{ monitor_if2 }}"
+                  - "{{ monitor_if3 }}"
             destination:
-              interface: "{{ monitor_dest }}"
+              erspan_id: "{{ erspan_id }}"
+              ip_address: "{{ erspan_ip }}"
+              origin_ip_address: "{{ erspan_origin }}"
         state: merged
 
     - name: Ios_monitor_sessions gathered - gather facts
@@ -29,7 +32,8 @@
           - result.changed == false
           - result.gathered | length == 1
           - result.gathered[0].session == 1
-          - result.gathered[0].destination.interface == monitor_dest
+          - result.gathered[0].session_type == "erspan-source"
+          - result.gathered[0].destination.ip_address == erspan_ip
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

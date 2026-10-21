@@ -466,3 +466,98 @@ class TestIosMonitorSessionsModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertIn("no monitor session 1 destination interface Gi1/0/48", result["commands"])
         self.assertIn("monitor session 1 destination interface Gi1/0/47", result["commands"])
+
+    def test_ios_monitor_sessions_erspan_merged(self):
+        """Merge ERSPAN source session onto empty device."""
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "session": 1,
+                        "session_type": "erspan-source",
+                        "sources": [{"interfaces": ["Gi2", "Gi3"]}],
+                        "destination": {
+                            "erspan_id": 10,
+                            "ip_address": "192.0.2.1",
+                            "origin_ip_address": "192.0.2.2",
+                        },
+                    },
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("monitor session 1 type erspan-source", result["commands"])
+        self.assertIn("source interface Gi2 , Gi3", result["commands"])
+        self.assertIn("erspan-id 10", result["commands"])
+        self.assertIn("ip address 192.0.2.1", result["commands"])
+        self.assertIn("origin ip address 192.0.2.2", result["commands"])
+
+    def test_ios_monitor_sessions_erspan_merged_idempotent(self):
+        """ERSPAN merged is idempotent when device stores a source range."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            monitor session 1 type erspan-source
+             source interface Gi2 - 3
+             destination
+              erspan-id 10
+              mtu 1464
+              ip address 192.0.2.1
+              ipv6 dscp 0
+              ipv6 ttl 0
+              origin ip address 192.0.2.2
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "session": 1,
+                        "session_type": "erspan-source",
+                        "sources": [{"interfaces": ["Gi2", "Gi3"]}],
+                        "destination": {
+                            "erspan_id": 10,
+                            "ip_address": "192.0.2.1",
+                            "origin_ip_address": "192.0.2.2",
+                        },
+                    },
+                ],
+                state="merged",
+            ),
+        )
+        self.execute_module(changed=False, commands=[])
+
+    def test_ios_monitor_sessions_erspan_replaced_source(self):
+        """ERSPAN replaced removes extra sources under type submode."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            monitor session 1 type erspan-source
+             source interface Gi2 - 3
+             destination
+              erspan-id 10
+              ip address 192.0.2.1
+              origin ip address 192.0.2.2
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "session": 1,
+                        "session_type": "erspan-source",
+                        "sources": [{"interfaces": ["Gi3", "Gi4"]}],
+                        "destination": {
+                            "erspan_id": 10,
+                            "ip_address": "192.0.2.1",
+                            "origin_ip_address": "192.0.2.2",
+                        },
+                    },
+                ],
+                state="replaced",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("no source interface Gi2", result["commands"])
+        self.assertIn("source interface Gi4", result["commands"])
+        self.assertNotIn("no source interface Gi3", result["commands"])

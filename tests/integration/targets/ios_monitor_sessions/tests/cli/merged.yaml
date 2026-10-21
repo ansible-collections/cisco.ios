@@ -10,20 +10,24 @@
       cisco.ios.ios_monitor_sessions: &id001
         config:
           - session: 1
+            session_type: erspan-source
             sources:
               - interfaces:
-                  - "{{ test_interface }}"
-                  - "{{ test_interface2 }}"
+                  - "{{ monitor_if1 }}"
+                  - "{{ monitor_if2 }}"
             destination:
-              interface: "{{ monitor_dest }}"
+              erspan_id: "{{ erspan_id }}"
+              ip_address: "{{ erspan_ip }}"
+              origin_ip_address: "{{ erspan_origin }}"
         state: merged
 
     - name: Ios_monitor_sessions merged - assert changed
       ansible.builtin.assert:
         that:
           - result.changed == true
-          - "'monitor session 1 source interface' in result.commands | join(' ')"
-          - "'monitor session 1 destination interface ' + monitor_dest in result.commands"
+          - "'monitor session 1 type erspan-source' in result.commands"
+          - "'source interface' in result.commands | join(' ')"
+          - "'ip address ' ~ erspan_ip in result.commands"
 
     - name: Ios_monitor_sessions merged - idempotent
       register: result
@@ -34,40 +38,44 @@
         that:
           - result.changed == false
 
-    - name: Ios_monitor_sessions merged - dest interface change negates old dest
+    - name: Ios_monitor_sessions merged - dest change
       register: result
       cisco.ios.ios_monitor_sessions:
         config:
           - session: 1
+            session_type: erspan-source
             sources:
               - interfaces:
-                  - "{{ test_interface }}"
-                  - "{{ test_interface2 }}"
+                  - "{{ monitor_if1 }}"
+                  - "{{ monitor_if2 }}"
             destination:
-              interface: "{{ monitor_dest_alt }}"
+              erspan_id: "{{ erspan_id_alt }}"
+              ip_address: "{{ erspan_ip_alt }}"
+              origin_ip_address: "{{ erspan_origin_alt }}"
         state: merged
 
-    - name: Ios_monitor_sessions merged - assert dest change negate
+    - name: Ios_monitor_sessions merged - assert dest change
       ansible.builtin.assert:
         that:
           - result.changed == true
-          - "'no monitor session 1 destination interface ' + monitor_dest in result.commands"
-          - "'monitor session 1 destination interface ' + monitor_dest_alt in result.commands"
+          - "'erspan-id ' ~ erspan_id_alt in result.commands"
+          - "'ip address ' ~ erspan_ip_alt in result.commands"
 
     - name: Ios_monitor_sessions merged - sources only preserves existing dest
       register: result
       cisco.ios.ios_monitor_sessions:
         config:
           - session: 1
+            session_type: erspan-source
             sources:
               - interfaces:
-                  - "{{ monitor_if_src3 }}"
+                  - "{{ monitor_if3 }}"
         state: merged
 
     - name: Ios_monitor_sessions merged - assert dest preserved
       ansible.builtin.assert:
         that:
-          - "'no monitor session 1 destination' not in result.commands | join(' ')"
+          - "'ip address' not in result.commands | join(' ')"
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

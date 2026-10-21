@@ -9,13 +9,15 @@
       cisco.ios.ios_monitor_sessions:
         config:
           - session: 1
+            session_type: erspan-source
             sources:
               - interfaces:
-                  - "{{ test_interface }}"
-                  - "{{ test_interface2 }}"
-                  - "{{ monitor_if_src3 }}"
+                  - "{{ monitor_if1 }}"
+                  - "{{ monitor_if2 }}"
             destination:
-              interface: "{{ monitor_dest }}"
+              erspan_id: "{{ erspan_id }}"
+              ip_address: "{{ erspan_ip }}"
+              origin_ip_address: "{{ erspan_origin }}"
         state: merged
 
     - name: Ios_monitor_sessions range idempotency - re-apply same config
@@ -23,13 +25,15 @@
       cisco.ios.ios_monitor_sessions:
         config:
           - session: 1
+            session_type: erspan-source
             sources:
               - interfaces:
-                  - "{{ test_interface }}"
-                  - "{{ test_interface2 }}"
-                  - "{{ monitor_if_src3 }}"
+                  - "{{ monitor_if1 }}"
+                  - "{{ monitor_if2 }}"
             destination:
-              interface: "{{ monitor_dest }}"
+              erspan_id: "{{ erspan_id }}"
+              ip_address: "{{ erspan_ip }}"
+              origin_ip_address: "{{ erspan_origin }}"
         state: merged
 
     - name: Ios_monitor_sessions range idempotency - assert idempotent even if device stored as range
