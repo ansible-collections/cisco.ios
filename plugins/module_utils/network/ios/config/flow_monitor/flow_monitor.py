@@ -265,7 +265,7 @@ class Flow_monitor(ResourceModule):
         if options.get("application_table_timeout") is not None:
             cmds.append(
                 " option application-table timeout {0}".format(
-                    options["application_table_timeout"]
+                    options["application_table_timeout"],
                 ),
             )
         if options.get("vrf_table_timeout") is not None:
