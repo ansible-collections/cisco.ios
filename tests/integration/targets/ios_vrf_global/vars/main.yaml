@@ -103,6 +103,14 @@ replaced:
         vnet:
           tag: 300
 
+replaced_change_rd:
+  commands:
+    - vrf definition VRF2
+    - no rd 2:3
+    - rd 2:4
+    - route-target export 198.51.100.5:400
+    - route-target import 198.51.100.5:400
+
 overridden:
   before:
     vrfs:
