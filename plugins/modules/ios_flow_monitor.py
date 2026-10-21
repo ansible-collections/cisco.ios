@@ -151,17 +151,11 @@ options:
             description: Flow record collect fields.
             type: dict
             suboptions:
-              routing_source_as:
-                description: Collect source AS number (2-octet).
-                type: bool
               routing_source_as_4octet:
                 description: Collect 4-octet source AS number.
                 type: bool
               routing_source_as_peer:
                 description: Collect peer source AS number.
-                type: bool
-              routing_destination_as:
-                description: Collect destination AS number (2-octet).
                 type: bool
               routing_destination_as_4octet:
                 description: Collect 4-octet destination AS number.
@@ -184,17 +178,11 @@ options:
               transport_source_port:
                 description: Collect transport source port.
                 type: bool
-              counter_bytes:
-                description: Collect byte counter.
-                type: bool
               counter_bytes_long:
                 description: Collect 64-bit byte counter.
                 type: bool
               counter_bytes_layer2:
                 description: Collect Layer 2 byte counter.
-                type: bool
-              counter_packets:
-                description: Collect packet counter.
                 type: bool
               counter_packets_long:
                 description: Collect 64-bit packet counter.
@@ -467,8 +455,8 @@ EXAMPLES = """
             routing_destination_as_4octet: true
             routing_next_hop_ipv4: true
             transport_tcp_flags: true
-            counter_bytes: true
-            counter_packets: true
+            counter_bytes_long: true
+            counter_packets_long: true
             timestamp_sys_uptime_first: true
             timestamp_sys_uptime_last: true
             interface_input: true
