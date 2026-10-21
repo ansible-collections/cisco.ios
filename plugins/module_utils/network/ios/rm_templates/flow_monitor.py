@@ -237,22 +237,10 @@ class Flow_monitorTemplate(NetworkTemplate):
         },
         # ── flow record collect additions ────────────────────────────────
         {
-            "name": "flow_record.collect.routing_source_as",
-            "getval": re.compile(r"^\s+collect routing source as$"),
-            "setval": " collect routing source as",
-            "result": {"records": {"{{ name }}": {"collect": {"routing_source_as": True}}}},
-        },
-        {
             "name": "flow_record.collect.routing_source_as_peer",
             "getval": re.compile(r"^\s+collect routing source as peer$"),
             "setval": " collect routing source as peer",
             "result": {"records": {"{{ name }}": {"collect": {"routing_source_as_peer": True}}}},
-        },
-        {
-            "name": "flow_record.collect.routing_destination_as",
-            "getval": re.compile(r"^\s+collect routing destination as$"),
-            "setval": " collect routing destination as",
-            "result": {"records": {"{{ name }}": {"collect": {"routing_destination_as": True}}}},
         },
         {
             "name": "flow_record.collect.routing_destination_as_peer",
@@ -469,18 +457,6 @@ class Flow_monitorTemplate(NetworkTemplate):
             "getval": re.compile(r"^\s+collect transport tcp flags$"),
             "setval": " collect transport tcp flags",
             "result": {"records": {"{{ name }}": {"collect": {"transport_tcp_flags": True}}}},
-        },
-        {
-            "name": "flow_record.collect.counter_bytes",
-            "getval": re.compile(r"^\s+collect counter bytes$"),
-            "setval": " collect counter bytes",
-            "result": {"records": {"{{ name }}": {"collect": {"counter_bytes": True}}}},
-        },
-        {
-            "name": "flow_record.collect.counter_packets",
-            "getval": re.compile(r"^\s+collect counter packets$"),
-            "setval": " collect counter packets",
-            "result": {"records": {"{{ name }}": {"collect": {"counter_packets": True}}}},
         },
         {
             "name": "flow_record.collect.timestamp_sys_uptime_first",

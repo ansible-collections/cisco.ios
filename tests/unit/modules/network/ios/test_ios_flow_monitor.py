@@ -68,8 +68,8 @@ class TestIosFlowMonitorModule(TestIosModule):
                                 "routing_destination_as_4octet": True,
                                 "routing_next_hop_ipv4": True,
                                 "transport_tcp_flags": True,
-                                "counter_bytes": True,
-                                "counter_packets": True,
+                                "counter_bytes_long": True,
+                                "counter_packets_long": True,
                                 "timestamp_sys_uptime_first": True,
                                 "timestamp_sys_uptime_last": True,
                                 "interface_input": True,
@@ -119,7 +119,7 @@ class TestIosFlowMonitorModule(TestIosModule):
         self.assertIn(" match flow direction", commands)
         self.assertIn(" match interface output", commands)
         self.assertIn(" collect routing source as 4-octet", commands)
-        self.assertIn(" collect counter bytes", commands)
+        self.assertIn(" collect counter bytes long", commands)
         self.assertIn(" collect timestamp sys-uptime first", commands)
 
         # Check exporter block
@@ -157,8 +157,8 @@ class TestIosFlowMonitorModule(TestIosModule):
              collect routing destination as 4-octet
              collect routing next-hop address ipv4
              collect transport tcp flags
-             collect counter bytes
-             collect counter packets
+             collect counter bytes long
+             collect counter packets long
              collect timestamp sys-uptime first
              collect timestamp sys-uptime last
              collect interface input
@@ -197,8 +197,8 @@ class TestIosFlowMonitorModule(TestIosModule):
                                 "routing_destination_as_4octet": True,
                                 "routing_next_hop_ipv4": True,
                                 "transport_tcp_flags": True,
-                                "counter_bytes": True,
-                                "counter_packets": True,
+                                "counter_bytes_long": True,
+                                "counter_packets_long": True,
                                 "timestamp_sys_uptime_first": True,
                                 "timestamp_sys_uptime_last": True,
                                 "interface_input": True,
@@ -245,7 +245,7 @@ class TestIosFlowMonitorModule(TestIosModule):
             """\
             flow record FLOW_RECORD_IPV4
              match ipv4 source address
-             collect counter bytes
+             collect counter bytes long
             flow exporter FLOW_EXPORTER_1
              destination 192.0.2.1 vrf MGMT
              transport udp 2055
@@ -344,7 +344,7 @@ class TestIosFlowMonitorModule(TestIosModule):
                         {
                             "name": "FLOW_RECORD_IPV4",
                             "match": {"ipv4_source_address": True},
-                            "collect": {"counter_bytes": True},
+                            "collect": {"counter_bytes_long": True},
                         },
                     ],
                     "monitors": [
@@ -383,8 +383,8 @@ class TestIosFlowMonitorModule(TestIosModule):
                      match flow direction
                      match interface output
                      collect routing source as 4-octet
-                     collect counter bytes
-                     collect counter packets
+                     collect counter bytes long
+                     collect counter packets long
                     flow exporter FLOW_EXPORTER_1
                      destination 192.0.2.1 vrf MGMT
                      source Loopback0
@@ -408,7 +408,7 @@ class TestIosFlowMonitorModule(TestIosModule):
         self.assertEqual(len(parsed["records"]), 1)
         self.assertEqual(parsed["records"][0]["name"], "FLOW_RECORD_IPV4")
         self.assertTrue(parsed["records"][0]["match"]["ipv4_tos"])
-        self.assertTrue(parsed["records"][0]["collect"]["counter_bytes"])
+        self.assertTrue(parsed["records"][0]["collect"]["counter_bytes_long"])
 
         self.assertEqual(len(parsed["exporters"]), 1)
         exp = parsed["exporters"][0]
