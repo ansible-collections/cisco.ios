@@ -83,6 +83,12 @@ class Monitor_sessions(ResourceModule):  # NOSONAR
             return
 
         if session_id in self._erspan:
+            if self.state in ["replaced", "overridden"] and self._erspan_dest_needs_clearing(
+                want_dest,
+                have_dest,
+            ):
+                self.commands.append("monitor session {0} type erspan-source".format(session_id))
+                self.commands.append("no destination")
             if want_dest:
                 self._set_erspan_destination(session_id, want_dest)
             return
@@ -170,6 +176,19 @@ class Monitor_sessions(ResourceModule):  # NOSONAR
             cmd += " {0}".format(direction)
         self.commands.append(cmd)
 
+    @staticmethod
+    def _erspan_dest_needs_clearing(want_dest, have_dest):
+        """Return True if the device has ERSPAN destination settings the want does not set.
+
+        A changed value is overwritten in place, so only settings which are
+        present on the device but omitted from want need an explicit removal.
+        """
+        if not have_dest:
+            return False
+        keys = ("erspan_id", "ip_address", "origin_ip_address")
+        want_dest = want_dest or {}
+        return any(have_dest.get(key) is not None and want_dest.get(key) is None for key in keys)
+
     def _set_erspan_destination(self, session_id, dest):
         self.commands.append("monitor session {0} type erspan-source".format(session_id))
         self.commands.append("destination")
@@ -212,7 +231,7 @@ class Monitor_sessions(ResourceModule):  # NOSONAR
             return True
         dest = entry.get("destination") or {}
         return bool(
-            dest.get("ip_address") or dest.get("erspan_id") or dest.get("origin_ip_address")
+            dest.get("ip_address") or dest.get("erspan_id") or dest.get("origin_ip_address"),
         )
 
     @staticmethod

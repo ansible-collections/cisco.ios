@@ -561,3 +561,100 @@ class TestIosMonitorSessionsModule(TestIosModule):
         self.assertIn("no source interface Gi2", result["commands"])
         self.assertIn("source interface Gi4", result["commands"])
         self.assertNotIn("no source interface Gi3", result["commands"])
+
+    def _erspan_have(self):
+        return dedent(
+            """\
+            monitor session 1 type erspan-source
+             source interface Gi2
+             destination
+              erspan-id 10
+              ip address 192.0.2.1
+              origin ip address 192.0.2.2
+            """,
+        )
+
+    def test_ios_monitor_sessions_erspan_replaced_omitted_destination(self):
+        """Replaced clears the ERSPAN destination when want omits it."""
+        self.execute_show_command.return_value = self._erspan_have()
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "session": 1,
+                        "session_type": "erspan-source",
+                        "sources": [{"interfaces": ["Gi2"]}],
+                    },
+                ],
+                state="replaced",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["monitor session 1 type erspan-source", "no destination"],
+        )
+
+    def test_ios_monitor_sessions_erspan_replaced_partial_destination(self):
+        """Replaced clears then re-applies when want drops one ERSPAN destination setting."""
+        self.execute_show_command.return_value = self._erspan_have()
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "session": 1,
+                        "session_type": "erspan-source",
+                        "sources": [{"interfaces": ["Gi2"]}],
+                        "destination": {"erspan_id": 10, "ip_address": "192.0.2.1"},
+                    },
+                ],
+                state="replaced",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        commands = result["commands"]
+        self.assertIn("no destination", commands)
+        self.assertNotIn("origin ip address 192.0.2.2", commands)
+        self.assertLess(commands.index("no destination"), commands.index("erspan-id 10"))
+
+    def test_ios_monitor_sessions_erspan_replaced_changed_ip_not_cleared(self):
+        """A changed ERSPAN value is overwritten in place, without clearing the destination."""
+        self.execute_show_command.return_value = self._erspan_have()
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "session": 1,
+                        "session_type": "erspan-source",
+                        "sources": [{"interfaces": ["Gi2"]}],
+                        "destination": {
+                            "erspan_id": 10,
+                            "ip_address": "192.0.2.3",
+                            "origin_ip_address": "192.0.2.2",
+                        },
+                    },
+                ],
+                state="replaced",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertNotIn("no destination", result["commands"])
+        self.assertIn("ip address 192.0.2.3", result["commands"])
+
+    def test_ios_monitor_sessions_erspan_merged_omitted_destination_untouched(self):
+        """Merged never clears an ERSPAN destination the user omitted."""
+        self.execute_show_command.return_value = self._erspan_have()
+        set_module_args(
+            dict(
+                config=[
+                    {
+                        "session": 1,
+                        "session_type": "erspan-source",
+                        "sources": [{"interfaces": ["Gi2", "Gi3"]}],
+                    },
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertNotIn("no destination", result["commands"])
