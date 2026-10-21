@@ -26,6 +26,12 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acls.a
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bfd_interfaces.bfd_interfaces import (
     Bfd_interfacesFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.flow_monitor.flow_monitor import (
+    Flow_monitorFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.flow_monitor_interfaces.flow_monitor_interfaces import (
+    Flow_monitor_interfacesFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bfd_templates.bfd_templates import (
     Bfd_templatesFacts,
 )
@@ -167,6 +173,8 @@ FACT_RESOURCE_SUBSETS = dict(
     hsrp_interfaces=Hsrp_interfacesFacts,
     bfd_interfaces=Bfd_interfacesFacts,
     bfd_templates=Bfd_templatesFacts,
+    flow_monitor=Flow_monitorFacts,
+    flow_monitor_interfaces=Flow_monitor_interfacesFacts,
 )
 
 
