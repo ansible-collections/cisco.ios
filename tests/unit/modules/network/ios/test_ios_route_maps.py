@@ -1159,7 +1159,9 @@ class TestIosRouteMapsModule(TestIosModule):
                             dict(
                                 action="permit",
                                 sequence=10,
-                                set=dict(large_community=dict(none=True, communities=["65000:100:0"])),
+                                set=dict(
+                                    large_community=dict(none=True, communities=["65000:100:0"])
+                                ),
                             ),
                         ],
                     ),
