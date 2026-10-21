@@ -226,15 +226,7 @@ deleted:
 
 rtt:
   commands:
-    - vrf definition VRF2
-    - no description This is a test VRF for merged state
-    - no ipv4 multicast multitopology
-    - no ipv6 multicast multitopology
-    - no rd 2:3
-    - no route-target export 198.51.100.5:400
-    - no route-target import 198.51.100.5:400
-    - no vnet tag 200
-    - no vpn id 2:45
+    - no vrf definition VRF2
     - vrf definition VRF6
     - description VRF6 description
     - ipv4 multicast multitopology
