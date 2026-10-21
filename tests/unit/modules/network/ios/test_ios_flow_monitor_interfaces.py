@@ -280,3 +280,101 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
             "ip flow monitor FLOW_MONITOR_IN sampler FLOW_SAMPLER input",
             result["rendered"],
         )
+
+    # ── merged add direction ──────────────────────────────────────────────────
+
+    def test_ios_flow_monitor_interfaces_merged_add_direction(self):
+        """Merged with an already-configured direction must only add the new one.
+
+        Gathered state always includes 'protocol: ip'; want omits it.  The
+        normalisation fix must treat them as equal so the existing input
+        assignment is not re-issued (which would toggle it off on IOS XE).
+        """
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1
+             ip flow monitor FLOW_MON sampler FLOW_SAMPLER input
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "GigabitEthernet1",
+                        "flow_monitors": [
+                            {
+                                "monitor": "FLOW_MON",
+                                "sampler": "FLOW_SAMPLER",
+                                "direction": "input",
+                            },
+                            {
+                                "monitor": "FLOW_MON",
+                                "sampler": "FLOW_SAMPLER",
+                                "direction": "output",
+                            },
+                        ],
+                    },
+                ],
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        # Only the new output direction should appear
+        self.assertIn(
+            "ip flow monitor FLOW_MON sampler FLOW_SAMPLER output",
+            result["commands"],
+        )
+        # The existing input direction must NOT be re-issued
+        self.assertNotIn(
+            "ip flow monitor FLOW_MON sampler FLOW_SAMPLER input",
+            result["commands"],
+        )
+
+    # ── replaced sampler change ───────────────────────────────────────────────
+
+    def test_ios_flow_monitor_interfaces_replaced_sampler_change(self):
+        """Replaced with a different sampler on the same (monitor, direction).
+
+        IOS XE keeps both assignments if the new one is simply issued on top of
+        the old; the module must issue 'no ip flow monitor X sampler OLD dir'
+        first to remove the stale entry cleanly.
+        """
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1
+             ip flow monitor FLOW_MON sampler SAMPLER_A output
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "GigabitEthernet1",
+                        "flow_monitors": [
+                            {
+                                "monitor": "FLOW_MON",
+                                "sampler": "SAMPLER_B",
+                                "direction": "output",
+                            },
+                        ],
+                    },
+                ],
+                "state": "replaced",
+            },
+        )
+        result = self.execute_module(changed=True)
+        commands = result["commands"]
+        self.assertIn("interface GigabitEthernet1", commands)
+        # Old assignment must be removed before the new one is added
+        self.assertIn(
+            "no ip flow monitor FLOW_MON sampler SAMPLER_A output",
+            commands,
+        )
+        self.assertIn(
+            "ip flow monitor FLOW_MON sampler SAMPLER_B output",
+            commands,
+        )
+        # Removal must precede addition
+        no_idx = commands.index("no ip flow monitor FLOW_MON sampler SAMPLER_A output")
+        add_idx = commands.index("ip flow monitor FLOW_MON sampler SAMPLER_B output")
+        self.assertLess(no_idx, add_idx)
