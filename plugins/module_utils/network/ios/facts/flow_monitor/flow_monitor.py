@@ -216,19 +216,27 @@ class Flow_monitorFacts(object):
                     continue
                 m = re.match(r"^option interface-table(?: timeout (\d+))?$", stripped)
                 if m:
-                    exp.setdefault("options", {})["interface_table_timeout"] = int(m.group(1)) if m.group(1) else None
+                    exp.setdefault("options", {})["interface_table_timeout"] = (
+                        int(m.group(1)) if m.group(1) else None
+                    )
                     continue
                 m = re.match(r"^option exporter-stats(?: timeout (\d+))?$", stripped)
                 if m:
-                    exp.setdefault("options", {})["exporter_stats_timeout"] = int(m.group(1)) if m.group(1) else None
+                    exp.setdefault("options", {})["exporter_stats_timeout"] = (
+                        int(m.group(1)) if m.group(1) else None
+                    )
                     continue
                 m = re.match(r"^option application-table(?: timeout (\d+))?$", stripped)
                 if m:
-                    exp.setdefault("options", {})["application_table_timeout"] = int(m.group(1)) if m.group(1) else None
+                    exp.setdefault("options", {})["application_table_timeout"] = (
+                        int(m.group(1)) if m.group(1) else None
+                    )
                     continue
                 m = re.match(r"^option vrf-table(?: timeout (\d+))?$", stripped)
                 if m:
-                    exp.setdefault("options", {})["vrf_table_timeout"] = int(m.group(1)) if m.group(1) else None
+                    exp.setdefault("options", {})["vrf_table_timeout"] = (
+                        int(m.group(1)) if m.group(1) else None
+                    )
                     continue
                 m = re.match(r"^description (.+)$", stripped)
                 if m:

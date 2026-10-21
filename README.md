@@ -68,6 +68,8 @@ Name | Description
 [cisco.ios.ios_evpn_evi](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_evpn_evi_module.rst)|Resource module to configure L2VPN EVPN EVI.
 [cisco.ios.ios_evpn_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_evpn_global_module.rst)|Resource module to configure L2VPN EVPN.
 [cisco.ios.ios_facts](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_facts_module.rst)|Module to collect facts from remote devices.
+[cisco.ios.ios_flow_monitor](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_flow_monitor_module.rst)|Resource module to configure Flexible NetFlow on Cisco IOS XE.
+[cisco.ios.ios_flow_monitor_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_flow_monitor_interfaces_module.rst)|Resource module to configure per-interface flow monitor assignments on Cisco IOS XE.
 [cisco.ios.ios_hostname](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_hostname_module.rst)|Resource module to configure hostname.
 [cisco.ios.ios_hsrp_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_hsrp_interfaces_module.rst)|Resource module to configure HSRP on interfaces.
 [cisco.ios.ios_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_interfaces_module.rst)|Resource module to configure interfaces.

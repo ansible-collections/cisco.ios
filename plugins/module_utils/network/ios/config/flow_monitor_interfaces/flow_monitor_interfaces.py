@@ -85,14 +85,8 @@ class Flow_monitor_interfaces(ResourceModule):
         """Compare want vs have for a single interface and generate commands."""
         intf_name = want.get("name") or have.get("name")
 
-        want_monitors = {
-            (m["monitor"], m["direction"]): m
-            for m in want.get("flow_monitors", [])
-        }
-        have_monitors = {
-            (m["monitor"], m["direction"]): m
-            for m in have.get("flow_monitors", [])
-        }
+        want_monitors = {(m["monitor"], m["direction"]): m for m in want.get("flow_monitors", [])}
+        have_monitors = {(m["monitor"], m["direction"]): m for m in have.get("flow_monitors", [])}
 
         cmds = []
 
@@ -102,8 +96,11 @@ class Flow_monitor_interfaces(ResourceModule):
                     proto = have_m.get("protocol", "ip")
                     cmds.append(
                         "no {0} flow monitor {1} sampler {2} {3}".format(
-                            proto, have_m["monitor"], have_m["sampler"], have_m["direction"]
-                        )
+                            proto,
+                            have_m["monitor"],
+                            have_m["sampler"],
+                            have_m["direction"],
+                        ),
                     )
 
         for key, want_m in want_monitors.items():
@@ -112,8 +109,11 @@ class Flow_monitor_interfaces(ResourceModule):
                 proto = want_m.get("protocol", "ip")
                 cmds.append(
                     "{0} flow monitor {1} sampler {2} {3}".format(
-                        proto, want_m["monitor"], want_m["sampler"], want_m["direction"]
-                    )
+                        proto,
+                        want_m["monitor"],
+                        want_m["sampler"],
+                        want_m["direction"],
+                    ),
                 )
 
         if cmds:
@@ -127,8 +127,11 @@ class Flow_monitor_interfaces(ResourceModule):
             proto = m.get("protocol", "ip")
             cmds.append(
                 "no {0} flow monitor {1} sampler {2} {3}".format(
-                    proto, m["monitor"], m["sampler"], m["direction"]
-                )
+                    proto,
+                    m["monitor"],
+                    m["sampler"],
+                    m["direction"],
+                ),
             )
         if cmds:
             self.commands.append("interface {0}".format(have["name"]))

@@ -43,11 +43,13 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
 
     def test_ios_flow_monitor_interfaces_merged(self):
         """Assign IN+OUT flow monitors to an interface with no existing flow config."""
-        self.execute_show_command.return_value = dedent("""\
+        self.execute_show_command.return_value = dedent(
+            """\
             interface GigabitEthernet1
              ip address 192.0.2.10 255.255.255.0
              negotiation auto
-            """)
+            """
+        )
         set_module_args(
             {
                 "config": [
@@ -65,10 +67,10 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
                                 "direction": "output",
                             },
                         ],
-                    }
+                    },
                 ],
                 "state": "merged",
-            }
+            },
         )
         result = self.execute_module(changed=True)
         self.assertIn("interface GigabitEthernet1", result["commands"])
@@ -83,12 +85,14 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
 
     def test_ios_flow_monitor_interfaces_merged_idempotent(self):
         """Merging identical config must produce no commands."""
-        self.execute_show_command.return_value = dedent("""\
+        self.execute_show_command.return_value = dedent(
+            """\
             interface GigabitEthernet1
              ip address 192.0.2.10 255.255.255.0
              ip flow monitor FLOW_MONITOR_IN sampler FLOW_SAMPLER input
              ip flow monitor FLOW_MONITOR_OUT sampler FLOW_SAMPLER output
-            """)
+            """
+        )
         set_module_args(
             {
                 "config": [
@@ -106,10 +110,10 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
                                 "direction": "output",
                             },
                         ],
-                    }
+                    },
                 ],
                 "state": "merged",
-            }
+            },
         )
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
@@ -118,7 +122,8 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
 
     def test_ios_flow_monitor_interfaces_deleted(self):
         """Deleting a named interface removes its flow monitor assignments."""
-        self.execute_show_command.return_value = dedent("""\
+        self.execute_show_command.return_value = dedent(
+            """\
             interface GigabitEthernet1
              ip address 192.0.2.10 255.255.255.0
              ip flow monitor FLOW_MONITOR_IN sampler FLOW_SAMPLER input
@@ -126,12 +131,13 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
             interface GigabitEthernet2
              ip address 192.0.2.20 255.255.255.0
              ip flow monitor FLOW_MONITOR_IN sampler FLOW_SAMPLER input
-            """)
+            """
+        )
         set_module_args(
             {
                 "config": [{"name": "GigabitEthernet1"}],
                 "state": "deleted",
-            }
+            },
         )
         result = self.execute_module(changed=True)
         self.assertIn("interface GigabitEthernet1", result["commands"])
@@ -148,12 +154,14 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
 
     def test_ios_flow_monitor_interfaces_deleted_all(self):
         """Deleting with no config removes flow monitors from all interfaces."""
-        self.execute_show_command.return_value = dedent("""\
+        self.execute_show_command.return_value = dedent(
+            """\
             interface GigabitEthernet1
              ip flow monitor FLOW_MONITOR_IN sampler FLOW_SAMPLER input
             interface GigabitEthernet2
              ip flow monitor FLOW_MONITOR_OUT sampler FLOW_SAMPLER output
-            """)
+            """
+        )
         set_module_args({"state": "deleted"})
         result = self.execute_module(changed=True)
         self.assertIn("interface GigabitEthernet1", result["commands"])
@@ -163,12 +171,14 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
 
     def test_ios_flow_monitor_interfaces_replaced(self):
         """Replaced removes old monitor and adds the new one on an interface."""
-        self.execute_show_command.return_value = dedent("""\
+        self.execute_show_command.return_value = dedent(
+            """\
             interface GigabitEthernet1
              ip address 192.0.2.10 255.255.255.0
              ip flow monitor OLD_MONITOR sampler FLOW_SAMPLER input
              ip flow monitor OLD_MONITOR sampler FLOW_SAMPLER output
-            """)
+            """
+        )
         set_module_args(
             {
                 "config": [
@@ -186,10 +196,10 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
                                 "direction": "output",
                             },
                         ],
-                    }
+                    },
                 ],
                 "state": "replaced",
-            }
+            },
         )
         result = self.execute_module(changed=True)
         self.assertIn("interface GigabitEthernet1", result["commands"])
@@ -216,16 +226,18 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
         """Feed raw interface config, assert structured output."""
         set_module_args(
             dict(
-                running_config=dedent("""\
+                running_config=dedent(
+                    """\
                     interface GigabitEthernet1
                      ip address 192.0.2.10 255.255.255.0
                      ip flow monitor FLOW_MONITOR_IN sampler FLOW_SAMPLER input
                      ip flow monitor FLOW_MONITOR_OUT sampler FLOW_SAMPLER output
                     interface GigabitEthernet2
                      ip address 192.0.2.20 255.255.255.0
-                    """),
+                    """
+                ),
                 state="parsed",
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         parsed = result["parsed"]
@@ -257,10 +269,10 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
                                 "direction": "input",
                             },
                         ],
-                    }
+                    },
                 ],
                 state="rendered",
-            )
+            ),
         )
         result = self.execute_module(changed=False)
         self.assertIn("interface GigabitEthernet1", result["rendered"])

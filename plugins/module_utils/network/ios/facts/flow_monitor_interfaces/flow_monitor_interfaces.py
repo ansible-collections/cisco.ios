@@ -51,15 +51,13 @@ class Flow_monitor_interfacesFacts(object):
             data = self.get_interfaces_data(connection)
 
         parser = Flow_monitor_interfacesTemplate(
-            lines=data.splitlines(), module=self._module
+            lines=data.splitlines(),
+            module=self._module,
         )
         parsed = parser.parse()
 
         # Filter to only interfaces that have flow_monitors configured
-        objs = [
-            v for v in parsed.values()
-            if v.get("flow_monitors")
-        ]
+        objs = [v for v in parsed.values() if v.get("flow_monitors")]
 
         ansible_facts["ansible_network_resources"].pop("flow_monitor_interfaces", None)
 
