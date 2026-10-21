@@ -509,6 +509,8 @@ class Route_mapsArgs(object):  # pylint: disable=R0903
                                         "additive": {"type": "bool"},
                                         "none": {"type": "bool"},
                                     },
+                                    "mutually_exclusive": [["none", "communities"]],
+                                    "required_by": {"additive": "communities"},
                                 },
                                 "level": {
                                     "type": "dict",

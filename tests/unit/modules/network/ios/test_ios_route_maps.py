@@ -1124,6 +1124,128 @@ class TestIosRouteMapsModule(TestIosModule):
         )
         self.assertTrue(entry["set"]["large_community"]["additive"])
 
+    def test_ios_route_maps_large_community_invalid_additive_only(self):
+        """set large-community additive without communities is rejected."""
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_LC_INVALID",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                set=dict(large_community=dict(additive=True)),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("additive", result["msg"])
+
+    def test_ios_route_maps_large_community_invalid_none_with_communities(self):
+        """set large-community none together with communities is rejected."""
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_LC_INVALID",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                set=dict(large_community=dict(none=True, communities=["65000:100:0"])),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("mutually exclusive", result["msg"])
+
+    def test_ios_route_maps_large_community_invalid_none_with_additive(self):
+        """set large-community none together with additive is rejected."""
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_LC_INVALID",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                set=dict(large_community=dict(none=True, additive=True)),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("additive", result["msg"])
+
+    def test_ios_route_maps_large_community_set_sorted(self):
+        """set large-community communities are sorted in generated commands."""
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_LC_SORT",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                set=dict(
+                                    large_community=dict(
+                                        communities=["65000:200:0", "65000:100:0"],
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("set large-community 65000:100:0 65000:200:0", result["commands"])
+
+    def test_ios_route_maps_match_large_community_sorted(self):
+        """match large-community values are sorted in generated commands."""
+        self.execute_show_command.side_effect = None
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_MATCH_LC_SORT",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                match=dict(
+                                    large_community=["65000:200:0", "65000:100:0"],
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("match large-community 65000:100:0 65000:200:0", result["commands"])
+
     def test_ios_route_maps_match_large_community_merged(self):
         """match large-community generates correct command."""
         self.execute_show_command.side_effect = None
