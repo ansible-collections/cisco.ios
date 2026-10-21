@@ -45,7 +45,7 @@ class TestIosFlowMonitorModule(TestIosModule):
         """Merge a full Akvorado-style stack onto an empty device."""
         self.execute_show_command.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             {
@@ -174,7 +174,7 @@ class TestIosFlowMonitorModule(TestIosModule):
              cache timeout inactive 10
              cache timeout active 60
              record FLOW_RECORD_IPV4
-            """
+            """,
         )
         set_module_args(
             {
@@ -254,7 +254,7 @@ class TestIosFlowMonitorModule(TestIosModule):
             flow monitor FLOW_MONITOR_OUT
              exporter FLOW_EXPORTER_1
              record FLOW_RECORD_IPV4
-            """
+            """,
         )
         set_module_args({"state": "deleted"})
         result = self.execute_module(changed=True)
@@ -281,7 +281,7 @@ class TestIosFlowMonitorModule(TestIosModule):
         """Monitor referencing two exporters (DNB-style pattern)."""
         self.execute_show_command.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             {
@@ -335,7 +335,7 @@ class TestIosFlowMonitorModule(TestIosModule):
         """Monitor defined without any exporter (INT-router pattern)."""
         self.execute_show_command.return_value = dedent(
             """\
-            """
+            """,
         )
         set_module_args(
             {
@@ -397,7 +397,7 @@ class TestIosFlowMonitorModule(TestIosModule):
                      cache timeout inactive 10
                      cache timeout active 60
                      record FLOW_RECORD_IPV4
-                    """
+                    """,
                 ),
                 state="parsed",
             ),
@@ -484,7 +484,7 @@ class TestIosFlowMonitorModule(TestIosModule):
                      cache timeout inactive 10
                      cache timeout active 60
                      record FLOW_RECORD_IPV4
-                    """
+                    """,
                 ),
                 state="parsed",
             ),

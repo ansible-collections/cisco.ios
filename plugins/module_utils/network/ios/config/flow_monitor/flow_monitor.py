@@ -248,23 +248,25 @@ class Flow_monitor(ResourceModule):
         options = exp.get("options", {})
         if options.get("sampler_table_timeout") is not None:
             cmds.append(
-                " option sampler-table timeout {0}".format(options["sampler_table_timeout"])
+                " option sampler-table timeout {0}".format(options["sampler_table_timeout"]),
             )
         if options.get("template_data_timeout") is not None:
             cmds.append(
-                " option template data timeout {0}".format(options["template_data_timeout"])
+                " option template data timeout {0}".format(options["template_data_timeout"]),
             )
         if options.get("interface_table_timeout") is not None:
             cmds.append(
-                " option interface-table timeout {0}".format(options["interface_table_timeout"])
+                " option interface-table timeout {0}".format(options["interface_table_timeout"]),
             )
         if options.get("exporter_stats_timeout") is not None:
             cmds.append(
-                " option exporter-stats timeout {0}".format(options["exporter_stats_timeout"])
+                " option exporter-stats timeout {0}".format(options["exporter_stats_timeout"]),
             )
         if options.get("application_table_timeout") is not None:
             cmds.append(
-                " option application-table timeout {0}".format(options["application_table_timeout"])
+                " option application-table timeout {0}".format(
+                    options["application_table_timeout"]
+                ),
             )
         if options.get("vrf_table_timeout") is not None:
             cmds.append(" option vrf-table timeout {0}".format(options["vrf_table_timeout"]))

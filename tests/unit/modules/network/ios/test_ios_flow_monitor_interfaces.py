@@ -48,7 +48,7 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
             interface GigabitEthernet1
              ip address 192.0.2.10 255.255.255.0
              negotiation auto
-            """
+            """,
         )
         set_module_args(
             {
@@ -91,7 +91,7 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
              ip address 192.0.2.10 255.255.255.0
              ip flow monitor FLOW_MONITOR_IN sampler FLOW_SAMPLER input
              ip flow monitor FLOW_MONITOR_OUT sampler FLOW_SAMPLER output
-            """
+            """,
         )
         set_module_args(
             {
@@ -131,7 +131,7 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
             interface GigabitEthernet2
              ip address 192.0.2.20 255.255.255.0
              ip flow monitor FLOW_MONITOR_IN sampler FLOW_SAMPLER input
-            """
+            """,
         )
         set_module_args(
             {
@@ -160,7 +160,7 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
              ip flow monitor FLOW_MONITOR_IN sampler FLOW_SAMPLER input
             interface GigabitEthernet2
              ip flow monitor FLOW_MONITOR_OUT sampler FLOW_SAMPLER output
-            """
+            """,
         )
         set_module_args({"state": "deleted"})
         result = self.execute_module(changed=True)
@@ -177,7 +177,7 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
              ip address 192.0.2.10 255.255.255.0
              ip flow monitor OLD_MONITOR sampler FLOW_SAMPLER input
              ip flow monitor OLD_MONITOR sampler FLOW_SAMPLER output
-            """
+            """,
         )
         set_module_args(
             {
@@ -234,7 +234,7 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
                      ip flow monitor FLOW_MONITOR_OUT sampler FLOW_SAMPLER output
                     interface GigabitEthernet2
                      ip address 192.0.2.20 255.255.255.0
-                    """
+                    """,
                 ),
                 state="parsed",
             ),
