@@ -211,7 +211,9 @@ class Monitor_sessions(ResourceModule):  # NOSONAR
         if entry.get("session_type") == "erspan-source":
             return True
         dest = entry.get("destination") or {}
-        return bool(dest.get("ip_address") or dest.get("erspan_id") or dest.get("origin_ip_address"))
+        return bool(
+            dest.get("ip_address") or dest.get("erspan_id") or dest.get("origin_ip_address")
+        )
 
     @staticmethod
     def _norm_dest(dest):

@@ -18,8 +18,9 @@ Version added: 11.7.0
 Synopsis
 --------
 - This module provides declarative management of SPAN (Switched Port Analyzer) monitor sessions on Cisco IOS-XE devices.
-- Each monitor session defines one or more source interfaces whose traffic is mirrored to a destination interface.
-- Only local SPAN (source interface to destination interface) is supported. VLAN-based sources, RSPAN (remote SPAN), and ERSPAN are not covered by this module.
+- Local SPAN (source interface to destination interface) is supported on Catalyst switches.
+- ERSPAN source sessions are supported on IOS-XE routers such as C8000V, where local SPAN is rejected (NGIO switch only).
+- VLAN-based sources and RSPAN are not covered by this module.
 
 
 
@@ -64,7 +65,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Destination interface configuration.</div>
+                        <div>Destination configuration (local SPAN interface or ERSPAN).</div>
                 </td>
             </tr>
                                 <tr>
@@ -93,17 +94,67 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>interface</b>
+                    <b>erspan_id</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                         / <span style="color: red">required</span>
+                        <span style="color: purple">integer</span>
                     </div>
                 </td>
                 <td>
                 </td>
                 <td>
-                        <div>Destination interface name.</div>
+                        <div>ERSPAN ID for <code>session_type=erspan-source</code>.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>interface</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Destination interface name for local SPAN.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>ip_address</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>ERSPAN destination IP address.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="1">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>origin_ip_address</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>ERSPAN origin IP address.</div>
                 </td>
             </tr>
 
@@ -122,6 +173,28 @@ Parameters
                 </td>
                 <td>
                         <div>Monitor session number.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="2">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>session_type</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>local</li>
+                                    <li>erspan-source</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Session type as configured on the device.</div>
+                        <div><code>local</code> is the Catalyst one-line SPAN syntax.</div>
+                        <div><code>erspan-source</code> is required on IOS-XE routers (C8000V, ISR, C8300) that reject local SPAN.</div>
                 </td>
             </tr>
             <tr>
@@ -243,9 +316,10 @@ Notes
 -----
 
 .. note::
-   - Tested against Cisco IOS-XE on Cat9k switches.
+   - Tested against Cisco IOS-XE on Cat9k switches (local SPAN) and C8000V (ERSPAN).
    - This module works with connection ``network_cli``.
-   - Interface names in ``config`` must match the abbreviated form used in the running configuration (e.g. ``Gi1/0/1``, ``Po2``, ``Twe1/0/2``).
+   - Interface names in ``config`` must match the abbreviated form used in the running configuration (e.g. ``Gi1/0/1``, ``Gi2``, ``Po2``, ``Twe1/0/2``).
+   - Local SPAN is not supported on IOS-XE routers without an NGIO switch module. Use ``session_type=erspan-source`` on those platforms.
 
 
 
@@ -286,6 +360,33 @@ Examples
     # monitor session 1 source interface Twe1/0/2 , Twe1/0/12 , Twe1/0/45
     # monitor session 1 source interface Po2
     # monitor session 1 destination interface Po3 encapsulation replicate
+
+    # Using state: merged (ERSPAN on IOS-XE routers)
+
+    - name: Configure ERSPAN source session on C8000V
+      cisco.ios.ios_monitor_sessions:
+        config:
+          - session: 1
+            session_type: erspan-source
+            sources:
+              - interfaces:
+                  - Gi2
+                  - Gi3
+            destination:
+              erspan_id: 10
+              ip_address: 192.0.2.1
+              origin_ip_address: 192.0.2.2
+        state: merged
+
+    # Commands fired:
+    # ---------------
+    # monitor session 1 type erspan-source
+    # source interface Gi2 , Gi3
+    # monitor session 1 type erspan-source
+    # destination
+    # erspan-id 10
+    # ip address 192.0.2.1
+    # origin ip address 192.0.2.2
 
     # Using state: merged with direction
 

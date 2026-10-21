@@ -164,8 +164,10 @@ class Monitor_sessionsFacts(object):  # NOSONAR
                 continue
             match = re.match(r"^origin ip address (\S+)$", stripped)
             if match:
-                session(current_id).setdefault("destination", {})["origin_ip_address"] = match.group(
-                    1,
+                session(current_id).setdefault("destination", {})["origin_ip_address"] = (
+                    match.group(
+                        1,
+                    )
                 )
                 continue
 
