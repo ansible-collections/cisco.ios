@@ -5,17 +5,17 @@
 - ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
-    - name: Ios_monitor_sessions gathered - populate with range (Gi1/0/1 - 3)
+    - name: Ios_monitor_sessions gathered - populate sources
       cisco.ios.ios_monitor_sessions:
         config:
           - session: 1
             sources:
               - interfaces:
-                  - Gi1/0/1
-                  - Gi1/0/2
-                  - Gi1/0/3
+                  - "{{ test_interface }}"
+                  - "{{ test_interface2 }}"
+                  - "{{ monitor_if_src3 }}"
             destination:
-              interface: Gi1/0/10
+              interface: "{{ monitor_dest }}"
         state: merged
 
     - name: Ios_monitor_sessions gathered - gather facts
@@ -29,7 +29,7 @@
           - result.changed == false
           - result.gathered | length == 1
           - result.gathered[0].session == 1
-          - result.gathered[0].destination.interface == "Gi1/0/10"
+          - result.gathered[0].destination.interface == monitor_dest
 
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

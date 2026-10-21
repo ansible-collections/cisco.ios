@@ -12,10 +12,10 @@
           - session: 1
             sources:
               - interfaces:
-                  - Gi1/0/1
-                  - Gi1/0/2
+                  - "{{ test_interface }}"
+                  - "{{ test_interface2 }}"
             destination:
-              interface: Gi1/0/10
+              interface: "{{ monitor_dest }}"
         state: merged
 
     - name: Ios_monitor_sessions merged - assert changed
@@ -23,7 +23,7 @@
         that:
           - result.changed == true
           - "'monitor session 1 source interface' in result.commands | join(' ')"
-          - "'monitor session 1 destination interface Gi1/0/10' in result.commands"
+          - "'monitor session 1 destination interface ' + monitor_dest in result.commands"
 
     - name: Ios_monitor_sessions merged - idempotent
       register: result
@@ -41,18 +41,18 @@
           - session: 1
             sources:
               - interfaces:
-                  - Gi1/0/1
-                  - Gi1/0/2
+                  - "{{ test_interface }}"
+                  - "{{ test_interface2 }}"
             destination:
-              interface: Gi1/0/9
+              interface: "{{ monitor_dest_alt }}"
         state: merged
 
     - name: Ios_monitor_sessions merged - assert dest change negate
       ansible.builtin.assert:
         that:
           - result.changed == true
-          - "'no monitor session 1 destination interface Gi1/0/10' in result.commands"
-          - "'monitor session 1 destination interface Gi1/0/9' in result.commands"
+          - "'no monitor session 1 destination interface ' + monitor_dest in result.commands"
+          - "'monitor session 1 destination interface ' + monitor_dest_alt in result.commands"
 
     - name: Ios_monitor_sessions merged - sources only preserves existing dest
       register: result
@@ -61,7 +61,7 @@
           - session: 1
             sources:
               - interfaces:
-                  - Gi1/0/3
+                  - "{{ monitor_if_src3 }}"
         state: merged
 
     - name: Ios_monitor_sessions merged - assert dest preserved

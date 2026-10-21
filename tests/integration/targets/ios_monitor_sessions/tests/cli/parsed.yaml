@@ -14,4 +14,4 @@
       - result.changed == false
       - result.parsed | length == 1
       - result.parsed[0].session == 1
-      - result.parsed[0].destination.interface == "Gi1/0/10"
+      - result.parsed[0].destination.interface == monitor_dest

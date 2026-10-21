@@ -9,9 +9,9 @@
       - session: 1
         sources:
           - interfaces:
-              - Gi1/0/1
+              - "{{ test_interface }}"
         destination:
-          interface: Gi1/0/10
+          interface: "{{ monitor_dest }}"
           encapsulation_replicate: true
     state: rendered
 
@@ -19,5 +19,5 @@
   ansible.builtin.assert:
     that:
       - result.changed == false
-      - "'monitor session 1 source interface Gi1/0/1' in result.rendered"
-      - "'monitor session 1 destination interface Gi1/0/10 encapsulation replicate' in result.rendered"
+      - "'monitor session 1 source interface ' + test_interface in result.rendered"
+      - "'monitor session 1 destination interface ' + monitor_dest + ' encapsulation replicate' in result.rendered"

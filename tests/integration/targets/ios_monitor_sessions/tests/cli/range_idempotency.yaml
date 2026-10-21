@@ -11,11 +11,11 @@
           - session: 1
             sources:
               - interfaces:
-                  - Gi1/0/1
-                  - Gi1/0/2
-                  - Gi1/0/3
+                  - "{{ test_interface }}"
+                  - "{{ test_interface2 }}"
+                  - "{{ monitor_if_src3 }}"
             destination:
-              interface: Gi1/0/10
+              interface: "{{ monitor_dest }}"
         state: merged
 
     - name: Ios_monitor_sessions range idempotency - re-apply same config
@@ -25,11 +25,11 @@
           - session: 1
             sources:
               - interfaces:
-                  - Gi1/0/1
-                  - Gi1/0/2
-                  - Gi1/0/3
+                  - "{{ test_interface }}"
+                  - "{{ test_interface2 }}"
+                  - "{{ monitor_if_src3 }}"
             destination:
-              interface: Gi1/0/10
+              interface: "{{ monitor_dest }}"
         state: merged
 
     - name: Ios_monitor_sessions range idempotency - assert idempotent even if device stored as range

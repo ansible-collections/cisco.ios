@@ -11,15 +11,15 @@
           - session: 1
             sources:
               - interfaces:
-                  - Gi1/0/1
+                  - "{{ test_interface }}"
             destination:
-              interface: Gi1/0/10
+              interface: "{{ monitor_dest }}"
           - session: 2
             sources:
               - interfaces:
-                  - Gi1/0/2
+                  - "{{ test_interface2 }}"
             destination:
-              interface: Gi1/0/9
+              interface: "{{ monitor_dest_alt }}"
         state: merged
 
     - name: Ios_monitor_sessions deleted - delete specific session

@@ -11,10 +11,10 @@
           - session: 1
             sources:
               - interfaces:
-                  - Gi1/0/1
-                  - Gi1/0/2
+                  - "{{ test_interface }}"
+                  - "{{ test_interface2 }}"
             destination:
-              interface: Gi1/0/10
+              interface: "{{ monitor_dest }}"
         state: merged
 
     - name: Ios_monitor_sessions replaced - swap sources
@@ -24,19 +24,19 @@
           - session: 1
             sources:
               - interfaces:
-                  - Gi1/0/2
-                  - Gi1/0/3
+                  - "{{ test_interface2 }}"
+                  - "{{ monitor_if_src3 }}"
             destination:
-              interface: Gi1/0/10
+              interface: "{{ monitor_dest }}"
         state: replaced
 
     - name: Ios_monitor_sessions replaced - assert
       ansible.builtin.assert:
         that:
           - result.changed == true
-          - "'no monitor session 1 source interface Gi1/0/1' in result.commands"
-          - "'monitor session 1 source interface Gi1/0/3' in result.commands"
-          - "'no monitor session 1 source interface Gi1/0/2' not in result.commands"
+          - "'no monitor session 1 source interface ' + test_interface in result.commands"
+          - "'monitor session 1 source interface ' + monitor_if_src3 in result.commands"
+          - "'no monitor session 1 source interface ' + test_interface2 not in result.commands"
 
     - name: Ios_monitor_sessions replaced - idempotent
       register: result

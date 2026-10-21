@@ -5,7 +5,7 @@
       - session: 1
         sources:
           - interfaces:
-              - Gi1/0/1
+              - "{{ test_interface }}"
         destination:
-          interface: Gi1/0/10
+          interface: "{{ monitor_dest }}"
     state: merged

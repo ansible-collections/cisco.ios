@@ -1,1 +1,5 @@
 ---
+# Align with prepare_ios_tests (GigabitEthernet2/3 on IOS-XE lab devices).
+monitor_if_src3: GigabitEthernet1
+monitor_dest: GigabitEthernet4
+monitor_dest_alt: GigabitEthernet1

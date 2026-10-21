@@ -11,16 +11,16 @@
           - session: 1
             sources:
               - interfaces:
-                  - Gi1/0/1
-                  - Gi1/0/2
+                  - "{{ test_interface }}"
+                  - "{{ test_interface2 }}"
             destination:
-              interface: Gi1/0/10
+              interface: "{{ monitor_dest }}"
           - session: 2
             sources:
               - interfaces:
-                  - Gi1/0/3
+                  - "{{ monitor_if_src3 }}"
             destination:
-              interface: Gi1/0/9
+              interface: "{{ monitor_dest_alt }}"
         state: merged
 
     - name: Ios_monitor_sessions overridden - keep session 1 with fewer sources, drop session 2
@@ -30,18 +30,18 @@
           - session: 1
             sources:
               - interfaces:
-                  - Gi1/0/1
+                  - "{{ test_interface }}"
             destination:
-              interface: Gi1/0/10
+              interface: "{{ monitor_dest }}"
         state: overridden
 
     - name: Ios_monitor_sessions overridden - assert extra source and session removed
       ansible.builtin.assert:
         that:
           - result.changed == true
-          - "'no monitor session 1 source interface Gi1/0/2' in result.commands"
+          - "'no monitor session 1 source interface ' + test_interface2 in result.commands"
           - "'no monitor session 2' in result.commands"
-          - "'no monitor session 1 source interface Gi1/0/1' not in result.commands"
+          - "'no monitor session 1 source interface ' + test_interface not in result.commands"
 
     - name: Ios_monitor_sessions overridden - idempotent
       register: result
