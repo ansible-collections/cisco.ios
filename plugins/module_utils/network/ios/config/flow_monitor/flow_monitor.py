@@ -31,6 +31,86 @@ class Flow_monitor(ResourceModule):
     The ios_flow_monitor config class
     """
 
+    _MATCH_CLI = [
+        ("ipv4_tos", "match ipv4 tos"),
+        ("ipv4_protocol", "match ipv4 protocol"),
+        ("ipv4_source_address", "match ipv4 source address"),
+        ("ipv4_destination_address", "match ipv4 destination address"),
+        ("ipv4_ttl", "match ipv4 ttl"),
+        ("ipv4_version", "match ipv4 version"),
+        ("transport_source_port", "match transport source-port"),
+        ("transport_destination_port", "match transport destination-port"),
+        ("transport_icmp_ipv4_code", "match transport icmp ipv4 code"),
+        ("transport_icmp_ipv4_type", "match transport icmp ipv4 type"),
+        ("transport_icmp_ipv6_code", "match transport icmp ipv6 code"),
+        ("transport_icmp_ipv6_type", "match transport icmp ipv6 type"),
+        ("flow_direction", "match flow direction"),
+        ("interface_input", "match interface input"),
+        ("interface_output", "match interface output"),
+        ("routing_vrf_input", "match routing vrf input"),
+        ("ipv6_source_address", "match ipv6 source address"),
+        ("ipv6_destination_address", "match ipv6 destination address"),
+        ("ipv6_hop_limit", "match ipv6 hop-limit"),
+        ("ipv6_protocol", "match ipv6 protocol"),
+        ("ipv6_traffic_class", "match ipv6 traffic-class"),
+        ("ipv6_version", "match ipv6 version"),
+        ("datalink_dot1q_priority", "match datalink dot1q priority"),
+        ("datalink_dot1q_vlan_input", "match datalink dot1q vlan input"),
+        ("datalink_dot1q_vlan_output", "match datalink dot1q vlan output"),
+        ("datalink_ethertype", "match datalink ethertype"),
+        ("datalink_mac_destination_input", "match datalink mac destination address input"),
+        ("datalink_mac_destination_output", "match datalink mac destination address output"),
+        ("datalink_mac_source_input", "match datalink mac source address input"),
+        ("datalink_mac_source_output", "match datalink mac source address output"),
+        ("datalink_vlan_input", "match datalink vlan input"),
+        ("datalink_vlan_output", "match datalink vlan output"),
+        ("application_name", "match application name"),
+    ]
+
+    _COLLECT_CLI = [
+        ("routing_source_as_4octet", "collect routing source as 4-octet"),
+        ("routing_source_as_peer", "collect routing source as peer"),
+        ("routing_destination_as_4octet", "collect routing destination as 4-octet"),
+        ("routing_destination_as_peer", "collect routing destination as peer"),
+        ("routing_next_hop_ipv4", "collect routing next-hop address ipv4"),
+        ("routing_next_hop_ipv6", "collect routing next-hop address ipv6"),
+        ("transport_tcp_flags", "collect transport tcp flags"),
+        ("transport_destination_port", "collect transport destination-port"),
+        ("transport_source_port", "collect transport source-port"),
+        ("counter_bytes_long", "collect counter bytes long"),
+        ("counter_bytes_layer2", "collect counter bytes layer2"),
+        ("counter_packets_long", "collect counter packets long"),
+        ("timestamp_sys_uptime_first", "collect timestamp sys-uptime first"),
+        ("timestamp_sys_uptime_last", "collect timestamp sys-uptime last"),
+        ("timestamp_absolute_first", "collect timestamp absolute first"),
+        ("timestamp_absolute_last", "collect timestamp absolute last"),
+        ("interface_input", "collect interface input"),
+        ("interface_output", "collect interface output"),
+        ("ipv4_source_address", "collect ipv4 source address"),
+        ("ipv4_source_mask", "collect ipv4 source mask"),
+        ("ipv4_source_prefix", "collect ipv4 source prefix"),
+        ("ipv4_destination_address", "collect ipv4 destination address"),
+        ("ipv4_destination_mask", "collect ipv4 destination mask"),
+        ("ipv4_destination_prefix", "collect ipv4 destination prefix"),
+        ("ipv4_protocol", "collect ipv4 protocol"),
+        ("ipv4_version", "collect ipv4 version"),
+        ("ipv6_source_address", "collect ipv6 source address"),
+        ("ipv6_source_mask", "collect ipv6 source mask"),
+        ("ipv6_source_prefix", "collect ipv6 source prefix"),
+        ("ipv6_destination_address", "collect ipv6 destination address"),
+        ("ipv6_destination_mask", "collect ipv6 destination mask"),
+        ("ipv6_destination_prefix", "collect ipv6 destination prefix"),
+        ("ipv6_protocol", "collect ipv6 protocol"),
+        ("ipv6_version", "collect ipv6 version"),
+        ("datalink_dot1q_vlan_input", "collect datalink dot1q vlan input"),
+        ("datalink_dot1q_vlan_output", "collect datalink dot1q vlan output"),
+        ("datalink_mac_destination_input", "collect datalink mac destination address input"),
+        ("datalink_mac_destination_output", "collect datalink mac destination address output"),
+        ("datalink_mac_source_input", "collect datalink mac source address input"),
+        ("datalink_mac_source_output", "collect datalink mac source address output"),
+        ("flow_sampler", "collect flow sampler"),
+    ]
+
     def __init__(self, module):
         super(Flow_monitor, self).__init__(
             empty_fact_val={"records": [], "exporters": [], "samplers": [], "monitors": []},
@@ -109,7 +189,10 @@ class Flow_monitor(ResourceModule):
         for name, want_rec in wantd["records"].items():
             have_rec = haved["records"].get(name, {})
             if want_rec != have_rec:
-                self.commands.extend(self._record_commands(name, want_rec))
+                if have_rec and self.state in ["replaced", "overridden"]:
+                    self.commands.extend(self._record_diff_commands(name, want_rec, have_rec))
+                else:
+                    self.commands.extend(self._record_commands(name, want_rec))
 
         for name, want_smp in wantd["samplers"].items():
             have_smp = haved["samplers"].get(name, {})
@@ -124,7 +207,10 @@ class Flow_monitor(ResourceModule):
         for name, want_mon in wantd["monitors"].items():
             have_mon = haved["monitors"].get(name, {})
             if want_mon != have_mon:
-                self.commands.extend(self._monitor_commands(name, want_mon))
+                if have_mon and self.state in ["replaced", "overridden"]:
+                    self.commands.extend(self._monitor_diff_commands(name, want_mon, have_mon))
+                else:
+                    self.commands.extend(self._monitor_commands(name, want_mon))
 
     # ── command builders ────────────────────────────────────────────────────
 
@@ -132,90 +218,67 @@ class Flow_monitor(ResourceModule):
         cmds = ["flow record {0}".format(name)]
         match = rec.get("match", {})
         collect = rec.get("collect", {})
-        _MATCH_CLI = [
-            ("ipv4_tos", "match ipv4 tos"),
-            ("ipv4_protocol", "match ipv4 protocol"),
-            ("ipv4_source_address", "match ipv4 source address"),
-            ("ipv4_destination_address", "match ipv4 destination address"),
-            ("ipv4_ttl", "match ipv4 ttl"),
-            ("ipv4_version", "match ipv4 version"),
-            ("transport_source_port", "match transport source-port"),
-            ("transport_destination_port", "match transport destination-port"),
-            ("transport_icmp_ipv4_code", "match transport icmp ipv4 code"),
-            ("transport_icmp_ipv4_type", "match transport icmp ipv4 type"),
-            ("transport_icmp_ipv6_code", "match transport icmp ipv6 code"),
-            ("transport_icmp_ipv6_type", "match transport icmp ipv6 type"),
-            ("flow_direction", "match flow direction"),
-            ("interface_input", "match interface input"),
-            ("interface_output", "match interface output"),
-            ("routing_vrf_input", "match routing vrf input"),
-            ("ipv6_source_address", "match ipv6 source address"),
-            ("ipv6_destination_address", "match ipv6 destination address"),
-            ("ipv6_hop_limit", "match ipv6 hop-limit"),
-            ("ipv6_protocol", "match ipv6 protocol"),
-            ("ipv6_traffic_class", "match ipv6 traffic-class"),
-            ("ipv6_version", "match ipv6 version"),
-            ("datalink_dot1q_priority", "match datalink dot1q priority"),
-            ("datalink_dot1q_vlan_input", "match datalink dot1q vlan input"),
-            ("datalink_dot1q_vlan_output", "match datalink dot1q vlan output"),
-            ("datalink_ethertype", "match datalink ethertype"),
-            ("datalink_mac_destination_input", "match datalink mac destination address input"),
-            ("datalink_mac_destination_output", "match datalink mac destination address output"),
-            ("datalink_mac_source_input", "match datalink mac source address input"),
-            ("datalink_mac_source_output", "match datalink mac source address output"),
-            ("datalink_vlan_input", "match datalink vlan input"),
-            ("datalink_vlan_output", "match datalink vlan output"),
-            ("application_name", "match application name"),
-        ]
-        _COLLECT_CLI = [
-            ("routing_source_as_4octet", "collect routing source as 4-octet"),
-            ("routing_source_as_peer", "collect routing source as peer"),
-            ("routing_destination_as_4octet", "collect routing destination as 4-octet"),
-            ("routing_destination_as_peer", "collect routing destination as peer"),
-            ("routing_next_hop_ipv4", "collect routing next-hop address ipv4"),
-            ("routing_next_hop_ipv6", "collect routing next-hop address ipv6"),
-            ("transport_tcp_flags", "collect transport tcp flags"),
-            ("transport_destination_port", "collect transport destination-port"),
-            ("transport_source_port", "collect transport source-port"),
-            ("counter_bytes_long", "collect counter bytes long"),
-            ("counter_bytes_layer2", "collect counter bytes layer2"),
-            ("counter_packets_long", "collect counter packets long"),
-            ("timestamp_sys_uptime_first", "collect timestamp sys-uptime first"),
-            ("timestamp_sys_uptime_last", "collect timestamp sys-uptime last"),
-            ("timestamp_absolute_first", "collect timestamp absolute first"),
-            ("timestamp_absolute_last", "collect timestamp absolute last"),
-            ("interface_input", "collect interface input"),
-            ("interface_output", "collect interface output"),
-            ("ipv4_source_address", "collect ipv4 source address"),
-            ("ipv4_source_mask", "collect ipv4 source mask"),
-            ("ipv4_source_prefix", "collect ipv4 source prefix"),
-            ("ipv4_destination_address", "collect ipv4 destination address"),
-            ("ipv4_destination_mask", "collect ipv4 destination mask"),
-            ("ipv4_destination_prefix", "collect ipv4 destination prefix"),
-            ("ipv4_protocol", "collect ipv4 protocol"),
-            ("ipv4_version", "collect ipv4 version"),
-            ("ipv6_source_address", "collect ipv6 source address"),
-            ("ipv6_source_mask", "collect ipv6 source mask"),
-            ("ipv6_source_prefix", "collect ipv6 source prefix"),
-            ("ipv6_destination_address", "collect ipv6 destination address"),
-            ("ipv6_destination_mask", "collect ipv6 destination mask"),
-            ("ipv6_destination_prefix", "collect ipv6 destination prefix"),
-            ("ipv6_protocol", "collect ipv6 protocol"),
-            ("ipv6_version", "collect ipv6 version"),
-            ("datalink_dot1q_vlan_input", "collect datalink dot1q vlan input"),
-            ("datalink_dot1q_vlan_output", "collect datalink dot1q vlan output"),
-            ("datalink_mac_destination_input", "collect datalink mac destination address input"),
-            ("datalink_mac_destination_output", "collect datalink mac destination address output"),
-            ("datalink_mac_source_input", "collect datalink mac source address input"),
-            ("datalink_mac_source_output", "collect datalink mac source address output"),
-            ("flow_sampler", "collect flow sampler"),
-        ]
-        for key, cli in _MATCH_CLI:
+        for key, cli in self._MATCH_CLI:
             if match.get(key):
                 cmds.append(" {0}".format(cli))
-        for key, cli in _COLLECT_CLI:
+        for key, cli in self._COLLECT_CLI:
             if collect.get(key):
                 cmds.append(" {0}".format(cli))
+        return cmds
+
+    def _record_diff_commands(self, name, want_rec, have_rec):
+        """Emit minimal in-place update for replaced/overridden — add new fields, remove dropped ones."""
+        cmds = ["flow record {0}".format(name)]
+        want_match = want_rec.get("match", {})
+        have_match = have_rec.get("match", {})
+        want_collect = want_rec.get("collect", {})
+        have_collect = have_rec.get("collect", {})
+        for key, cli in self._MATCH_CLI:
+            if have_match.get(key) and not want_match.get(key):
+                cmds.append(" no {0}".format(cli))
+            elif want_match.get(key) and not have_match.get(key):
+                cmds.append(" {0}".format(cli))
+        for key, cli in self._COLLECT_CLI:
+            if have_collect.get(key) and not want_collect.get(key):
+                cmds.append(" no {0}".format(cli))
+            elif want_collect.get(key) and not have_collect.get(key):
+                cmds.append(" {0}".format(cli))
+        return cmds
+
+    def _monitor_diff_commands(self, name, want_mon, have_mon):
+        """Emit minimal in-place update for replaced/overridden — diff exporter list and scalar fields."""
+        cmds = ["flow monitor {0}".format(name)]
+        want_exporters = want_mon.get("exporters", [])
+        have_exporters = have_mon.get("exporters", [])
+        have_exp_set = set(have_exporters)
+        want_exp_set = set(want_exporters)
+        for exp in sorted(have_exp_set - want_exp_set):
+            cmds.append(" no exporter {0}".format(exp))
+        for exp in [e for e in want_exporters if e not in have_exp_set]:
+            cmds.append(" exporter {0}".format(exp))
+        want_desc = want_mon.get("description")
+        have_desc = have_mon.get("description")
+        if want_desc != have_desc:
+            if want_desc:
+                cmds.append(" description {0}".format(want_desc))
+            else:
+                cmds.append(" no description")
+        want_cache = want_mon.get("cache", {})
+        have_cache = have_mon.get("cache", {})
+        if want_cache != have_cache:
+            for field, cmd in [
+                ("type", "cache type"),
+                ("entries", "cache entries"),
+                ("timeout_inactive", "cache timeout inactive"),
+                ("timeout_active", "cache timeout active"),
+                ("timeout_update", "cache timeout update"),
+            ]:
+                wv = want_cache.get(field)
+                hv = have_cache.get(field)
+                if wv != hv and wv is not None:
+                    cmds.append(" {0} {1}".format(cmd, wv))
+        if want_mon.get("record") != have_mon.get("record") and want_mon.get("record"):
+            cmds.append(" record {0}".format(want_mon["record"]))
         return cmds
 
     def _exporter_commands(self, name, exp):
