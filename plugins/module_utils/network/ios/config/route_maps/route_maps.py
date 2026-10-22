@@ -203,7 +203,7 @@ class Route_maps(ResourceModule):
             ):
                 # IOS appends to an existing large-community line, so remove it first
                 self.compare(parsers=parsers, want={}, have={compare_type: {k: have_v}})
-                self.compare(parsers=parsers, want={compare_type: {k: v}}, have=dict())
+                self.compare(parsers=parsers, want={compare_type: {k: v}}, have={})
             elif v != have_v and k not in ["ip", "ipv6", "action", "sequence", "community"]:
                 if have_v:
                     self.compare(
