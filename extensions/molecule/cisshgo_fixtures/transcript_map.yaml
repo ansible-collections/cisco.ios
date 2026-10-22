@@ -920,6 +920,31 @@ platforms:
 
     end_context: "#"
 
+  ios_monitor_sessions:
+    vendor: "cisco"
+    hostname: "cisshgo-ios"
+    username: "admin"
+    password: "admin"
+    command_transcripts:
+      "show privilege": "transcripts/common/show_privilege.txt"
+      "terminal length 0": "transcripts/generic_empty_return.txt"
+      "terminal width 512": "transcripts/generic_empty_return.txt"
+      "terminal width 0": "transcripts/generic_empty_return.txt"
+      "show version": "transcripts/common/show_version.txt"
+      "show running-config": "transcripts/ios_monitor_sessions/show_running-config.txt"
+      "show running-config | section ^monitor session": "transcripts/ios_monitor_sessions/show_running-config_section_monitor-session_populated.txt"
+      "show vlan": "transcripts/generic_empty_return.txt"
+      "write memory": "transcripts/generic_empty_return.txt"
+      "write mem": "transcripts/generic_empty_return.txt"
+    context_search:
+      "configure terminal": "(config)#"
+      "enable": "#"
+      "base": "#"
+    context_hierarchy:
+      "(config)#": "#"
+      "#": ">"
+    end_context: "#"
+
 scenarios:
   ios-acl-interfaces-merged:
     platform: ios_acl_interfaces
@@ -4654,3 +4679,47 @@ scenarios:
         transcript: "transcripts/ios_vxlan_vtep/scenarios/ios-vxlan-vtep-deleted/after_deleted.txt"
       - command: "show running-config | section ^interface nve"
         transcript: "transcripts/ios_vxlan_vtep/scenarios/ios-vxlan-vtep-deleted/after_deleted.txt"
+
+  # ── merged: empty → merged ──────────────────────────────────────────────
+  ios-monitor-sessions-merged:
+    platform: ios_monitor_sessions
+    sequence:
+      # get_facts (have) — empty
+      - command: "show running-config | section ^monitor session"
+        transcript: "transcripts/ios_monitor_sessions/scenarios/ios-monitor-sessions-merged/before_empty.txt"
+      # edit_config
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "monitor session 1 source interface Gi1/0/1"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "monitor session 1 destination interface Gi1/0/10"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^monitor session"
+        transcript: "transcripts/ios_monitor_sessions/scenarios/ios-monitor-sessions-merged/after_merged.txt"
+      # idempotent: get_facts (have)
+      - command: "show running-config | section ^monitor session"
+        transcript: "transcripts/ios_monitor_sessions/scenarios/ios-monitor-sessions-merged/after_merged.txt"
+
+  # ── overridden: two sessions → one session ──────────────────────────────
+  ios-monitor-sessions-overridden:
+    platform: ios_monitor_sessions
+    sequence:
+      # get_facts (have) — two sessions
+      - command: "show running-config | section ^monitor session"
+        transcript: "transcripts/ios_monitor_sessions/scenarios/ios-monitor-sessions-overridden/before_two_sessions.txt"
+      # edit_config — remove session 2
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no monitor session 2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^monitor session"
+        transcript: "transcripts/ios_monitor_sessions/scenarios/ios-monitor-sessions-overridden/after_overridden.txt"
+      # idempotent: get_facts (have)
+      - command: "show running-config | section ^monitor session"
+        transcript: "transcripts/ios_monitor_sessions/scenarios/ios-monitor-sessions-overridden/after_overridden.txt"

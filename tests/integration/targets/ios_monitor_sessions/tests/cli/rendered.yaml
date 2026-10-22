@@ -1,0 +1,28 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_monitor_sessions rendered integration tests on connection={{ ansible_connection }}
+
+- name: Ios_monitor_sessions rendered - render commands without device
+  register: result
+  cisco.ios.ios_monitor_sessions:
+    config:
+      - session: 1
+        session_type: erspan-source
+        sources:
+          - interfaces:
+              - "{{ monitor_if1 }}"
+        destination:
+          erspan_id: "{{ erspan_id }}"
+          ip_address: "{{ erspan_ip }}"
+          origin_ip_address: "{{ erspan_origin }}"
+    state: rendered
+
+- name: Ios_monitor_sessions rendered - assert commands generated
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - "'monitor session 1 type erspan-source' in result.rendered"
+      - "'source interface ' ~ monitor_if1 in result.rendered"
+      - "'erspan-id ' ~ erspan_id in result.rendered"
+      - "'ip address ' ~ erspan_ip in result.rendered"
+      - "'origin ip address ' ~ erspan_origin in result.rendered"

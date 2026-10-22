@@ -1,0 +1,11 @@
+---
+# Abbreviated names as stored on IOS-XE C8000V. Do not use Gi1 (mgmt).
+monitor_if1: Gi2
+monitor_if2: Gi3
+monitor_if3: Gi4
+erspan_id: 10
+erspan_ip: 192.0.2.1
+erspan_origin: 192.0.2.2
+erspan_id_alt: 20
+erspan_ip_alt: 192.0.2.3
+erspan_origin_alt: 192.0.2.4
