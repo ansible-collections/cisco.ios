@@ -26,6 +26,16 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 
 
+# Values that IOS-XE omits from the running config because they are the default
+CACHE_TIMEOUT_DEFAULTS = {"timeout_inactive": 15, "timeout_active": 1800}
+EXPORTER_DEFAULTS = {
+    "export_protocol": "netflow-v9",
+    "template_data_timeout": 600,
+    "ttl": 255,
+    "dscp": 0,
+}
+
+
 class Flow_monitor(ResourceModule):
     """
     The ios_flow_monitor config class
@@ -201,16 +211,36 @@ class Flow_monitor(ResourceModule):
 
         for name, want_exp in wantd["exporters"].items():
             have_exp = haved["exporters"].get(name, {})
-            if want_exp != have_exp:
+            if self._without_defaults(want_exp, EXPORTER_DEFAULTS) != self._without_defaults(
+                have_exp,
+                EXPORTER_DEFAULTS,
+            ):
                 self.commands.extend(self._exporter_commands(name, want_exp))
 
         for name, want_mon in wantd["monitors"].items():
             have_mon = haved["monitors"].get(name, {})
-            if want_mon != have_mon:
+            if self._normalize_monitor(want_mon) != self._normalize_monitor(have_mon):
                 if have_mon and self.state in ["replaced", "overridden"]:
                     self.commands.extend(self._monitor_diff_commands(name, want_mon, have_mon))
                 else:
                     self.commands.extend(self._monitor_commands(name, want_mon))
+
+    # ── default value handling ──────────────────────────────────────────────
+
+    @staticmethod
+    def _without_defaults(data, defaults):
+        """Return a copy of data without the keys whose value is the IOS default."""
+        return {k: v for k, v in data.items() if k not in defaults or v != defaults[k]}
+
+    def _normalize_monitor(self, mon):
+        """Return the monitor without default cache timeouts, as IOS does not show them."""
+        mon = dict(mon)
+        cache = self._without_defaults(mon.get("cache", {}), CACHE_TIMEOUT_DEFAULTS)
+        if cache:
+            mon["cache"] = cache
+        else:
+            mon.pop("cache", None)
+        return mon
 
     # ── command builders ────────────────────────────────────────────────────
 
@@ -275,6 +305,9 @@ class Flow_monitor(ResourceModule):
             ]:
                 wv = want_cache.get(field)
                 hv = have_cache.get(field)
+                if hv is None:
+                    # IOS does not show default values in the running config
+                    hv = CACHE_TIMEOUT_DEFAULTS.get(field)
                 if wv != hv and wv is not None:
                     cmds.append(" {0} {1}".format(cmd, wv))
         if want_mon.get("record") != have_mon.get("record") and want_mon.get("record"):

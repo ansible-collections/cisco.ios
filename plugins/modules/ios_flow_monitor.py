@@ -30,6 +30,12 @@ notes:
     output in yaml format.
   - Some options (C(cache type permanent), C(transport tcp), C(timestamp sys-uptime)) are
     only supported on router platforms. Catalyst switches support C(timestamp absolute) instead.
+  - IOS XE does not show values that are the default in the running configuration, for example
+    C(cache timeout inactive 15), C(cache timeout active 1800) and the exporter
+    C(export-protocol netflow-v9), C(template data timeout 600), C(ttl 255) and C(dscp 0).
+    The module treats these as equal to an unset value, so specifying them does not cause a change on every run.
+  - IOS XE ignores changes to a flow record, without reporting an error, while a flow monitor that uses it
+    exists. To change a record, delete the flow monitors using it first, or use a new record name.
 options:
   config:
     description: Flexible NetFlow global configuration.

@@ -27,6 +27,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 
 
+# IOS-XE omits the timeout from an exporter "option" line when it is the default
+DEFAULT_OPTION_TIMEOUT = 600
+
+
 class Flow_monitorFacts(object):
     """The ios flow_monitor facts class"""
 
@@ -206,36 +210,40 @@ class Flow_monitorFacts(object):
                 if m:
                     exp["dscp"] = int(m.group(1))
                     continue
-                m = re.match(r"^option sampler-table timeout (\d+)$", stripped)
+                m = re.match(r"^option sampler-table(?: timeout (\d+))?$", stripped)
                 if m:
-                    exp.setdefault("options", {})["sampler_table_timeout"] = int(m.group(1))
+                    exp.setdefault("options", {})["sampler_table_timeout"] = (
+                        int(m.group(1)) if m.group(1) else DEFAULT_OPTION_TIMEOUT
+                    )
                     continue
-                m = re.match(r"^option template data timeout (\d+)$", stripped)
+                m = re.match(r"^option template data(?: timeout (\d+))?$", stripped)
                 if m:
-                    exp.setdefault("options", {})["template_data_timeout"] = int(m.group(1))
+                    exp.setdefault("options", {})["template_data_timeout"] = (
+                        int(m.group(1)) if m.group(1) else DEFAULT_OPTION_TIMEOUT
+                    )
                     continue
                 m = re.match(r"^option interface-table(?: timeout (\d+))?$", stripped)
                 if m:
                     exp.setdefault("options", {})["interface_table_timeout"] = (
-                        int(m.group(1)) if m.group(1) else None
+                        int(m.group(1)) if m.group(1) else DEFAULT_OPTION_TIMEOUT
                     )
                     continue
                 m = re.match(r"^option exporter-stats(?: timeout (\d+))?$", stripped)
                 if m:
                     exp.setdefault("options", {})["exporter_stats_timeout"] = (
-                        int(m.group(1)) if m.group(1) else None
+                        int(m.group(1)) if m.group(1) else DEFAULT_OPTION_TIMEOUT
                     )
                     continue
                 m = re.match(r"^option application-table(?: timeout (\d+))?$", stripped)
                 if m:
                     exp.setdefault("options", {})["application_table_timeout"] = (
-                        int(m.group(1)) if m.group(1) else None
+                        int(m.group(1)) if m.group(1) else DEFAULT_OPTION_TIMEOUT
                     )
                     continue
                 m = re.match(r"^option vrf-table(?: timeout (\d+))?$", stripped)
                 if m:
                     exp.setdefault("options", {})["vrf_table_timeout"] = (
-                        int(m.group(1)) if m.group(1) else None
+                        int(m.group(1)) if m.group(1) else DEFAULT_OPTION_TIMEOUT
                     )
                     continue
                 m = re.match(r"^description (.+)$", stripped)

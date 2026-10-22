@@ -492,3 +492,114 @@ class TestIosFlowMonitorModule(TestIosModule):
         result = self.execute_module(changed=False)
         mon = result["parsed"]["monitors"][0]
         self.assertEqual(mon["exporters"], ["FLOW_EXPORTER_1", "FLOW_EXPORTER_2"])
+
+    # ── values IOS-XE omits from the running config because they are defaults ──
+
+    _DEFAULTS_HAVE = dedent(
+        """\
+        flow record REC
+         match ipv4 protocol
+         collect counter bytes long
+        flow exporter EXP
+         destination 192.0.2.1
+         transport udp 9995
+         option interface-table
+         option exporter-stats
+         option vrf-table
+         option sampler-table
+         option application-table
+        flow monitor MON
+         exporter EXP
+         cache timeout active 90
+         record REC
+        """,
+    )
+
+    def _defaults_config(self):
+        return {
+            "records": [
+                {
+                    "name": "REC",
+                    "match": {"ipv4_protocol": True},
+                    "collect": {"counter_bytes_long": True},
+                },
+            ],
+            "exporters": [
+                {
+                    "name": "EXP",
+                    "destination": "192.0.2.1",
+                    "export_protocol": "netflow-v9",
+                    "template_data_timeout": 600,
+                    "ttl": 255,
+                    "dscp": 0,
+                    "transport": {"protocol": "udp", "port": 9995},
+                    "options": {
+                        "interface_table_timeout": 600,
+                        "exporter_stats_timeout": 600,
+                        "vrf_table_timeout": 600,
+                        "sampler_table_timeout": 600,
+                        "application_table_timeout": 600,
+                    },
+                },
+            ],
+            "monitors": [
+                {
+                    "name": "MON",
+                    "exporters": ["EXP"],
+                    "cache": {"timeout_inactive": 15, "timeout_active": 90},
+                    "record": "REC",
+                },
+            ],
+        }
+
+    def test_ios_flow_monitor_merged_idempotent_default_values(self):
+        """Values equal to the IOS default are not shown in the running config and must not cause a diff."""
+        self.execute_show_command.return_value = self._DEFAULTS_HAVE
+        set_module_args({"config": self._defaults_config(), "state": "merged"})
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_flow_monitor_replaced_idempotent_default_values(self):
+        self.execute_show_command.return_value = self._DEFAULTS_HAVE
+        set_module_args({"config": self._defaults_config(), "state": "replaced"})
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_flow_monitor_changed_from_default_is_applied(self):
+        """A value that differs from the default (and from the device) is still configured."""
+        self.execute_show_command.return_value = self._DEFAULTS_HAVE
+        config = self._defaults_config()
+        config["monitors"][0]["cache"] = {"timeout_inactive": 20, "timeout_active": 90}
+        config["exporters"][0]["ttl"] = 64
+        set_module_args({"config": config, "state": "replaced"})
+        result = self.execute_module(changed=True)
+        self.assertIn(" cache timeout inactive 20", result["commands"])
+        self.assertIn(" ttl 64", result["commands"])
+
+    def test_ios_flow_monitor_explicit_default_replaces_non_default(self):
+        """Setting the default value explicitly changes a non-default value on the device."""
+        have = self._DEFAULTS_HAVE.replace(
+            " cache timeout active 90",
+            " cache timeout inactive 10\n cache timeout active 90",
+        )
+        self.execute_show_command.return_value = have
+        set_module_args({"config": self._defaults_config(), "state": "replaced"})
+        result = self.execute_module(changed=True)
+        self.assertIn(" cache timeout inactive 15", result["commands"])
+
+    def test_ios_flow_monitor_gathered_bare_option_lines(self):
+        """A bare 'option X' line means the default 600 second timeout, not an unset option."""
+        self.execute_show_command.return_value = self._DEFAULTS_HAVE
+        set_module_args({"state": "gathered"})
+        result = self.execute_module(changed=False)
+        options = result["gathered"]["exporters"][0]["options"]
+        self.assertEqual(
+            options,
+            {
+                "interface_table_timeout": 600,
+                "exporter_stats_timeout": 600,
+                "vrf_table_timeout": 600,
+                "sampler_table_timeout": 600,
+                "application_table_timeout": 600,
+            },
+        )
