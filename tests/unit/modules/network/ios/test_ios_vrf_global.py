@@ -477,6 +477,35 @@ class TestIosVrfGlobalModule(TestIosModule):
         )
         self.execute_module(changed=False, commands=[])
 
+    def test_ios_vrf_global_overridden_purges_absent_vrf(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            vrf definition VRF2
+             description keep this one
+             rd 2:3
+            vrf definition VRF_OLD
+             description should be purged
+             rd 9:9
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    vrfs=[
+                        dict(
+                            name="VRF2",
+                            description="keep this one",
+                            rd="2:3",
+                        ),
+                    ],
+                ),
+                state="overridden",
+            ),
+        )
+        commands = ["no vrf definition VRF_OLD"]
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], commands)
+
     def test_ios_vrf_global_deleted(self):
         self.execute_show_command.return_value = dedent(
             """\

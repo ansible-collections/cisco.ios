@@ -1,0 +1,6 @@
+---
+minor_changes:
+  - ios_monitor_sessions - New resource module for declarative management of SPAN
+    (Switched Port Analyzer) monitor sessions on Cisco IOS-XE devices. Supports all
+    standard states (merged, replaced, overridden, deleted, rendered, gathered, parsed)
+    and handles IOS-XE range notation and per-direction source interface consolidation.
