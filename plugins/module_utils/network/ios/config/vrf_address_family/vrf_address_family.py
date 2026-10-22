@@ -188,24 +188,28 @@ class Vrf_address_family(ResourceModule):
         haafs = have.get("address_families", {})
         for afk, afv in waafs.items():
             begin = len(self.commands)
-            have_af = haafs.get(afk) or self._find_bare_af_in_have(afk, haafs)
-            self._compare_single_af(want=afv, have=have_af or {})
-            af_absent = not (afk in haafs or self._find_bare_af_in_have(afk, haafs))
+            # A bare AF spec (no safi) is the IOS unicast AF, which facts key as (afi, "unicast")
+            bare_have = self._find_bare_af_in_have(afk, haafs)
+            if self.state == "merged":
+                # Merged is additive: a sparse want must not negate sub-config that is only on the device
+                have_af = haafs.get(afk, {})
+            else:
+                have_af = haafs.get(afk) or bare_have or {}
+            self._compare_single_af(want=afv, have=have_af)
+            af_absent = afk not in haafs and not bare_have
             if len(self.commands) != begin or af_absent:
                 af_cmd = f"address-family {afv.get('afi')}"
                 if afv.get("safi"):
                     af_cmd += f" {afv.get('safi')}"
                 self.commands.insert(begin, af_cmd)
 
-    def _find_bare_af_in_have(self, afk, haafs):
-        """When safi is None (bare AF spec), find a matching have entry by afi alone."""
+    @staticmethod
+    def _find_bare_af_in_have(afk, haafs):
+        """Find the have entry for a bare AF spec (safi is None), which IOS treats as unicast."""
         afi, safi = afk
         if safi is not None:
             return None
-        for k, v in haafs.items():
-            if k[0] == afi:
-                return v
-        return None
+        return haafs.get((afi, "unicast"))
 
     def _compare_single_af(self, want, have):
         """Custom handling of single af option

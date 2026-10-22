@@ -7707,7 +7707,9 @@ Examples
     # - name: vrf2
     #   address_families:
     #     - afi: ipv4
+    #       safi: unicast
     #     - afi: ipv6
+    #       safi: unicast
 
 
 
