@@ -4502,7 +4502,7 @@ scenarios:
         transcript: "transcripts/generic_empty_return.txt"
       - command: "vrf definition test1"
         transcript: "transcripts/generic_empty_return.txt"
-      - command: "no no address-family ipv4 unicast"
+      - command: "no address-family ipv4 unicast"
         transcript: "transcripts/generic_empty_return.txt"
       - command: "end"
         transcript: "transcripts/generic_empty_return.txt"
