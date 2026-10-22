@@ -43,7 +43,7 @@ class Vrf_address_familyTemplate(NetworkTemplate):
                 $""", re.VERBOSE,
             ),
             "setval": "address-family {{ afi }} {{ safi }}",
-            "remval": "no address-family {{ afi }} {{ safi }}",
+            "remval": "address-family {{ afi }} {{ safi }}",
             "result": {
                 '{{ name }}': {
                     'name': '{{ name }}',

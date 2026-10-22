@@ -137,16 +137,20 @@ class Vrf_address_family(ResourceModule):
 
         if self.state == "deleted":
             for vrfk, vrfv in haved.items():
+                # With a config only the named VRFs are touched, without one all VRFs are
+                if wantd and vrfk not in wantd:
+                    continue
+                adrf = wantd.get(vrfk, {}).get("address_families", {})
+                begin = len(self.commands)
                 for afk, afv in vrfv.get("address_families", {}).items():
-                    adrf = wantd.get(vrfk, {}).get("address_families", {})
                     if afk in adrf or not adrf:
-                        self.commands.append(f"vrf definition {vrfk}")
-
                         self.addcmd(
                             {"afi": afv.get("afi"), "safi": afv.get("safi")},
                             "address_family",
                             True,
                         )
+                if len(self.commands) != begin:
+                    self.commands.insert(begin, f"vrf definition {vrfk}")
 
         if self.state in ["overridden"]:
             for vrfk, vrfv in haved.items():
@@ -188,35 +192,24 @@ class Vrf_address_family(ResourceModule):
         haafs = have.get("address_families", {})
         for afk, afv in waafs.items():
             begin = len(self.commands)
-            # A bare AF spec (no safi) is the IOS unicast AF, which facts key as (afi, "unicast")
-            bare_have = self._find_bare_af_in_have(afk, haafs)
-            if self.state == "merged":
-                # Merged is additive: a sparse want must not negate sub-config that is only on the device
-                have_af = haafs.get(afk, {})
-            else:
-                have_af = haafs.get(afk) or bare_have or {}
-            self._compare_single_af(want=afv, have=have_af)
-            af_absent = afk not in haafs and not bare_have
+            self._compare_single_af(want=afv, have=haafs.get(afk, {}))
+            # An address-family that is not on the device is created even without options
+            af_absent = afk not in haafs
             if len(self.commands) != begin or af_absent:
                 af_cmd = f"address-family {afv.get('afi')}"
                 if afv.get("safi"):
                     af_cmd += f" {afv.get('safi')}"
                 self.commands.insert(begin, af_cmd)
 
-    @staticmethod
-    def _find_bare_af_in_have(afk, haafs):
-        """Find the have entry for a bare AF spec (safi is None), which IOS treats as unicast."""
-        afi, safi = afk
-        if safi is not None:
-            return None
-        return haafs.get((afi, "unicast"))
-
     def _compare_single_af(self, want, have):
         """Custom handling of single af option
         :params want: the want VRF dictionary
         :params have: the have VRF dictionary
         """
-        if "route_target" in want:
+        # replaced/overridden must also remove route-targets when want has none
+        if "route_target" in want or (
+            self.state in ["replaced", "overridden"] and have.get("route_target")
+        ):
             self._compare_route_targets(want, have)
         self.compare(parsers=self.parsers[1:], want=want, have=have)
 
@@ -228,12 +221,26 @@ class Vrf_address_family(ResourceModule):
 
         for vrf in entry:
             if "address_families" in vrf:
+                # A bare AF spec (no safi) is the IOS unicast AF, which is how facts key it
                 vrf["address_families"] = {
-                    (x["afi"], x.get("safi")): x for x in vrf["address_families"]
+                    (x["afi"], x.get("safi") or "unicast"): x for x in vrf["address_families"]
                 }
 
         entry = {x["name"]: x for x in entry}
         return entry
+
+    @staticmethod
+    def _rt_key(route_target):
+        """Identify a route-target by value and stitching, an unset stitching flag is False."""
+        return (route_target["rt_value"], bool(route_target.get("stitching")))
+
+    @staticmethod
+    def _rt_cmd(direction, key, negate=False):
+        rt_value, stitching = key
+        cmd = f"route-target {direction} {rt_value}"
+        if stitching:
+            cmd += " stitching"
+        return f"no {cmd}" if negate else cmd
 
     def _compare_route_targets(self, want, have):
         """Custom handling for route targets lists for all states
@@ -243,43 +250,19 @@ class Vrf_address_family(ResourceModule):
         want_rt = want.get("route_target", {})
         have_rt = have.get("route_target", {})
 
-        want_exports = want_rt.get("exports", [])
-        have_exports = have_rt.get("exports", [])
+        for direction, option in (("export", "exports"), ("import", "imports")):
+            want_keys = list(dict.fromkeys(self._rt_key(rt) for rt in want_rt.get(option, [])))
+            have_keys = [self._rt_key(rt) for rt in have_rt.get(option, [])]
 
-        if self.state in ["merged", "replaced", "overridden"]:
-            for export_rt in want_exports:
-                if export_rt not in have_exports:
-                    rt_cmd = f"route-target export {export_rt['rt_value']}"
-                    if export_rt.get("stitching"):
-                        rt_cmd += " stitching"
-                    self.commands.append(rt_cmd)
+            if self.state in ["merged", "replaced", "overridden"]:
+                for key in want_keys:
+                    if key not in have_keys:
+                        self.commands.append(self._rt_cmd(direction, key))
 
-        if self.state in ["replaced", "overridden", "deleted"]:
-            for export_rt in have_exports:
-                if self.state == "deleted" or export_rt not in want_exports:
-                    rt_cmd = f"no route-target export {export_rt['rt_value']}"
-                    if export_rt.get("stitching"):
-                        rt_cmd += " stitching"
-                    self.commands.append(rt_cmd)
-
-        want_imports = want_rt.get("imports", [])
-        have_imports = have_rt.get("imports", [])
-
-        if self.state in ["merged", "replaced", "overridden"]:
-            for import_rt in want_imports:
-                if import_rt not in have_imports:
-                    rt_cmd = f"route-target import {import_rt['rt_value']}"
-                    if import_rt.get("stitching"):
-                        rt_cmd += " stitching"
-                    self.commands.append(rt_cmd)
-
-        if self.state in ["replaced", "overridden", "deleted"]:
-            for import_rt in have_imports:
-                if self.state == "deleted" or import_rt not in want_imports:
-                    rt_cmd = f"no route-target import {import_rt['rt_value']}"
-                    if import_rt.get("stitching"):
-                        rt_cmd += " stitching"
-                    self.commands.append(rt_cmd)
+            if self.state in ["replaced", "overridden", "deleted"]:
+                for key in have_keys:
+                    if self.state == "deleted" or key not in want_keys:
+                        self.commands.append(self._rt_cmd(direction, key, negate=True))
 
     def _handle_deprecates(self, want):
         if not isinstance(want, list):
@@ -296,10 +279,10 @@ class Vrf_address_family(ResourceModule):
                         new_rt = {}
                         if "export" in rt:
                             export_value = rt["export"]
-                            new_rt["exports"] = [{"rt_value": export_value, "stiching": False}]
+                            new_rt["exports"] = [{"rt_value": export_value, "stitching": False}]
                         if "import_config" in rt:
                             import_value = rt["import_config"]
-                            new_rt["imports"] = [{"rt_value": import_value, "stiching": False}]
+                            new_rt["imports"] = [{"rt_value": import_value, "stitching": False}]
                         if new_rt:
                             af["route_target"] = new_rt
         return want
