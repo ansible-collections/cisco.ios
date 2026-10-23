@@ -44,6 +44,12 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.evpn_e
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.evpn_global.evpn_global import (
     Evpn_globalFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.flow_monitor.flow_monitor import (
+    Flow_monitorFacts,
+)
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.flow_monitor_interfaces.flow_monitor_interfaces import (
+    Flow_monitor_interfacesFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.hostname.hostname import (
     HostnameFacts,
 )
@@ -170,6 +176,8 @@ FACT_RESOURCE_SUBSETS = dict(
     hsrp_interfaces=Hsrp_interfacesFacts,
     bfd_interfaces=Bfd_interfacesFacts,
     bfd_templates=Bfd_templatesFacts,
+    flow_monitor=Flow_monitorFacts,
+    flow_monitor_interfaces=Flow_monitor_interfacesFacts,
     monitor_sessions=Monitor_sessionsFacts,
 )
 
