@@ -129,6 +129,32 @@ class TestIosConfigModule(TestIosModule):
         args = self.run_commands.call_args[0][1]
         self.assertIn("copy running-config startup-config\r", args)
 
+    def test_trim_trailing_whitespace(self):
+        value = "line one  \nline two\t\r\nline three   "
+        expected = "line one\nline two\r\nline three"
+
+        self.assertEqual(ios_config._trim_trailing_whitespace(value), expected)
+
+    def test_ios_config_diff_trims_trailing_whitespace(self):
+        set_module_args(
+            dict(
+                running_config="hostname router\n",
+                intended_config="hostname switch\n",
+                diff_against="intended",
+                _ansible_diff=True,
+            ),
+        )
+
+        with patch(
+            "ansible_collections.cisco.ios.plugins.modules.ios_config._trim_trailing_whitespace",
+            side_effect=lambda value: "trimmed: {0}".format(value),
+        ) as trim_trailing_whitespace:
+            result = self.execute_module(changed=True)
+
+        self.assertEqual(trim_trailing_whitespace.call_count, 2)
+        self.assertTrue(result["diff"]["before"].startswith("trimmed: "))
+        self.assertTrue(result["diff"]["after"].startswith("trimmed: "))
+
     def test_ios_config_lines_wo_parents(self):
         lines = ["hostname foo"]
         set_module_args(dict(lines=lines))

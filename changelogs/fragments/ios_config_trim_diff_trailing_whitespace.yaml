@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_config - Trim trailing whitespace from returned diff output to avoid noisy diffs.
