@@ -1981,7 +1981,8 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
 
     def test_ios_bgp_address_family_bmp_legacy_server(self):
         self.execute_show_command.return_value = self.BMP_VRF_CONFIG.replace(
-            "server 1 server 2", "server 3"
+            "server 1 server 2",
+            "server 3",
         )
         set_module_args(self._bmp_af_args({"server": 3}, "merged"))
         self.execute_module(changed=False, commands=[])

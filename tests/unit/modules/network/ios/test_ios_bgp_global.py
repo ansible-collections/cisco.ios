@@ -1064,7 +1064,9 @@ class TestIosBgpGlobalModule(TestIosModule):
                 "config": {
                     "as_number": "65000",
                     "bmp": {
-                        "servers": [{"number": 1, "description": "collector uno", "set_ip_dscp": 3}]
+                        "servers": [
+                            {"number": 1, "description": "collector uno", "set_ip_dscp": 3}
+                        ],
                     },
                 },
                 "state": "merged",
@@ -1090,7 +1092,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                 "config": {
                     "as_number": "65000",
                     "bmp": {
-                        "servers": [{"number": 1, "address": {"host": "192.0.2.50", "port": 5500}}]
+                        "servers": [{"number": 1, "address": {"host": "192.0.2.50", "port": 5500}}],
                     },
                 },
                 "state": "merged",
@@ -1370,7 +1372,8 @@ class TestIosBgpGlobalModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
-            result["commands"], ["router bgp 65000", "no neighbor 192.0.2.2 bmp-activate"]
+            result["commands"],
+            ["router bgp 65000", "no neighbor 192.0.2.2 bmp-activate"],
         )
 
     def test_ios_bgp_global_bmp_legacy_server_options(self):

@@ -169,7 +169,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 "bmp": {
                     "servers": {
                         "{{ bmp_srv_no }}": {
-                            "address": {"host": "{{ host }}", "port": "{{ port }}"}
+                            "address": {"host": "{{ host }}", "port": "{{ port }}"},
                         },
                     },
                 },
@@ -186,7 +186,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "description {{ description }}",
             "compval": "description",
             "result": {
-                "bmp": {"servers": {"{{ bmp_srv_no }}": {"description": "{{ description }}"}}}
+                "bmp": {"servers": {"{{ bmp_srv_no }}": {"description": "{{ description }}"}}},
             },
         },
         {
@@ -202,7 +202,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {
                 "bmp": {
                     "servers": {
-                        "{{ bmp_srv_no }}": {"failure_retry_delay": "{{ failure_retry_delay }}"}
+                        "{{ bmp_srv_no }}": {"failure_retry_delay": "{{ failure_retry_delay }}"},
                     },
                 },
             },
@@ -219,7 +219,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "compval": "flapping_delay",
             "result": {
                 "bmp": {
-                    "servers": {"{{ bmp_srv_no }}": {"flapping_delay": "{{ flapping_delay }}"}}
+                    "servers": {"{{ bmp_srv_no }}": {"flapping_delay": "{{ flapping_delay }}"}},
                 },
             },
         },
@@ -265,7 +265,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 "bmp": {
                     "servers": {
                         "{{ bmp_srv_no }}": {
-                            "stats_reporting_period": "{{ stats_reporting_period }}"
+                            "stats_reporting_period": "{{ stats_reporting_period }}",
                         },
                     },
                 },
