@@ -505,3 +505,29 @@ def generate_switchport_trunk(type, add, vlans_range):
         append_command()
 
     return commands
+
+
+def normalize_bmp_activate(bmp_activate):
+    """Return a canonical bmp_activate dict: {'all': True}, {'servers': [sorted ints]} or {}.
+
+    The deprecated single ``server`` option is folded into ``servers`` and
+    duplicates are dropped, so want and have can be compared directly.
+    """
+    if not bmp_activate:
+        return {}
+    if bmp_activate.get("all"):
+        return {"all": True}
+    servers = list(bmp_activate.get("servers") or [])
+    if bmp_activate.get("server") is not None:
+        servers.append(bmp_activate["server"])
+    servers = sorted({int(srv) for srv in servers})
+    return {"servers": servers} if servers else {}
+
+
+def merge_bmp_activate(have, want):
+    """Merge semantics for bmp_activate: 'all' wins, otherwise the server lists are united."""
+    have = normalize_bmp_activate(have)
+    want = normalize_bmp_activate(want)
+    if have.get("all") or want.get("all"):
+        return {"all": True}
+    return normalize_bmp_activate({"servers": have.get("servers", []) + want.get("servers", [])})

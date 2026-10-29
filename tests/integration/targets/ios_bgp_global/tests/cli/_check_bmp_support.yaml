@@ -1,0 +1,29 @@
+---
+# Probe whether the device supports the BGP Monitoring Protocol. Platforms
+# that do not (some virtual routers) reject 'bmp server' with an
+# invalid-input error, which lets BMP scenarios skip gracefully instead of
+# failing CI.
+- name: Probe BMP support
+  register: bmp_probe
+  ignore_errors: true
+  cisco.ios.ios_config:
+    lines:
+      - bmp server 1
+      - exit-bmp-server-mode
+    parents: router bgp 65000
+
+- name: Remove the probe BMP server so it does not leak into facts
+  when: not (bmp_probe.failed | default(false))
+  cisco.ios.ios_config:
+    lines:
+      - no bmp server 1
+    parents: router bgp 65000
+
+- name: Set fact for BMP support
+  ansible.builtin.set_fact:
+    bmp_supported: "{{ not (bmp_probe.failed | default(false)) }}"
+
+- name: Notice when BMP scenarios will be skipped
+  when: not bmp_supported
+  ansible.builtin.debug:
+    msg: Skipping BMP scenarios, the device rejected 'bmp server'.

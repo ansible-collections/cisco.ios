@@ -925,3 +925,562 @@ class TestIosBgpGlobalModule(TestIosModule):
             },
         )
         self.execute_module(changed=False, commands=[])
+
+    # ------------------------------------------------------------------ BMP
+
+    BMP_RUNNING_CONFIG = dedent(
+        """\
+        router bgp 65000
+         bmp server 1
+          address 192.0.2.10 port-number 5000
+          description collector one
+          initial-delay 15
+          failure-retry-delay 20
+          flapping-delay 120
+          stats-reporting-period 60
+          update-source Loopback100
+          set ip dscp 5
+          activate
+         exit-bmp-server-mode
+         bmp server 2
+          address 192.0.2.11 port-number 5001
+         exit-bmp-server-mode
+         bmp buffer-size 1024
+         bmp initial-refresh delay 30
+         neighbor 192.0.2.1 remote-as 65001
+         neighbor 192.0.2.1 bmp-activate all
+         neighbor 192.0.2.2 remote-as 65002
+         neighbor 192.0.2.2 bmp-activate server 1 server 2
+        """,
+    )
+
+    BMP_SERVER_ONE = {
+        "number": 1,
+        "address": {"host": "192.0.2.10", "port": 5000},
+        "description": "collector one",
+        "initial_delay": 15,
+        "failure_retry_delay": 20,
+        "flapping_delay": 120,
+        "stats_reporting_period": 60,
+        "update_source": "Loopback100",
+        "set_ip_dscp": 5,
+        "activate": True,
+    }
+
+    def _bmp_config(self, **overrides):
+        config = {
+            "as_number": "65000",
+            "bgp": {"default": {"ipv4_unicast": True, "route_target": {"filter": True}}},
+            "bmp": {
+                "buffer_size": 1024,
+                "initial_refresh": {"delay": 30},
+                "servers": [
+                    dict(self.BMP_SERVER_ONE),
+                    {"number": 2, "address": {"host": "192.0.2.11", "port": 5001}},
+                ],
+            },
+            "neighbors": [
+                {
+                    "neighbor_address": "192.0.2.1",
+                    "remote_as": "65001",
+                    "bmp_activate": {"all": True},
+                },
+                {
+                    "neighbor_address": "192.0.2.2",
+                    "remote_as": "65002",
+                    "bmp_activate": {"servers": [1, 2]},
+                },
+            ],
+        }
+        config.update(overrides)
+        return config
+
+    def test_ios_bgp_global_bmp_parsed(self):
+        set_module_args({"running_config": self.BMP_RUNNING_CONFIG, "state": "parsed"})
+        parsed = self.execute_module(changed=False)["parsed"]
+        self.assertEqual(parsed["bmp"]["buffer_size"], 1024)
+        self.assertEqual(parsed["bmp"]["initial_refresh"], {"delay": 30})
+        self.assertEqual(
+            parsed["bmp"]["servers"],
+            [
+                self.BMP_SERVER_ONE,
+                {"number": 2, "address": {"host": "192.0.2.11", "port": 5001}},
+            ],
+        )
+        neighbors = {n["neighbor_address"]: n for n in parsed["neighbors"]}
+        self.assertEqual(neighbors["192.0.2.1"]["bmp_activate"], {"all": True})
+        self.assertEqual(neighbors["192.0.2.2"]["bmp_activate"], {"servers": [1, 2]})
+
+    def test_ios_bgp_global_bmp_merged_idempotent(self):
+        self.execute_show_command.return_value = self.BMP_RUNNING_CONFIG
+        set_module_args({"config": self._bmp_config(), "state": "merged"})
+        self.execute_module(changed=False, commands=[])
+
+    def test_ios_bgp_global_bmp_replaced_idempotent(self):
+        self.execute_show_command.return_value = self.BMP_RUNNING_CONFIG
+        set_module_args({"config": self._bmp_config(), "state": "replaced"})
+        self.execute_module(changed=False, commands=[])
+
+    def test_ios_bgp_global_bmp_rendered(self):
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "bmp": {"servers": [dict(self.BMP_SERVER_ONE)]},
+                    "neighbors": [
+                        {
+                            "neighbor_address": "192.0.2.9",
+                            "remote_as": "65009",
+                            "bmp_activate": {"servers": [2, 1]},
+                        },
+                    ],
+                },
+                "state": "rendered",
+            },
+        )
+        rendered = self.execute_module(changed=False)["rendered"]
+        self.assertEqual(
+            rendered[rendered.index("bmp server 1") : rendered.index("exit-bmp-server-mode") + 1],
+            [
+                "bmp server 1",
+                "address 192.0.2.10 port-number 5000",
+                "description collector one",
+                "failure-retry-delay 20",
+                "flapping-delay 120",
+                "initial-delay 15",
+                "set ip dscp 5",
+                "stats-reporting-period 60",
+                "update-source Loopback100",
+                "activate",
+                "exit-bmp-server-mode",
+            ],
+        )
+        self.assertIn("neighbor 192.0.2.9 bmp-activate server 1 server 2", rendered)
+
+    def test_ios_bgp_global_bmp_merged_option_change(self):
+        self.execute_show_command.return_value = self.BMP_RUNNING_CONFIG
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "bmp": {
+                        "servers": [{"number": 1, "description": "collector uno", "set_ip_dscp": 3}]
+                    },
+                },
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "router bgp 65000",
+                "bmp server 1",
+                "description collector uno",
+                "set ip dscp 3",
+                "exit-bmp-server-mode",
+            ],
+        )
+
+    def test_ios_bgp_global_bmp_merged_address_change_on_active_server(self):
+        """IOS-XE ignores an address change while activated, so it is deactivated around it."""
+        self.execute_show_command.return_value = self.BMP_RUNNING_CONFIG
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "bmp": {
+                        "servers": [{"number": 1, "address": {"host": "192.0.2.50", "port": 5500}}]
+                    },
+                },
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "router bgp 65000",
+                "bmp server 1",
+                "no activate",
+                "no address 192.0.2.10 port-number 5000",
+                "address 192.0.2.50 port-number 5500",
+                "activate",
+                "exit-bmp-server-mode",
+            ],
+        )
+
+    def test_ios_bgp_global_bmp_merged_new_server(self):
+        self.execute_show_command.return_value = self.BMP_RUNNING_CONFIG
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "bmp": {
+                        "servers": [
+                            {
+                                "number": 3,
+                                "address": {"host": "192.0.2.12", "port": 5002},
+                                "activate": True,
+                            },
+                        ],
+                    },
+                },
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "router bgp 65000",
+                "bmp server 3",
+                "address 192.0.2.12 port-number 5002",
+                "activate",
+                "exit-bmp-server-mode",
+            ],
+        )
+
+    def test_ios_bgp_global_bmp_new_server_without_options(self):
+        self.execute_show_command.return_value = self.BMP_RUNNING_CONFIG
+        set_module_args(
+            {
+                "config": {"as_number": "65000", "bmp": {"servers": [{"number": 4}]}},
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["router bgp 65000", "bmp server 4", "exit-bmp-server-mode"],
+        )
+
+    def test_ios_bgp_global_bmp_replaced_removes_options_and_servers(self):
+        self.execute_show_command.return_value = self.BMP_RUNNING_CONFIG
+        config = self._bmp_config()
+        config["bmp"] = {
+            "initial_refresh": {"skip": True},
+            "servers": [
+                {
+                    "number": 1,
+                    "address": {"host": "192.0.2.10", "port": 5000},
+                    "description": "collector one",
+                    "activate": True,
+                },
+            ],
+        }
+        set_module_args({"config": config, "state": "replaced"})
+        result = self.execute_module(changed=True)
+        commands = result["commands"]
+        for expected in (
+            "no bmp buffer-size 1024",
+            "no bmp initial-refresh delay 30",
+            "bmp initial-refresh skip",
+            "no bmp server 2",
+            "no initial-delay 15",
+            "no failure-retry-delay 20",
+            "no flapping-delay 120",
+            "no stats-reporting-period 60",
+            "no update-source Loopback100",
+            "no set ip dscp 5",
+        ):
+            self.assertIn(expected, commands)
+        self.assertNotIn("no activate", commands)
+        self.assertNotIn("no description collector one", commands)
+
+    def test_ios_bgp_global_bmp_server_deactivated(self):
+        self.execute_show_command.return_value = self.BMP_RUNNING_CONFIG
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "bmp": {"servers": [{"number": 1, "activate": False}]},
+                },
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["router bgp 65000", "bmp server 1", "no activate", "exit-bmp-server-mode"],
+        )
+
+    def test_ios_bgp_global_bmp_deleted(self):
+        self.execute_show_command.return_value = self.BMP_RUNNING_CONFIG
+        set_module_args({"config": {"as_number": "65000"}, "state": "deleted"})
+        commands = self.execute_module(changed=True)["commands"]
+        for expected in (
+            "no bmp server 1",
+            "no bmp server 2",
+            "no bmp buffer-size 1024",
+            "no bmp initial-refresh delay 30",
+        ):
+            self.assertIn(expected, commands)
+
+    def test_ios_bgp_global_bmp_neighbor_idempotent_all_and_servers(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             neighbor 192.0.2.1 remote-as 65001
+             neighbor 192.0.2.1 bmp-activate all
+             neighbor 192.0.2.2 remote-as 65002
+             neighbor 192.0.2.2 bmp-activate server 1 server 2
+            """,
+        )
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "192.0.2.1",
+                            "remote_as": "65001",
+                            "bmp_activate": {"all": True},
+                        },
+                        {
+                            "neighbor_address": "192.0.2.2",
+                            "remote_as": "65002",
+                            "bmp_activate": {"servers": [2, 1]},
+                        },
+                    ],
+                },
+                "state": "merged",
+            },
+        )
+        self.execute_module(changed=False, commands=[])
+
+    def test_ios_bgp_global_bmp_neighbor_activate_clears_before_change(self):
+        """IOS-XE ignores bmp-activate on an activated neighbor, so the old one is removed first."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             neighbor 192.0.2.2 remote-as 65002
+             neighbor 192.0.2.2 bmp-activate server 1 server 2
+            """,
+        )
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "bgp": {"default": {"ipv4_unicast": True, "route_target": {"filter": True}}},
+                    "neighbors": [
+                        {
+                            "neighbor_address": "192.0.2.2",
+                            "remote_as": "65002",
+                            "bmp_activate": {"servers": [3]},
+                        },
+                    ],
+                },
+                "state": "replaced",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "router bgp 65000",
+                "no neighbor 192.0.2.2 bmp-activate",
+                "neighbor 192.0.2.2 bmp-activate server 3",
+            ],
+        )
+
+    def test_ios_bgp_global_bmp_neighbor_activate_merged_unites_servers(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             neighbor 192.0.2.2 remote-as 65002
+             neighbor 192.0.2.2 bmp-activate server 1 server 2
+            """,
+        )
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "192.0.2.2",
+                            "remote_as": "65002",
+                            "bmp_activate": {"servers": [3]},
+                        },
+                    ],
+                },
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "router bgp 65000",
+                "no neighbor 192.0.2.2 bmp-activate",
+                "neighbor 192.0.2.2 bmp-activate server 1 server 2 server 3",
+            ],
+        )
+
+    def test_ios_bgp_global_bmp_neighbor_activate_merged_all_wins(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             neighbor 192.0.2.2 remote-as 65002
+             neighbor 192.0.2.2 bmp-activate server 1
+            """,
+        )
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "192.0.2.2",
+                            "remote_as": "65002",
+                            "bmp_activate": {"all": True},
+                        },
+                    ],
+                },
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "router bgp 65000",
+                "no neighbor 192.0.2.2 bmp-activate",
+                "neighbor 192.0.2.2 bmp-activate all",
+            ],
+        )
+
+    def test_ios_bgp_global_bmp_neighbor_activate_removed_on_replaced(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             neighbor 192.0.2.2 remote-as 65002
+             neighbor 192.0.2.2 bmp-activate all
+            """,
+        )
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "bgp": {"default": {"ipv4_unicast": True, "route_target": {"filter": True}}},
+                    "neighbors": [{"neighbor_address": "192.0.2.2", "remote_as": "65002"}],
+                },
+                "state": "replaced",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"], ["router bgp 65000", "no neighbor 192.0.2.2 bmp-activate"]
+        )
+
+    def test_ios_bgp_global_bmp_legacy_server_options(self):
+        """The deprecated server/server_options still work and are the same as servers."""
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bmp server 4
+              address 192.0.2.14 port-number 5004
+              activate
+             exit-bmp-server-mode
+            """,
+        )
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "bmp": {
+                        "server": 4,
+                        "server_options": {
+                            "activate": True,
+                            "address": {"host": "192.0.2.14", "port": 5004},
+                        },
+                    },
+                },
+                "state": "merged",
+            },
+        )
+        self.execute_module(changed=False, commands=[])
+
+    def test_ios_bgp_global_bmp_legacy_neighbor_server(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             neighbor 192.0.2.2 remote-as 65002
+            """,
+        )
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "192.0.2.2",
+                            "remote_as": "65002",
+                            "bmp_activate": {"server": 2},
+                        },
+                    ],
+                },
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["router bgp 65000", "neighbor 192.0.2.2 bmp-activate server 2"],
+        )
+
+    def test_ios_bgp_global_bmp_server_options_without_server_fails(self):
+        self.execute_show_command.return_value = "router bgp 65000\n"
+        set_module_args(
+            {
+                "config": {"as_number": "65000", "bmp": {"server_options": {"activate": True}}},
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("server_options requires", result["msg"])
+
+    def test_ios_bgp_global_bmp_initial_refresh_switch(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bmp initial-refresh delay 30
+            """,
+        )
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "bgp": {"default": {"ipv4_unicast": True, "route_target": {"filter": True}}},
+                    "bmp": {"initial_refresh": {"skip": True}},
+                },
+                "state": "replaced",
+            },
+        )
+        commands = self.execute_module(changed=True)["commands"]
+        self.assertIn("bmp initial-refresh skip", commands)
+        self.assertIn("no bmp initial-refresh delay 30", commands)
+
+    def test_ios_bgp_global_bmp_neighbor_activate_follows_remote_as(self):
+        """IOS-XE drops bmp-activate for a neighbor that does not exist yet."""
+        self.execute_show_command.return_value = "router bgp 65000\n"
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "192.0.2.1",
+                            "remote_as": "65001",
+                            "bmp_activate": {"all": True},
+                        },
+                    ],
+                },
+                "state": "merged",
+            },
+        )
+        commands = self.execute_module(changed=True)["commands"]
+        self.assertLess(
+            commands.index("neighbor 192.0.2.1 remote-as 65001"),
+            commands.index("neighbor 192.0.2.1 bmp-activate all"),
+        )

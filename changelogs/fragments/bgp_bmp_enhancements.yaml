@@ -1,0 +1,11 @@
+---
+minor_changes:
+  - ios_bgp_global - add ``bmp.servers`` to manage multiple BMP servers (1-4) with ``number``, ``activate``, ``address``, ``description``, ``failure_retry_delay``, ``flapping_delay``, ``initial_delay``, ``set_ip_dscp``, ``stats_reporting_period`` and ``update_source``. ``bmp.server`` and ``bmp.server_options`` keep working and are folded into ``bmp.servers``, but ``bmp.servers`` is preferred.
+  - ios_bgp_global - add ``neighbors.bmp_activate.servers`` to activate several BMP servers for a neighbor. ``bmp_activate.server`` keeps working and is folded into ``servers``.
+  - ios_bgp_address_family - add ``neighbors.bmp_activate.servers`` to activate several BMP servers for a neighbor. ``bmp_activate.server`` keeps working and is folded into ``servers``.
+bugfixes:
+  - ios_bgp_global - gathered facts for BMP only returned the last ``bmp server`` number and dropped all server options because the sub-mode lines were never parsed; every server and its options are now returned as ``bmp.servers``.
+  - ios_bgp_global - generate a valid ``bmp server`` configuration without relying on a trailing ``exit-bmp-server-mode`` appended to the ``address`` line, and make BMP server options idempotent for ``merged``, ``replaced``, ``overridden`` and ``deleted``.
+  - ios_bgp_global - deactivate a BMP server around a change of its address, as IOS-XE silently ignores an address change while the server is activated.
+  - ios_bgp_global - ``neighbors.bmp_activate`` generated the incomplete ``neighbor X bmp-activate`` command (twice) and never ``all`` or ``server N``; it now renders ``bmp-activate all`` or ``bmp-activate server N [server M ...]``.
+  - ios_bgp_global, ios_bgp_address_family - remove the existing ``bmp-activate`` of a neighbor before applying a changed one, as IOS-XE silently ignores ``bmp-activate`` on an already activated neighbor, and apply it after the neighbor's ``remote-as`` so it is not dropped for a neighbor that does not exist yet.
