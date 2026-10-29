@@ -603,3 +603,206 @@ class TestIosFlowMonitorModule(TestIosModule):
                 "application_table_timeout": 600,
             },
         )
+
+    # ── platform differences: Catalyst 9300 / Catalyst 9600 / routers ─────────
+
+    # A flow record as stored by a Catalyst 9600, which accepts the plain counters and sys-uptime.
+    _C9600_CONFIG = dedent(
+        """\
+        flow record REC_IN
+         match interface input
+         match ipv4 tos
+         match ipv4 protocol
+         match ipv4 source address
+         match ipv4 destination address
+         match transport source-port
+         match transport destination-port
+         match flow direction
+         collect routing source as 4-octet
+         collect routing destination as 4-octet
+         collect routing next-hop address ipv4
+         collect transport tcp flags
+         collect counter bytes
+         collect counter packets
+         collect timestamp sys-uptime first
+         collect timestamp sys-uptime last
+         collect interface output
+        flow exporter EXP
+         destination 192.0.2.10 vrf MGMT
+         source Loopback0
+         transport udp 2055
+         option sampler-table timeout 10
+        flow monitor MON_IN
+         exporter EXP
+         cache timeout inactive 10
+         cache timeout active 60
+         record REC_IN
+        sampler SMP
+         mode random 1 out-of 1000
+        """,
+    )
+
+    def test_ios_flow_monitor_catalyst_9600_config_round_trip(self):
+        """Every line of a Catalyst 9600 flow configuration is parsed and rendered again unchanged."""
+        set_module_args({"state": "parsed", "running_config": self._C9600_CONFIG})
+        parsed = self.execute_module(changed=False)["parsed"]
+        collect = parsed["records"][0]["collect"]
+        self.assertTrue(collect["counter_bytes"])
+        self.assertTrue(collect["counter_packets"])
+        self.assertTrue(collect["timestamp_sys_uptime_first"])
+
+        set_module_args({"state": "rendered", "config": parsed})
+        rendered = self.execute_module(changed=False)["rendered"]
+        original = [line.strip() for line in self._C9600_CONFIG.splitlines()]
+        self.assertEqual(sorted(line.strip() for line in rendered), sorted(original))
+
+    def test_ios_flow_monitor_catalyst_9600_gathered_and_idempotent(self):
+        """The plain counters must not make gathered fail or merged report a change."""
+        self.execute_show_command.return_value = self._C9600_CONFIG
+        set_module_args({"state": "gathered"})
+        gathered = self.execute_module(changed=False)["gathered"]
+        self.assertTrue(gathered["records"][0]["collect"]["counter_bytes"])
+
+        set_module_args({"config": gathered, "state": "merged"})
+        self.assertEqual(self.execute_module(changed=False)["commands"], [])
+        set_module_args({"config": gathered, "state": "replaced"})
+        self.assertEqual(self.execute_module(changed=False)["commands"], [])
+
+    def test_ios_flow_monitor_plain_counters_and_routing_as_are_rendered(self):
+        """counter_bytes, counter_packets and the unqualified routing AS options send the plain commands."""
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            {
+                "config": {
+                    "records": [
+                        {
+                            "name": "REC",
+                            "collect": {
+                                "counter_bytes": True,
+                                "counter_packets": True,
+                                "routing_source_as": True,
+                                "routing_destination_as": True,
+                            },
+                        },
+                    ],
+                },
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        for line in (
+            " collect counter bytes",
+            " collect counter packets",
+            " collect routing source as",
+            " collect routing destination as",
+        ):
+            self.assertIn(line, result["commands"])
+
+    def test_ios_flow_monitor_replaced_removes_plain_counter(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            flow record REC
+             match ipv4 protocol
+             collect counter bytes
+             collect counter packets
+            """,
+        )
+        set_module_args(
+            {
+                "config": {
+                    "records": [
+                        {
+                            "name": "REC",
+                            "match": {"ipv4_protocol": True},
+                            "collect": {"counter_packets": True},
+                        },
+                    ],
+                },
+                "state": "replaced",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["flow record REC", " no collect counter bytes"])
+
+    def test_ios_flow_monitor_catalyst_9300_layer2_long_counter(self):
+        """A Catalyst 9300 stores 'collect counter bytes layer2 long', it must not be dropped by the parser."""
+        have = dedent(
+            """\
+            flow record REC
+             match ipv4 protocol
+             collect counter bytes layer2 long
+             collect counter packets long
+             collect timestamp absolute first
+            """,
+        )
+        self.execute_show_command.return_value = have
+        set_module_args({"state": "gathered"})
+        collect = self.execute_module(changed=False)["gathered"]["records"][0]["collect"]
+        self.assertTrue(collect["counter_bytes_layer2_long"])
+        self.assertNotIn("counter_bytes_layer2", collect)
+
+        set_module_args(
+            {
+                "config": {
+                    "records": [
+                        {
+                            "name": "REC",
+                            "match": {"ipv4_protocol": True},
+                            "collect": {
+                                "counter_bytes_layer2_long": True,
+                                "counter_packets_long": True,
+                                "timestamp_absolute_first": True,
+                            },
+                        },
+                    ],
+                },
+                "state": "replaced",
+            },
+        )
+        self.assertEqual(self.execute_module(changed=False)["commands"], [])
+
+    def test_ios_flow_monitor_every_collect_and_match_option_round_trips(self):
+        """Guard: each option the module can render is read back from the device as the same option.
+
+        A parser that produces an option missing from the argspec makes every state fail on a device
+        that has the line, and a CLI line the parser does not know is silently dropped by gathered.
+        """
+        from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.flow_monitor.flow_monitor import (
+            Flow_monitorArgs,
+        )
+        from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.flow_monitor.flow_monitor import (
+            Flow_monitor,
+        )
+        from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.flow_monitor import (
+            flow_monitor as facts,
+        )
+
+        record_spec = Flow_monitorArgs.argument_spec["config"]["options"]["records"]["options"]
+        parser_tables = {"match": facts._MATCH_MAP, "collect": facts._COLLECT_MAP}
+        failures = []
+        for section, table in (
+            ("match", Flow_monitor._MATCH_CLI),
+            ("collect", Flow_monitor._COLLECT_CLI),
+        ):
+            argspec_options = set(record_spec[section]["options"])
+            if argspec_options != {key for key, _cli in table}:
+                failures.append("{0}: argspec and CLI table list different options".format(section))
+            if argspec_options != set(parser_tables[section].values()):
+                failures.append("{0}: argspec and parser list different options".format(section))
+            if {cli for _key, cli in table} != set(parser_tables[section]):
+                failures.append(
+                    "{0}: CLI table and parser know different command lines".format(section),
+                )
+            for key, cli in table:
+                config = "flow record REC\n {0}\n".format(cli)
+                set_module_args({"state": "parsed", "running_config": config})
+                parsed = self.execute_module(changed=False)["parsed"]
+                got = parsed["records"][0].get(section, {})
+                if got != {key: True}:
+                    failures.append("{0}: '{1}' parsed as {2}".format(section, cli, got))
+                    continue
+                set_module_args({"state": "rendered", "config": parsed})
+                rendered = [line.strip() for line in self.execute_module(changed=False)["rendered"]]
+                if cli not in rendered:
+                    failures.append("{0}: '{1}' rendered as {2}".format(section, cli, rendered))
+        self.assertEqual(failures, [])

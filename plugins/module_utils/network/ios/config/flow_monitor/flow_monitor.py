@@ -78,8 +78,10 @@ class Flow_monitor(ResourceModule):
     ]
 
     _COLLECT_CLI = [
+        ("routing_source_as", "collect routing source as"),
         ("routing_source_as_4octet", "collect routing source as 4-octet"),
         ("routing_source_as_peer", "collect routing source as peer"),
+        ("routing_destination_as", "collect routing destination as"),
         ("routing_destination_as_4octet", "collect routing destination as 4-octet"),
         ("routing_destination_as_peer", "collect routing destination as peer"),
         ("routing_next_hop_ipv4", "collect routing next-hop address ipv4"),
@@ -87,8 +89,11 @@ class Flow_monitor(ResourceModule):
         ("transport_tcp_flags", "collect transport tcp flags"),
         ("transport_destination_port", "collect transport destination-port"),
         ("transport_source_port", "collect transport source-port"),
+        ("counter_bytes", "collect counter bytes"),
         ("counter_bytes_long", "collect counter bytes long"),
         ("counter_bytes_layer2", "collect counter bytes layer2"),
+        ("counter_bytes_layer2_long", "collect counter bytes layer2 long"),
+        ("counter_packets", "collect counter packets"),
         ("counter_packets_long", "collect counter packets long"),
         ("timestamp_sys_uptime_first", "collect timestamp sys-uptime first"),
         ("timestamp_sys_uptime_last", "collect timestamp sys-uptime last"),
