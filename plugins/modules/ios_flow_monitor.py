@@ -32,21 +32,22 @@ notes:
   - The platforms accept different C(collect) options. The module does not check the platform, the device
     rejects an option it does not support when the commands are applied. Commands sent before the rejected
     one stay applied.
-  - Tested on a Catalyst 9300 (IOS XE 17.12.4 and 17.18.4) and a Catalyst 9600 (C9606R, IOS XE 17.12.5), both with
-    Network Advantage and DNA Advantage licenses. The license does not change which options are accepted.
+  - Tested on a Catalyst 9300 (IOS XE 17.12.4 and 17.18.4) and a Catalyst 9600 (C9606R, IOS XE 17.12.5 and 17.12.6),
+    all with Network Advantage and DNA Advantage licenses. The license does not change which options are accepted,
+    and IOS XE 17.12.5 and 17.12.6 gave the same results.
   - Catalyst 9600 accepts C(counter_bytes) and C(counter_packets) (C(collect counter bytes), C(collect counter packets))
     and C(timestamp_sys_uptime_first) and C(timestamp_sys_uptime_last). Existing flow records on these devices use them.
   - Catalyst 9300 rejects C(counter_bytes) and C(counter_packets) with C(% Incomplete command), and rejects
     C(timestamp_sys_uptime_first) and C(timestamp_sys_uptime_last) as invalid input. Use C(counter_bytes_long),
     C(counter_bytes_layer2_long), C(counter_packets_long), C(timestamp_absolute_first) and C(timestamp_absolute_last) there.
-  - Catalyst 9300 also rejects C(counter_bytes_layer2) (it needs C(long), use C(counter_bytes_layer2_long)),
+  - Both Catalyst 9300 and Catalyst 9600 reject C(counter_bytes_layer2) (it needs C(long), use C(counter_bytes_layer2_long)),
     C(routing_source_as) and C(routing_destination_as) without qualifier, and the C(routing_source_as_peer) and
-    C(routing_destination_as_peer) variants, all with C(% Incomplete command). C(routing_source_as_4octet) and
-    C(routing_destination_as_4octet) are accepted.
-  - Accepted on the Catalyst 9300 and used in existing Catalyst 9600 flow records, so these are the safe choice on both,
-    C(routing_source_as_4octet), C(routing_destination_as_4octet), C(routing_next_hop_ipv4), C(transport_tcp_flags),
-    C(interface_input) and C(interface_output).
-  - IOS XE does not show values that are the default in the running configuration, for example
+    C(routing_destination_as_peer) variants, all with C(% Incomplete command). These options are for other platforms.
+  - Accepted on both Catalyst 9300 and Catalyst 9600, so these are the safe choice on both,
+    C(counter_bytes_long), C(counter_bytes_layer2_long), C(counter_packets_long), C(timestamp_absolute_first),
+    C(timestamp_absolute_last), C(routing_source_as_4octet), C(routing_destination_as_4octet), C(routing_next_hop_ipv4),
+    C(transport_tcp_flags), C(interface_input) and C(interface_output).
+  - IOS XE (Catalyst 9300 and 9600) does not show values that are the default in the running configuration, for example
     C(cache timeout inactive 15), C(cache timeout active 1800) and the exporter
     C(export-protocol netflow-v9), C(template data timeout 600), C(ttl 255) and C(dscp 0).
     The module treats these as equal to an unset value, so specifying them does not cause a change on every run.
@@ -176,7 +177,7 @@ options:
               routing_source_as:
                 description:
                   - Collect source AS number (C(collect routing source as)).
-                  - Rejected by Catalyst 9300 as an incomplete command, use I(routing_source_as_4octet) there.
+                  - Rejected by Catalyst 9300 and 9600 as an incomplete command, use I(routing_source_as_4octet) there.
                 type: bool
               routing_source_as_4octet:
                 description: Collect 4-octet source AS number. Accepted on Catalyst 9300 and 9600.
@@ -184,12 +185,12 @@ options:
               routing_source_as_peer:
                 description:
                   - Collect peer source AS number.
-                  - Rejected by Catalyst 9300 as an incomplete command.
+                  - Rejected by Catalyst 9300 and 9600 as an incomplete command.
                 type: bool
               routing_destination_as:
                 description:
                   - Collect destination AS number (C(collect routing destination as)).
-                  - Rejected by Catalyst 9300 as an incomplete command, use I(routing_destination_as_4octet) there.
+                  - Rejected by Catalyst 9300 and 9600 as an incomplete command, use I(routing_destination_as_4octet) there.
                 type: bool
               routing_destination_as_4octet:
                 description: Collect 4-octet destination AS number. Accepted on Catalyst 9300 and 9600.
@@ -197,7 +198,7 @@ options:
               routing_destination_as_peer:
                 description:
                   - Collect peer destination AS number.
-                  - Rejected by Catalyst 9300 as an incomplete command.
+                  - Rejected by Catalyst 9300 and 9600 as an incomplete command.
                 type: bool
               routing_next_hop_ipv4:
                 description: Collect IPv4 next-hop address.
@@ -226,12 +227,12 @@ options:
               counter_bytes_layer2:
                 description:
                   - Collect Layer 2 byte counter (C(collect counter bytes layer2)).
-                  - Rejected by Catalyst 9300 as an incomplete command, use I(counter_bytes_layer2_long) there.
+                  - Rejected by Catalyst 9300 and 9600 as an incomplete command, use I(counter_bytes_layer2_long) there.
                 type: bool
               counter_bytes_layer2_long:
                 description:
                   - Collect 64-bit Layer 2 byte counter (C(collect counter bytes layer2 long)).
-                  - This is the byte counter recommended for Catalyst 9300.
+                  - This is the byte counter recommended for Catalyst 9300. Accepted on Catalyst 9300 and 9600.
                 type: bool
               counter_packets:
                 description:
@@ -253,10 +254,10 @@ options:
                   - Accepted by Catalyst 9600 and routers. Rejected by Catalyst 9300, use I(timestamp_absolute_last) there.
                 type: bool
               timestamp_absolute_first:
-                description: Collect absolute timestamp at flow start. Accepted on Catalyst 9300.
+                description: Collect absolute timestamp at flow start. Accepted on Catalyst 9300 and 9600.
                 type: bool
               timestamp_absolute_last:
-                description: Collect absolute timestamp at last packet. Accepted on Catalyst 9300.
+                description: Collect absolute timestamp at last packet. Accepted on Catalyst 9300 and 9600.
                 type: bool
               interface_input:
                 description: Collect input interface.
