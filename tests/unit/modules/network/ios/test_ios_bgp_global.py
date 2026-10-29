@@ -1039,8 +1039,10 @@ class TestIosBgpGlobalModule(TestIosModule):
             },
         )
         rendered = self.execute_module(changed=False)["rendered"]
+        start = rendered.index("bmp server 1")
+        end = rendered.index("exit-bmp-server-mode") + 1
         self.assertEqual(
-            rendered[rendered.index("bmp server 1") : rendered.index("exit-bmp-server-mode") + 1],
+            rendered[start:end],
             [
                 "bmp server 1",
                 "address 192.0.2.10 port-number 5000",
@@ -1065,7 +1067,7 @@ class TestIosBgpGlobalModule(TestIosModule):
                     "as_number": "65000",
                     "bmp": {
                         "servers": [
-                            {"number": 1, "description": "collector uno", "set_ip_dscp": 3}
+                            {"number": 1, "description": "collector uno", "set_ip_dscp": 3},
                         ],
                     },
                 },
