@@ -1870,3 +1870,119 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             ),
         )
         self.execute_module(changed=False, commands=[])
+
+    # ------------------------------------------------------------------ BMP
+
+    BMP_VRF_CONFIG = dedent(
+        """\
+        router bgp 65000
+         bgp log-neighbor-changes
+         address-family ipv4 vrf VRF_A
+          neighbor 192.0.2.50 remote-as 65050
+          neighbor 192.0.2.50 activate
+          neighbor 192.0.2.50 bmp-activate server 1 server 2
+         exit-address-family
+        """,
+    )
+
+    def _bmp_af_args(self, bmp_activate, state, remote_as="65050"):
+        neighbor = {"neighbor_address": "192.0.2.50", "activate": True}
+        if remote_as:
+            neighbor["remote_as"] = remote_as
+        if bmp_activate is not None:
+            neighbor["bmp_activate"] = bmp_activate
+        return {
+            "config": {
+                "as_number": "65000",
+                "address_family": [{"afi": "ipv4", "vrf": "VRF_A", "neighbors": [neighbor]}],
+            },
+            "state": state,
+        }
+
+    def test_ios_bgp_address_family_bmp_parsed(self):
+        set_module_args({"running_config": self.BMP_VRF_CONFIG, "state": "parsed"})
+        parsed = self.execute_module(changed=False)["parsed"]
+        neighbor = parsed["address_family"][0]["neighbors"][0]
+        self.assertEqual(neighbor["bmp_activate"], {"servers": [1, 2]})
+
+    def test_ios_bgp_address_family_bmp_parsed_all(self):
+        set_module_args(
+            {
+                "running_config": self.BMP_VRF_CONFIG.replace("server 1 server 2", "all"),
+                "state": "parsed",
+            },
+        )
+        parsed = self.execute_module(changed=False)["parsed"]
+        neighbor = parsed["address_family"][0]["neighbors"][0]
+        self.assertEqual(neighbor["bmp_activate"], {"all": True})
+
+    def test_ios_bgp_address_family_bmp_merged_idempotent(self):
+        self.execute_show_command.return_value = self.BMP_VRF_CONFIG
+        set_module_args(self._bmp_af_args({"servers": [2, 1]}, "merged"))
+        self.execute_module(changed=False, commands=[])
+
+    def test_ios_bgp_address_family_bmp_replaced_idempotent(self):
+        self.execute_show_command.return_value = self.BMP_VRF_CONFIG
+        set_module_args(self._bmp_af_args({"servers": [1, 2]}, "replaced"))
+        self.execute_module(changed=False, commands=[])
+
+    def test_ios_bgp_address_family_bmp_merged_new_neighbor(self):
+        """bmp-activate must follow remote-as and activate for a new neighbor."""
+        self.execute_show_command.return_value = "router bgp 65000\n bgp log-neighbor-changes\n"
+        set_module_args(self._bmp_af_args({"servers": [1]}, "merged"))
+        commands = self.execute_module(changed=True)["commands"]
+        bmp = commands.index("neighbor 192.0.2.50 bmp-activate server 1")
+        self.assertLess(commands.index("neighbor 192.0.2.50 remote-as 65050"), bmp)
+        self.assertLess(commands.index("neighbor 192.0.2.50 activate"), bmp)
+
+    def test_ios_bgp_address_family_bmp_merged_unites_servers(self):
+        self.execute_show_command.return_value = self.BMP_VRF_CONFIG
+        set_module_args(self._bmp_af_args({"servers": [3]}, "merged", remote_as=None))
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "router bgp 65000",
+                "address-family ipv4 unicast vrf VRF_A",
+                "no neighbor 192.0.2.50 bmp-activate",
+                "neighbor 192.0.2.50 bmp-activate server 1 server 2 server 3",
+                "exit-address-family",
+            ],
+        )
+
+    def test_ios_bgp_address_family_bmp_merged_all_wins(self):
+        self.execute_show_command.return_value = self.BMP_VRF_CONFIG
+        set_module_args(self._bmp_af_args({"all": True}, "merged", remote_as=None))
+        result = self.execute_module(changed=True)
+        self.assertIn("no neighbor 192.0.2.50 bmp-activate", result["commands"])
+        self.assertIn("neighbor 192.0.2.50 bmp-activate all", result["commands"])
+
+    def test_ios_bgp_address_family_bmp_replaced_changes_servers(self):
+        """A change clears the old activation first because IOS-XE ignores a second bmp-activate."""
+        self.execute_show_command.return_value = self.BMP_VRF_CONFIG
+        set_module_args(self._bmp_af_args({"servers": [2]}, "replaced"))
+        commands = self.execute_module(changed=True)["commands"]
+        clear = commands.index("no neighbor 192.0.2.50 bmp-activate")
+        self.assertLess(clear, commands.index("neighbor 192.0.2.50 bmp-activate server 2"))
+
+    def test_ios_bgp_address_family_bmp_replaced_removes_activation(self):
+        self.execute_show_command.return_value = self.BMP_VRF_CONFIG
+        set_module_args(self._bmp_af_args(None, "replaced"))
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "router bgp 65000",
+                "address-family ipv4 unicast vrf VRF_A",
+                "no neighbor 192.0.2.50 bmp-activate",
+                "exit-address-family",
+            ],
+        )
+
+    def test_ios_bgp_address_family_bmp_legacy_server(self):
+        self.execute_show_command.return_value = self.BMP_VRF_CONFIG.replace(
+            "server 1 server 2",
+            "server 3",
+        )
+        set_module_args(self._bmp_af_args({"server": 3}, "merged"))
+        self.execute_module(changed=False, commands=[])

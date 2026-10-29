@@ -567,17 +567,20 @@ options:
           server:
             description:
               - Server Information
+              - Deprecated, use I(servers) instead. When set it is merged into I(servers).
               - Please refer vendor documentation for valid values
             type: int
           server_options:
-            description: bmp server options
+            description:
+              - bmp server options
+              - Deprecated, use I(servers) instead. Applies to the server given in I(server).
             type: dict
             suboptions:
               activate:
                 description: activate server
                 type: bool
               address:
-                description: skip all refreshes
+                description: BMP server address
                 type: dict
                 suboptions:
                   host:
@@ -586,6 +589,53 @@ options:
                   port:
                     description: port number BMP server
                     type: int
+          servers:
+            description:
+              - BMP servers, each entered with C(bmp server <number>).
+            type: list
+            elements: dict
+            suboptions:
+              number:
+                description: BMP server number
+                type: int
+                required: true
+              activate:
+                description:
+                  - Start the connection between the BMP server and the BGP neighbors
+                  - IOS-XE ignores a change of I(address) while the server is activated, so the
+                    server is deactivated and re-activated around an address change.
+                type: bool
+              address:
+                description: BMP server address and port
+                type: dict
+                suboptions:
+                  host:
+                    description: IPv4 or IPv6 address of the BMP server
+                    type: str
+                  port:
+                    description: Port number of the BMP server
+                    type: int
+              description:
+                description: Description of the BMP server, up to 80 characters
+                type: str
+              failure_retry_delay:
+                description: Delay in seconds before retrying after a failed connection (1-3600)
+                type: int
+              flapping_delay:
+                description: Delay in seconds applied after repeated connection failures (1-3600)
+                type: int
+              initial_delay:
+                description: Delay in seconds before the initial connection request (1-3600)
+                type: int
+              set_ip_dscp:
+                description: DSCP value, from 0 to 7, set on BMP traffic (C(set ip dscp))
+                type: int
+              stats_reporting_period:
+                description: Interval in seconds between statistics reports from the BGP neighbors (1-3600)
+                type: int
+              update_source:
+                description: Source interface used for the BMP session
+                type: str
       default_information:
         description:
           - Control distribution of default information
@@ -835,7 +885,11 @@ options:
               - Maintain Split Horizon while sending update
             type: bool
           bmp_activate:
-            description: Activate the BMP monitoring for a BGP peer
+            description:
+              - Activate the BMP monitoring for a BGP peer
+              - IOS-XE ignores a change on a neighbor that is already activated, so a
+                change removes the existing activation before applying the new one.
+              - With I(state=merged) I(servers) are added to the activated ones, and I(all) takes precedence.
             type: dict
             suboptions:
               all:
@@ -845,8 +899,13 @@ options:
                 description:
                   - Activate BMP for server
                   - BMP Server Number
+                  - Deprecated, use I(servers) instead.
                   - Please refer vendor documentation for valid values
                 type: int
+              servers:
+                description: BMP server numbers to activate for the neighbor (1-4)
+                type: list
+                elements: int
           capability:
             description:
               - Advertise capability to the peer
@@ -1799,6 +1858,105 @@ EXAMPLES = """
 #  neighbor 192.0.2.1 description merge neighbor
 #  neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
 #  neighbor 192.0.2.1 route-map test-route out
+
+# Using merged to configure the BGP Monitoring Protocol (BMP)
+
+# Before state:
+# -------------
+#
+# router-ios#show running-config | section ^router bgp
+# router bgp 65000
+#  bgp log-neighbor-changes
+#  neighbor 192.0.2.1 remote-as 65001
+
+# Task:
+# -----
+- name: Configure BMP servers and activate them for neighbors
+  cisco.ios.ios_bgp_global:
+    config:
+      as_number: "65000"
+      bmp:
+        buffer_size: 1024
+        initial_refresh:
+          delay: 30
+        servers:
+          - number: 1
+            address:
+              host: 192.0.2.10
+              port: 5000
+            description: collector one
+            failure_retry_delay: 20
+            flapping_delay: 120
+            initial_delay: 15
+            set_ip_dscp: 5
+            stats_reporting_period: 60
+            update_source: Loopback100
+            activate: true
+          - number: 2
+            address:
+              host: 192.0.2.11
+              port: 5001
+      neighbors:
+        - neighbor_address: 192.0.2.1
+          remote_as: "65001"
+          bmp_activate:
+            servers: [1, 2]
+    state: merged
+
+# Task output:
+# ------------
+#
+# commands:
+#   - router bgp 65000
+#   - bmp buffer-size 1024
+#   - bmp initial-refresh delay 30
+#   - bmp server 1
+#   - address 192.0.2.10 port-number 5000
+#   - description collector one
+#   - failure-retry-delay 20
+#   - flapping-delay 120
+#   - initial-delay 15
+#   - set ip dscp 5
+#   - stats-reporting-period 60
+#   - update-source Loopback100
+#   - activate
+#   - exit-bmp-server-mode
+#   - bmp server 2
+#   - address 192.0.2.11 port-number 5001
+#   - exit-bmp-server-mode
+#   - neighbor 192.0.2.1 bmp-activate server 1 server 2
+
+# After state:
+# ------------
+#
+# router-ios#show running-config | section ^router bgp
+# router bgp 65000
+#  bmp server 1
+#   address 192.0.2.10 port-number 5000
+#   description collector one
+#   initial-delay 15
+#   failure-retry-delay 20
+#   flapping-delay 120
+#   stats-reporting-period 60
+#   update-source Loopback100
+#   set ip dscp 5
+#   activate
+#  exit-bmp-server-mode
+#  bmp server 2
+#   address 192.0.2.11 port-number 5001
+#  exit-bmp-server-mode
+#  bmp buffer-size 1024
+#  bmp initial-refresh delay 30
+#  bgp log-neighbor-changes
+#  neighbor 192.0.2.1 remote-as 65001
+#  neighbor 192.0.2.1 bmp-activate server 1 server 2
+
+# Note: IOS-XE ignores a change of a server address while the server is
+# activated, and a second bmp-activate on an already activated neighbor.
+# The module therefore deactivates the server around an address change
+# ("no activate", "no address ...", "address ...", "activate") and removes an
+# existing neighbor activation ("no neighbor ... bmp-activate") before applying
+# a changed one.
 
 # Using replaced
 

@@ -1,0 +1,141 @@
+---
+- ansible.builtin.debug:
+    msg: START BMP ios_bgp_global scenarios on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _check_bmp_support.yaml
+
+- name: Remove the probe BGP instance
+  cisco.ios.ios_bgp_global:
+    state: purged
+
+- block:
+    - name: Configure BMP servers and neighbor activation
+      register: result
+      cisco.ios.ios_bgp_global: &bmp_config
+        config:
+          as_number: 65000
+          bgp:
+            log_neighbor_changes: true
+          bmp:
+            buffer_size: 1024
+            initial_refresh:
+              delay: 30
+            servers:
+              - number: 1
+                address:
+                  host: 192.0.2.10
+                  port: 5000
+                description: collector one
+                failure_retry_delay: 20
+                flapping_delay: 120
+                initial_delay: 15
+                set_ip_dscp: 5
+                stats_reporting_period: 60
+                activate: true
+              - number: 2
+                address:
+                  host: 192.0.2.11
+                  port: 5001
+          neighbors:
+            - neighbor_address: 192.0.2.1
+              remote_as: 65001
+              bmp_activate:
+                all: true
+            - neighbor_address: 192.0.2.2
+              remote_as: 65002
+              bmp_activate:
+                servers: [1, 2]
+        state: merged
+
+    - name: Assert that the BMP commands were generated
+      ansible.builtin.assert:
+        that:
+          - result.changed
+          - "'bmp buffer-size 1024' in result.commands"
+          - "'bmp server 1' in result.commands"
+          - "'address 192.0.2.10 port-number 5000' in result.commands"
+          - "'set ip dscp 5' in result.commands"
+          - "'neighbor 192.0.2.1 bmp-activate all' in result.commands"
+          - "'neighbor 192.0.2.2 bmp-activate server 1 server 2' in result.commands"
+
+    - name: Merge the same BMP configuration again
+      register: result
+      cisco.ios.ios_bgp_global: *bmp_config
+
+    - name: Assert that the BMP configuration is idempotent
+      ansible.builtin.assert:
+        that:
+          - not result.changed
+
+    - name: Gather the BMP configuration
+      register: gathered
+      cisco.ios.ios_bgp_global:
+        state: gathered
+
+    - name: Assert that the gathered BMP configuration matches
+      ansible.builtin.assert:
+        that:
+          - gathered.gathered.bmp.servers | length == 2
+          - (gathered.gathered.bmp.servers | first).number == 1
+          - (gathered.gathered.bmp.servers | first).address.host == '192.0.2.10'
+          - (gathered.gathered.bmp.servers | first).description == 'collector one'
+          - (gathered.gathered.bmp.servers | first).activate
+          - (gathered.gathered.neighbors | selectattr('neighbor_address', 'equalto', '192.0.2.1') | first).bmp_activate.all
+
+    - name: Change the address of an activated server
+      register: result
+      cisco.ios.ios_bgp_global:
+        config:
+          as_number: 65000
+          bmp:
+            servers:
+              - number: 1
+                address:
+                  host: 192.0.2.50
+                  port: 5500
+        state: merged
+
+    - name: Assert that the server is deactivated around the address change
+      ansible.builtin.assert:
+        that:
+          - result.commands | select('match', 'no activate') | list | length == 1
+          - "'address 192.0.2.50 port-number 5500' in result.commands"
+          - "'no address 192.0.2.10 port-number 5000' in result.commands"
+
+    - name: Add a server to the servers a neighbor is activated for
+      register: result
+      cisco.ios.ios_bgp_global:
+        config:
+          as_number: 65000
+          bgp:
+            log_neighbor_changes: true
+          neighbors:
+            - neighbor_address: 192.0.2.2
+              remote_as: 65002
+              bmp_activate:
+                servers: [3]
+        state: merged
+
+    - name: Assert that the old activation is removed first and the servers are united
+      ansible.builtin.assert:
+        that:
+          - result.changed
+          - result.commands.index('no neighbor 192.0.2.2 bmp-activate') < result.commands.index('neighbor 192.0.2.2 bmp-activate server 1 server 2 server 3')
+
+    - name: Remove all BMP configuration
+      register: result
+      cisco.ios.ios_bgp_global:
+        config:
+          as_number: 65000
+        state: deleted
+
+    - name: Assert that the BMP servers were removed
+      ansible.builtin.assert:
+        that:
+          - result.changed
+          - "'no bmp server 1' in result.commands"
+          - "'no bmp server 2' in result.commands"
+  when: bmp_supported
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

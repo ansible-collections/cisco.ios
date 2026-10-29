@@ -29,6 +29,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bgp_global import (
     Bgp_globalTemplate,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+    merge_bmp_activate,
+    normalize_bmp_activate,
+)
 
 
 class Bgp_global(ResourceModule):
@@ -41,9 +45,6 @@ class Bgp_global(ResourceModule):
         "bmp.buffer_size",
         "bmp.initial_refresh.delay",
         "bmp.initial_refresh.skip",
-        "bmp.server",
-        "bmp.server_options.activate",
-        "bmp.server_options.address",
         "default_information",
         "default_metric",
         "distance.admin",
@@ -182,7 +183,17 @@ class Bgp_global(ResourceModule):
             wantd = self.want
             # if state is merged, merge want with have and then compare
             if self.state == "merged":
+                bmp_activate = {
+                    addr: merge_bmp_activate(
+                        self.have.get("neighbors", {}).get(addr, {}).get("bmp_activate"),
+                        nbr["bmp_activate"],
+                    )
+                    for addr, nbr in self.want.get("neighbors", {}).items()
+                    if nbr.get("bmp_activate")
+                }
                 wantd = dict_merge(self.have, self.want)
+                for addr, value in bmp_activate.items():
+                    wantd["neighbors"][addr]["bmp_activate"] = value
 
             self._compare(want=wantd, have=self.have)
 
@@ -205,6 +216,12 @@ class Bgp_global(ResourceModule):
 
         # for dict type attributes
         self.compare(parsers=self.parsers, want=want, have=have)
+
+        # bmp servers need their own sub-mode handling
+        self._compare_bmp_servers(
+            want.get("bmp", {}).get("servers", {}),
+            have.get("bmp", {}).get("servers", {}),
+        )
 
         # for list type attributes
         for _parse in self.generic_list_parsers:
@@ -287,7 +304,6 @@ class Bgp_global(ResourceModule):
         neig_parses = [
             "remote_as",
             "peer_group",
-            "bmp_activate",
             "cluster_id",
             "description",
             "disable_connected_check",
@@ -325,7 +341,6 @@ class Bgp_global(ResourceModule):
             "allow_policy",
             "allowas_in",
             "as_override",
-            "bmp_activate",
             "capability",
             "default_originate",
             "default_originate.route_map",
@@ -366,9 +381,14 @@ class Bgp_global(ResourceModule):
             ):
                 neig_parses.remove("shutdown")
                 handle_shutdown_default = True
+            # bmp-activate is ignored by IOS-XE for a neighbor that does not exist yet,
+            # so it must follow remote-as / peer-group
+            want_bmp = w_neighbor.pop("bmp_activate", None)
+            have_bmp = have_nbr.pop("bmp_activate", None)
             self.compare(parsers=neig_parses, want=w_neighbor, have=have_nbr)
             if handle_shutdown_default:
                 self.addcmd(have_nbr, "shutdown", True)
+            self._compare_bmp_activate(w_neighbor, have_nbr, want_bmp, have_bmp)
 
             if want_route:
                 for k_rmps, w_rmps in want_route.items():
@@ -384,6 +404,90 @@ class Bgp_global(ResourceModule):
                     )
         for name, h_neighbor in have.items():
             self.compare(parsers="neighbor_address", want={}, have=h_neighbor)
+
+    def _compare_bmp_activate(self, w_neighbor, h_neighbor, w_bmp, h_bmp):
+        """Compare neighbor bmp-activate.
+
+        IOS-XE silently ignores a ``bmp-activate`` command on a neighbor that
+        is already activated, so a change has to clear the old activation first.
+        """
+        want = normalize_bmp_activate(w_bmp)
+        have = normalize_bmp_activate(h_bmp)
+        if want == have:
+            return
+        address = w_neighbor.get("neighbor_address") or h_neighbor.get("neighbor_address")
+        if have:
+            self.commands.append("no neighbor {0} bmp-activate".format(address))
+        if want:
+            self.addcmd({"neighbor_address": address, "bmp_activate": want}, "bmp_activate", False)
+
+    def _compare_bmp_servers(self, want, have):
+        """Compare the BMP servers, each of which lives in its own sub-mode."""
+        for number in sorted(want, key=int):
+            w_srv = want[number]
+            h_srv = have.pop(number, {})
+            begin = len(self.commands)
+            self._compare_bmp_server(w_srv, h_srv)
+            if len(self.commands) != begin or not h_srv:
+                self.commands.insert(begin, self._tmplt.render(w_srv, "bmp.servers.number", False))
+                self.commands.append("exit-bmp-server-mode")
+
+        # remove servers that are not wanted (replaced, overridden, deleted)
+        for number in sorted(have, key=int):
+            self.addcmd(have[number], "bmp.servers.number", True)
+
+    def _compare_bmp_server(self, w_srv, h_srv):
+        """Compare the options of a single BMP server.
+
+        IOS-XE silently ignores an ``address`` change, or its removal, while
+        the server is activated, and ``activate`` has to follow the address.
+        """
+        want_active = bool(w_srv.get("activate"))
+        have_active = bool(h_srv.get("activate"))
+        w_addr = w_srv.get("address")
+        h_addr = h_srv.get("address")
+        addr_changed = w_addr != h_addr
+
+        if have_active and (not want_active or addr_changed):
+            self.addcmd(h_srv, "bmp.servers.activate", True)
+            have_active = False
+
+        if addr_changed:
+            if h_addr:
+                self.addcmd(h_srv, "bmp.servers.address", True)
+            if w_addr:
+                self.addcmd(w_srv, "bmp.servers.address", False)
+
+        self.compare(
+            parsers=[
+                "bmp.servers.description",
+                "bmp.servers.failure_retry_delay",
+                "bmp.servers.flapping_delay",
+                "bmp.servers.initial_delay",
+                "bmp.servers.set_ip_dscp",
+                "bmp.servers.stats_reporting_period",
+                "bmp.servers.update_source",
+            ],
+            want=w_srv,
+            have=h_srv,
+        )
+
+        if want_active and not have_active:
+            self.addcmd(w_srv, "bmp.servers.activate", False)
+
+    def _bmp_list_to_dict(self, bmp):
+        """Key the BMP servers by number, folding in the deprecated server/server_options."""
+        servers = {str(srv["number"]): srv for srv in bmp.pop("servers", None) or []}
+        legacy_number = bmp.pop("server", None)
+        legacy_options = bmp.pop("server_options", None) or {}
+        if legacy_number is not None:
+            srv = servers.setdefault(str(legacy_number), {"number": legacy_number})
+            for key, value in legacy_options.items():
+                srv.setdefault(key, value)
+        elif legacy_options:
+            self._module.fail_json(msg="bmp.server_options requires bmp.server to be set")
+        if servers:
+            bmp["servers"] = servers
 
     def _compare_generic_lists(self, w_attr, h_attr, parser):
         """Handling of gereric list options."""
@@ -416,6 +520,8 @@ class Bgp_global(ResourceModule):
                 "vrf",
             ],
         }
+        if tmp_data.get("bmp"):
+            self._bmp_list_to_dict(tmp_data["bmp"])
         for k, _v in p_key.items():
             if tmp_data.get(k) and k not in ["distributes", "redistribute", "bgp"]:
                 if k == "neighbors":

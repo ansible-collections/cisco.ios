@@ -125,45 +125,164 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {"bmp": {"initial_refresh": {"skip": True}}},
         },
         {
-            "name": "bmp.server",
+            "name": "bmp.servers.number",
             "getval": re.compile(
                 r"""
-                \sbmp\sserver
-                (\s(?P<server>\d+))?
+                \sbmp\sserver\s(?P<bmp_srv_no>\d+)
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "bmp server {{ bmp.server }}",
-            "result": {"bmp": {"server": "{{ server|string }}"}},
+            "setval": "bmp server {{ number }}",
+            "result": {
+                "bmp": {
+                    "servers": {
+                        "{{ bmp_srv_no }}": {"number": "{{ bmp_srv_no }}"},
+                    },
+                },
+            },
+            "shared": True,
         },
         {
-            "name": "bmp.server_options.activate",
+            "name": "bmp.servers.activate",
             "getval": re.compile(
                 r"""
-                \sactivate
+                \s\sactivate
                 $""",
                 re.VERBOSE,
             ),
             "setval": "activate",
-            "result": {"bmp": {"server_options": {"activate": True}}},
+            "compval": "activate",
+            "result": {"bmp": {"servers": {"{{ bmp_srv_no }}": {"activate": True}}}},
         },
         {
-            "name": "bmp.server_options.address",
+            "name": "bmp.servers.address",
             "getval": re.compile(
                 r"""
-                \saddress\s(?P<host>\S+)\s
-                (\sport-number\s(?P<port>\d+))
+                \s\saddress\s(?P<host>\S+)
+                \sport-number\s(?P<port>\d+)
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "address "
-            "{{ bmp.server_options.address.host }} port-number {{ bmp.server_options.address.port|string }}\nexit-bmp-server-mode",
+            "setval": "address {{ address.host }} port-number {{ address.port }}",
+            "compval": "address",
             "result": {
                 "bmp": {
-                    "server_options": {
-                        "address": {"host": "{{ host }}", "port": "{{ port }}"},
+                    "servers": {
+                        "{{ bmp_srv_no }}": {
+                            "address": {"host": "{{ host }}", "port": "{{ port }}"},
+                        },
                     },
                 },
+            },
+        },
+        {
+            "name": "bmp.servers.description",
+            "getval": re.compile(
+                r"""
+                \s\sdescription\s(?P<description>.+?)\s*
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "description {{ description }}",
+            "compval": "description",
+            "result": {
+                "bmp": {"servers": {"{{ bmp_srv_no }}": {"description": "{{ description }}"}}},
+            },
+        },
+        {
+            "name": "bmp.servers.failure_retry_delay",
+            "getval": re.compile(
+                r"""
+                \s\sfailure-retry-delay\s(?P<failure_retry_delay>\d+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "failure-retry-delay {{ failure_retry_delay }}",
+            "compval": "failure_retry_delay",
+            "result": {
+                "bmp": {
+                    "servers": {
+                        "{{ bmp_srv_no }}": {"failure_retry_delay": "{{ failure_retry_delay }}"},
+                    },
+                },
+            },
+        },
+        {
+            "name": "bmp.servers.flapping_delay",
+            "getval": re.compile(
+                r"""
+                \s\sflapping-delay\s(?P<flapping_delay>\d+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "flapping-delay {{ flapping_delay }}",
+            "compval": "flapping_delay",
+            "result": {
+                "bmp": {
+                    "servers": {"{{ bmp_srv_no }}": {"flapping_delay": "{{ flapping_delay }}"}},
+                },
+            },
+        },
+        {
+            "name": "bmp.servers.initial_delay",
+            "getval": re.compile(
+                r"""
+                \s\sinitial-delay\s(?P<initial_delay>\d+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "initial-delay {{ initial_delay }}",
+            "compval": "initial_delay",
+            "result": {
+                "bmp": {"servers": {"{{ bmp_srv_no }}": {"initial_delay": "{{ initial_delay }}"}}},
+            },
+        },
+        {
+            "name": "bmp.servers.set_ip_dscp",
+            "getval": re.compile(
+                r"""
+                \s\sset\sip\sdscp\s(?P<set_ip_dscp>\d+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "set ip dscp {{ set_ip_dscp }}",
+            "compval": "set_ip_dscp",
+            "result": {
+                "bmp": {"servers": {"{{ bmp_srv_no }}": {"set_ip_dscp": "{{ set_ip_dscp }}"}}},
+            },
+        },
+        {
+            "name": "bmp.servers.stats_reporting_period",
+            "getval": re.compile(
+                r"""
+                \s\sstats-reporting-period\s(?P<stats_reporting_period>\d+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "stats-reporting-period {{ stats_reporting_period }}",
+            "compval": "stats_reporting_period",
+            "result": {
+                "bmp": {
+                    "servers": {
+                        "{{ bmp_srv_no }}": {
+                            "stats_reporting_period": "{{ stats_reporting_period }}",
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "bmp.servers.update_source",
+            "getval": re.compile(
+                r"""
+                \s\supdate-source\s(?P<update_source>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "update-source {{ update_source }}",
+            "compval": "update_source",
+            "result": {
+                "bmp": {"servers": {"{{ bmp_srv_no }}": {"update_source": "{{ update_source }}"}}},
             },
         },
         {
@@ -614,7 +733,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 "bgp": {
                     "client_to_client": {
                         "set": "{{ not not set }}",
-                        "all": "{{ not not all }}",
+                        "all": "{{ true if all is defined else none }}",
                         "intra_cluster": "{{ intra_cluster }}",
                     },
                 },
@@ -1381,25 +1500,6 @@ class Bgp_globalTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "bmp_activate",
-            "getval": re.compile(
-                r"""
-                \sneighbor\s(?P<neighbor_address>\S+)
-                \s(?P<bmp_activate>bmp-activate)
-                $""",
-                re.VERBOSE,
-            ),
-            "setval": "neighbor {{ neighbor_address }} bmp-activate",
-            "result": {
-                "neighbors": {
-                    "{{ neighbor_address }}": {
-                        "bmp_activate": "{{ not not bmp_activate }}",
-                        "neighbor_address": "{{ neighbor_address }}",
-                    },
-                },
-            },
-        },
-        {
             "name": "cluster_id",
             "getval": re.compile(
                 r"""
@@ -2041,7 +2141,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                         "neighbor_address": "{{ neighbor_address }}",
                         "advertise": {
                             "additional_paths": {
-                                "all": "{{ not not all }}",
+                                "all": "{{ true if all is defined else none }}",
                                 "best": "{{ receive }}",
                                 "group_best": "{{ not not group_best }}",
                             },
@@ -2280,21 +2380,21 @@ class Bgp_globalTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \sneighbor\s(?P<neighbor_address>\S+)\sbmp-activate
-                (\sserver\s(?P<server>\d+))?
                 (\s(?P<all>all))?
+                (?P<servers>(\sserver\s\d+)+)?
                 $""",
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} bmp-activate"
-            "{{ (' server '+ bmp_activate.server|string) if bmp_activate.server is defined else '' }}"
-            "{{ (' all') if bmp_activate.all|d(False) else '' }}",
+            "{{ ' all' if bmp_activate.all|d(False) else '' }}"
+            "{% for srv in bmp_activate.servers|d([]) %} server {{ srv }}{% endfor %}",
             "result": {
                 "neighbors": {
                     "{{ neighbor_address }}": {
                         "neighbor_address": "{{ neighbor_address }}",
                         "bmp_activate": {
-                            "server": "{{ server }}",
-                            "all": "{{ not not  all }}",
+                            "all": "{{ true if all is defined else none }}",
+                            "servers": "{{ servers.split()[1::2]|map('int')|list if servers is defined else [] }}",
                         },
                     },
                 },

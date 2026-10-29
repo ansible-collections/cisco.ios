@@ -34,6 +34,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.bgp_address_family import (
     Bgp_address_familyTemplate,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+    merge_bmp_activate,
+    normalize_bmp_activate,
+)
 
 
 class Bgp_address_family(ResourceModule):
@@ -162,7 +166,18 @@ class Bgp_address_family(ResourceModule):
         global_neighbors = haved.get("address_family", {}).pop("__", {}).get("neighbors", {})
 
         if self.state == "merged":
+            bmp_activate = {}
+            for af_key, want_af in wantd.get("address_family", {}).items():
+                have_nbrs = haved.get("address_family", {}).get(af_key, {}).get("neighbors", {})
+                for addr, nbr in want_af.get("neighbors", {}).items():
+                    if nbr.get("bmp_activate"):
+                        bmp_activate[(af_key, addr)] = merge_bmp_activate(
+                            have_nbrs.get(addr, {}).get("bmp_activate"),
+                            nbr["bmp_activate"],
+                        )
             wantd = dict_merge(haved, wantd)
+            for (af_key, addr), value in bmp_activate.items():
+                wantd["address_family"][af_key]["neighbors"][addr]["bmp_activate"] = value
 
         if self.state in ["overridden", "replaced"]:
             all_neighbors_to_delete = set()
@@ -306,7 +321,6 @@ class Bgp_address_family(ResourceModule):
             "allow_policy",
             "allowas_in",
             "as_override",
-            "bmp_activate",
             "capability",
             "cluster_id",
             "default_originate",
@@ -359,7 +373,12 @@ class Bgp_address_family(ResourceModule):
         for name, w_neighbor in want.items():
             have_nbr = have.pop(name, {})
             self._get_nbr_remote_as(global_neighbors, name, w_neighbor, have_nbr)
+            # bmp-activate is ignored by IOS-XE for a neighbor that does not exist yet,
+            # so it must follow remote-as and activate
+            want_bmp = w_neighbor.pop("bmp_activate", None)
+            have_bmp = have_nbr.pop("bmp_activate", None)
             self.compare(parsers=neig_parses, want=w_neighbor, have=have_nbr)
+            self._compare_bmp_activate(w_neighbor, have_nbr, want_bmp, have_bmp)
             for i in ["route_maps", "prefix_lists"]:  # handles route_maps, prefix_lists
                 want_route_or_prefix = w_neighbor.pop(i, {})
                 have_route_or_prefix = have_nbr.pop(i, {})
@@ -374,6 +393,22 @@ class Bgp_address_family(ResourceModule):
                 for k_rmps, h_rmps in have_route_or_prefix.items():
                     h_rmps["neighbor_address"] = have_nbr.get("neighbor_address")
                     self.compare(parsers=[i], want={}, have={i: h_rmps})
+
+    def _compare_bmp_activate(self, w_neighbor, h_neighbor, w_bmp, h_bmp):
+        """Compare neighbor bmp-activate.
+
+        IOS-XE silently ignores a ``bmp-activate`` command on a neighbor that
+        is already activated, so a change has to clear the old activation first.
+        """
+        want = normalize_bmp_activate(w_bmp)
+        have = normalize_bmp_activate(h_bmp)
+        if want == have:
+            return
+        address = w_neighbor.get("neighbor_address") or h_neighbor.get("neighbor_address")
+        if have:
+            self.commands.append("no neighbor {0} bmp-activate".format(address))
+        if want:
+            self.addcmd({"neighbor_address": address, "bmp_activate": want}, "bmp_activate", False)
 
     def _compare_network_lists(self, w_attr, h_attr):
         """Handling of network list options."""
