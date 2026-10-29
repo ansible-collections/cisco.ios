@@ -62,6 +62,8 @@
       - hsrp_interfaces
       - bfd_interfaces
       - bfd_templates
+      - flow_monitor
+      - flow_monitor_interfaces
       - monitor_sessions
 
 - name: Collect list of available network resources for IOS
