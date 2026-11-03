@@ -1108,7 +1108,7 @@ options:
             description:
               - Set to C(true) to declare this neighbor as a peer-group.
               - Set to C(false) to remove the peer-group and its member configuration.
-              - This option is mutually exclusive with O(peer_group).
+              - This option is mutually exclusive with C(peer_group).
             type: bool
           remote_as:
             description:

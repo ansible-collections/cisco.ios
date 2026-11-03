@@ -5583,7 +5583,7 @@ Parameters
                 <td>
                         <div>Set to <code>true</code> to declare this neighbor as a peer-group.</div>
                         <div>Set to <code>false</code> to remove the peer-group and its member configuration.</div>
-                        <div>This option is mutually exclusive with O(peer_group).</div>
+                        <div>This option is mutually exclusive with <code>peer_group</code>.</div>
                 </td>
             </tr>
             <tr>
