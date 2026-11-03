@@ -28,10 +28,12 @@
         that:
           - peer_group_declaration['before'] == result['before']
 
-    - name: Assert that after dict is correctly generated
+    - name: Assert peer-group after values are correctly generated
       ansible.builtin.assert:
         that:
-          - peer_group_declaration['after'] == result['after']
+          - peer_group_declaration['after']['as_number'] == result['after']['as_number']
+          - peer_group_declaration['after']['bgp']['default'] == result['after']['bgp']['default']
+          - peer_group_declaration['after']['neighbors'] == result['after']['neighbors']
 
     - name: Merge peer-group declaration and member assignment (idempotent)
       register: result

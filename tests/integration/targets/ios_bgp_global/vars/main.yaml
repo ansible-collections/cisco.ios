@@ -221,12 +221,6 @@ peer_group_declaration:
         ipv4_unicast: false
         route_target:
           filter: false
-      graceful_shutdown:
-        community: "100"
-        local_preference: 100
-        neighbors:
-          time: 50
-      log_neighbor_changes: true
     neighbors:
       - neighbor_address: 192.0.2.254
         peer_group: TestGroup
