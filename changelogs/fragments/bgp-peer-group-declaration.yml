@@ -1,0 +1,5 @@
+---
+bugfixes:
+  - >-
+    ios_bgp_global - Add ``peer_group_declaration`` to declare or
+    remove BGP peer-groups while preserving string-based ``peer_group`` assignments.
