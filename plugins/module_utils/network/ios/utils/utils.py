@@ -525,8 +525,10 @@ def normalize_bmp_activate(bmp_activate):
 
 
 def merge_bmp_activate(have, want):
-    """Merge semantics for bmp_activate: 'all' wins, otherwise the server lists are united."""
+    """Merge bmp_activate, honoring explicit ``all: false`` and uniting server lists."""
     have = normalize_bmp_activate(have)
+    if want and want.get("all") is False:
+        return {"all": False}
     want = normalize_bmp_activate(want)
     if have.get("all") or want.get("all"):
         return {"all": True}

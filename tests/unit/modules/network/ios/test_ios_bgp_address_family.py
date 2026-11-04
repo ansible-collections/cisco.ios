@@ -1950,6 +1950,23 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             ],
         )
 
+    def test_ios_bgp_address_family_bmp_merged_all_false_clears_activation(self):
+        self.execute_show_command.return_value = self.BMP_VRF_CONFIG.replace(
+            "bmp-activate server 1 server 2",
+            "bmp-activate all",
+        )
+        set_module_args(self._bmp_af_args({"all": False}, "merged", remote_as=None))
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "router bgp 65000",
+                "address-family ipv4 unicast vrf VRF_A",
+                "no neighbor 192.0.2.50 bmp-activate",
+                "exit-address-family",
+            ],
+        )
+
     def test_ios_bgp_address_family_bmp_merged_all_wins(self):
         self.execute_show_command.return_value = self.BMP_VRF_CONFIG
         set_module_args(self._bmp_af_args({"all": True}, "merged", remote_as=None))

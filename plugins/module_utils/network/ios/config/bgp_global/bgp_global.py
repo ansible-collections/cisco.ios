@@ -166,6 +166,9 @@ class Bgp_global(ResourceModule):
         for each in self.want, self.have:
             self._bgp_global_list_to_dict(each)
 
+        if self.state in ["merged", "replaced", "overridden", "rendered", "deleted"]:
+            self._validate_bmp_server_strings(self.want)
+
         if self.state == "deleted":
             # deleted, clean up global params
             if not self.want or (self.have.get("as_number") == self.want.get("as_number")):
@@ -488,6 +491,25 @@ class Bgp_global(ResourceModule):
             self._module.fail_json(msg="bmp.server_options requires bmp.server to be set")
         if servers:
             bmp["servers"] = servers
+
+    def _validate_bmp_server_strings(self, data):
+        """Reject line breaks in BMP values that are interpolated into CLI commands."""
+        servers = data.get("bmp", {}).get("servers", {})
+        for number, server in servers.items():
+            address = server.get("address") or {}
+            values = {
+                "address.host": address.get("host"),
+                "description": server.get("description"),
+                "update_source": server.get("update_source"),
+            }
+            for name, value in values.items():
+                if isinstance(value, str) and ("\r" in value or "\n" in value):
+                    self._module.fail_json(
+                        msg=(
+                            "BMP server {0} option {1} must not contain carriage returns "
+                            "or line feeds"
+                        ).format(number, name),
+                    )
 
     def _compare_generic_lists(self, w_attr, h_attr, parser):
         """Handling of gereric list options."""

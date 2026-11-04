@@ -83,6 +83,25 @@
           - (gathered.gathered.bmp.servers | first).activate
           - (gathered.gathered.neighbors | selectattr('neighbor_address', 'equalto', '192.0.2.1') | first).bmp_activate.all
 
+    - name: Clear all BMP activation with an explicit false value
+      register: result
+      cisco.ios.ios_bgp_global:
+        config:
+          as_number: 65000
+          neighbors:
+            - neighbor_address: 192.0.2.1
+              remote_as: 65001
+              bmp_activate:
+                all: false
+        state: merged
+
+    - name: Assert that explicit false removed the neighbor activation
+      ansible.builtin.assert:
+        that:
+          - result.changed
+          - "'no neighbor 192.0.2.1 bmp-activate' in result.commands"
+          - result.commands | select('match', '^neighbor .* bmp-activate') | list | length == 0
+
     - name: Change the address of an activated server
       register: result
       cisco.ios.ios_bgp_global:
@@ -136,6 +155,30 @@
           - result.changed
           - "'no bmp server 1' in result.commands"
           - "'no bmp server 2' in result.commands"
+
+    - name: Reject a BMP description containing a line break
+      block:
+        - name: Submit a multiline BMP description
+          cisco.ios.ios_bgp_global:
+            config:
+              as_number: 65000
+              bmp:
+                servers:
+                  - number: 4
+                    description: |-
+                      resolver-probe-first
+                      description resolver-probe-second
+            state: merged
+
+        - name: Fail if the multiline description was accepted
+          ansible.builtin.fail:
+            msg: The BMP description line break was accepted.
+
+      rescue:
+        - name: Assert the invalid value was rejected before device configuration
+          ansible.builtin.assert:
+            that:
+              - "'BMP server 4 option description' in ansible_failed_result.msg"
   when: bmp_supported
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

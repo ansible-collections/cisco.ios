@@ -1354,6 +1354,38 @@ class TestIosBgpGlobalModule(TestIosModule):
             ],
         )
 
+    def test_ios_bgp_global_bmp_neighbor_activate_merged_all_false_clears_activation(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             neighbor 192.0.2.2 remote-as 65002
+             neighbor 192.0.2.2 bmp-activate all
+            """,
+        )
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "192.0.2.2",
+                            "remote_as": "65002",
+                            "bmp_activate": {"all": False},
+                        },
+                    ],
+                },
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "router bgp 65000",
+                "no neighbor 192.0.2.2 bmp-activate",
+            ],
+        )
+
     def test_ios_bgp_global_bmp_neighbor_activate_removed_on_replaced(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -1444,6 +1476,51 @@ class TestIosBgpGlobalModule(TestIosModule):
         )
         result = self.execute_module(failed=True)
         self.assertIn("server_options requires", result["msg"])
+
+    def _assert_bmp_server_string_rejected(self, bmp, state="rendered"):
+        set_module_args(
+            {
+                "config": {"as_number": "65000", "bmp": bmp},
+                "state": state,
+            },
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("must not contain carriage returns or line feeds", result["msg"])
+
+    def test_ios_bgp_global_bmp_description_rejects_line_break(self):
+        self._assert_bmp_server_string_rejected(
+            {"servers": [{"number": 1, "description": "collector one\nresolver-probe"}]},
+        )
+
+    def test_ios_bgp_global_bmp_update_source_rejects_line_break(self):
+        self._assert_bmp_server_string_rejected(
+            {"servers": [{"number": 1, "update_source": "Loopback100\rresolver-probe"}]},
+        )
+
+    def test_ios_bgp_global_bmp_address_host_rejects_line_break(self):
+        self._assert_bmp_server_string_rejected(
+            {
+                "servers": [
+                    {"number": 1, "address": {"host": "192.0.2.10\nresolver-probe", "port": 5000}},
+                ],
+            },
+        )
+
+    def test_ios_bgp_global_bmp_legacy_address_host_rejects_line_break(self):
+        self._assert_bmp_server_string_rejected(
+            {
+                "server": 1,
+                "server_options": {
+                    "address": {"host": "192.0.2.10\rresolver-probe", "port": 5000},
+                },
+            },
+        )
+
+    def test_ios_bgp_global_bmp_deleted_description_rejects_line_break(self):
+        self._assert_bmp_server_string_rejected(
+            {"servers": [{"number": 1, "description": "collector one\nresolver-probe"}]},
+            state="deleted",
+        )
 
     def test_ios_bgp_global_bmp_initial_refresh_switch(self):
         self.execute_show_command.return_value = dedent(
