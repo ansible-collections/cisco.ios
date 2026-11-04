@@ -69,19 +69,19 @@
           - not result.changed
 
     - name: Gather the BMP configuration
-      register: gathered
+      register: gathered_bmp
       cisco.ios.ios_bgp_global:
         state: gathered
 
     - name: Assert that the gathered BMP configuration matches
       ansible.builtin.assert:
         that:
-          - gathered.gathered.bmp.servers | length == 2
-          - (gathered.gathered.bmp.servers | first).number == 1
-          - (gathered.gathered.bmp.servers | first).address.host == '192.0.2.10'
-          - (gathered.gathered.bmp.servers | first).description == 'collector one'
-          - (gathered.gathered.bmp.servers | first).activate
-          - (gathered.gathered.neighbors | selectattr('neighbor_address', 'equalto', '192.0.2.1') | first).bmp_activate.all
+          - gathered_bmp.gathered.bmp.servers | length == 2
+          - (gathered_bmp.gathered.bmp.servers | first).number == 1
+          - (gathered_bmp.gathered.bmp.servers | first).address.host == '192.0.2.10'
+          - (gathered_bmp.gathered.bmp.servers | first).description == 'collector one'
+          - (gathered_bmp.gathered.bmp.servers | first).activate
+          - (gathered_bmp.gathered.neighbors | selectattr('neighbor_address', 'equalto', '192.0.2.1') | first).bmp_activate.all
 
     - name: Clear all BMP activation with an explicit false value
       register: result
