@@ -22,6 +22,10 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
+BMP_SERVER_NO = "{{ bmp_srv_no }}"
+ALL_OPTION_RESULT = "{{ true if all is defined else none }}"
+
+
 class Bgp_globalTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Bgp_globalTemplate, self).__init__(lines=lines, tmplt=self, module=module)
@@ -136,7 +140,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {
                 "bmp": {
                     "servers": {
-                        "{{ bmp_srv_no }}": {"number": "{{ bmp_srv_no }}"},
+                        BMP_SERVER_NO: {"number": BMP_SERVER_NO},
                     },
                 },
             },
@@ -152,7 +156,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             ),
             "setval": "activate",
             "compval": "activate",
-            "result": {"bmp": {"servers": {"{{ bmp_srv_no }}": {"activate": True}}}},
+            "result": {"bmp": {"servers": {BMP_SERVER_NO: {"activate": True}}}},
         },
         {
             "name": "bmp.servers.address",
@@ -168,7 +172,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {
                 "bmp": {
                     "servers": {
-                        "{{ bmp_srv_no }}": {
+                        BMP_SERVER_NO: {
                             "address": {"host": "{{ host }}", "port": "{{ port }}"},
                         },
                     },
@@ -186,7 +190,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "description {{ description }}",
             "compval": "description",
             "result": {
-                "bmp": {"servers": {"{{ bmp_srv_no }}": {"description": "{{ description }}"}}},
+                "bmp": {"servers": {BMP_SERVER_NO: {"description": "{{ description }}"}}},
             },
         },
         {
@@ -202,7 +206,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {
                 "bmp": {
                     "servers": {
-                        "{{ bmp_srv_no }}": {"failure_retry_delay": "{{ failure_retry_delay }}"},
+                        BMP_SERVER_NO: {"failure_retry_delay": "{{ failure_retry_delay }}"},
                     },
                 },
             },
@@ -219,7 +223,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "compval": "flapping_delay",
             "result": {
                 "bmp": {
-                    "servers": {"{{ bmp_srv_no }}": {"flapping_delay": "{{ flapping_delay }}"}},
+                    "servers": {BMP_SERVER_NO: {"flapping_delay": "{{ flapping_delay }}"}},
                 },
             },
         },
@@ -234,7 +238,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "initial-delay {{ initial_delay }}",
             "compval": "initial_delay",
             "result": {
-                "bmp": {"servers": {"{{ bmp_srv_no }}": {"initial_delay": "{{ initial_delay }}"}}},
+                "bmp": {"servers": {BMP_SERVER_NO: {"initial_delay": "{{ initial_delay }}"}}},
             },
         },
         {
@@ -248,7 +252,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "set ip dscp {{ set_ip_dscp }}",
             "compval": "set_ip_dscp",
             "result": {
-                "bmp": {"servers": {"{{ bmp_srv_no }}": {"set_ip_dscp": "{{ set_ip_dscp }}"}}},
+                "bmp": {"servers": {BMP_SERVER_NO: {"set_ip_dscp": "{{ set_ip_dscp }}"}}},
             },
         },
         {
@@ -264,7 +268,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {
                 "bmp": {
                     "servers": {
-                        "{{ bmp_srv_no }}": {
+                        BMP_SERVER_NO: {
                             "stats_reporting_period": "{{ stats_reporting_period }}",
                         },
                     },
@@ -282,7 +286,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "setval": "update-source {{ update_source }}",
             "compval": "update_source",
             "result": {
-                "bmp": {"servers": {"{{ bmp_srv_no }}": {"update_source": "{{ update_source }}"}}},
+                "bmp": {"servers": {BMP_SERVER_NO: {"update_source": "{{ update_source }}"}}},
             },
         },
         {
@@ -733,7 +737,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                 "bgp": {
                     "client_to_client": {
                         "set": "{{ not not set }}",
-                        "all": "{{ true if all is defined else none }}",
+                        "all": ALL_OPTION_RESULT,
                         "intra_cluster": "{{ intra_cluster }}",
                     },
                 },
@@ -2141,7 +2145,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                         "neighbor_address": "{{ neighbor_address }}",
                         "advertise": {
                             "additional_paths": {
-                                "all": "{{ true if all is defined else none }}",
+                                "all": ALL_OPTION_RESULT,
                                 "best": "{{ receive }}",
                                 "group_best": "{{ not not group_best }}",
                             },
@@ -2393,7 +2397,7 @@ class Bgp_globalTemplate(NetworkTemplate):
                     "{{ neighbor_address }}": {
                         "neighbor_address": "{{ neighbor_address }}",
                         "bmp_activate": {
-                            "all": "{{ true if all is defined else none }}",
+                            "all": ALL_OPTION_RESULT,
                             "servers": "{{ servers.split()[1::2]|map('int')|list if servers is defined else [] }}",
                         },
                     },

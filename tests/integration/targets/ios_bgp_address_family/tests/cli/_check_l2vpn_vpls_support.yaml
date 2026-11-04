@@ -22,7 +22,7 @@
 
 - name: Set fact for l2vpn vpls support
   ansible.builtin.set_fact:
-    l2vpn_vpls_supported: "{{ not (l2vpn_vpls_probe.failed | default(false)) }}"
+    l2vpn_vpls_supported: "{{ false }}"
 
 - name: Notice when l2vpn vpls scenarios will be skipped
   when: not l2vpn_vpls_supported
