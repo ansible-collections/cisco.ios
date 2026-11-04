@@ -5,7 +5,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 """
@@ -20,7 +19,6 @@ import re
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
-
 
 UNIQUE_AFI = "{{ afi|d() + '_' + safi|d() + '_' + vrf|d() }}"
 UNIQUE_NEIB_ADD = "{{ neighbor_address }}"
