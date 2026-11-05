@@ -32,6 +32,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     merge_bmp_activate,
     normalize_bmp_activate,
+    validate_neighbor_addresses,
 )
 
 
@@ -168,6 +169,7 @@ class Bgp_global(ResourceModule):
 
         if self.state in ["merged", "replaced", "overridden", "rendered", "deleted"]:
             self._validate_bmp_server_strings(self.want)
+            validate_neighbor_addresses(self._module, self.want)
 
         if self.state == "deleted":
             # deleted, clean up global params
@@ -414,11 +416,32 @@ class Bgp_global(ResourceModule):
         IOS-XE silently ignores a ``bmp-activate`` command on a neighbor that
         is already activated, so a change has to clear the old activation first.
         """
-        want = normalize_bmp_activate(w_bmp)
         have = normalize_bmp_activate(h_bmp)
+        want = normalize_bmp_activate(w_bmp)
+        address = w_neighbor.get("neighbor_address") or h_neighbor.get("neighbor_address")
+
+        if self.state == "deleted":
+            if not have:
+                return
+            if not want or want.get("all") or have.get("all"):
+                self.commands.append("no neighbor {0} bmp-activate".format(address))
+                return
+
+            remaining = [
+                server for server in have.get("servers", []) if server not in want["servers"]
+            ]
+            if remaining != have.get("servers", []):
+                self.commands.append("no neighbor {0} bmp-activate".format(address))
+                if remaining:
+                    self.addcmd(
+                        {"neighbor_address": address, "bmp_activate": {"servers": remaining}},
+                        "bmp_activate",
+                        False,
+                    )
+            return
+
         if want == have:
             return
-        address = w_neighbor.get("neighbor_address") or h_neighbor.get("neighbor_address")
         if have:
             self.commands.append("no neighbor {0} bmp-activate".format(address))
         if want:
@@ -426,6 +449,13 @@ class Bgp_global(ResourceModule):
 
     def _compare_bmp_servers(self, want, have):
         """Compare the BMP servers, each of which lives in its own sub-mode."""
+        if self.state == "deleted":
+            numbers = want if want else have
+            for number in sorted(numbers, key=int):
+                if number in have:
+                    self.addcmd(have[number], "bmp.servers.number", True)
+            return
+
         for number in sorted(want, key=int):
             w_srv = want[number]
             h_srv = have.pop(number, {})

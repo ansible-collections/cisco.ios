@@ -1221,6 +1221,76 @@ class TestIosBgpGlobalModule(TestIosModule):
         ):
             self.assertIn(expected, commands)
 
+    def test_ios_bgp_global_bmp_deleted_targeted_server(self):
+        self.execute_show_command.return_value = self.BMP_RUNNING_CONFIG
+        set_module_args(
+            {
+                "config": {"as_number": "65000", "bmp": {"servers": [{"number": 1}]}},
+                "state": "deleted",
+            },
+        )
+        commands = self.execute_module(changed=True)["commands"]
+        self.assertIn("no bmp server 1", commands)
+        self.assertNotIn("no bmp server 2", commands)
+
+    def test_ios_bgp_global_bmp_deleted_targeted_legacy_server(self):
+        self.execute_show_command.return_value = self.BMP_RUNNING_CONFIG
+        set_module_args(
+            {
+                "config": {"as_number": "65000", "bmp": {"server": 1}},
+                "state": "deleted",
+            },
+        )
+        commands = self.execute_module(changed=True)["commands"]
+        self.assertIn("no bmp server 1", commands)
+        self.assertNotIn("no bmp server 2", commands)
+
+    def test_ios_bgp_global_bmp_deleted_neighbor_activation_exact_match(self):
+        self.execute_show_command.return_value = self.BMP_RUNNING_CONFIG
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "192.0.2.2",
+                            "remote_as": "65002",
+                            "bmp_activate": {"servers": [1, 2]},
+                        },
+                    ],
+                },
+                "state": "deleted",
+            },
+        )
+        commands = self.execute_module(changed=True)["commands"]
+        self.assertIn("no neighbor 192.0.2.2 bmp-activate", commands)
+        self.assertFalse(
+            any(command.startswith("neighbor 192.0.2.2 bmp-activate") for command in commands),
+        )
+
+    def test_ios_bgp_global_bmp_deleted_neighbor_activation_subset(self):
+        self.execute_show_command.return_value = self.BMP_RUNNING_CONFIG
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "192.0.2.2",
+                            "remote_as": "65002",
+                            "bmp_activate": {"servers": [1]},
+                        },
+                    ],
+                },
+                "state": "deleted",
+            },
+        )
+        commands = self.execute_module(changed=True)["commands"]
+        self.assertLess(
+            commands.index("no neighbor 192.0.2.2 bmp-activate"),
+            commands.index("neighbor 192.0.2.2 bmp-activate server 2"),
+        )
+
     def test_ios_bgp_global_bmp_neighbor_idempotent_all_and_servers(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -1521,6 +1591,34 @@ class TestIosBgpGlobalModule(TestIosModule):
             {"servers": [{"number": 1, "description": "collector one\nresolver-probe"}]},
             state="deleted",
         )
+
+    def _assert_bgp_neighbor_address_rejected(self, neighbor_address):
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": neighbor_address,
+                            "bmp_activate": {"all": True},
+                        },
+                    ],
+                },
+                "state": "rendered",
+            },
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn(
+            "Neighbor address must not contain carriage returns or line feeds",
+            result["msg"],
+        )
+
+    def test_ios_bgp_global_bmp_neighbor_address_rejects_line_breaks(self):
+        for line_break in ("\n", "\r"):
+            with self.subTest(line_break=repr(line_break)):
+                self._assert_bgp_neighbor_address_rejected(
+                    "192.0.2.99{0}neighbor 192.0.2.1".format(line_break),
+                )
 
     def test_ios_bgp_global_bmp_initial_refresh_switch(self):
         self.execute_show_command.return_value = dedent(

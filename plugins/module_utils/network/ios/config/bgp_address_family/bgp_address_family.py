@@ -37,6 +37,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
     merge_bmp_activate,
     normalize_bmp_activate,
+    validate_neighbor_addresses,
 )
 
 
@@ -156,6 +157,9 @@ class Bgp_address_family(ResourceModule):
 
         for each in self.want, self.have:
             each["address_family"] = self._bgp_add_fam_list_to_dict(each.get("address_family", []))
+
+        if self.state in ["merged", "replaced", "overridden", "rendered", "deleted"]:
+            validate_neighbor_addresses(self._module, self.want)
 
         wantd = self.want
         haved = self.have

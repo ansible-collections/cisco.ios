@@ -12,6 +12,15 @@
       - exit-bmp-server-mode
     parents: router bgp 65000
 
+- name: Fail when the BMP probe failed for an unexpected reason
+  ansible.builtin.fail:
+    msg: >-
+      BMP support probe failed unexpectedly:
+      {{ bmp_probe.msg | default('no error details returned') }}
+  when:
+    - bmp_probe.failed | default(false)
+    - "'invalid input detected' not in (bmp_probe.msg | default('') | lower)"
+
 - name: Remove the probe BMP server so it does not leak into facts
   when: not (bmp_probe.failed | default(false))
   cisco.ios.ios_config:

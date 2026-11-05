@@ -2003,3 +2003,17 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
         )
         set_module_args(self._bmp_af_args({"server": 3}, "merged"))
         self.execute_module(changed=False, commands=[])
+
+    def test_ios_bgp_address_family_bmp_neighbor_address_rejects_line_breaks(self):
+        for line_break in ("\n", "\r"):
+            with self.subTest(line_break=repr(line_break)):
+                args = self._bmp_af_args({"servers": [1]}, "rendered")
+                args["config"]["address_family"][0]["neighbors"][0]["neighbor_address"] = (
+                    "192.0.2.99{0}neighbor 192.0.2.1".format(line_break)
+                )
+                set_module_args(args)
+                result = self.execute_module(failed=True)
+                self.assertIn(
+                    "Neighbor address must not contain carriage returns or line feeds",
+                    result["msg"],
+                )

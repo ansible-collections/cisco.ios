@@ -11,3 +11,4 @@ bugfixes:
   - ios_bgp_global and ios_bgp_address_family - honor an explicit false value for ``bmp_activate.all`` in merged state by removing an existing all-server activation.
   - ios_bgp_global - ``neighbors.bmp_activate`` generated the incomplete ``neighbor X bmp-activate`` command (twice) and never ``all`` or ``server N``; it now renders ``bmp-activate all`` or ``bmp-activate server N [server M ...]``.
   - ios_bgp_global, ios_bgp_address_family - remove the existing ``bmp-activate`` of a neighbor before applying a changed one, as IOS-XE silently ignores ``bmp-activate`` on an already activated neighbor, and apply it after the neighbor's ``remote-as`` so it is not dropped for a neighbor that does not exist yet.
+  - ios_bgp_global, ios_bgp_address_family - reject carriage returns and line feeds in BGP neighbor addresses before rendering CLI commands.

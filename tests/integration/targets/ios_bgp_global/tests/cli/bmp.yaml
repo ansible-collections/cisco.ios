@@ -142,6 +142,51 @@
           - result.changed
           - result.commands.index('no neighbor 192.0.2.2 bmp-activate') < result.commands.index('neighbor 192.0.2.2 bmp-activate server 1 server 2 server 3')
 
+    - name: Clear the neighbor activation before deleting a BMP server
+      register: result
+      cisco.ios.ios_bgp_global:
+        config:
+          as_number: 65000
+          neighbors:
+            - neighbor_address: 192.0.2.2
+              remote_as: 65002
+              bmp_activate:
+                all: false
+        state: merged
+
+    - name: Assert that the neighbor activation was cleared
+      ansible.builtin.assert:
+        that:
+          - result.changed
+          - "'no neighbor 192.0.2.2 bmp-activate' in result.commands"
+
+    - name: Delete only BMP server 2
+      register: result
+      cisco.ios.ios_bgp_global:
+        config:
+          as_number: 65000
+          bmp:
+            servers:
+              - number: 2
+        state: deleted
+
+    - name: Assert that only the selected BMP server was removed
+      ansible.builtin.assert:
+        that:
+          - result.changed
+          - "'no bmp server 1' not in result.commands"
+
+    - name: Gather BMP configuration after targeted deletion
+      register: gathered_bmp
+      cisco.ios.ios_bgp_global:
+        state: gathered
+
+    - name: Assert that BMP server 1 remains configured
+      ansible.builtin.assert:
+        that:
+          - gathered_bmp.gathered.bmp.servers | length == 1
+          - (gathered_bmp.gathered.bmp.servers | first).number == 1
+
     - name: Remove all BMP configuration
       register: result
       cisco.ios.ios_bgp_global:
@@ -154,7 +199,30 @@
         that:
           - result.changed
           - "'no bmp server 1' in result.commands"
-          - "'no bmp server 2' in result.commands"
+
+    - name: Reconfigure BMP before targeted neighbor activation deletion
+      register: result
+      cisco.ios.ios_bgp_global: *bmp_config
+
+    - name: Delete only BMP activation server 1 from neighbor 2
+      register: result
+      cisco.ios.ios_bgp_global:
+        config:
+          as_number: 65000
+          neighbors:
+            - neighbor_address: 192.0.2.2
+              remote_as: 65002
+              bmp_activate:
+                servers: [1]
+        state: deleted
+
+    - name: Assert only the selected neighbor activation server was removed
+      ansible.builtin.assert:
+        that:
+          - result.changed
+          - "'no neighbor 192.0.2.2 bmp-activate' in result.commands"
+          - "'neighbor 192.0.2.2 bmp-activate server 2' in result.commands"
+          - "'neighbor 192.0.2.2 bmp-activate server 1' not in result.commands"
 
     - name: Reject a BMP description containing a line break
       block:
@@ -179,6 +247,31 @@
           ansible.builtin.assert:
             that:
               - "'BMP server 4 option description' in ansible_failed_result.msg"
+
+    - name: Reject a neighbor address containing a line break
+      block:
+        - name: Render BMP activation for a multiline neighbor address
+          cisco.ios.ios_bgp_global:
+            config:
+              as_number: 65000
+              neighbors:
+                - neighbor_address: |-
+                    192.0.2.99
+                    neighbor 192.0.2.1
+                  remote_as: 65099
+                  bmp_activate:
+                    all: true
+            state: rendered
+
+        - name: Fail if the multiline neighbor address was accepted
+          ansible.builtin.fail:
+            msg: The multiline neighbor address was accepted.
+
+      rescue:
+        - name: Assert the invalid neighbor address was rejected
+          ansible.builtin.assert:
+            that:
+              - "'Neighbor address must not contain carriage returns or line feeds' in ansible_failed_result.msg"
   when: bmp_supported
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml

@@ -533,3 +533,16 @@ def merge_bmp_activate(have, want):
     if have.get("all") or want.get("all"):
         return {"all": True}
     return normalize_bmp_activate({"servers": have.get("servers", []) + want.get("servers", [])})
+
+
+def validate_neighbor_addresses(module, data):
+    """Reject line breaks in neighbor addresses that are interpolated into CLI commands."""
+    if isinstance(data, dict):
+        address = data.get("neighbor_address")
+        if isinstance(address, str) and ("\r" in address or "\n" in address):
+            module.fail_json(msg="Neighbor address must not contain carriage returns or line feeds")
+        for value in data.values():
+            validate_neighbor_addresses(module, value)
+    elif isinstance(data, (list, tuple)):
+        for value in data:
+            validate_neighbor_addresses(module, value)
