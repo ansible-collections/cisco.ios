@@ -15,7 +15,7 @@ This collection has been tested against Cisco IOS XE Version 17.3 on CML.
 - The `ansible.utils` collection, required transitively by `ansible.netcommon` as declared in its [collection metadata](https://github.com/ansible-collections/ansible.netcommon/blob/main/galaxy.yml).
 - Python packages declared in this collection's [`requirements.txt`](https://github.com/ansible-collections/cisco.ios/blob/main/requirements.txt) and [`ansible.netcommon`'s requirements.txt](https://github.com/ansible-collections/ansible.netcommon/blob/main/requirements.txt): `ansible-pylibssh` 1.4.0 or later, `jxmlease`, `ncclient`, `paramiko`, `xmltodict`, `grpcio`, and `protobuf`.
 
-`ansible-pylibssh` provides the libssh backend for `ansible.netcommon.network_cli`. The Paramiko backend is deprecated; use the libssh backend for new deployments. See the [`network_cli` SSH type documentation](https://docs.ansible.com/projects/ansible/latest/collections/ansible/netcommon/network_cli_connection.html#parameter-ssh_type).
+`ansible-pylibssh` provides the libssh backend for `ansible.netcommon.network_cli`. The `paramiko` backend is now deprecated. Refer to the following [forum post](https://forum.ansible.com/t/deprecation-notice-paramiko-deprecated-for-network-cli-migrate-to-libssh-ansible-pylibssh/45782) for more information.
 
 ## Support
 
