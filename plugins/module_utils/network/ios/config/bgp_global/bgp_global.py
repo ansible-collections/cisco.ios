@@ -285,6 +285,7 @@ class Bgp_global(ResourceModule):
     def _compare_neighbor_lists(self, want, have):
         """Compare neighbor list of dict"""
         neig_parses = [
+            "peer_group_declaration",
             "remote_as",
             "peer_group",
             "bmp_activate",
@@ -359,6 +360,13 @@ class Bgp_global(ResourceModule):
             have_nbr = have.pop(name, {})
             want_route = w_neighbor.pop("route_maps", {})
             have_route = have_nbr.pop("route_maps", {})
+            if w_neighbor.get("peer_group_declaration") is False:
+                if self.state == "rendered":
+                    self.addcmd(w_neighbor, "peer_group_declaration", True)
+                elif have_nbr.get("peer_group_declaration"):
+                    self.addcmd(have_nbr, "peer_group_declaration", True)
+                w_neighbor.pop("peer_group_declaration")
+                have_nbr.pop("peer_group_declaration", None)
             if (
                 not w_neighbor.get("shutdown", {}).get("set")
                 and have_nbr.get("shutdown", {}).get("set")

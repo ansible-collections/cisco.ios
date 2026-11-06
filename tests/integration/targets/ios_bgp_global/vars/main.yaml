@@ -204,3 +204,26 @@ rtt:
   commands:
     - router bgp 65000
     - no network 192.0.4.2
+
+peer_group_declaration:
+  before: {}
+  commands:
+    - router bgp 65000
+    - no bgp default ipv4-unicast
+    - no bgp default route-target filter
+    - neighbor TestGroup peer-group
+    - neighbor TestGroup remote-as 65001
+    - neighbor 192.0.2.254 peer-group TestGroup
+  after:
+    as_number: "65000"
+    bgp:
+      default:
+        ipv4_unicast: false
+        route_target:
+          filter: false
+    neighbors:
+      - neighbor_address: 192.0.2.254
+        peer_group: TestGroup
+      - neighbor_address: TestGroup
+        peer_group_declaration: true
+        remote_as: "65001"
