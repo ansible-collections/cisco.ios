@@ -73,6 +73,8 @@ plugin_routing:
       redirect: cisco.ios.ios_vrf_address_family
     vrf_global:
       redirect: cisco.ios.ios_vrf_global
+    monitor_sessions:
+      redirect: cisco.ios.ios_monitor_sessions
   modules:
     acl_interfaces:
       redirect: cisco.ios.ios_acl_interfaces
@@ -146,4 +148,6 @@ plugin_routing:
       redirect: cisco.ios.ios_vrf_address_family
     vrf_global:
       redirect: cisco.ios.ios_vrf_global
+    monitor_sessions:
+      redirect: cisco.ios.ios_monitor_sessions
 requires_ansible: ">=2.16.0"

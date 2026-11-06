@@ -1,0 +1,10 @@
+---
+bugfixes:
+  - ios_vrf_address_family - fix module not generating address-family block when no sub-configuration
+    is present but the address-family is absent from the device.
+  - ios_vrf_address_family - treat an address-family without ``safi`` as unicast, so state ``merged``
+    no longer removes existing configuration for it and its options are idempotent.
+  - ios_vrf_address_family - fix state ``deleted`` sending ``no no address-family`` and deleting
+    the address-families of VRFs which are not in the task.
+  - ios_vrf_address_family - fix route-targets being added on every run, and not removed by state
+    ``replaced`` or ``overridden`` when the address-family has no ``route_target``.

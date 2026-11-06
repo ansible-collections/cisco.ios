@@ -1,0 +1,57 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_monitor_sessions replaced integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Ios_monitor_sessions replaced - populate
+      cisco.ios.ios_monitor_sessions:
+        config:
+          - session: 1
+            session_type: erspan-source
+            sources:
+              - interfaces:
+                  - "{{ monitor_if1 }}"
+                  - "{{ monitor_if2 }}"
+            destination:
+              erspan_id: "{{ erspan_id }}"
+              ip_address: "{{ erspan_ip }}"
+              origin_ip_address: "{{ erspan_origin }}"
+        state: merged
+
+    - name: Ios_monitor_sessions replaced - swap sources
+      register: result
+      cisco.ios.ios_monitor_sessions: &id001
+        config:
+          - session: 1
+            session_type: erspan-source
+            sources:
+              - interfaces:
+                  - "{{ monitor_if2 }}"
+                  - "{{ monitor_if3 }}"
+            destination:
+              erspan_id: "{{ erspan_id }}"
+              ip_address: "{{ erspan_ip }}"
+              origin_ip_address: "{{ erspan_origin }}"
+        state: replaced
+
+    - name: Ios_monitor_sessions replaced - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no source interface ' ~ monitor_if1 in result.commands"
+          - "'source interface ' ~ monitor_if3 in result.commands"
+          - "'no source interface ' ~ monitor_if2 not in result.commands"
+
+    - name: Ios_monitor_sessions replaced - idempotent
+      register: result
+      cisco.ios.ios_monitor_sessions: *id001
+
+    - name: Ios_monitor_sessions replaced - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -195,6 +195,8 @@ class L3_interfaces(ResourceModule):
             wacls = want.pop(afi, {})
             hacls = have.pop(afi, {})
 
+            afi_begin = len(self.commands)
+
             for key, entry in wacls.items():
                 if entry.get("secondary", False) is True:
                     continue
@@ -241,6 +243,8 @@ class L3_interfaces(ResourceModule):
                     have={afi: hacl},
                 )
 
+            afi_after_adds = len(self.commands)
+
             # remove remaining items in have for replaced
             # these can be subnets that are no longer used
             # or secondaries that have moved to primary
@@ -248,6 +252,16 @@ class L3_interfaces(ResourceModule):
             for key, entry in hacls.items():
                 self.validate_ips(afi, have=entry)
                 self.compare(parsers=self.parsers, want={}, have={afi: entry})
+
+            # Move "no ip/ipv6 address" (deletes) before "ip/ipv6 address" (adds).
+            # IOS replaces a primary address atomically when a new one is assigned,
+            # so the no-command after is redundant and can be dangerous when the
+            # same host IP changes subnet mask — the no may match the newly-set
+            # address on some IOS versions.
+            delete_cmds = self.commands[afi_after_adds:]
+            if delete_cmds:
+                add_cmds = self.commands[afi_begin:afi_after_adds]
+                self.commands[afi_begin:] = delete_cmds + add_cmds
 
     def validate_ips(self, afi, want=None, have=None):
         if afi == "ipv4" and want:

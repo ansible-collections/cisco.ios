@@ -8,8 +8,9 @@ from __future__ import absolute_import, division, print_function
 
 __metaclass__ = type
 from textwrap import dedent
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.vlans.vlans import Vlans
 from ansible_collections.cisco.ios.plugins.modules import ios_vlans
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
@@ -510,13 +511,8 @@ class TestIosVlansModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
-            "no vlan 1",
             "no vlan 150",
             "no vlan 888",
-            "no vlan 1002",
-            "no vlan 1003",
-            "no vlan 1004",
-            "no vlan 1005",
             "vlan 200",
             "name test_vlan_200",
             "state active",
@@ -530,6 +526,28 @@ class TestIosVlansModule(TestIosModule):
         ]
 
         self.assertEqual(result["commands"], commands)
+
+    def test_ios_vlans_overridden_with_empty_config_preserves_reserved_vlans(self):
+        vlans = object.__new__(Vlans)
+        vlans.state = "overridden"
+        vlans.commands = []
+        vlans._compare = Mock()
+        vlans._tmplt = Mock()
+        vlans._tmplt.render.side_effect = lambda have, resource, negate: "no vlan {0}".format(
+            have["vlan_id"],
+        )
+
+        have = [
+            {"vlan_id": 1, "name": "default"},
+            {"vlan_id": 1002, "name": "fddi-default"},
+            {"vlan_id": 1003, "name": "token-ring-default"},
+            {"vlan_id": 1004, "name": "fddinet-default"},
+            {"vlan_id": 1005, "name": "trnet-default"},
+        ]
+
+        vlans.generate_commands(conf_want=[], conf_have=have, resource="vlans")
+
+        self.assertEqual(vlans.commands, [])
 
     def test_ios_vlans_overridden_with_private_vlans(self):
         """Test overriding VLANs when private VLANs are present - Issue #1184"""
@@ -573,7 +591,6 @@ class TestIosVlansModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
-            "no vlan 1",
             "no vlan 501",
             "no vlan 502",
             "vlan 500",
@@ -624,7 +641,6 @@ class TestIosVlansModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
-            "no vlan 1",
             "vlan 500",
             "name Test_VLAN",
             "no state active",
@@ -686,7 +702,6 @@ class TestIosVlansModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         commands = [
-            "no vlan 1",
             "vlan 500",
             "name Primary_VLAN_Updated",
             "private-vlan isolated",

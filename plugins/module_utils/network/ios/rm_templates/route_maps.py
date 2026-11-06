@@ -86,6 +86,13 @@ def _tmplt_route_map_match(config_data):
                 temp.append(v)
             cmd += " ".join(sorted(temp))
             command.append(cmd)
+        if match.get("large_community"):
+            cmd = "match large-community"
+            temp = []
+            for k, v in match["large_community"].items():
+                temp.append(v)
+            cmd += " " + " ".join(sorted(temp))
+            command.append(cmd)
         if match.get("interfaces"):
             cmd = "match interface "
             temp = []
@@ -448,6 +455,16 @@ def _tmplt_route_map_set(config_data):
                 temp.append(v)
             cmd += " ".join(sorted(temp))
             command.append(cmd)
+        if set.get("large_community"):
+            cmd = "set large-community"
+            if set["large_community"].get("none"):
+                cmd += " none"
+            else:
+                if set["large_community"].get("communities"):
+                    cmd += " " + " ".join(sorted(set["large_community"]["communities"]))
+                if set["large_community"].get("additive"):
+                    cmd += " additive"
+            command.append(cmd)
         if set.get("level"):
             cmd = "set level"
             if set["level"].get("level_1"):
@@ -729,6 +746,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s*(?P<clns>clns\s(address\s\S+|next-hop\s\S+|route-source\s\S+))*
                 \s*(?P<community>community\s\S.*)*
                 \s*(?P<extcommunity>extcommunity\s\S.*)*
+                \s*(?P<large_community_match>large-community\s\S.*)*
                 \s*(?P<interfaces>interface\s\S.*)*
                 \s*(?P<length>length\s\d+\s\d+)*
                 \s*(?P<local_preference>local-preference\s\d.*|local-preference)*
@@ -777,6 +795,7 @@ class Route_mapsTemplate(NetworkTemplate):
                                     "exact_match": "{{ True if community is defined and 'exact-match' in community }}",
                                 },
                                 "extcommunity": "{{ extcommunity.split('extcommunity ')[1].split(' ') if extcommunity is defined }}",
+                                "large_community": "{{ large_community_match.split('large-community ')[1].split(' ') if large_community_match is defined }}",
                                 "interfaces": "{{ interfaces.split('interface ')[1].split(' ') if interfaces is defined }}",
                                 "length": {
                                     "minimum": "{{ length.split(' ')[1] if length is defined }}",
@@ -983,6 +1002,7 @@ class Route_mapsTemplate(NetworkTemplate):
                 \s*(?P<extcommunity>extcommunity\s\S.*)*
                 \s*(?P<global>global)*
                 \s*(?P<interfaces>interface\s\S.*)*
+                \s*(?P<large_community>large-community\s\S.*)*
                 \s*(?P<level>level\s(level-1-2|level-1|level-2|nssa-only))*
                 \s*(?P<lisp>lisp\slocator-set\s\S+)*
                 \s*(?P<local_preference>local-preference\s\d+)*
@@ -1080,6 +1100,13 @@ class Route_mapsTemplate(NetworkTemplate):
                                 },
                                 "global_route": "{{ True if global is defined }}",
                                 "interfaces": "{{ interfaces.split('interface ')[1].split(' ') if interfaces is defined }}",
+                                "large_community": {
+                                    "communities": "{{ large_community.split('large-community ')[1].split()\
+                                        |reject('in', ['additive', 'none'])|list\
+                                        if large_community is defined and 'none' not in large_community }}",
+                                    "additive": "{{ True if large_community is defined and 'additive' in large_community }}",
+                                    "none": "{{ True if large_community is defined and 'none' in large_community }}",
+                                },
                                 "level": {
                                     "level_1": "{{ True if level is defined and 'level-1' in level and 'level-1-2' not in level }}",
                                     "level_1_2": "{{ True if level is defined and 'level-1-2' in level }}",

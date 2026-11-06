@@ -1017,3 +1017,348 @@ class TestIosRouteMapsModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         self.assertIn("continue 20", result["commands"])
+
+    def test_ios_route_maps_large_community_merged(self):
+        """set large-community generates correct command with multiple values and additive."""
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_LARGE_COMM",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                set=dict(
+                                    large_community=dict(
+                                        communities=["65000:100:0", "65000:200:0"],
+                                        additive=True,
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn(
+            "set large-community 65000:100:0 65000:200:0 additive",
+            result["commands"],
+        )
+
+    def test_ios_route_maps_large_community_none(self):
+        """set large-community none generates correct command."""
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_LARGE_COMM_NONE",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                set=dict(large_community=dict(none=True)),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("set large-community none", result["commands"])
+
+    def test_ios_route_maps_large_community_idempotent(self):
+        """Merged with existing large-community config is idempotent."""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_LARGE_COMM",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                set=dict(
+                                    large_community=dict(
+                                        communities=["65000:100:0", "65000:200:0"],
+                                        additive=True,
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        self.load_fixtures()
+        self.execute_show_command.side_effect = (
+            lambda *args, **kwargs: "route-map TEST_LARGE_COMM permit 10\n"
+            + " set large-community 65000:100:0 65000:200:0 additive\n"
+        )
+        result = self.changed(False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_route_maps_large_community_replaced(self):
+        """Replaced removes existing match/set large-community lines before applying new values."""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_LC_REPL",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                match=dict(large_community=["65000:100:0"]),
+                                set=dict(large_community=dict(communities=["65000:400:0"])),
+                            ),
+                        ],
+                    ),
+                ],
+                state="replaced",
+            ),
+        )
+        self.load_fixtures()
+        self.execute_show_command.side_effect = (
+            lambda *args, **kwargs: "route-map TEST_LC_REPL permit 10\n"
+            + " match large-community 65000:100:0 65000:200:0\n"
+            + " set large-community 65000:100:0 65000:300:0 additive\n"
+        )
+        result = self.changed(True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "route-map TEST_LC_REPL permit 10",
+                "no match large-community 65000:100:0 65000:200:0",
+                "match large-community 65000:100:0",
+                "no set large-community 65000:100:0 65000:300:0 additive",
+                "set large-community 65000:400:0",
+            ],
+        )
+
+    def test_ios_route_maps_large_community_parsed(self):
+        """Parsed state extracts large-community values correctly."""
+        set_module_args(
+            dict(
+                running_config=(
+                    "route-map TEST_LARGE_COMM permit 10\n"
+                    " set large-community 65000:100:0 65000:200:0 additive\n"
+                ),
+                state="parsed",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        parsed = result["parsed"]
+        entry = parsed[0]["entries"][0]
+        self.assertEqual(
+            sorted(entry["set"]["large_community"]["communities"]),
+            ["65000:100:0", "65000:200:0"],
+        )
+        self.assertTrue(entry["set"]["large_community"]["additive"])
+
+    def test_ios_route_maps_large_community_invalid_additive_only(self):
+        """set large-community additive without communities is rejected."""
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_LC_INVALID",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                set=dict(large_community=dict(additive=True)),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("additive", result["msg"])
+
+    def test_ios_route_maps_large_community_invalid_none_with_communities(self):
+        """set large-community none together with communities is rejected."""
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_LC_INVALID",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                set=dict(
+                                    large_community=dict(none=True, communities=["65000:100:0"]),
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("mutually exclusive", result["msg"])
+
+    def test_ios_route_maps_large_community_invalid_none_with_additive(self):
+        """set large-community none together with additive is rejected."""
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_LC_INVALID",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                set=dict(large_community=dict(none=True, additive=True)),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("additive", result["msg"])
+
+    def test_ios_route_maps_large_community_set_sorted(self):
+        """set large-community communities are sorted in generated commands."""
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_LC_SORT",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                set=dict(
+                                    large_community=dict(
+                                        communities=["65000:200:0", "65000:100:0"],
+                                    ),
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("set large-community 65000:100:0 65000:200:0", result["commands"])
+
+    def test_ios_route_maps_match_large_community_sorted(self):
+        """match large-community values are sorted in generated commands."""
+        self.execute_show_command.side_effect = None
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_MATCH_LC_SORT",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                match=dict(
+                                    large_community=["65000:200:0", "65000:100:0"],
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("match large-community 65000:100:0 65000:200:0", result["commands"])
+
+    def test_ios_route_maps_match_large_community_merged(self):
+        """match large-community generates correct command."""
+        self.execute_show_command.side_effect = None
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_MATCH_LC",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                match=dict(
+                                    large_community=["65000:100:0", "65000:200:0"],
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn(
+            "match large-community 65000:100:0 65000:200:0",
+            result["commands"],
+        )
+
+    def test_ios_route_maps_match_large_community_idempotent(self):
+        """Merged with existing match large-community config is idempotent."""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        route_map="TEST_MATCH_LC",
+                        entries=[
+                            dict(
+                                action="permit",
+                                sequence=10,
+                                match=dict(
+                                    large_community=["65000:100:0", "65000:200:0"],
+                                ),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        self.load_fixtures()
+        self.execute_show_command.side_effect = (
+            lambda *args, **kwargs: "route-map TEST_MATCH_LC permit 10\n"
+            + " match large-community 65000:100:0 65000:200:0\n"
+        )
+        result = self.changed(False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_route_maps_match_large_community_parsed(self):
+        """Parsed state extracts match large-community values correctly."""
+        set_module_args(
+            dict(
+                running_config=(
+                    "route-map TEST_MATCH_LC permit 10\n"
+                    " match large-community 65000:100:0 65000:200:0\n"
+                ),
+                state="parsed",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        parsed = result["parsed"]
+        entry = parsed[0]["entries"][0]
+        self.assertEqual(
+            sorted(entry["match"]["large_community"]),
+            ["65000:100:0", "65000:200:0"],
+        )

@@ -354,7 +354,6 @@ class TestIosInterfacesModule(TestIosModule):
             "shutdown",
             "interface GigabitEthernet4",
             "no description Ansible UT interface 4",
-            "shutdown",
             "interface GigabitEthernet5",
             "no description Ansible UT interface 5",
             "no duplex full",
@@ -376,6 +375,35 @@ class TestIosInterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], commands)
+
+    def test_ios_interfaces_overridden_idempotent_shutdown(self):
+        """overridden must not re-emit 'shutdown' for already-shutdown interfaces"""
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1
+             description Ansible UT interface 1
+             no shutdown
+            interface GigabitEthernet2
+             shutdown
+            interface GigabitEthernet3
+             shutdown
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "description": "Ansible UT interface 1",
+                        "name": "GigabitEthernet1",
+                        "enabled": True,
+                    },
+                ],
+                "state": "overridden",
+            },
+        )
+        # GigabitEthernet2 and GigabitEthernet3 are already shut down;
+        # overridden should not re-emit 'shutdown' for them
+        self.execute_module(changed=False, commands=[])
 
     def test_ios_interfaces_deleted(self):
         self.execute_show_command.return_value = dedent(

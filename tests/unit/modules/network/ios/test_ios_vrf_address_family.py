@@ -634,3 +634,391 @@ class TestIosVrfAddressFamilyModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(expected_commands))
+
+    def test_ios_vrf_address_family_merged_bare_af_new(self):
+        """Test that a bare address-family entry (no sub-config) generates the
+        address-family block when the AF is not yet present on the device.
+
+        Regression test for: ios_vrf_address_family silently drops address-family
+        header when no sub-commands are generated for a new AF.
+        """
+        self.get_config.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="TEST_VRF_01",
+                        address_families=[
+                            dict(afi="ipv4"),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        commands = [
+            "vrf definition TEST_VRF_01",
+            "address-family ipv4",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_vrf_address_family_merged_bare_af_idempotent(self):
+        """Test that a bare address-family entry is idempotent when the AF is
+        already present on the device with no sub-configuration.
+        """
+        run_cfg = dedent(
+            """\
+            vrf definition TEST_VRF_01
+             address-family ipv4
+             exit-address-family
+            """,
+        )
+        self.get_config.return_value = run_cfg
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="TEST_VRF_01",
+                        address_families=[
+                            dict(afi="ipv4"),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        self.execute_module(changed=False, commands=[])
+
+    def _bare_af_args(self, state):
+        return dict(
+            config=[dict(name="TEST_VRF_01", address_families=[dict(afi="ipv4")])],
+            state=state,
+        )
+
+    def test_ios_vrf_address_family_merged_bare_af_keeps_existing_sub_config(self):
+        """Merged is additive: a bare AF must not remove sub-config that is already on the device."""
+        self.get_config.return_value = dedent(
+            """\
+            vrf definition TEST_VRF_01
+             address-family ipv4
+              export map testing-map
+             exit-address-family
+            """,
+        )
+        set_module_args(self._bare_af_args("merged"))
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_vrf_address_family_merged_bare_af_multicast_only_creates_unicast(self):
+        """A bare AF is unicast, so an existing multicast AF must not count as the AF being present."""
+        self.get_config.return_value = dedent(
+            """\
+            vrf definition TEST_VRF_01
+             address-family ipv4 multicast
+             exit-address-family
+            """,
+        )
+        set_module_args(self._bare_af_args("merged"))
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["vrf definition TEST_VRF_01", "address-family ipv4"])
+
+    def test_ios_vrf_address_family_merged_bare_af_unicast_and_multicast(self):
+        """With unicast and multicast present, a bare AF is compared with unicast only."""
+        self.get_config.return_value = dedent(
+            """\
+            vrf definition TEST_VRF_01
+             address-family ipv4
+              export map unicast-map
+             exit-address-family
+             address-family ipv4 multicast
+              export map multicast-map
+             exit-address-family
+            """,
+        )
+        set_module_args(self._bare_af_args("merged"))
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_vrf_address_family_replaced_bare_af_clears_sub_config(self):
+        """Replaced and overridden still treat a bare AF as an AF with no sub-config."""
+        self.get_config.return_value = dedent(
+            """\
+            vrf definition TEST_VRF_01
+             address-family ipv4
+              export map testing-map
+             exit-address-family
+            """,
+        )
+        set_module_args(self._bare_af_args("replaced"))
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["vrf definition TEST_VRF_01", "address-family ipv4", "no export map testing-map"],
+        )
+
+    _RT_HAVE = dedent(
+        """\
+        vrf definition TEST_VRF_01
+         address-family ipv4
+          route-target export 65000:1
+          route-target import 65000:2
+         exit-address-family
+        """,
+    )
+
+    def _rt_args(self, state, exports=None, imports=None, safi="unicast"):
+        route_target = {}
+        if exports is not None:
+            route_target["exports"] = exports
+        if imports is not None:
+            route_target["imports"] = imports
+        return dict(
+            config=[
+                dict(
+                    name="TEST_VRF_01",
+                    address_families=[dict(afi="ipv4", safi=safi, route_target=route_target)],
+                ),
+            ],
+            state=state,
+        )
+
+    def test_ios_vrf_address_family_deleted_address_family(self):
+        """Deleting an address family must send a single 'no', not 'no no address-family'."""
+        self.get_config.return_value = self._RT_HAVE
+        set_module_args(
+            dict(
+                config=[dict(name="TEST_VRF_01", address_families=[dict(afi="ipv4")])],
+                state="deleted",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["vrf definition TEST_VRF_01", "no address-family ipv4 unicast"],
+        )
+
+    def test_ios_vrf_address_family_merged_route_target_idempotent(self):
+        """A route-target without 'stitching' equals the device one, which facts report as stitching False."""
+        self.get_config.return_value = self._RT_HAVE
+        set_module_args(
+            self._rt_args(
+                "merged",
+                exports=[dict(rt_value="65000:1")],
+                imports=[dict(rt_value="65000:2")],
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_vrf_address_family_replaced_route_target_idempotent(self):
+        self.get_config.return_value = self._RT_HAVE
+        set_module_args(
+            self._rt_args(
+                "replaced",
+                exports=[dict(rt_value="65000:1", stitching=False)],
+                imports=[dict(rt_value="65000:2")],
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_vrf_address_family_merged_route_target_stitching_is_a_change(self):
+        """The same value with stitching is a different route-target and is still configured."""
+        self.get_config.return_value = self._RT_HAVE
+        set_module_args(self._rt_args("merged", exports=[dict(rt_value="65000:1", stitching=True)]))
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "vrf definition TEST_VRF_01",
+                "address-family ipv4 unicast",
+                "route-target export 65000:1 stitching",
+            ],
+        )
+
+    def test_ios_vrf_address_family_merged_route_target_added(self):
+        self.get_config.return_value = self._RT_HAVE
+        set_module_args(
+            self._rt_args(
+                "merged",
+                exports=[dict(rt_value="65000:1"), dict(rt_value="65000:9")],
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "vrf definition TEST_VRF_01",
+                "address-family ipv4 unicast",
+                "route-target export 65000:9",
+            ],
+        )
+
+    def test_ios_vrf_address_family_replaced_without_route_target_removes_it(self):
+        """Replaced with an AF that has no route_target removes the route-targets on the device."""
+        self.get_config.return_value = self._RT_HAVE
+        set_module_args(self._bare_af_args("replaced"))
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "vrf definition TEST_VRF_01",
+                "address-family ipv4",
+                "no route-target export 65000:1",
+                "no route-target import 65000:2",
+            ],
+        )
+
+    def test_ios_vrf_address_family_merged_without_route_target_keeps_it(self):
+        """Merged never removes route-targets the task does not mention."""
+        self.get_config.return_value = self._RT_HAVE
+        set_module_args(self._bare_af_args("merged"))
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_vrf_address_family_merged_deprecated_route_target_idempotent(self):
+        """The deprecated export/import_config route-target options are idempotent too."""
+        self.get_config.return_value = self._RT_HAVE
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="TEST_VRF_01",
+                        address_families=[
+                            dict(
+                                afi="ipv4",
+                                safi="unicast",
+                                route_target=dict(export="65000:1", import_config="65000:2"),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_vrf_address_family_merged_bare_af_with_options_idempotent(self):
+        """A bare AF spec is the unicast AF, so its options are idempotent like an explicit unicast AF."""
+        self.get_config.return_value = dedent(
+            """\
+            vrf definition TEST_VRF_01
+             address-family ipv4
+              export map testing-map
+              route-target export 65000:1
+              route-target export 65000:9
+             exit-address-family
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="TEST_VRF_01",
+                        address_families=[
+                            dict(
+                                afi="ipv4",
+                                export=dict(map="testing-map"),
+                                route_target=dict(exports=[dict(rt_value="65000:9")]),
+                            ),
+                        ],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_vrf_address_family_overridden_bare_af_is_kept(self):
+        """Overridden keeps the unicast AF for a bare want, it does not remove and re-add it."""
+        self.get_config.return_value = dedent(
+            """\
+            vrf definition TEST_VRF_01
+             address-family ipv4
+             exit-address-family
+            """,
+        )
+        set_module_args(self._bare_af_args("overridden"))
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    _TWO_VRFS = dedent(
+        """\
+        vrf definition OTHER_VRF
+         address-family ipv4
+         exit-address-family
+         address-family ipv6
+         exit-address-family
+        vrf definition TEST_VRF_01
+         address-family ipv4
+         exit-address-family
+         address-family ipv6
+         exit-address-family
+        """,
+    )
+
+    def test_ios_vrf_address_family_deleted_only_touches_named_vrf(self):
+        """Deleting from one VRF must not delete the address families of the other VRFs."""
+        self.get_config.return_value = self._TWO_VRFS
+        set_module_args(
+            dict(
+                config=[dict(name="TEST_VRF_01", address_families=[dict(afi="ipv4")])],
+                state="deleted",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["vrf definition TEST_VRF_01", "no address-family ipv4 unicast"],
+        )
+
+    def test_ios_vrf_address_family_deleted_vrf_by_name(self):
+        """A VRF named without address families loses all of them, other VRFs are kept."""
+        self.get_config.return_value = self._TWO_VRFS
+        set_module_args(dict(config=[dict(name="TEST_VRF_01")], state="deleted"))
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "vrf definition TEST_VRF_01",
+                "no address-family ipv4 unicast",
+                "no address-family ipv6 unicast",
+            ],
+        )
+
+    def test_ios_vrf_address_family_deleted_no_config_deletes_all(self):
+        """Without a config all address families of all VRFs are deleted, one header per VRF."""
+        self.get_config.return_value = self._TWO_VRFS
+        set_module_args(dict(config=[], state="deleted"))
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "vrf definition OTHER_VRF",
+                "no address-family ipv4 unicast",
+                "no address-family ipv6 unicast",
+                "vrf definition TEST_VRF_01",
+                "no address-family ipv4 unicast",
+                "no address-family ipv6 unicast",
+            ],
+        )
+
+    def test_ios_vrf_address_family_deleted_missing_address_family_idempotent(self):
+        self.get_config.return_value = dedent(
+            """\
+            vrf definition TEST_VRF_01
+             address-family ipv4
+             exit-address-family
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[dict(name="TEST_VRF_01", address_families=[dict(afi="ipv6")])],
+                state="deleted",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])

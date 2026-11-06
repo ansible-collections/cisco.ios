@@ -1,0 +1,10 @@
+---
+devices:
+  - platform: ios_monitor_sessions
+    count: 1
+
+  - scenario: ios-monitor-sessions-merged
+    count: 1
+
+  - scenario: ios-monitor-sessions-overridden
+    count: 1

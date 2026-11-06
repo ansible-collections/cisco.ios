@@ -81,6 +81,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.lldp_i
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.logging_global.logging_global import (
     Logging_globalFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.monitor_sessions.monitor_sessions import (
+    Monitor_sessionsFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ntp_global.ntp_global import (
     Ntp_globalFacts,
 )
@@ -167,6 +170,7 @@ FACT_RESOURCE_SUBSETS = dict(
     hsrp_interfaces=Hsrp_interfacesFacts,
     bfd_interfaces=Bfd_interfacesFacts,
     bfd_templates=Bfd_templatesFacts,
+    monitor_sessions=Monitor_sessionsFacts,
 )
 
 
