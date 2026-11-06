@@ -36,6 +36,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
 )
 
 
+BMP_NEIGHBOR_DEACTIVATE_COMMAND = "no neighbor {0} bmp-activate"
+BMP_SERVER_NUMBER_PARSER = "bmp.servers.number"
+
+
 class Bgp_global(ResourceModule):
     """
     The cisco.ios_bgp_global config class
@@ -424,14 +428,14 @@ class Bgp_global(ResourceModule):
             if not have:
                 return
             if not want or want.get("all") or have.get("all"):
-                self.commands.append("no neighbor {0} bmp-activate".format(address))
+                self.commands.append(BMP_NEIGHBOR_DEACTIVATE_COMMAND.format(address))
                 return
 
             remaining = [
                 server for server in have.get("servers", []) if server not in want["servers"]
             ]
             if remaining != have.get("servers", []):
-                self.commands.append("no neighbor {0} bmp-activate".format(address))
+                self.commands.append(BMP_NEIGHBOR_DEACTIVATE_COMMAND.format(address))
                 if remaining:
                     self.addcmd(
                         {"neighbor_address": address, "bmp_activate": {"servers": remaining}},
@@ -443,7 +447,7 @@ class Bgp_global(ResourceModule):
         if want == have:
             return
         if have:
-            self.commands.append("no neighbor {0} bmp-activate".format(address))
+            self.commands.append(BMP_NEIGHBOR_DEACTIVATE_COMMAND.format(address))
         if want:
             self.addcmd({"neighbor_address": address, "bmp_activate": want}, "bmp_activate", False)
 
@@ -453,7 +457,7 @@ class Bgp_global(ResourceModule):
             numbers = want if want else have
             for number in sorted(numbers, key=int):
                 if number in have:
-                    self.addcmd(have[number], "bmp.servers.number", True)
+                    self.addcmd(have[number], BMP_SERVER_NUMBER_PARSER, True)
             return
 
         for number in sorted(want, key=int):
@@ -462,12 +466,15 @@ class Bgp_global(ResourceModule):
             begin = len(self.commands)
             self._compare_bmp_server(w_srv, h_srv)
             if len(self.commands) != begin or not h_srv:
-                self.commands.insert(begin, self._tmplt.render(w_srv, "bmp.servers.number", False))
+                self.commands.insert(
+                    begin,
+                    self._tmplt.render(w_srv, BMP_SERVER_NUMBER_PARSER, False),
+                )
                 self.commands.append("exit-bmp-server-mode")
 
         # remove servers that are not wanted (replaced, overridden, deleted)
         for number in sorted(have, key=int):
-            self.addcmd(have[number], "bmp.servers.number", True)
+            self.addcmd(have[number], BMP_SERVER_NUMBER_PARSER, True)
 
     def _compare_bmp_server(self, w_srv, h_srv):
         """Compare the options of a single BMP server.
