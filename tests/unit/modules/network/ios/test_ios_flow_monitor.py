@@ -818,7 +818,10 @@ class TestIosFlowMonitorModule(TestIosModule):
             """,
         )
         set_module_args(
-            {"state": "replaced", "config": {"exporters": [{"name": "EXP", "destination": "10.0.0.1"}]}},
+            {
+                "state": "replaced",
+                "config": {"exporters": [{"name": "EXP", "destination": "10.0.0.1"}]},
+            },
         )
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["flow exporter EXP", " no ttl"])

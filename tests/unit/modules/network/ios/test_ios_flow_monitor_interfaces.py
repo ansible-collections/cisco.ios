@@ -410,8 +410,18 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
                     {
                         "name": "GigabitEthernet1",
                         "flow_monitors": [
-                            {"monitor": "FM", "sampler": "SM", "direction": "input", "protocol": "ip"},
-                            {"monitor": "FM", "sampler": "SM", "direction": "input", "protocol": "ipv6"},
+                            {
+                                "monitor": "FM",
+                                "sampler": "SM",
+                                "direction": "input",
+                                "protocol": "ip",
+                            },
+                            {
+                                "monitor": "FM",
+                                "sampler": "SM",
+                                "direction": "input",
+                                "protocol": "ipv6",
+                            },
                         ],
                     },
                 ],
