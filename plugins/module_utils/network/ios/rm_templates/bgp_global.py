@@ -183,7 +183,7 @@ class Bgp_globalTemplate(NetworkTemplate):
             "name": "bmp.servers.description",
             "getval": re.compile(
                 r"""
-                \s\sdescription\s(?P<description>.+?)\s*
+                \s\sdescription\s(?P<description>\S+(?:\s+\S+)*)\s*
                 $""",
                 re.VERBOSE,
             ),
