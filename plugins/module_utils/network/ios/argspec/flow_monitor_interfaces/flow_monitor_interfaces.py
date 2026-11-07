@@ -43,7 +43,7 @@ class Flow_monitor_interfacesArgs(object):  # pylint: disable=R0903
                     "elements": "dict",
                     "options": {
                         "monitor": {"type": "str", "required": True},
-                        "sampler": {"type": "str", "required": True},
+                        "sampler": {"type": "str"},
                         "direction": {
                             "type": "str",
                             "required": True,

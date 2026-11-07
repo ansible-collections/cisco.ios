@@ -50,18 +50,18 @@ class Flow_monitor_interfacesTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""^\s+(?P<protocol>ip|ipv6)\sflow\smonitor
                     \s(?P<monitor>\S+)
-                    \ssampler\s(?P<sampler>\S+)
+                    (\ssampler\s(?P<sampler>\S+))?
                     \s(?P<direction>input|output)
                     $""",
                 re.VERBOSE,
             ),
-            "setval": "{{ protocol | default('ip') }} flow monitor {{ monitor }} sampler {{ sampler }} {{ direction }}",
+            "setval": "{{ protocol | default('ip') }} flow monitor {{ monitor }}{{ (' sampler ' ~ sampler) if sampler is defined and sampler else '' }} {{ direction }}",
             "result": {
                 "{{ name }}": {
                     "flow_monitors": [
                         {
                             "monitor": "{{ monitor }}",
-                            "sampler": "{{ sampler }}",
+                            "sampler": "{{ sampler if sampler is defined }}",
                             "direction": "{{ direction }}",
                             "protocol": "{{ protocol }}",
                         },

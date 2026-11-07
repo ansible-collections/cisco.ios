@@ -53,9 +53,10 @@ options:
             type: str
             required: true
           sampler:
-            description: Name of the sampler to use with this monitor.
+            description:
+              - Name of the sampler to use with this monitor.
+              - Optional, an unsampled monitor can be assigned without a sampler.
             type: str
-            required: true
           direction:
             description: Traffic direction to monitor.
             type: str
