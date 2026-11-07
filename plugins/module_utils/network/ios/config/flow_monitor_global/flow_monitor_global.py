@@ -36,6 +36,11 @@ EXPORTER_DEFAULTS = {
 }
 
 
+def _strip_parent(cmds):
+    """Drop the parent context line and indentation from a command list."""
+    return [c.strip() for c in cmds[1:]]
+
+
 class Flow_monitor_global(ResourceModule):
     """
     The ios_flow_monitor_global config class
@@ -315,21 +320,19 @@ class Flow_monitor_global(ResourceModule):
         """Emit minimal in-place update for replaced/overridden, negating dropped attributes."""
         have_filled = dict(EXPORTER_DEFAULTS)
         have_filled.update(have_exp)
-        strip = lambda cmds: [c.strip() for c in cmds[1:]]
         return self._diff_lines(
             "flow exporter {0}".format(name),
-            strip(self._exporter_commands(name, want_exp)),
-            strip(self._exporter_commands(name, have_filled)),
-            strip(self._exporter_commands(name, have_exp)),
+            _strip_parent(self._exporter_commands(name, want_exp)),
+            _strip_parent(self._exporter_commands(name, have_filled)),
+            _strip_parent(self._exporter_commands(name, have_exp)),
         )
 
     def _sampler_diff_commands(self, name, want_smp, have_smp):
         """Emit minimal in-place update for replaced/overridden, negating dropped attributes."""
-        strip = lambda cmds: [c.strip() for c in cmds[1:]]
-        have_lines = strip(self._sampler_commands(name, have_smp))
+        have_lines = _strip_parent(self._sampler_commands(name, have_smp))
         return self._diff_lines(
             "sampler {0}".format(name),
-            strip(self._sampler_commands(name, want_smp)),
+            _strip_parent(self._sampler_commands(name, want_smp)),
             have_lines,
             have_lines,
         )

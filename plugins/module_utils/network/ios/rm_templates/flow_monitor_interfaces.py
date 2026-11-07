@@ -55,7 +55,11 @@ class Flow_monitor_interfacesTemplate(NetworkTemplate):
                     $""",
                 re.VERBOSE,
             ),
-            "setval": "{{ protocol | default('ip') }} flow monitor {{ monitor }}{{ (' sampler ' ~ sampler) if sampler is defined and sampler else '' }} {{ direction }}",
+            "setval": (
+                "{{ protocol | default('ip') }} flow monitor {{ monitor }}"
+                "{{ (' sampler ' ~ sampler) if sampler is defined and sampler else '' }}"
+                " {{ direction }}"
+            ),
             "result": {
                 "{{ name }}": {
                     "flow_monitors": [
