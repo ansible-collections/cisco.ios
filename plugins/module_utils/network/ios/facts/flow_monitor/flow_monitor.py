@@ -258,6 +258,10 @@ class Flow_monitorFacts(object):
 
             elif current_type == "samplers":
                 smp = samplers[current_name]
+                m = re.match(r"^description (.+)$", stripped)
+                if m:
+                    smp["description"] = m.group(1)
+                    continue
                 m = re.match(r"^mode (random|deterministic) 1 out-of (\d+)$", stripped)
                 if m:
                     smp["mode"] = m.group(1)

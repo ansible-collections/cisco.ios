@@ -806,3 +806,75 @@ class TestIosFlowMonitorModule(TestIosModule):
                 if cli not in rendered:
                     failures.append("{0}: '{1}' rendered as {2}".format(section, cli, rendered))
         self.assertEqual(failures, [])
+
+    # ── replaced: attribute removal ──────────────────────────────────────────
+
+    def test_ios_flow_monitor_replaced_exporter_drops_ttl(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            flow exporter EXP
+             destination 10.0.0.1
+             ttl 100
+            """,
+        )
+        set_module_args(
+            {"state": "replaced", "config": {"exporters": [{"name": "EXP", "destination": "10.0.0.1"}]}},
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["flow exporter EXP", " no ttl"])
+
+    def test_ios_flow_monitor_replaced_sampler_drops_description(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            sampler SMP
+             description my sampler
+             mode random 1 out-of 100
+            """,
+        )
+        set_module_args(
+            {
+                "state": "replaced",
+                "config": {"samplers": [{"name": "SMP", "mode": "random", "window_size": 100}]},
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["sampler SMP", " no description"])
+
+    def test_ios_flow_monitor_sampler_description_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            sampler SMP
+             description my sampler
+             mode random 1 out-of 100
+            """,
+        )
+        set_module_args(
+            {
+                "state": "merged",
+                "config": {
+                    "samplers": [
+                        {
+                            "name": "SMP",
+                            "description": "my sampler",
+                            "mode": "random",
+                            "window_size": 100,
+                        },
+                    ],
+                },
+            },
+        )
+        self.execute_module(changed=False)
+
+    def test_ios_flow_monitor_replaced_monitor_drops_cache_entries(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            flow monitor MON
+             record REC
+             cache entries 10000
+            """,
+        )
+        set_module_args(
+            {"state": "replaced", "config": {"monitors": [{"name": "MON", "record": "REC"}]}},
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["flow monitor MON", " no cache entries"])

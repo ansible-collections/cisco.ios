@@ -212,7 +212,10 @@ class Flow_monitor(ResourceModule):
         for name, want_smp in wantd["samplers"].items():
             have_smp = haved["samplers"].get(name, {})
             if want_smp != have_smp:
-                self.commands.extend(self._sampler_commands(name, want_smp))
+                if have_smp and self.state in ["replaced", "overridden"]:
+                    self.commands.extend(self._sampler_diff_commands(name, want_smp, have_smp))
+                else:
+                    self.commands.extend(self._sampler_commands(name, want_smp))
 
         for name, want_exp in wantd["exporters"].items():
             have_exp = haved["exporters"].get(name, {})
@@ -220,7 +223,10 @@ class Flow_monitor(ResourceModule):
                 have_exp,
                 EXPORTER_DEFAULTS,
             ):
-                self.commands.extend(self._exporter_commands(name, want_exp))
+                if have_exp and self.state in ["replaced", "overridden"]:
+                    self.commands.extend(self._exporter_diff_commands(name, want_exp, have_exp))
+                else:
+                    self.commands.extend(self._exporter_commands(name, want_exp))
 
         for name, want_mon in wantd["monitors"].items():
             have_mon = haved["monitors"].get(name, {})
@@ -278,7 +284,51 @@ class Flow_monitor(ResourceModule):
                 cmds.append(" no {0}".format(cli))
             elif want_collect.get(key) and not have_collect.get(key):
                 cmds.append(" {0}".format(cli))
-        return cmds
+        return cmds if len(cmds) > 1 else []
+
+    @staticmethod
+    def _line_key(line):
+        """Return the command prefix identifying a setting, ignoring its value."""
+        if " timeout" in line:
+            return line.split(" timeout")[0]
+        return line.split()[0]
+
+    def _diff_lines(self, header, want_lines, have_lines, orig_have_lines):
+        """Add lines missing from have; negate settings in have that want no longer sets."""
+        cmds = [header]
+        want_keys = set(self._line_key(ln) for ln in want_lines)
+        for ln in want_lines:
+            if ln not in have_lines:
+                cmds.append(" {0}".format(ln))
+        for ln in orig_have_lines:
+            if self._line_key(ln) not in want_keys:
+                cmds.append(
+                    " no {0}{1}".format(self._line_key(ln), " timeout" if ln.startswith("template data") else ""),
+                )
+        return cmds if len(cmds) > 1 else []
+
+    def _exporter_diff_commands(self, name, want_exp, have_exp):
+        """Emit minimal in-place update for replaced/overridden, negating dropped attributes."""
+        have_filled = dict(EXPORTER_DEFAULTS)
+        have_filled.update(have_exp)
+        strip = lambda cmds: [c.strip() for c in cmds[1:]]
+        return self._diff_lines(
+            "flow exporter {0}".format(name),
+            strip(self._exporter_commands(name, want_exp)),
+            strip(self._exporter_commands(name, have_filled)),
+            strip(self._exporter_commands(name, have_exp)),
+        )
+
+    def _sampler_diff_commands(self, name, want_smp, have_smp):
+        """Emit minimal in-place update for replaced/overridden, negating dropped attributes."""
+        strip = lambda cmds: [c.strip() for c in cmds[1:]]
+        have_lines = strip(self._sampler_commands(name, have_smp))
+        return self._diff_lines(
+            "sampler {0}".format(name),
+            strip(self._sampler_commands(name, want_smp)),
+            have_lines,
+            have_lines,
+        )
 
     def _monitor_diff_commands(self, name, want_mon, have_mon):
         """Emit minimal in-place update for replaced/overridden — diff exporter list and scalar fields."""
@@ -313,11 +363,15 @@ class Flow_monitor(ResourceModule):
                 if hv is None:
                     # IOS does not show default values in the running config
                     hv = CACHE_TIMEOUT_DEFAULTS.get(field)
-                if wv != hv and wv is not None:
+                if wv is None:
+                    # Dropped from want: negate only a non-default value that is really set
+                    if have_cache.get(field) is not None and have_cache[field] != CACHE_TIMEOUT_DEFAULTS.get(field):
+                        cmds.append(" no {0}".format(cmd))
+                elif wv != hv:
                     cmds.append(" {0} {1}".format(cmd, wv))
         if want_mon.get("record") != have_mon.get("record") and want_mon.get("record"):
             cmds.append(" record {0}".format(want_mon["record"]))
-        return cmds
+        return cmds if len(cmds) > 1 else []
 
     def _exporter_commands(self, name, exp):
         cmds = ["flow exporter {0}".format(name)]

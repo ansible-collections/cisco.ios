@@ -378,3 +378,59 @@ class TestIosFlowMonitorInterfacesModule(TestIosModule):
         no_idx = commands.index("no ip flow monitor FLOW_MON sampler SAMPLER_A output")
         add_idx = commands.index("ip flow monitor FLOW_MON sampler SAMPLER_B output")
         self.assertLess(no_idx, add_idx)
+
+    def test_ios_flow_monitor_interfaces_overridden_short_name_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1
+             ip flow monitor FM sampler SM input
+            """,
+        )
+        set_module_args(
+            {
+                "state": "overridden",
+                "config": [
+                    {
+                        "name": "Gi1",
+                        "flow_monitors": [
+                            {"monitor": "FM", "sampler": "SM", "direction": "input"},
+                        ],
+                    },
+                ],
+            },
+        )
+        self.execute_module(changed=False)
+
+    def test_ios_flow_monitor_interfaces_ip_and_ipv6(self):
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            {
+                "state": "merged",
+                "config": [
+                    {
+                        "name": "GigabitEthernet1",
+                        "flow_monitors": [
+                            {"monitor": "FM", "sampler": "SM", "direction": "input", "protocol": "ip"},
+                            {"monitor": "FM", "sampler": "SM", "direction": "input", "protocol": "ipv6"},
+                        ],
+                    },
+                ],
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("ip flow monitor FM sampler SM input", result["commands"])
+        self.assertIn("ipv6 flow monitor FM sampler SM input", result["commands"])
+
+    def test_ios_flow_monitor_interfaces_no_sampler_deleted(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1
+             ip flow monitor FM input
+            """,
+        )
+        set_module_args({"state": "deleted"})
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface GigabitEthernet1", "no ip flow monitor FM input"],
+        )
