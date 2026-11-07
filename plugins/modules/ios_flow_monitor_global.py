@@ -5,7 +5,7 @@
 # (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 
 """
-The module file for ios_flow_monitor
+The module file for ios_flow_monitor_global
 """
 
 from __future__ import absolute_import, division, print_function
@@ -14,7 +14,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 DOCUMENTATION = """
-module: ios_flow_monitor
+module: ios_flow_monitor_global
 short_description: Resource module to configure Flexible NetFlow on Cisco IOS XE.
 description:
   - This module manages the Flexible NetFlow global configuration on Cisco IOS XE devices.
@@ -481,8 +481,10 @@ options:
     description:
       - The state the configuration should be left in.
       - State I(merged) merges the provided config into the existing device config.
-      - State I(replaced) replaces the entire flow monitor configuration.
-      - State I(overridden) is equivalent to I(replaced) for this module.
+      - State I(replaced) converges only the records, exporters, samplers and monitors named in
+        C(config) and leaves other entities untouched.
+      - State I(overridden) additionally removes every record, exporter, sampler and monitor
+        that is not named in C(config). Removing a monitor that is applied to interfaces is service-affecting.
       - State I(deleted) removes the specified (or all) flow monitor entities.
         Deletion order is monitors → exporters → samplers → records to respect dependencies.
       - State I(rendered), I(gathered) and I(parsed) do not perform any change on the device.
@@ -497,7 +499,7 @@ EXAMPLES = """
 # (empty)
 
 - name: Configure Flexible NetFlow (Catalyst 9600 and routers, see the notes for Catalyst 9300)
-  cisco.ios.ios_flow_monitor:
+  cisco.ios.ios_flow_monitor_global:
     config:
       records:
         - name: FLOW_RECORD_IPV4
@@ -582,7 +584,7 @@ EXAMPLES = """
 # used in the first example, it needs the long counters and absolute timestamps.
 
 - name: Configure a flow record on a Catalyst 9300
-  cisco.ios.ios_flow_monitor:
+  cisco.ios.ios_flow_monitor_global:
     config:
       records:
         - name: FLOW_RECORD_IPV4
@@ -630,7 +632,7 @@ EXAMPLES = """
 # Using state: merged — dual exporter (two collectors)
 
 - name: Configure flow monitor with dual exporters
-  cisco.ios.ios_flow_monitor:
+  cisco.ios.ios_flow_monitor_global:
     config:
       exporters:
         - name: FLOW_EXPORTER_1
@@ -664,19 +666,19 @@ EXAMPLES = """
 # Using state: deleted
 
 - name: Remove all flow monitor configuration
-  cisco.ios.ios_flow_monitor:
+  cisco.ios.ios_flow_monitor_global:
     state: deleted
 
 # Using state: gathered
 
 - name: Gather existing flow monitor configuration
-  cisco.ios.ios_flow_monitor:
+  cisco.ios.ios_flow_monitor_global:
     state: gathered
 
 # Using state: rendered
 
 - name: Render commands without connecting to device
-  cisco.ios.ios_flow_monitor:
+  cisco.ios.ios_flow_monitor_global:
     config:
       samplers:
         - name: FLOW_SAMPLER
@@ -687,7 +689,7 @@ EXAMPLES = """
 # Using state: parsed
 
 - name: Parse device config into structured data
-  cisco.ios.ios_flow_monitor:
+  cisco.ios.ios_flow_monitor_global:
     running_config: |
       flow record FLOW_RECORD_IPV4
        match ipv4 source address
@@ -748,11 +750,11 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.u
     emit_warnings,
 )
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.flow_monitor.flow_monitor import (
-    Flow_monitorArgs,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.flow_monitor_global.flow_monitor_global import (
+    Flow_monitor_globalArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.flow_monitor.flow_monitor import (
-    Flow_monitor,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.flow_monitor_global.flow_monitor_global import (
+    Flow_monitor_global,
 )
 
 
@@ -763,7 +765,7 @@ def main():
     :returns: the result form module invocation
     """
     module = AnsibleModule(
-        argument_spec=Flow_monitorArgs.argument_spec,
+        argument_spec=Flow_monitor_globalArgs.argument_spec,
         mutually_exclusive=[["config", "running_config"]],
         required_if=[
             ["state", "merged", ["config"]],
@@ -775,7 +777,7 @@ def main():
         supports_check_mode=True,
     )
 
-    result = Flow_monitor(module).execute_module()
+    result = Flow_monitor_global(module).execute_module()
     emit_warnings(module, result)
     module.exit_json(**result)
 

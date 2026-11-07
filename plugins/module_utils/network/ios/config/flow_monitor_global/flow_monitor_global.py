@@ -9,7 +9,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 """
-The ios_flow_monitor config file.
+The ios_flow_monitor_global config file.
 It is in this file where the current configuration (as dict)
 is compared to the provided configuration (as dict) and the command set
 necessary to bring the current configuration to its desired end-state is
@@ -21,8 +21,8 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts import Facts
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.flow_monitor import (
-    Flow_monitorTemplate,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.flow_monitor_global import (
+    Flow_monitor_globalTemplate,
 )
 
 
@@ -36,9 +36,9 @@ EXPORTER_DEFAULTS = {
 }
 
 
-class Flow_monitor(ResourceModule):
+class Flow_monitor_global(ResourceModule):
     """
-    The ios_flow_monitor config class
+    The ios_flow_monitor_global config class
     """
 
     _MATCH_CLI = [
@@ -127,12 +127,12 @@ class Flow_monitor(ResourceModule):
     ]
 
     def __init__(self, module):
-        super(Flow_monitor, self).__init__(
+        super(Flow_monitor_global, self).__init__(
             empty_fact_val={"records": [], "exporters": [], "samplers": [], "monitors": []},
             facts_module=Facts(module),
             module=module,
-            resource="flow_monitor",
-            tmplt=Flow_monitorTemplate(),
+            resource="flow_monitor_global",
+            tmplt=Flow_monitor_globalTemplate(),
         )
         self.parsers = []
 
@@ -184,8 +184,9 @@ class Flow_monitor(ResourceModule):
                 self.commands.append("no flow record {0}".format(name))
             return
 
-        if self.state in ["overridden", "replaced"]:
-            # Remove entities in have that are not in want
+        if self.state == "overridden":
+            # Remove entities in have that are not in want. "replaced" only
+            # converges the entities named in want and leaves the others alone.
             # Deletion order: monitors → exporters → samplers → records
             for name in haved["monitors"]:
                 if name not in wantd["monitors"]:

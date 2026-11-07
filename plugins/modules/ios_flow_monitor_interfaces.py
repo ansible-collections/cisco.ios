@@ -20,7 +20,7 @@ description:
   - This module manages the per-interface C(ip flow monitor) configuration on Cisco IOS XE devices.
   - It assigns flow monitors (with a sampler and direction) to interfaces.
   - Flow monitor and sampler names referenced here must already exist on the device;
-    use M(cisco.ios.ios_flow_monitor) to create them.
+    use M(cisco.ios.ios_flow_monitor_global) to create them.
 version_added: "11.7.0"
 author:
   - Jorgen Spange (@jorgenspange)

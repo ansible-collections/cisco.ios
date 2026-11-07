@@ -25,12 +25,12 @@ __metaclass__ = type
 ##############################################
 
 """
-The arg spec for the ios_flow_monitor module
+The arg spec for the ios_flow_monitor_global module
 """
 
 
-class Flow_monitorArgs(object):  # pylint: disable=R0903
-    """The arg spec for the ios_flow_monitor module"""
+class Flow_monitor_globalArgs(object):  # pylint: disable=R0903
+    """The arg spec for the ios_flow_monitor_global module"""
 
     argument_spec = {
         "config": {

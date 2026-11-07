@@ -75,8 +75,8 @@ plugin_routing:
       redirect: cisco.ios.ios_vrf_global
     monitor_sessions:
       redirect: cisco.ios.ios_monitor_sessions
-    flow_monitor:
-      redirect: cisco.ios.ios_flow_monitor
+    flow_monitor_global:
+      redirect: cisco.ios.ios_flow_monitor_global
     flow_monitor_interfaces:
       redirect: cisco.ios.ios_flow_monitor_interfaces
   modules:
@@ -154,8 +154,8 @@ plugin_routing:
       redirect: cisco.ios.ios_vrf_global
     monitor_sessions:
       redirect: cisco.ios.ios_monitor_sessions
-    flow_monitor:
-      redirect: cisco.ios.ios_flow_monitor
+    flow_monitor_global:
+      redirect: cisco.ios.ios_flow_monitor_global
     flow_monitor_interfaces:
       redirect: cisco.ios.ios_flow_monitor_interfaces
 requires_ansible: ">=2.16.0"

@@ -62,7 +62,7 @@
       - hsrp_interfaces
       - bfd_interfaces
       - bfd_templates
-      - flow_monitor
+      - flow_monitor_global
       - flow_monitor_interfaces
       - monitor_sessions
 

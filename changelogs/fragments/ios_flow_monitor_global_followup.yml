@@ -1,0 +1,5 @@
+---
+minor_changes:
+  - ios_flow_monitor_global - Module renamed from ios_flow_monitor to ios_flow_monitor_global (unreleased, so no deprecation needed).
+  - ios_flow_monitor_global - State replaced now only converges the entities named in config; overridden removes every unnamed record, exporter, sampler and monitor.
+  - ios_flow_monitor_global - Removed the unused parser definitions from the rm_template.

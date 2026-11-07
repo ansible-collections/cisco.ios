@@ -9,7 +9,7 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 """
-The ios flow_monitor fact class.
+The ios flow_monitor_global fact class.
 It is in this file the configuration is collected from the device
 for a given resource, parsed, and the facts tree is populated
 based on the configuration.
@@ -19,11 +19,11 @@ import re
 
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common import utils
 
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.flow_monitor.flow_monitor import (
-    Flow_monitorArgs,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.flow_monitor_global.flow_monitor_global import (
+    Flow_monitor_globalArgs,
 )
-from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.flow_monitor import (
-    Flow_monitorTemplate,
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.flow_monitor_global import (
+    Flow_monitor_globalTemplate,
 )
 
 
@@ -118,14 +118,14 @@ _COLLECT_MAP = {
 }
 
 
-class Flow_monitorFacts(object):
-    """The ios flow_monitor facts class"""
+class Flow_monitor_globalFacts(object):
+    """The ios flow_monitor_global facts class"""
 
     def __init__(self, module, subspec="config", options="options"):
         self._module = module
-        self.argument_spec = Flow_monitorArgs.argument_spec
+        self.argument_spec = Flow_monitor_globalArgs.argument_spec
 
-    def get_flow_monitor_data(self, connection):
+    def get_flow_monitor_global_data(self, connection):
         return connection.get("show running-config | section ^(flow|sampler)")
 
     def _parse_flow_config(self, data):
@@ -310,7 +310,7 @@ class Flow_monitorFacts(object):
         }
 
     def populate_facts(self, connection, ansible_facts, data=None):
-        """Populate the facts for Flow_monitor network resource.
+        """Populate the facts for Flow_monitor_global network resource.
 
         :param connection: the device connection
         :param ansible_facts: Facts dictionary
@@ -322,7 +322,7 @@ class Flow_monitorFacts(object):
         facts = {}
 
         if not data:
-            data = self.get_flow_monitor_data(connection)
+            data = self.get_flow_monitor_global_data(connection)
 
         objs = self._parse_flow_config(data)
 
@@ -338,9 +338,9 @@ class Flow_monitorFacts(object):
             if not mon.get("exporters"):
                 mon.pop("exporters", None)
 
-        ansible_facts["ansible_network_resources"].pop("flow_monitor", None)
+        ansible_facts["ansible_network_resources"].pop("flow_monitor_global", None)
 
-        tmplt = Flow_monitorTemplate(module=self._module)
+        tmplt = Flow_monitor_globalTemplate(module=self._module)
         params = utils.remove_empties(
             tmplt.validate_config(
                 self.argument_spec,
@@ -349,7 +349,7 @@ class Flow_monitorFacts(object):
             ),
         )
 
-        facts["flow_monitor"] = params.get("config", {})
+        facts["flow_monitor_global"] = params.get("config", {})
         ansible_facts["ansible_network_resources"].update(facts)
 
         return ansible_facts

@@ -10,14 +10,14 @@ __metaclass__ = type
 from textwrap import dedent
 from unittest.mock import patch
 
-from ansible_collections.cisco.ios.plugins.modules import ios_flow_monitor
+from ansible_collections.cisco.ios.plugins.modules import ios_flow_monitor_global
 from ansible_collections.cisco.ios.tests.unit.modules.utils import set_module_args
 
 from .ios_module import TestIosModule
 
 
 class TestIosFlowMonitorModule(TestIosModule):
-    module = ios_flow_monitor
+    module = ios_flow_monitor_global
 
     def setUp(self):
         super(TestIosFlowMonitorModule, self).setUp()
@@ -29,8 +29,8 @@ class TestIosFlowMonitorModule(TestIosModule):
         self.get_resource_connection_facts = self.mock_get_resource_connection_facts.start()
 
         self.mock_execute_show_command = patch(
-            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.flow_monitor.flow_monitor."
-            "Flow_monitorFacts.get_flow_monitor_data",
+            "ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.flow_monitor_global.flow_monitor_global."
+            "Flow_monitor_globalFacts.get_flow_monitor_global_data",
         )
         self.execute_show_command = self.mock_execute_show_command.start()
 
@@ -41,7 +41,7 @@ class TestIosFlowMonitorModule(TestIosModule):
 
     # ── merged ───────────────────────────────────────────────────────────────
 
-    def test_ios_flow_monitor_merged(self):
+    def test_ios_flow_monitor_global_merged(self):
         """Merge a full Akvorado-style stack onto an empty device."""
         self.execute_show_command.return_value = dedent(
             """\
@@ -140,7 +140,7 @@ class TestIosFlowMonitorModule(TestIosModule):
         self.assertIn(" cache timeout active 60", commands)
         self.assertIn(" record FLOW_RECORD_IPV4", commands)
 
-    def test_ios_flow_monitor_merged_idempotent(self):
+    def test_ios_flow_monitor_global_merged_idempotent(self):
         """Merging the same config that's already on the device must produce no commands."""
         self.execute_show_command.return_value = dedent(
             """\
@@ -239,7 +239,7 @@ class TestIosFlowMonitorModule(TestIosModule):
 
     # ── deleted ──────────────────────────────────────────────────────────────
 
-    def test_ios_flow_monitor_deleted(self):
+    def test_ios_flow_monitor_global_deleted(self):
         """Delete all flow monitor config — deletion order must be monitors→exporters→samplers→records."""
         self.execute_show_command.return_value = dedent(
             """\
@@ -277,7 +277,7 @@ class TestIosFlowMonitorModule(TestIosModule):
 
     # ── dual exporter ─────────────────────────────────────────────────────────
 
-    def test_ios_flow_monitor_dual_exporter(self):
+    def test_ios_flow_monitor_global_dual_exporter(self):
         """Monitor referencing two exporters (DNB-style pattern)."""
         self.execute_show_command.return_value = dedent(
             """\
@@ -331,7 +331,7 @@ class TestIosFlowMonitorModule(TestIosModule):
 
     # ── monitor without exporter ─────────────────────────────────────────────
 
-    def test_ios_flow_monitor_monitor_no_exporter(self):
+    def test_ios_flow_monitor_global_monitor_no_exporter(self):
         """Monitor defined without any exporter (INT-router pattern)."""
         self.execute_show_command.return_value = dedent(
             """\
@@ -367,7 +367,7 @@ class TestIosFlowMonitorModule(TestIosModule):
 
     # ── parsed ───────────────────────────────────────────────────────────────
 
-    def test_ios_flow_monitor_parsed(self):
+    def test_ios_flow_monitor_global_parsed(self):
         """Feed raw config string, assert structured output."""
         set_module_args(
             dict(
@@ -435,7 +435,7 @@ class TestIosFlowMonitorModule(TestIosModule):
 
     # ── rendered ─────────────────────────────────────────────────────────────
 
-    def test_ios_flow_monitor_rendered(self):
+    def test_ios_flow_monitor_global_rendered(self):
         """No device connection, render commands from config."""
         set_module_args(
             dict(
@@ -472,7 +472,7 @@ class TestIosFlowMonitorModule(TestIosModule):
 
     # ── dual exporter parsed ────────────────────────────────────────────────
 
-    def test_ios_flow_monitor_parsed_dual_exporter(self):
+    def test_ios_flow_monitor_global_parsed_dual_exporter(self):
         """Dual-exporter monitor is parsed into a list with two entries."""
         set_module_args(
             dict(
@@ -552,20 +552,20 @@ class TestIosFlowMonitorModule(TestIosModule):
             ],
         }
 
-    def test_ios_flow_monitor_merged_idempotent_default_values(self):
+    def test_ios_flow_monitor_global_merged_idempotent_default_values(self):
         """Values equal to the IOS default are not shown in the running config and must not cause a diff."""
         self.execute_show_command.return_value = self._DEFAULTS_HAVE
         set_module_args({"config": self._defaults_config(), "state": "merged"})
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
 
-    def test_ios_flow_monitor_replaced_idempotent_default_values(self):
+    def test_ios_flow_monitor_global_replaced_idempotent_default_values(self):
         self.execute_show_command.return_value = self._DEFAULTS_HAVE
         set_module_args({"config": self._defaults_config(), "state": "replaced"})
         result = self.execute_module(changed=False)
         self.assertEqual(result["commands"], [])
 
-    def test_ios_flow_monitor_changed_from_default_is_applied(self):
+    def test_ios_flow_monitor_global_changed_from_default_is_applied(self):
         """A value that differs from the default (and from the device) is still configured."""
         self.execute_show_command.return_value = self._DEFAULTS_HAVE
         config = self._defaults_config()
@@ -576,7 +576,7 @@ class TestIosFlowMonitorModule(TestIosModule):
         self.assertIn(" cache timeout inactive 20", result["commands"])
         self.assertIn(" ttl 64", result["commands"])
 
-    def test_ios_flow_monitor_explicit_default_replaces_non_default(self):
+    def test_ios_flow_monitor_global_explicit_default_replaces_non_default(self):
         """Setting the default value explicitly changes a non-default value on the device."""
         have = self._DEFAULTS_HAVE.replace(
             " cache timeout active 90",
@@ -587,7 +587,7 @@ class TestIosFlowMonitorModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertIn(" cache timeout inactive 15", result["commands"])
 
-    def test_ios_flow_monitor_gathered_bare_option_lines(self):
+    def test_ios_flow_monitor_global_gathered_bare_option_lines(self):
         """A bare 'option X' line means the default 600 second timeout, not an unset option."""
         self.execute_show_command.return_value = self._DEFAULTS_HAVE
         set_module_args({"state": "gathered"})
@@ -642,7 +642,7 @@ class TestIosFlowMonitorModule(TestIosModule):
         """,
     )
 
-    def test_ios_flow_monitor_catalyst_9600_config_round_trip(self):
+    def test_ios_flow_monitor_global_catalyst_9600_config_round_trip(self):
         """Every line of a Catalyst 9600 flow configuration is parsed and rendered again unchanged."""
         set_module_args({"state": "parsed", "running_config": self._C9600_CONFIG})
         parsed = self.execute_module(changed=False)["parsed"]
@@ -656,7 +656,7 @@ class TestIosFlowMonitorModule(TestIosModule):
         original = [line.strip() for line in self._C9600_CONFIG.splitlines()]
         self.assertEqual(sorted(line.strip() for line in rendered), sorted(original))
 
-    def test_ios_flow_monitor_catalyst_9600_gathered_and_idempotent(self):
+    def test_ios_flow_monitor_global_catalyst_9600_gathered_and_idempotent(self):
         """The plain counters must not make gathered fail or merged report a change."""
         self.execute_show_command.return_value = self._C9600_CONFIG
         set_module_args({"state": "gathered"})
@@ -668,7 +668,7 @@ class TestIosFlowMonitorModule(TestIosModule):
         set_module_args({"config": gathered, "state": "replaced"})
         self.assertEqual(self.execute_module(changed=False)["commands"], [])
 
-    def test_ios_flow_monitor_plain_counters_and_routing_as_are_rendered(self):
+    def test_ios_flow_monitor_global_plain_counters_and_routing_as_are_rendered(self):
         """counter_bytes, counter_packets and the unqualified routing AS options send the plain commands."""
         self.execute_show_command.return_value = ""
         set_module_args(
@@ -698,7 +698,7 @@ class TestIosFlowMonitorModule(TestIosModule):
         ):
             self.assertIn(line, result["commands"])
 
-    def test_ios_flow_monitor_replaced_removes_plain_counter(self):
+    def test_ios_flow_monitor_global_replaced_removes_plain_counter(self):
         self.execute_show_command.return_value = dedent(
             """\
             flow record REC
@@ -724,7 +724,7 @@ class TestIosFlowMonitorModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["flow record REC", " no collect counter bytes"])
 
-    def test_ios_flow_monitor_catalyst_9300_layer2_long_counter(self):
+    def test_ios_flow_monitor_global_catalyst_9300_layer2_long_counter(self):
         """A Catalyst 9300 stores 'collect counter bytes layer2 long', it must not be dropped by the parser."""
         have = dedent(
             """\
@@ -761,28 +761,28 @@ class TestIosFlowMonitorModule(TestIosModule):
         )
         self.assertEqual(self.execute_module(changed=False)["commands"], [])
 
-    def test_ios_flow_monitor_every_collect_and_match_option_round_trips(self):
+    def test_ios_flow_monitor_global_every_collect_and_match_option_round_trips(self):
         """Guard: each option the module can render is read back from the device as the same option.
 
         A parser that produces an option missing from the argspec makes every state fail on a device
         that has the line, and a CLI line the parser does not know is silently dropped by gathered.
         """
-        from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.flow_monitor.flow_monitor import (
-            Flow_monitorArgs,
+        from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.flow_monitor_global.flow_monitor_global import (
+            Flow_monitor_globalArgs,
         )
-        from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.flow_monitor.flow_monitor import (
-            Flow_monitor,
+        from ansible_collections.cisco.ios.plugins.module_utils.network.ios.config.flow_monitor_global.flow_monitor_global import (
+            Flow_monitor_global,
         )
-        from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.flow_monitor import (
-            flow_monitor as facts,
+        from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.flow_monitor_global import (
+            flow_monitor_global as facts,
         )
 
-        record_spec = Flow_monitorArgs.argument_spec["config"]["options"]["records"]["options"]
+        record_spec = Flow_monitor_globalArgs.argument_spec["config"]["options"]["records"]["options"]
         parser_tables = {"match": facts._MATCH_MAP, "collect": facts._COLLECT_MAP}
         failures = []
         for section, table in (
-            ("match", Flow_monitor._MATCH_CLI),
-            ("collect", Flow_monitor._COLLECT_CLI),
+            ("match", Flow_monitor_global._MATCH_CLI),
+            ("collect", Flow_monitor_global._COLLECT_CLI),
         ):
             argspec_options = set(record_spec[section]["options"])
             if argspec_options != {key for key, _cli in table}:
@@ -809,7 +809,7 @@ class TestIosFlowMonitorModule(TestIosModule):
 
     # ── replaced: attribute removal ──────────────────────────────────────────
 
-    def test_ios_flow_monitor_replaced_exporter_drops_ttl(self):
+    def test_ios_flow_monitor_global_replaced_exporter_drops_ttl(self):
         self.execute_show_command.return_value = dedent(
             """\
             flow exporter EXP
@@ -823,7 +823,7 @@ class TestIosFlowMonitorModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["flow exporter EXP", " no ttl"])
 
-    def test_ios_flow_monitor_replaced_sampler_drops_description(self):
+    def test_ios_flow_monitor_global_replaced_sampler_drops_description(self):
         self.execute_show_command.return_value = dedent(
             """\
             sampler SMP
@@ -840,7 +840,7 @@ class TestIosFlowMonitorModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["sampler SMP", " no description"])
 
-    def test_ios_flow_monitor_sampler_description_idempotent(self):
+    def test_ios_flow_monitor_global_sampler_description_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
             sampler SMP
@@ -865,7 +865,7 @@ class TestIosFlowMonitorModule(TestIosModule):
         )
         self.execute_module(changed=False)
 
-    def test_ios_flow_monitor_replaced_monitor_drops_cache_entries(self):
+    def test_ios_flow_monitor_global_replaced_monitor_drops_cache_entries(self):
         self.execute_show_command.return_value = dedent(
             """\
             flow monitor MON
@@ -878,3 +878,52 @@ class TestIosFlowMonitorModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["flow monitor MON", " no cache entries"])
+
+    # ── replaced vs overridden ───────────────────────────────────────────────
+
+    def _two_records_on_device(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            flow record REC
+             match ipv4 protocol
+            flow record OTHER_REC
+             match ipv4 protocol
+            """,
+        )
+
+    def test_ios_flow_monitor_replaced_keeps_unnamed_entities(self):
+        self._two_records_on_device()
+        set_module_args(
+            {
+                "state": "replaced",
+                "config": {"records": [{"name": "REC", "match": {"ipv4_protocol": True}}]},
+            },
+        )
+        self.execute_module(changed=False, commands=[])
+
+    def test_ios_flow_monitor_overridden_removes_unnamed_entities(self):
+        self._two_records_on_device()
+        set_module_args(
+            {
+                "state": "overridden",
+                "config": {"records": [{"name": "REC", "match": {"ipv4_protocol": True}}]},
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["no flow record OTHER_REC"])
+
+    def test_ios_flow_monitor_overridden_removes_unnamed_monitor_first(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            flow exporter EXP
+             destination 10.0.0.1
+            flow monitor MON
+             exporter EXP
+            """,
+        )
+        set_module_args({"state": "overridden", "config": {"records": [{"name": "REC"}]}})
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"][:2],
+            ["no flow monitor MON", "no flow exporter EXP"],
+        )
