@@ -305,7 +305,8 @@ class Flow_monitor_global(ResourceModule):
             if self._line_key(ln) not in want_keys:
                 cmds.append(
                     " no {0}{1}".format(
-                        self._line_key(ln), " timeout" if ln.startswith("template data") else ""
+                        self._line_key(ln),
+                        " timeout" if ln.startswith("template data") else "",
                     ),
                 )
         return cmds if len(cmds) > 1 else []

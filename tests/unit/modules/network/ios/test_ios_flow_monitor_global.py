@@ -777,7 +777,9 @@ class TestIosFlowMonitorModule(TestIosModule):
             flow_monitor_global as facts,
         )
 
-        record_spec = Flow_monitor_globalArgs.argument_spec["config"]["options"]["records"]["options"]
+        record_spec = Flow_monitor_globalArgs.argument_spec["config"]["options"]["records"][
+            "options"
+        ]
         parser_tables = {"match": facts._MATCH_MAP, "collect": facts._COLLECT_MAP}
         failures = []
         for section, table in (
