@@ -814,7 +814,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             UNIQUE_NEIB_ADD: {
                                 "advertises": {
                                     "additional_paths": {
-                                        "all": "{{ not not all }}",
+                                        "all": "{{ true if all is defined else none }}",
                                         "best": "{{ receive }}",
                                         "group_best": "{{ not not group_best }}",
                                     },
@@ -1077,14 +1077,14 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s\sneighbor\s(?P<neighbor_address>\S+)\sbmp-activate
-                (\sserver\s(?P<server>\d+))?
                 (\s(?P<all>all))?
+                (?P<servers>(\sserver\s\d+)+)?
                 $""",
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} bmp-activate"
-            "{{ (' server '+ bmp_activate.server|string) if bmp_activate.server is defined else '' }}"
-            "{{ (' all') if bmp_activate.all|d(False) else '' }}",
+            "{{ ' all' if bmp_activate.all|d(False) else '' }}"
+            "{% for srv in bmp_activate.servers|d([]) %} server {{ srv }}{% endfor %}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
@@ -1092,8 +1092,8 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                             UNIQUE_NEIB_ADD: {
                                 "neighbor_address": UNIQUE_NEIB_ADD,
                                 "bmp_activate": {
-                                    "server": "{{ server }}",
-                                    "all": "{{ not not  all }}",
+                                    "all": "{{ true if all is defined else none }}",
+                                    "servers": "{{ servers.split()[1::2]|map('int')|list if servers is defined else [] }}",
                                 },
                             },
                         },

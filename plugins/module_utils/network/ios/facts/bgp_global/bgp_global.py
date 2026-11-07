@@ -70,6 +70,10 @@ class Bgp_globalFacts(object):
         if objs:
             objs = self._set_defaults(objs)
 
+        bmp_servers = objs.get("bmp", {}).get("servers", {})
+        if bmp_servers:
+            objs["bmp"]["servers"] = sorted(bmp_servers.values(), key=lambda k: int(k["number"]))
+
         neighbor_list = objs.get("neighbors", {})
         if neighbor_list:
             objs["neighbors"] = sorted(

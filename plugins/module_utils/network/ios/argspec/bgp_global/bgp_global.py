@@ -301,6 +301,25 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                                 },
                             },
                         },
+                        "servers": {
+                            "type": "list",
+                            "elements": "dict",
+                            "options": {
+                                "number": {"type": "int", "required": True},
+                                "activate": {"type": "bool"},
+                                "address": {
+                                    "type": "dict",
+                                    "options": {"host": {"type": "str"}, "port": {"type": "int"}},
+                                },
+                                "description": {"type": "str"},
+                                "failure_retry_delay": {"type": "int"},
+                                "flapping_delay": {"type": "int"},
+                                "initial_delay": {"type": "int"},
+                                "set_ip_dscp": {"type": "int"},
+                                "stats_reporting_period": {"type": "int"},
+                                "update_source": {"type": "str"},
+                            },
+                        },
                     },
                 },
                 "default_information": {"type": "bool"},
@@ -439,7 +458,11 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                         "as_override": {"type": "bool"},
                         "bmp_activate": {
                             "type": "dict",
-                            "options": {"all": {"type": "bool"}, "server": {"type": "int"}},
+                            "options": {
+                                "all": {"type": "bool"},
+                                "server": {"type": "int"},
+                                "servers": {"type": "list", "elements": "int"},
+                            },
                         },
                         "capability": {
                             "type": "dict",
