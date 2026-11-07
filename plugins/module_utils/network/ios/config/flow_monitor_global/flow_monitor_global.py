@@ -304,7 +304,9 @@ class Flow_monitor_global(ResourceModule):
         for ln in orig_have_lines:
             if self._line_key(ln) not in want_keys:
                 cmds.append(
-                    " no {0}{1}".format(self._line_key(ln), " timeout" if ln.startswith("template data") else ""),
+                    " no {0}{1}".format(
+                        self._line_key(ln), " timeout" if ln.startswith("template data") else ""
+                    ),
                 )
         return cmds if len(cmds) > 1 else []
 
@@ -366,7 +368,9 @@ class Flow_monitor_global(ResourceModule):
                     hv = CACHE_TIMEOUT_DEFAULTS.get(field)
                 if wv is None:
                     # Dropped from want: negate only a non-default value that is really set
-                    if have_cache.get(field) is not None and have_cache[field] != CACHE_TIMEOUT_DEFAULTS.get(field):
+                    if have_cache.get(field) is not None and have_cache[
+                        field
+                    ] != CACHE_TIMEOUT_DEFAULTS.get(field):
                         cmds.append(" no {0}".format(cmd))
                 elif wv != hv:
                     cmds.append(" {0} {1}".format(cmd, wv))
