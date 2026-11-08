@@ -1157,7 +1157,8 @@ class TestIosL3InterfacesModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
-            result["commands"], ["interface GigabitEthernet0/1", "ip tcp adjust-mss 1350"]
+            result["commands"],
+            ["interface GigabitEthernet0/1", "ip tcp adjust-mss 1350"],
         )
 
     def test_ios_l3_interfaces_tcp_adjust_mss_merged_idempotent(self):
