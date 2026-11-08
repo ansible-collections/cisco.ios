@@ -29,6 +29,9 @@ notes:
   - The module examples use callback plugin (stdout_callback = yaml) to generate task
     output in yaml format.
   - Some options (C(cache type permanent), C(transport tcp)) are only supported on router platforms.
+  - Catalyst 9300 accepts C(cache entries) without an error but does not keep it in the running configuration.
+    A monitor that sets C(cache.entries) is therefore reported as changed on every run on that platform,
+    so leave it out there. The C(cache) timeouts are kept.
   - The platforms accept different C(collect) options. The module does not check the platform, the device
     rejects an option it does not support when the commands are applied. Commands sent before the rejected
     one stay applied.
@@ -449,7 +452,10 @@ options:
                 type: str
                 choices: [normal, permanent]
               entries:
-                description: Maximum number of cache entries.
+                description:
+                  - Maximum number of cache entries.
+                  - Catalyst 9300 accepts this without an error but does not keep it in the running configuration,
+                    so it is reported as changed on every run there.
                 type: int
               timeout_inactive:
                 description: Inactive flow cache timeout (seconds).

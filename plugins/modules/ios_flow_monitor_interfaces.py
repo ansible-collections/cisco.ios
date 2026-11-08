@@ -28,7 +28,12 @@ notes:
   - Tested against Cisco IOS XE.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
-  - Short interface names (e.g. Gi0/1) may impact idempotency; prefer full names.
+  - Short interface names (e.g. Gi1/0/1) are normalized and are compared with the full names on the device.
+  - A C(protocol=ipv6) assignment needs IPv6 routing enabled (C(ipv6 unicast-routing)) and a flow monitor whose record
+    matches IPv6 fields. Otherwise IOS XE drops the C(ipv6 flow monitor) line without an error and the module
+    reports the assignment as changed on every run.
+  - A flow record that matches both IPv4 and IPv6 fields cannot be attached to an interface, IOS XE refuses it with
+    C(Unsupported key field). Use one flow monitor for C(ip) and another for C(ipv6) on the same interface.
   - The module examples use callback plugin (stdout_callback = yaml) to generate task
     output in yaml format.
 options:
@@ -39,8 +44,8 @@ options:
     suboptions:
       name:
         description:
-          - Full name of the interface, e.g. GigabitEthernet0/1, Port-channel21.800.
-          - Short interface names like Gi0/1 may impact idempotency.
+          - Name of the interface, e.g. GigabitEthernet0/1, Port-channel21.800.
+          - Short interface names like Gi0/1 are normalized to the full name.
         type: str
         required: true
       flow_monitors:
