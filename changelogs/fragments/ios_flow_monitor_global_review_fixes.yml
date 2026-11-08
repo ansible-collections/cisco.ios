@@ -1,5 +1,0 @@
----
-bugfixes:
-  - ios_flow_monitor_global - Negate exporter and sampler attributes dropped from the wanted config and monitor cache settings under replaced and overridden, and skip empty parent-only commands.
-  - ios_flow_monitor_global - Parse sampler description in facts so it is idempotent.
-  - ios_flow_monitor_interfaces - Key assignments on interface, protocol, monitor and direction, normalize interface names for want and have, and allow an optional sampler.
