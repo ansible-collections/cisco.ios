@@ -61,6 +61,22 @@ options:
       ipv6_unreachables:
         description: Enable sending ICMP Unreachable messages for IPv6.
         type: bool
+      tcp_adjust_mss:
+        description:
+          - Adjust the maximum segment size of TCP SYN packets for IPv4 that pass through the interface
+            (C(ip tcp adjust-mss)).
+          - Valid values are 500 to 1460.
+          - Not supported on Layer 2 switchports.
+          - It is off by default, so removing it from the configuration under I(state=replaced),
+            I(state=overridden) or I(state=deleted) removes the command.
+        type: int
+      ipv6_tcp_adjust_mss:
+        description:
+          - Adjust the maximum segment size of TCP SYN packets for IPv6 that pass through the interface
+            (C(ipv6 tcp adjust-mss)).
+          - Valid values are 40 to 1440.
+          - Not supported on Layer 2 switchports.
+        type: int
       helper_addresses:
         description: Specify a destination address for UDP broadcasts
         type: dict
@@ -407,6 +423,46 @@ EXAMPLES = """
 #  ipv6 enable
 #  no autostate
 
+
+# Using merged to adjust the TCP MSS
+
+# Before state:
+# -------------
+#
+# router-ios#show running-config | section ^interface GigabitEthernet0/1
+# interface GigabitEthernet0/1
+#  no switchport
+#  ip address 192.0.2.1 255.255.255.0
+#  ipv6 address 2001:db8::1/64
+
+# Task:
+# -----
+- name: Adjust the TCP MSS for IPv4 and IPv6
+  cisco.ios.ios_l3_interfaces:
+    config:
+      - name: GigabitEthernet0/1
+        tcp_adjust_mss: 1400
+        ipv6_tcp_adjust_mss: 1380
+    state: merged
+
+# Task output:
+# ------------
+#
+# commands:
+#   - interface GigabitEthernet0/1
+#   - ip tcp adjust-mss 1400
+#   - ipv6 tcp adjust-mss 1380
+
+# After state:
+# ------------
+#
+# router-ios#show running-config | section ^interface GigabitEthernet0/1
+# interface GigabitEthernet0/1
+#  no switchport
+#  ip address 192.0.2.1 255.255.255.0
+#  ip tcp adjust-mss 1400
+#  ipv6 address 2001:db8::1/64
+#  ipv6 tcp adjust-mss 1380
 
 # Using replaced
 

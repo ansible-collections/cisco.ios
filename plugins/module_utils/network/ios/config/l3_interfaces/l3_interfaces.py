@@ -59,6 +59,8 @@ class L3_interfaces(ResourceModule):
         ]
         self.gen_parsers = [
             "autostate",
+            "tcp_adjust_mss",
+            "ipv6_tcp_adjust_mss",
         ]
 
     def execute_module(self):
@@ -76,6 +78,8 @@ class L3_interfaces(ResourceModule):
         """Generate configuration commands to send based on
         want, have and desired state.
         """
+        self._validate_tcp_adjust_mss()
+
         if self.want:
             wantd = {}
             for each in self.want:
@@ -112,6 +116,23 @@ class L3_interfaces(ResourceModule):
                 have.setdefault("autostate", True)
                 want.setdefault("autostate", True)
             self._compare(want=want, have=have)
+
+    def _validate_tcp_adjust_mss(self):
+        """Reject TCP MSS values the device would refuse (IPv4 500-1460, IPv6 40-1440)."""
+        limits = {"tcp_adjust_mss": (500, 1460), "ipv6_tcp_adjust_mss": (40, 1440)}
+        for entry in self.want or []:
+            for option, (low, high) in limits.items():
+                value = entry.get(option)
+                if value is not None and not low <= value <= high:
+                    self._module.fail_json(
+                        msg="{0} must be between {1} and {2} for interface {3}, got {4}".format(
+                            option,
+                            low,
+                            high,
+                            entry["name"],
+                            value,
+                        ),
+                    )
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and

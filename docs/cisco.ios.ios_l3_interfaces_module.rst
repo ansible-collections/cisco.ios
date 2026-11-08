@@ -884,6 +884,24 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="3">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>ipv6_tcp_adjust_mss</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Adjust the maximum segment size of TCP SYN packets for IPv6 that pass through the interface (<code>ipv6 tcp adjust-mss</code>).</div>
+                        <div>Valid values are 40 to 1440.</div>
+                        <div>Not supported on Layer 2 switchports.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>ipv6_unreachables</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -951,6 +969,25 @@ Parameters
                 </td>
                 <td>
                         <div>Enable sending ICMP Redirect messages.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>tcp_adjust_mss</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Adjust the maximum segment size of TCP SYN packets for IPv4 that pass through the interface (<code>ip tcp adjust-mss</code>).</div>
+                        <div>Valid values are 500 to 1460.</div>
+                        <div>Not supported on Layer 2 switchports.</div>
+                        <div>It is off by default, so removing it from the configuration under <em>state=replaced</em>, <em>state=overridden</em> or <em>state=deleted</em> removes the command.</div>
                 </td>
             </tr>
             <tr>
@@ -1189,6 +1226,46 @@ Examples
     #  ipv6 enable
     #  no autostate
 
+
+    # Using merged to adjust the TCP MSS
+
+    # Before state:
+    # -------------
+    #
+    # router-ios#show running-config | section ^interface GigabitEthernet0/1
+    # interface GigabitEthernet0/1
+    #  no switchport
+    #  ip address 192.0.2.1 255.255.255.0
+    #  ipv6 address 2001:db8::1/64
+
+    # Task:
+    # -----
+    - name: Adjust the TCP MSS for IPv4 and IPv6
+      cisco.ios.ios_l3_interfaces:
+        config:
+          - name: GigabitEthernet0/1
+            tcp_adjust_mss: 1400
+            ipv6_tcp_adjust_mss: 1380
+        state: merged
+
+    # Task output:
+    # ------------
+    #
+    # commands:
+    #   - interface GigabitEthernet0/1
+    #   - ip tcp adjust-mss 1400
+    #   - ipv6 tcp adjust-mss 1380
+
+    # After state:
+    # ------------
+    #
+    # router-ios#show running-config | section ^interface GigabitEthernet0/1
+    # interface GigabitEthernet0/1
+    #  no switchport
+    #  ip address 192.0.2.1 255.255.255.0
+    #  ip tcp adjust-mss 1400
+    #  ipv6 address 2001:db8::1/64
+    #  ipv6 tcp adjust-mss 1380
 
     # Using replaced
 
