@@ -5,7 +5,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 """
@@ -20,7 +19,6 @@ from ansible.module_utils.common.text.converters import to_text
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
-
 
 # For 1:1 mapping of options _ to - , Any new option with _ is required to be added in this mapping
 OPTION_TO_CLI = {

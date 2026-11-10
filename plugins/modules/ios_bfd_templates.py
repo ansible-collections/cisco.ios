@@ -10,7 +10,6 @@ The module file for ios_bfd_templates
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 DOCUMENTATION = """
