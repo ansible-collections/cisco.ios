@@ -128,7 +128,9 @@ def _tmplt_access_list_entries(aces):
             command = source_destination_common_config(aces, command, "destination")
         if isinstance(proto_option, dict):
             for flag, enabled in proto_option.items():
-                if enabled:
+                if flag == "type_number":
+                    command += " {}".format(enabled)
+                elif enabled:
                     command += " {}".format(flag.replace("_", "-"))
         if aces.get("dscp"):
             command += " dscp {dscp}".format(**aces)
