@@ -2730,6 +2730,7 @@ Parameters
                 </td>
                 <td>
                         <div>Server Information</div>
+                        <div>Deprecated, use <em>servers</em> instead. When set it is merged into <em>servers</em>.</div>
                         <div>Please refer vendor documentation for valid values</div>
                 </td>
             </tr>
@@ -2748,6 +2749,7 @@ Parameters
                 </td>
                 <td>
                         <div>bmp server options</div>
+                        <div>Deprecated, use <em>servers</em> instead. Applies to the server given in <em>server</em>.</div>
                 </td>
             </tr>
                                 <tr>
@@ -2787,7 +2789,7 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>skip all refreshes</div>
+                        <div>BMP server address</div>
                 </td>
             </tr>
                                 <tr>
@@ -2829,6 +2831,250 @@ Parameters
                 </td>
             </tr>
 
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>servers</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>BMP servers, each entered with <code>bmp server &lt;number&gt;</code>.</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>activate</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Start the connection between the BMP server and the BGP neighbors</div>
+                        <div>IOS-XE ignores a change of <em>address</em> while the server is activated, so the server is deactivated and re-activated around an address change.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>address</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">dictionary</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>BMP server address and port</div>
+                </td>
+            </tr>
+                                <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>host</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>IPv4 or IPv6 address of the BMP server</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="3">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>port</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Port number of the BMP server</div>
+                </td>
+            </tr>
+
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>description</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Description of the BMP server, up to 80 characters</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>failure_retry_delay</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Delay in seconds before retrying after a failed connection (1-3600)</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>flapping_delay</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Delay in seconds applied after repeated connection failures (1-3600)</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>initial_delay</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Delay in seconds before the initial connection request (1-3600)</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>number</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                         / <span style="color: red">required</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>BMP server number</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>set_ip_dscp</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>DSCP value, from 0 to 7, set on BMP traffic (<code>set ip dscp</code>)</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>stats_reporting_period</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Interval in seconds between statistics reports from the BGP neighbors (1-3600)</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>update_source</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">string</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>Source interface used for the BMP session</div>
+                </td>
+            </tr>
 
 
             <tr>
@@ -4090,6 +4336,8 @@ Parameters
                 </td>
                 <td>
                         <div>Activate the BMP monitoring for a BGP peer</div>
+                        <div>IOS-XE ignores a change on a neighbor that is already activated, so a change removes the existing activation before applying the new one.</div>
+                        <div>With <em>state=merged</em> <em>servers</em> are added to the activated ones, and <em>all</em> takes precedence.</div>
                 </td>
             </tr>
                                 <tr>
@@ -4131,7 +4379,27 @@ Parameters
                 <td>
                         <div>Activate BMP for server</div>
                         <div>BMP Server Number</div>
+                        <div>Deprecated, use <em>servers</em> instead.</div>
                         <div>Please refer vendor documentation for valid values</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>servers</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>BMP server numbers to activate for the neighbor (1-4)</div>
                 </td>
             </tr>
 
@@ -8682,6 +8950,105 @@ Examples
     #  neighbor 192.0.2.1 description merge neighbor
     #  neighbor 192.0.2.1 aigp send cost-community 100 poi igp-cost transitive
     #  neighbor 192.0.2.1 route-map test-route out
+
+    # Using merged to configure the BGP Monitoring Protocol (BMP)
+
+    # Before state:
+    # -------------
+    #
+    # router-ios#show running-config | section ^router bgp
+    # router bgp 65000
+    #  bgp log-neighbor-changes
+    #  neighbor 192.0.2.1 remote-as 65001
+
+    # Task:
+    # -----
+    - name: Configure BMP servers and activate them for neighbors
+      cisco.ios.ios_bgp_global:
+        config:
+          as_number: "65000"
+          bmp:
+            buffer_size: 1024
+            initial_refresh:
+              delay: 30
+            servers:
+              - number: 1
+                address:
+                  host: 192.0.2.10
+                  port: 5000
+                description: collector one
+                failure_retry_delay: 20
+                flapping_delay: 120
+                initial_delay: 15
+                set_ip_dscp: 5
+                stats_reporting_period: 60
+                update_source: Loopback100
+                activate: true
+              - number: 2
+                address:
+                  host: 192.0.2.11
+                  port: 5001
+          neighbors:
+            - neighbor_address: 192.0.2.1
+              remote_as: "65001"
+              bmp_activate:
+                servers: [1, 2]
+        state: merged
+
+    # Task output:
+    # ------------
+    #
+    # commands:
+    #   - router bgp 65000
+    #   - bmp buffer-size 1024
+    #   - bmp initial-refresh delay 30
+    #   - bmp server 1
+    #   - address 192.0.2.10 port-number 5000
+    #   - description collector one
+    #   - failure-retry-delay 20
+    #   - flapping-delay 120
+    #   - initial-delay 15
+    #   - set ip dscp 5
+    #   - stats-reporting-period 60
+    #   - update-source Loopback100
+    #   - activate
+    #   - exit-bmp-server-mode
+    #   - bmp server 2
+    #   - address 192.0.2.11 port-number 5001
+    #   - exit-bmp-server-mode
+    #   - neighbor 192.0.2.1 bmp-activate server 1 server 2
+
+    # After state:
+    # ------------
+    #
+    # router-ios#show running-config | section ^router bgp
+    # router bgp 65000
+    #  bmp server 1
+    #   address 192.0.2.10 port-number 5000
+    #   description collector one
+    #   initial-delay 15
+    #   failure-retry-delay 20
+    #   flapping-delay 120
+    #   stats-reporting-period 60
+    #   update-source Loopback100
+    #   set ip dscp 5
+    #   activate
+    #  exit-bmp-server-mode
+    #  bmp server 2
+    #   address 192.0.2.11 port-number 5001
+    #  exit-bmp-server-mode
+    #  bmp buffer-size 1024
+    #  bmp initial-refresh delay 30
+    #  bgp log-neighbor-changes
+    #  neighbor 192.0.2.1 remote-as 65001
+    #  neighbor 192.0.2.1 bmp-activate server 1 server 2
+
+    # Note: IOS-XE ignores a change of a server address while the server is
+    # activated, and a second bmp-activate on an already activated neighbor.
+    # The module therefore deactivates the server around an address change
+    # ("no activate", "no address ...", "address ...", "activate") and removes an
+    # existing neighbor activation ("no neighbor ... bmp-activate") before applying
+    # a changed one.
 
     # Using replaced
 

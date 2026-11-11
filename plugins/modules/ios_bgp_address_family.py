@@ -487,7 +487,12 @@ options:
                     description: Maintain Split Horizon while sending update
                     type: bool
               bmp_activate:
-                description: Activate the BMP monitoring for a BGP peer
+                description:
+                  - Activate the BMP monitoring for a BGP peer
+                  - Only supported by IOS-XE inside a VRF address-family.
+                  - IOS-XE ignores a change on a neighbor that is already activated, so a
+                    change removes the existing activation before applying the new one.
+                  - With I(state=merged) I(servers) are added to the activated ones, and I(all) takes precedence.
                 type: dict
                 suboptions:
                   all:
@@ -497,8 +502,13 @@ options:
                     description:
                       - Activate BMP for server
                       - BMP Server Number
+                      - Deprecated, use I(servers) instead.
                       - Please refer vendor documentation for valid values
                     type: int
+                  servers:
+                    description: BMP server numbers to activate for the neighbor (1-4)
+                    type: list
+                    elements: int
               capability:
                 description:
                   - Advertise capability to the peer
@@ -1730,6 +1740,68 @@ EXAMPLES = """
 #   bgp dmzlink-bw
 #   bgp soft-reconfig-backup
 #  exit-address-family
+
+# Using merged to activate BMP for a neighbor in a VRF address family
+
+# Before state:
+# -------------
+#
+# router-ios#show running-config | section ^router bgp
+# router bgp 65000
+#  bmp server 1
+#   address 192.0.2.10 port-number 5000
+#   activate
+#  exit-bmp-server-mode
+#  bmp server 2
+#   address 192.0.2.11 port-number 5001
+#   activate
+#  exit-bmp-server-mode
+#  address-family ipv4 vrf VRF_A
+#  exit-address-family
+
+# Task:
+# -----
+- name: Activate BMP for a VRF neighbor
+  cisco.ios.ios_bgp_address_family:
+    config:
+      as_number: "65000"
+      address_family:
+        - afi: ipv4
+          vrf: VRF_A
+          neighbors:
+            - neighbor_address: 192.0.2.50
+              remote_as: "65050"
+              activate: true
+              bmp_activate:
+                servers: [1, 2]
+    state: merged
+
+# Task output:
+# ------------
+#
+# commands:
+#   - router bgp 65000
+#   - address-family ipv4 unicast vrf VRF_A
+#   - neighbor 192.0.2.50 remote-as 65050
+#   - neighbor 192.0.2.50 activate
+#   - neighbor 192.0.2.50 bmp-activate server 1 server 2
+#   - exit-address-family
+
+# After state:
+# ------------
+#
+# router-ios#show running-config | section ^router bgp
+# router bgp 65000
+#  address-family ipv4 vrf VRF_A
+#   neighbor 192.0.2.50 remote-as 65050
+#   neighbor 192.0.2.50 activate
+#   neighbor 192.0.2.50 bmp-activate server 1 server 2
+#  exit-address-family
+
+# Note: BMP servers are configured with the cisco.ios.ios_bgp_global module.
+# bmp_activate is only supported by IOS-XE inside a VRF address family. IOS-XE
+# ignores a second bmp-activate on an already activated neighbor, so a change
+# removes the existing activation ("no neighbor ... bmp-activate") first.
 
 # Using replaced
 
