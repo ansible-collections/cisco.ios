@@ -1077,3 +1077,182 @@ class TestIosL3InterfacesModule(TestIosModule):
         ]
         result = self.execute_module(changed=True)
         self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    # --------------------------------------------------------------- TCP MSS
+
+    MSS_RUNNING_CONFIG = dedent(
+        """\
+        interface GigabitEthernet0/1
+         no switchport
+         ip address 192.0.2.1 255.255.255.0
+         ip tcp adjust-mss 1400
+         ipv6 address 2001:db8::1/64
+         ipv6 tcp adjust-mss 1380
+        interface GigabitEthernet0/2
+         no switchport
+         ip address 192.0.2.2 255.255.255.0
+        """,
+    )
+
+    def test_ios_l3_interfaces_tcp_adjust_mss_parsed(self):
+        set_module_args({"running_config": self.MSS_RUNNING_CONFIG, "state": "parsed"})
+        parsed = {each["name"]: each for each in self.execute_module(changed=False)["parsed"]}
+        self.assertEqual(parsed["GigabitEthernet0/1"]["tcp_adjust_mss"], 1400)
+        self.assertEqual(parsed["GigabitEthernet0/1"]["ipv6_tcp_adjust_mss"], 1380)
+        self.assertNotIn("tcp_adjust_mss", parsed["GigabitEthernet0/2"])
+        self.assertNotIn("ipv6_tcp_adjust_mss", parsed["GigabitEthernet0/2"])
+
+    def test_ios_l3_interfaces_tcp_adjust_mss_gathered(self):
+        self.execute_show_command.return_value = self.MSS_RUNNING_CONFIG
+        set_module_args({"state": "gathered"})
+        gathered = {each["name"]: each for each in self.execute_module(changed=False)["gathered"]}
+        self.assertEqual(gathered["GigabitEthernet0/1"]["tcp_adjust_mss"], 1400)
+        self.assertEqual(gathered["GigabitEthernet0/1"]["ipv6_tcp_adjust_mss"], 1380)
+
+    def test_ios_l3_interfaces_tcp_adjust_mss_rendered(self):
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "GigabitEthernet0/1",
+                        "tcp_adjust_mss": 1460,
+                        "ipv6_tcp_adjust_mss": 1440,
+                    },
+                ],
+                "state": "rendered",
+            },
+        )
+        rendered = self.execute_module(changed=False)["rendered"]
+        self.assertIn("ip tcp adjust-mss 1460", rendered)
+        self.assertIn("ipv6 tcp adjust-mss 1440", rendered)
+
+    def test_ios_l3_interfaces_tcp_adjust_mss_merged(self):
+        self.execute_show_command.return_value = self.MSS_RUNNING_CONFIG
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "GigabitEthernet0/2",
+                        "tcp_adjust_mss": 1300,
+                        "ipv6_tcp_adjust_mss": 1280,
+                    },
+                ],
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "interface GigabitEthernet0/2",
+                "ip tcp adjust-mss 1300",
+                "ipv6 tcp adjust-mss 1280",
+            ],
+        )
+
+    def test_ios_l3_interfaces_tcp_adjust_mss_merged_change_value(self):
+        self.execute_show_command.return_value = self.MSS_RUNNING_CONFIG
+        set_module_args(
+            {"config": [{"name": "GigabitEthernet0/1", "tcp_adjust_mss": 1350}], "state": "merged"},
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface GigabitEthernet0/1", "ip tcp adjust-mss 1350"],
+        )
+
+    def test_ios_l3_interfaces_tcp_adjust_mss_merged_idempotent(self):
+        self.execute_show_command.return_value = self.MSS_RUNNING_CONFIG
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "GigabitEthernet0/1",
+                        "tcp_adjust_mss": 1400,
+                        "ipv6_tcp_adjust_mss": 1380,
+                    },
+                ],
+                "state": "merged",
+            },
+        )
+        self.execute_module(changed=False, commands=[])
+
+    def test_ios_l3_interfaces_tcp_adjust_mss_replaced_removes_dropped(self):
+        self.execute_show_command.return_value = self.MSS_RUNNING_CONFIG
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "GigabitEthernet0/1",
+                        "ipv4": [{"address": "192.0.2.1/24"}],
+                        "ipv6": [{"address": "2001:db8::1/64"}],
+                        "tcp_adjust_mss": 1400,
+                    },
+                ],
+                "state": "replaced",
+            },
+        )
+        commands = self.execute_module(changed=True)["commands"]
+        self.assertIn("no ipv6 tcp adjust-mss 1380", commands)
+        self.assertNotIn("no ip tcp adjust-mss 1400", commands)
+        self.assertNotIn("ip tcp adjust-mss 1400", commands)
+
+    def test_ios_l3_interfaces_tcp_adjust_mss_replaced_idempotent(self):
+        self.execute_show_command.return_value = self.MSS_RUNNING_CONFIG
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "GigabitEthernet0/1",
+                        "ipv4": [{"address": "192.0.2.1/24"}],
+                        "ipv6": [{"address": "2001:db8::1/64"}],
+                        "redirects": True,
+                        "unreachables": True,
+                        "ipv6_redirects": True,
+                        "ipv6_unreachables": True,
+                        "tcp_adjust_mss": 1400,
+                        "ipv6_tcp_adjust_mss": 1380,
+                    },
+                ],
+                "state": "replaced",
+            },
+        )
+        self.execute_module(changed=False, commands=[])
+
+    def test_ios_l3_interfaces_tcp_adjust_mss_overridden_removes_from_unlisted(self):
+        self.execute_show_command.return_value = self.MSS_RUNNING_CONFIG
+        set_module_args(
+            {
+                "config": [{"name": "GigabitEthernet0/2", "ipv4": [{"address": "192.0.2.2/24"}]}],
+                "state": "overridden",
+            },
+        )
+        commands = self.execute_module(changed=True)["commands"]
+        self.assertIn("no ip tcp adjust-mss 1400", commands)
+        self.assertIn("no ipv6 tcp adjust-mss 1380", commands)
+
+    def test_ios_l3_interfaces_tcp_adjust_mss_deleted(self):
+        self.execute_show_command.return_value = self.MSS_RUNNING_CONFIG
+        set_module_args({"config": [{"name": "GigabitEthernet0/1"}], "state": "deleted"})
+        commands = self.execute_module(changed=True)["commands"]
+        self.assertIn("no ip tcp adjust-mss 1400", commands)
+        self.assertIn("no ipv6 tcp adjust-mss 1380", commands)
+
+    def test_ios_l3_interfaces_tcp_adjust_mss_range_not_validated(self):
+        """The valid range differs between platforms and IOS XE versions, the device decides."""
+        self.execute_show_command.return_value = self.MSS_RUNNING_CONFIG
+        set_module_args(
+            {
+                "config": [
+                    {
+                        "name": "GigabitEthernet0/2",
+                        "tcp_adjust_mss": 1500,
+                        "ipv6_tcp_adjust_mss": 3740,
+                    },
+                ],
+                "state": "merged",
+            },
+        )
+        commands = self.execute_module(changed=True)["commands"]
+        self.assertIn("ip tcp adjust-mss 1500", commands)
+        self.assertIn("ipv6 tcp adjust-mss 3740", commands)

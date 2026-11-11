@@ -59,6 +59,8 @@ class L3_interfaces(ResourceModule):
         ]
         self.gen_parsers = [
             "autostate",
+            "tcp_adjust_mss",
+            "ipv6_tcp_adjust_mss",
         ]
 
     def execute_module(self):
