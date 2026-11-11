@@ -22,6 +22,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.r
 )
 
 
+INTERFACE_NAME = "{{ name }}"
+
+
 class Flow_monitor_interfacesTemplate(NetworkTemplate):
     def __init__(self, lines=None, module=None):
         super(Flow_monitor_interfacesTemplate, self).__init__(
@@ -42,7 +45,7 @@ class Flow_monitor_interfacesTemplate(NetworkTemplate):
             ),
             "compval": "name",
             "setval": "interface {{ name }}",
-            "result": {"{{ name }}": {"name": "{{ name }}"}},
+            "result": {INTERFACE_NAME: {"name": INTERFACE_NAME}},
             "shared": True,
         },
         {
@@ -61,7 +64,7 @@ class Flow_monitor_interfacesTemplate(NetworkTemplate):
                 " {{ direction }}"
             ),
             "result": {
-                "{{ name }}": {
+                INTERFACE_NAME: {
                     "flow_monitors": [
                         {
                             "monitor": "{{ monitor }}",

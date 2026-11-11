@@ -26,6 +26,10 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 
 
+NO_COMMAND = " no {0}"
+DESCRIPTION_COMMAND = " description {0}"
+TIMEOUT_SUFFIX = " timeout"
+
 # Values that IOS-XE omits from the running config because they are the default
 CACHE_TIMEOUT_DEFAULTS = {"timeout_inactive": 15, "timeout_active": 1800}
 EXPORTER_DEFAULTS = {
@@ -282,12 +286,12 @@ class Flow_monitor_global(ResourceModule):
         have_collect = have_rec.get("collect", {})
         for key, cli in self._MATCH_CLI:
             if have_match.get(key) and not want_match.get(key):
-                cmds.append(" no {0}".format(cli))
+                cmds.append(NO_COMMAND.format(cli))
             elif want_match.get(key) and not have_match.get(key):
                 cmds.append(" {0}".format(cli))
         for key, cli in self._COLLECT_CLI:
             if have_collect.get(key) and not want_collect.get(key):
-                cmds.append(" no {0}".format(cli))
+                cmds.append(NO_COMMAND.format(cli))
             elif want_collect.get(key) and not have_collect.get(key):
                 cmds.append(" {0}".format(cli))
         return cmds if len(cmds) > 1 else []
@@ -295,14 +299,14 @@ class Flow_monitor_global(ResourceModule):
     @staticmethod
     def _line_key(line):
         """Return the command prefix identifying a setting, ignoring its value."""
-        if " timeout" in line:
-            return line.split(" timeout")[0]
+        if TIMEOUT_SUFFIX in line:
+            return line.split(TIMEOUT_SUFFIX)[0]
         return line.split()[0]
 
     def _diff_lines(self, header, want_lines, have_lines, orig_have_lines):
         """Add lines missing from have; negate settings in have that want no longer sets."""
         cmds = [header]
-        want_keys = set(self._line_key(ln) for ln in want_lines)
+        want_keys = {self._line_key(ln) for ln in want_lines}
         for ln in want_lines:
             if ln not in have_lines:
                 cmds.append(" {0}".format(ln))
@@ -311,7 +315,7 @@ class Flow_monitor_global(ResourceModule):
                 cmds.append(
                     " no {0}{1}".format(
                         self._line_key(ln),
-                        " timeout" if ln.startswith("template data") else "",
+                        TIMEOUT_SUFFIX if ln.startswith("template data") else "",
                     ),
                 )
         return cmds if len(cmds) > 1 else []
@@ -352,7 +356,7 @@ class Flow_monitor_global(ResourceModule):
         have_desc = have_mon.get("description")
         if want_desc != have_desc:
             if want_desc:
-                cmds.append(" description {0}".format(want_desc))
+                cmds.append(DESCRIPTION_COMMAND.format(want_desc))
             else:
                 cmds.append(" no description")
         want_cache = want_mon.get("cache", {})
@@ -375,7 +379,7 @@ class Flow_monitor_global(ResourceModule):
                     if have_cache.get(field) is not None and have_cache[
                         field
                     ] != CACHE_TIMEOUT_DEFAULTS.get(field):
-                        cmds.append(" no {0}".format(cmd))
+                        cmds.append(NO_COMMAND.format(cmd))
                 elif wv != hv:
                     cmds.append(" {0} {1}".format(cmd, wv))
         if want_mon.get("record") != have_mon.get("record") and want_mon.get("record"):
@@ -385,7 +389,7 @@ class Flow_monitor_global(ResourceModule):
     def _exporter_commands(self, name, exp):
         cmds = ["flow exporter {0}".format(name)]
         if exp.get("description"):
-            cmds.append(" description {0}".format(exp["description"]))
+            cmds.append(DESCRIPTION_COMMAND.format(exp["description"]))
         if exp.get("destination"):
             line = " destination {0}".format(exp["destination"])
             if exp.get("vrf"):
@@ -435,7 +439,7 @@ class Flow_monitor_global(ResourceModule):
     def _sampler_commands(self, name, smp):
         cmds = ["sampler {0}".format(name)]
         if smp.get("description"):
-            cmds.append(" description {0}".format(smp["description"]))
+            cmds.append(DESCRIPTION_COMMAND.format(smp["description"]))
         if smp.get("mode") and smp.get("window_size") is not None:
             cmds.append(" mode {0} 1 out-of {1}".format(smp["mode"], smp["window_size"]))
         return cmds
@@ -443,7 +447,7 @@ class Flow_monitor_global(ResourceModule):
     def _monitor_commands(self, name, mon):
         cmds = ["flow monitor {0}".format(name)]
         if mon.get("description"):
-            cmds.append(" description {0}".format(mon["description"]))
+            cmds.append(DESCRIPTION_COMMAND.format(mon["description"]))
         for exp_name in mon.get("exporters", []):
             cmds.append(" exporter {0}".format(exp_name))
         cache = mon.get("cache", {})

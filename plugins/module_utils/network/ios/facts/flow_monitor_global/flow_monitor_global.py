@@ -27,6 +27,8 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
 )
 
 
+DESCRIPTION_PATTERN = r"^description (.+)$"
+
 # IOS-XE omits the timeout from an exporter "option" line when it is the default
 DEFAULT_OPTION_TIMEOUT = 600
 
@@ -251,14 +253,13 @@ class Flow_monitor_globalFacts(object):
                         int(m.group(1)) if m.group(1) else DEFAULT_OPTION_TIMEOUT
                     )
                     continue
-                m = re.match(r"^description (.+)$", stripped)
+                m = re.match(DESCRIPTION_PATTERN, stripped)
                 if m:
                     exp["description"] = m.group(1)
-                    continue
 
             elif current_type == "samplers":
                 smp = samplers[current_name]
-                m = re.match(r"^description (.+)$", stripped)
+                m = re.match(DESCRIPTION_PATTERN, stripped)
                 if m:
                     smp["description"] = m.group(1)
                     continue
@@ -297,10 +298,9 @@ class Flow_monitor_globalFacts(object):
                 if m:
                     mon.setdefault("cache", {})["entries"] = int(m.group(1))
                     continue
-                m = re.match(r"^description (.+)$", stripped)
+                m = re.match(DESCRIPTION_PATTERN, stripped)
                 if m:
                     mon["description"] = m.group(1)
-                    continue
 
         return {
             "records": list(records.values()),
