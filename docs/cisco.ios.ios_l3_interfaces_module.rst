@@ -894,8 +894,9 @@ Parameters
                 </td>
                 <td>
                         <div>Adjust the maximum segment size of TCP SYN packets for IPv6 that pass through the interface (<code>ipv6 tcp adjust-mss</code>).</div>
-                        <div>Valid values are 40 to 1440.</div>
+                        <div>The valid range depends on the platform and the IOS XE version, check it with <code>ipv6 tcp adjust-mss ?</code> on the device. The module does not validate the value, the device rejects a value it does not support.</div>
                         <div>Not supported on Layer 2 switchports.</div>
+                        <div>It is off by default, so removing it from the configuration under <em>state=replaced</em>, <em>state=overridden</em> or <em>state=deleted</em> removes the command.</div>
                 </td>
             </tr>
             <tr>
@@ -985,7 +986,7 @@ Parameters
                 </td>
                 <td>
                         <div>Adjust the maximum segment size of TCP SYN packets for IPv4 that pass through the interface (<code>ip tcp adjust-mss</code>).</div>
-                        <div>Valid values are 500 to 1460.</div>
+                        <div>The valid range depends on the platform and the IOS XE version, check it with <code>ip tcp adjust-mss ?</code> on the device. The module does not validate the value, the device rejects a value it does not support.</div>
                         <div>Not supported on Layer 2 switchports.</div>
                         <div>It is off by default, so removing it from the configuration under <em>state=replaced</em>, <em>state=overridden</em> or <em>state=deleted</em> removes the command.</div>
                 </td>

@@ -65,7 +65,9 @@ options:
         description:
           - Adjust the maximum segment size of TCP SYN packets for IPv4 that pass through the interface
             (C(ip tcp adjust-mss)).
-          - Valid values are 500 to 1460.
+          - The valid range depends on the platform and the IOS XE version, check it with
+            C(ip tcp adjust-mss ?) on the device. The module does not validate the value,
+            the device rejects a value it does not support.
           - Not supported on Layer 2 switchports.
           - It is off by default, so removing it from the configuration under I(state=replaced),
             I(state=overridden) or I(state=deleted) removes the command.
@@ -74,8 +76,12 @@ options:
         description:
           - Adjust the maximum segment size of TCP SYN packets for IPv6 that pass through the interface
             (C(ipv6 tcp adjust-mss)).
-          - Valid values are 40 to 1440.
+          - The valid range depends on the platform and the IOS XE version, check it with
+            C(ipv6 tcp adjust-mss ?) on the device. The module does not validate the value,
+            the device rejects a value it does not support.
           - Not supported on Layer 2 switchports.
+          - It is off by default, so removing it from the configuration under I(state=replaced),
+            I(state=overridden) or I(state=deleted) removes the command.
         type: int
       helper_addresses:
         description: Specify a destination address for UDP broadcasts

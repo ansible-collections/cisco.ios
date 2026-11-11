@@ -1238,34 +1238,21 @@ class TestIosL3InterfacesModule(TestIosModule):
         self.assertIn("no ip tcp adjust-mss 1400", commands)
         self.assertIn("no ipv6 tcp adjust-mss 1380", commands)
 
-    def test_ios_l3_interfaces_tcp_adjust_mss_range_limits_accepted(self):
+    def test_ios_l3_interfaces_tcp_adjust_mss_range_not_validated(self):
+        """The valid range differs between platforms and IOS XE versions, the device decides."""
         self.execute_show_command.return_value = self.MSS_RUNNING_CONFIG
         set_module_args(
             {
                 "config": [
                     {
                         "name": "GigabitEthernet0/2",
-                        "tcp_adjust_mss": 500,
-                        "ipv6_tcp_adjust_mss": 40,
+                        "tcp_adjust_mss": 1500,
+                        "ipv6_tcp_adjust_mss": 3740,
                     },
                 ],
                 "state": "merged",
             },
         )
         commands = self.execute_module(changed=True)["commands"]
-        self.assertIn("ip tcp adjust-mss 500", commands)
-        self.assertIn("ipv6 tcp adjust-mss 40", commands)
-
-    def test_ios_l3_interfaces_tcp_adjust_mss_out_of_range(self):
-        self.execute_show_command.return_value = self.MSS_RUNNING_CONFIG
-        for option, value in (
-            ("tcp_adjust_mss", 499),
-            ("tcp_adjust_mss", 1461),
-            ("ipv6_tcp_adjust_mss", 39),
-            ("ipv6_tcp_adjust_mss", 1441),
-        ):
-            set_module_args(
-                {"config": [{"name": "GigabitEthernet0/2", option: value}], "state": "merged"},
-            )
-            result = self.execute_module(failed=True)
-            self.assertIn("{0} must be between".format(option), result["msg"])
+        self.assertIn("ip tcp adjust-mss 1500", commands)
+        self.assertIn("ipv6 tcp adjust-mss 3740", commands)

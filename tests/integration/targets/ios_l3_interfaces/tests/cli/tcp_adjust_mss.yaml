@@ -73,21 +73,6 @@
           - "'no ipv6 tcp adjust-mss 1380' in result.commands"
           - "'no ip tcp adjust-mss 1300' not in result.commands"
 
-    - name: Reject a TCP MSS outside the supported range
-      register: result
-      ignore_errors: true
-      cisco.ios.ios_l3_interfaces:
-        config:
-          - name: Loopback999
-            tcp_adjust_mss: 1461
-        state: merged
-
-    - name: Assert that the invalid value was rejected
-      ansible.builtin.assert:
-        that:
-          - result.failed
-          - "'tcp_adjust_mss must be between 500 and 1460' in result.msg"
-
     - name: Delete the interface configuration
       register: result
       cisco.ios.ios_l3_interfaces:
