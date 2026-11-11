@@ -1,7 +1,4 @@
 ---
-breaking_changes:
-  - ios_bgp_global - remove ``bmp.server`` and ``bmp.server_options``, which could only describe a single BMP server. Use ``bmp.servers`` instead, with ``number`` and the server options (``activate``, ``address``, ...) in each list entry. Playbooks that still use the removed options fail with ``Unsupported parameters``.
-  - ios_bgp_global, ios_bgp_address_family - remove ``neighbors.bmp_activate.server``. Use ``neighbors.bmp_activate.servers``, a list of server numbers, instead.
 minor_changes:
   - ios_bgp_global - add ``bmp.servers`` to manage multiple BMP servers (1-4) with ``number``, ``activate``, ``address``, ``description``, ``failure_retry_delay``, ``flapping_delay``, ``initial_delay``, ``set_ip_dscp``, ``stats_reporting_period`` and ``update_source``.
   - ios_bgp_global - add ``neighbors.bmp_activate.servers`` to activate several BMP servers for a neighbor.

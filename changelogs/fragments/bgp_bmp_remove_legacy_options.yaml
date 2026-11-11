@@ -1,0 +1,4 @@
+---
+breaking_changes:
+  - ios_bgp_global - remove ``bmp.server`` and ``bmp.server_options``, which could only describe a single BMP server. Use ``bmp.servers`` instead, with ``number`` and the server options (``activate``, ``address``, ...) in each list entry. Playbooks that still use the removed options fail with ``Unsupported parameters``.
+  - ios_bgp_global, ios_bgp_address_family - remove ``neighbors.bmp_activate.server``. Use ``neighbors.bmp_activate.servers``, a list of server numbers, instead.
