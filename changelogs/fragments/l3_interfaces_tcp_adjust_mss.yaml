@@ -1,0 +1,3 @@
+---
+minor_changes:
+  - ios_l3_interfaces - add ``tcp_adjust_mss`` (``ip tcp adjust-mss``) and ``ipv6_tcp_adjust_mss`` (``ipv6 tcp adjust-mss``) to adjust the TCP MSS of SYN packets that pass through an interface. The valid range depends on the platform and the IOS XE version and is not validated by the module.

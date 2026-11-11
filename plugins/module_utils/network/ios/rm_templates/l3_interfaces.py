@@ -83,6 +83,28 @@ class L3_interfacesTemplate(NetworkTemplate):
             "result": {"{{ name }}": {"mac_address": "{{ mac_address }}"}},
         },
         {
+            "name": "tcp_adjust_mss",
+            "getval": re.compile(
+                r"""^\s*ip\stcp\sadjust-mss
+                    \s(?P<tcp_adjust_mss>\d+)
+                    $""",
+                re.VERBOSE,
+            ),
+            "setval": "ip tcp adjust-mss {{ tcp_adjust_mss }}",
+            "result": {"{{ name }}": {"tcp_adjust_mss": "{{ tcp_adjust_mss }}"}},
+        },
+        {
+            "name": "ipv6_tcp_adjust_mss",
+            "getval": re.compile(
+                r"""^\s*ipv6\stcp\sadjust-mss
+                    \s(?P<ipv6_tcp_adjust_mss>\d+)
+                    $""",
+                re.VERBOSE,
+            ),
+            "setval": "ipv6 tcp adjust-mss {{ ipv6_tcp_adjust_mss }}",
+            "result": {"{{ name }}": {"ipv6_tcp_adjust_mss": "{{ ipv6_tcp_adjust_mss }}"}},
+        },
+        {
             "name": "name",
             "getval": re.compile(
                 r"""^interface
