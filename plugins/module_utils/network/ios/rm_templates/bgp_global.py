@@ -1473,7 +1473,6 @@ class Bgp_globalTemplate(NetworkTemplate):
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} peer-group",
-            "remval": "neighbor {{ neighbor_address }} peer-group",
             "result": {
                 "neighbors": {
                     "{{ neighbor_address }}": {

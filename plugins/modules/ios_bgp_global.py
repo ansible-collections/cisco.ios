@@ -1166,7 +1166,7 @@ options:
           peer_group_declaration:
             description:
               - Set to C(true) to declare this neighbor as a peer-group.
-              - Set to C(false) to remove the peer-group and its member configuration.
+              - Set to C(false) to delete this peer-group and its member configuration.
               - This option is mutually exclusive with C(peer_group).
             type: bool
           remote_as:

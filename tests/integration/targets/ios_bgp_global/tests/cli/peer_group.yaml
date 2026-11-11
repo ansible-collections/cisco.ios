@@ -5,23 +5,28 @@
 - ansible.builtin.include_tasks: _remove_config.yaml
 
 - block:
-    - name: Merge peer-group declaration and member assignment
+    - name: Merge multiple peer-group declarations and member assignments
       register: result
       cisco.ios.ios_bgp_global: &peer_group_config
         config:
           as_number: 65000
           neighbors:
+            - neighbor_address: 192.0.2.254
+              peer_group: TestGroup
+            - neighbor_address: 192.0.2.253
+              peer_group: BackupGroup
             - neighbor_address: TestGroup
               peer_group_declaration: true
               remote_as: "65001"
-            - neighbor_address: 192.0.2.254
-              peer_group: TestGroup
+            - neighbor_address: BackupGroup
+              peer_group_declaration: true
+              remote_as: "65002"
         state: merged
 
-    - name: Assert the declaration and assignment generated the expected commands
+    - name: Assert declarations precede assignments and commands are ordered correctly
       ansible.builtin.assert:
         that:
-          - "{{ peer_group_declaration['commands'] | symmetric_difference(result['commands']) | length == 0 }}"
+          - peer_group_declaration['commands'] == result['commands']
 
     - name: Assert that before dict is correctly generated
       ansible.builtin.assert:
@@ -35,7 +40,7 @@
           - peer_group_declaration['after']['bgp']['default'] == result['after']['bgp']['default']
           - peer_group_declaration['after']['neighbors'] == result['after']['neighbors']
 
-    - name: Merge peer-group declaration and member assignment (idempotent)
+    - name: Merge multiple peer-group declarations and member assignments (idempotent)
       register: result
       cisco.ios.ios_bgp_global: *peer_group_config
 
@@ -44,17 +49,19 @@
         that:
           - result['changed'] == false
 
-    - name: Gather peer-group declaration and member assignment
+    - name: Gather multiple peer-group declarations and member assignments
       cisco.ios.ios_bgp_global:
         state: gathered
       register: gathered_result
 
-    - name: Assert declaration boolean and assignment string are gathered
+    - name: Assert multiple declaration booleans and assignment strings are gathered
       ansible.builtin.assert:
         that:
           - gathered_result.changed == false
           - (gathered_result.gathered.neighbors | selectattr('neighbor_address', 'equalto', 'TestGroup') | list | first).peer_group_declaration is sameas true
+          - (gathered_result.gathered.neighbors | selectattr('neighbor_address', 'equalto', 'BackupGroup') | list | first).peer_group_declaration is sameas true
           - (gathered_result.gathered.neighbors | selectattr('neighbor_address', 'equalto', '192.0.2.254') | list | first).peer_group == 'TestGroup'
+          - (gathered_result.gathered.neighbors | selectattr('neighbor_address', 'equalto', '192.0.2.253') | list | first).peer_group == 'BackupGroup'
 
     - name: Remove peer-group declaration with false
       cisco.ios.ios_bgp_global:
@@ -98,5 +105,7 @@
         that:
           - "'TestGroup' not in after_removal.stdout[0]"
           - "'192.0.2.254' not in after_removal.stdout[0]"
+          - "'BackupGroup' in after_removal.stdout[0]"
+          - "'192.0.2.253' in after_removal.stdout[0]"
   always:
     - ansible.builtin.include_tasks: _remove_config.yaml
