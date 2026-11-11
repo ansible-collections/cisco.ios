@@ -293,7 +293,11 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                 },
                                 "bmp_activate": {
                                     "type": "dict",
-                                    "options": {"all": {"type": "bool"}, "server": {"type": "int"}},
+                                    "options": {
+                                        "all": {"type": "bool"},
+                                        "server": {"type": "int"},
+                                        "servers": {"type": "list", "elements": "int"},
+                                    },
                                 },
                                 "capability": {
                                     "type": "dict",
