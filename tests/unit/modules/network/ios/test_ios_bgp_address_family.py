@@ -1996,14 +1996,6 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
             ],
         )
 
-    def test_ios_bgp_address_family_bmp_legacy_server(self):
-        self.execute_show_command.return_value = self.BMP_VRF_CONFIG.replace(
-            "server 1 server 2",
-            "server 3",
-        )
-        set_module_args(self._bmp_af_args({"server": 3}, "merged"))
-        self.execute_module(changed=False, commands=[])
-
     def test_ios_bgp_address_family_bmp_neighbor_address_rejects_line_breaks(self):
         for line_break in ("\n", "\r"):
             with self.subTest(line_break=repr(line_break)):
@@ -2017,3 +2009,10 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                     "Neighbor address must not contain carriage returns or line feeds",
                     result["msg"],
                 )
+
+    def test_ios_bgp_address_family_bmp_activate_server_removed(self):
+        """neighbors.bmp_activate.server was replaced by bmp_activate.servers."""
+        self.execute_show_command.return_value = self.BMP_VRF_CONFIG
+        set_module_args(self._bmp_af_args({"server": 3}, "merged"))
+        result = self.execute_module(failed=True)
+        self.assertIn("server", result["msg"])

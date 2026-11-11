@@ -498,13 +498,6 @@ options:
                   all:
                     description: Activate BMP monitoring for all servers
                     type: bool
-                  server:
-                    description:
-                      - Activate BMP for server
-                      - BMP Server Number
-                      - Deprecated, use I(servers) instead.
-                      - Please refer vendor documentation for valid values
-                    type: int
                   servers:
                     description: BMP server numbers to activate for the neighbor (1-4)
                     type: list

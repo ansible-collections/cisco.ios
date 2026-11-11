@@ -510,17 +510,14 @@ def generate_switchport_trunk(type, add, vlans_range):
 def normalize_bmp_activate(bmp_activate):
     """Return a canonical bmp_activate dict: {'all': True}, {'servers': [sorted ints]} or {}.
 
-    The deprecated single ``server`` option is folded into ``servers`` and
-    duplicates are dropped, so want and have can be compared directly.
+    The server numbers are sorted and de-duplicated, so want and have can be
+    compared directly.
     """
     if not bmp_activate:
         return {}
     if bmp_activate.get("all"):
         return {"all": True}
-    servers = list(bmp_activate.get("servers") or [])
-    if bmp_activate.get("server") is not None:
-        servers.append(bmp_activate["server"])
-    servers = sorted({int(srv) for srv in servers})
+    servers = sorted({int(srv) for srv in bmp_activate.get("servers") or []})
     return {"servers": servers} if servers else {}
 
 

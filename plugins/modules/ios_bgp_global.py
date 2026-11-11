@@ -564,31 +564,6 @@ options:
               skip:
                 description: skip all refreshes
                 type: bool
-          server:
-            description:
-              - Server Information
-              - Deprecated, use I(servers) instead. When set it is merged into I(servers).
-              - Please refer vendor documentation for valid values
-            type: int
-          server_options:
-            description:
-              - bmp server options
-              - Deprecated, use I(servers) instead. Applies to the server given in I(server).
-            type: dict
-            suboptions:
-              activate:
-                description: activate server
-                type: bool
-              address:
-                description: BMP server address
-                type: dict
-                suboptions:
-                  host:
-                    description: host address
-                    type: str
-                  port:
-                    description: port number BMP server
-                    type: int
           servers:
             description:
               - BMP servers, each entered with C(bmp server <number>).
@@ -895,13 +870,6 @@ options:
               all:
                 description: Activate BMP monitoring for all servers
                 type: bool
-              server:
-                description:
-                  - Activate BMP for server
-                  - BMP Server Number
-                  - Deprecated, use I(servers) instead.
-                  - Please refer vendor documentation for valid values
-                type: int
               servers:
                 description: BMP server numbers to activate for the neighbor (1-4)
                 type: list
@@ -2500,7 +2468,8 @@ EXAMPLES = """
         update_group: true
       bmp:
         buffer_size: 22
-        server: 2
+        servers:
+          - number: 2
       distance:
         bgp:
           routes_external: 2
@@ -2600,7 +2569,6 @@ EXAMPLES = """
 # - router bgp 65000
 # - auto-summary
 # - bmp buffer-size 22
-# - bmp server 2
 # - distance bgp 2 3 4
 # - distance mbgp 2 3 5
 # - maximum-paths 2
@@ -2645,6 +2613,8 @@ EXAMPLES = """
 # - bgp suppress-inactive
 # - bgp update-delay 2
 # - bgp update-group split as-override
+# - bmp server 2
+# - exit-bmp-server-mode
 # - bgp inject-map map2 exist-map Testmap3 copy-attributes
 # - bgp inject-map map1 exist-map Testmap2 copy-attributes
 # - distribute-list prefix prefixTest in
@@ -2688,8 +2658,9 @@ EXAMPLES = """
 #
 # router bgp 65000
 #  auto-summary
-#  bmp buffer-size 22
 #  bmp server 2
+#  exit-bmp-server-mode
+#  bmp buffer-size 22
 #  distance bgp 2 3 4
 #  distance mbgp 2 3 5
 #  maximum-paths 2
@@ -2869,7 +2840,8 @@ EXAMPLES = """
 #       update_group: true
 #     bmp:
 #       buffer_size: 22
-#       server: 2
+#       servers:
+#         - number: 2
 #     distance:
 #       bgp:
 #         routes_external: 2
