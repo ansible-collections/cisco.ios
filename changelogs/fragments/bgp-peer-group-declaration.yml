@@ -1,0 +1,11 @@
+---
+minor_changes:
+  - >-
+    ios_bgp_global - add ``peer_group_declaration`` to declare or remove BGP
+    peer-groups, alongside string-based ``peer_group`` member assignments.
+bugfixes:
+  - >-
+    ios_bgp_global - peer-group declaration lines are now parsed into facts.
+    With ``replaced`` or ``overridden``, set ``peer_group_declaration: true``
+    on peer-group entries before upgrading to preserve declarations; otherwise
+    the declaration and its member configuration are removed.

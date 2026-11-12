@@ -171,6 +171,8 @@ class Bgp_global(ResourceModule):
         for each in self.want, self.have:
             self._bgp_global_list_to_dict(each)
 
+        self._validate_peer_group_declarations(self.want)
+
         if self.state in ["merged", "replaced", "overridden", "rendered", "deleted"]:
             self._validate_bmp_server_strings(self.want)
             validate_neighbor_addresses(self._module, self.want)
@@ -205,6 +207,25 @@ class Bgp_global(ResourceModule):
                     wantd["neighbors"][addr]["bmp_activate"] = value
 
             self._compare(want=wantd, have=self.have)
+
+    def _validate_peer_group_declarations(self, want):
+        """Reject attributes combined with a peer-group deletion request."""
+        for name, neighbor in want.get("neighbors", {}).items():
+            if neighbor.get("peer_group_declaration") is not False:
+                continue
+            other_attributes = [
+                key
+                for key, value in neighbor.items()
+                if key not in ("neighbor_address", "peer_group_declaration")
+                and value not in (None, {}, [])
+            ]
+            if other_attributes:
+                self._module.fail_json(
+                    msg=(
+                        "peer_group_declaration: false cannot be combined with other "
+                        "neighbor attributes for neighbor {0}: {1}"
+                    ).format(name, ", ".join(sorted(other_attributes))),
+                )
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and
@@ -311,6 +332,7 @@ class Bgp_global(ResourceModule):
     def _compare_neighbor_lists(self, want, have):
         """Compare neighbor list of dict"""
         neig_parses = [
+            "peer_group_declaration",
             "remote_as",
             "peer_group",
             "cluster_id",
@@ -378,23 +400,35 @@ class Bgp_global(ResourceModule):
             "translate_update.nlri",
         ]
 
-        for name, w_neighbor in want.items():
+        for name, w_neighbor in sorted(
+            want.items(),
+            key=lambda neighbor: not neighbor[1].get("peer_group_declaration"),
+        ):
+            neighbor_parses = neig_parses.copy()
             handle_shutdown_default = False
             have_nbr = have.pop(name, {})
             want_route = w_neighbor.pop("route_maps", {})
             have_route = have_nbr.pop("route_maps", {})
+            if w_neighbor.get("peer_group_declaration") is False:
+                if self.state == "rendered":
+                    self.addcmd(w_neighbor, "peer_group_declaration", True)
+                elif have_nbr.get("peer_group_declaration"):
+                    self.addcmd(have_nbr, "peer_group_declaration", True)
+                w_neighbor.pop("peer_group_declaration")
+                have_nbr.pop("peer_group_declaration", None)
+                continue
             if (
                 not w_neighbor.get("shutdown", {}).get("set")
                 and have_nbr.get("shutdown", {}).get("set")
                 and self.state in ["merged", "replaced", "overridden"]
             ):
-                neig_parses.remove("shutdown")
+                neighbor_parses.remove("shutdown")
                 handle_shutdown_default = True
             # bmp-activate is ignored by IOS-XE for a neighbor that does not exist yet,
             # so it must follow remote-as / peer-group
             want_bmp = w_neighbor.pop("bmp_activate", None)
             have_bmp = have_nbr.pop("bmp_activate", None)
-            self.compare(parsers=neig_parses, want=w_neighbor, have=have_nbr)
+            self.compare(parsers=neighbor_parses, want=w_neighbor, have=have_nbr)
             if handle_shutdown_default:
                 self.addcmd(have_nbr, "shutdown", True)
             self._compare_bmp_activate(w_neighbor, have_nbr, want_bmp, have_bmp)
