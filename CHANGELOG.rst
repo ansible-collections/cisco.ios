@@ -4,6 +4,53 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v11.7.0
+=======
+
+Minor Changes
+-------------
+
+- ios_bgp_address_family - add ``neighbors.bmp_activate.servers`` to activate several BMP servers for a neighbor. ``bmp_activate.server`` keeps working and is folded into ``servers``.
+- ios_bgp_global - add ``bmp.servers`` to manage multiple BMP servers (1-4) with ``number``, ``activate``, ``address``, ``description``, ``failure_retry_delay``, ``flapping_delay``, ``initial_delay``, ``set_ip_dscp``, ``stats_reporting_period`` and ``update_source``. ``bmp.server`` and ``bmp.server_options`` keep working and are folded into ``bmp.servers``, but ``bmp.servers`` is preferred.
+- ios_bgp_global - add ``neighbors.bmp_activate.servers`` to activate several BMP servers for a neighbor. ``bmp_activate.server`` keeps working and is folded into ``servers``.
+- ios_bgp_global - add ``peer_group_declaration`` to declare or remove BGP peer-groups, alongside string-based ``peer_group`` member assignments.
+- ios_flow_monitor_global - new resource module to manage Flexible NetFlow records, exporters, samplers, and monitors on Cisco IOS XE.
+- ios_flow_monitor_interfaces - new resource module to manage per-interface flow monitor assignments on Cisco IOS XE.
+- ios_l3_interfaces - add ``tcp_adjust_mss`` (``ip tcp adjust-mss``) and ``ipv6_tcp_adjust_mss`` (``ipv6 tcp adjust-mss``) to adjust the TCP MSS of SYN packets that pass through an interface. The valid range depends on the platform and the IOS XE version and is not validated by the module.
+- ios_monitor_sessions - New resource module for declarative management of SPAN (Switched Port Analyzer) monitor sessions on Cisco IOS-XE devices. Supports all standard states (merged, replaced, overridden, deleted, rendered, gathered, parsed) and handles IOS-XE range notation and per-direction source interface consolidation.
+- ios_monitor_sessions - add ERSPAN source sessions for IOS-XE routers such as C8000V that reject local SPAN.
+- ios_route_maps - Add support for C(set large-community) in route-map entries, including multi-value lists, the additive flag, and large-community none.
+
+Bugfixes
+--------
+
+- cisco.ios.ios_vlans - Exclude reserved VLAN 1,1002-1005 for state overridden.
+- ios_bgp_global - ``neighbors.bmp_activate`` generated the incomplete ``neighbor X bmp-activate`` command (twice) and never ``all`` or ``server N``; it now renders ``bmp-activate all`` or ``bmp-activate server N [server M ...]``.
+- ios_bgp_global - deactivate a BMP server around a change of its address, as IOS-XE silently ignores an address change while the server is activated.
+- ios_bgp_global - gathered facts for BMP only returned the last ``bmp server`` number and dropped all server options because the sub-mode lines were never parsed; every server and its options are now returned as ``bmp.servers``.
+- ios_bgp_global - generate a valid ``bmp server`` configuration without relying on a trailing ``exit-bmp-server-mode`` appended to the ``address`` line, and make BMP server options idempotent for ``merged``, ``replaced``, ``overridden`` and ``deleted``.
+- ios_bgp_global - peer-group declaration lines are now parsed into facts. With ``replaced`` or ``overridden``, set ``peer_group_declaration: true`` on peer-group entries before upgrading to preserve declarations; otherwise the declaration and its member configuration are removed.
+- ios_bgp_global - reject carriage returns and line feeds in BMP server string options so they cannot add extra IOS configuration commands.
+- ios_bgp_global and ios_bgp_address_family - honor an explicit false value for ``bmp_activate.all`` in merged state by removing an existing all-server activation.
+- ios_bgp_global, ios_bgp_address_family - reject carriage returns and line feeds in BGP neighbor addresses before rendering CLI commands.
+- ios_bgp_global, ios_bgp_address_family - remove the existing ``bmp-activate`` of a neighbor before applying a changed one, as IOS-XE silently ignores ``bmp-activate`` on an already activated neighbor, and apply it after the neighbor's ``remote-as`` so it is not dropped for a neighbor that does not exist yet.
+- ios_interfaces - Fixed overridden state emitting redundant "shutdown" commands for interfaces that are already shut down, causing every playbook run to report changed regardless of actual device state.
+- ios_interfaces - Fixed overridden state not deleting logical interfaces (subinterfaces and VLAN interfaces) that are absent from the desired config; they are now removed with "no interface <name>" instead of only being unconfigured and shut down.
+- ios_l3_interfaces - fix ``replaced`` state to emit ``no ip address`` before ``ip address`` when changing an interface's IP, preventing potential address removal when the same host IP moves between subnet masks on some IOS versions.
+- ios_vrf_address_family - fix module not generating address-family block when no sub-configuration is present but the address-family is absent from the device.
+- ios_vrf_address_family - fix route-targets being added on every run, and not removed by state ``replaced`` or ``overridden`` when the address-family has no ``route_target``.
+- ios_vrf_address_family - fix state ``deleted`` sending ``no no address-family`` and deleting the address-families of VRFs which are not in the task.
+- ios_vrf_address_family - treat an address-family without ``safi`` as unicast, so state ``merged`` no longer removes existing configuration for it and its options are idempotent.
+- ios_vrf_global - Fix ``state: replaced`` failing to update the RD of an existing VRF on IOS-XE, which requires ``no rd <old>`` before ``rd <new>``. The module now emits the removal command first whenever the route distinguisher changes, then configures route-targets again because IOS-XE deletes them with the RD. The same re-apply happens when ``state: replaced`` removes the RD while route-targets are still wanted.
+- ios_vrf_global - Fixed overridden state not deleting VRFs that are absent from the desired config; they are now removed with "no vrf definition <name>" instead of only having their attributes stripped.
+
+New Modules
+-----------
+
+- ios_flow_monitor_global - Resource module to configure Flexible NetFlow on Cisco IOS XE.
+- ios_flow_monitor_interfaces - Resource module to configure per\-interface flow monitor assignments on Cisco IOS XE.
+- ios_monitor_sessions - Resource module to configure SPAN monitor sessions.
+
 v11.6.0
 =======
 
