@@ -1464,6 +1464,25 @@ class Bgp_globalTemplate(NetworkTemplate):
             "result": {"del_neighbor": True},
         },
         {
+            "name": "peer_group_declaration",
+            "getval": re.compile(
+                r"""
+                \sneighbor\s(?P<neighbor_address>\S+)
+                \speer-group$
+                """,
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} peer-group",
+            "result": {
+                "neighbors": {
+                    "{{ neighbor_address }}": {
+                        "peer_group_declaration": "{{ True }}",
+                        "neighbor_address": "{{ neighbor_address }}",
+                    },
+                },
+            },
+        },
+        {
             "name": "remote_as",
             "getval": re.compile(
                 r"""

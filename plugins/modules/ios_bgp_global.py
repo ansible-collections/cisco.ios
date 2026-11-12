@@ -1161,8 +1161,14 @@ options:
                     description: Perform inbound path-attribute filtering
                     type: bool
           peer_group:
-            description: Member of the peer-group
+            description: Name of the peer-group this neighbor belongs to.
             type: str
+          peer_group_declaration:
+            description:
+              - Set to C(true) to declare this neighbor as a peer-group.
+              - Set to C(false) to delete this peer-group and its member configuration.
+              - This option is mutually exclusive with C(peer_group).
+            type: bool
           remote_as:
             description:
               - Specify a BGP neighbor
@@ -2560,6 +2566,8 @@ EXAMPLES = """
           peer_group: "5"
           soft_reconfiguration: true
           version: 4
+        - neighbor_address: testPeerGroup
+          peer_group_declaration: true
       networks:
         - address: 192.0.2.15
           backdoor: true

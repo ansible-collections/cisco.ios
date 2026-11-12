@@ -5828,7 +5828,30 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>Member of the peer-group</div>
+                        <div>Name of the peer-group this neighbor belongs to.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="5">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>peer_group_declaration</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Set to <code>true</code> to declare this neighbor as a peer-group.</div>
+                        <div>Set to <code>false</code> to delete this peer-group and its member configuration.</div>
+                        <div>This option is mutually exclusive with <code>peer_group</code>.</div>
                 </td>
             </tr>
             <tr>
@@ -9652,6 +9675,8 @@ Examples
               peer_group: "5"
               soft_reconfiguration: true
               version: 4
+            - neighbor_address: testPeerGroup
+              peer_group_declaration: true
           networks:
             - address: 192.0.2.15
               backdoor: true

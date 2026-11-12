@@ -386,6 +386,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                     "type": "list",
                     "elements": "dict",
                     "aliases": ["neighbor"],
+                    "mutually_exclusive": [["peer_group", "peer_group_declaration"]],
                     "options": {
                         "neighbor_address": {"type": "str"},
                         "activate": {"type": "bool"},
@@ -597,6 +598,7 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                             },
                         },
                         "peer_group": {"type": "str"},
+                        "peer_group_declaration": {"type": "bool"},
                         "remote_as": {"type": "str"},
                         "remove_private_as": {
                             "type": "dict",

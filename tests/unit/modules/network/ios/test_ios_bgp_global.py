@@ -820,6 +820,349 @@ class TestIosBgpGlobalModule(TestIosModule):
         self.assertEqual(neighbor["local_as"]["number"], "501.65083")
         self.assertIsInstance(neighbor["local_as"]["number"], str)
 
+    def test_ios_bgp_global_peer_group_declaration(self):
+        self.execute_show_command.return_value = "router bgp 65000\n"
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "TestGroup",
+                            "peer_group_declaration": True,
+                        },
+                    ],
+                },
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["router bgp 65000", "neighbor TestGroup peer-group"],
+        )
+
+    def test_ios_bgp_global_peer_group_declaration_precedes_member_assignment(self):
+        self.execute_show_command.return_value = "router bgp 65000\n"
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "192.0.2.254",
+                            "peer_group": "TestGroup",
+                        },
+                        {
+                            "neighbor_address": "TestGroup",
+                            "peer_group_declaration": True,
+                        },
+                    ],
+                },
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            [
+                "router bgp 65000",
+                "neighbor TestGroup peer-group",
+                "neighbor 192.0.2.254 peer-group TestGroup",
+            ],
+        )
+
+    def test_ios_bgp_global_peer_group_declaration_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             neighbor TestGroup peer-group
+            """,
+        )
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "TestGroup",
+                            "peer_group_declaration": True,
+                        },
+                    ],
+                },
+                "state": "merged",
+            },
+        )
+        self.execute_module(changed=False, commands=[])
+
+    def test_ios_bgp_global_peer_group_assignment_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             neighbor 192.0.2.254 peer-group TestGroup
+            """,
+        )
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "192.0.2.254",
+                            "peer_group": "TestGroup",
+                        },
+                    ],
+                },
+                "state": "merged",
+            },
+        )
+        self.execute_module(changed=False, commands=[])
+
+    def test_ios_bgp_global_peer_group_declaration_false_removes_group(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             neighbor TestGroup peer-group
+             neighbor TestGroup remote-as 65001
+            """,
+        )
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "TestGroup",
+                            "peer_group_declaration": False,
+                        },
+                    ],
+                },
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("no neighbor TestGroup peer-group", result["commands"])
+
+    def test_ios_bgp_global_peer_group_declaration_false_rejects_other_attributes(self):
+        self.execute_show_command.return_value = "router bgp 65000\n"
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "TestGroup",
+                            "peer_group_declaration": False,
+                            "description": "gone",
+                        },
+                    ],
+                },
+                "state": "merged",
+            },
+        )
+        with self.assertRaises(AnsibleFailJson) as error:
+            self.execute_module(changed=False)
+        self.assertIn(
+            "peer_group_declaration: false cannot be combined with other neighbor attributes",
+            str(error.exception),
+        )
+
+    def test_ios_bgp_global_shutdown_parser_is_independent_per_neighbor(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             neighbor 192.0.2.1 remote-as 100
+             neighbor 192.0.2.1 shutdown
+             neighbor 192.0.2.2 remote-as 200
+             neighbor 192.0.2.2 shutdown
+            """,
+        )
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {"neighbor_address": "192.0.2.1", "remote_as": "100"},
+                        {"neighbor_address": "192.0.2.2", "remote_as": "200"},
+                    ],
+                },
+                "state": "replaced",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("no neighbor 192.0.2.1 shutdown", result["commands"])
+        self.assertIn("no neighbor 192.0.2.2 shutdown", result["commands"])
+
+    def test_ios_bgp_global_peer_group_declaration_false_absent_is_idempotent(self):
+        self.execute_show_command.return_value = "router bgp 65000\n"
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "TestGroup",
+                            "peer_group_declaration": False,
+                        },
+                    ],
+                },
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_bgp_global_peer_group_declaration_false_removes_in_config_states(self):
+        states = ["merged", "replaced", "overridden", "deleted"]
+        running_config = dedent(
+            """\
+            router bgp 65000
+             neighbor TestGroup peer-group
+            """,
+        )
+
+        for state in states:
+            with self.subTest(state=state):
+                self.execute_show_command.return_value = running_config
+                set_module_args(
+                    {
+                        "config": {
+                            "as_number": "65000",
+                            "bgp": {
+                                "default": {
+                                    "ipv4_unicast": True,
+                                    "route_target": {"filter": True},
+                                },
+                            },
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "TestGroup",
+                                    "peer_group_declaration": False,
+                                },
+                            ],
+                        },
+                        "state": state,
+                    },
+                )
+                result = self.execute_module(changed=True)
+                self.assertIn(
+                    "no neighbor TestGroup peer-group",
+                    result["commands"],
+                )
+
+    def test_ios_bgp_global_peer_group_declaration_false_absent_is_idempotent_in_config_states(
+        self,
+    ):
+        states = ["merged", "replaced", "overridden", "deleted"]
+
+        for state in states:
+            with self.subTest(state=state):
+                self.execute_show_command.return_value = "router bgp 65000\n"
+                set_module_args(
+                    {
+                        "config": {
+                            "as_number": "65000",
+                            "bgp": {
+                                "default": {
+                                    "ipv4_unicast": True,
+                                    "route_target": {"filter": True},
+                                },
+                            },
+                            "neighbors": [
+                                {
+                                    "neighbor_address": "TestGroup",
+                                    "peer_group_declaration": False,
+                                },
+                            ],
+                        },
+                        "state": state,
+                    },
+                )
+                result = self.execute_module(changed=False)
+                self.assertEqual(result["commands"], [])
+
+    def test_ios_bgp_global_peer_group_declaration_false_purged_state(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             neighbor TestGroup peer-group
+            """,
+        )
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "TestGroup",
+                            "peer_group_declaration": False,
+                        },
+                    ],
+                },
+                "state": "purged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["no router bgp 65000"])
+
+    def test_ios_bgp_global_peer_group_declaration_false_rendered(self):
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "TestGroup",
+                            "peer_group_declaration": False,
+                        },
+                    ],
+                },
+                "state": "rendered",
+            },
+        )
+        result = self.execute_module(changed=False)
+        self.assertIn(
+            "no neighbor TestGroup peer-group",
+            result["rendered"],
+        )
+
+    def test_ios_bgp_global_peer_group_declaration_mutually_exclusive(self):
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "TestGroup",
+                            "peer_group": "OtherPeerGroup",
+                            "peer_group_declaration": True,
+                        },
+                    ],
+                },
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("mutually exclusive", result["msg"])
+
+    def test_ios_bgp_global_peer_group_declaration_parsed_as_boolean(self):
+        set_module_args(
+            dict(
+                running_config=dedent(
+                    """\
+                    router bgp 65000
+                     neighbor TestGroup peer-group
+                    """,
+                ),
+                state="parsed",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        neighbor = next(
+            n for n in result["parsed"]["neighbors"] if n["neighbor_address"] == "TestGroup"
+        )
+        self.assertIs(neighbor["peer_group_declaration"], True)
+
     def test_ios_bgp_global_asdot_local_as_merged_idempotent(self):
         """merged state with ASDOT local_as must be idempotent when device already has it."""
         self.execute_show_command.return_value = dedent(
