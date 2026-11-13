@@ -2720,123 +2720,6 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="5">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>server</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Server Information</div>
-                        <div>Deprecated, use <em>servers</em> instead. When set it is merged into <em>servers</em>.</div>
-                        <div>Please refer vendor documentation for valid values</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>server_options</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>bmp server options</div>
-                        <div>Deprecated, use <em>servers</em> instead. Applies to the server given in <em>server</em>.</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>activate</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">boolean</span>
-                    </div>
-                </td>
-                <td>
-                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
-                                    <li>no</li>
-                                    <li>yes</li>
-                        </ul>
-                </td>
-                <td>
-                        <div>activate server</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>address</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">dictionary</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>BMP server address</div>
-                </td>
-            </tr>
-                                <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>host</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">string</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>host address</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="3">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>port</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>port number BMP server</div>
-                </td>
-            </tr>
-
-
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="5">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>servers</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -4360,27 +4243,6 @@ Parameters
                 </td>
                 <td>
                         <div>Activate BMP monitoring for all servers</div>
-                </td>
-            </tr>
-            <tr>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                    <td class="elbow-placeholder"></td>
-                <td colspan="4">
-                    <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>server</b>
-                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
-                    <div style="font-size: small">
-                        <span style="color: purple">integer</span>
-                    </div>
-                </td>
-                <td>
-                </td>
-                <td>
-                        <div>Activate BMP for server</div>
-                        <div>BMP Server Number</div>
-                        <div>Deprecated, use <em>servers</em> instead.</div>
-                        <div>Please refer vendor documentation for valid values</div>
                 </td>
             </tr>
             <tr>
@@ -9615,7 +9477,8 @@ Examples
             update_group: true
           bmp:
             buffer_size: 22
-            server: 2
+            servers:
+              - number: 2
           distance:
             bgp:
               routes_external: 2
@@ -9717,7 +9580,6 @@ Examples
     # - router bgp 65000
     # - auto-summary
     # - bmp buffer-size 22
-    # - bmp server 2
     # - distance bgp 2 3 4
     # - distance mbgp 2 3 5
     # - maximum-paths 2
@@ -9762,6 +9624,8 @@ Examples
     # - bgp suppress-inactive
     # - bgp update-delay 2
     # - bgp update-group split as-override
+    # - bmp server 2
+    # - exit-bmp-server-mode
     # - bgp inject-map map2 exist-map Testmap3 copy-attributes
     # - bgp inject-map map1 exist-map Testmap2 copy-attributes
     # - distribute-list prefix prefixTest in
@@ -9805,8 +9669,9 @@ Examples
     #
     # router bgp 65000
     #  auto-summary
-    #  bmp buffer-size 22
     #  bmp server 2
+    #  exit-bmp-server-mode
+    #  bmp buffer-size 22
     #  distance bgp 2 3 4
     #  distance mbgp 2 3 5
     #  maximum-paths 2
@@ -9986,7 +9851,8 @@ Examples
     #       update_group: true
     #     bmp:
     #       buffer_size: 22
-    #       server: 2
+    #       servers:
+    #         - number: 2
     #     distance:
     #       bgp:
     #         routes_external: 2

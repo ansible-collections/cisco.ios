@@ -550,16 +550,8 @@ class Bgp_global(ResourceModule):
             self.addcmd(w_srv, "bmp.servers.activate", False)
 
     def _bmp_list_to_dict(self, bmp):
-        """Key the BMP servers by number, folding in the deprecated server/server_options."""
+        """Key the BMP servers by number."""
         servers = {str(srv["number"]): srv for srv in bmp.pop("servers", None) or []}
-        legacy_number = bmp.pop("server", None)
-        legacy_options = bmp.pop("server_options", None) or {}
-        if legacy_number is not None:
-            srv = servers.setdefault(str(legacy_number), {"number": legacy_number})
-            for key, value in legacy_options.items():
-                srv.setdefault(key, value)
-        elif legacy_options:
-            self._module.fail_json(msg="bmp.server_options requires bmp.server to be set")
         if servers:
             bmp["servers"] = servers
 

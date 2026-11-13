@@ -1576,18 +1576,6 @@ class TestIosBgpGlobalModule(TestIosModule):
         self.assertIn("no bmp server 1", commands)
         self.assertNotIn("no bmp server 2", commands)
 
-    def test_ios_bgp_global_bmp_deleted_targeted_legacy_server(self):
-        self.execute_show_command.return_value = self.BMP_RUNNING_CONFIG
-        set_module_args(
-            {
-                "config": {"as_number": "65000", "bmp": {"server": 1}},
-                "state": "deleted",
-            },
-        )
-        commands = self.execute_module(changed=True)["commands"]
-        self.assertIn("no bmp server 1", commands)
-        self.assertNotIn("no bmp server 2", commands)
-
     def test_ios_bgp_global_bmp_deleted_neighbor_activation_exact_match(self):
         self.execute_show_command.return_value = self.BMP_RUNNING_CONFIG
         set_module_args(
@@ -1823,73 +1811,6 @@ class TestIosBgpGlobalModule(TestIosModule):
             ["router bgp 65000", "no neighbor 192.0.2.2 bmp-activate"],
         )
 
-    def test_ios_bgp_global_bmp_legacy_server_options(self):
-        """The deprecated server/server_options still work and are the same as servers."""
-        self.execute_show_command.return_value = dedent(
-            """\
-            router bgp 65000
-             bmp server 4
-              address 192.0.2.14 port-number 5004
-              activate
-             exit-bmp-server-mode
-            """,
-        )
-        set_module_args(
-            {
-                "config": {
-                    "as_number": "65000",
-                    "bmp": {
-                        "server": 4,
-                        "server_options": {
-                            "activate": True,
-                            "address": {"host": "192.0.2.14", "port": 5004},
-                        },
-                    },
-                },
-                "state": "merged",
-            },
-        )
-        self.execute_module(changed=False, commands=[])
-
-    def test_ios_bgp_global_bmp_legacy_neighbor_server(self):
-        self.execute_show_command.return_value = dedent(
-            """\
-            router bgp 65000
-             neighbor 192.0.2.2 remote-as 65002
-            """,
-        )
-        set_module_args(
-            {
-                "config": {
-                    "as_number": "65000",
-                    "neighbors": [
-                        {
-                            "neighbor_address": "192.0.2.2",
-                            "remote_as": "65002",
-                            "bmp_activate": {"server": 2},
-                        },
-                    ],
-                },
-                "state": "merged",
-            },
-        )
-        result = self.execute_module(changed=True)
-        self.assertEqual(
-            result["commands"],
-            ["router bgp 65000", "neighbor 192.0.2.2 bmp-activate server 2"],
-        )
-
-    def test_ios_bgp_global_bmp_server_options_without_server_fails(self):
-        self.execute_show_command.return_value = "router bgp 65000\n"
-        set_module_args(
-            {
-                "config": {"as_number": "65000", "bmp": {"server_options": {"activate": True}}},
-                "state": "merged",
-            },
-        )
-        result = self.execute_module(failed=True)
-        self.assertIn("server_options requires", result["msg"])
-
     def _assert_bmp_server_string_rejected(self, bmp, state="rendered"):
         set_module_args(
             {
@@ -1916,16 +1837,6 @@ class TestIosBgpGlobalModule(TestIosModule):
                 "servers": [
                     {"number": 1, "address": {"host": "192.0.2.10\nresolver-probe", "port": 5000}},
                 ],
-            },
-        )
-
-    def test_ios_bgp_global_bmp_legacy_address_host_rejects_line_break(self):
-        self._assert_bmp_server_string_rejected(
-            {
-                "server": 1,
-                "server_options": {
-                    "address": {"host": "192.0.2.10\rresolver-probe", "port": 5000},
-                },
             },
         )
 
@@ -2007,3 +1918,46 @@ class TestIosBgpGlobalModule(TestIosModule):
             commands.index("neighbor 192.0.2.1 remote-as 65001"),
             commands.index("neighbor 192.0.2.1 bmp-activate all"),
         )
+
+    def test_ios_bgp_global_bmp_server_removed(self):
+        """bmp.server was replaced by bmp.servers and is no longer accepted."""
+        self.execute_show_command.return_value = "router bgp 65000\n"
+        set_module_args({"config": {"as_number": "65000", "bmp": {"server": 1}}, "state": "merged"})
+        result = self.execute_module(failed=True)
+        self.assertIn("server", result["msg"])
+
+    def test_ios_bgp_global_bmp_server_options_removed(self):
+        """bmp.server_options was replaced by the options of bmp.servers."""
+        self.execute_show_command.return_value = "router bgp 65000\n"
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "bmp": {"server_options": {"activate": True}},
+                },
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("server_options", result["msg"])
+
+    def test_ios_bgp_global_bmp_activate_server_removed(self):
+        """neighbors.bmp_activate.server was replaced by bmp_activate.servers."""
+        self.execute_show_command.return_value = "router bgp 65000\n"
+        set_module_args(
+            {
+                "config": {
+                    "as_number": "65000",
+                    "neighbors": [
+                        {
+                            "neighbor_address": "192.0.2.2",
+                            "remote_as": "65002",
+                            "bmp_activate": {"server": 2},
+                        },
+                    ],
+                },
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(failed=True)
+        self.assertIn("server", result["msg"])
