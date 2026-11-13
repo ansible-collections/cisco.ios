@@ -106,7 +106,10 @@ class AclsFacts(object):
                     each_ace.pop("protocol_options", None)
             elif protocol == "icmp":
                 protocol_options = str(protocol_options).replace("-", "_")
-                each_ace["protocol_options"] = {"icmp": {protocol_options: True}}
+                if protocol_options.isdigit():  # a type with no keyword, e.g. 143
+                    each_ace["protocol_options"] = {"icmp": {"type_number": int(protocol_options)}}
+                else:
+                    each_ace["protocol_options"] = {"icmp": {protocol_options: True}}
             elif protocol == "igmp":
                 protocol_options = str(protocol_options).replace("-", "_")
                 mapping = AclsFacts.IGMP_MAP.get(protocol_options, protocol_options)
