@@ -7,7 +7,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 """
@@ -34,7 +33,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
     normalize_bmp_activate,
     validate_neighbor_addresses,
 )
-
 
 BMP_NEIGHBOR_DEACTIVATE_COMMAND = "no neighbor {0} bmp-activate"
 BMP_SERVER_NUMBER_PARSER = "bmp.servers.number"
