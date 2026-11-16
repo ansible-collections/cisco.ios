@@ -4,6 +4,25 @@ Cisco Ios Collection Release Notes
 
 .. contents:: Topics
 
+v11.7.1
+=======
+
+Release Summary
+---------------
+
+This patch is a re-release of 11.7.0 with a bugfix to monitor_sessions module's init files.
+The previous release(11.7.0) fixed BGP bugs across ios_bgp_global and ios_bgp_address_family, including BMP server fact parsing, activation ordering, peer-group declaration parsing, and input validation.
+The previous release(11.7.0) fixed VRF state bugs across ios_vrf_global (route distinguisher updates and absent VRF deletion in overridden state) and ios_vrf_address_family (unicast SAFI defaults, route-target idempotency, and deleted state scoping).
+The previous release(11.7.0) fixed interface and VLAN bugs across ios_vlans (excluding reserved VLANs in overridden state), ios_interfaces (removing absent logical interfaces and redundant shutdowns), and ios_l3_interfaces (IP replacement ordering).
+The previous release(11.7.0) added new resource modules including ios_flow_monitor_global and ios_flow_monitor_interfaces for Flexible NetFlow management, and ios_monitor_sessions for local SPAN and ERSPAN source sessions.
+The previous release(11.7.0) added multi-server BMP support (bmp.servers and neighbors.bmp_activate.servers) in ios_bgp_global and ios_bgp_address_family, along with peer_group_declaration in ios_bgp_global.
+The previous release(11.7.0) added TCP MSS adjustment parameters (tcp_adjust_mss and ipv6_tcp_adjust_mss) in ios_l3_interfaces and set large-community support in ios_route_maps.
+
+Bugfixes
+--------
+
+- Clean the init.py files within monitor_sessions module_utils. This removes the failures seen with empty-init
+
 v11.7.0
 =======
 
