@@ -21,7 +21,7 @@ description:
   - It manages flow records, flow exporters, samplers, and flow monitors as named entities.
 version_added: "11.7.0"
 author:
-  - Jorgen Spange (@jorgenspange)
+  - Jørgen Spange (@jorgenspange)
 notes:
   - Tested against Cisco IOS XE.
   - This module works with connection C(network_cli).
