@@ -26,7 +26,7 @@ description:
   - VLAN-based sources and RSPAN are not covered by this module.
 version_added: "11.7.0"
 author:
-  - Jorgen Spange (@jorgenspange)
+  - Jørgen Spange (@jorgenspange)
 notes:
   - Tested against Cisco IOS-XE on Cat9k switches (local SPAN) and C8000V (ERSPAN).
   - This module works with connection C(network_cli).

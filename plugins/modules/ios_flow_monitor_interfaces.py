@@ -23,7 +23,7 @@ description:
     use M(cisco.ios.ios_flow_monitor_global) to create them.
 version_added: "11.7.0"
 author:
-  - Jorgen Spange (@jorgenspange)
+  - Jørgen Spange (@jorgenspange)
 notes:
   - Tested against Cisco IOS XE.
   - This module works with connection C(network_cli).
