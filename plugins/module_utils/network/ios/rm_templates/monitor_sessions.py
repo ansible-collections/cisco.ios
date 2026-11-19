@@ -5,7 +5,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 import re
@@ -13,7 +12,6 @@ import re
 from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.rm_base.network_template import (
     NetworkTemplate,
 )
-
 
 _SESSION_KEY = "{{ session }}"
 _IFACE_KEY = "{{ interface }}"

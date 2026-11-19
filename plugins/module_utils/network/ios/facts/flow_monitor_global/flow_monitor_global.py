@@ -5,7 +5,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 """
@@ -25,7 +24,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.argspec.flow
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.flow_monitor_global import (
     Flow_monitor_globalTemplate,
 )
-
 
 DESCRIPTION_PATTERN = r"^description (.+)$"
 

@@ -5,7 +5,6 @@
 
 from __future__ import absolute_import, division, print_function
 
-
 __metaclass__ = type
 
 """
@@ -24,7 +23,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.flow_monitor_global import (
     Flow_monitor_globalTemplate,
 )
-
 
 NO_COMMAND = " no {0}"
 DESCRIPTION_COMMAND = " description {0}"
