@@ -137,7 +137,7 @@ EXAMPLES = """
 #
 # commands:
 #   - interface Tunnel1501
-#   - tunnel source Loopback499
+#   - tunnel source loopback499
 #   - tunnel destination 198.51.100.101
 #   - tunnel key 1501
 #   - tunnel vrf MGMT
@@ -309,7 +309,7 @@ EXAMPLES = """
 # rendered:
 #   - interface Tunnel1502
 #   - tunnel mode gre multipoint
-#   - tunnel source Loopback499
+#   - tunnel source loopback499
 #   - tunnel key 7
 
 # Using parsed
@@ -354,7 +354,7 @@ commands:
   type: list
   sample:
     - interface Tunnel1501
-    - tunnel source Loopback499
+    - tunnel source loopback499
     - tunnel destination 198.51.100.101
 rendered:
   description: The provided configuration in the task rendered in device native format (offline).
@@ -362,7 +362,7 @@ rendered:
   type: list
   sample:
     - interface Tunnel1501
-    - tunnel source Loopback499
+    - tunnel source loopback499
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)

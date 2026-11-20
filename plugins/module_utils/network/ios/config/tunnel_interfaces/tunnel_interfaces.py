@@ -33,7 +33,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
     Tunnel_interfacesTemplate,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    canonical_interface,
+    normalize_interface,
 )
 
 
@@ -99,12 +99,12 @@ class Tunnel_interfaces(ResourceModule):
         result = {}
         for item in deepcopy(interfaces) or []:
             # "Tu1501" in the task and "Tunnel1501" on the device are the same interface
-            item["name"] = canonical_interface(item["name"])
+            item["name"] = normalize_interface(item["name"])
             if check and not item["name"].startswith("Tunnel"):
                 self._module.fail_json(msg="%s is not a tunnel interface." % item["name"])
             # "Gi1" and "GigabitEthernet1", "2001:DB8::1" and "2001:db8::1" are the same
             if item.get("source"):
-                item["source"] = _address_or(item["source"], canonical_interface)
+                item["source"] = _address_or(item["source"], normalize_interface)
             if item.get("destination"):
                 item["destination"] = _address_or(item["destination"], str)
             result[item["name"]] = item

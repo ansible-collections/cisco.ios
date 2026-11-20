@@ -105,7 +105,7 @@ class TestIosTunnelInterfacesModule(TestIosModule):
             result["commands"],
             [
                 "interface Tunnel1501",
-                "tunnel source Loopback499",
+                "tunnel source loopback499",
                 "tunnel destination 198.51.100.101",
                 "tunnel key 1501",
                 "tunnel vrf MGMT",
@@ -364,7 +364,7 @@ class TestIosTunnelInterfacesModule(TestIosModule):
             [
                 "interface Tunnel1502",
                 "tunnel mode gre multipoint",
-                "tunnel source Loopback499",
+                "tunnel source loopback499",
                 "tunnel key 7",
             ],
         )
@@ -453,4 +453,4 @@ class TestIosTunnelInterfacesModule(TestIosModule):
             "interface Tunnel1\n tunnel mode ipsec ipv4\n tunnel source Loopback499\n",
             {"config": [{"name": "Tunnel2", "source": "Loopback499"}], "state": "overridden"},
         )
-        self.assertEqual(result["commands"], ["interface Tunnel2", "tunnel source Loopback499"])
+        self.assertEqual(result["commands"], ["interface Tunnel2", "tunnel source loopback499"])

@@ -306,7 +306,7 @@ Examples
     #
     # commands:
     #   - interface Tunnel1501
-    #   - tunnel source Loopback499
+    #   - tunnel source loopback499
     #   - tunnel destination 198.51.100.101
     #   - tunnel key 1501
     #   - tunnel vrf MGMT
@@ -478,7 +478,7 @@ Examples
     # rendered:
     #   - interface Tunnel1502
     #   - tunnel mode gre multipoint
-    #   - tunnel source Loopback499
+    #   - tunnel source loopback499
     #   - tunnel key 7
 
     # Using parsed
@@ -563,7 +563,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>The set of commands pushed to the remote device.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface Tunnel1501&#x27;, &#x27;tunnel source Loopback499&#x27;, &#x27;tunnel destination 198.51.100.101&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface Tunnel1501&#x27;, &#x27;tunnel source loopback499&#x27;, &#x27;tunnel destination 198.51.100.101&#x27;]</div>
                 </td>
             </tr>
             <tr>
@@ -614,7 +614,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>The provided configuration in the task rendered in device native format (offline).</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface Tunnel1501&#x27;, &#x27;tunnel source Loopback499&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;interface Tunnel1501&#x27;, &#x27;tunnel source loopback499&#x27;]</div>
                 </td>
             </tr>
     </table>

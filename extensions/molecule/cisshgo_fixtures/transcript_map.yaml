@@ -4760,7 +4760,7 @@ scenarios:
         transcript: "transcripts/generic_empty_return.txt"
       - command: "interface Tunnel1501"
         transcript: "transcripts/generic_empty_return.txt"
-      - command: "tunnel source Loopback499"
+      - command: "tunnel source loopback499"
         transcript: "transcripts/generic_empty_return.txt"
       - command: "tunnel destination 198.51.100.101"
         transcript: "transcripts/generic_empty_return.txt"
