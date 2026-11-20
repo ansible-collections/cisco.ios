@@ -715,7 +715,7 @@ Examples
     # commands:
     #   - ip sla logging traps
     #   - ip sla 1
-    #   - icmp-echo 192.0.2.1 source-interface Loopback0
+    #   - icmp-echo 192.0.2.1 source-interface loopback0
     #   - vrf MGMT
     #   - frequency 5
     #   - ip sla schedule 1 life forever start-time now
@@ -957,7 +957,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>The set of commands pushed to the remote device.</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ip sla 1&#x27;, &#x27;icmp-echo 192.0.2.1 source-interface Loopback0&#x27;, &#x27;frequency 5&#x27;, &#x27;ip sla schedule 1 life forever start-time now&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ip sla 1&#x27;, &#x27;icmp-echo 192.0.2.1 source-interface loopback0&#x27;, &#x27;frequency 5&#x27;, &#x27;ip sla schedule 1 life forever start-time now&#x27;]</div>
                 </td>
             </tr>
             <tr>
@@ -1008,7 +1008,7 @@ Common return values are documented `here <https://docs.ansible.com/ansible/late
                             <div>The provided configuration in the task rendered in device native format (offline).</div>
                     <br/>
                         <div style="font-size: smaller"><b>Sample:</b></div>
-                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ip sla 1&#x27;, &#x27;icmp-echo 192.0.2.1 source-interface Loopback0&#x27;]</div>
+                        <div style="font-size: smaller; color: blue; word-wrap: break-word; word-break: break-all;">[&#x27;ip sla 1&#x27;, &#x27;icmp-echo 192.0.2.1 source-interface loopback0&#x27;]</div>
                 </td>
             </tr>
     </table>

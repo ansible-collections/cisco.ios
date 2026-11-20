@@ -32,7 +32,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
     Ip_sla_globalTemplate,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    canonical_interface,
+    normalize_interface,
 )
 
 
@@ -97,7 +97,7 @@ class Ip_sla_global(ResourceModule):
             for op in ops:
                 icmp = op.get("icmp_echo")
                 if icmp and icmp.get("source_interface"):
-                    icmp["source_interface"] = canonical_interface(icmp["source_interface"])
+                    icmp["source_interface"] = normalize_interface(icmp["source_interface"])
                 # IOS does not print the default life of 3600 seconds
                 if op.get("schedule") and not op["schedule"].get("life"):
                     op["schedule"]["life"] = "3600"

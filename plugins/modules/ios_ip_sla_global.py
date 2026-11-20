@@ -232,7 +232,7 @@ EXAMPLES = """
 # commands:
 #   - ip sla logging traps
 #   - ip sla 1
-#   - icmp-echo 192.0.2.1 source-interface Loopback0
+#   - icmp-echo 192.0.2.1 source-interface loopback0
 #   - vrf MGMT
 #   - frequency 5
 #   - ip sla schedule 1 life forever start-time now
@@ -434,7 +434,7 @@ commands:
   type: list
   sample:
     - ip sla 1
-    - icmp-echo 192.0.2.1 source-interface Loopback0
+    - icmp-echo 192.0.2.1 source-interface loopback0
     - frequency 5
     - ip sla schedule 1 life forever start-time now
 rendered:
@@ -443,7 +443,7 @@ rendered:
   type: list
   sample:
     - ip sla 1
-    - icmp-echo 192.0.2.1 source-interface Loopback0
+    - icmp-echo 192.0.2.1 source-interface loopback0
 gathered:
   description: Facts about the network resource gathered from the remote device as structured data.
   returned: when I(state) is C(gathered)

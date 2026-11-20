@@ -4762,7 +4762,7 @@ scenarios:
         transcript: "transcripts/generic_empty_return.txt"
       - command: "ip sla 1"
         transcript: "transcripts/generic_empty_return.txt"
-      - command: "icmp-echo 192.0.2.1 source-interface Loopback0"
+      - command: "icmp-echo 192.0.2.1 source-interface loopback0"
         transcript: "transcripts/generic_empty_return.txt"
       - command: "vrf MGMT"
         transcript: "transcripts/generic_empty_return.txt"

@@ -132,7 +132,7 @@ class TestIosIpSlaModule(TestIosModule):
                 "ip sla logging traps",
                 "ip sla enable reaction-alerts",
                 "ip sla 1",
-                "icmp-echo 192.0.2.1 source-interface Loopback0",
+                "icmp-echo 192.0.2.1 source-interface loopback0",
                 "vrf MGMT",
                 "frequency 5",
                 "ip sla schedule 1 life forever start-time now",
@@ -238,7 +238,7 @@ class TestIosIpSlaModule(TestIosModule):
             [
                 "no ip sla 1",
                 "ip sla 1",
-                "icmp-echo 192.0.2.99 source-interface Loopback0",
+                "icmp-echo 192.0.2.99 source-interface loopback0",
                 "vrf MGMT",
                 "frequency 5",
                 "ip sla schedule 1 life forever start-time now",
