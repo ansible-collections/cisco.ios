@@ -26,6 +26,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
     L3_interfacesTemplate,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+    canonical_interface,
     normalize_interface,
     validate_n_expand_ipv4,
 )
@@ -292,6 +293,10 @@ class L3_interfaces(ResourceModule):
                 if "ipv4" in val:
                     temp = {}
                     for each in val["ipv4"]:
+                        # "Lo498" in the task and "Loopback498" on the device are the same interface
+                        source = each.get("source_interface")
+                        if source and source.get("name"):
+                            source["name"] = canonical_interface(source["name"])
                         if each.get("address") and each.get("address") != "dhcp":
                             temp.update({each["address"]: each})
                         elif each.get("address") == "dhcp":

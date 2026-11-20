@@ -1256,3 +1256,55 @@ class TestIosL3InterfacesModule(TestIosModule):
         commands = self.execute_module(changed=True)["commands"]
         self.assertIn("ip tcp adjust-mss 1500", commands)
         self.assertIn("ipv6 tcp adjust-mss 3740", commands)
+
+    def test_ios_l3_interfaces_unnumbered_source_interface_name_is_normalised(self):
+        # IOS prints the full name, "Lo498" and "loopback498" are the same interface
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Tunnel1501
+             ip unnumbered Loopback498
+            """,
+        )
+        for name in ("Loopback498", "loopback498", "Lo498"):
+            set_module_args(
+                dict(
+                    config=[dict(name="Tunnel1501", ipv4=[dict(source_interface=dict(name=name))])],
+                    state="merged",
+                ),
+            )
+            result = self.execute_module(changed=False)
+            self.assertEqual(result["commands"], [], name)
+
+    def test_ios_l3_interfaces_unnumbered_source_interface_is_sent_with_the_full_name(self):
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        name="Tunnel1501",
+                        ipv4=[dict(source_interface=dict(name="Lo498", poll=True))],
+                    ),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"], ["interface Tunnel1501", "ip unnumbered Loopback498 poll"]
+        )
+
+    def test_ios_l3_interfaces_unnumbered_source_interface_changes(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Tunnel1501
+             ip unnumbered Loopback498
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[dict(name="Tunnel1501", ipv4=[dict(source_interface=dict(name="Lo499"))])],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface Tunnel1501", "ip unnumbered Loopback499"])

@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_l3_interfaces - A short or lower case interface name in source_interface is idempotent.
