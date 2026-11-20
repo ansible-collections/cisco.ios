@@ -293,7 +293,12 @@ class L3_interfaces(ResourceModule):
                     temp = {}
                     for each in val["ipv4"]:
                         if each.get("address") and each.get("address") != "dhcp":
+                            # "ip mtu" belongs to the interface and is read back as an item of its own,
+                            # an mtu given next to the address is the same setting
+                            mtu = each.pop("mtu", None)
                             temp.update({each["address"]: each})
+                            if mtu is not None:
+                                temp.update({"mtu": {"mtu": mtu}})
                         elif each.get("address") == "dhcp":
                             # deprecated attribute
                             temp.update(

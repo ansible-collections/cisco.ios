@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_l3_interfaces - An ip mtu given next to the address in a task is idempotent.
