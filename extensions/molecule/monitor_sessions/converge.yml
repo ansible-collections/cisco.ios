@@ -1,0 +1,96 @@
+---
+- name: "Gather ios_monitor_sessions facts (gathered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  tasks:
+    - name: "Gather monitor session facts from device"
+      cisco.ios.ios_monitor_sessions:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered facts contain expected session"
+      ansible.builtin.assert:
+        that:
+          - result.gathered | length == 1
+          - result.gathered[0].session == 1
+          - result.gathered[0].destination.interface == "Gi1/0/10"
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed — monitor session config gathered from fixture"
+
+- name: "Merge ios_monitor_sessions configuration (merged state)"
+  hosts: ios_merged
+  gather_facts: false
+  tasks:
+    - name: "Merge monitor session configuration"
+      cisco.ios.ios_monitor_sessions: &merged_config
+        config:
+          - session: 1
+            sources:
+              - interfaces:
+                  - Gi1/0/1
+            destination:
+              interface: Gi1/0/10
+        state: merged
+      register: result
+
+    - name: "Assert merged commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'monitor session 1 source interface Gi1/0/1' in result.commands"
+          - "'monitor session 1 destination interface Gi1/0/10' in result.commands"
+        quiet: true
+
+    - name: "Merge monitor session configuration — idempotent run"
+      cisco.ios.ios_monitor_sessions: *merged_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — config applied + idempotency verified"
+
+- name: "Override ios_monitor_sessions configuration (overridden state)"
+  hosts: ios_overridden
+  gather_facts: false
+  tasks:
+    - name: "Override monitor sessions — keep only session 1"
+      cisco.ios.ios_monitor_sessions: &overridden_config
+        config:
+          - session: 1
+            sources:
+              - interfaces:
+                  - Gi1/0/1
+            destination:
+              interface: Gi1/0/10
+        state: overridden
+      register: result
+
+    - name: "Assert overridden removed session 2"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no monitor session 2' in result.commands"
+        quiet: true
+
+    - name: "Override monitor sessions — idempotent run"
+      cisco.ios.ios_monitor_sessions: *overridden_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: overridden state"
+      ansible.builtin.debug:
+        msg: "overridden state test passed — extra session removed + idempotency verified"

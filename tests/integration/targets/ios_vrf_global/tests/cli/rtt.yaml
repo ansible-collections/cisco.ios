@@ -58,7 +58,7 @@
 
     - ansible.builtin.assert:
         that:
-          - result.commands|length == 18
+          - result.commands|length == 10
           - result.changed == true
           - result.commands|symmetric_difference(rtt.commands) == []
 

@@ -1,0 +1,65 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_monitor_sessions overridden integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Ios_monitor_sessions overridden - populate two sessions
+      cisco.ios.ios_monitor_sessions:
+        config:
+          - session: 1
+            session_type: erspan-source
+            sources:
+              - interfaces:
+                  - "{{ monitor_if1 }}"
+                  - "{{ monitor_if2 }}"
+            destination:
+              erspan_id: "{{ erspan_id }}"
+              ip_address: "{{ erspan_ip }}"
+              origin_ip_address: "{{ erspan_origin }}"
+          - session: 2
+            session_type: erspan-source
+            sources:
+              - interfaces:
+                  - "{{ monitor_if3 }}"
+            destination:
+              erspan_id: "{{ erspan_id_alt }}"
+              ip_address: "{{ erspan_ip_alt }}"
+              origin_ip_address: "{{ erspan_origin_alt }}"
+        state: merged
+
+    - name: Ios_monitor_sessions overridden - keep session 1 with fewer sources, drop session 2
+      register: result
+      cisco.ios.ios_monitor_sessions: &id001
+        config:
+          - session: 1
+            session_type: erspan-source
+            sources:
+              - interfaces:
+                  - "{{ monitor_if1 }}"
+            destination:
+              erspan_id: "{{ erspan_id }}"
+              ip_address: "{{ erspan_ip }}"
+              origin_ip_address: "{{ erspan_origin }}"
+        state: overridden
+
+    - name: Ios_monitor_sessions overridden - assert extra source and session removed
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no source interface ' ~ monitor_if2 in result.commands"
+          - "'no monitor session 2' in result.commands"
+          - "'no source interface ' ~ monitor_if1 not in result.commands"
+
+    - name: Ios_monitor_sessions overridden - idempotent
+      register: result
+      cisco.ios.ios_monitor_sessions: *id001
+
+    - name: Ios_monitor_sessions overridden - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

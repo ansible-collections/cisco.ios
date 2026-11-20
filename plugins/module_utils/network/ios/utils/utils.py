@@ -505,3 +505,44 @@ def generate_switchport_trunk(type, add, vlans_range):
         append_command()
 
     return commands
+
+
+def normalize_bmp_activate(bmp_activate):
+    """Return a canonical bmp_activate dict: {'all': True}, {'servers': [sorted ints]} or {}.
+
+    The deprecated single ``server`` option is folded into ``servers`` and
+    duplicates are dropped, so want and have can be compared directly.
+    """
+    if not bmp_activate:
+        return {}
+    if bmp_activate.get("all"):
+        return {"all": True}
+    servers = list(bmp_activate.get("servers") or [])
+    if bmp_activate.get("server") is not None:
+        servers.append(bmp_activate["server"])
+    servers = sorted({int(srv) for srv in servers})
+    return {"servers": servers} if servers else {}
+
+
+def merge_bmp_activate(have, want):
+    """Merge bmp_activate, honoring explicit ``all: false`` and uniting server lists."""
+    have = normalize_bmp_activate(have)
+    if want and want.get("all") is False:
+        return {"all": False}
+    want = normalize_bmp_activate(want)
+    if have.get("all") or want.get("all"):
+        return {"all": True}
+    return normalize_bmp_activate({"servers": have.get("servers", []) + want.get("servers", [])})
+
+
+def validate_neighbor_addresses(module, data):
+    """Reject line breaks in neighbor addresses that are interpolated into CLI commands."""
+    if isinstance(data, dict):
+        address = data.get("neighbor_address")
+        if isinstance(address, str) and ("\r" in address or "\n" in address):
+            module.fail_json(msg="Neighbor address must not contain carriage returns or line feeds")
+        for value in data.values():
+            validate_neighbor_addresses(module, value)
+    elif isinstance(data, (list, tuple)):
+        for value in data:
+            validate_neighbor_addresses(module, value)

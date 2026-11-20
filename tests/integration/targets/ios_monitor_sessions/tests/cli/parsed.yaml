@@ -1,0 +1,19 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_monitor_sessions parsed integration tests on connection={{ ansible_connection }}
+
+- name: Ios_monitor_sessions parsed - parse config string
+  register: result
+  cisco.ios.ios_monitor_sessions:
+    running_config: "{{ lookup('file', role_path + '/tests/cli/_parsed.cfg') }}"
+    state: parsed
+
+- name: Ios_monitor_sessions parsed - assert structured data returned
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.parsed | length == 1
+      - result.parsed[0].session == 1
+      - result.parsed[0].session_type == "erspan-source"
+      - result.parsed[0].destination.ip_address == erspan_ip
+      - result.parsed[0].destination.erspan_id == erspan_id

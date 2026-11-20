@@ -2420,6 +2420,9 @@ Parameters
                 </td>
                 <td>
                         <div>Activate the BMP monitoring for a BGP peer</div>
+                        <div>Only supported by IOS-XE inside a VRF address-family.</div>
+                        <div>IOS-XE ignores a change on a neighbor that is already activated, so a change removes the existing activation before applying the new one.</div>
+                        <div>With <em>state=merged</em> <em>servers</em> are added to the activated ones, and <em>all</em> takes precedence.</div>
                 </td>
             </tr>
                                 <tr>
@@ -2463,7 +2466,28 @@ Parameters
                 <td>
                         <div>Activate BMP for server</div>
                         <div>BMP Server Number</div>
+                        <div>Deprecated, use <em>servers</em> instead.</div>
                         <div>Please refer vendor documentation for valid values</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>servers</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">list</span>
+                         / <span style="color: purple">elements=integer</span>
+                    </div>
+                </td>
+                <td>
+                </td>
+                <td>
+                        <div>BMP server numbers to activate for the neighbor (1-4)</div>
                 </td>
             </tr>
 
@@ -8423,6 +8447,68 @@ Examples
     #   bgp dmzlink-bw
     #   bgp soft-reconfig-backup
     #  exit-address-family
+
+    # Using merged to activate BMP for a neighbor in a VRF address family
+
+    # Before state:
+    # -------------
+    #
+    # router-ios#show running-config | section ^router bgp
+    # router bgp 65000
+    #  bmp server 1
+    #   address 192.0.2.10 port-number 5000
+    #   activate
+    #  exit-bmp-server-mode
+    #  bmp server 2
+    #   address 192.0.2.11 port-number 5001
+    #   activate
+    #  exit-bmp-server-mode
+    #  address-family ipv4 vrf VRF_A
+    #  exit-address-family
+
+    # Task:
+    # -----
+    - name: Activate BMP for a VRF neighbor
+      cisco.ios.ios_bgp_address_family:
+        config:
+          as_number: "65000"
+          address_family:
+            - afi: ipv4
+              vrf: VRF_A
+              neighbors:
+                - neighbor_address: 192.0.2.50
+                  remote_as: "65050"
+                  activate: true
+                  bmp_activate:
+                    servers: [1, 2]
+        state: merged
+
+    # Task output:
+    # ------------
+    #
+    # commands:
+    #   - router bgp 65000
+    #   - address-family ipv4 unicast vrf VRF_A
+    #   - neighbor 192.0.2.50 remote-as 65050
+    #   - neighbor 192.0.2.50 activate
+    #   - neighbor 192.0.2.50 bmp-activate server 1 server 2
+    #   - exit-address-family
+
+    # After state:
+    # ------------
+    #
+    # router-ios#show running-config | section ^router bgp
+    # router bgp 65000
+    #  address-family ipv4 vrf VRF_A
+    #   neighbor 192.0.2.50 remote-as 65050
+    #   neighbor 192.0.2.50 activate
+    #   neighbor 192.0.2.50 bmp-activate server 1 server 2
+    #  exit-address-family
+
+    # Note: BMP servers are configured with the cisco.ios.ios_bgp_global module.
+    # bmp_activate is only supported by IOS-XE inside a VRF address family. IOS-XE
+    # ignores a second bmp-activate on an already activated neighbor, so a change
+    # removes the existing activation ("no neighbor ... bmp-activate") first.
 
     # Using replaced
 

@@ -1,0 +1,4 @@
+monitor session 1 source interface Gi1/0/1
+monitor session 1 destination interface Gi1/0/10
+monitor session 2 source interface Gi1/0/2
+monitor session 2 destination interface Gi1/0/20

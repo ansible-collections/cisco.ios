@@ -1,0 +1,4 @@
+---
+- name: Remove all monitor sessions
+  cisco.ios.ios_monitor_sessions:
+    state: deleted
