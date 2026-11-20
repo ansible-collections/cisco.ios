@@ -945,6 +945,31 @@ platforms:
       "#": ">"
     end_context: "#"
 
+  ios_track_objects:
+    vendor: "cisco"
+    hostname: "cisshgo-ios"
+    username: "admin"
+    password: "admin"
+    command_transcripts:
+      "show privilege": "transcripts/common/show_privilege.txt"
+      "terminal length 0": "transcripts/generic_empty_return.txt"
+      "terminal width 512": "transcripts/generic_empty_return.txt"
+      "terminal width 0": "transcripts/generic_empty_return.txt"
+      "show version": "transcripts/common/show_version.txt"
+      "show running-config": "transcripts/ios_track_objects/show_running-config.txt"
+      "show running-config | section ^track": "transcripts/ios_track_objects/show_running-config_section_^track_populated.txt"
+      "show vlan": "transcripts/generic_empty_return.txt"
+      "write memory": "transcripts/generic_empty_return.txt"
+      "write mem": "transcripts/generic_empty_return.txt"
+    context_search:
+      "configure terminal": "(config)#"
+      "enable": "#"
+      "base": "#"
+    context_hierarchy:
+      "(config)#": "#"
+      "#": ">"
+    end_context: "#"
+
 scenarios:
   ios-acl-interfaces-merged:
     platform: ios_acl_interfaces
@@ -4723,3 +4748,55 @@ scenarios:
       # idempotent: get_facts (have)
       - command: "show running-config | section ^monitor session"
         transcript: "transcripts/ios_monitor_sessions/scenarios/ios-monitor-sessions-overridden/after_overridden.txt"
+
+  track-objects-merged:
+    platform: ios_track_objects
+    sequence:
+      # get_facts (have)
+      - command: "show running-config | section ^track"
+        transcript: "transcripts/ios_track_objects/scenarios/track-objects-merged/before_empty.txt"
+      # edit_config
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "track 1 ip sla 1 state"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "delay down 120 up 180"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "track 3 interface GigabitEthernet1/0/1 line-protocol"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "track 10 list boolean and"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "object 1"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "object 3 not"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "delay down 10"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^track"
+        transcript: "transcripts/ios_track_objects/scenarios/track-objects-merged/after_merged.txt"
+      # idempotent: get_facts (have)
+      - command: "show running-config | section ^track"
+        transcript: "transcripts/ios_track_objects/scenarios/track-objects-merged/after_merged.txt"
+
+  track-objects-overridden:
+    platform: ios_track_objects
+    sequence:
+      # get_facts (have)
+      - command: "show running-config | section ^track"
+        transcript: "transcripts/ios_track_objects/scenarios/track-objects-overridden/before_two.txt"
+      # edit_config
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no track 2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^track"
+        transcript: "transcripts/ios_track_objects/scenarios/track-objects-overridden/after_overridden.txt"
+      # idempotent: get_facts (have)
+      - command: "show running-config | section ^track"
+        transcript: "transcripts/ios_track_objects/scenarios/track-objects-overridden/after_overridden.txt"

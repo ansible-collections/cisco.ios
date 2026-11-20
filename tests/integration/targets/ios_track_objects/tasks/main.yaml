@@ -1,0 +1,5 @@
+---
+- name: Main task file for ios_track_objects tests
+  ansible.builtin.include_tasks: cli.yaml
+  tags:
+    - cli
