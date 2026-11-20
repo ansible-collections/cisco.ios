@@ -1,4 +1,3 @@
 ---
 minor_changes:
-  - ios_tunnel_interfaces - New resource module for the tunnel parameters of tunnel interfaces (source, destination, mode, key, vrf,
-    ttl, checksum, path-mtu-discovery). Supports merged, replaced, overridden, deleted, rendered, gathered and parsed.
+  - ios_tunnel_interfaces - New resource module.
