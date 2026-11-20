@@ -1,4 +1,0 @@
----
-bugfixes:
-  - Clean the init.py files within monitor_sessions module_utils.
-    This removes the failures seen with empty-init
