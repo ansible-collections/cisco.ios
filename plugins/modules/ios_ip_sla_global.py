@@ -15,31 +15,16 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_ip_sla_global
-extends_documentation_fragment:
-  - cisco.ios.ios
 short_description: Resource module to configure IP SLA operations.
 description:
-  - This module configures and manages IP SLA (Service Level Agreement) operations and their
-    schedules on Cisco IOS devices.
-  - Supported operation types are C(icmp_echo), C(tcp_connect) and C(http) (C(get) and C(raw)).
-    Other operation types (for example C(udp-jitter)) and the C(ip sla reaction-configuration),
-    C(ip sla responder) and C(ip sla group) commands are not covered yet.
-  - Operations of an unsupported type that exist on the device are left untouched and a warning
-    is issued when facts are gathered. They are not part of C(before), C(after) or C(gathered).
+  - This module configures and manages the attributes of IP SLA operations on Cisco IOS.
 version_added: 11.8.0
 author:
   - Jørgen Spange (@jorgenspange)
 notes:
-  - Tested against Cisco IOS XE Software, Version 17.x.
+  - Tested against Cisco IOS XE Software, Version 17.12.4 on a Catalyst 9300.
   - This module works with connection C(network_cli).
-  - IOS does not allow to edit an operation that is scheduled. When an option of a scheduled operation changes, the module
-    sends C(no ip sla schedule <id>) first and schedules the operation again afterwards (unless the schedule is no longer wanted).
-  - IOS does not allow to change the type line of an operation (destination, URL, source interface, ports) nor to remove an
-    C(http raw) request. In those cases, and when the operation type changes, the operation is removed with C(no ip sla <id>)
-    and created again, with everything that is wanted. Statistics of the operation are lost.
-  - IOS refuses to schedule an operation unless I(threshold) <= I(timeout) <= I(frequency) (defaults 5000 ms, 5000 ms and 60 s),
-    and the message is not treated as an error by the connection plugin. The module fails with an explanation instead.
-  - IOS does not print the default C(life) of 3600 seconds, the module treats a schedule without I(life) as 3600.
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   config:
     description: A dictionary of IP SLA configuration.

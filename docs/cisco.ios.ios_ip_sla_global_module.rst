@@ -17,9 +17,7 @@ Version added: 11.8.0
 
 Synopsis
 --------
-- This module configures and manages IP SLA (Service Level Agreement) operations and their schedules on Cisco IOS devices.
-- Supported operation types are ``icmp_echo``, ``tcp_connect`` and ``http`` (``get`` and ``raw``). Other operation types (for example ``udp-jitter``) and the ``ip sla reaction-configuration``, ``ip sla responder`` and ``ip sla group`` commands are not covered yet.
-- Operations of an unsupported type that exist on the device are left untouched and a warning is issued when facts are gathered. They are not part of ``before``, ``after`` or ``gathered``.
+- This module configures and manages the attributes of IP SLA operations on Cisco IOS.
 
 
 
@@ -660,14 +658,8 @@ Notes
 -----
 
 .. note::
-   - Tested against Cisco IOS XE Software, Version 17.x.
-   - This module works with connection ``network_cli``.
-   - IOS does not allow to edit an operation that is scheduled. When an option of a scheduled operation changes, the module sends ``no ip sla schedule <id>`` first and schedules the operation again afterwards (unless the schedule is no longer wanted).
-   - IOS does not allow to change the type line of an operation (destination, URL, source interface, ports) nor to remove an ``http raw`` request. In those cases, and when the operation type changes, the operation is removed with ``no ip sla <id>`` and created again, with everything that is wanted. Statistics of the operation are lost.
-   - IOS refuses to schedule an operation unless *threshold* <= *timeout* <= *frequency* (defaults 5000 ms, 5000 ms and 60 s), and the message is not treated as an error by the connection plugin. The module fails with an explanation instead.
-   - IOS does not print the default ``life`` of 3600 seconds, the module treats a schedule without *life* as 3600.
-   - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
-   - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
+   - Tested against Cisco IOS XE Software, Version 17.12.4 on a Catalyst 9300.
+   - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
 
 
 
