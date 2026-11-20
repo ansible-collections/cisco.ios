@@ -1256,3 +1256,73 @@ class TestIosL3InterfacesModule(TestIosModule):
         commands = self.execute_module(changed=True)["commands"]
         self.assertIn("ip tcp adjust-mss 1500", commands)
         self.assertIn("ipv6 tcp adjust-mss 3740", commands)
+
+    def test_ios_l3_interfaces_mtu_on_the_address_is_idempotent(self):
+        # "ip mtu" is read back as an item of its own, an mtu given next to the address is the same setting
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Tunnel1501
+             ip address 192.0.2.82 255.255.255.252
+             ip mtu 1400
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(name="Tunnel1501", ipv4=[dict(address="192.0.2.82/30", mtu=1400)]),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_l3_interfaces_mtu_on_the_address_is_set_after_the_address(self):
+        self.execute_show_command.return_value = ""
+        set_module_args(
+            dict(
+                config=[dict(name="Tunnel1501", ipv4=[dict(address="192.0.2.82/30", mtu=1400)])],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface Tunnel1501", "ip address 192.0.2.82 255.255.255.252", "ip mtu 1400"],
+        )
+
+    def test_ios_l3_interfaces_mtu_on_the_address_changes_only_the_mtu(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Tunnel1501
+             ip address 192.0.2.82 255.255.255.252
+             ip mtu 1400
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[dict(name="Tunnel1501", ipv4=[dict(address="192.0.2.82/30", mtu=1500)])],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface Tunnel1501", "ip mtu 1500"])
+
+    def test_ios_l3_interfaces_mtu_as_an_item_of_its_own_still_works(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface Tunnel1501
+             ip address 192.0.2.82 255.255.255.252
+             ip mtu 1400
+            """,
+        )
+        set_module_args(
+            dict(
+                config=[
+                    dict(name="Tunnel1501", ipv4=[dict(address="192.0.2.82/30"), dict(mtu=1400)]),
+                ],
+                state="merged",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["commands"], [])
