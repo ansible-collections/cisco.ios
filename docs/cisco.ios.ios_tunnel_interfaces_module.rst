@@ -17,9 +17,7 @@ Version added: 11.8.0
 
 Synopsis
 --------
-- This module configures and manages the tunnel specific parameters (``tunnel source``, ``tunnel destination``, ``tunnel key``, ``tunnel vrf`` and so on) of tunnel interfaces on Cisco IOS devices.
-- The other settings of a tunnel interface are managed by the modules that already own them, ``ios_interfaces`` for the description, ``ios_vrf_interfaces`` for ``vrf forwarding`` and ``ios_l3_interfaces`` for the IP address, MTU, TCP MSS and redirects.
-- Supported parameters are *source*, *destination*, *mode* (``gre ip``, ``gre ipv6`` and ``gre multipoint``), *key*, *tunnel_vrf*, *ttl*, *checksum* and *path_mtu_discovery*. Others, for example ``tunnel keepalive`` and ``tunnel protection``, are not covered yet.
+- This module configures and manages the tunnel attributes of tunnel interfaces on Cisco IOS.
 
 
 
@@ -123,6 +121,7 @@ Parameters
                 <td>
                         <div>Encapsulation of the tunnel (<code>tunnel mode</code>).</div>
                         <div><code>gre_ip</code> is the default of IOS and is not printed in the running configuration.</div>
+                        <div><code>gre_multipoint</code> cannot be combined with <em>destination</em>.</div>
                 </td>
             </tr>
             <tr>
@@ -269,12 +268,7 @@ Notes
 
 .. note::
    - Tested against Cisco IOS XE Software, Version 17.12.4 on a Catalyst 9300.
-   - This module works with connection ``network_cli``.
-   - IOS does not print the defaults ``tunnel mode gre ip`` and ``tunnel ttl 255``. The module treats a tunnel without them as *mode=gre_ip* and *ttl=255*, so setting the defaults explicitly is idempotent.
-   - IOS refuses ``tunnel mode gre multipoint`` while a ``tunnel destination`` is configured, and the error is not seen by the connection plugin. The module removes the destination before switching to *gre_multipoint*, sets the mode before the destination when leaving it, and fails when a task sets *destination* together with *mode=gre_multipoint*.
-   - The tunnel interface itself is not removed by this module. State *deleted* removes the tunnel parameters only, use ``ios_interfaces`` with state *purged* to remove the interface.
-   - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
-   - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
+   - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
 
 
 

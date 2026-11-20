@@ -15,30 +15,16 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_tunnel_interfaces
-extends_documentation_fragment:
-  - cisco.ios.ios
 short_description: Resource module to configure tunnel interface parameters.
 description:
-  - This module configures and manages the tunnel specific parameters (C(tunnel source), C(tunnel destination),
-    C(tunnel key), C(tunnel vrf) and so on) of tunnel interfaces on Cisco IOS devices.
-  - The other settings of a tunnel interface are managed by the modules that already own them, C(ios_interfaces)
-    for the description, C(ios_vrf_interfaces) for C(vrf forwarding) and C(ios_l3_interfaces) for the IP address, MTU,
-    TCP MSS and redirects.
-  - Supported parameters are I(source), I(destination), I(mode) (C(gre ip), C(gre ipv6) and C(gre multipoint)), I(key), I(tunnel_vrf),
-    I(ttl), I(checksum) and I(path_mtu_discovery). Others, for example C(tunnel keepalive) and C(tunnel protection), are not covered yet.
+  - This module configures and manages the tunnel attributes of tunnel interfaces on Cisco IOS.
 version_added: 11.8.0
 author:
   - Jørgen Spange (@jorgenspange)
 notes:
   - Tested against Cisco IOS XE Software, Version 17.12.4 on a Catalyst 9300.
   - This module works with connection C(network_cli).
-  - IOS does not print the defaults C(tunnel mode gre ip) and C(tunnel ttl 255). The module treats a tunnel without them as
-    I(mode=gre_ip) and I(ttl=255), so setting the defaults explicitly is idempotent.
-  - IOS refuses C(tunnel mode gre multipoint) while a C(tunnel destination) is configured, and the error is not seen by the
-    connection plugin. The module removes the destination before switching to I(gre_multipoint), sets the mode before the
-    destination when leaving it, and fails when a task sets I(destination) together with I(mode=gre_multipoint).
-  - The tunnel interface itself is not removed by this module. State I(deleted) removes the tunnel parameters only,
-    use C(ios_interfaces) with state I(purged) to remove the interface.
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   config:
     description: A list of tunnel interface configurations.
@@ -59,6 +45,7 @@ options:
         description:
           - Encapsulation of the tunnel (C(tunnel mode)).
           - C(gre_ip) is the default of IOS and is not printed in the running configuration.
+          - C(gre_multipoint) cannot be combined with I(destination).
         type: str
         choices: ["gre_ip", "gre_ipv6", "gre_multipoint"]
       key:
