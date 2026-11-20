@@ -295,7 +295,7 @@ class L3_interfaces(ResourceModule):
             )
             if want_source and have_source and want_source.get("name") and have_source.get("name"):
                 if normalize_interface(want_source["name"]) == normalize_interface(
-                    have_source["name"]
+                    have_source["name"],
                 ):
                     have_source["name"] = want_source["name"]
 
