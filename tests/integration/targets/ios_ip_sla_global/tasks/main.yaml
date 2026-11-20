@@ -1,0 +1,5 @@
+---
+- name: Main task file for ios_ip_sla_global tests
+  ansible.builtin.include_tasks: cli.yaml
+  tags:
+    - cli

@@ -1,0 +1,17 @@
+---
+- name: Populate base IP SLA configuration
+  cisco.ios.ios_ip_sla_global:
+    config:
+      logging_traps: true
+      operations:
+        - operation_id: 91
+          icmp_echo:
+            destination: "{{ sla_dest1 }}"
+          frequency: 10
+          schedule:
+            life: forever
+            start_time: now
+        - operation_id: 92
+          icmp_echo:
+            destination: "{{ sla_dest2 }}"
+    state: merged

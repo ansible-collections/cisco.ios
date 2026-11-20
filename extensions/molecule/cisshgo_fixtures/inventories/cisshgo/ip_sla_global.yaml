@@ -1,0 +1,10 @@
+---
+devices:
+  - platform: ios_ip_sla_global
+    count: 1
+
+  - scenario: ip-sla-global-merged
+    count: 1
+
+  - scenario: ip-sla-global-overridden
+    count: 1

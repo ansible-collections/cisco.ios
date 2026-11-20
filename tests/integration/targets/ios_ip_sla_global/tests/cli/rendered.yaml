@@ -1,0 +1,21 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_ip_sla_global rendered integration tests on connection={{ ansible_connection }}
+
+- name: Rendered - render commands without device
+  register: result
+  cisco.ios.ios_ip_sla_global:
+    config:
+      operations:
+        - operation_id: 91
+          tcp_connect:
+            destination: "{{ sla_dest1 }}"
+            port: 443
+          frequency: 30
+    state: rendered
+
+- name: Rendered - assert commands generated
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.rendered == ['ip sla 91', 'tcp-connect ' ~ sla_dest1 ~ ' 443', 'frequency 30']

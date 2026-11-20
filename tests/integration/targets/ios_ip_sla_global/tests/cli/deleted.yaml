@@ -1,0 +1,45 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_ip_sla_global deleted integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Deleted - one operation
+      register: result
+      cisco.ios.ios_ip_sla_global:
+        config:
+          operations:
+            - operation_id: 92
+        state: deleted
+
+    - name: Deleted - assert only operation 92 was removed
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == ['no ip sla 92']
+          - result.after.operations | map(attribute='operation_id') | list == [91]
+
+    - name: Deleted - everything
+      register: result
+      cisco.ios.ios_ip_sla_global:
+        state: deleted
+
+    - name: Deleted - assert everything is gone
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.after is not defined or result.after == {}
+
+    - name: Deleted - idempotent
+      register: result
+      cisco.ios.ios_ip_sla_global:
+        state: deleted
+
+    - name: Deleted - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

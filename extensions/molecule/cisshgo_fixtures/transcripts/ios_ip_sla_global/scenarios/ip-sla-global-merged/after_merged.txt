@@ -1,0 +1,6 @@
+ip sla 1
+ icmp-echo 192.0.2.1 source-interface Loopback0
+  vrf MGMT
+  frequency 5
+ip sla schedule 1 life forever start-time now
+ip sla logging traps
