@@ -32,7 +32,7 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
     Track_objectsTemplate,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    canonical_interface,
+    normalize_interface,
 )
 
 
@@ -100,7 +100,7 @@ class Track_objects(ResourceModule):
         for obj in deepcopy(objects) or []:
             # "Gi1" in the task and "GigabitEthernet1" on the device are the same interface
             if obj.get("interface"):
-                obj["interface"]["name"] = canonical_interface(obj["interface"]["name"])
+                obj["interface"]["name"] = normalize_interface(obj["interface"]["name"])
             result[obj["object_id"]] = obj
         return result
 
