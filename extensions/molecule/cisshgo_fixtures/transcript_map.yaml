@@ -945,6 +945,31 @@ platforms:
       "#": ">"
     end_context: "#"
 
+  ios_tunnel_interfaces:
+    vendor: "cisco"
+    hostname: "cisshgo-ios"
+    username: "admin"
+    password: "admin"
+    command_transcripts:
+      "show privilege": "transcripts/common/show_privilege.txt"
+      "terminal length 0": "transcripts/generic_empty_return.txt"
+      "terminal width 512": "transcripts/generic_empty_return.txt"
+      "terminal width 0": "transcripts/generic_empty_return.txt"
+      "show version": "transcripts/common/show_version.txt"
+      "show running-config": "transcripts/ios_tunnel_interfaces/show_running-config.txt"
+      "show running-config | section ^interface Tunnel": "transcripts/ios_tunnel_interfaces/show_running-config_section_interface-Tunnel_populated.txt"
+      "show vlan": "transcripts/generic_empty_return.txt"
+      "write memory": "transcripts/generic_empty_return.txt"
+      "write mem": "transcripts/generic_empty_return.txt"
+    context_search:
+      "configure terminal": "(config)#"
+      "enable": "#"
+      "base": "#"
+    context_hierarchy:
+      "(config)#": "#"
+      "#": ">"
+    end_context: "#"
+
 scenarios:
   ios-acl-interfaces-merged:
     platform: ios_acl_interfaces
@@ -4723,3 +4748,55 @@ scenarios:
       # idempotent: get_facts (have)
       - command: "show running-config | section ^monitor session"
         transcript: "transcripts/ios_monitor_sessions/scenarios/ios-monitor-sessions-overridden/after_overridden.txt"
+
+  tunnel-interfaces-merged:
+    platform: ios_tunnel_interfaces
+    sequence:
+      # get_facts (have)
+      - command: "show running-config | section ^interface Tunnel"
+        transcript: "transcripts/ios_tunnel_interfaces/scenarios/tunnel-interfaces-merged/before_empty.txt"
+      # edit_config
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface Tunnel1501"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "tunnel source Loopback499"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "tunnel destination 198.51.100.101"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "tunnel key 1501"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "tunnel vrf MGMT"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^interface Tunnel"
+        transcript: "transcripts/ios_tunnel_interfaces/scenarios/tunnel-interfaces-merged/after_merged.txt"
+      # idempotent: get_facts (have)
+      - command: "show running-config | section ^interface Tunnel"
+        transcript: "transcripts/ios_tunnel_interfaces/scenarios/tunnel-interfaces-merged/after_merged.txt"
+
+  tunnel-interfaces-overridden:
+    platform: ios_tunnel_interfaces
+    sequence:
+      # get_facts (have)
+      - command: "show running-config | section ^interface Tunnel"
+        transcript: "transcripts/ios_tunnel_interfaces/scenarios/tunnel-interfaces-overridden/before_two.txt"
+      # edit_config
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "interface Tunnel1502"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no tunnel source"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no tunnel destination"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^interface Tunnel"
+        transcript: "transcripts/ios_tunnel_interfaces/scenarios/tunnel-interfaces-overridden/after_overridden.txt"
+      # idempotent: get_facts (have)
+      - command: "show running-config | section ^interface Tunnel"
+        transcript: "transcripts/ios_tunnel_interfaces/scenarios/tunnel-interfaces-overridden/after_overridden.txt"

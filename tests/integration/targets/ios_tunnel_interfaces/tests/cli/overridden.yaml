@@ -1,0 +1,36 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_tunnel_interfaces overridden integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Overridden - only tunnel 1 keeps its parameters
+      register: result
+      cisco.ios.ios_tunnel_interfaces: &override
+        config:
+          - name: "{{ tunnel1 }}"
+            source: "{{ tunnel_src }}"
+            destination: "{{ tunnel_dst1 }}"
+            key: 1501
+        state: overridden
+
+    - name: Overridden - assert the other tunnel was cleared
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands[0] == 'interface ' ~ tunnel2
+          - "'no tunnel destination' in result.commands"
+          - "'no tunnel ttl' in result.commands"
+
+    - name: Overridden - idempotent
+      register: result
+      cisco.ios.ios_tunnel_interfaces: *override
+
+    - name: Overridden - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -1,0 +1,12 @@
+interface Tunnel1501
+ tunnel source Loopback499
+ tunnel destination 198.51.100.101
+ tunnel key 1501
+ tunnel vrf MGMT
+interface Tunnel1502
+ tunnel source GigabitEthernet1/0/12
+ tunnel mode gre ipv6
+ tunnel destination 2001:DB8::1
+ tunnel ttl 64
+ tunnel checksum
+ tunnel path-mtu-discovery

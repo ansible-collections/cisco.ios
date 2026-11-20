@@ -1,0 +1,109 @@
+---
+- name: "Gather ios_tunnel_interfaces facts (gathered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  tasks:
+    - name: "Gather facts from device"
+      cisco.ios.ios_tunnel_interfaces:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered facts"
+      ansible.builtin.assert:
+        that:
+          - result.gathered | length == 2
+          - result.gathered[0].name == "Tunnel1501"
+          - result.gathered[0].vrf == "MGMT"
+          - result.gathered[1].mode == "gre_ipv6"
+          - result.gathered[1].destination == "2001:DB8::1"
+          - result.gathered[1].path_mtu_discovery == true
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed"
+
+- name: "Merge ios_tunnel_interfaces configuration (merged state)"
+  hosts: ios_merged
+  gather_facts: false
+  tasks:
+    - name: "Merge configuration"
+      cisco.ios.ios_tunnel_interfaces: &merged_config
+        config:
+          - name: Tunnel1501
+            source: Loopback499
+            destination: 198.51.100.101
+            key: 1501
+            vrf: MGMT
+        state: merged
+      register: result
+
+    - name: "Assert merged commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == merged_commands
+        quiet: true
+      vars:
+        merged_commands:
+          - "interface Tunnel1501"
+          - "tunnel source Loopback499"
+          - "tunnel destination 198.51.100.101"
+          - "tunnel key 1501"
+          - "tunnel vrf MGMT"
+
+    - name: "Merge configuration — idempotent run"
+      cisco.ios.ios_tunnel_interfaces: *merged_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands == []
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — config applied + idempotency verified"
+
+- name: "Override ios_tunnel_interfaces configuration (overridden state)"
+  hosts: ios_overridden
+  gather_facts: false
+  tasks:
+    - name: "Override configuration"
+      cisco.ios.ios_tunnel_interfaces: &overridden_config
+        config:
+          - name: Tunnel1501
+            source: Loopback499
+            destination: 198.51.100.101
+            key: 1501
+            vrf: MGMT
+        state: overridden
+      register: result
+
+    - name: "Assert only the other tunnel is cleared"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == overridden_commands
+        quiet: true
+      vars:
+        overridden_commands:
+          - "interface Tunnel1502"
+          - "no tunnel source"
+          - "no tunnel destination"
+
+    - name: "Override configuration — idempotent run"
+      cisco.ios.ios_tunnel_interfaces: *overridden_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: overridden state"
+      ansible.builtin.debug:
+        msg: "overridden state test passed — other tunnel cleared + idempotency verified"

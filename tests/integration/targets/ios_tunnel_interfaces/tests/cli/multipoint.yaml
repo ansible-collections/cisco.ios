@@ -1,0 +1,46 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_tunnel_interfaces multipoint integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Multipoint - IOS refuses the mode while a destination is set, it has to go first
+      register: result
+      cisco.ios.ios_tunnel_interfaces: &multipoint
+        config:
+          - name: "{{ tunnel1 }}"
+            mode: gre_multipoint
+        state: merged
+
+    - name: Multipoint - assert the order
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == ['interface ' ~ tunnel1, 'no tunnel destination', 'tunnel mode gre multipoint']
+
+    - name: Multipoint - idempotent
+      register: result
+      cisco.ios.ios_tunnel_interfaces: *multipoint
+
+    - name: Multipoint - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    - name: Multipoint - back to point to point, the mode has to go first
+      register: result
+      cisco.ios.ios_tunnel_interfaces:
+        config:
+          - name: "{{ tunnel1 }}"
+            source: "{{ tunnel_src }}"
+            destination: "{{ tunnel_dst1 }}"
+        state: replaced
+
+    - name: Multipoint - assert the order
+      ansible.builtin.assert:
+        that:
+          - result.commands == ['interface ' ~ tunnel1, 'no tunnel mode', 'tunnel destination ' ~ tunnel_dst1]
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

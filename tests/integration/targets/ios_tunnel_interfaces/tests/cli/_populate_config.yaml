@@ -1,0 +1,13 @@
+---
+- name: Populate base tunnel interfaces
+  cisco.ios.ios_tunnel_interfaces:
+    config:
+      - name: "{{ tunnel1 }}"
+        source: "{{ tunnel_src }}"
+        destination: "{{ tunnel_dst1 }}"
+        key: 1501
+      - name: "{{ tunnel2 }}"
+        source: "{{ tunnel_src }}"
+        destination: "{{ tunnel_dst2 }}"
+        ttl: 64
+    state: merged

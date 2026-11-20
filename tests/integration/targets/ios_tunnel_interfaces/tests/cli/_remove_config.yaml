@@ -1,0 +1,7 @@
+---
+- name: Remove the test tunnel interfaces
+  cisco.ios.ios_interfaces:
+    config:
+      - name: "{{ tunnel1 }}"
+      - name: "{{ tunnel2 }}"
+    state: purged
