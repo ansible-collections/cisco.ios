@@ -13,7 +13,7 @@
         that:
           - result.gathered | length == 2
           - result.gathered[0].name == "Tunnel1501"
-          - result.gathered[0].vrf == "MGMT"
+          - result.gathered[0].tunnel_vrf == "MGMT"
           - result.gathered[1].mode == "gre_ipv6"
           - result.gathered[1].destination == "2001:DB8::1"
           - result.gathered[1].path_mtu_discovery == true
@@ -34,7 +34,7 @@
             source: Loopback499
             destination: 198.51.100.101
             key: 1501
-            vrf: MGMT
+            tunnel_vrf: MGMT
         state: merged
       register: result
 
@@ -78,7 +78,7 @@
             source: Loopback499
             destination: 198.51.100.101
             key: 1501
-            vrf: MGMT
+            tunnel_vrf: MGMT
         state: overridden
       register: result
 

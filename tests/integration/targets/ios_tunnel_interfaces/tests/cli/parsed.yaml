@@ -14,6 +14,6 @@
     that:
       - result.changed == false
       - result.parsed | length == 2
-      - result.parsed[0].vrf == "MGMT"
+      - result.parsed[0].tunnel_vrf == "MGMT"
       - result.parsed[1].mode == "gre_ipv6"
       - result.parsed[1].checksum == true

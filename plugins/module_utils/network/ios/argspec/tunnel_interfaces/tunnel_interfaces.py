@@ -45,7 +45,7 @@ class Tunnel_interfacesArgs(object):  # pylint: disable=R0903
                     "type": "str",
                 },
                 "key": {"type": "int", "no_log": False},
-                "vrf": {"type": "str"},
+                "tunnel_vrf": {"type": "str"},
                 "ttl": {"type": "int"},
                 "checksum": {"type": "bool"},
                 "path_mtu_discovery": {"type": "bool"},

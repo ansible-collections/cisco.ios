@@ -19,7 +19,7 @@ Synopsis
 --------
 - This module configures and manages the tunnel specific parameters (``tunnel source``, ``tunnel destination``, ``tunnel key``, ``tunnel vrf`` and so on) of tunnel interfaces on Cisco IOS devices.
 - The other settings of a tunnel interface are managed by the modules that already own them, ``ios_interfaces`` for the description, ``ios_vrf_interfaces`` for ``vrf forwarding`` and ``ios_l3_interfaces`` for the IP address, MTU, TCP MSS and redirects.
-- Supported parameters are *source*, *destination*, *mode* (``gre ip``, ``gre ipv6`` and ``gre multipoint``), *key*, *vrf*, *ttl*, *checksum* and *path_mtu_discovery*. Others, for example ``tunnel keepalive`` and ``tunnel protection``, are not covered yet.
+- Supported parameters are *source*, *destination*, *mode* (``gre ip``, ``gre ipv6`` and ``gre multipoint``), *key*, *tunnel_vrf*, *ttl*, *checksum* and *path_mtu_discovery*. Others, for example ``tunnel keepalive`` and ``tunnel protection``, are not covered yet.
 
 
 
@@ -198,7 +198,7 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="1">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
-                    <b>vrf</b>
+                    <b>tunnel_vrf</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
                         <span style="color: purple">string</span>
@@ -207,7 +207,8 @@ Parameters
                 <td>
                 </td>
                 <td>
-                        <div>VRF used to look up the tunnel destination (<code>tunnel vrf</code>).</div>
+                        <div>VRF used to reach the tunnel destination, also called the front-door VRF (<code>tunnel vrf</code>).</div>
+                        <div>This is not the VRF of the tunnel interface itself (<code>vrf forwarding</code>), that one is managed by <code>ios_vrf_interfaces</code>.</div>
                 </td>
             </tr>
 
@@ -297,7 +298,7 @@ Examples
             source: Loopback499
             destination: 198.51.100.101
             key: 1501
-            vrf: MGMT
+            tunnel_vrf: MGMT
         state: merged
 
     # Task Output
@@ -356,7 +357,7 @@ Examples
             source: Loopback499
             destination: 198.51.100.101
             key: 1501
-            vrf: MGMT
+            tunnel_vrf: MGMT
         state: merged
 
     # router#show running-config interface Tunnel1501
@@ -458,7 +459,7 @@ Examples
     #     source: Loopback499
     #     destination: 198.51.100.101
     #     key: 1501
-    #     vrf: MGMT
+    #     tunnel_vrf: MGMT
 
     # Using rendered
 

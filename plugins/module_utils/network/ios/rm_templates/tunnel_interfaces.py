@@ -84,7 +84,13 @@ class Tunnel_interfacesTemplate(NetworkTemplate):
             "result": {_NAME: {"unsupported": True}},
         },
         _option("key", r"key\s(?P<key>\d+)", "tunnel key {{ key }}", "{{ key | int }}", "tunnel key"),
-        _option("vrf", r"vrf\s(?P<vrf>\S+)", "tunnel vrf {{ vrf }}", "{{ vrf }}", "tunnel vrf {{ vrf }}"),
+        _option(
+            "tunnel_vrf",
+            r"vrf\s(?P<tunnel_vrf>\S+)",
+            "tunnel vrf {{ tunnel_vrf }}",
+            "{{ tunnel_vrf }}",
+            "tunnel vrf {{ tunnel_vrf }}",
+        ),
         _option("ttl", r"ttl\s(?P<ttl>\d+)", "tunnel ttl {{ ttl }}", "{{ ttl | int }}", "tunnel ttl"),
         _option("checksum", r"(?P<checksum>checksum)", "tunnel checksum", "{{ True }}"),
         _option(

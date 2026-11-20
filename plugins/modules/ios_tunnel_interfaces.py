@@ -24,7 +24,7 @@ description:
   - The other settings of a tunnel interface are managed by the modules that already own them, C(ios_interfaces)
     for the description, C(ios_vrf_interfaces) for C(vrf forwarding) and C(ios_l3_interfaces) for the IP address, MTU,
     TCP MSS and redirects.
-  - Supported parameters are I(source), I(destination), I(mode) (C(gre ip), C(gre ipv6) and C(gre multipoint)), I(key), I(vrf),
+  - Supported parameters are I(source), I(destination), I(mode) (C(gre ip), C(gre ipv6) and C(gre multipoint)), I(key), I(tunnel_vrf),
     I(ttl), I(checksum) and I(path_mtu_discovery). Others, for example C(tunnel keepalive) and C(tunnel protection), are not covered yet.
 version_added: 11.8.0
 author:
@@ -64,8 +64,10 @@ options:
       key:
         description: GRE key of the tunnel (C(tunnel key)).
         type: int
-      vrf:
-        description: VRF used to look up the tunnel destination (C(tunnel vrf)).
+      tunnel_vrf:
+        description:
+          - VRF used to reach the tunnel destination, also called the front-door VRF (C(tunnel vrf)).
+          - This is not the VRF of the tunnel interface itself (C(vrf forwarding)), that one is managed by C(ios_vrf_interfaces).
         type: str
       ttl:
         description: TTL of the tunnel packets (C(tunnel ttl)). 255 is the default of IOS and is not printed.
@@ -127,7 +129,7 @@ EXAMPLES = """
         source: Loopback499
         destination: 198.51.100.101
         key: 1501
-        vrf: MGMT
+        tunnel_vrf: MGMT
     state: merged
 
 # Task Output
@@ -186,7 +188,7 @@ EXAMPLES = """
         source: Loopback499
         destination: 198.51.100.101
         key: 1501
-        vrf: MGMT
+        tunnel_vrf: MGMT
     state: merged
 
 # router#show running-config interface Tunnel1501
@@ -288,7 +290,7 @@ EXAMPLES = """
 #     source: Loopback499
 #     destination: 198.51.100.101
 #     key: 1501
-#     vrf: MGMT
+#     tunnel_vrf: MGMT
 
 # Using rendered
 

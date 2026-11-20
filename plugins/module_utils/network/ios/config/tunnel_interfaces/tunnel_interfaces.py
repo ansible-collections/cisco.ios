@@ -38,7 +38,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils 
 
 
 DEFAULTS = {"mode": "gre_ip", "ttl": 255}
-SIMPLE_PARSERS = ("key", "vrf", "ttl", "checksum", "path_mtu_discovery")
 
 
 def _address_or(value, fallback):
@@ -134,7 +133,7 @@ class Tunnel_interfaces(ResourceModule):
         else:
             self._compare_default("mode", want, have)
             self.compare(parsers=["source", "destination"], want=want, have=have)
-        self.compare(parsers=["key", "vrf"], want=want, have=have)
+        self.compare(parsers=["key", "tunnel_vrf"], want=want, have=have)
         self._compare_default("ttl", want, have)
         self.compare(parsers=["checksum", "path_mtu_discovery"], want=want, have=have)
 
