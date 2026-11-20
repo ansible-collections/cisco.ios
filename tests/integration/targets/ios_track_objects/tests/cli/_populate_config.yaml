@@ -1,0 +1,27 @@
+---
+- name: Populate base tracked objects
+  cisco.ios.ios_track_objects:
+    config:
+      - object_id: 91
+        ip_sla:
+          operation_id: 91
+          parameter: state
+        delay:
+          down: 120
+          up: 180
+      - object_id: 92
+        ip_route:
+          prefix: "{{ track_prefix }}"
+        delay:
+          down: 10
+          up: 5
+      - object_id: 99
+        boolean_list:
+          operator: and
+          objects:
+            - object_id: 91
+            - object_id: 92
+              negate: true
+        delay:
+          down: 10
+    state: merged

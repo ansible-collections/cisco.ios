@@ -1,0 +1,5 @@
+---
+track_prefix: 192.0.2.0/28
+track_prefix_mask: 192.0.2.0 255.255.255.240
+track_if: Gi2
+track_if_long: GigabitEthernet2

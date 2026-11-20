@@ -1,0 +1,38 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_track_objects deleted integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Deleted - one object
+      register: result
+      cisco.ios.ios_track_objects:
+        config:
+          - object_id: 99
+        state: deleted
+
+    - name: Deleted - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == ['no track 99']
+          - result.after | map(attribute='object_id') | list == [91, 92]
+
+    - name: Deleted - everything
+      register: result
+      cisco.ios.ios_track_objects:
+        state: deleted
+
+    - name: Deleted - idempotent
+      register: result
+      cisco.ios.ios_track_objects:
+        state: deleted
+
+    - name: Deleted - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

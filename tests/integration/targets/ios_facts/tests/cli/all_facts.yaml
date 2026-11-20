@@ -65,6 +65,7 @@
       - flow_monitor_global
       - flow_monitor_interfaces
       - monitor_sessions
+      - track_objects
 
 - name: Collect list of available network resources for IOS
   register: result

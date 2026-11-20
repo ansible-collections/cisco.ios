@@ -1,0 +1,19 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_track_objects parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parsed - parse config string
+  register: result
+  cisco.ios.ios_track_objects:
+    running_config: "{{ lookup('file', role_path + '/tests/cli/_parsed.cfg') }}"
+    state: parsed
+
+- name: Parsed - assert structured data returned
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.parsed | length == 4
+      - result.parsed[1].ip_route.prefix == track_prefix
+      - result.parsed[1].ip_route.vrf == "MGMT"
+      - result.parsed[2].interface.name == track_if_long
+      - result.parsed[3].boolean_list.objects[1].negate == true

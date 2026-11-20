@@ -1,0 +1,23 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_track_objects gathered integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Gathered - read the configuration
+      register: result
+      cisco.ios.ios_track_objects:
+        state: gathered
+
+    - name: Gathered - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered | length == 3
+          - result.gathered[0].ip_sla.parameter == "state"
+          - result.gathered[1].ip_route.prefix == track_prefix
+          - result.gathered[2].boolean_list.objects | length == 2
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -1,0 +1,78 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_track_objects replaced integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Replaced - cut down object 99 and object 92
+      register: result
+      cisco.ios.ios_track_objects: &replace
+        config:
+          - object_id: 92
+            ip_route:
+              prefix: "{{ track_prefix }}"
+            delay:
+              up: 5
+          - object_id: 99
+            boolean_list:
+              operator: and
+              objects:
+                - object_id: 91
+        state: replaced
+
+    - name: Replaced - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no object 92' in result.commands"
+          - "'no delay' in result.commands"
+          - "'delay up 5' in result.commands"
+          - result.after | selectattr('object_id', 'equalto', 91) | list | length == 1
+
+    - name: Replaced - idempotent
+      register: result
+      cisco.ios.ios_track_objects: *replace
+
+    - name: Replaced - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    - name: Replaced - track another IP SLA operation, changed in place
+      register: result
+      cisco.ios.ios_track_objects:
+        config:
+          - object_id: 91
+            ip_sla:
+              operation_id: 92
+              parameter: reachability
+            delay:
+              down: 120
+              up: 180
+        state: replaced
+
+    - name: Replaced - assert changed in place, the delay is kept
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == ['track 91 ip sla 92 reachability']
+
+    - name: Replaced - track an interface instead, IOS needs the object removed first
+      register: result
+      cisco.ios.ios_track_objects:
+        config:
+          - object_id: 91
+            interface:
+              name: "{{ track_if }}"
+              parameter: line_protocol
+        state: replaced
+
+    - name: Replaced - assert recreated
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == ['no track 91', 'track 91 interface ' ~ track_if_long ~ ' line-protocol']
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

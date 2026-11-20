@@ -370,6 +370,17 @@ def normalize_interface(name):
     return proper_interface
 
 
+def canonical_interface(name):
+    """Return the interface name as IOS prints it (Gi1 -> GigabitEthernet1, loopback0 -> Loopback0).
+
+    Used to compare interface names from a task with the ones from the device.
+    """
+    normalized = normalize_interface(name)
+    if not normalized:
+        return normalized
+    return normalized[0].upper() + normalized[1:]
+
+
 def get_interface_type(interface):
     """Gets the type of interface"""
 

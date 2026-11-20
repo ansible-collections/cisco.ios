@@ -1,0 +1,4 @@
+---
+minor_changes:
+  - ios_track_objects - New resource module for declarative management of tracked objects (interface, ip sla, ip route
+    and list boolean) including delay. Supports merged, replaced, overridden, deleted, rendered, gathered and parsed.
