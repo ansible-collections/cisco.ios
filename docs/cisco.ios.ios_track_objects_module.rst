@@ -17,9 +17,7 @@ Version added: 11.8.0
 
 Synopsis
 --------
-- This module configures and manages tracked objects (``track``) on Cisco IOS devices.
-- Supported object types are ``interface`` (line-protocol and ip routing), ``ip_sla`` (reachability and state), ``ip_route`` (reachability) and ``boolean_list`` (``track N list boolean and|or``). Other types (for example ``list threshold`` and ``ip route ... metric threshold``) and the ``track timer`` commands are not covered yet.
-- Tracked objects of an unsupported type that exist on the device are left untouched and a warning is issued when facts are gathered. They are not part of ``before``, ``after`` or ``gathered``.
+- This module configures and manages the attributes of tracked objects on Cisco IOS.
 
 
 
@@ -445,12 +443,8 @@ Notes
 -----
 
 .. note::
-   - Tested against Cisco IOS XE Software, Version 17.x.
-   - This module works with connection ``network_cli``.
-   - The interface, IP SLA operation or prefix an object tracks is changed in place. IOS does not allow to change the kind of an object (for example from ``interface`` to ``ip_sla``), the object is then removed with ``no track <id>`` and created again. Whatever uses the object (for example HSRP, static routes or EEM) sees it go down while this happens.
-   - The *type* of an object is required when the object does not exist yet and for the states *replaced* and *overridden*.
-   - For more information on using Ansible to manage network devices see the :ref:`Ansible Network Guide <network_guide>`
-   - For more information on using Ansible to manage Cisco devices see the `Cisco integration page <https://www.ansible.com/integrations/networks/cisco>`_.
+   - Tested against Cisco IOS XE Software, Version 17.12.4 on a Catalyst 9300.
+   - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
 
 
 

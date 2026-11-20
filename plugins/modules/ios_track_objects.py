@@ -15,27 +15,16 @@ __metaclass__ = type
 
 DOCUMENTATION = """
 module: ios_track_objects
-extends_documentation_fragment:
-  - cisco.ios.ios
 short_description: Resource module to configure tracked objects.
 description:
-  - This module configures and manages tracked objects (C(track)) on Cisco IOS devices.
-  - Supported object types are C(interface) (line-protocol and ip routing), C(ip_sla) (reachability and state),
-    C(ip_route) (reachability) and C(boolean_list) (C(track N list boolean and|or)).
-    Other types (for example C(list threshold) and C(ip route ... metric threshold)) and the C(track timer)
-    commands are not covered yet.
-  - Tracked objects of an unsupported type that exist on the device are left untouched and a warning
-    is issued when facts are gathered. They are not part of C(before), C(after) or C(gathered).
+  - This module configures and manages the attributes of tracked objects on Cisco IOS.
 version_added: 11.8.0
 author:
   - Jørgen Spange (@jorgenspange)
 notes:
-  - Tested against Cisco IOS XE Software, Version 17.x.
+  - Tested against Cisco IOS XE Software, Version 17.12.4 on a Catalyst 9300.
   - This module works with connection C(network_cli).
-  - The interface, IP SLA operation or prefix an object tracks is changed in place. IOS does not allow to change the kind
-    of an object (for example from C(interface) to C(ip_sla)), the object is then removed with C(no track <id>) and created again.
-    Whatever uses the object (for example HSRP, static routes or EEM) sees it go down while this happens.
-  - The I(type) of an object is required when the object does not exist yet and for the states I(replaced) and I(overridden).
+    See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
   config:
     description: A list of tracked objects.
