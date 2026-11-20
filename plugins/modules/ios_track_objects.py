@@ -22,7 +22,7 @@ version_added: 11.8.0
 author:
   - Jørgen Spange (@jorgenspange)
 notes:
-  - Tested against Cisco IOS XE Software, Version 17.12.4 on a Catalyst 9300.
+  - Tested against Cisco IOS XE Software, Version 17.12.4 and 17.18.4 on a Catalyst 9300.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:

@@ -443,7 +443,7 @@ Notes
 -----
 
 .. note::
-   - Tested against Cisco IOS XE Software, Version 17.12.4 on a Catalyst 9300.
+   - Tested against Cisco IOS XE Software, Version 17.12.4 and 17.18.4 on a Catalyst 9300.
    - This module works with connection ``network_cli``. See https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html
 
 
