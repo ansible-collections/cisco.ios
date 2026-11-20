@@ -26,7 +26,6 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates
     L3_interfacesTemplate,
 )
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
-    canonical_interface,
     normalize_interface,
     validate_n_expand_ipv4,
 )
@@ -94,6 +93,7 @@ class L3_interfaces(ResourceModule):
 
         for each in wantd, haved:
             self.list_to_dict(each)
+        self._align_source_interfaces(wantd, haved)
 
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
@@ -277,6 +277,28 @@ class L3_interfaces(ResourceModule):
             if v4_addr_h:
                 have["address"] = v4_addr_h
 
+    @staticmethod
+    def _align_source_interfaces(wantd, haved):
+        """IOS prints "ip unnumbered Loopback498", the task may say "Lo498" or "loopback498".
+
+        When both name the same interface the device side takes the spelling of the task, so they
+        compare equal and the command is sent as the user wrote it.
+        """
+        for name, want in wantd.items():
+            want_source = (
+                (want.get("ipv4") or {}).get("source_interface", {}).get("source_interface")
+            )
+            have_source = (
+                (haved.get(name, {}).get("ipv4") or {})
+                .get("source_interface", {})
+                .get("source_interface")
+            )
+            if want_source and have_source and want_source.get("name") and have_source.get("name"):
+                if normalize_interface(want_source["name"]) == normalize_interface(
+                    have_source["name"]
+                ):
+                    have_source["name"] = want_source["name"]
+
     def list_to_dict(self, param):
         def list_to_dict_by_destination_ip(helper_list):
             return {item["destination_ip"]: item for item in helper_list}
@@ -293,10 +315,6 @@ class L3_interfaces(ResourceModule):
                 if "ipv4" in val:
                     temp = {}
                     for each in val["ipv4"]:
-                        # "Lo498" in the task and "Loopback498" on the device are the same interface
-                        source = each.get("source_interface")
-                        if source and source.get("name"):
-                            source["name"] = canonical_interface(source["name"])
                         if each.get("address") and each.get("address") != "dhcp":
                             temp.update({each["address"]: each})
                         elif each.get("address") == "dhcp":

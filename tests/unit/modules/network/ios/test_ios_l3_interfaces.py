@@ -1275,7 +1275,7 @@ class TestIosL3InterfacesModule(TestIosModule):
             result = self.execute_module(changed=False)
             self.assertEqual(result["commands"], [], name)
 
-    def test_ios_l3_interfaces_unnumbered_source_interface_is_sent_with_the_full_name(self):
+    def test_ios_l3_interfaces_unnumbered_source_interface_is_sent_as_written(self):
         self.execute_show_command.return_value = ""
         set_module_args(
             dict(
@@ -1290,7 +1290,8 @@ class TestIosL3InterfacesModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
-            result["commands"], ["interface Tunnel1501", "ip unnumbered Loopback498 poll"]
+            result["commands"],
+            ["interface Tunnel1501", "ip unnumbered Lo498 poll"],
         )
 
     def test_ios_l3_interfaces_unnumbered_source_interface_changes(self):
@@ -1307,4 +1308,4 @@ class TestIosL3InterfacesModule(TestIosModule):
             ),
         )
         result = self.execute_module(changed=True)
-        self.assertEqual(result["commands"], ["interface Tunnel1501", "ip unnumbered Loopback499"])
+        self.assertEqual(result["commands"], ["interface Tunnel1501", "ip unnumbered Lo499"])
