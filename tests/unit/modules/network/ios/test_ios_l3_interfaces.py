@@ -1290,7 +1290,8 @@ class TestIosL3InterfacesModule(TestIosModule):
         )
         result = self.execute_module(changed=True)
         self.assertEqual(
-            result["commands"], ["interface Tunnel1501", "ip unnumbered Loopback498 poll"]
+            result["commands"],
+            ["interface Tunnel1501", "ip unnumbered Loopback498 poll"],
         )
 
     def test_ios_l3_interfaces_unnumbered_source_interface_changes(self):
