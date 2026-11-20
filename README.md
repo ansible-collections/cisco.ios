@@ -79,6 +79,7 @@ Name | Description
 [cisco.ios.ios_hostname](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_hostname_module.rst)|Resource module to configure hostname.
 [cisco.ios.ios_hsrp_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_hsrp_interfaces_module.rst)|Resource module to configure HSRP on interfaces.
 [cisco.ios.ios_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_interfaces_module.rst)|Resource module to configure interfaces.
+[cisco.ios.ios_ip_sla_global](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ip_sla_global_module.rst)|Resource module to configure IP SLA operations.
 [cisco.ios.ios_l2_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_l2_interfaces_module.rst)|Resource module to configure L2 interfaces.
 [cisco.ios.ios_l3_interfaces](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_l3_interfaces_module.rst)|Resource module to configure L3 interfaces.
 [cisco.ios.ios_lacp](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_lacp_module.rst)|Resource module to configure LACP.
@@ -98,8 +99,8 @@ Name | Description
 [cisco.ios.ios_service](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_service_module.rst)|Resource module to configure service.
 [cisco.ios.ios_snmp_server](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_snmp_server_module.rst)|Resource module to configure snmp server.
 [cisco.ios.ios_static_routes](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_static_routes_module.rst)|Resource module to configure static routes.
-[cisco.ios.ios_track_objects](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_track_objects_module.rst)|Resource module to configure tracked objects.
 [cisco.ios.ios_system](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_system_module.rst)|Module to manage the system attributes.
+[cisco.ios.ios_track_objects](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_track_objects_module.rst)|Resource module to configure tracked objects.
 [cisco.ios.ios_user](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_user_module.rst)|Module to manage the aggregates of local users.
 [cisco.ios.ios_vlans](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vlans_module.rst)|Resource module to configure VLANs.
 [cisco.ios.ios_vrf](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_vrf_module.rst)|Module to configure VRF definitions.
