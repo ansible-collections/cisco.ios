@@ -1,0 +1,19 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_ip_sla_global parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parsed - parse config string
+  register: result
+  cisco.ios.ios_ip_sla_global:
+    running_config: "{{ lookup('file', role_path + '/tests/cli/_parsed.cfg') }}"
+    state: parsed
+
+- name: Parsed - assert structured data returned
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.parsed.logging_traps == true
+      - result.parsed.operations | length == 2
+      - result.parsed.operations[0].icmp_echo.source_interface == "Loopback0"
+      - result.parsed.operations[1].http.method == "raw"
+      - result.parsed.operations[1].http.raw_request == sla_raw_request

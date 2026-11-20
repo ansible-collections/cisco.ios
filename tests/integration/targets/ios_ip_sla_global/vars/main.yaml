@@ -1,0 +1,5 @@
+---
+sla_dest1: 192.0.2.1
+sla_dest2: 192.0.2.2
+sla_url: http://192.0.2.10
+sla_raw_request: "GET http://192.0.2.10/test HTTP/1.0\\r\\nUser-Agent: Cisco IP SLA\\r\\nend\\r\\n\\r\\n"

@@ -1,0 +1,120 @@
+---
+- name: "Gather ios_ip_sla_global facts (gathered state)"
+  hosts: ios_gathered
+  gather_facts: false
+  tasks:
+    - name: "Gather facts from device"
+      cisco.ios.ios_ip_sla_global:
+        state: gathered
+      register: result
+
+    - name: "Assert gathered facts"
+      ansible.builtin.assert:
+        that:
+          - result.gathered.logging_traps == true
+          - result.gathered.operations | length == 2
+          - result.gathered.operations[0].icmp_echo.destination == "192.0.2.1"
+          - result.gathered.operations[0].schedule.life == "forever"
+          - result.gathered.operations[1].http.method == "raw"
+          - "'User-Agent: Cisco IP SLA' in result.gathered.operations[1].http.raw_request"
+        quiet: true
+
+    - name: "PASSED: gathered state"
+      ansible.builtin.debug:
+        msg: "gathered state test passed"
+
+- name: "Merge ios_ip_sla_global configuration (merged state)"
+  hosts: ios_merged
+  gather_facts: false
+  tasks:
+    - name: "Merge configuration"
+      cisco.ios.ios_ip_sla_global: &merged_config
+        config:
+          logging_traps: true
+          operations:
+            - operation_id: 1
+              icmp_echo:
+                destination: 192.0.2.1
+                source_interface: Loopback0
+              vrf: MGMT
+              frequency: 5
+              schedule:
+                life: forever
+                start_time: now
+        state: merged
+      register: result
+
+    - name: "Assert merged commands match expected"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == merged_commands
+        quiet: true
+      vars:
+        merged_commands:
+          - "ip sla logging traps"
+          - "ip sla 1"
+          - "icmp-echo 192.0.2.1 source-interface Loopback0"
+          - "vrf MGMT"
+          - "frequency 5"
+          - "ip sla schedule 1 life forever start-time now"
+
+    - name: "Merge configuration — idempotent run"
+      cisco.ios.ios_ip_sla_global: *merged_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.commands == []
+        quiet: true
+
+    - name: "PASSED: merged state"
+      ansible.builtin.debug:
+        msg: "merged state test passed — config applied + idempotency verified"
+
+- name: "Override ios_ip_sla_global configuration (overridden state)"
+  hosts: ios_overridden
+  gather_facts: false
+  tasks:
+    - name: "Override configuration"
+      cisco.ios.ios_ip_sla_global: &overridden_config
+        config:
+          logging_traps: true
+          operations:
+            - operation_id: 1
+              icmp_echo:
+                destination: 192.0.2.1
+                source_interface: Loopback0
+              vrf: MGMT
+              frequency: 5
+              schedule:
+                life: forever
+                start_time: now
+        state: overridden
+      register: result
+
+    - name: "Assert only the extra configuration is removed"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == overridden_commands
+        quiet: true
+      vars:
+        overridden_commands:
+          - "no ip sla 2"
+
+    - name: "Override configuration — idempotent run"
+      cisco.ios.ios_ip_sla_global: *overridden_config
+      register: result
+
+    - name: "Assert idempotent — no changes on second run"
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+        quiet: true
+
+    - name: "PASSED: overridden state"
+      ansible.builtin.debug:
+        msg: "overridden state test passed — extra configuration removed + idempotency verified"

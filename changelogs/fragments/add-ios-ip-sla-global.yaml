@@ -1,0 +1,5 @@
+---
+minor_changes:
+  - ios_ip_sla_global - New resource module for declarative management of IP SLA operations (icmp-echo, tcp-connect, http get/raw),
+    their schedules, and the global ``ip sla logging traps`` and ``ip sla enable reaction-alerts`` options.
+    Supports merged, replaced, overridden, deleted, rendered, gathered and parsed.

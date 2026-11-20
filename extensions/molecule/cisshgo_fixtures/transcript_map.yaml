@@ -945,6 +945,31 @@ platforms:
       "#": ">"
     end_context: "#"
 
+  ios_ip_sla_global:
+    vendor: "cisco"
+    hostname: "cisshgo-ios"
+    username: "admin"
+    password: "admin"
+    command_transcripts:
+      "show privilege": "transcripts/common/show_privilege.txt"
+      "terminal length 0": "transcripts/generic_empty_return.txt"
+      "terminal width 512": "transcripts/generic_empty_return.txt"
+      "terminal width 0": "transcripts/generic_empty_return.txt"
+      "show version": "transcripts/common/show_version.txt"
+      "show running-config": "transcripts/ios_ip_sla_global/show_running-config.txt"
+      "show running-config | section ^ip sla": "transcripts/ios_ip_sla_global/show_running-config_section_^ip-sla_populated.txt"
+      "show vlan": "transcripts/generic_empty_return.txt"
+      "write memory": "transcripts/generic_empty_return.txt"
+      "write mem": "transcripts/generic_empty_return.txt"
+    context_search:
+      "configure terminal": "(config)#"
+      "enable": "#"
+      "base": "#"
+    context_hierarchy:
+      "(config)#": "#"
+      "#": ">"
+    end_context: "#"
+
 scenarios:
   ios-acl-interfaces-merged:
     platform: ios_acl_interfaces
@@ -4723,3 +4748,53 @@ scenarios:
       # idempotent: get_facts (have)
       - command: "show running-config | section ^monitor session"
         transcript: "transcripts/ios_monitor_sessions/scenarios/ios-monitor-sessions-overridden/after_overridden.txt"
+
+  ip-sla-global-merged:
+    platform: ios_ip_sla_global
+    sequence:
+      # get_facts (have)
+      - command: "show running-config | section ^ip sla"
+        transcript: "transcripts/ios_ip_sla_global/scenarios/ip-sla-global-merged/before_empty.txt"
+      # edit_config
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ip sla logging traps"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ip sla 1"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "icmp-echo 192.0.2.1 source-interface Loopback0"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "vrf MGMT"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "frequency 5"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "ip sla schedule 1 life forever start-time now"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^ip sla"
+        transcript: "transcripts/ios_ip_sla_global/scenarios/ip-sla-global-merged/after_merged.txt"
+      # idempotent: get_facts (have)
+      - command: "show running-config | section ^ip sla"
+        transcript: "transcripts/ios_ip_sla_global/scenarios/ip-sla-global-merged/after_merged.txt"
+
+  ip-sla-global-overridden:
+    platform: ios_ip_sla_global
+    sequence:
+      # get_facts (have)
+      - command: "show running-config | section ^ip sla"
+        transcript: "transcripts/ios_ip_sla_global/scenarios/ip-sla-global-overridden/before_two.txt"
+      # edit_config
+      - command: "configure terminal"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "no ip sla 2"
+        transcript: "transcripts/generic_empty_return.txt"
+      - command: "end"
+        transcript: "transcripts/generic_empty_return.txt"
+      # get_facts (after)
+      - command: "show running-config | section ^ip sla"
+        transcript: "transcripts/ios_ip_sla_global/scenarios/ip-sla-global-overridden/after_overridden.txt"
+      # idempotent: get_facts (have)
+      - command: "show running-config | section ^ip sla"
+        transcript: "transcripts/ios_ip_sla_global/scenarios/ip-sla-global-overridden/after_overridden.txt"

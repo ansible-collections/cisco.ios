@@ -1,0 +1,4 @@
+---
+- name: Remove all IP SLA configuration
+  cisco.ios.ios_ip_sla_global:
+    state: deleted
