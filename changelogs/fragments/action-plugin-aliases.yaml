@@ -1,0 +1,4 @@
+---
+bugfixes:
+  - cisco.ios modules - Add missing action plugin aliases for a bunch of modules
+    so they use the IOS network action plugin.
