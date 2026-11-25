@@ -2017,3 +2017,124 @@ class TestIosBgpAddressFamilyModule(TestIosModule):
                     "Neighbor address must not contain carriage returns or line feeds",
                     result["msg"],
                 )
+
+    def test_ios_bgp_address_family_inherit_peer_policy_merged(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp log-neighbor-changes
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    address_family=[
+                        dict(
+                            afi="ipv4",
+                            safi="unicast",
+                            vrf="TEST",
+                            neighbors=[
+                                dict(
+                                    neighbor_address="172.19.10.255",
+                                    activate=True,
+                                    inherit=dict(peer_policy="peer_policy_template"),
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                state="merged",
+            ),
+        )
+        commands = [
+            "router bgp 65000",
+            "address-family ipv4 unicast vrf TEST",
+            "neighbor 172.19.10.255 activate",
+            "neighbor 172.19.10.255 inherit peer-policy peer_policy_template",
+            "exit-address-family",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_bgp_address_family_inherit_peer_session_merged(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp log-neighbor-changes
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    address_family=[
+                        dict(
+                            afi="ipv4",
+                            safi="unicast",
+                            vrf="TEST",
+                            neighbors=[
+                                dict(
+                                    neighbor_address="172.19.10.255",
+                                    activate=True,
+                                    inherit=dict(peer_session="peer_session_template"),
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                state="merged",
+            ),
+        )
+        commands = [
+            "router bgp 65000",
+            "address-family ipv4 unicast vrf TEST",
+            "neighbor 172.19.10.255 activate",
+            "neighbor 172.19.10.255 inherit peer-session peer_session_template",
+            "exit-address-family",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))
+
+    def test_ios_bgp_address_family_inherit_both_merged(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            router bgp 65000
+             bgp log-neighbor-changes
+            """,
+        )
+        set_module_args(
+            dict(
+                config=dict(
+                    as_number="65000",
+                    address_family=[
+                        dict(
+                            afi="ipv4",
+                            safi="unicast",
+                            vrf="TEST",
+                            neighbors=[
+                                dict(
+                                    neighbor_address="172.19.10.255",
+                                    activate=True,
+                                    inherit=dict(
+                                        peer_policy="peer_policy_template",
+                                        peer_session="peer_session_template",
+                                    ),
+                                ),
+                            ],
+                        ),
+                    ],
+                ),
+                state="merged",
+            ),
+        )
+        commands = [
+            "router bgp 65000",
+            "address-family ipv4 unicast vrf TEST",
+            "neighbor 172.19.10.255 activate",
+            "neighbor 172.19.10.255 inherit peer-policy peer_policy_template",
+            "neighbor 172.19.10.255 inherit peer-session peer_session_template",
+            "exit-address-family",
+        ]
+        result = self.execute_module(changed=True)
+        self.assertEqual(sorted(result["commands"]), sorted(commands))

@@ -621,10 +621,15 @@ options:
                     description: disable graceful-restart
                     type: bool
               inherit:
-                description:
-                  - Inherit a template
-                  - Inherit a peer-policy template
-                type: str
+                description: Inherit a template
+                type: dict
+                suboptions:
+                  peer_policy:
+                    description: Inherit a peer-policy template
+                    type: str
+                  peer_session:
+                    description: Inherit a peer-session template
+                    type: str
               internal_vpn_client:
                 description: Stack iBGP-CE Neighbor Path in ATTR_SET for vpn update
                 type: bool
