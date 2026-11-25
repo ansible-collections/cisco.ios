@@ -1426,16 +1426,35 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             "getval": re.compile(
                 r"""
                 \s\sneighbor\s(?P<neighbor_address>\S+)\sinherit\speer-policy
-                \s(?P<inherit>\S+)
+                \s(?P<peer_policy>\S+)
                 $""",
                 re.VERBOSE,
             ),
-            "setval": "neighbor {{ neighbor_address }} inherit peer-policy"
-            "{{ (' ' + inherit) if inherit is defined else '' }}",
+            "setval": "neighbor {{ neighbor_address }} inherit peer-policy {{ inherit }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"inherit": "{{ inherit }}"}},
+                        "neighbors": {UNIQUE_NEIB_ADD: {"inherit": "{{ peer_policy }}"}},
+                    },
+                },
+            },
+        },
+        {
+            "name": "inherit_peer_session",
+            "getval": re.compile(
+                r"""
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sinherit\speer-session
+                \s(?P<peer_session>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} inherit peer-session {{ inherit_peer_session }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_AFI: {
+                        "neighbors": {
+                            UNIQUE_NEIB_ADD: {"inherit_peer_session": "{{ peer_session }}"}
+                        },
                     },
                 },
             },

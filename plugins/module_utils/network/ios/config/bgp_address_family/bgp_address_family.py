@@ -339,6 +339,7 @@ class Bgp_address_family(ResourceModule):
             "fall_over.route_map",
             "ha_mode",
             "inherit",
+            "inherit_peer_session",
             "internal_vpn_client",
             "log_neighbor_changes",
             "maximum_prefix",

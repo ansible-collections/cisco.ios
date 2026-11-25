@@ -363,6 +363,7 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                     },
                                 },
                                 "inherit": {"type": "str"},
+                                "inherit_peer_session": {"type": "str"},
                                 "internal_vpn_client": {"type": "bool"},
                                 "local_as": {
                                     "type": "dict",
