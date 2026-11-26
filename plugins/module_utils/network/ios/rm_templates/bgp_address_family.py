@@ -1422,20 +1422,43 @@ class Bgp_address_familyTemplate(NetworkTemplate):
             },
         },
         {
-            "name": "inherit",
+            "name": "inherit.peer_policy",
             "getval": re.compile(
                 r"""
                 \s\sneighbor\s(?P<neighbor_address>\S+)\sinherit\speer-policy
-                \s(?P<inherit>\S+)
+                \s(?P<peer_policy>\S+)
                 $""",
                 re.VERBOSE,
             ),
             "setval": "neighbor {{ neighbor_address }} inherit peer-policy"
-            "{{ (' ' + inherit) if inherit is defined else '' }}",
+            "{{ (' ' + inherit.peer_policy) if inherit.peer_policy is defined else '' }}",
             "result": {
                 "address_family": {
                     UNIQUE_AFI: {
-                        "neighbors": {UNIQUE_NEIB_ADD: {"inherit": "{{ inherit }}"}},
+                        "neighbors": {
+                            UNIQUE_NEIB_ADD: {"inherit": {"peer_policy": "{{ peer_policy }}"}},
+                        },
+                    },
+                },
+            },
+        },
+        {
+            "name": "inherit.peer_session",
+            "getval": re.compile(
+                r"""
+                \s\sneighbor\s(?P<neighbor_address>\S+)\sinherit\speer-session
+                \s(?P<peer_session>\S+)
+                $""",
+                re.VERBOSE,
+            ),
+            "setval": "neighbor {{ neighbor_address }} inherit peer-session"
+            "{{ (' ' + inherit.peer_session) if inherit.peer_session is defined else '' }}",
+            "result": {
+                "address_family": {
+                    UNIQUE_AFI: {
+                        "neighbors": {
+                            UNIQUE_NEIB_ADD: {"inherit": {"peer_session": "{{ peer_session }}"}},
+                        },
                     },
                 },
             },

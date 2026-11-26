@@ -1,0 +1,7 @@
+---
+bugfixes:
+  - "ios_bgp_address_family - add peer-session template support for neighbor inheritance in VRF
+    address-family contexts. The ``inherit`` neighbor option has changed from a ``str`` to a
+    ``dict`` with ``peer_policy`` and ``peer_session`` suboptions, so both template types can
+    now be configured simultaneously
+    (https://github.com/ansible-collections/cisco.ios/issues/1374)."
