@@ -295,7 +295,6 @@ class Bgp_address_familyArgs(object):  # pylint: disable=R0903
                                     "type": "dict",
                                     "options": {
                                         "all": {"type": "bool"},
-                                        "server": {"type": "int"},
                                         "servers": {"type": "list", "elements": "int"},
                                     },
                                 },

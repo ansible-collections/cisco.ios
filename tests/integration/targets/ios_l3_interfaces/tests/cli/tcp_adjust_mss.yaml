@@ -33,15 +33,15 @@
           - not result.changed
 
     - name: Gather the TCP MSS configuration
-      register: gathered
+      register: tcp_mss_gathered
       cisco.ios.ios_l3_interfaces:
         state: gathered
 
     - name: Assert that the gathered TCP MSS values match
       ansible.builtin.assert:
         that:
-          - (gathered.gathered | selectattr('name', 'equalto', 'Loopback999') | first).tcp_adjust_mss == 1400
-          - (gathered.gathered | selectattr('name', 'equalto', 'Loopback999') | first).ipv6_tcp_adjust_mss == 1380
+          - (tcp_mss_gathered.gathered | selectattr('name', 'equalto', 'Loopback999') | first).tcp_adjust_mss == 1400
+          - (tcp_mss_gathered.gathered | selectattr('name', 'equalto', 'Loopback999') | first).ipv6_tcp_adjust_mss == 1380
 
     - name: Change the IPv4 TCP MSS in place
       register: result
