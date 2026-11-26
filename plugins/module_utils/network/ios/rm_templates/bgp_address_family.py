@@ -1436,7 +1436,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 "address_family": {
                     UNIQUE_AFI: {
                         "neighbors": {
-                            UNIQUE_NEIB_ADD: {"inherit": {"peer_policy": "{{ peer_policy }}"}}
+                            UNIQUE_NEIB_ADD: {"inherit": {"peer_policy": "{{ peer_policy }}"}},
                         },
                     },
                 },
@@ -1457,7 +1457,7 @@ class Bgp_address_familyTemplate(NetworkTemplate):
                 "address_family": {
                     UNIQUE_AFI: {
                         "neighbors": {
-                            UNIQUE_NEIB_ADD: {"inherit": {"peer_session": "{{ peer_session }}"}}
+                            UNIQUE_NEIB_ADD: {"inherit": {"peer_session": "{{ peer_session }}"}},
                         },
                     },
                 },
