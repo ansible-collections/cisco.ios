@@ -1,0 +1,21 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_radius_global rendered integration tests on connection={{ ansible_connection }}
+
+- name: Rendered - render commands without device
+  register: result
+  cisco.ios.ios_radius_global:
+    config:
+      source_interface:
+        name: Loopback1
+      servers:
+        - name: "{{ server1 }}"
+          address:
+            ipv6: 2001:db8::10
+    state: rendered
+
+- name: Rendered - assert commands generated
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.rendered == ['ip radius source-interface loopback1', 'radius server ' ~ server1, 'address ipv6 2001:db8::10 auth-port 1812 acct-port 1813']

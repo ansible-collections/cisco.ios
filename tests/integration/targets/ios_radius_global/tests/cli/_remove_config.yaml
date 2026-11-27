@@ -1,0 +1,15 @@
+---
+- name: Remove the servers and the global options of the tests
+  cisco.ios.ios_radius_global:
+    config:
+      servers:
+        - name: "{{ server1 }}"
+        - name: "{{ server2 }}"
+      timeout: 7
+      retransmit: 4
+      deadtime: 2
+      dead_criteria:
+        time: 8
+      attributes:
+        - number: 8
+    state: deleted

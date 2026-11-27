@@ -105,6 +105,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ospfv3
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.prefix_lists.prefix_lists import (
     Prefix_listsFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.radius_global.radius_global import (
+    Radius_globalFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.route_maps.route_maps import (
     Route_mapsFacts,
 )
@@ -179,6 +182,7 @@ FACT_RESOURCE_SUBSETS = dict(
     flow_monitor_global=Flow_monitor_globalFacts,
     flow_monitor_interfaces=Flow_monitor_interfacesFacts,
     monitor_sessions=Monitor_sessionsFacts,
+    radius_global=Radius_globalFacts,
 )
 
 
