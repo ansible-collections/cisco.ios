@@ -1,0 +1,6 @@
+---
+ca_name: LAB-ROOT-CA
+web_name: LAB-WEB-CERT
+# SHA-1 fingerprints of files/lab-root-ca.pem and files/lab-other-ca.pem
+ca_fingerprint: CEB5230B3E8B271B27B5295D14DE000EF4231526
+other_fingerprint: 05DA9D82FE78186D1592F271C9E560F60266E794

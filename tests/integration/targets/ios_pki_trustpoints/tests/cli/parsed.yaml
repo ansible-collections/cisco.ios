@@ -1,0 +1,19 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_pki_trustpoints parsed integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- name: Parsed - parse config string
+  register: result
+  cisco.ios.ios_pki_trustpoints:
+    running_config: "{{ lookup('file', role_path + '/tests/cli/_parsed.cfg') }}"
+    state: parsed
+
+- name: Parsed - assert structured data returned
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.parsed | length == 2
+      - "result.parsed[1].enrollment == {'type': 'url', 'url': 'http://192.0.2.10:80', 'pem': true}"
+      - result.parsed[1].revocation_check == ['crl', 'none']
+      - "result.parsed[1].rsakeypair == {'key_label': 'web-key', 'size': 2048}"

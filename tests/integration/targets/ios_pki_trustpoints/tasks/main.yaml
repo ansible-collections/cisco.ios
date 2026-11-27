@@ -1,0 +1,5 @@
+---
+- name: Main task file for ios_pki_trustpoints tests
+  ansible.builtin.include_tasks: cli.yaml
+  tags:
+    - cli
