@@ -1,0 +1,44 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_service http_replaced integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _prepare_http.yaml
+- block:
+    - name: Http replaced - prepare
+      cisco.ios.ios_service:
+        config:
+          ip:
+            http:
+              authentication: local
+              access_class: HTTP-TEST-ACL
+              port: 8080
+              max_connections: 100
+        state: merged
+
+    - name: Http replaced - the section is cut down to the task, the service options of the device are sent back
+      register: result
+      cisco.ios.ios_service: &replace
+        config: "{{ service_options | combine({'ip': {'http': {'authentication': 'enable'}}}) }}"
+        state: replaced
+
+    - name: Http replaced - assert the values back to the default and the ACL removed carrying its name
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no ip http access-class ipv4 HTTP-TEST-ACL' in result.commands"
+          - "'no ip http port' in result.commands"
+          - "'no ip http max-connections' in result.commands"
+          - result.commands | select('match', '^(no )?service') | list | length == 0
+
+    - name: Http replaced - idempotent, the defaults the device prints are not removed again
+      register: result
+      cisco.ios.ios_service: *replace
+
+    - name: Http replaced - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_http_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

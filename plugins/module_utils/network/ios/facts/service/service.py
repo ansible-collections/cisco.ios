@@ -35,7 +35,10 @@ class ServiceFacts(object):
     def get_service_data(self, connection):
         return connection.get(
             "show running-config all | section ^service|^ip finger|^ip bootp server|^ip source-route"
-            "|^ip scp server enable|^ip rcmd|^ip tftp source-interface|^ip ftp source-interface",
+            "|^ip scp server enable|^ip rcmd|^ip tftp source-interface|^ip ftp source-interface"
+            "|^ip http"
+            "|^tftp-server"
+            "|^ip ssh",
         )
 
     def populate_facts(self, connection, ansible_facts, data=None):

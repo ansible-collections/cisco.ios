@@ -1,0 +1,12 @@
+---
+- ansible.builtin.include_tasks: _prepare.yaml
+
+- name: Keep the http options of the device, to put them back
+  ansible.builtin.set_fact:
+    http_baseline: "{{ gathered_service.gathered.ip.http | default({}) }}"
+
+- name: Create the ACL of the tests
+  cisco.ios.ios_config:
+    lines:
+      - permit 192.0.2.0 0.0.0.255
+    parents: ip access-list standard HTTP-TEST-ACL

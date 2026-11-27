@@ -1,0 +1,21 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_service http_parsed integration tests on connection={{ ansible_connection }}
+
+- name: Http parsed - parse config string
+  register: result
+  cisco.ios.ios_service:
+    running_config: "{{ lookup('file', role_path + '/tests/cli/_parsed_http.cfg') }}"
+    state: parsed
+
+- name: Http parsed - assert structured data returned
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.parsed.ip.http.server == true
+      - result.parsed.ip.http.authentication == "aaa"
+      - result.parsed.ip.http.access_class == "HTTP-CLIENTS"
+      - result.parsed.ip.http.port == 8080
+      - result.parsed.ip.http.secure_trustpoint == "LAB-TP"
+      - result.parsed.ip.http.client.source_interface == "GigabitEthernet0/0"
+      - result.parsed.ip.http.client.secure_trustpoint == "LAB-CA"

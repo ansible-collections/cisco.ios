@@ -1,0 +1,159 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_service ssh integration tests on connection={{ ansible_connection }}
+
+- name: Ssh - gather what the device has, it is restored at the end
+  register: ssh_gathered
+  cisco.ios.ios_service:
+    state: gathered
+
+- name: Ssh - keep it
+  ansible.builtin.set_fact:
+    ssh_before: "{{ ssh_gathered.gathered.ip.ssh }}"
+    ip_before: "{{ ssh_gathered.gathered.ip }}"
+    service_before: "{{ ssh_gathered.gathered | dict2items | rejectattr('key', 'equalto', 'ip') | items2dict }}"
+
+- block:
+    - name: Ssh - merged, only options that do not touch the login
+      register: result
+      cisco.ios.ios_service: &set
+        config:
+          ip:
+            ssh:
+              time_out: 90
+              authentication_retries: 4
+        state: merged
+
+    - name: Ssh - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'ip ssh time-out 90' in result.commands"
+          - "'ip ssh authentication-retries 4' in result.commands"
+
+    - name: Ssh - idempotent
+      register: result
+      cisco.ios.ios_service: *set
+
+    - name: Ssh - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    - name: Ssh - replaced only changes what the task names, the ip section of the device is sent back
+      register: result
+      cisco.ios.ios_service:
+        config: "{{ service_before | combine({'ip': ip_before | combine({'ssh': {'time_out': 100}}, recursive=true)}) }}"
+        state: replaced
+
+    - name: Ssh - assert
+      ansible.builtin.assert:
+        that:
+          - result.commands == ['ip ssh time-out 100']
+
+    - name: Ssh - the order of an algorithm list matters
+      when: ssh_before.server.algorithm.hostkey | default([]) | length > 1
+      block:
+        - name: Ssh - the list of the device is idempotent
+          register: result
+          cisco.ios.ios_service:
+            config:
+              ip:
+                ssh:
+                  server:
+                    algorithm:
+                      hostkey: "{{ ssh_before.server.algorithm.hostkey }}"
+            state: merged
+
+        - name: Ssh - the same members in another order change it
+          register: result_reversed
+          cisco.ios.ios_service:
+            config:
+              ip:
+                ssh:
+                  server:
+                    algorithm:
+                      hostkey: "{{ ssh_before.server.algorithm.hostkey | reverse | list }}"
+            state: merged
+
+        - name: Ssh - assert
+          ansible.builtin.assert:
+            that:
+              - result.changed == false
+              - result_reversed.changed == true
+              - result_reversed.commands == ['ip ssh server algorithm hostkey ' ~ (ssh_before.server.algorithm.hostkey | reverse | join(' '))]
+
+    - name: Ssh - gathered
+      register: result
+      cisco.ios.ios_service:
+        state: gathered
+
+    - name: Ssh - assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.gathered.ip.ssh.time_out == 100
+          - result.gathered.ip.ssh.authentication_retries == 4
+
+    - name: Ssh - deleted does not reset an option that has a default
+      register: result
+      check_mode: true
+      cisco.ios.ios_service:
+        config:
+          ip:
+            ssh:
+              time_out: 100
+        state: deleted
+
+    - name: Ssh - assert
+      ansible.builtin.assert:
+        that:
+          - result.commands | select('search', 'ip ssh') | list | length == 0
+  always:
+    - name: Ssh - restore what the device had
+      cisco.ios.ios_service:
+        config:
+          ip:
+            ssh:
+              time_out: "{{ ssh_before.time_out }}"
+              authentication_retries: "{{ ssh_before.authentication_retries }}"
+              server:
+                algorithm:
+                  hostkey: "{{ ssh_before.server.algorithm.hostkey | default(omit) }}"
+        state: merged
+
+- name: Ssh - parsed
+  register: result
+  cisco.ios.ios_service:
+    running_config: |
+      service dhcp
+      ip ssh time-out 120
+      ip ssh logging events
+      ip ssh server algorithm hostkey rsa-sha2-512 rsa-sha2-256
+    state: parsed
+
+- name: Ssh - assert parsed
+  ansible.builtin.assert:
+    that:
+      - result.parsed.ip.ssh.time_out == 120
+      - result.parsed.ip.ssh.logging_events == true
+      - result.parsed.ip.ssh.server.algorithm.hostkey == ['rsa-sha2-512', 'rsa-sha2-256']
+
+- name: Ssh - rendered
+  register: result
+  cisco.ios.ios_service:
+    config:
+      ip:
+        ssh:
+          version: 2
+          server:
+            algorithm:
+              kex:
+                - ecdh-sha2-nistp521
+                - ecdh-sha2-nistp384
+    state: rendered
+
+- name: Ssh - assert rendered
+  ansible.builtin.assert:
+    that:
+      - "'ip ssh version 2' in result.rendered"
+      - "'ip ssh server algorithm kex ecdh-sha2-nistp521 ecdh-sha2-nistp384' in result.rendered"

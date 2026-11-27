@@ -1,0 +1,41 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_service tftp_server offline integration tests on connection={{ ansible_connection }}
+
+- name: Tftp_server rendered - render commands without device
+  register: result
+  cisco.ios.ios_service:
+    config:
+      tftp_server:
+        files:
+          - file: flash:image.bin
+          - file: flash:config.txt
+            alias: backup.txt
+            access_list: 10
+    state: rendered
+
+- name: Tftp_server rendered - assert
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - "'tftp-server flash:image.bin' in result.rendered"
+      - "'tftp-server flash:config.txt alias backup.txt 10' in result.rendered"
+
+- name: Tftp_server parsed - parse config string, the old form of the line is read as the new one
+  register: result
+  cisco.ios.ios_service:
+    running_config: |
+      service dhcp
+      tftp-server flash:image.bin
+      tftp-server flash:config.txt alias backup.txt 10
+      tftp-server flash old.bin
+    state: parsed
+
+- name: Tftp_server parsed - assert structured data returned
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.parsed.tftp_server.files | length == 3
+      - result.parsed.tftp_server.files[1].alias == "backup.txt"
+      - result.parsed.tftp_server.files[1].access_list == 10
+      - result.parsed.tftp_server.files[2].file == "flash:old.bin"

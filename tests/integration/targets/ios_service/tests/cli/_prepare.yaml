@@ -13,4 +13,4 @@
 
 - name: Keep them to send them back
   ansible.builtin.set_fact:
-    service_options: "{{ gathered_service.gathered | dict2items | rejectattr('key', 'equalto', 'ip') | items2dict }}"
+    service_options: "{{ gathered_service.gathered | dict2items | rejectattr('key', 'in', ['ip', 'tftp_server']) | items2dict }}"

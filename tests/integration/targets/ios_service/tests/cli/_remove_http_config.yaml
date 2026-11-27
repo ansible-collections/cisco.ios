@@ -1,0 +1,24 @@
+---
+- name: Take the ACL of the tests out of the http server
+  cisco.ios.ios_config:
+    lines:
+      - no ip http access-class ipv4 HTTP-TEST-ACL
+
+- name: Remove the http client source interface when the device had none
+  cisco.ios.ios_config:
+    lines:
+      - no ip http client source-interface
+  when: http_baseline.client.source_interface is not defined
+
+- name: Put the http options of the device back
+  cisco.ios.ios_service:
+    config:
+      ip:
+        http: "{{ http_baseline }}"
+    state: merged
+  when: http_baseline | length > 0
+
+- name: Remove the ACL of the tests
+  cisco.ios.ios_config:
+    lines:
+      - no ip access-list standard HTTP-TEST-ACL

@@ -26,6 +26,8 @@ author:
 notes:
   - Tested against Cisco IOSXE Version 17.9.1a on CML.
   - The I(ip) options are tested against Cisco IOS XE Software, Version 17.12.4 and 17.18.4 on a Catalyst 9300.
+  - The length of the SSH host key is set with the exec command C(crypto key generate rsa), it is not part of the
+    configuration and not managed by this module.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
@@ -94,6 +96,73 @@ options:
               rcp_enable:
                 description: Enable remote copy (C(ip rcmd rcp-enable)).
                 type: bool
+          ssh:
+            description:
+              - Security relevant options of C(ip ssh).
+              - IOS prints every option with its default value, so an option that is not in the task is left alone
+                in all states. To go back to a default, set the default value.
+              - State I(deleted) removes I(source_interface) and I(rsa_keypair_name), the options without a default.
+            type: dict
+            suboptions:
+              version:
+                description: SSH version (C(ip ssh version)).
+                type: int
+                choices: [1, 2]
+              time_out:
+                description: Seconds before an idle negotiation is closed (C(ip ssh time-out)).
+                type: int
+              authentication_retries:
+                description: Authentication attempts per connection (C(ip ssh authentication-retries)).
+                type: int
+              dh_min_size:
+                description: Minimum size of the Diffie-Hellman group (C(ip ssh dh min size)).
+                type: int
+              bulk_mode:
+                description: Window size of bulk mode transfers (C(ip ssh bulk-mode)).
+                type: int
+              logging_events:
+                description: Log the SSH events (C(ip ssh logging events)).
+                type: bool
+              source_interface:
+                description: Source interface of the SSH client (C(ip ssh source-interface)).
+                type: str
+              rsa_keypair_name:
+                description: Name of the RSA key pair used by the SSH server (C(ip ssh rsa keypair-name)).
+                type: str
+              server:
+                description: SSH server.
+                type: dict
+                suboptions:
+                  algorithm:
+                    description:
+                      - Algorithms offered by the server, in order of preference (C(ip ssh server algorithm)).
+                      - A list replaces the one of the device, the order matters.
+                    type: dict
+                    suboptions:
+                      mac:
+                        description: Message authentication codes.
+                        type: list
+                        elements: str
+                      kex:
+                        description: Key exchange algorithms.
+                        type: list
+                        elements: str
+                      hostkey:
+                        description: Host key algorithms.
+                        type: list
+                        elements: str
+                      encryption:
+                        description: Encryption algorithms.
+                        type: list
+                        elements: str
+                      publickey:
+                        description: Public key algorithms.
+                        type: list
+                        elements: str
+                      authentication:
+                        description: Authentication methods.
+                        type: list
+                        elements: str
           tftp:
             description: TFTP client.
             type: dict
@@ -108,6 +177,47 @@ options:
               source_interface:
                 description: Source interface of the FTP connections (C(ip ftp source-interface)).
                 type: str
+          http:
+            description: HTTP and HTTPS server and client.
+            type: dict
+            suboptions:
+              server:
+                description: Enable the HTTP server (C(ip http server)).
+                type: bool
+              secure_server:
+                description: Enable the HTTPS server (C(ip http secure-server)).
+                type: bool
+              authentication:
+                description:
+                  - Authentication method of the HTTP server (C(ip http authentication)).
+                  - C(enable) is the default of IOS.
+                type: str
+                choices: ["aaa", "enable", "local", "tacacs"]
+              access_class:
+                description: ACL that limits the clients of the HTTP server (C(ip http access-class ipv4)).
+                type: str
+              port:
+                description: Port of the HTTP server (C(ip http port)), 80 is the default of IOS.
+                type: int
+              secure_port:
+                description: Port of the HTTPS server (C(ip http secure-port)), 443 is the default of IOS.
+                type: int
+              max_connections:
+                description: Maximum number of concurrent connections of the server (C(ip http max-connections)), 300 is the default of IOS.
+                type: int
+              secure_trustpoint:
+                description: Trustpoint of the certificate of the HTTPS server (C(ip http secure-trustpoint)).
+                type: str
+              client:
+                description: HTTP client.
+                type: dict
+                suboptions:
+                  source_interface:
+                    description: Source interface of the HTTP client connections (C(ip http client source-interface)).
+                    type: str
+                  secure_trustpoint:
+                    description: Trustpoint used to verify the HTTPS servers of the client (C(ip http client secure-trustpoint)).
+                    type: str
       linenumber:
         description: enable line number banner for each exec
         type: bool
@@ -191,6 +301,39 @@ options:
       telnet_zeroidle:
         description: Set TCP window 0 when connection is idle
         type: bool
+      tftp_server:
+        description:
+          - The files the TFTP server serves (C(tftp-server)). IOS has no command to switch the server on or off, it serves
+            the files that are configured.
+          - Only managed when it is in the task, the other states leave it alone otherwise.
+        type: dict
+        version_added: 11.8.0
+        suboptions:
+          enable:
+            description:
+              - Set to C(false) to remove every C(tftp-server) line, the server then serves nothing. It works with every state.
+              - Cannot be used together with I(files). C(true) has no effect on its own.
+            type: bool
+          files:
+            description:
+              - The files to serve.
+              - With I(state=merged) they are added, with I(state=replaced) and I(state=overridden) they are the only ones left.
+              - With I(state=deleted) only the files named here are removed.
+            type: list
+            elements: dict
+            suboptions:
+              file:
+                description: File system and name of the file, for example C(flash:image.bin).
+                type: str
+                required: true
+              alias:
+                description: Name the file is served as (C(alias)).
+                type: str
+              access_list:
+                description:
+                  - Number of the standard access list that limits who can fetch the file.
+                  - IOS takes a number here, a named access list is refused.
+                type: int
       timestamps:
         description: Timestamp debug/log messages
         elements: dict
@@ -406,6 +549,77 @@ EXAMPLES = """
 # no ip finger
 # ip ftp source-interface GigabitEthernet0/0
 # ip tftp source-interface GigabitEthernet0/0
+
+# Using merged with the ip http options
+# Using merged with tftp_server
+
+# Before state:
+# -------------
+#
+# router-ios#show running-config all | include ^ip http (server|secure-server|port|authentication)
+# ip http server
+# ip http secure-server
+# ip http port 80
+# ip http authentication enable
+
+- name: Turn the HTTP server off, keep the HTTPS server and limit who may use it
+  cisco.ios.ios_service:
+    config:
+      ip:
+        http:
+          server: false
+          secure_server: true
+          authentication: local
+          access_class: HTTP-CLIENTS
+          secure_trustpoint: LAB-TRUSTPOINT
+          client:
+            source_interface: GigabitEthernet0/0
+# router-ios#show running-config | include ^tftp-server
+# tftp-server flash:image.bin
+
+- name: Serve a file with an alias and limit who can fetch it
+  cisco.ios.ios_service:
+    config:
+      tftp_server:
+        files:
+          - file: flash:config.txt
+            alias: backup.txt
+            access_list: 10
+    state: merged
+
+# Task Output
+# -----------
+#
+# commands:
+#   - no ip http server
+#   - ip http access-class ipv4 HTTP-CLIENTS
+#   - ip http secure-trustpoint LAB-TRUSTPOINT
+#   - ip http client source-interface GigabitEthernet0/0
+#   - ip http authentication local
+#   - tftp-server flash:config.txt alias backup.txt 10
+
+# After state:
+# ------------
+#
+# router-ios#show running-config | include ^tftp-server
+# tftp-server flash:image.bin
+# tftp-server flash:config.txt alias backup.txt 10
+
+# Using merged to switch the TFTP server off
+
+- name: Remove every tftp-server line
+  cisco.ios.ios_service:
+    config:
+      tftp_server:
+        enable: false
+    state: merged
+
+# Task Output
+# -----------
+#
+# commands:
+#   - no tftp-server flash:image.bin
+#   - no tftp-server flash:config.txt alias backup.txt 10
 
 # Using replaced
 
@@ -694,6 +908,46 @@ EXAMPLES = """
 #       year: true
 #     msg: log
 #     timestamp: datetime
+
+# Using merged with the ip.ssh options
+
+# Before state:
+# -------------
+#
+# router-ios#show running-config all | include ^ip ssh (time-out|authentication-retries|server algorithm hostkey)
+# ip ssh time-out 120
+# ip ssh authentication-retries 3
+# ip ssh server algorithm hostkey rsa-sha2-512 rsa-sha2-256 ssh-rsa
+
+- name: Tighten the SSH server
+  cisco.ios.ios_service:
+    config:
+      ip:
+        ssh:
+          time_out: 60
+          authentication_retries: 4
+          server:
+            algorithm:
+              hostkey:
+                - rsa-sha2-512
+                - rsa-sha2-256
+    state: merged
+
+# Task Output
+# -----------
+#
+# commands:
+#   - ip ssh time-out 60
+#   - ip ssh authentication-retries 4
+#   - ip ssh server algorithm hostkey rsa-sha2-512 rsa-sha2-256
+
+# After state:
+# ------------
+#
+# router-ios#show running-config all | include ^ip ssh (time-out|authentication-retries|server algorithm hostkey)
+# ip ssh time-out 60
+# ip ssh authentication-retries 4
+# ip ssh server algorithm hostkey rsa-sha2-512 rsa-sha2-256
 """
 
 RETURN = """
