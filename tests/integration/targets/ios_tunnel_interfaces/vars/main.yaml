@@ -1,0 +1,6 @@
+---
+tunnel1: Tunnel1501
+tunnel2: Tunnel1502
+tunnel_src: 192.0.2.250
+tunnel_dst1: 198.51.100.101
+tunnel_dst2: 198.51.100.102

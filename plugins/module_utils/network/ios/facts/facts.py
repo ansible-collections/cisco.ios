@@ -117,6 +117,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.snmp_s
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.static_routes.static_routes import (
     Static_routesFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.tunnel_interfaces.tunnel_interfaces import (
+    Tunnel_interfacesFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.vlans.vlans import (
     VlansFacts,
 )
@@ -179,6 +182,7 @@ FACT_RESOURCE_SUBSETS = dict(
     flow_monitor_global=Flow_monitor_globalFacts,
     flow_monitor_interfaces=Flow_monitor_interfacesFacts,
     monitor_sessions=Monitor_sessionsFacts,
+    tunnel_interfaces=Tunnel_interfacesFacts,
 )
 
 

@@ -1,0 +1,10 @@
+---
+devices:
+  - platform: ios_tunnel_interfaces
+    count: 1
+
+  - scenario: tunnel-interfaces-merged
+    count: 1
+
+  - scenario: tunnel-interfaces-overridden
+    count: 1
