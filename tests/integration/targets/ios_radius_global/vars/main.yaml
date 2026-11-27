@@ -1,0 +1,5 @@
+---
+server1: RADSRV-TEST-1
+server2: RADSRV-TEST-2
+server1_address: 192.0.2.10
+server2_address: 198.51.100.10

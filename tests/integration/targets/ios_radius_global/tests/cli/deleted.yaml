@@ -1,0 +1,59 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_radius_global deleted integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- block:
+    - name: Deleted - prepare
+      cisco.ios.ios_radius_global:
+        config:
+          retransmit: 4
+          servers:
+            - name: "{{ server1 }}"
+              address:
+                ipv4: "{{ server1_address }}"
+            - name: "{{ server2 }}"
+              address:
+                ipv4: "{{ server2_address }}"
+        state: merged
+
+    - name: Deleted - one server
+      register: result
+      cisco.ios.ios_radius_global:
+        config:
+          servers:
+            - name: "{{ server2 }}"
+        state: deleted
+
+    - name: Deleted - assert
+      ansible.builtin.assert:
+        that:
+          - result.commands == ['no radius server ' ~ server2]
+
+    - name: Deleted - a global option, the servers stay
+      register: result
+      cisco.ios.ios_radius_global:
+        config:
+          retransmit: 4
+        state: deleted
+
+    - name: Deleted - assert
+      ansible.builtin.assert:
+        that:
+          - result.commands == ['no radius-server retransmit']
+
+    - name: Deleted - idempotent
+      register: result
+      cisco.ios.ios_radius_global:
+        config:
+          retransmit: 4
+          servers:
+            - name: "{{ server2 }}"
+        state: deleted
+
+    - name: Deleted - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -1,0 +1,20 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_radius_global parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parsed - parse config string
+  register: result
+  cisco.ios.ios_radius_global:
+    running_config: "{{ lookup('file', role_path + '/tests/cli/_parsed.cfg') }}"
+    state: parsed
+
+- name: Parsed - assert structured data returned
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.parsed.timeout == 4
+      - result.parsed.source_interface.vrf == "MGMT"
+      - result.parsed.load_balance.method == "least_outstanding"
+      - result.parsed.attributes[0].number == 6
+      - result.parsed.servers[0].address.ipv4 == "192.0.2.10"
+      - result.parsed.servers[0].key.type == 7

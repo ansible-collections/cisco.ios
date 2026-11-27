@@ -1,0 +1,33 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_radius_global gathered integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- block:
+    - name: Gathered - prepare
+      cisco.ios.ios_radius_global:
+        config:
+          deadtime: 2
+          servers:
+            - name: "{{ server1 }}"
+              address:
+                ipv4: "{{ server1_address }}"
+                auth_port: 1645
+                acct_port: 1646
+              retransmit: 2
+        state: merged
+
+    - name: Gathered - read the configuration
+      register: result
+      cisco.ios.ios_radius_global:
+        state: gathered
+
+    - name: Gathered - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered.deadtime == 2
+          - (result.gathered.servers | selectattr('name', 'equalto', server1) | first).address.auth_port == 1645
+          - (result.gathered.servers | selectattr('name', 'equalto', server1) | first).retransmit == 2
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

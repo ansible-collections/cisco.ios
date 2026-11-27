@@ -1,0 +1,31 @@
+---
+- name: Collect all CLI test cases
+  ansible.builtin.find:
+    paths: "{{ role_path }}/tests/cli"
+    patterns: "{{ testcase }}.yaml"
+    use_regex: true
+  register: test_cases
+  delegate_to: localhost
+
+- name: Set test_items
+  ansible.builtin.set_fact:
+    test_items: "{{ test_cases.files | map(attribute='path') | list }}"
+  delegate_to: localhost
+
+- name: The radius commands need aaa new-model
+  cisco.ios.ios_command:
+    commands: show running-config | include ^aaa new-model
+  register: aaa_new_model
+  vars:
+    ansible_connection: ansible.netcommon.network_cli
+
+- name: Run test case (connection=ansible.netcommon.network_cli)
+  ansible.builtin.include_tasks: "{{ test_case_to_run }}"
+  vars:
+    ansible_connection: ansible.netcommon.network_cli
+  with_items: "{{ test_items }}"
+  loop_control:
+    loop_var: test_case_to_run
+  when: >-
+    aaa_new_model.stdout[0] | length > 0 or
+    (test_case_to_run | basename) in ['parsed.yaml', 'rendered.yaml']
