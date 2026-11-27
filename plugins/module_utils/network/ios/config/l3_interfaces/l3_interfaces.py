@@ -93,6 +93,7 @@ class L3_interfaces(ResourceModule):
 
         for each in wantd, haved:
             self.list_to_dict(each)
+        self._align_source_interfaces(wantd, haved)
 
         if self.state == "merged":
             wantd = dict_merge(haved, wantd)
@@ -275,6 +276,28 @@ class L3_interfaces(ResourceModule):
             v4_addr_h = validate_n_expand_ipv4(self._module, have) if have.get("address") else {}
             if v4_addr_h:
                 have["address"] = v4_addr_h
+
+    @staticmethod
+    def _align_source_interfaces(wantd, haved):
+        """IOS prints "ip unnumbered Loopback498", the task may say "Lo498" or "loopback498".
+
+        When both name the same interface the device side takes the spelling of the task, so they
+        compare equal and the command is sent as the user wrote it.
+        """
+        for name, want in wantd.items():
+            want_source = (
+                (want.get("ipv4") or {}).get("source_interface", {}).get("source_interface")
+            )
+            have_source = (
+                (haved.get(name, {}).get("ipv4") or {})
+                .get("source_interface", {})
+                .get("source_interface")
+            )
+            if want_source and have_source and want_source.get("name") and have_source.get("name"):
+                if normalize_interface(want_source["name"]) == normalize_interface(
+                    have_source["name"],
+                ):
+                    have_source["name"] = want_source["name"]
 
     def list_to_dict(self, param):
         def list_to_dict_by_destination_ip(helper_list):
