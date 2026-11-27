@@ -1,0 +1,35 @@
+---
+- name: Remove what the tests created, by name
+  when: aaa_on | bool
+  cisco.ios.ios_aaa:
+    config:
+      authentication:
+        login:
+          - name: "{{ list_name }}"
+        dot1x:
+          - name: "{{ list_name }}"
+      authorization:
+        exec:
+          - name: "{{ list_name }}"
+        commands:
+          - level: 15
+            name: "{{ list_name }}"
+      accounting:
+        exec:
+          - name: "{{ list_name }}"
+      group_servers:
+        - type: radius
+          name: "{{ group_name }}"
+      dynamic_author:
+        clients:
+          - address: "{{ client_address }}"
+    state: deleted
+
+- name: Remove the RADIUS servers
+  when: aaa_on | bool
+  cisco.ios.ios_config:
+    lines:
+      - "no radius server {{ item }}"
+  loop:
+    - "{{ server1 }}"
+    - "{{ server2 }}"

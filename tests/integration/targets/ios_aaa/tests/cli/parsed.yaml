@@ -1,0 +1,19 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_aaa parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parsed - parse config string
+  register: result
+  cisco.ios.ios_aaa:
+    running_config: "{{ lookup('file', role_path + '/tests/cli/_parsed.cfg') }}"
+    state: parsed
+
+- name: Parsed - assert structured data returned
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.parsed.new_model == true
+      - result.parsed.authentication.login[0].methods == ['group ISE-TAC', 'local']
+      - result.parsed.authorization.commands[0].level == 15
+      - result.parsed.group_servers[0].servers == ['ISE-TAC-PRI', 'ISE-TAC-SEC']
+      - result.parsed.dynamic_author.clients[0].server_key.type == 6

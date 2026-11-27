@@ -1,0 +1,49 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_aaa replaced integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _prepare.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
+- block:
+    - name: Replaced - prepare
+      cisco.ios.ios_aaa:
+        config:
+          group_servers:
+            - type: radius
+              name: "{{ group_name }}"
+              servers:
+                - "{{ server1 }}"
+                - "{{ server2 }}"
+              deadtime: 5
+        state: merged
+
+    - name: Replaced - the group is made to match
+      register: result
+      cisco.ios.ios_aaa: &replace
+        config:
+          group_servers:
+            - type: radius
+              name: "{{ group_name }}"
+              servers:
+                - "{{ server2 }}"
+                - "{{ server1 }}"
+        state: replaced
+
+    - name: Replaced - assert, the order of the servers is the order they are tried
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no deadtime' in result.commands"
+          - result.after.group_servers | selectattr('name', 'equalto', group_name) | map(attribute='servers') | first == [server2, server1]
+
+    - name: Replaced - idempotent
+      register: result
+      cisco.ios.ios_aaa: *replace
+
+    - name: Replaced - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
+  when: aaa_on | bool

@@ -1,0 +1,20 @@
+---
+- name: Is AAA enabled on the device? The tests do not enable it, that changes how the logins work
+  cisco.ios.ios_aaa:
+    state: gathered
+  register: gathered_aaa
+
+- name: Remember it
+  ansible.builtin.set_fact:
+    aaa_on: "{{ gathered_aaa.gathered.new_model | default(false) }}"
+
+- name: Create the two RADIUS servers the group refers to
+  when: aaa_on | bool
+  cisco.ios.ios_config:
+    lines:
+      - address ipv4 192.0.2.50 auth-port 1812 acct-port 1813
+      - key IosAaaTestKey
+    parents: "radius server {{ item }}"
+  loop:
+    - "{{ server1 }}"
+    - "{{ server2 }}"
