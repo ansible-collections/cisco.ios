@@ -1,0 +1,16 @@
+---
+- name: Create the interface of the tests
+  cisco.ios.ios_interfaces:
+    config:
+      - name: "{{ source_interface }}"
+        enabled: true
+    state: merged
+
+- name: Gather the service options of the device, replaced and overridden reset what is not in the task
+  cisco.ios.ios_service:
+    state: gathered
+  register: gathered_service
+
+- name: Keep them to send them back
+  ansible.builtin.set_fact:
+    service_options: "{{ gathered_service.gathered | dict2items | rejectattr('key', 'in', ['ip', 'tftp_server']) | items2dict }}"

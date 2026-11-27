@@ -1,0 +1,26 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_service http_rendered integration tests on connection={{ ansible_connection }}
+
+- name: Http rendered - render commands without device
+  register: result
+  cisco.ios.ios_service:
+    config:
+      ip:
+        http:
+          server: false
+          secure_server: true
+          authentication: tacacs
+          secure_trustpoint: LAB-TP
+          client:
+            secure_trustpoint: LAB-CA
+    state: rendered
+
+- name: Http rendered - assert commands generated
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - "'ip http secure-server' in result.rendered"
+      - "'ip http authentication tacacs' in result.rendered"
+      - "'ip http secure-trustpoint LAB-TP' in result.rendered"
+      - "'ip http client secure-trustpoint LAB-CA' in result.rendered"

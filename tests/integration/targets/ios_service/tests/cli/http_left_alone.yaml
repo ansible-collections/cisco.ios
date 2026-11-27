@@ -1,0 +1,41 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_service http_left_alone integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _prepare_http.yaml
+- block:
+    - name: Http left alone - prepare
+      cisco.ios.ios_service:
+        config:
+          ip:
+            http:
+              max_connections: 100
+        state: merged
+
+    - name: Http left alone - replaced without the ip section
+      register: result
+      cisco.ios.ios_service:
+        config: "{{ service_options }}"
+        state: replaced
+
+    - name: Http left alone - overridden without the ip section
+      register: result_overridden
+      cisco.ios.ios_service:
+        config: "{{ service_options }}"
+        state: overridden
+
+    - name: Http left alone - gather
+      register: after
+      cisco.ios.ios_service:
+        state: gathered
+
+    - name: Http left alone - assert
+      ansible.builtin.assert:
+        that:
+          - result.commands | select('search', 'ip http') | list | length == 0
+          - result_overridden.commands | select('search', 'ip http') | list | length == 0
+          - after.gathered.ip.http.max_connections == 100
+
+  always:
+    - ansible.builtin.include_tasks: _remove_http_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

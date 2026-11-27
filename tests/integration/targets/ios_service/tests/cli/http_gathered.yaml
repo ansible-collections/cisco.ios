@@ -1,0 +1,31 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_service http_gathered integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _prepare_http.yaml
+- block:
+    - name: Http gathered - prepare
+      cisco.ios.ios_service:
+        config:
+          ip:
+            http:
+              access_class: HTTP-TEST-ACL
+              port: 8080
+        state: merged
+
+    - name: Http gathered - read the configuration
+      register: result
+      cisco.ios.ios_service:
+        state: gathered
+
+    - name: Http gathered - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered.ip.http.access_class == "HTTP-TEST-ACL"
+          - result.gathered.ip.http.port == 8080
+          - result.gathered.ip.http.secure_port is defined
+
+  always:
+    - ansible.builtin.include_tasks: _remove_http_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

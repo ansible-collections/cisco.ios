@@ -1,0 +1,58 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_service http_merged integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _prepare_http.yaml
+- block:
+    - name: Http merged - authentication, access class, port, connections, source interface
+      register: result
+      cisco.ios.ios_service: &create
+        config:
+          ip:
+            http:
+              authentication: local
+              access_class: HTTP-TEST-ACL
+              port: 8080
+              max_connections: 100
+              client:
+                source_interface: "{{ source_interface }}"
+        state: merged
+
+    - name: Http merged - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'ip http authentication local' in result.commands"
+          - "'ip http access-class ipv4 HTTP-TEST-ACL' in result.commands"
+          - "'ip http port 8080' in result.commands"
+          - "'ip http max-connections 100' in result.commands"
+          - "'ip http client source-interface ' ~ source_interface in result.commands"
+
+    - name: Http merged - idempotent
+      register: result
+      cisco.ios.ios_service: *create
+
+    - name: Http merged - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    - name: Http merged - the defaults and an abbreviated interface name are the same
+      register: result
+      cisco.ios.ios_service:
+        config:
+          ip:
+            http:
+              secure_port: 443
+              client:
+                source_interface: Lo999
+        state: merged
+
+    - name: Http merged - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+  always:
+    - ansible.builtin.include_tasks: _remove_http_config.yaml
+    - ansible.builtin.include_tasks: _remove_config.yaml

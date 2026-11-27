@@ -1,0 +1,19 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_service parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parsed - parse config string
+  register: result
+  cisco.ios.ios_service:
+    running_config: "{{ lookup('file', role_path + '/tests/cli/_parsed.cfg') }}"
+    state: parsed
+
+- name: Parsed - assert structured data returned
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.parsed.ip.scp_server == true
+      - result.parsed.ip.rcmd.rsh_enable == true
+      - result.parsed.ip.tftp.source_interface == "GigabitEthernet0/0"
+      - result.parsed.ip.ftp.source_interface == "Loopback1"
+      - result.parsed.ip.finger is not defined

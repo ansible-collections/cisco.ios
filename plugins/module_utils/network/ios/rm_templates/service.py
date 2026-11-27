@@ -526,4 +526,481 @@ class ServiceTemplate(NetworkTemplate):
                 "unsupported_transceiver": True,
             },
         },
+        {
+            "name": "ip_bootp_server",
+            "getval": re.compile(
+                r"""
+                ^ip\sbootp\sserver
+                """, re.VERBOSE,
+            ),
+            "setval": "ip bootp server",
+            "compval": "ip.bootp_server",
+            "result": {
+                "ip": {"bootp_server": True},
+            },
+        },
+        {
+            "name": "ip_finger",
+            "getval": re.compile(
+                r"""
+                ^ip\sfinger
+                """, re.VERBOSE,
+            ),
+            "setval": "ip finger",
+            "compval": "ip.finger",
+            "result": {
+                "ip": {"finger": True},
+            },
+        },
+        {
+            "name": "ip_source_route",
+            "getval": re.compile(
+                r"""
+                ^ip\ssource-route
+                """, re.VERBOSE,
+            ),
+            "setval": "ip source-route",
+            "compval": "ip.source_route",
+            "result": {
+                "ip": {"source_route": True},
+            },
+        },
+        {
+            "name": "ip_scp_server",
+            "getval": re.compile(
+                r"""
+                ^ip\sscp\sserver\senable
+                """, re.VERBOSE,
+            ),
+            "setval": "ip scp server enable",
+            "compval": "ip.scp_server",
+            "result": {
+                "ip": {"scp_server": True},
+            },
+        },
+        {
+            "name": "ip_rcmd_rsh_enable",
+            "getval": re.compile(
+                r"""
+                ^ip\srcmd\srsh-enable
+                """, re.VERBOSE,
+            ),
+            "setval": "ip rcmd rsh-enable",
+            "compval": "ip.rcmd.rsh_enable",
+            "result": {
+                "ip": {"rcmd": {"rsh_enable": True}},
+            },
+        },
+        {
+            "name": "ip_rcmd_rcp_enable",
+            "getval": re.compile(
+                r"""
+                ^ip\srcmd\srcp-enable
+                """, re.VERBOSE,
+            ),
+            "setval": "ip rcmd rcp-enable",
+            "compval": "ip.rcmd.rcp_enable",
+            "result": {
+                "ip": {"rcmd": {"rcp_enable": True}},
+            },
+        },
+        {
+            "name": "ip_tftp_source_interface",
+            "getval": re.compile(
+                r"""
+                ^ip\stftp\ssource-interface\s(?P<source_interface>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip tftp source-interface {{ ip.tftp.source_interface }}",
+            "remval": "ip tftp source-interface",
+            "compval": "ip.tftp.source_interface",
+            "result": {
+                "ip": {"tftp": {"source_interface": "{{ source_interface }}"}},
+            },
+        },
+        {
+            "name": "ip_ftp_source_interface",
+            "getval": re.compile(
+                r"""
+                ^ip\sftp\ssource-interface\s(?P<source_interface>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip ftp source-interface {{ ip.ftp.source_interface }}",
+            "remval": "ip ftp source-interface",
+            "compval": "ip.ftp.source_interface",
+            "result": {
+                "ip": {"ftp": {"source_interface": "{{ source_interface }}"}},
+            },
+        },
+        # --- ip.http: the HTTP and HTTPS server and client ---
+        {
+            "name": "ip_http_server",
+            "getval": re.compile(
+                r"""
+                ^ip\shttp\sserver
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip http server",
+            "compval": "ip.http.server",
+            "result": {
+                "ip": {"http": {"server": True}},
+            },
+        },
+        {
+            "name": "ip_http_secure_server",
+            "getval": re.compile(
+                r"""
+                ^ip\shttp\ssecure-server
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip http secure-server",
+            "compval": "ip.http.secure_server",
+            "result": {
+                "ip": {"http": {"secure_server": True}},
+            },
+        },
+        {
+            "name": "ip_http_authentication",
+            "getval": re.compile(
+                r"""
+                ^ip\shttp\sauthentication\s(?P<authentication>aaa|enable|local|tacacs)(\s.*)?
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip http authentication {{ ip.http.authentication }}",
+            "remval": "ip http authentication",
+            "compval": "ip.http.authentication",
+            "result": {
+                "ip": {"http": {"authentication": "{{ authentication }}"}},
+            },
+        },
+        {
+            "name": "ip_http_access_class",
+            "getval": re.compile(
+                r"""
+                ^ip\shttp\saccess-class\sipv4\s(?P<access_class>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip http access-class ipv4 {{ ip.http.access_class }}",
+            "remval": "ip http access-class ipv4 {{ ip.http.access_class }}",
+            "compval": "ip.http.access_class",
+            "result": {
+                "ip": {"http": {"access_class": "{{ access_class }}"}},
+            },
+        },
+        {
+            "name": "ip_http_port",
+            "getval": re.compile(
+                r"""
+                ^ip\shttp\sport\s(?P<port>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip http port {{ ip.http.port }}",
+            "remval": "ip http port",
+            "compval": "ip.http.port",
+            "result": {
+                "ip": {"http": {"port": "{{ port | int }}"}},
+            },
+        },
+        {
+            "name": "ip_http_secure_port",
+            "getval": re.compile(
+                r"""
+                ^ip\shttp\ssecure-port\s(?P<secure_port>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip http secure-port {{ ip.http.secure_port }}",
+            "remval": "ip http secure-port",
+            "compval": "ip.http.secure_port",
+            "result": {
+                "ip": {"http": {"secure_port": "{{ secure_port | int }}"}},
+            },
+        },
+        {
+            "name": "ip_http_max_connections",
+            "getval": re.compile(
+                r"""
+                ^ip\shttp\smax-connections\s(?P<max_connections>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip http max-connections {{ ip.http.max_connections }}",
+            "remval": "ip http max-connections",
+            "compval": "ip.http.max_connections",
+            "result": {
+                "ip": {"http": {"max_connections": "{{ max_connections | int }}"}},
+            },
+        },
+        {
+            "name": "ip_http_secure_trustpoint",
+            "getval": re.compile(
+                r"""
+                ^ip\shttp\ssecure-trustpoint\s(?P<secure_trustpoint>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip http secure-trustpoint {{ ip.http.secure_trustpoint }}",
+            "remval": "ip http secure-trustpoint {{ ip.http.secure_trustpoint }}",
+            "compval": "ip.http.secure_trustpoint",
+            "result": {
+                "ip": {"http": {"secure_trustpoint": "{{ secure_trustpoint }}"}},
+            },
+        },
+        {
+            "name": "ip_http_client_source_interface",
+            "getval": re.compile(
+                r"""
+                ^ip\shttp\sclient\ssource-interface\s(?P<source_interface>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip http client source-interface {{ ip.http.client.source_interface }}",
+            "remval": "ip http client source-interface",
+            "compval": "ip.http.client.source_interface",
+            "result": {
+                "ip": {"http": {"client": {"source_interface": "{{ source_interface }}"}}},
+            },
+        },
+        {
+            "name": "ip_http_client_secure_trustpoint",
+            "getval": re.compile(
+                r"""
+                ^ip\shttp\sclient\ssecure-trustpoint\s(?P<secure_trustpoint>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip http client secure-trustpoint {{ ip.http.client.secure_trustpoint }}",
+            "remval": "ip http client secure-trustpoint {{ ip.http.client.secure_trustpoint }}",
+            "compval": "ip.http.client.secure_trustpoint",
+            "result": {
+                "ip": {"http": {"client": {"secure_trustpoint": "{{ secure_trustpoint }}"}}},
+            },
+        },
+        # ---- tftp-server: the files served by the TFTP server ----
+        {
+            "name": "tftp_server",
+            "getval": re.compile(
+                r"""
+                ^tftp-server\s(?P<file>[^\s:]+:\S+)
+                (\salias\s(?P<alias>\S+))?
+                (\s(?P<access_list>\d+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "tftp-server {{ file }}"
+                      "{{ (' alias ' + alias) if alias is defined else '' }}"
+                      "{{ (' ' + access_list|string) if access_list is defined else '' }}",
+            "result": {
+                "tftp_server": {
+                    "files": [
+                        {
+                            "file": "{{ file }}",
+                            "alias": "{{ alias }}",
+                            "access_list": "{{ access_list | int if access_list is defined }}",
+                        },
+                    ],
+                },
+            },
+        },
+        {
+            # old form of the same line, "tftp-server flash file", read as "flash:file"
+            "name": "tftp_server_old_form",
+            "getval": re.compile(
+                r"""
+                ^tftp-server\s(?P<file_system>[^\s:]+)\s(?P<name>\S+)
+                (\salias\s(?P<alias>\S+))?
+                (\s(?P<access_list>\d+))?
+                $""", re.VERBOSE,
+            ),
+            "setval": "",
+            "result": {
+                "tftp_server": {
+                    "files": [
+                        {
+                            "file": "{{ file_system }}:{{ name }}",
+                            "alias": "{{ alias }}",
+                            "access_list": "{{ access_list | int if access_list is defined }}",
+                        },
+                    ],
+                },
+            },
+        },
+        # ip ssh: curated security relevant options, see the ip.ssh option
+        {
+            "name": "ip_ssh_version",
+            "getval": re.compile(
+                r"""
+                ^ip\sssh\sversion\s(?P<version>[12])
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip ssh version {{ ip.ssh.version }}",
+            "compval": "ip.ssh.version",
+            "result": {
+                "ip": {"ssh": {"version": "{{ version | int }}"}},
+            },
+        },
+        {
+            "name": "ip_ssh_time_out",
+            "getval": re.compile(
+                r"""
+                ^ip\sssh\stime-out\s(?P<time_out>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip ssh time-out {{ ip.ssh.time_out }}",
+            "compval": "ip.ssh.time_out",
+            "result": {
+                "ip": {"ssh": {"time_out": "{{ time_out | int }}"}},
+            },
+        },
+        {
+            "name": "ip_ssh_authentication_retries",
+            "getval": re.compile(
+                r"""
+                ^ip\sssh\sauthentication-retries\s(?P<authentication_retries>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip ssh authentication-retries {{ ip.ssh.authentication_retries }}",
+            "compval": "ip.ssh.authentication_retries",
+            "result": {
+                "ip": {"ssh": {"authentication_retries": "{{ authentication_retries | int }}"}},
+            },
+        },
+        {
+            "name": "ip_ssh_dh_min_size",
+            "getval": re.compile(
+                r"""
+                ^ip\sssh\sdh\smin\ssize\s(?P<dh_min_size>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip ssh dh min size {{ ip.ssh.dh_min_size }}",
+            "compval": "ip.ssh.dh_min_size",
+            "result": {
+                "ip": {"ssh": {"dh_min_size": "{{ dh_min_size | int }}"}},
+            },
+        },
+        {
+            "name": "ip_ssh_bulk_mode",
+            "getval": re.compile(
+                r"""
+                ^ip\sssh\sbulk-mode\s(?P<bulk_mode>\d+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip ssh bulk-mode {{ ip.ssh.bulk_mode }}",
+            "compval": "ip.ssh.bulk_mode",
+            "result": {
+                "ip": {"ssh": {"bulk_mode": "{{ bulk_mode | int }}"}},
+            },
+        },
+        {
+            "name": "ip_ssh_logging_events",
+            "getval": re.compile(
+                r"""
+                ^ip\sssh\slogging\sevents
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip ssh logging events",
+            "compval": "ip.ssh.logging_events",
+            "result": {
+                "ip": {"ssh": {"logging_events": True}},
+            },
+        },
+        {
+            "name": "ip_ssh_source_interface",
+            "getval": re.compile(
+                r"""
+                ^ip\sssh\ssource-interface\s(?P<source_interface>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip ssh source-interface {{ ip.ssh.source_interface }}",
+            "remval": "ip ssh source-interface",
+            "compval": "ip.ssh.source_interface",
+            "result": {
+                "ip": {"ssh": {"source_interface": "{{ source_interface }}"}},
+            },
+        },
+        {
+            "name": "ip_ssh_rsa_keypair_name",
+            "getval": re.compile(
+                r"""
+                ^ip\sssh\srsa\skeypair-name\s(?P<rsa_keypair_name>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip ssh rsa keypair-name {{ ip.ssh.rsa_keypair_name }}",
+            "compval": "ip.ssh.rsa_keypair_name",
+            "result": {
+                "ip": {"ssh": {"rsa_keypair_name": "{{ rsa_keypair_name }}"}},
+            },
+        },
+        {
+            "name": "ip_ssh_server_algorithm_mac",
+            "getval": re.compile(
+                r"""
+                ^ip\sssh\sserver\salgorithm\smac\s(?P<mac>.+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip ssh server algorithm mac {{ ip.ssh.server.algorithm.mac | join(' ') }}",
+            "compval": "ip.ssh.server.algorithm.mac",
+            "result": {
+                "ip": {"ssh": {"server": {"algorithm": {"mac": "{{ mac.split() }}"}}}},
+            },
+        },
+        {
+            "name": "ip_ssh_server_algorithm_kex",
+            "getval": re.compile(
+                r"""
+                ^ip\sssh\sserver\salgorithm\skex\s(?P<kex>.+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip ssh server algorithm kex {{ ip.ssh.server.algorithm.kex | join(' ') }}",
+            "compval": "ip.ssh.server.algorithm.kex",
+            "result": {
+                "ip": {"ssh": {"server": {"algorithm": {"kex": "{{ kex.split() }}"}}}},
+            },
+        },
+        {
+            "name": "ip_ssh_server_algorithm_hostkey",
+            "getval": re.compile(
+                r"""
+                ^ip\sssh\sserver\salgorithm\shostkey\s(?P<hostkey>.+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip ssh server algorithm hostkey {{ ip.ssh.server.algorithm.hostkey | join(' ') }}",
+            "compval": "ip.ssh.server.algorithm.hostkey",
+            "result": {
+                "ip": {"ssh": {"server": {"algorithm": {"hostkey": "{{ hostkey.split() }}"}}}},
+            },
+        },
+        {
+            "name": "ip_ssh_server_algorithm_encryption",
+            "getval": re.compile(
+                r"""
+                ^ip\sssh\sserver\salgorithm\sencryption\s(?P<encryption>.+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip ssh server algorithm encryption {{ ip.ssh.server.algorithm.encryption | join(' ') }}",
+            "compval": "ip.ssh.server.algorithm.encryption",
+            "result": {
+                "ip": {"ssh": {"server": {"algorithm": {"encryption": "{{ encryption.split() }}"}}}},
+            },
+        },
+        {
+            "name": "ip_ssh_server_algorithm_publickey",
+            "getval": re.compile(
+                r"""
+                ^ip\sssh\sserver\salgorithm\spublickey\s(?P<publickey>.+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip ssh server algorithm publickey {{ ip.ssh.server.algorithm.publickey | join(' ') }}",
+            "compval": "ip.ssh.server.algorithm.publickey",
+            "result": {
+                "ip": {"ssh": {"server": {"algorithm": {"publickey": "{{ publickey.split() }}"}}}},
+            },
+        },
+        {
+            "name": "ip_ssh_server_algorithm_authentication",
+            "getval": re.compile(
+                r"""
+                ^ip\sssh\sserver\salgorithm\sauthentication\s(?P<authentication>.+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip ssh server algorithm authentication {{ ip.ssh.server.algorithm.authentication | join(' ') }}",
+            "compval": "ip.ssh.server.algorithm.authentication",
+            "result": {
+                "ip": {"ssh": {"server": {"algorithm": {"authentication": "{{ authentication.split() }}"}}}},
+            },
+        },
     ]

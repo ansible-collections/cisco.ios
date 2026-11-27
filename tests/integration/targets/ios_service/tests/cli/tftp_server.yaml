@@ -1,0 +1,117 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_service tftp_server integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _prepare.yaml
+
+- name: The file of the tests, a file that exists on the device (override with tftp_server_test_file)
+  ansible.builtin.set_fact:
+    tftp_file: "{{ tftp_server_test_file | default('flash:packages.conf') }}"
+    tftp_alias: ios_service_test.txt
+    service_options_no_tftp: "{{ service_options | dict2items | rejectattr('key', 'equalto', 'tftp_server') | items2dict }}"
+
+- block:
+    - name: Tftp_server - serve a file with an alias
+      register: result
+      cisco.ios.ios_service: &merge
+        config:
+          tftp_server:
+            files:
+              - file: "{{ tftp_file }}"
+                alias: "{{ tftp_alias }}"
+        state: merged
+
+    - name: Tftp_server - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'tftp-server ' ~ tftp_file ~ ' alias ' ~ tftp_alias in result.commands"
+
+    - name: Tftp_server - idempotent
+      register: result
+      cisco.ios.ios_service: *merge
+
+    - name: Tftp_server - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    - name: Tftp_server - gathered
+      register: result
+      cisco.ios.ios_service:
+        state: gathered
+
+    - name: Tftp_server - assert gathered
+      ansible.builtin.assert:
+        that:
+          - result.gathered.tftp_server.files | selectattr('file', 'equalto', tftp_file) | list | length == 1
+          - (result.gathered.tftp_server.files | selectattr('file', 'equalto', tftp_file) | first).alias == tftp_alias
+
+    - name: Tftp_server - replaced, without the alias; the service options of the device are sent back
+      register: result
+      cisco.ios.ios_service: &replace
+        config: "{{ service_options_no_tftp | combine({'tftp_server': {'files': [{'file': tftp_file}]}}) }}"
+        state: replaced
+
+    - name: Tftp_server - assert the line with the alias is replaced
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no tftp-server ' ~ tftp_file ~ ' alias ' ~ tftp_alias in result.commands"
+          - "'tftp-server ' ~ tftp_file in result.commands"
+          - result.commands | select('match', '^(no )?service') | list | length == 0
+
+    - name: Tftp_server - replaced idempotent
+      register: result
+      cisco.ios.ios_service: *replace
+
+    - name: Tftp_server - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    - name: Tftp_server - not in the task, replaced and overridden leave the served files alone
+      register: result
+      cisco.ios.ios_service:
+        config: "{{ service_options_no_tftp }}"
+        state: "{{ item }}"
+      loop:
+        - replaced
+        - overridden
+
+    - name: Tftp_server - assert nothing of the tftp-server lines is touched
+      ansible.builtin.assert:
+        that:
+          - item.commands | select('search', 'tftp-server') | list | length == 0
+      loop: "{{ result.results }}"
+
+    - name: Tftp_server - enable false switches the server off
+      register: result
+      cisco.ios.ios_service: &off
+        config:
+          tftp_server:
+            enable: false
+        state: merged
+
+    - name: Tftp_server - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no tftp-server ' ~ tftp_file in result.commands"
+
+    - name: Tftp_server - enable false on a server that serves nothing
+      register: result
+      cisco.ios.ios_service: *off
+
+    - name: Tftp_server - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+  always:
+    - name: Remove the file of the tests
+      cisco.ios.ios_config:
+        lines:
+          - "no tftp-server {{ tftp_file }}"
+
+    - ansible.builtin.include_tasks: _remove_config.yaml

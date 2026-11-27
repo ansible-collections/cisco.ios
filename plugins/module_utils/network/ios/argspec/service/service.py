@@ -45,6 +45,89 @@ class ServiceArgs(object):  # pylint: disable=R0903
                 "exec_wait": {"type": "bool"},
                 "hide_telnet_addresses": {"type": "bool"},
                 "internal": {"type": "bool"},
+                "ip": {
+                    "type": "dict",
+                    "options": {
+                        "bootp_server": {"type": "bool"},
+                        "finger": {"type": "bool"},
+                        "source_route": {"type": "bool"},
+                        "scp_server": {"type": "bool"},
+                        "rcmd": {
+                            "type": "dict",
+                            "options": {
+                                "rsh_enable": {"type": "bool"},
+                                "rcp_enable": {"type": "bool"},
+                            },
+                        },
+                        "ssh": {
+                            "type": "dict",
+                            "options": {
+                                "version": {"type": "int", "choices": [1, 2]},
+                                "time_out": {"type": "int"},
+                                "authentication_retries": {"type": "int"},
+                                "dh_min_size": {"type": "int"},
+                                "bulk_mode": {"type": "int"},
+                                "logging_events": {"type": "bool"},
+                                "source_interface": {"type": "str"},
+                                "rsa_keypair_name": {"type": "str"},
+                                "server": {
+                                    "type": "dict",
+                                    "options": {
+                                        "algorithm": {
+                                            "type": "dict",
+                                            "options": {
+                                                "mac": {"type": "list", "elements": "str"},
+                                                "kex": {"type": "list", "elements": "str"},
+                                                "hostkey": {
+                                                    "type": "list",
+                                                    "elements": "str",
+                                                    "no_log": False,
+                                                },
+                                                "encryption": {"type": "list", "elements": "str"},
+                                                "publickey": {"type": "list", "elements": "str"},
+                                                "authentication": {
+                                                    "type": "list",
+                                                    "elements": "str",
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                        "tftp": {
+                            "type": "dict",
+                            "options": {"source_interface": {"type": "str"}},
+                        },
+                        "ftp": {
+                            "type": "dict",
+                            "options": {"source_interface": {"type": "str"}},
+                        },
+                        "http": {
+                            "type": "dict",
+                            "options": {
+                                "server": {"type": "bool"},
+                                "secure_server": {"type": "bool"},
+                                "authentication": {
+                                    "type": "str",
+                                    "choices": ["aaa", "enable", "local", "tacacs"],
+                                },
+                                "access_class": {"type": "str"},
+                                "port": {"type": "int"},
+                                "secure_port": {"type": "int"},
+                                "max_connections": {"type": "int"},
+                                "secure_trustpoint": {"type": "str"},
+                                "client": {
+                                    "type": "dict",
+                                    "options": {
+                                        "source_interface": {"type": "str"},
+                                        "secure_trustpoint": {"type": "str"},
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
                 "linenumber": {"type": "bool"},
                 "log": {"type": "bool"},
                 "log_hidden": {"type": "bool"},
@@ -74,6 +157,21 @@ class ServiceArgs(object):  # pylint: disable=R0903
                     "type": "dict",
                 },
                 "telnet_zeroidle": {"type": "bool"},
+                "tftp_server": {
+                    "type": "dict",
+                    "options": {
+                        "enable": {"type": "bool"},
+                        "files": {
+                            "type": "list",
+                            "elements": "dict",
+                            "options": {
+                                "file": {"type": "str", "required": True},
+                                "alias": {"type": "str"},
+                                "access_list": {"type": "int"},
+                            },
+                        },
+                    },
+                },
                 "timestamps": {
                     "elements": "dict",
                     "options": {
