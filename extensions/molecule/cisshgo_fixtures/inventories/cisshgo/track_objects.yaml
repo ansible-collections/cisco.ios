@@ -1,0 +1,10 @@
+---
+devices:
+  - platform: ios_track_objects
+    count: 1
+
+  - scenario: track-objects-merged
+    count: 1
+
+  - scenario: track-objects-overridden
+    count: 1

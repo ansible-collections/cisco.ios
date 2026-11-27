@@ -1,0 +1,73 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_track_objects merged integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+
+- block:
+    - name: Merged - create objects
+      register: result
+      cisco.ios.ios_track_objects: &create
+        config:
+          - object_id: 91
+            ip_sla:
+              operation_id: 91
+              parameter: state
+            delay:
+              down: 120
+              up: 180
+          - object_id: 92
+            ip_route:
+              prefix: "{{ track_prefix }}"
+            delay:
+              down: 10
+              up: 5
+          - object_id: 93
+            interface:
+              name: "{{ track_if }}"
+              parameter: line_protocol
+          - object_id: 99
+            boolean_list:
+              operator: and
+              objects:
+                - object_id: 91
+                - object_id: 92
+                  negate: true
+            delay:
+              down: 10
+        state: merged
+
+    - name: Merged - assert changed
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'track 91 ip sla 91 state' in result.commands"
+          - "'track 92 ip route ' ~ track_prefix_mask ~ ' reachability' in result.commands"
+          - "'track 93 interface ' ~ track_if_long ~ ' line-protocol' in result.commands"
+          - "'object 92 not' in result.commands"
+
+    - name: Merged - idempotent (short interface name, device stores the long one)
+      register: result
+      cisco.ios.ios_track_objects: *create
+
+    - name: Merged - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    - name: Merged - only the up delay is given, down is kept
+      register: result
+      cisco.ios.ios_track_objects:
+        config:
+          - object_id: 92
+            delay:
+              up: 20
+        state: merged
+
+    - name: Merged - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == ['track 92', 'delay down 10 up 20']
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

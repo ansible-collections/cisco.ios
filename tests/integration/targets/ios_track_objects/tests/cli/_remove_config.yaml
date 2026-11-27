@@ -1,0 +1,4 @@
+---
+- name: Remove all tracked objects
+  cisco.ios.ios_track_objects:
+    state: deleted
