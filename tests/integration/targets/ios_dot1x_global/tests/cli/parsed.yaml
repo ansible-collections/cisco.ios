@@ -1,0 +1,18 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_dot1x_global parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parsed - parse config string
+  register: result
+  cisco.ios.ios_dot1x_global:
+    running_config: "{{ lookup('file', role_path + '/tests/cli/_parsed.cfg') }}"
+    state: parsed
+
+- name: Parsed - assert structured data returned
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.parsed.system_auth_control == true
+      - result.parsed.critical_eapol == true
+      - result.parsed.authentication.mac_move.permit == true
+      - result.parsed.authentication.critical_recovery_delay == 1000

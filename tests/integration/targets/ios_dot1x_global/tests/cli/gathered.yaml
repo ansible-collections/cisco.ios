@@ -1,0 +1,30 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_dot1x_global gathered integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _prepare.yaml
+- block:
+    - name: Gathered - prepare
+      cisco.ios.ios_dot1x_global:
+        config:
+          critical_eapol: true
+          authentication:
+            mac_move:
+              permit: true
+        state: merged
+
+    - name: Gathered - read the configuration
+      register: result
+      cisco.ios.ios_dot1x_global:
+        state: gathered
+
+    - name: Gathered - assert, the defaults that IOS prints are part of it
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered.critical_eapol == true
+          - result.gathered.authentication.mac_move.permit == true
+          - result.gathered.authentication.critical_recovery_delay == 100
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -1,0 +1,20 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_dot1x_global rendered integration tests on connection={{ ansible_connection }}
+
+- name: Rendered - render commands without device
+  register: result
+  cisco.ios.ios_dot1x_global:
+    config:
+      system_auth_control: true
+      critical_eapol: true
+      authentication:
+        mac_move:
+          permit: true
+    state: rendered
+
+- name: Rendered - assert 802.1X is switched on last
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.rendered == ['dot1x critical eapol', 'authentication mac-move permit', 'dot1x system-auth-control']

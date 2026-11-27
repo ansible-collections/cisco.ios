@@ -1,0 +1,9 @@
+---
+- name: Put the global 802.1X options of the tests back to their defaults, dot1x system-auth-control is not touched
+  cisco.ios.ios_config:
+    lines:
+      - no dot1x critical eapol
+      - no dot1x auth-fail eapol
+      - no authentication mac-move permit
+      - no authentication mac-move deny-uncontrolled
+      - authentication critical recovery delay 100

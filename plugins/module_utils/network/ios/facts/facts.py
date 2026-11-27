@@ -35,6 +35,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_ad
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.bgp_global.bgp_global import (
     Bgp_globalFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.dot1x_global.dot1x_global import (
+    Dot1x_globalFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.evpn_ethernet.evpn_ethernet import (
     Evpn_ethernetFacts,
 )
@@ -179,6 +182,7 @@ FACT_RESOURCE_SUBSETS = dict(
     flow_monitor_global=Flow_monitor_globalFacts,
     flow_monitor_interfaces=Flow_monitor_interfacesFacts,
     monitor_sessions=Monitor_sessionsFacts,
+    dot1x_global=Dot1x_globalFacts,
 )
 
 
