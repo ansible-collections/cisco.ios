@@ -1,0 +1,3 @@
+---
+bugfixes:
+  - ios_acls - parse and render numeric ICMP types with no keyword, such as IPv6 type 143, through the new `type_number` option (https://github.com/ansible-collections/cisco.ios/issues/1364).

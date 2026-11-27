@@ -171,6 +171,7 @@ class AclsArgs(object):  # pylint: disable=R0903
                                                 "traceroute": {"type": "bool"},
                                                 "ttl_exceeded": {"type": "bool"},
                                                 "unreachable": {"type": "bool"},
+                                                "type_number": {"type": "int"},
                                             },
                                             "type": "dict",
                                         },

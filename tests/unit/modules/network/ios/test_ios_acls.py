@@ -1493,6 +1493,45 @@ class TestIosAclsModule(TestIosModule):
         result = self.execute_module(changed=False)
         self.assertEqual(sorted(result["rendered"]), sorted(commands))
 
+    def test_ios_acls_parsed_icmp_numeric_type(self):
+        set_module_args(
+            dict(
+                running_config="ipv6 access-list MLD\n sequence 10 permit icmp any any 143",
+                state="parsed",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        ace = result["parsed"][0]["acls"][0]["aces"][0]
+        self.assertEqual(ace["protocol_options"], {"icmp": {"type_number": 143}})
+
+    def test_ios_acls_rendered_icmp_numeric_type(self):
+        set_module_args(
+            dict(
+                config=[
+                    dict(
+                        afi="ipv6",
+                        acls=[
+                            dict(
+                                name="MLD",
+                                aces=[
+                                    dict(
+                                        sequence=10,
+                                        grant="permit",
+                                        protocol_options=dict(icmp=dict(type_number=143)),
+                                        source=dict(any=True),
+                                        destination=dict(any=True),
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                ],
+                state="rendered",
+            ),
+        )
+        result = self.execute_module(changed=False)
+        self.assertIn("permit icmp any any 143 sequence 10", result["rendered"])
+
     def test_ios_acls_parsed(self):
         self.execute_show_command_name.return_value = dedent("")
         set_module_args(

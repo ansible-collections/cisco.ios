@@ -368,6 +368,9 @@ options:
                       unreachable:
                         description: All unreachables
                         type: bool
+                      type_number:
+                        description: ICMP message type as a number (for types with no keyword, for example IPv6 MLD report 143).
+                        type: int
                     type: dict
                   igmp:
                     description: Internet Gateway Message Protocol.
