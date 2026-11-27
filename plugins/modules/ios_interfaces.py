@@ -57,7 +57,8 @@ options:
           - C(no enable) changes the port speed mode and can flap the link.
           - With I(state=replaced), I(state=overridden) and I(state=deleted) an interface that has C(enable) configured and
             does not set this option gets C(no enable), like any other option.
-          - The option is only applied to HundredGigE interfaces, for any other interface it is skipped with a warning.
+          - The option is only applied to HundredGigE and FortyGigabitEthernet interfaces, for any other interface it is skipped with a warning.
+          - IOS only accepts the command on the ports that can run in both modes, make sure that the port you set it on is one of them.
         type: bool
       speed:
         description:

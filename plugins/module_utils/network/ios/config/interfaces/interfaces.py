@@ -173,8 +173,8 @@ class Interfaces(ResourceModule):
     def _compare_enable(self, want, have):
         """Handle the `enable` command (100G mode of a Catalyst 9600 C9600-LC-24C port).
 
-        `enable` is only accepted on the ports that can run in 100G mode, so it is never
-        sent for any other interface. Turning it on is added to the commands here, turning
+        `enable` is only accepted on the ports that can run in 100G mode (the HundredGigE
+        or FortyGigabitEthernet interface of such a port), so it is never sent for any other interface. Turning it on is added to the commands here, turning
         it off is returned to the caller, so that it is the last command of the interface.
         """
         want_enable = want.get("enable")
@@ -184,7 +184,9 @@ class Interfaces(ResourceModule):
             if want_enable:
                 self._module.warn(
                     "enable is not applied to {0}: it is only available on the 100G capable "
-                    "ports (HundredGigE) of a Catalyst 9600 C9600-LC-24C line card.".format(name),
+                    "ports (HundredGigE or FortyGigabitEthernet) of a Catalyst 9600 C9600-LC-24C line card.".format(
+                        name
+                    ),
                 )
             return False
         if want_enable is True and not have_enable:
@@ -198,7 +200,7 @@ class Interfaces(ResourceModule):
     @staticmethod
     def _enable_supported(name):
         """Return True for the interfaces that can take the `enable` command."""
-        return name.startswith("HundredGigE")
+        return name.startswith(("HundredGigE", "FortyGigabitEthernet"))
 
     def purge(self, have):
         """Handle operation for purged state"""

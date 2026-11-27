@@ -979,6 +979,19 @@ class TestIosInterfacesModule(TestIosModule):
         result = self.execute_module(changed=True)
         self.assertEqual(result["commands"], ["interface HundredGigE1/0/27", "enable"])
 
+    def test_ios_interfaces_enable_on_fortygigabitethernet(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface FortyGigabitEthernet1/0/27
+             description 40G mode
+            """,
+        )
+        set_module_args(
+            {"config": [{"name": "FortyGigabitEthernet1/0/27", "enable": True}], "state": "merged"},
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface FortyGigabitEthernet1/0/27", "enable"])
+
     def test_ios_interfaces_enable_merged_idempotent(self):
         self.execute_show_command.return_value = dedent(
             """\
@@ -1117,15 +1130,15 @@ class TestIosInterfacesModule(TestIosModule):
             """\
             interface GigabitEthernet1
              description Management
-            interface FortyGigabitEthernet1/0/26
-             description 40G port
+            interface TenGigabitEthernet1/1/1
+             description 10G port
             """,
         )
         set_module_args(
             {
                 "config": [
                     {"name": "GigabitEthernet1", "enable": True},
-                    {"name": "FortyGigabitEthernet1/0/26", "enable": True},
+                    {"name": "TenGigabitEthernet1/1/1", "enable": True},
                 ],
                 "state": "merged",
             },

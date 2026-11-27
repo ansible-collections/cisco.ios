@@ -108,7 +108,8 @@ Parameters
                         <div>Set the value to <code>true</code> to enter <code>enable</code> or to <code>false</code> to enter <code>no enable</code>.</div>
                         <div><code>no enable</code> changes the port speed mode and can flap the link.</div>
                         <div>With <em>state=replaced</em>, <em>state=overridden</em> and <em>state=deleted</em> an interface that has <code>enable</code> configured and does not set this option gets <code>no enable</code>, like any other option.</div>
-                        <div>The option is only applied to HundredGigE interfaces, for any other interface it is skipped with a warning.</div>
+                        <div>The option is only applied to HundredGigE and FortyGigabitEthernet interfaces, for any other interface it is skipped with a warning.</div>
+                        <div>IOS only accepts the command on the ports that can run in both modes, make sure that the port you set it on is one of them.</div>
                 </td>
             </tr>
             <tr>
