@@ -954,3 +954,266 @@ class TestIosInterfacesModule(TestIosModule):
             parent_idx,
             "'no interface GigabitEthernet1.100' must appear before 'interface GigabitEthernet1'",
         )
+
+    def test_ios_interfaces_enable_merged(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface HundredGigE1/0/25
+             description 100G uplink
+             enable
+            interface HundredGigE1/0/27
+             description Not in 100G mode yet
+            interface FortyGigabitEthernet1/0/29
+             description 40G port
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {"name": "HundredGigE1/0/25", "enable": True},
+                    {"name": "HundredGigE1/0/27", "enable": True},
+                ],
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface HundredGigE1/0/27", "enable"])
+
+    def test_ios_interfaces_enable_merged_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface HundredGigE1/0/25
+             description 100G uplink
+             enable
+            interface HundredGigE1/0/27
+             description Not in 100G mode
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {"name": "HundredGigE1/0/25", "enable": True},
+                    {"name": "HundredGigE1/0/27", "enable": False},
+                ],
+                "state": "merged",
+            },
+        )
+        self.execute_module(changed=False, commands=[])
+
+    def test_ios_interfaces_enable_merged_false_removes_enable(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface HundredGigE1/0/25
+             description 100G uplink
+             enable
+            """,
+        )
+        set_module_args(
+            {
+                "config": [{"name": "HundredGigE1/0/25", "enable": False}],
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface HundredGigE1/0/25", "no enable"])
+
+    def test_ios_interfaces_enable_merged_unset_keeps_enable(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface HundredGigE1/0/25
+             description 100G uplink
+             enable
+            """,
+        )
+        set_module_args(
+            {
+                "config": [{"name": "HundredGigE1/0/25", "description": "New description"}],
+                "state": "merged",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface HundredGigE1/0/25", "description New description"],
+        )
+
+    def test_ios_interfaces_enable_replaced_unset_removes_enable(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface HundredGigE1/0/25
+             description 100G uplink
+             enable
+            """,
+        )
+        set_module_args(
+            {
+                "config": [{"name": "HundredGigE1/0/25", "description": "100G uplink"}],
+                "state": "replaced",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertEqual(result["commands"], ["interface HundredGigE1/0/25", "no enable"])
+
+    def test_ios_interfaces_enable_replaced_set_is_idempotent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface HundredGigE1/0/25
+             description 100G uplink
+             enable
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {"name": "HundredGigE1/0/25", "description": "100G uplink", "enable": True},
+                ],
+                "state": "replaced",
+            },
+        )
+        self.execute_module(changed=False, commands=[])
+
+    def test_ios_interfaces_enable_overridden_unset_removes_enable(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface HundredGigE1/0/25
+             description 100G uplink
+             enable
+            interface HundredGigE1/0/27
+             enable
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {"name": "HundredGigE1/0/25", "description": "100G uplink", "enable": True},
+                ],
+                "state": "overridden",
+            },
+        )
+        result = self.execute_module(changed=True)
+        self.assertIn("interface HundredGigE1/0/27", result["commands"])
+        self.assertIn("no enable", result["commands"])
+        self.assertNotIn("interface HundredGigE1/0/25", result["commands"])
+
+    def test_ios_interfaces_enable_deleted(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface HundredGigE1/0/25
+             description 100G uplink
+             enable
+            interface HundredGigE1/0/27
+             enable
+            """,
+        )
+        set_module_args({"config": [{"name": "HundredGigE1/0/27"}], "state": "deleted"})
+        result = self.execute_module(changed=True)
+        self.assertEqual(
+            result["commands"],
+            ["interface HundredGigE1/0/27", "shutdown", "no enable"],
+        )
+
+    def test_ios_interfaces_enable_skipped_on_other_interfaces(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1
+             description Management
+            interface FortyGigabitEthernet1/0/26
+             description 40G port
+            """,
+        )
+        set_module_args(
+            {
+                "config": [
+                    {"name": "GigabitEthernet1", "enable": True},
+                    {"name": "FortyGigabitEthernet1/0/26", "enable": True},
+                ],
+                "state": "merged",
+            },
+        )
+        with patch("ansible.module_utils.basic.AnsibleModule.warn") as warn:
+            self.execute_module(changed=False, commands=[])
+        messages = [call.args[0] for call in warn.call_args_list]
+        self.assertEqual(len(messages), 2)
+        self.assertIn("GigabitEthernet1", messages[0])
+
+    def test_ios_interfaces_enable_false_on_other_interfaces_is_silent(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface GigabitEthernet1
+             description Management
+            """,
+        )
+        set_module_args(
+            {"config": [{"name": "GigabitEthernet1", "enable": False}], "state": "merged"},
+        )
+        with patch("ansible.module_utils.basic.AnsibleModule.warn") as warn:
+            self.execute_module(changed=False, commands=[])
+        warn.assert_not_called()
+
+    def test_ios_interfaces_enable_gathered(self):
+        self.execute_show_command.return_value = dedent(
+            """\
+            interface HundredGigE1/0/25
+             description 100G uplink
+             enable
+            interface HundredGigE1/0/27
+             description Not in 100G mode
+            """,
+        )
+        set_module_args({"state": "gathered"})
+        result = self.execute_module(changed=False)
+        gathered = {each["name"]: each for each in result["gathered"]}
+        self.assertTrue(gathered["HundredGigE1/0/25"]["enable"])
+        self.assertNotIn("enable", gathered["HundredGigE1/0/27"])
+
+    def test_ios_interfaces_enable_parsed(self):
+        set_module_args(
+            {
+                "running_config": dedent(
+                    """\
+                    interface HundredGigE1/0/25
+                     description 100G uplink
+                     enable
+                    """,
+                ),
+                "state": "parsed",
+            },
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(
+            result["parsed"],
+            [
+                {
+                    "name": "HundredGigE1/0/25",
+                    "description": "100G uplink",
+                    "enabled": True,
+                    "enable": True,
+                },
+            ],
+        )
+
+    def test_ios_interfaces_enable_parsed_trailing_space(self):
+        set_module_args(
+            {
+                "running_config": "interface HundredGigE2/0/25\n no switchport\n enable \n no ip redirects\n",
+                "state": "parsed",
+            },
+        )
+        result = self.execute_module(changed=False)
+        self.assertTrue(result["parsed"][0]["enable"])
+
+    def test_ios_interfaces_enable_rendered(self):
+        set_module_args(
+            {
+                "config": [
+                    {"name": "HundredGigE1/0/25", "description": "100G uplink", "enable": True},
+                    {"name": "HundredGigE1/0/27", "enable": False},
+                ],
+                "state": "rendered",
+            },
+        )
+        result = self.execute_module(changed=False)
+        self.assertEqual(
+            result["rendered"],
+            ["interface HundredGigE1/0/25", "enable", "description 100G uplink"],
+        )

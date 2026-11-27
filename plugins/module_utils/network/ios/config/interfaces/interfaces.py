@@ -140,6 +140,7 @@ class Interfaces(ResourceModule):
         for the Interfaces network resource.
         """
         begin = len(self.commands)
+        enable_off = self._compare_enable(want, have)
         self.compare(parsers=self.parsers, want=want, have=have)
         want_enabled = want.get("enabled")
         have_enabled = have.get("enabled")
@@ -164,8 +165,40 @@ class Interfaces(ResourceModule):
                 elif have.get("mode"):  # can oly have layer2 as switchport no show cli
                     # handles deleted as want be blank and only
                     self.addcmd(have, "mode", False)
+        if enable_off:
+            self.addcmd(have, "enable", True)
         if len(self.commands) != begin:
             self.commands.insert(begin, self._tmplt.render(want or have, "interface", False))
+
+    def _compare_enable(self, want, have):
+        """Handle the `enable` command (100G mode of a Catalyst 9600 C9600-LC-24C port).
+
+        `enable` is only accepted on the ports that can run in 100G mode, so it is never
+        sent for any other interface. Turning it on is added to the commands here, turning
+        it off is returned to the caller, so that it is the last command of the interface.
+        """
+        want_enable = want.get("enable")
+        have_enable = bool(have.get("enable"))
+        name = (want or have).get("name", "")
+        if not self._enable_supported(name):
+            if want_enable:
+                self._module.warn(
+                    "enable is not applied to {0}: it is only available on the 100G capable "
+                    "ports (HundredGigE) of a Catalyst 9600 C9600-LC-24C line card.".format(name),
+                )
+            return False
+        if want_enable is True and not have_enable:
+            self.addcmd(want, "enable", False)
+        elif want_enable is False and have_enable:
+            return True
+        elif want_enable is None and have_enable:
+            return True
+        return False
+
+    @staticmethod
+    def _enable_supported(name):
+        """Return True for the interfaces that can take the `enable` command."""
+        return name.startswith("HundredGigE")
 
     def purge(self, have):
         """Handle operation for purged state"""
