@@ -1,0 +1,45 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_dot1x_global replaced integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _prepare.yaml
+- block:
+    - name: Replaced - prepare, options that are not defaults
+      cisco.ios.ios_dot1x_global:
+        config:
+          auth_fail_eapol: true
+          authentication:
+            mac_move:
+              permit: true
+            critical_recovery_delay: 1000
+        state: merged
+
+    - name: Replaced - what is not in the task goes back to its default
+      register: result
+      cisco.ios.ios_dot1x_global: &replace
+        config:
+          system_auth_control: "{{ keep_system_auth_control }}"
+          critical_eapol: true
+        state: replaced
+
+    - name: Replaced - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'dot1x critical eapol' in result.commands"
+          - "'no dot1x auth-fail eapol' in result.commands"
+          - "'no authentication mac-move permit' in result.commands"
+          - "'authentication critical recovery delay 100' in result.commands"
+          - result.commands | select('search', 'system-auth-control') | list | length == 0
+
+    - name: Replaced - idempotent
+      register: result
+      cisco.ios.ios_dot1x_global: *replace
+
+    - name: Replaced - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

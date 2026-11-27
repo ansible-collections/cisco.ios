@@ -1,0 +1,65 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_dot1x_global merged integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _prepare.yaml
+- block:
+    - name: Merged - the options
+      register: result
+      cisco.ios.ios_dot1x_global: &create
+        config:
+          critical_eapol: true
+          auth_fail_eapol: true
+          authentication:
+            mac_move:
+              permit: true
+            critical_recovery_delay: 1000
+        state: merged
+
+    - name: Merged - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'dot1x critical eapol' in result.commands"
+          - "'dot1x auth-fail eapol' in result.commands"
+          - "'authentication mac-move permit' in result.commands"
+          - "'authentication critical recovery delay 1000' in result.commands"
+
+    - name: Merged - idempotent
+      register: result
+      cisco.ios.ios_dot1x_global: *create
+
+    - name: Merged - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    - name: Merged - one option, the others are kept
+      register: result
+      cisco.ios.ios_dot1x_global:
+        config:
+          authentication:
+            critical_recovery_delay: 500
+        state: merged
+
+    - name: Merged - assert
+      ansible.builtin.assert:
+        that:
+          - result.commands == ['authentication critical recovery delay 500']
+          - result.after.authentication.mac_move.permit == true
+          - result.after.critical_eapol == true
+
+    - name: Merged - false turns an option off
+      register: result
+      cisco.ios.ios_dot1x_global:
+        config:
+          auth_fail_eapol: false
+        state: merged
+
+    - name: Merged - assert
+      ansible.builtin.assert:
+        that:
+          - result.commands == ['no dot1x auth-fail eapol']
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

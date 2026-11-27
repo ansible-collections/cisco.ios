@@ -1,0 +1,9 @@
+---
+- name: Gather the options of the device, system_auth_control is kept as it is in every task
+  cisco.ios.ios_dot1x_global:
+    state: gathered
+  register: gathered_dot1x
+
+- name: Keep it
+  ansible.builtin.set_fact:
+    keep_system_auth_control: "{{ gathered_dot1x.gathered.system_auth_control | default(false) }}"
