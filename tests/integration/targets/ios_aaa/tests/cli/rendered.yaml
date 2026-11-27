@@ -1,0 +1,26 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_aaa rendered integration tests on connection={{ ansible_connection }}
+
+- name: Rendered - render commands without device
+  register: result
+  cisco.ios.ios_aaa:
+    config:
+      group_servers:
+        - type: radius
+          name: ISE-RAD
+          servers:
+            - ISE-RAD-PRI
+      accounting:
+        system:
+          - name: default
+            record: start-stop
+            methods:
+              - group ISE-RAD
+    state: rendered
+
+- name: Rendered - assert commands generated
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.rendered == ['aaa group server radius ISE-RAD', 'server name ISE-RAD-PRI', 'aaa accounting system default start-stop group ISE-RAD']

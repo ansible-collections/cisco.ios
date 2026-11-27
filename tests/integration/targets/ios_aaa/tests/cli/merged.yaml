@@ -1,0 +1,79 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_aaa merged integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _prepare.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
+- block:
+    - name: Merged - the group, the client and the lists that use the group
+      register: result
+      cisco.ios.ios_aaa: &create
+        config:
+          group_servers:
+            - type: radius
+              name: "{{ group_name }}"
+              servers:
+                - "{{ server1 }}"
+                - "{{ server2 }}"
+              deadtime: 5
+          dynamic_author:
+            clients:
+              - address: "{{ client_address }}"
+                server_key:
+                  key: IosAaaTestKey
+          authentication:
+            login:
+              - name: "{{ list_name }}"
+                methods:
+                  - "group {{ group_name }}"
+                  - local
+          authorization:
+            commands:
+              - level: 15
+                name: "{{ list_name }}"
+                methods:
+                  - group tacacs+
+                  - if-authenticated
+          accounting:
+            exec:
+              - name: "{{ list_name }}"
+                record: start-stop
+                methods:
+                  - "group {{ group_name }}"
+        state: merged
+
+    - name: Merged - assert the order of the commands, the group comes before the lists that use it
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands[0] == 'aaa group server radius ' ~ group_name
+          - "'aaa authentication login ' ~ list_name ~ ' group ' ~ group_name ~ ' local' in result.commands"
+
+    - name: Merged - idempotent
+      register: result
+      cisco.ios.ios_aaa: *create
+
+    - name: Merged - assert idempotent, the plain text key is not compared with the encrypted one
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    - name: Merged - the same methods in another order are sent again
+      register: result
+      cisco.ios.ios_aaa:
+        config:
+          authentication:
+            login:
+              - name: "{{ list_name }}"
+                methods:
+                  - local
+                  - "group {{ group_name }}"
+        state: merged
+
+    - name: Merged - assert
+      ansible.builtin.assert:
+        that:
+          - result.commands == ['aaa authentication login ' ~ list_name ~ ' local group ' ~ group_name]
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
+  when: aaa_on | bool

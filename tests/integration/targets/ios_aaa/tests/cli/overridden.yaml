@@ -1,0 +1,49 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_aaa overridden integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _prepare.yaml
+- ansible.builtin.include_tasks: _remove_config.yaml
+- block:
+    - name: Overridden - prepare, two login lists
+      cisco.ios.ios_aaa:
+        config:
+          authentication:
+            login:
+              - name: "{{ list_name }}"
+                methods:
+                  - local
+              - name: "{{ list_name }}-2"
+                methods:
+                  - local
+        state: merged
+
+    - name: Overridden - gather the lists of the device
+      register: gathered
+      cisco.ios.ios_aaa:
+        state: gathered
+
+    - name: Overridden - send them back without the second list
+      register: result
+      cisco.ios.ios_aaa:
+        config:
+          authentication:
+            login: "{{ gathered.gathered.authentication.login | rejectattr('name', 'equalto', list_name ~ '-2') | list }}"
+        state: overridden
+
+    - name: Overridden - assert only the second list is removed
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == ['no aaa authentication login ' ~ list_name ~ '-2']
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
+    - name: Overridden - remove the second list
+      when: aaa_on | bool
+      cisco.ios.ios_aaa:
+        config:
+          authentication:
+            login:
+              - name: "{{ list_name }}-2"
+        state: deleted
+  when: aaa_on | bool

@@ -1,0 +1,7 @@
+---
+# Only these names are used. The default lists are never touched: they decide how the logins work.
+list_name: IOS-AAA-LIST
+group_name: IOS-AAA-RAD
+server1: IOS-AAA-RS1
+server2: IOS-AAA-RS2
+client_address: 192.0.2.77

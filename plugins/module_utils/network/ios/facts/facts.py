@@ -19,6 +19,9 @@ from ansible_collections.ansible.netcommon.plugins.module_utils.network.common.f
     FactsBase,
 )
 
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.aaa.aaa import (
+    AaaFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.acl_interfaces.acl_interfaces import (
     Acl_interfacesFacts,
 )
@@ -179,6 +182,7 @@ FACT_RESOURCE_SUBSETS = dict(
     flow_monitor_global=Flow_monitor_globalFacts,
     flow_monitor_interfaces=Flow_monitor_interfacesFacts,
     monitor_sessions=Monitor_sessionsFacts,
+    aaa=AaaFacts,
 )
 
 
