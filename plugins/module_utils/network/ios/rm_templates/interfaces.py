@@ -74,6 +74,20 @@ class InterfacesTemplate(NetworkTemplate):
             },
         },
         {
+            "name": "enable",
+            "getval": re.compile(
+                r"""
+                \s+enable\s*
+                $""", re.VERBOSE,
+            ),
+            "setval": "enable",
+            "result": {
+                '{{ name }}': {
+                    'enable': True,
+                },
+            },
+        },
+        {
             "name": "mac_address",
             "getval": re.compile(
                 r"""

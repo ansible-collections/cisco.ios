@@ -90,6 +90,32 @@ Parameters
                     <td class="elbow-placeholder"></td>
                 <td colspan="4">
                     <div class="ansibleOptionAnchor" id="parameter-"></div>
+                    <b>enable</b>
+                    <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
+                    <div style="font-size: small">
+                        <span style="color: purple">boolean</span>
+                    </div>
+                </td>
+                <td>
+                        <ul style="margin: 0; padding: 0"><b>Choices:</b>
+                                    <li>no</li>
+                                    <li>yes</li>
+                        </ul>
+                </td>
+                <td>
+                        <div>Run a Hundred Gigabit Ethernet port in 100G mode (the <code>enable</code> command).</div>
+                        <div>On a Catalyst 9600 C9600-LC-24C line card every port is a 40G port by default. The odd-numbered ports 25 to 47 only run in 100G mode once <code>enable</code> is entered, which disables 40G on that port and on the port below it.</div>
+                        <div>Set the value to <code>true</code> to enter <code>enable</code> or to <code>false</code> to enter <code>no enable</code>.</div>
+                        <div><code>no enable</code> changes the port speed mode and can flap the link.</div>
+                        <div>With <em>state=replaced</em>, <em>state=overridden</em> and <em>state=deleted</em> an interface that has <code>enable</code> configured and does not set this option gets <code>no enable</code>, like any other option.</div>
+                        <div>The option is only applied to HundredGigE and FortyGigabitEthernet interfaces, for any other interface it is skipped with a warning.</div>
+                        <div>IOS only accepts the command on the ports that can run in both modes, make sure that the port you set it on is one of them.</div>
+                </td>
+            </tr>
+            <tr>
+                    <td class="elbow-placeholder"></td>
+                <td colspan="4">
+                    <div class="ansibleOptionAnchor" id="parameter-"></div>
                     <b>enabled</b>
                     <a class="ansibleOptionLink" href="#parameter-" title="Permalink to this option"></a>
                     <div style="font-size: small">
@@ -1161,6 +1187,45 @@ Examples
     # interface GigabitEthernet3
     #  description Configured and Merged by Ansible Network
     #  no switchport
+
+    # Using merged - with enable (100G mode on a Catalyst 9600 C9600-LC-24C)
+
+    # Before state:
+    # -------------
+    #
+    # Cat9600#show running-config | section ^interface HundredGigE
+    # interface HundredGigE1/0/25
+    #  description 100G uplink
+    #  enable
+    # interface HundredGigE1/0/27
+    #  description Not in 100G mode yet
+
+    - name: Run the port 27 in 100G mode, the port 25 already is
+      cisco.ios.ios_interfaces:
+        config:
+          - name: HundredGigE1/0/25
+            enable: true
+          - name: HundredGigE1/0/27
+            enable: true
+        state: merged
+
+    # Task Output
+    # -----------
+    #
+    # commands:
+    # - interface HundredGigE1/0/27
+    # - enable
+
+    # After state:
+    # ------------
+    #
+    # Cat9600#show running-config | section ^interface HundredGigE
+    # interface HundredGigE1/0/25
+    #  description 100G uplink
+    #  enable
+    # interface HundredGigE1/0/27
+    #  description Not in 100G mode yet
+    #  enable
 
     # Using replaced
 

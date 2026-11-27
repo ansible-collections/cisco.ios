@@ -40,6 +40,7 @@ class InterfacesArgs(object):  # pylint: disable=R0903
                 "name": {"type": "str", "required": True},
                 "description": {"type": "str"},
                 "enabled": {"type": "bool"},
+                "enable": {"type": "bool"},
                 "speed": {"type": "str"},
                 "mtu": {"type": "int"},
                 "mode": {"choices": ["layer2", "layer3"], "type": "str"},

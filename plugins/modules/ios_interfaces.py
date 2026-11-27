@@ -48,6 +48,18 @@ options:
           - Set the value to C(true) to administratively enable the interface or C(false)
             to disable it.
         type: bool
+      enable:
+        description:
+          - Run a Hundred Gigabit Ethernet port in 100G mode (the C(enable) command).
+          - On a Catalyst 9600 C9600-LC-24C line card every port is a 40G port by default. The odd-numbered ports 25 to 47
+            only run in 100G mode once C(enable) is entered, which disables 40G on that port and on the port below it.
+          - Set the value to C(true) to enter C(enable) or to C(false) to enter C(no enable).
+          - C(no enable) changes the port speed mode and can flap the link.
+          - With I(state=replaced), I(state=overridden) and I(state=deleted) an interface that has C(enable) configured and
+            does not set this option gets C(no enable), like any other option.
+          - The option is only applied to HundredGigE and FortyGigabitEthernet interfaces, for any other interface it is skipped with a warning.
+          - IOS only accepts the command on the ports that can run in both modes, make sure that the port you set it on is one of them.
+        type: bool
       speed:
         description:
           - Interface link speed. Applicable for Ethernet interfaces only.
@@ -451,6 +463,45 @@ EXAMPLES = """
 # interface GigabitEthernet3
 #  description Configured and Merged by Ansible Network
 #  no switchport
+
+# Using merged - with enable (100G mode on a Catalyst 9600 C9600-LC-24C)
+
+# Before state:
+# -------------
+#
+# Cat9600#show running-config | section ^interface HundredGigE
+# interface HundredGigE1/0/25
+#  description 100G uplink
+#  enable
+# interface HundredGigE1/0/27
+#  description Not in 100G mode yet
+
+- name: Run the port 27 in 100G mode, the port 25 already is
+  cisco.ios.ios_interfaces:
+    config:
+      - name: HundredGigE1/0/25
+        enable: true
+      - name: HundredGigE1/0/27
+        enable: true
+    state: merged
+
+# Task Output
+# -----------
+#
+# commands:
+# - interface HundredGigE1/0/27
+# - enable
+
+# After state:
+# ------------
+#
+# Cat9600#show running-config | section ^interface HundredGigE
+# interface HundredGigE1/0/25
+#  description 100G uplink
+#  enable
+# interface HundredGigE1/0/27
+#  description Not in 100G mode yet
+#  enable
 
 # Using replaced
 
