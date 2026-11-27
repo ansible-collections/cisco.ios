@@ -290,17 +290,6 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                             "type": "dict",
                             "options": {"delay": {"type": "int"}, "skip": {"type": "bool"}},
                         },
-                        "server": {"type": "int"},
-                        "server_options": {
-                            "type": "dict",
-                            "options": {
-                                "activate": {"type": "bool"},
-                                "address": {
-                                    "type": "dict",
-                                    "options": {"host": {"type": "str"}, "port": {"type": "int"}},
-                                },
-                            },
-                        },
                         "servers": {
                             "type": "list",
                             "elements": "dict",
@@ -461,7 +450,6 @@ class Bgp_globalArgs(object):  # pylint: disable=R0903
                             "type": "dict",
                             "options": {
                                 "all": {"type": "bool"},
-                                "server": {"type": "int"},
                                 "servers": {"type": "list", "elements": "int"},
                             },
                         },
