@@ -1,0 +1,69 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_dot1x_interfaces replaced integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _prepare.yaml
+- block:
+    - name: Replaced - prepare
+      cisco.ios.ios_dot1x_interfaces:
+        config:
+          - name: "{{ dot1x_port1 }}"
+            mab: true
+            dot1x:
+              pae: authenticator
+              timeout:
+                tx_period: 7
+            authentication:
+              port_control: auto
+              periodic: true
+              timer:
+                reauthenticate:
+                  server: true
+              violation: restrict
+              control_direction: in
+              event:
+                fail:
+                  retry: 3
+                  action: authorize
+                  vlan: 999
+                server_dead:
+                  action: authorize
+                  vlan: 20
+                server_alive:
+                  action: reinitialize
+
+        state: merged
+
+    - name: Replaced - cut the port down to the task
+      register: result
+      cisco.ios.ios_dot1x_interfaces: &replace
+        config:
+          - name: "{{ dot1x_port1 }}"
+            mab: true
+            dot1x:
+              pae: authenticator
+            authentication:
+              port_control: auto
+              host_mode: multi_auth
+        state: replaced
+
+    - name: Replaced - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no authentication periodic' in result.commands"
+          - "'no authentication violation restrict' in result.commands"
+          - "'no dot1x timeout tx-period 7' in result.commands"
+          - "'authentication host-mode multi-auth' in result.commands"
+
+    - name: Replaced - idempotent
+      register: result
+      cisco.ios.ios_dot1x_interfaces: *replace
+
+    - name: Replaced - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

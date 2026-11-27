@@ -1,0 +1,19 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_dot1x_interfaces parsed integration tests on connection={{ ansible_connection }}
+
+- name: Parsed - parse config string
+  register: result
+  cisco.ios.ios_dot1x_interfaces:
+    running_config: "{{ lookup('file', role_path + '/tests/cli/_parsed.cfg') }}"
+    state: parsed
+
+- name: Parsed - assert structured data returned
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.parsed | length == 1
+      - result.parsed[0].name == "GigabitEthernet1/0/1"
+      - result.parsed[0].mab == true
+      - result.parsed[0].dot1x.timeout.tx_period == 7
+      - result.parsed[0].authentication.event.fail.vlan == 999

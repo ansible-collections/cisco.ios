@@ -1,0 +1,51 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_dot1x_interfaces gathered integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _prepare.yaml
+- block:
+    - name: Gathered - prepare
+      cisco.ios.ios_dot1x_interfaces:
+        config:
+          - name: "{{ dot1x_port1 }}"
+            mab: true
+            dot1x:
+              pae: authenticator
+              timeout:
+                tx_period: 7
+            authentication:
+              port_control: auto
+              periodic: true
+              timer:
+                reauthenticate:
+                  server: true
+              violation: restrict
+              control_direction: in
+              event:
+                fail:
+                  retry: 3
+                  action: authorize
+                  vlan: 999
+                server_dead:
+                  action: authorize
+                  vlan: 20
+                server_alive:
+                  action: reinitialize
+
+        state: merged
+
+    - name: Gathered - read the configuration
+      register: result
+      cisco.ios.ios_dot1x_interfaces:
+        state: gathered
+
+    - name: Gathered - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - (result.gathered | selectattr('name', 'equalto', dot1x_port1) | first).mab == true
+          - (result.gathered | selectattr('name', 'equalto', dot1x_port1) | first).authentication.port_control == 'auto'
+          - (result.gathered | selectattr('name', 'equalto', dot1x_port2) | list) | length == 0
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

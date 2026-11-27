@@ -1,0 +1,87 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_dot1x_interfaces merged integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _prepare.yaml
+- block:
+    - name: Merged - create
+      register: result
+      cisco.ios.ios_dot1x_interfaces: &create
+        config:
+          - name: "{{ dot1x_port1 }}"
+            mab: true
+            dot1x:
+              pae: authenticator
+              timeout:
+                tx_period: 7
+            authentication:
+              port_control: auto
+              periodic: true
+              timer:
+                reauthenticate:
+                  server: true
+              violation: restrict
+              control_direction: in
+              event:
+                fail:
+                  retry: 3
+                  action: authorize
+                  vlan: 999
+                server_dead:
+                  action: authorize
+                  vlan: 20
+                server_alive:
+                  action: reinitialize
+
+        state: merged
+
+    - name: Merged - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands[0] == 'interface ' ~ dot1x_port1
+          - "'authentication port-control auto' in result.commands"
+          - "'authentication event fail retry 3 action authorize vlan 999' in result.commands"
+          - "'mab' in result.commands"
+          - "'dot1x pae authenticator' in result.commands"
+
+    - name: Merged - idempotent
+      register: result
+      cisco.ios.ios_dot1x_interfaces: *create
+
+    - name: Merged - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    - name: Merged - only the violation, everything else is kept
+      register: result
+      cisco.ios.ios_dot1x_interfaces:
+        config:
+          - name: "{{ dot1x_port1 }}"
+            authentication:
+              violation: shutdown
+        state: merged
+
+    - name: Merged - assert
+      ansible.builtin.assert:
+        that:
+          - result.commands == ['interface ' ~ dot1x_port1, 'authentication violation shutdown']
+          - result.after | selectattr('name', 'equalto', dot1x_port1) | map(attribute='mab') | first == true
+
+    - name: Merged - false turns a flag off
+      register: result
+      cisco.ios.ios_dot1x_interfaces:
+        config:
+          - name: "{{ dot1x_port1 }}"
+            authentication:
+              periodic: false
+        state: merged
+
+    - name: Merged - assert
+      ansible.builtin.assert:
+        that:
+          - result.commands == ['interface ' ~ dot1x_port1, 'no authentication periodic']
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

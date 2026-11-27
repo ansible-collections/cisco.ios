@@ -1,0 +1,42 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_dot1x_interfaces overridden integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _prepare.yaml
+- block:
+    - name: Overridden - prepare, options on both ports
+      cisco.ios.ios_dot1x_interfaces:
+        config:
+          - name: "{{ dot1x_port1 }}"
+            mab: true
+            authentication:
+              port_control: auto
+          - name: "{{ dot1x_port2 }}"
+            mab: true
+            authentication:
+              port_control: auto
+        state: merged
+
+    - name: Overridden - only the first port keeps its options, what the device has elsewhere is sent back
+      register: result
+      cisco.ios.ios_dot1x_interfaces: &override
+        config: "{{ other_interfaces + [{'name': dot1x_port1, 'mab': true, 'authentication': {'port_control': 'auto'}}] }}"
+        state: overridden
+
+    - name: Overridden - assert only the second port was cleared
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == ['interface ' ~ dot1x_port2, 'no authentication port-control auto', 'no mab']
+
+    - name: Overridden - idempotent
+      register: result
+      cisco.ios.ios_dot1x_interfaces: *override
+
+    - name: Overridden - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml
