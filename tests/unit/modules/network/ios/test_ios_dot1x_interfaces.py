@@ -678,7 +678,7 @@ class TestIosDot1xInterfacesModule(TestIosModule):
                     {
                         "name": "GigabitEthernet1/0/1",
                         "authentication": {
-                            "event": {"server_dead": {"action": "authorize", "vlan": 25}}
+                            "event": {"server_dead": {"action": "authorize", "vlan": 25}},
                         },
                     },
                 ],
