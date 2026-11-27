@@ -185,7 +185,7 @@ class Interfaces(ResourceModule):
                 self._module.warn(
                     "enable is not applied to {0}: it is only available on the 100G capable "
                     "ports (HundredGigE or FortyGigabitEthernet) of a Catalyst 9600 C9600-LC-24C line card.".format(
-                        name
+                        name,
                     ),
                 )
             return False
