@@ -45,6 +45,30 @@ class ServiceArgs(object):  # pylint: disable=R0903
                 "exec_wait": {"type": "bool"},
                 "hide_telnet_addresses": {"type": "bool"},
                 "internal": {"type": "bool"},
+                "ip": {
+                    "type": "dict",
+                    "options": {
+                        "bootp_server": {"type": "bool"},
+                        "finger": {"type": "bool"},
+                        "source_route": {"type": "bool"},
+                        "scp_server": {"type": "bool"},
+                        "rcmd": {
+                            "type": "dict",
+                            "options": {
+                                "rsh_enable": {"type": "bool"},
+                                "rcp_enable": {"type": "bool"},
+                            },
+                        },
+                        "tftp": {
+                            "type": "dict",
+                            "options": {"source_interface": {"type": "str"}},
+                        },
+                        "ftp": {
+                            "type": "dict",
+                            "options": {"source_interface": {"type": "str"}},
+                        },
+                    },
+                },
                 "linenumber": {"type": "bool"},
                 "log": {"type": "bool"},
                 "log_hidden": {"type": "bool"},

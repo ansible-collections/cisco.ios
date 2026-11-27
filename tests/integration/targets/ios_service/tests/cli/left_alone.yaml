@@ -1,0 +1,42 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_service left_alone integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _prepare.yaml
+- block:
+    - name: Left alone - prepare, services on
+      cisco.ios.ios_service:
+        config:
+          ip:
+            finger: true
+            tftp:
+              source_interface: "{{ source_interface }}"
+        state: merged
+
+    - name: Left alone - replaced without the ip section
+      register: result
+      cisco.ios.ios_service:
+        config: "{{ service_options }}"
+        state: replaced
+
+    - name: Left alone - overridden without the ip section
+      register: result_overridden
+      cisco.ios.ios_service:
+        config: "{{ service_options }}"
+        state: overridden
+
+    - name: Left alone - gather
+      register: after
+      cisco.ios.ios_service:
+        state: gathered
+
+    - name: Left alone - assert nothing of the ip services is touched
+      ansible.builtin.assert:
+        that:
+          - result.commands | select('search', 'ip ') | list | length == 0
+          - result_overridden.commands | select('search', 'ip ') | list | length == 0
+          - after.gathered.ip.finger == true
+          - after.gathered.ip.tftp.source_interface == source_interface
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

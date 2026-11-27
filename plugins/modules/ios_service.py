@@ -18,13 +18,14 @@ DOCUMENTATION = """
 module: ios_service
 short_description: Resource module to configure service.
 description:
-  - This module configures and manages service attributes on IOS platforms
+  - This module configures and manages service attributes and IP services on IOS platforms
 version_added: 4.6.0
 author:
   - Ambroise Rosset (@earendilfr)
   - Sagar Paul (@KB-perByte)
 notes:
   - Tested against Cisco IOSXE Version 17.9.1a on CML.
+  - The I(ip) options are tested against Cisco IOS XE Software, Version 17.12.4 and 17.18.4 on a Catalyst 9300.
   - This module works with connection C(network_cli).
     See U(https://docs.ansible.com/ansible/latest/network/user_guide/platform_ios.html)
 options:
@@ -64,6 +65,49 @@ options:
       internal:
         description: Enable/Disable Internal commands
         type: bool
+      ip:
+        description:
+          - Legacy IP services and the source interface of the file transfers.
+          - Only managed when it is in the task, the other states leave it alone otherwise.
+        type: dict
+        version_added: 11.8.0
+        suboptions:
+          bootp_server:
+            description: Enable the BOOTP server (C(ip bootp server)).
+            type: bool
+          finger:
+            description: Enable the finger server (C(ip finger)).
+            type: bool
+          source_route:
+            description: Handle packets with IP source route options (C(ip source-route)).
+            type: bool
+          scp_server:
+            description: Enable the SCP server (C(ip scp server enable)).
+            type: bool
+          rcmd:
+            description: Remote commands.
+            type: dict
+            suboptions:
+              rsh_enable:
+                description: Enable the remote shell (C(ip rcmd rsh-enable)).
+                type: bool
+              rcp_enable:
+                description: Enable remote copy (C(ip rcmd rcp-enable)).
+                type: bool
+          tftp:
+            description: TFTP client.
+            type: dict
+            suboptions:
+              source_interface:
+                description: Source interface of the TFTP connections (C(ip tftp source-interface)).
+                type: str
+          ftp:
+            description: FTP client.
+            type: dict
+            suboptions:
+              source_interface:
+                description: Source interface of the FTP connections (C(ip ftp source-interface)).
+                type: str
       linenumber:
         description: enable line number banner for each exec
         type: bool
@@ -324,6 +368,44 @@ EXAMPLES = """
 # service dhcp
 # service call-home
 # service password-recovery
+
+# Using merged with the ip options
+
+# Before state:
+# -------------
+#
+# router-ios#show running-config all | include ^ip (finger|bootp|source-route|scp|tftp|ftp)
+# ip scp server enable
+
+- name: Disable the legacy IP services and set the source interfaces
+  cisco.ios.ios_service:
+    config:
+      ip:
+        finger: false
+        bootp_server: false
+        scp_server: false
+        tftp:
+          source_interface: GigabitEthernet0/0
+        ftp:
+          source_interface: GigabitEthernet0/0
+    state: merged
+
+# Task Output
+# -----------
+#
+# commands:
+#   - no ip scp server enable
+#   - ip tftp source-interface GigabitEthernet0/0
+#   - ip ftp source-interface GigabitEthernet0/0
+
+# After state:
+# ------------
+#
+# router-ios#show running-config all | include ^ip (finger|bootp|source-route|scp|tftp|ftp)
+# no ip bootp server
+# no ip finger
+# ip ftp source-interface GigabitEthernet0/0
+# ip tftp source-interface GigabitEthernet0/0
 
 # Using replaced
 

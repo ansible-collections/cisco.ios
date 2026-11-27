@@ -526,4 +526,110 @@ class ServiceTemplate(NetworkTemplate):
                 "unsupported_transceiver": True,
             },
         },
+        {
+            "name": "ip_bootp_server",
+            "getval": re.compile(
+                r"""
+                ^ip\sbootp\sserver
+                """, re.VERBOSE,
+            ),
+            "setval": "ip bootp server",
+            "compval": "ip.bootp_server",
+            "result": {
+                "ip": {"bootp_server": True},
+            },
+        },
+        {
+            "name": "ip_finger",
+            "getval": re.compile(
+                r"""
+                ^ip\sfinger
+                """, re.VERBOSE,
+            ),
+            "setval": "ip finger",
+            "compval": "ip.finger",
+            "result": {
+                "ip": {"finger": True},
+            },
+        },
+        {
+            "name": "ip_source_route",
+            "getval": re.compile(
+                r"""
+                ^ip\ssource-route
+                """, re.VERBOSE,
+            ),
+            "setval": "ip source-route",
+            "compval": "ip.source_route",
+            "result": {
+                "ip": {"source_route": True},
+            },
+        },
+        {
+            "name": "ip_scp_server",
+            "getval": re.compile(
+                r"""
+                ^ip\sscp\sserver\senable
+                """, re.VERBOSE,
+            ),
+            "setval": "ip scp server enable",
+            "compval": "ip.scp_server",
+            "result": {
+                "ip": {"scp_server": True},
+            },
+        },
+        {
+            "name": "ip_rcmd_rsh_enable",
+            "getval": re.compile(
+                r"""
+                ^ip\srcmd\srsh-enable
+                """, re.VERBOSE,
+            ),
+            "setval": "ip rcmd rsh-enable",
+            "compval": "ip.rcmd.rsh_enable",
+            "result": {
+                "ip": {"rcmd": {"rsh_enable": True}},
+            },
+        },
+        {
+            "name": "ip_rcmd_rcp_enable",
+            "getval": re.compile(
+                r"""
+                ^ip\srcmd\srcp-enable
+                """, re.VERBOSE,
+            ),
+            "setval": "ip rcmd rcp-enable",
+            "compval": "ip.rcmd.rcp_enable",
+            "result": {
+                "ip": {"rcmd": {"rcp_enable": True}},
+            },
+        },
+        {
+            "name": "ip_tftp_source_interface",
+            "getval": re.compile(
+                r"""
+                ^ip\stftp\ssource-interface\s(?P<source_interface>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip tftp source-interface {{ ip.tftp.source_interface }}",
+            "remval": "ip tftp source-interface",
+            "compval": "ip.tftp.source_interface",
+            "result": {
+                "ip": {"tftp": {"source_interface": "{{ source_interface }}"}},
+            },
+        },
+        {
+            "name": "ip_ftp_source_interface",
+            "getval": re.compile(
+                r"""
+                ^ip\sftp\ssource-interface\s(?P<source_interface>\S+)
+                $""", re.VERBOSE,
+            ),
+            "setval": "ip ftp source-interface {{ ip.ftp.source_interface }}",
+            "remval": "ip ftp source-interface",
+            "compval": "ip.ftp.source_interface",
+            "result": {
+                "ip": {"ftp": {"source_interface": "{{ source_interface }}"}},
+            },
+        },
     ]

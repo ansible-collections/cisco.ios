@@ -505,3 +505,182 @@ class TestIosServiceModule(TestIosModule):
         result = self.execute_module(changed=False)
         self.maxDiff = None
         self.assertEqual(sorted(result["rendered"]), sorted(rendered))
+
+    def _run_ip(self, running, config, state="merged", changed=True):
+        self.execute_show_command.return_value = running
+        args = {"state": state}
+        if config is not None:
+            args["config"] = config
+        set_module_args(args)
+        return self.execute_module(changed=changed)
+
+    def test_ios_service_ip_merged(self):
+        result = self._run_ip(
+            "service dhcp\n",
+            {
+                "ip": {
+                    "finger": True,
+                    "source_route": True,
+                    "rcmd": {"rsh_enable": True},
+                    "tftp": {"source_interface": "GigabitEthernet0/0"},
+                },
+            },
+        )
+        self.assertEqual(
+            result["commands"],
+            [
+                "ip finger",
+                "ip source-route",
+                "ip rcmd rsh-enable",
+                "ip tftp source-interface GigabitEthernet0/0",
+            ],
+        )
+
+    def test_ios_service_ip_merged_idempotent_and_the_source_interface_may_be_abbreviated(self):
+        result = self._run_ip(
+            "service dhcp\nip finger\nip scp server enable\nip tftp source-interface GigabitEthernet0/0\n"
+            "ip ftp source-interface Loopback1\n",
+            {
+                "ip": {
+                    "finger": True,
+                    "scp_server": True,
+                    "tftp": {"source_interface": "Gi0/0"},
+                    "ftp": {"source_interface": "Loopback1"},
+                },
+            },
+            changed=False,
+        )
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_service_ip_merged_keeps_what_is_not_in_the_task(self):
+        result = self._run_ip(
+            "service dhcp\nip finger\nip tftp source-interface GigabitEthernet0/0\n",
+            {"ip": {"bootp_server": True}},
+        )
+        self.assertEqual(result["commands"], ["ip bootp server"])
+
+    def test_ios_service_ip_merged_changes_a_source_interface(self):
+        result = self._run_ip(
+            "service dhcp\nip tftp source-interface GigabitEthernet0/0\n",
+            {"ip": {"tftp": {"source_interface": "Vlan402"}}},
+        )
+        self.assertEqual(result["commands"], ["ip tftp source-interface Vlan402"])
+
+    def test_ios_service_ip_false_turns_a_service_off(self):
+        result = self._run_ip(
+            "service dhcp\nip finger\nip scp server enable\nip rcmd rsh-enable\n",
+            {"ip": {"finger": False, "scp_server": False, "rcmd": {"rsh_enable": False}}},
+        )
+        self.assertEqual(
+            result["commands"],
+            ["no ip finger", "no ip scp server enable", "no ip rcmd rsh-enable"],
+        )
+
+    def test_ios_service_ip_false_on_a_service_that_is_off_is_idempotent(self):
+        # IOS prints "no ip finger" with "show running-config all", it is not a service that is on
+        result = self._run_ip(
+            "service dhcp\nno ip finger\nno ip bootp server\nno ip source-route\n",
+            {"ip": {"finger": False, "bootp_server": False, "source_route": False}},
+            changed=False,
+        )
+        self.assertEqual(result["commands"], [])
+
+    def test_ios_service_ip_replaced_removes_what_is_not_in_the_section(self):
+        result = self._run_ip(
+            "service dhcp\nip finger\nip scp server enable\nip tftp source-interface GigabitEthernet0/0\n",
+            {"ip": {"scp_server": True}},
+            state="replaced",
+        )
+        self.assertEqual(result["commands"], ["no ip finger", "no ip tftp source-interface"])
+
+    def test_ios_service_ip_overridden_removes_what_is_not_in_the_section(self):
+        result = self._run_ip(
+            "service dhcp\nip bootp server\nip ftp source-interface Loopback1\n",
+            {"ip": {"bootp_server": True}},
+            state="overridden",
+        )
+        self.assertEqual(result["commands"], ["no ip ftp source-interface"])
+
+    def test_ios_service_states_leave_the_ip_section_alone_when_it_is_not_in_the_task(self):
+        # existing playbooks must not start to switch services off
+        running = (
+            "service dhcp\nservice call-home\nip finger\nip scp server enable\n"
+            "ip tftp source-interface GigabitEthernet0/0\n"
+        )
+        for state, config in (
+            ("replaced", {"dhcp": True}),
+            ("overridden", {"dhcp": True}),
+            ("merged", {"dhcp": True}),
+            ("deleted", None),
+        ):
+            self.execute_show_command.return_value = running
+            args = {"state": state}
+            if config is not None:
+                args["config"] = config
+            set_module_args(args)
+            result = self.execute_module(changed=state in ("replaced", "overridden", "deleted"))
+            ip_commands = [c for c in result["commands"] if " ip " in " " + c]
+            self.assertEqual(ip_commands, [], state)
+
+    def test_ios_service_ip_deleted_removes_only_what_the_task_names(self):
+        result = self._run_ip(
+            "service dhcp\nip finger\nip scp server enable\nip tftp source-interface GigabitEthernet0/0\n",
+            {"ip": {"finger": True, "tftp": {"source_interface": "Gi0/0"}}},
+            state="deleted",
+        )
+        self.assertEqual(result["commands"], ["no ip finger", "no ip tftp source-interface"])
+
+    def test_ios_service_ip_rendered(self):
+        set_module_args(
+            {
+                "config": {
+                    "ip": {
+                        "bootp_server": True,
+                        "scp_server": True,
+                        "rcmd": {"rsh_enable": True, "rcp_enable": True},
+                        "ftp": {"source_interface": "Loopback1"},
+                    },
+                },
+                "state": "rendered",
+            },
+        )
+        result = self.execute_module(changed=False)
+        # the defaults of the service options are rendered as well, as for any other task
+        self.assertEqual(
+            [c for c in result["rendered"] if c.startswith("ip ")],
+            [
+                "ip bootp server",
+                "ip scp server enable",
+                "ip rcmd rsh-enable",
+                "ip rcmd rcp-enable",
+                "ip ftp source-interface Loopback1",
+            ],
+        )
+
+    def test_ios_service_ip_parsed_and_gathered(self):
+        running = dedent(
+            """\
+            service dhcp
+            no ip bootp server
+            no ip finger
+            no ip source-route
+            ip scp server enable
+            ip rcmd rsh-enable
+            ip tftp source-interface GigabitEthernet0/0
+            ip ftp source-interface Loopback1
+            """,
+        )
+        expected_ip = {
+            "scp_server": True,
+            "rcmd": {"rsh_enable": True},
+            "tftp": {"source_interface": "GigabitEthernet0/0"},
+            "ftp": {"source_interface": "Loopback1"},
+        }
+        set_module_args({"running_config": running, "state": "parsed"})
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["parsed"]["ip"], expected_ip)
+
+        self.execute_show_command.return_value = running
+        set_module_args({"state": "gathered"})
+        result = self.execute_module(changed=False)
+        self.assertEqual(result["gathered"]["ip"], expected_ip)

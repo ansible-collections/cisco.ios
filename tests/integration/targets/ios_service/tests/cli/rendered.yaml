@@ -1,0 +1,22 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_service rendered integration tests on connection={{ ansible_connection }}
+
+- name: Rendered - render commands without device
+  register: result
+  cisco.ios.ios_service:
+    config:
+      ip:
+        finger: true
+        scp_server: true
+        tftp:
+          source_interface: GigabitEthernet0/0
+    state: rendered
+
+- name: Rendered - assert commands generated
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - "'ip finger' in result.rendered"
+      - "'ip scp server enable' in result.rendered"
+      - "'ip tftp source-interface GigabitEthernet0/0' in result.rendered"
