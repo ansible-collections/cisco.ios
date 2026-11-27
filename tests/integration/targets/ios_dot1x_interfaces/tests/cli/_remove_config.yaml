@@ -1,0 +1,16 @@
+---
+- name: Remove the options of the two ports of the tests
+  cisco.ios.ios_dot1x_interfaces:
+    config:
+      - name: "{{ dot1x_port1 }}"
+      - name: "{{ dot1x_port2 }}"
+    state: deleted
+
+- name: Remove the access mode of the two ports
+  cisco.ios.ios_config:
+    parents: "interface {{ item }}"
+    lines:
+      - no switchport mode
+  loop:
+    - "{{ dot1x_port1 }}"
+    - "{{ dot1x_port2 }}"

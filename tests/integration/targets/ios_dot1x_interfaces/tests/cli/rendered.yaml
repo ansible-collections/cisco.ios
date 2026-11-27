@@ -1,0 +1,21 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_dot1x_interfaces rendered integration tests on connection={{ ansible_connection }}
+
+- name: Rendered - render commands without device
+  register: result
+  cisco.ios.ios_dot1x_interfaces:
+    config:
+      - name: GigabitEthernet1/0/2
+        mab: true
+        authentication:
+          order:
+            - mab
+            - dot1x
+    state: rendered
+
+- name: Rendered - assert commands generated
+  ansible.builtin.assert:
+    that:
+      - result.changed == false
+      - result.rendered == ['interface GigabitEthernet1/0/2', 'authentication order mab dot1x', 'mab']

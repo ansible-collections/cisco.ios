@@ -1,0 +1,18 @@
+---
+- name: Put the two ports in access mode
+  cisco.ios.ios_config:
+    parents: "interface {{ item }}"
+    lines:
+      - switchport mode access
+  loop:
+    - "{{ dot1x_port1 }}"
+    - "{{ dot1x_port2 }}"
+
+- name: Gather the 802.1X options of the rest of the device, overridden removes what is not in the task
+  cisco.ios.ios_dot1x_interfaces:
+    state: gathered
+  register: gathered_dot1x
+
+- name: Keep what is not on the ports of the tests, to send it back
+  ansible.builtin.set_fact:
+    other_interfaces: "{{ gathered_dot1x.gathered | rejectattr('name', 'in', [dot1x_port1, dot1x_port2]) | list }}"

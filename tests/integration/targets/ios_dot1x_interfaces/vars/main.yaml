@@ -1,0 +1,4 @@
+---
+# Not the first interface, it is the management one on the lab devices
+dot1x_port1: GigabitEthernet2
+dot1x_port2: GigabitEthernet3
