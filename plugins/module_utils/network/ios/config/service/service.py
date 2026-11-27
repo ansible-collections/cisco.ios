@@ -28,6 +28,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.facts 
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.rm_templates.service import (
     ServiceTemplate,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.utils.utils import (
+    normalize_interface,
+)
 
 
 class Service(ResourceModule):
@@ -79,6 +82,16 @@ class Service(ResourceModule):
             "udp_small_servers",
             "unsupported_transceiver",
         ]
+        self.ip_parsers = [
+            "ip_bootp_server",
+            "ip_finger",
+            "ip_source_route",
+            "ip_scp_server",
+            "ip_rcmd_rsh_enable",
+            "ip_rcmd_rcp_enable",
+            "ip_tftp_source_interface",
+            "ip_ftp_source_interface",
+        ]
 
     def execute_module(self):
         """Execute the module
@@ -97,6 +110,11 @@ class Service(ResourceModule):
         """
         wantd = self._service_list_to_dict(self.want)
         haved = self._service_list_to_dict(self.have)
+
+        # the ip section is only managed when the task has it, so that the states of existing
+        # playbooks keep leaving the ip services alone
+        task_ip = wantd.pop("ip", None)
+        have_ip = haved.pop("ip", None) or {}
 
         service_default = {
             "counters": 0,
@@ -122,6 +140,49 @@ class Service(ResourceModule):
             wantd = dict_merge(self._service_list_to_dict(service_default), wantd)
 
         self._compare(want=wantd, have=haved)
+        self._compare_ip(task_ip, have_ip)
+
+    def _compare_ip(self, task_ip, have_ip):
+        """The ip section: legacy services and the source interfaces of the file transfers."""
+        if self.state == "deleted":
+            if not task_ip:
+                return
+            # only what the task names is removed
+            want_ip = {}
+            have_ip = self._keep_named(have_ip, task_ip)
+        elif task_ip is None:
+            return
+        else:
+            want_ip = task_ip
+            if self.state == "merged":
+                want_ip = dict_merge(have_ip, task_ip)
+        self._same_source_interfaces(want_ip, have_ip)
+        self.compare(parsers=self.ip_parsers, want={"ip": want_ip}, have={"ip": have_ip})
+
+    def _keep_named(self, have, named):
+        """The part of have that the task names."""
+        kept = {}
+        for key, value in have.items():
+            if key not in named:
+                continue
+            if isinstance(value, dict) and isinstance(named[key], dict):
+                value = self._keep_named(value, named[key])
+            kept[key] = value
+        return kept
+
+    @staticmethod
+    def _same_source_interfaces(want_ip, have_ip):
+        """ "Gi0/0" in the task and "GigabitEthernet0/0" on the device are the same interface,
+        the device side takes the spelling of the task."""
+        for proto in ("tftp", "ftp"):
+            want_name = (want_ip.get(proto) or {}).get("source_interface")
+            have_name = (have_ip.get(proto) or {}).get("source_interface")
+            if (
+                want_name
+                and have_name
+                and normalize_interface(want_name) == normalize_interface(have_name)
+            ):
+                have_ip[proto]["source_interface"] = want_name
 
     def _compare(self, want, have):
         """Leverages the base class `compare()` method and

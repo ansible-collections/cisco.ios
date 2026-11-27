@@ -19,6 +19,7 @@ isoformat
 nolabel
 notesdir
 passenv
+rcmd
 returncode
 setenv
 setuptools
