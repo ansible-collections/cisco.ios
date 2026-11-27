@@ -1,0 +1,117 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_pki_trustpoints merged integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- block:
+    - name: Merged - create a trustpoint
+      register: result
+      cisco.ios.ios_pki_trustpoints: &create
+        config:
+          - name: "{{ web_name }}"
+            enrollment:
+              type: terminal
+            revocation_check:
+              - none
+            hash: sha256
+            subject_name: CN=router.example.com
+        state: merged
+
+    - name: Merged - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands[0] == 'crypto pki trustpoint ' ~ web_name
+          - "'enrollment terminal' in result.commands"
+          - "'revocation-check none' in result.commands"
+          - "'subject-name CN=router.example.com' in result.commands"
+
+    - name: Merged - idempotent
+      register: result
+      cisco.ios.ios_pki_trustpoints: *create
+
+    - name: Merged - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    - name: Merged - change one option, the others are kept
+      register: result
+      cisco.ios.ios_pki_trustpoints:
+        config:
+          - name: "{{ web_name }}"
+            revocation_check:
+              - crl
+              - none
+        state: merged
+
+    - name: Merged - assert
+      ansible.builtin.assert:
+        that:
+          - result.commands == ['crypto pki trustpoint ' ~ web_name, 'revocation-check crl none']
+          - (result.after | selectattr('name', 'equalto', web_name) | first).subject_name == 'CN=router.example.com'
+
+    - name: Merged - enrollment with a url, an IP address because IOS resolves a host name when it is entered
+      register: result
+      cisco.ios.ios_pki_trustpoints:
+        config:
+          - name: "{{ web_name }}"
+            enrollment:
+              type: url
+              url: http://192.0.2.10:80
+        state: merged
+
+    - name: Merged - assert url
+      ansible.builtin.assert:
+        that:
+          - result.commands == ['crypto pki trustpoint ' ~ web_name, 'enrollment url http://192.0.2.10:80']
+
+    - name: Merged - terminal with pem, the form the real configurations use
+      register: result
+      cisco.ios.ios_pki_trustpoints:
+        config:
+          - name: "{{ web_name }}"
+            enrollment:
+              type: terminal
+              pem: true
+        state: merged
+
+    - name: Merged - assert pem
+      ansible.builtin.assert:
+        that:
+          - result.commands == ['crypto pki trustpoint ' ~ web_name, 'enrollment terminal pem']
+
+    - name: Merged - pem off again
+      register: result
+      cisco.ios.ios_pki_trustpoints:
+        config:
+          - name: "{{ web_name }}"
+            enrollment:
+              type: terminal
+              pem: false
+        state: merged
+
+    - name: Merged - assert pem off
+      ansible.builtin.assert:
+        that:
+          - result.commands == ['crypto pki trustpoint ' ~ web_name, 'enrollment terminal']
+
+    - name: Merged - pem with a url is refused, IOS XE refuses it
+      register: result
+      ignore_errors: true
+      cisco.ios.ios_pki_trustpoints:
+        config:
+          - name: "{{ web_name }}"
+            enrollment:
+              type: url
+              url: http://192.0.2.10:80
+              pem: true
+        state: merged
+
+    - name: Merged - assert refused
+      ansible.builtin.assert:
+        that:
+          - result.failed == true
+          - "'only supported with the type terminal' in result.msg"
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

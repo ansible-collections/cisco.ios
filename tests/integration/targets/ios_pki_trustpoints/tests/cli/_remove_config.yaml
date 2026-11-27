@@ -1,0 +1,9 @@
+---
+- name: Remove the trustpoints of the tests, the others are not touched
+  cisco.ios.ios_pki_trustpoints:
+    config:
+      - name: "{{ ca_name }}"
+        delete_certificates: true
+      - name: "{{ web_name }}"
+        delete_certificates: true
+    state: deleted

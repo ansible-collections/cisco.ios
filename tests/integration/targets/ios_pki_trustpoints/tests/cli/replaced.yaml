@@ -1,0 +1,46 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_pki_trustpoints replaced integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- block:
+    - name: Replaced - prepare
+      cisco.ios.ios_pki_trustpoints:
+        config:
+          - name: "{{ web_name }}"
+            enrollment:
+              type: terminal
+            revocation_check:
+              - none
+            subject_name: CN=router.example.com
+            subject_alt_name: router.example.com
+        state: merged
+
+    - name: Replaced - what is not in the task is removed
+      register: result
+      cisco.ios.ios_pki_trustpoints: &replace
+        config:
+          - name: "{{ web_name }}"
+            enrollment:
+              type: terminal
+            revocation_check:
+              - none
+            subject_name: CN=router.example.com
+        state: replaced
+
+    - name: Replaced - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands == ['crypto pki trustpoint ' ~ web_name, 'no subject-alt-name router.example.com']
+
+    - name: Replaced - idempotent
+      register: result
+      cisco.ios.ios_pki_trustpoints: *replace
+
+    - name: Replaced - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

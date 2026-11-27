@@ -1,0 +1,90 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_pki_trustpoints ca_certificate integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- block:
+    - name: CA certificate - install the root CA
+      register: result
+      cisco.ios.ios_pki_trustpoints: &install
+        config:
+          - name: "{{ ca_name }}"
+            enrollment:
+              type: terminal
+            revocation_check:
+              - none
+            fingerprint: "{{ ca_fingerprint }}"
+            ca_certificate: "{{ lookup('ansible.builtin.file', role_path + '/files/lab-root-ca.pem') }}"
+        state: merged
+
+    - name: CA certificate - assert installed
+      vars:
+        installed: "{{ result.after | selectattr('name', 'equalto', ca_name) | first }}"
+        expected: "{{ lookup('ansible.builtin.file', role_path + '/files/lab-root-ca.pem') }}"
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.commands[-1] == 'crypto pki authenticate ' ~ ca_name
+          - installed.ca_certificate | trim == expected | trim
+
+    - name: CA certificate - idempotent
+      register: result
+      cisco.ios.ios_pki_trustpoints: *install
+
+    - name: CA certificate - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+
+    - name: CA certificate - another certificate is an error, IOS does not replace it
+      register: result
+      ignore_errors: true
+      cisco.ios.ios_pki_trustpoints:
+        config:
+          - name: "{{ ca_name }}"
+            fingerprint: "{{ other_fingerprint }}"
+            ca_certificate: "{{ lookup('ansible.builtin.file', role_path + '/files/lab-other-ca.pem') }}"
+        state: merged
+
+    - name: CA certificate - assert
+      ansible.builtin.assert:
+        that:
+          - result.failed == true
+          - "'already holds another CA certificate' in result.msg"
+
+    - name: CA certificate - removing a trustpoint with a CA certificate is refused without delete_certificates
+      register: result
+      ignore_errors: true
+      cisco.ios.ios_pki_trustpoints:
+        config:
+          - name: "{{ ca_name }}"
+        state: deleted
+
+    - name: CA certificate - gather
+      register: still_there
+      cisco.ios.ios_pki_trustpoints:
+        state: gathered
+
+    - name: CA certificate - assert refused and nothing was removed
+      ansible.builtin.assert:
+        that:
+          - result.failed == true
+          - ca_name in result.msg
+          - "'delete_certificates' in result.msg"
+          - still_there.gathered | selectattr('name', 'equalto', ca_name) | list | length == 1
+
+    - name: CA certificate - remove the trustpoint with the certificate
+      register: result
+      cisco.ios.ios_pki_trustpoints:
+        config:
+          - name: "{{ ca_name }}"
+            delete_certificates: true
+        state: deleted
+
+    - name: CA certificate - assert removed
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - result.after | selectattr('name', 'equalto', ca_name) | list | length == 0
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

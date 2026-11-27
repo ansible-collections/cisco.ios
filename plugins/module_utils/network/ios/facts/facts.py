@@ -102,6 +102,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ospfv2
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ospfv3.ospfv3 import (
     Ospfv3Facts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.pki_trustpoints.pki_trustpoints import (
+    Pki_trustpointsFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.prefix_lists.prefix_lists import (
     Prefix_listsFacts,
 )
@@ -179,6 +182,7 @@ FACT_RESOURCE_SUBSETS = dict(
     flow_monitor_global=Flow_monitor_globalFacts,
     flow_monitor_interfaces=Flow_monitor_interfacesFacts,
     monitor_sessions=Monitor_sessionsFacts,
+    pki_trustpoints=Pki_trustpointsFacts,
 )
 
 

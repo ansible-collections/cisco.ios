@@ -93,6 +93,7 @@ Name | Description
 [cisco.ios.ios_ospfv2](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ospfv2_module.rst)|Resource module to configure OSPFv2.
 [cisco.ios.ios_ospfv3](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ospfv3_module.rst)|Resource module to configure OSPFv3.
 [cisco.ios.ios_ping](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_ping_module.rst)|Tests reachability using ping from IOS switch.
+[cisco.ios.ios_pki_trustpoints](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_pki_trustpoints_module.rst)|Resource module to configure PKI trustpoints.
 [cisco.ios.ios_prefix_lists](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_prefix_lists_module.rst)|Resource module to configure prefix lists.
 [cisco.ios.ios_route_maps](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_route_maps_module.rst)|Resource module to configure route maps.
 [cisco.ios.ios_service](https://github.com/ansible-collections/cisco.ios/blob/main/docs/cisco.ios.ios_service_module.rst)|Resource module to configure service.
