@@ -12,8 +12,8 @@ class ModuleDocFragment(object):
     # Standard files documentation fragment
     DOCUMENTATION = r"""options: {}
 notes:
-- For more information on using Ansible to manage network devices see the :ref:`Ansible
-  Network Guide <network_guide>`
-- For more information on using Ansible to manage Cisco devices see the `Cisco integration
-  page <https://www.ansible.com/integrations/networks/cisco>`_.
+- For more information on using Ansible to manage network devices see the Ansible
+  Network Guide U(https://docs.ansible.com/ansible/latest/network/getting_started/index.html).
+- For more information on using Ansible to manage Cisco devices see the Cisco integration
+  page U(https://www.ansible.com/integrations/networks/cisco).
 """
