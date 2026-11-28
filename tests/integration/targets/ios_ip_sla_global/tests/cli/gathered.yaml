@@ -1,0 +1,23 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_ip_sla_global gathered integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Gathered - read the configuration
+      register: result
+      cisco.ios.ios_ip_sla_global:
+        state: gathered
+
+    - name: Gathered - assert
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+          - result.gathered.logging_traps == true
+          - result.gathered.operations | length == 2
+          - result.gathered.operations[0].icmp_echo.destination == sla_dest1
+          - result.gathered.operations[0].schedule.life == "forever"
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

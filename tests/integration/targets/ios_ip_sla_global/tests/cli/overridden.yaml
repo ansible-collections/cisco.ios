@@ -1,0 +1,40 @@
+---
+- ansible.builtin.debug:
+    msg: START ios_ip_sla_global overridden integration tests on connection={{ ansible_connection }}
+
+- ansible.builtin.include_tasks: _remove_config.yaml
+- ansible.builtin.include_tasks: _populate_config.yaml
+
+- block:
+    - name: Overridden - keep only operation 91
+      register: result
+      cisco.ios.ios_ip_sla_global: &override
+        config:
+          operations:
+            - operation_id: 91
+              icmp_echo:
+                destination: "{{ sla_dest1 }}"
+              frequency: 10
+              schedule:
+                life: forever
+                start_time: now
+        state: overridden
+
+    - name: Overridden - assert operation 92 and the global option are gone
+      ansible.builtin.assert:
+        that:
+          - result.changed == true
+          - "'no ip sla 92' in result.commands"
+          - "'no ip sla logging traps' in result.commands"
+          - result.after.operations | length == 1
+
+    - name: Overridden - idempotent
+      register: result
+      cisco.ios.ios_ip_sla_global: *override
+
+    - name: Overridden - assert idempotent
+      ansible.builtin.assert:
+        that:
+          - result.changed == false
+  always:
+    - ansible.builtin.include_tasks: _remove_config.yaml

@@ -59,6 +59,9 @@ from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.hsrp_i
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.interfaces.interfaces import (
     InterfacesFacts,
 )
+from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.ip_sla_global.ip_sla_global import (
+    Ip_sla_globalFacts,
+)
 from ansible_collections.cisco.ios.plugins.module_utils.network.ios.facts.l2_interfaces.l2_interfaces import (
     L2_interfacesFacts,
 )
@@ -179,6 +182,7 @@ FACT_RESOURCE_SUBSETS = dict(
     flow_monitor_global=Flow_monitor_globalFacts,
     flow_monitor_interfaces=Flow_monitor_interfacesFacts,
     monitor_sessions=Monitor_sessionsFacts,
+    ip_sla_global=Ip_sla_globalFacts,
 )
 
 
